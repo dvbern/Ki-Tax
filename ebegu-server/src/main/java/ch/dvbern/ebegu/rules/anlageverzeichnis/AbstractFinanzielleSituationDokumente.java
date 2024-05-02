@@ -155,6 +155,8 @@ abstract class AbstractFinanzielleSituationDokumente
 		case STEUERVERANLAGUNG:
 			return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
 		case STEUERERKLAERUNG:
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten()
+				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 		case NACHWEIS_VERMOEGEN:
 			// Vermögen muss immer ausgewiesen werden!
 			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten();

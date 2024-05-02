@@ -613,7 +613,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiDokumenteTest() {
+	void finSiDokumenteTest() {
 		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
@@ -657,10 +657,10 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		//Test wenn Steuererklärung nicht ausgefüllt ist
 		finanzielleSituationJA.setSteuererklaerungAusgefuellt(false);
 		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(10, dokumentGrunds.size());
+		Assert.assertEquals(9, dokumentGrunds.size());
 
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assert.assertEquals(10, dokumentGrundGS1.size());
+		Assert.assertEquals(9, dokumentGrundGS1.size());
 
 		assertType(dokumentGrundGS1, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
