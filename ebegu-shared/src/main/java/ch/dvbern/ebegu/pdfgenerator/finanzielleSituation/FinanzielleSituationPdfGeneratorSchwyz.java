@@ -94,7 +94,8 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 		var gesuchsteller1 = requireNonNull(gesuch.getGesuchsteller1());
 		var finSit1 = requireFinanzielleSituation(gesuchsteller1);
 
-		String name = FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch) ?
+		final boolean gemeinsameSteuererklaerung = FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch);
+		String name = gemeinsameSteuererklaerung ?
 			bothNames() :
 			gesuchsteller1.extractFullName();
 
@@ -104,6 +105,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 			createMassgebendesEinkommenTableForGesuchsteller(finSit1, name, massgebendesEinkommen, isQuellenbesteuert(finSit1));
 
 		var tablesGs2 = Optional.ofNullable(gesuch.getGesuchsteller2())
+			.filter(gesuchstellerContainer -> !gemeinsameSteuererklaerung)
 			.flatMap(gesuchsteller2 -> findFinanzielleSituation(gesuchsteller2)
 				.map(finSit2 -> createMassgebendesEinkommenTableForGesuchsteller(
 					finSit2,
@@ -220,7 +222,8 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 		FinanzielleSituationResultateDTO resultateDTO = requireNonNull(jahrOffset == 1 ? ekvBasisJahrPlus1 : ekvBasisJahrPlus2);
 		int jahr = gesuch.getGesuchsperiode().getBasisJahr() + jahrOffset;
 
-		String name = FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch) ?
+		final boolean gemeinsameSteuererklaerung = FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch);
+		String name = gemeinsameSteuererklaerung ?
 			bothNames() :
 			requireNonNull(gesuchsteller1).extractFullName();
 
@@ -235,6 +238,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 
 		GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
 		var tablesGS2 = findEinkommensverschlechterung(gesuchsteller2, jahrOffset)
+			.filter(gesuchstellerCont -> !gemeinsameSteuererklaerung)
 			.map(ekv2 -> createMassgebendesEinkommenTableForGesuchsteller(
 				ekv2,
 				requireNonNull(gesuchsteller2).extractFullName(),
