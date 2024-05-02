@@ -33,6 +33,7 @@ public final class PdfUnitTestUtil {
 	public static String getText(@Nonnull File file) {
 		try (PDDocument document = PDDocument.load(file)) {
 			PDFTextStripper pdfStripper = new PDFTextStripper();
+			pdfStripper.setLineSeparator("\n");
 			return pdfStripper.getText(document);
 		} catch (@Nonnull IOException ex) {
 			throw new IllegalStateException("Could not extract text", ex);
