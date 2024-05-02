@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.neskovanp;
+package ch.dvbern.ebegu.errors;
 
-import java.time.LocalDate;
+public class OIDCTokenException extends Exception {
+	public OIDCTokenException(String message) {
+		super(message);
+	}
 
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
-
-public interface IKibonAnfrageWebService {
-
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
-			throws
-			KiBonAnfrageServiceException, OIDCTokenException;
+	public OIDCTokenException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

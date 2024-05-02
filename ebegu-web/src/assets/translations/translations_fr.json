@@ -3118,5 +3118,6 @@
     "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
     "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der Schulfreienzeit (Ferien) statt",
     "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
+    "ERROR_OIDC_TOKEN_INITIALISATION": "Une erreur est survenue lors de la demande des données fiscales, veuillez réessayer.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

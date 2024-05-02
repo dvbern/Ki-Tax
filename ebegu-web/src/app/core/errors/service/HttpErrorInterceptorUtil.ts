@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.neskovanp;
+export function isOIDCTokenInitialisationException(response: any): boolean {
+    const http500 = 500;
+    if (!response) {
+        return false;
+    }
+    let hasError = false;
+    if (response.data !== null && response.data !== undefined) {
+        hasError = response.data.hasOwnProperty('error');
+    }
+    const msg = 'Failed to obtain OIDC token';
 
-import java.time.LocalDate;
-
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
-
-public interface IKibonAnfrageWebService {
-
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
-			throws
-			KiBonAnfrageServiceException, OIDCTokenException;
+    return response.status === http500 && hasError && response.data.error.includes(msg) > -1;
 }

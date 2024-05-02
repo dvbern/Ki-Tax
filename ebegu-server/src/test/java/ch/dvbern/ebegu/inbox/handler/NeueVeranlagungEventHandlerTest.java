@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import ch.dvbern.ebegu.errors.OIDCTokenException;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -169,7 +170,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void steuerAbfrageNichtErfolgreich() {
+	void steuerAbfrageNichtErfolgreich() throws OIDCTokenException {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(gesuch_1GS, GesuchstellerTyp.GESUCHSTELLER_1)).andReturn(kibonAnfrageContext);
@@ -177,7 +178,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void steuerdatenResponseNichtRechtskraeftig() {
+	void steuerdatenResponseNichtRechtskraeftig() throws OIDCTokenException {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
@@ -186,7 +187,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void finSitUnterschiedGleich() {
+	void finSitUnterschiedGleich() throws OIDCTokenException {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 		expectGesuchFound();
 		Einstellung einstellung = findEinstellungMinUnterschied();
@@ -198,7 +199,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void finSitUnterschiedMehrAberNichtGenuegen() {
+	void finSitUnterschiedMehrAberNichtGenuegen() throws OIDCTokenException {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(60));
@@ -207,7 +208,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void createsNeueVeranlagungMitteilung() {
+	void createsNeueVeranlagungMitteilung() throws OIDCTokenException {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
@@ -217,7 +218,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void createsNeueVeranlagungMitteilungWhenZugunstenAntragsteller() {
+	void createsNeueVeranlagungMitteilungWhenZugunstenAntragsteller() throws OIDCTokenException {
 		//Einkommen sinkt um 1 CHF
 		expectEverythingUntilCompare(BigDecimal.valueOf(99999));
 		Einstellung einstellung = findEinstellungMinUnterschied();
@@ -228,7 +229,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void createsNeueVeranalgungMitteilungWhenGesuchMarkiert() {
+	void createsNeueVeranalgungMitteilungWhenGesuchMarkiert() throws OIDCTokenException {
 		//Einkommen bleibt gleich
 		expectEverythingUntilCompare(BigDecimal.valueOf(100000));
 		// gesuch ist markiert
@@ -261,11 +262,11 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		session.evict(gesuch_1GS);
 	}
 
-	private void expectEverythingUntilCompare() {
+	private void expectEverythingUntilCompare() throws OIDCTokenException {
 		expectEverythingUntilCompare(BigDecimal.valueOf(100060));
 	}
 
-	private void expectEverythingUntilCompare(BigDecimal einkommenNeu) {
+	private void expectEverythingUntilCompare(BigDecimal einkommenNeu) throws OIDCTokenException {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig =

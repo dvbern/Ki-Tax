@@ -32,6 +32,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -47,6 +49,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -74,6 +77,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.OIDCTokenException;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -439,10 +443,10 @@ public class FinanzielleSituationResource {
 	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE,
 		SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SUPER_ADMIN})
 	@TransactionAttribute(TransactionAttributeType.NEVER)
-	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
-		@Nonnull @NotNull @PathParam("gesuchstellerNumber") int gesuchstellerNumber,
+	public Response updateFinSitMitSteuerdaten(
+		@Nonnull @PathParam("gesuchstellerNumber") @NotNull int gesuchstellerNumber,
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
-		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
+		@Nonnull @PathParam("isGemeinsam") @NotNull boolean isGemeinsam,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
@@ -459,8 +463,18 @@ public class FinanzielleSituationResource {
 		GesuchstellerTyp gesuchstellerTyp = GesuchstellerTyp.getGesuchstellerTypByNummer(gesuchstellerNumber);
 		initFinanzielleSituationContainerForSteuerdatenRequest(gesuch, isGemeinsam, gesuchstellerTyp);
 
-		KibonAnfrageContext kibonAnfrageContext =
-				kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
+		KibonAnfrageContext kibonAnfrageContext = null;
+		try {
+			kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
+		} catch (OIDCTokenException e) {
+			JsonObject errorJson = Json.createObjectBuilder()
+				.add("error", "Failed to obtain OIDC token")
+				.add("message", e.getMessage())
+				.build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+				.entity(errorJson.toString())
+				.build();
+		}
 
 		if (isGemeinsam) {
 			this.gesuchstellerService.saveGesuchsteller(requireNonNull(gesuch.getGesuchsteller2()), gesuch, 2, false);
@@ -474,7 +488,7 @@ public class FinanzielleSituationResource {
 				false);
 		FinanzielleSituationContainer persistedFinSit = this.finanzielleSituationService.saveFinanzielleSituationTemp(
 				kibonAnfrageContext.getFinanzielleSituationContainerToUse());
-		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+		return Response.ok(converter.finanzielleSituationContainerToJAX(persistedFinSit)).build();
 	}
 
 	private void initFinanzielleSituationContainerForSteuerdatenRequest(

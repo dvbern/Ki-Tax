@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenRequest;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
+import ch.dvbern.ebegu.errors.OIDCTokenException;
 import ch.dvbern.ebegu.services.SteuerdatenAnfrageLogService;
 import ch.dvbern.ebegu.ws.neskovanp.oicd.OIDCTokenManagerBean;
 import ch.dvbern.ebegu.ws.oicd.OIDCToken;
@@ -70,7 +71,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		Integer zpvNummer,
 		LocalDate geburtsdatum,
 		String gesuchId,
-		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
+		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException, OIDCTokenException {
 		final String methodName = "KibonAnfrageService#getSteuerdaten";
 		SteuerdatenResponse steuerdatenResponse = null;
 		Exception exceptionReceived = null;
@@ -106,6 +107,11 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			exceptionReceived = permissionDeniedFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault.getFaultInfo().getErrorCode(), permissionDeniedFault.getFaultInfo().getUserMessage());
 		}
+		catch (OIDCTokenException oidcTokenException) {
+			exceptionReceived = oidcTokenException;
+			LOGGER.error(oidcTokenException.getMessage());
+			throw oidcTokenException;
+		}
 		catch (Exception e) {
 			exceptionReceived = e;
 			LOGGER.error(e.getMessage());
@@ -138,7 +144,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		steuerdatenAnfrageLogService.saveSteuerdatenAnfrageLog(anfrageLog);
 	}
 
-	private KiBonAnfragePort getServicePort() throws KiBonAnfrageServiceException {
+	private KiBonAnfragePort getServicePort() throws OIDCTokenException {
 		if (port == null) {
 			initKiBonAnfragePort();
 		}
@@ -147,12 +153,12 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")
-	private void initKiBonAnfragePort() throws KiBonAnfrageServiceException {
-		LOGGER.info("Initialising GeresResidentInfoService:");
+	private void initKiBonAnfragePort() throws OIDCTokenException {
+		LOGGER.info("Initialising KiBonAnfrageService:");
 		if (port == null) {
 			String endpointURL = config.getKibonAnfrageEndpoint();
 			if (StringUtils.isEmpty(endpointURL)) {
-				throw new KiBonAnfrageServiceException("initKiBonAnfragePort", "Es wurde keine Endpunkt URL definiert fuer den "
+				throw new OIDCTokenException("Es wurde keine Endpunkt URL definiert fuer den "
 					+ "KibonAnfrageService");
 			}
 
@@ -175,14 +181,13 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 				bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 			} catch (RuntimeException e) {
 				port = null;
-				throw new KiBonAnfrageServiceException("initKiBonAnfragePort",
-					"Could not create service-port KibonAnfrageService for endpoint " + endpointURL, e);
+				throw new OIDCTokenException("Could not create service-port KibonAnfrageService for endpoint " + endpointURL, e);
 			}
 		}
 		LOGGER.info("KibonAnfrageService erfolgreich initialisiert");
 	}
 
-	private void initAuthorizationForKibonAnfrageService() throws KiBonAnfrageServiceException {
+	private void initAuthorizationForKibonAnfrageService() throws OIDCTokenException {
 		try {
 			OIDCToken authToken = OIDCTokenManagerBean.getValidOICDToken();
 			Map<String, List<String>> requestHeaders = new HashMap<>();
@@ -193,8 +198,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		} catch (Exception e) {
 			port = null;
 			LOGGER.error("Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
-			throw new KiBonAnfrageServiceException(
-				"initAuthorizationForKibonAnfrageService",
+			throw new OIDCTokenException(
 				"Could not initialze the Autorziation Token for KibonAnfrage Serivce",
 				e);
 		}

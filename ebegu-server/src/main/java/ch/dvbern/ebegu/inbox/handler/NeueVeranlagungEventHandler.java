@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.OIDCTokenException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
@@ -152,7 +153,12 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		KibonAnfrageContext kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
+		KibonAnfrageContext kibonAnfrageContext = null;
+		try {
+			kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
+		} catch (OIDCTokenException e) {
+			return Processing.failure("OIDC Server koennte nicht erreicht werden: " + key);
+		}
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 				|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
