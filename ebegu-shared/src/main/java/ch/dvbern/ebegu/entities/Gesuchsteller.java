@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckAhvFormat;
-import ch.dvbern.ebegu.validators.CheckAhvGesuchsteller;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 

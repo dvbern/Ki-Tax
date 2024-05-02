@@ -17,7 +17,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
-import {BehaviorSubject, defer, Observable, of, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';

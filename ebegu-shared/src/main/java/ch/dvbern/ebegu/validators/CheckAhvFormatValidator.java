@@ -17,10 +17,10 @@ public class CheckAhvFormatValidator implements ConstraintValidator<CheckAhvForm
 	@Override
 	public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 		int ahvlenght = 13;
-		String START_DIGITS = "756";
+		String startDigits = "756";
 		int relevantDigitsSum = 0;
 		List<Integer> digits = new ArrayList<>();
-		for (char c : s.replaceAll("\\.", "").toCharArray()) {
+		for (char c : s.replace("\\.", "").toCharArray()) {
 			digits.add(Integer.parseInt(String.valueOf(c)));
 		}
 
@@ -37,11 +37,11 @@ public class CheckAhvFormatValidator implements ConstraintValidator<CheckAhvForm
 		}
 
 		int relevantDigitsRounded = (int) Math.ceil(relevantDigitsSum / 10.0) * 10;
-		int calculatedDigit = relevantDigitsRounded - (int) relevantDigitsSum;
+		int calculatedDigit = relevantDigitsRounded - relevantDigitsSum;
 		int checkDigit = digits.get(12);
 
-		String startDigits = s.substring(0, 3);
+		String startDigitsAHV = s.substring(0, 3);
 
-		return checkDigit == calculatedDigit && startDigits.equals(START_DIGITS);
+		return checkDigit == calculatedDigit && startDigitsAHV.equals(startDigits);
 	}
 }
