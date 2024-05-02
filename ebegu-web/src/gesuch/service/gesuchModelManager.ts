@@ -1279,9 +1279,9 @@ export class GesuchModelManager {
     }
 
     private createDeferPromise<T>(): IPromise<T> {
-        const defer = this.$q.defer<T>();
-        defer.resolve();
-        return defer.promise;
+        const deferLocal = this.$q.defer<T>();
+        deferLocal.resolve();
+        return deferLocal.promise;
     }
 
     public findIndexOfErwerbspensum(gesuchstellerNumber: number, pensum: any): number {
