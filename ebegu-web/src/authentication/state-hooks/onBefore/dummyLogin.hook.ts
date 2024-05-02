@@ -33,7 +33,7 @@ export function dummyLoginHookRunBlock($transitions: TransitionService): void {
         to: state => state.data && state.data.requiresDummyLogin
     };
 
-    $transitions.onBefore(requiresDummyLogin, checkDummyLogin, {priority: OnBeforePriorities.DUMMY_LOGIN});
+    $transitions.onBefore(requiresDummyLogin, checkDummyLogin, {priority: OnBeforePriorities.CONFIGURATION});
 }
 
 function checkDummyLogin(transition: Transition): HookResult {
