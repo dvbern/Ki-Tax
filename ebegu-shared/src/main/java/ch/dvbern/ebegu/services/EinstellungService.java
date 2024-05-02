@@ -136,8 +136,6 @@ public interface EinstellungService {
 
 	/**
 	 * Return alle Einstellungen für eine gegebene Key und eventuel Gesuchsperiode
-	 * @param key
-	 * @return
 	 */
 	@Nonnull
 	List<Einstellung> findEinstellungen(@Nonnull EinstellungKey key, @Nullable Gesuchsperiode gesuchsperiode);
@@ -152,9 +150,13 @@ public interface EinstellungService {
 	}
 
 	default BigDecimal getEinstellungAsBigDecimal(@Nonnull EinstellungKey key, @Nonnull Betreuung betreuung) {
+		return findEinstellung(key, betreuung).getValueAsBigDecimal();
+	}
+
+	default Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Betreuung betreuung) {
 		Gemeinde gemeinde = betreuung.extractGemeinde();
 		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
 
-		return findEinstellung(key, gemeinde, periode).getValueAsBigDecimal();
+		return findEinstellung(key, gemeinde, periode);
 	}
 }

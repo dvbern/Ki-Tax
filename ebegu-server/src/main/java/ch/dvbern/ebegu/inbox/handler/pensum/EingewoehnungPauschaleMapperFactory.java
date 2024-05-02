@@ -20,23 +20,29 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 
 @ApplicationScoped
 @NoArgsConstructor
 @AllArgsConstructor
-public class BetreuungInFerienzeitMapperFactory {
+public class EingewoehnungPauschaleMapperFactory {
 
 	@Inject
-	private MitteilungService mitteilungService;
+	private EinstellungService einstellungService;
 
-	public PensumMapper<AbstractBetreuungsPensum> createForBetreuungInFerienzeit(ProcessingContext ctx) {
-		return mitteilungService.showSchulergaenzendeBetreuung(ctx.getBetreuung()) ?
-			new BetreuungInFerienzeitMapper(ctx) :
+	public PensumMapper<AbstractMahlzeitenPensum> createForEingewoehnungPauschale(ProcessingContext ctx) {
+		EingewoehnungTyp eingewoehnungTyp =
+			EingewoehnungTyp.valueOf(einstellungService.findEinstellung(EINGEWOEHNUNG_TYP, ctx.getBetreuung()).getValue());
+
+		return eingewoehnungTyp.isEingewoehnungTypPauschale() ?
+			PensumMapper.EINGEWOEHNUNG_PAUSCHALE_MAPPER :
 			PensumMapper.nop();
 	}
 }

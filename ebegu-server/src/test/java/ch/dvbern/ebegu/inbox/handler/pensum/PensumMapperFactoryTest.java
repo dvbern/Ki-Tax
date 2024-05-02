@@ -30,8 +30,11 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
@@ -50,6 +53,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.initProcessingContext;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -79,7 +83,8 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 		factory = new PensumMapperFactory(
 			new BetreuungInFerienzeitMapperFactory(mitteilungService),
 			new MahlzeitVerguenstigungMapperFactory(einstellungService),
-			new PensumValueMapperFactory(einstellungService)
+			new PensumValueMapperFactory(einstellungService),
+			new EingewoehnungPauschaleMapperFactory(einstellungService)
 		);
 	}
 
@@ -224,6 +229,10 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSSTUNDEN_TFO), anyObject()))
 			.andReturn(BigDecimal.valueOf(11))
+			.anyTimes();
+
+		expect(einstellungService.findEinstellung(eq(EINGEWOEHNUNG_TYP), anyObject()))
+			.andReturn(new Einstellung(EINGEWOEHNUNG_TYP, EingewoehnungTyp.PAUSCHALE.name(), mock(Gesuchsperiode.class)))
 			.anyTimes();
 	}
 }
