@@ -441,6 +441,6 @@ class FinanzielleSituationPdfTest {
 
 	@Nonnull
 	private String textForSnapshot(String text) {
-		return text.replaceAll(Constants.DATE_FORMATTER.format(LocalDate.now()), "<TODAY>");
+		return text.replaceAll(Constants.DATE_FORMATTER.format(LocalDate.now()), "<TODAY>").replaceAll("\\r", "");
 	}
 }
