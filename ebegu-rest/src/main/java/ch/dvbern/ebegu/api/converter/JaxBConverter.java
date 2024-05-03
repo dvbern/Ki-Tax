@@ -3265,8 +3265,9 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(erweiterteBetreuungJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
-
-		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		if(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse() != null) {
+			erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		}
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
