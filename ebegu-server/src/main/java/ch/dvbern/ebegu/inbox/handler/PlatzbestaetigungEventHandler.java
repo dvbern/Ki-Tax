@@ -87,7 +87,8 @@ import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_
 @AllArgsConstructor
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
+	@SuppressWarnings("FieldMayBeFinal") // need a mock in unit test
+	private Logger logger = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
 
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
 
@@ -127,17 +128,19 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		EventMonitor eventMonitor = new EventMonitor(betreuungMonitoringService, eventTime, refnr, clientName);
 		Processing processing = attemptProcessing(eventMonitor, dto);
 
-		if (processing.isProcessingIgnored()) {
-			LOG.info(
+		switch (processing.getState()) {
+		case SUCCESS:
+			logger.debug("Platzbestaetigung Event für Betreuung mit RefNr: {} erfolgreich verarbeitet: {}", refnr, processing);
+			return;
+		case IGNORE:
+			logger.info(
 				"Platzbestaetigung Event für Betreuung mit RefNr: {} wurde ignoriert und nicht verarbeitet: {}",
 				refnr,
 				processing);
 			eventMonitor.record("Eine Platzbestaetigung Event wurde ignoriert: " + processing);
 			return;
-		}
-
-		if (!processing.isProcessingSuccess()) {
-			LOG.warn(
+		case FAILURE:
+			logger.warn(
 				"Platzbestaetigung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}",
 				refnr,
 				processing);
@@ -307,12 +310,12 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			//noinspection ResultOfMethodCallIgnored
 
 			betreuungService.betreuungPlatzBestaetigen(ctx.getBetreuung(), clientName);
-			LOG.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", refnr);
+			logger.info("PlatzbestaetigungEvent Betreuung mit RefNr: {} automatisch bestätigt", refnr);
 			ctx.getEventMonitor().record("PlatzbestaetigungEvent automatisch bestätigt");
 		} else {
 			//noinspection ResultOfMethodCallIgnored
 			betreuungService.saveBetreuung(ctx.getBetreuung(), false, clientName);
-			LOG.info(
+			logger.info(
 				"PlatzbestaetigungEvent Betreuung mit RefNr: {} eingelesen, aber nicht automatisch bestätigt",
 				refnr);
 			ctx.getEventMonitor().record(
@@ -330,7 +333,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		if (!ctx.isGueltigkeitCoveringPeriode() && !ctx.isSingleClientForPeriod()) {
 			ctx.requireHumanConfirmation();
-			LOG.info(
+			logger.info(
 				"Eine manuelle Bestätigung ist nötig für die PlatzbestaetigungEvent fuer Betreuung mit RefNr: {}, weil"
 					+ " die Drittanwendung nicht für die gesamte Gesuchsperiode berechtigt ist"
 				,
@@ -409,7 +412,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (incomingName == null && incomingBfsNumber == null) {
 			// Gemeinde not received, cannot evaluate -> abort automated processing
 			ctx.requireHumanConfirmation();
-			LOG.info(
+			logger.info(
 				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat keine Gemeinde spezifiziert",
 				ctx.getDto().getRefnr());
 			ctx.addHumanConfirmationMessage("PlatzbestaetigungEvent hat keine Gemeinde spezifiziert");
@@ -445,7 +448,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
-		LOG.info(
+		logger.info(
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());
 		ctx.getEventMonitor().record("PlatzbestaetigungEvent: Mutationsmeldung erstellt für " + betreuung.getId());

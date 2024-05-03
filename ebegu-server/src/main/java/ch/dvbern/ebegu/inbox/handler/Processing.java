@@ -73,8 +73,4 @@ public class Processing {
 	public boolean isProcessingSuccess() {
 		return state == ProcessingState.SUCCESS;
 	}
-
-	public boolean isProcessingIgnored() {
-		return state == ProcessingState.IGNORE;
-	}
 }
