@@ -17,37 +17,31 @@
 
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
+import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import lombok.Value;
 
 @Value
-public class PensumValueMapper implements PensumMapper<AbstractMahlzeitenPensum> {
+public class BetreuungInFerienzeitMapper implements PensumMapper<AbstractBetreuungsPensum> {
 
-	private final BigDecimal maxTageProMonat;
-	private final BigDecimal maxStundenProMonat;
+	private final ProcessingContext ctx;
 
 	@Override
 	public void toAbstractMahlzeitenPensum(
-		@Nonnull AbstractMahlzeitenPensum target,
+		@Nonnull AbstractBetreuungsPensum target,
 		@Nonnull ZeitabschnittDTO zeitabschnittDTO
 	) {
-		switch (zeitabschnittDTO.getPensumUnit()) {
-		case DAYS:
-			target.applyPensumFromDays(zeitabschnittDTO.getBetreuungspensum(), maxTageProMonat);
-			return;
-		case HOURS:
-			target.applyPensumFromHours(zeitabschnittDTO.getBetreuungspensum(), maxStundenProMonat);
-			return;
-		case PERCENTAGE:
-			target.applyPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
-			return;
-		default:
-			throw new IllegalArgumentException("Unsupported pensum unit: " + zeitabschnittDTO.getPensumUnit());
+		target.setBetreuungInFerienzeit(zeitabschnittDTO.getBetreuungInFerienzeit());
+
+		if (target.getBetreuungInFerienzeit() == null) {
+			target.setVollstaendig(false);
+			ctx.requireHumanConfirmation();
+			ctx.addHumanConfirmationMessage("Betreuung in Ferienzeit ist nicht gesetzt. Das Kind hat EinschulungTyp "
+				+ ctx.getBetreuung().getKind().getKindJA().getEinschulungTyp()
+				+ ". Automatische Bestätigung nicht möglich.");
 		}
 	}
 }

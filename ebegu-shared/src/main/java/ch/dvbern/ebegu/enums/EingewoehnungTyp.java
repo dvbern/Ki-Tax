@@ -28,7 +28,7 @@ public enum EingewoehnungTyp {
 		return this == FKJV || this == LUZERN;
 	}
 
-	public boolean isEingewoehnunTypPauschale() {
+	public boolean isEingewoehnungTypPauschale() {
 		return this == PAUSCHALE;
 	}
 }

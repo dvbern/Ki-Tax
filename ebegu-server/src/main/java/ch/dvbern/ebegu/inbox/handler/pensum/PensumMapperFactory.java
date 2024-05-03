@@ -18,37 +18,61 @@
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import lombok.experimental.UtilityClass;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@UtilityClass
+@ApplicationScoped
+@NoArgsConstructor
+@AllArgsConstructor
 public class PensumMapperFactory {
 
+	@Inject
+	private BetreuungInFerienzeitMapperFactory betreuungInFerienzeitMapperFactory;
+	@Inject
+	private MahlzeitVerguenstigungMapperFactory mahlzeitVerguenstigungMapperFactory;
+	@Inject
+	private PensumValueMapperFactory pensumValueMapperFactory;
+	@Inject
+	private EingewoehnungPauschaleMapperFactory eingewoehnungPauschaleMapperFactory;
+
 	@Nonnull
-	public static PensumMapper createPensumMapper(@Nonnull ProcessingContext ctx) {
-		if (ctx.getBetreuung().isAngebotMittagstisch()) {
-			return PensumMapper.MITTAGSTISCH_MAPPER;
-		}
-
-		if (ctx.isMahlzeitVerguenstigungEnabled()) {
-			return PensumMapper.combine(
-				defaultMapper(ctx),
-				new MahlzeitVerguenstigungMapper(ctx)
-			);
-		}
-
-		return defaultMapper(ctx);
+	public PensumMapper<Betreuungspensum> createForPlatzbestaetigung(@Nonnull ProcessingContext ctx) {
+		return createPensumMapper(ctx);
 	}
 
 	@Nonnull
-	private static PensumMapper defaultMapper(@Nonnull ProcessingContext ctx) {
-		PensumValueMapper pensumValueMapper = new PensumValueMapper(ctx.getMaxTageProMonat(), ctx.getMaxStundenProMonat());
+	public PensumMapper<BetreuungsmitteilungPensum> createForBetreuungsmitteilung(@Nonnull ProcessingContext ctx) {
+		return createPensumMapper(ctx);
+	}
+
+	@Nonnull
+	<T extends AbstractBetreuungsPensum> PensumMapper<T> createPensumMapper(@Nonnull ProcessingContext ctx) {
+		if (ctx.getBetreuung().isAngebotMittagstisch()) {
+			return (target, zeitabschnittDTO) -> {
+				PensumMapper.GUELTIGKEIT_MAPPER.toAbstractMahlzeitenPensum(target, zeitabschnittDTO);
+				target.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
+				target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
+				// this transformation should be at the end
+				PensumUtil.transformMittagstischPensum(target);
+			};
+		}
 
 		return PensumMapper.combine(
 			PensumMapper.GUELTIGKEIT_MAPPER,
 			PensumMapper.KOSTEN_MAPPER,
-			pensumValueMapper
+			pensumValueMapperFactory.createForPensum(ctx),
+			// the following mappers are (currently) not possible for Mittagstisch
+			eingewoehnungPauschaleMapperFactory.createForEingewoehnungPauschale(ctx),
+			mahlzeitVerguenstigungMapperFactory.createForMahlzeitenVerguenstigung(ctx),
+			betreuungInFerienzeitMapperFactory.createForBetreuungInFerienzeit(ctx)
 		);
 	}
 }

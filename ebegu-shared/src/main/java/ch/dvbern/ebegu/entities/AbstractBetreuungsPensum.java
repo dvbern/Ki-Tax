@@ -15,19 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.entities.containers;
+package ch.dvbern.ebegu.entities;
 
-import java.util.List;
+import javax.annotation.Nullable;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
-import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+@MappedSuperclass
+public abstract class AbstractBetreuungsPensum extends AbstractMahlzeitenPensum {
 
-public interface AbstractMahlzeitenPensumContainer {
+	private static final long serialVersionUID = 571961095549058797L;
 
-	@Nonnull
-	List<? extends AbstractMahlzeitenPensum> getBetreuungenGS();
+	@Nullable
+	@Column(nullable = true)
+	private Boolean betreuungInFerienzeit;
 
-	@Nonnull
-	List<? extends AbstractMahlzeitenPensum> getBetreuungenJA();
+	@Nullable
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
+	}
 }

@@ -18,104 +18,94 @@
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.inbox.handler.EventMonitor;
-import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.BetreuungMonitoringService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
-import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import com.spotify.hamcrest.pojo.IsPojo;
 import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.betreuungWithSingleContainer;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.initProcessingContext;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.is;
 
 @ExtendWith(EasyMockExtension.class)
-class PensumMapperFactoryTest {
+class PensumMapperFactoryTest extends EasyMockSupport {
 
 	@Mock
-	private BetreuungMonitoringService monitoringService = null;
+	private EinstellungService einstellungService;
 
-	@Nonnull
-	private final Gesuch gesuch = PlatzbestaetigungTestUtil.initGesuch();
+	@Mock
+	private MitteilungService mitteilungService;
 
-	@ParameterizedTest
-	@CsvSource({
-		"PERCENTAGE, 100, 100",
-		"DAYS, 20, 100",
-		"HOURS, 220, 100"
-	})
-	void mapZeitabschnittToAbstractMahlzeitenPensum(
-		@Nonnull Zeiteinheit zeiteinheit,
-		@Nonnull BigDecimal betreuungspensum,
-		@Nonnull BigDecimal pensumInPercent
-	) {
-		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
-		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
-		z.setPensumUnit(zeiteinheit);
-		z.setBetreuungspensum(betreuungspensum);
+	private PensumMapperFactory factory;
 
-		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+	@BeforeEach
+	void setUp() {
+		// EinstellungMock is initialized too late when trying to do field initializers instead.
+		factory = new PensumMapperFactory(
+			new BetreuungInFerienzeitMapperFactory(mitteilungService),
+			new MahlzeitVerguenstigungMapperFactory(einstellungService),
+			new PensumValueMapperFactory(einstellungService),
+			new EingewoehnungPauschaleMapperFactory(einstellungService)
+		);
+	}
 
-		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
-		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
-
-		assertThat(actual, matches(z, pensumInPercent, Constants.DEFAULT_GUELTIGKEIT));
+	@AfterEach
+	void tearDown() {
+		verifyAll();
 	}
 
 	@Test
-	void ignoresMahlzeitenWhenMahlzeitenVerguenstigungNotEnabled() {
-		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+	void importHauptMahlzeitenWhenBetreuungsAngebotMittagstisch() {
 		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
-		z.setAnzahlHauptmahlzeiten(BigDecimal.ONE);
+		z.setAnzahlHauptmahlzeiten(BigDecimal.valueOf(4));
+		z.setTarifProHauptmahlzeiten(BigDecimal.valueOf(12.25));
 		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
 
-		ProcessingContext ctx = initProcessingContext(betreuung, z, false);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		ProcessingContext ctx = initProcessingContext(z);
 
-		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
-		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
-
-		assertThat(actual, pojo(AbstractMahlzeitenPensum.class)
-			.where(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(BigDecimal.ZERO))
-			.where(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten, comparesEqualTo(BigDecimal.ZERO))
-			.where(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit, comparesEqualTo(BigDecimal.ZERO))
-			.where(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit, comparesEqualTo(BigDecimal.ZERO)));
-	}
-
-	@Test
-	void readsHauptMahlzeitenWhenBetreuungsAngebotMittagstisch() {
 		BigDecimal monatlicheHauptmahlzeiten = BigDecimal.valueOf(5);
 		BigDecimal tarifProHauptmahlzeit = BigDecimal.valueOf(10.5);
 
-		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		Betreuung betreuung = ctx.getBetreuung();
 
 		// setup a MITTAGSTISCH
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.MITTAGSTISCH);
@@ -125,16 +115,9 @@ class PensumMapperFactoryTest {
 		betreuungspensum.setTarifProHauptmahlzeit(tarifProHauptmahlzeit);
 		PensumUtil.transformMittagstischPensum(betreuungspensum);
 
-		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
-		z.setAnzahlHauptmahlzeiten(BigDecimal.valueOf(4));
-		z.setTarifProHauptmahlzeiten(BigDecimal.valueOf(12.25));
-		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
-
-		ProcessingContext ctx = initProcessingContext(betreuung, z, false);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
-
-		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
-		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
+		replayAll();
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = factory.createPensumMapper(ctx);
+		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
 
 		assertThat(actual, pojo(AbstractMahlzeitenPensum.class)
 			.where(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(BigDecimal.valueOf(4)))
@@ -145,28 +128,111 @@ class PensumMapperFactoryTest {
 			.where(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten, comparesEqualTo(BigDecimal.valueOf(4 * 12.25))));
 	}
 
-	@Nonnull
-	private ProcessingContext initProcessingContext(
-		@Nonnull Betreuung betreuung,
-		@Nonnull ZeitabschnittDTO zeitabschnitt,
-		boolean mahlzeitVerguenstigungEnabled
-	) {
-		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(zeitabschnitt);
+	@Test
+	void defaultMapperIntegrationTest() {
+		ZeitabschnittDTO z = createZeitabschnitt();
 
-		return new ProcessingContext(
-			betreuung,
-			betreuungEventDTO,
-			getClientPeriodeGueltigkeit(betreuung),
-			mahlzeitVerguenstigungEnabled,
-			new EventMonitor(monitoringService, LocalDateTime.now(), betreuungEventDTO.getRefnr(), "client"),
-			new BigDecimal("20.00"),
-			new BigDecimal("220.00"),
-			true);
+		mockEinstellungen();
+		replayAll();
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = factory.createPensumMapper(initProcessingContext(z));
+		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
+
+		assertThat(actual, matches(z));
+	}
+
+	@Test
+	void platzbestaetigungIntegrationTest() {
+		ZeitabschnittDTO z = createZeitabschnitt();
+
+		mockEinstellungen();
+		replayAll();
+		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z));
+		Betreuungspensum actual = convert(forPlatzbestaetigung, z, Betreuungspensum::new);
+
+		assertThat(actual, matches(z));
+	}
+
+	@Test
+	void betreuungsmitteilungIntegrationTest() {
+		ZeitabschnittDTO z = createZeitabschnitt();
+
+		mockEinstellungen();
+		replayAll();
+		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z));
+		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
+
+		assertThat(actual, matches(z));
+	}
+
+	private <T extends AbstractBetreuungsPensum> T convert(
+		PensumMapper<T> pensumMapper,
+		ZeitabschnittDTO z,
+		Supplier<T> entitySupplier
+	) {
+		T actual = entitySupplier.get();
+		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
+
+		return actual;
 	}
 
 	@Nonnull
-	private DateRange getClientPeriodeGueltigkeit(@Nonnull Betreuung betreuung) {
-		return betreuung.extractGesuchsperiode().getGueltigkeit().getOverlap(Constants.DEFAULT_GUELTIGKEIT)
-			.orElseThrow(() -> new IllegalArgumentException("client gueltigkeit & periode do not overlap"));
+	private ZeitabschnittDTO createZeitabschnitt() {
+		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+		z.setAnzahlHauptmahlzeiten(BigDecimal.valueOf(4));
+		z.setTarifProHauptmahlzeiten(BigDecimal.valueOf(12.25));
+		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
+		z.setTarifProNebenmahlzeiten(BigDecimal.valueOf(9.5));
+		z.setBetreuungInFerienzeit(false);
+		z.setEingewoehnung(new EingewoehnungDTO(BigDecimal.valueOf(400), LocalDate.of(2024, 1, 10), LocalDate.of(2024, 1, 12)));
+
+		return z;
+	}
+
+	private IsPojo<AbstractBetreuungsPensum> matches(ZeitabschnittDTO z) {
+		return pojo(AbstractBetreuungsPensum.class)
+			.where(AbstractBetreuungsPensum::getGueltigkeit, pojo(DateRange.class)
+				.where(DateRange::getGueltigAb, is(z.getVon()))
+				.where(DateRange::getGueltigBis, is(z.getBis()))
+			)
+			.where(AbstractBetreuungsPensum::getPensum, comparesEqualTo(z.getBetreuungspensum()))
+			.where(AbstractBetreuungsPensum::getUnitForDisplay, is(PensumUnits.valueOf(z.getPensumUnit().name())))
+			.where(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
+			.where(AbstractBetreuungsPensum::getEingewoehnungPauschale, pojo(EingewoehnungPauschale.class)
+				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(z.getEingewoehnung().getPauschale()))
+				.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
+					.where(DateRange::getGueltigAb, is(z.getEingewoehnung().getVon()))
+					.where(DateRange::getGueltigBis, is(z.getEingewoehnung().getBis()))
+				))
+			.where(AbstractBetreuungsPensum::getMonatlicheHauptmahlzeiten, comparesEqualTo(z.getAnzahlHauptmahlzeiten()))
+			.where(AbstractBetreuungsPensum::getMonatlicheNebenmahlzeiten, comparesEqualTo(z.getAnzahlNebenmahlzeiten()))
+			.where(AbstractBetreuungsPensum::getTarifProHauptmahlzeit, comparesEqualTo(z.getTarifProHauptmahlzeiten()))
+			.where(AbstractBetreuungsPensum::getTarifProNebenmahlzeit, comparesEqualTo(z.getTarifProNebenmahlzeiten()))
+			.where(AbstractBetreuungsPensum::getBetreuungInFerienzeit, comparesEqualTo(z.getBetreuungInFerienzeit()));
+	}
+
+	private void mockEinstellungen() {
+		expect(mitteilungService.showSchulergaenzendeBetreuung(anyObject()))
+			.andReturn(true)
+			.anyTimes();
+
+		expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
+			.andReturn(true)
+			.anyTimes();
+
+		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSTAGE_KITA), anyObject()))
+			.andReturn(BigDecimal.valueOf(240))
+			.anyTimes();
+
+		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSTAGE_TFO), anyObject()))
+			.andReturn(BigDecimal.valueOf(240))
+			.anyTimes();
+
+		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSSTUNDEN_TFO), anyObject()))
+			.andReturn(BigDecimal.valueOf(11))
+			.anyTimes();
+
+		expect(einstellungService.findEinstellung(eq(EINGEWOEHNUNG_TYP), anyObject()))
+			.andReturn(new Einstellung(EINGEWOEHNUNG_TYP, EingewoehnungTyp.PAUSCHALE.name(), mock(Gesuchsperiode.class)))
+			.anyTimes();
 	}
 }
