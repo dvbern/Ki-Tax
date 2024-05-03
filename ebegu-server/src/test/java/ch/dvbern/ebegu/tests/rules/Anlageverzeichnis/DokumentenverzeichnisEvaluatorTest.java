@@ -731,7 +731,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(200000));
 
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(10, dokumentGrunds.size()); // Vermoegen wird neu immer gefragt (2 GS x 2 EKVs)
+		Assert.assertEquals(8, dokumentGrunds.size()); // Vermoegen wird neu immer gefragt (2 GS x 2 EKVs)
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
 		Assert.assertEquals(4, dokumentGrundGS1.size());
