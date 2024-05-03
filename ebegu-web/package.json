@@ -34,7 +34,7 @@
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "ngcc && npm run set-version && mkdirp build",
+    "postinstall": "npm run set-version && mkdirp build",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:run:parallel": "cypress-parallel -s cypress:run -t 3 -d \"cypress/e2e/**/*.cy.ts\""
