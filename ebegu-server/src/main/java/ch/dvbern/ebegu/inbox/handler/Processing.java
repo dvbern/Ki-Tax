@@ -17,49 +17,64 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Value;
+
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Processing {
 
-	private final boolean processingSuccess;
-
-	private final boolean processingIgnored;
+	private final ProcessingState state;
 
 	@Nullable
 	private final String message;
 
-	private Processing(boolean processingSuccess, boolean processingIgnored, @Nullable String message) {
-		this.processingSuccess = processingSuccess;
-		this.processingIgnored = processingIgnored;
-		this.message = message;
-	}
+	private final Map<ImportForm, Processing> importProcessing;
 
 	@Nonnull
 	public static Processing success() {
-		return new Processing(true, false, null);
+		return new Processing(ProcessingState.SUCCESS, null, Map.of());
 	}
 
 	@Nonnull
 	public static Processing failure(@Nonnull String message) {
-		return new Processing(false, false, message);
+		return new Processing(ProcessingState.FAILURE, message, Map.of());
 	}
 
 	@Nonnull
 	public static Processing ignore(@Nonnull String message) {
-		return new Processing(false, true, message);
+		return new Processing(ProcessingState.IGNORE, message, Map.of());
+	}
+
+	@Nonnull
+	public static Processing fromImport(@Nonnull Map<ImportForm, Processing> importProcessing) {
+		if (importProcessing.isEmpty()) {
+			return new Processing(ProcessingState.FAILURE, "Platzbestätigung oder Mutation nicht möglich.", Map.of());
+		}
+
+		if (importProcessing.values().stream().anyMatch(p -> p.getState() == ProcessingState.SUCCESS)) {
+			return new Processing(ProcessingState.SUCCESS, null, importProcessing);
+		}
+
+		if (importProcessing.values().stream().allMatch(p -> p.getState() == ProcessingState.IGNORE)) {
+			return new Processing(ProcessingState.IGNORE, null, importProcessing);
+		}
+
+		return new Processing(ProcessingState.FAILURE, null, importProcessing);
 	}
 
 	public boolean isProcessingSuccess() {
-		return processingSuccess;
+		return state == ProcessingState.SUCCESS;
 	}
 
 	public boolean isProcessingIgnored() {
-		return processingIgnored;
-	}
-
-	@Nullable
-	public String getMessage() {
-		return message;
+		return state == ProcessingState.IGNORE;
 	}
 }

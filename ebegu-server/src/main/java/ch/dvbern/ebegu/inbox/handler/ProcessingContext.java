@@ -21,8 +21,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 
@@ -30,6 +32,8 @@ public class ProcessingContext {
 
 	@Nonnull
 	private final Betreuung betreuung;
+	@Nullable
+	private final Betreuungsmitteilung latestOpenBetreuungsmitteilung;
 	@Nonnull
 	private final BetreuungEventDTO dto;
 	@Nonnull
@@ -46,11 +50,13 @@ public class ProcessingContext {
 
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
+		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
 		@Nonnull EventMonitor eventMonitor,
 		boolean singleClientForPeriod) {
 		this.betreuung = betreuung;
+		this.latestOpenBetreuungsmitteilung = latestOpenBetreuungsmitteilung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
 		this.eventMonitor = eventMonitor;
@@ -64,6 +70,11 @@ public class ProcessingContext {
 	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
+	}
+
+	@Nullable
+	public Betreuungsmitteilung getLatestOpenBetreuungsmitteilung() {
+		return latestOpenBetreuungsmitteilung;
 	}
 
 	@Nonnull

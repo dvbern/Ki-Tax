@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumValueMapper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
@@ -50,6 +51,7 @@ import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.spotify.hamcrest.pojo.IsPojo;
 import lombok.experimental.UtilityClass;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -175,6 +177,7 @@ public final class PlatzbestaetigungTestUtil {
 
 		return new ProcessingContext(
 			betreuung,
+			null,
 			betreuungEventDTO,
 			getClientPeriodeGueltigkeit(betreuung),
 			new EventMonitor(mock(BetreuungMonitoringService.class), LocalDateTime.now(), betreuungEventDTO.getRefnr(),
@@ -196,9 +199,15 @@ public final class PlatzbestaetigungTestUtil {
 	@Nonnull
 	public static Matcher<Processing> failed(@Nonnull Matcher<String> messageMatcher) {
 		return pojo(Processing.class)
-			.where(Processing::isProcessingSuccess, is(false))
-			.where(Processing::isProcessingIgnored, is(false))
+			.where(Processing::getState, is(ProcessingState.FAILURE))
 			.where(Processing::getMessage, messageMatcher);
+	}
+
+	@Nonnull
+	public static Matcher<Processing> failed(@Nonnull ImportForm importForm, @Nonnull Matcher<String> messageMatcher) {
+		return pojo(Processing.class)
+			.where(Processing::getState, is(ProcessingState.FAILURE))
+			.where(Processing::getImportProcessing, Matchers.hasEntry(is(importForm), failed(messageMatcher)));
 	}
 
 	@Nonnull
@@ -207,10 +216,15 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
+	public static Matcher<Processing> ignored(@Nonnull ImportForm importForm, @Nonnull String message) {
+		return pojo(Processing.class)
+			.where(Processing::getImportProcessing, Matchers.hasEntry(is(importForm), ignored(message)));
+	}
+
+	@Nonnull
 	public static Matcher<Processing> ignored(@Nonnull Matcher<String> messageMatcher) {
 		return pojo(Processing.class)
-			.where(Processing::isProcessingSuccess, is(false))
-			.where(Processing::isProcessingIgnored, is(true))
+			.where(Processing::getState, is(ProcessingState.IGNORE))
 			.where(Processing::getMessage, messageMatcher);
 	}
 

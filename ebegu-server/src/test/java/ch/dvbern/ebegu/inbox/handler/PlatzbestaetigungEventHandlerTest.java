@@ -48,7 +48,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -92,6 +91,7 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm.MUTATIONS_MITTEILUNG;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
@@ -176,33 +176,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, "fake", CLIENT_NAME);
 	}
 
-	@ParameterizedTest
-	@EnumSource(value = Betreuungsstatus.class,
-		names = { "WARTEN", "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
-		mode = Mode.INCLUDE)
-	void isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
-		assertThat(handler.isMutationsMitteilungStatus(status), is(true));
-	}
-
-	@ParameterizedTest
-	@CsvSource({
-		"WARTEN, IN_BEARBEITUNG_JA, ERSTGESUCH, true",
-		"WARTEN, IN_BEARBEITUNG_JA, MUTATION, false",
-		"BESTAETIGT, IN_BEARBEITUNG_GS, ERSTGESUCH, true",
-		"BESTAETIGT, IN_BEARBEITUNG_GS, MUTATION, false",
-		"BESTAETIGT, IN_BEARBEITUNG_SOZIALDIENST, ERSTGESUCH, true",
-		"BESTAETIGT, IN_BEARBEITUNG_SOZIALDIENST, MUTATION, false",
-		"BESTAETIGT, IN_BEARBEITUNG_JA, ERSTGESUCH, false"
-	})
-	void isPlatzbestaetigungStatus(
-		@Nonnull Betreuungsstatus betreuungsstatus,
-		@Nonnull AntragStatus antragStatus,
-		@Nonnull AntragTyp antragTyp,
-		boolean expectedResult
-	) {
-		assertThat(handler.isPlatzbestaetigungStatus(betreuungsstatus, antragStatus, antragTyp), is(expectedResult));
-	}
-
 	@Test
 	void testIsSame() {
 		List<Betreuung> betreuungen = gesuch_1GS.extractAllBetreuungen();
@@ -219,31 +192,31 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	@Nested
-	class IgnoreEventTest {
+	class FailEventTest {
 
 		@Test
-		void ignoreWhenMandantNotFound() {
+		void failWhenMandantNotFound() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
 			expect(betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr()))
 				.andReturn(Optional.empty());
 
-			testIgnored(dto, "Mandant konnte nicht gefunden werden.");
+			testFailed(dto, "Mandant konnte nicht gefunden werden.");
 		}
 
 		/**
 		 * Should use "Stornieren" API instead
 		 */
 		@Test
-		void ignoreWhenNoZeitabschnitte() {
+		void failWhenNoZeitabschnitte() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			dto.setZeitabschnitte(Collections.emptyList());
 
-			testIgnored(dto, "Es wurden keine Zeitabschnitte übergeben.");
+			testFailed(dto, "Es wurden keine Zeitabschnitte übergeben.");
 		}
 
 		@Test
-		void ignoreEventWhenNoBetreuungFound() {
+		void failWhenNoBetreuungFound() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
 			expect(betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr()))
@@ -252,12 +225,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant))
 				.andReturn(Optional.empty());
 
-			testIgnored(dto, "Betreuung nicht gefunden.");
+			testFailed(dto, "Betreuung nicht gefunden.");
 		}
 
 		@ParameterizedTest
 		@EnumSource(value = GesuchsperiodeStatus.class, names = "AKTIV", mode = Mode.EXCLUDE)
-		void ignoreEventWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
+		void failWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
 			Betreuung betreuung = betreuungWithSingleContainer();
@@ -265,11 +238,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectBetreuungFound(betreuung);
 
-			testIgnored(dto, "Die Gesuchsperiode ist nicht aktiv.");
+			testFailed(dto, "Die Gesuchsperiode ist nicht aktiv.");
 		}
 
 		@Test
-		void ignoreEventWhenBetreuungMutiertAfterEventTimestamp() {
+		void failWhenBetreuungMutiertAfterEventTimestamp() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
@@ -290,7 +263,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@Test
-		void ignoreEventWhenInvalidPensumInDays() {
+		void failWhenInvalidPensumInDays() {
 			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
 			zeitabschnittDTO.setPensumUnit(Zeiteinheit.DAYS);
 			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
@@ -299,11 +272,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectBetreuungFound(betreuung);
 
-			testIgnored(dto, "Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
+			testFailed(dto, "Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}
 
 		@Test
-		void ignoreEventWhenNoExternalClient() {
+		void failWhenNoExternalClient() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
@@ -327,18 +300,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@Test
-		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
+		void failWhenClientGueltigkeitOutsidePeriode() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
 			mockClients(new DateRange(2022));
 
-			testIgnored(dto, "Der Client hat innerhalb der Periode keine Berechtigung.");
+			testFailed(dto, "Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
 
 		@Test
-		void ignoreWhenZeitabschnitteOverlap() {
+		void failWhenZeitabschnitteOverlap() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(
 				createZeitabschnittDTO(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 10)),
 				createZeitabschnittDTO(LocalDate.of(2021, 1, 10), LocalDate.of(2021, 1, 11))
@@ -348,11 +321,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expectBetreuungFound(betreuung);
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
-			testIgnored(dto, "Zeitabschnitte dürfen nicht überlappen.");
+			testFailed(dto, "Zeitabschnitte dürfen nicht überlappen.");
 		}
 
 		@Test
-		void ignoreWhenNoInstitutionGueltigkeitAndClientGueltigkeitOverlap() {
+		void failWhenNoInstitutionGueltigkeitAndClientGueltigkeitOverlap() {
 			LocalDate gueltigAb = LocalDate.of(2021, 5, 1);
 			DateRange institutionGueltigkeit = new DateRange(gueltigAb, Constants.END_OF_TIME);
 
@@ -363,11 +336,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expectBetreuungFound(betreuung);
 			mockClients(new DateRange(Constants.START_OF_TIME, gueltigAb.minusDays(1)));
 
-			testIgnored(dto, "Die Institution Gültigkeit überlappt nicht mit der Client Gültigkeit.");
+			testFailed(dto, "Die Institution Gültigkeit überlappt nicht mit der Client Gültigkeit.");
 		}
 
 		@Test
-		void ignoreWhenNoZeitabschnittInInstitutionGueltigkeit() {
+		void failWhenNoZeitabschnittInInstitutionGueltigkeit() {
 			LocalDate gueltigAb = LocalDate.of(2021, 5, 1);
 			DateRange dtoGueltigkeit =
 				new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb(), gueltigAb.minusDays(1));
@@ -380,13 +353,13 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expectBetreuungFound(betreuung);
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
-			testIgnored(
+			testFailed(
 				dto,
 				"Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode & Institution Gültigkeit.");
 		}
 
 		@Test
-		void ignoreWhenNoZeitabschnittInClientGueltigkeit() {
+		void failWhenNoZeitabschnittInClientGueltigkeit() {
 			LocalDate gesuchsperiodeAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
 			LocalDate zeitabschnittBis = gesuchsperiodeAb.plusMonths(8).minusDays(1);
 
@@ -398,7 +371,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expectBetreuungFound(betreuung);
 			mockClients(new DateRange(zeitabschnittBis.plusDays(1), Constants.END_OF_TIME));
 
-			testIgnored(
+			testFailed(
 				dto,
 				"Kein Zeitabschnitt liegt innerhalb Client Gültigkeit & Periode & Institution Gültigkeit.");
 		}
@@ -407,24 +380,19 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		@EnumSource(value = Betreuungsstatus.class,
 			names = { "WARTEN", "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
 			mode = Mode.EXCLUDE)
-		void ignoreWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
+		void failWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 			Betreuung betreuung = betreuungWithSingleContainer();
 			betreuung.setBetreuungsstatus(status);
 
-			expectBetreuungFound(betreuung);
+			expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(betreuung);
+
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
-			replayAll();
-
-			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(
-				result, failed(stringContainsInOrder("Die Betreuung hat einen ungültigen Status: ", status.name()))
-			);
-			verifyAll();
+			testFailed(dto, "Platzbestätigung oder Mutation nicht möglich.");
 		}
 
-		private void testIgnored(@Nonnull BetreuungEventDTO dto, @Nonnull String message) {
+		private void testFailed(@Nonnull BetreuungEventDTO dto, @Nonnull String message) {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
@@ -480,7 +448,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		) {
 			dto.setSprachfoerderungBestaetigt(sprachfoerderung);
 			expectPlatzBestaetigung();
-			expectBetreuungFound(betreuung);
+			expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(betreuung);
 			expectGetSchnittstelleSprachfoerderungAktivAb(aktivierungDatum);
 			mockClients(clientGueltigkeit);
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
@@ -644,8 +612,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				InstitutionExternalClient client2 = mockClient(new DateRange(Constants.START_OF_TIME, periodeAb), "client2");
 
 				expectHumanConfirmation();
-				expectBetreuungFound(betreuung);
-				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
+				expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(betreuung);
+
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 1, 1));
 				mockClients(clientGueltigkeit, List.of(client2));
 				expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
 					.andReturn(unitTestPensumMapper());
@@ -919,7 +888,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testProcessingSuccess(boolean erweitereBetreuung) {
-			expectBetreuungFound(betreuung);
+			expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(betreuung);
+
 			if (erweitereBetreuung) {
 				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 1, 1));
 			}
@@ -1211,7 +1181,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, ignored("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(result, ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
 
@@ -1228,7 +1198,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
 				result,
-				ignored("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
+				ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
 			verifyAll();
 		}
 
@@ -1265,7 +1235,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, ignored("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(result, ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
 
@@ -1315,6 +1285,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
 			expectBetreuungFound(betreuung);
+			expectLastGueltigeBetreuung(betreuung);
 
 			mockClients(clientGueltigkeit);
 
@@ -1354,6 +1325,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			return captured;
 		}
+	}
+
+	private void expectLastGueltigeBetreuung(@Nullable Betreuung lastGueltigeBetreuung) {
+		expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, true, mandant))
+			.andReturn(Optional.ofNullable(lastGueltigeBetreuung));
+	}
+
+	private void expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(Betreuung betreuung) {
+		expectBetreuungFound(betreuung);
+		expectLastGueltigeBetreuung(betreuung);
+		expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
+			.andReturn(Collections.emptyList());
 	}
 
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {

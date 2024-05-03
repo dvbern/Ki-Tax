@@ -22,10 +22,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -45,13 +48,12 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil;
@@ -76,6 +78,7 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.importAs;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.COMPARATOR_WITH_GUELTIGKEIT;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_COMPARATOR;
 
@@ -125,22 +128,20 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Processing processing = attemptProcessing(eventMonitor, dto);
 
 		if (processing.isProcessingIgnored()) {
-			String message = processing.getMessage();
 			LOG.info(
 				"Platzbestaetigung Event für Betreuung mit RefNr: {} wurde ignoriert und nicht verarbeitet: {}",
 				refnr,
-				message);
-			eventMonitor.record("Eine Platzbestaetigung Event wurde ignoriert: " + message);
+				processing);
+			eventMonitor.record("Eine Platzbestaetigung Event wurde ignoriert: " + processing);
 			return;
 		}
 
 		if (!processing.isProcessingSuccess()) {
-			String message = processing.getMessage();
 			LOG.warn(
 				"Platzbestaetigung Event für Betreuung mit RefNr: {} nicht verarbeitet: {}",
 				refnr,
-				message);
-			eventMonitor.record("Eine Platzbestaetigung Event wurde nicht verarbeitet: " + message);
+				processing);
+			eventMonitor.record("Eine Platzbestaetigung Event wurde nicht verarbeitet: " + processing);
 		}
 	}
 
@@ -151,14 +152,12 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Es wurden keine Zeitabschnitte übergeben.");
 		}
 
-		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr());
-		if (mandant.isEmpty()) {
-			return Processing.failure("Mandant konnte nicht gefunden werden.");
-		}
+		return betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr())
+			.map(mandant -> betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant)
+				.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
+				.orElseGet(() -> Processing.failure("Betreuung nicht gefunden.")))
+			.orElseGet(() -> Processing.failure("Mandant konnte nicht gefunden werden."));
 
-		return betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant.get())
-			.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
-			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
 
 	@Nonnull
@@ -175,20 +174,20 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
-		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.DAYS) && !betreuung.isAngebotKita()) {
+		if (hasZeitabschnittWithPensumInDays(dto) && !betreuung.isAngebotKita()) {
 			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}
 
 		InstitutionExternalClients clients =
 			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), betreuung);
 
-		return clients.getRelevantClient().map(client ->
-				processEventForExternalClient(eventMonitor, dto, betreuung, client, clients.getOther().isEmpty()))
+		return clients.getRelevantClient()
+			.map(client -> processEventForExternalClient(eventMonitor, dto, betreuung, client, clients.getOther().isEmpty()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), betreuung));
 	}
 
-	private boolean hasZeitabschnittWithPensumUnit(@Nonnull BetreuungEventDTO dto, @Nonnull Zeiteinheit zeiteinheit) {
-		return dto.getZeitabschnitte().stream().anyMatch(z -> z.getPensumUnit() == zeiteinheit);
+	private boolean hasZeitabschnittWithPensumInDays(@Nonnull BetreuungEventDTO dto) {
+		return dto.getZeitabschnitte().stream().anyMatch(z -> z.getPensumUnit() == Zeiteinheit.DAYS);
 	}
 
 	@Nonnull
@@ -201,30 +200,70 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		DateRange clientGueltigkeit = client.getGueltigkeit();
-		Optional<DateRange> overlap = gesuchsperiode.getOverlap(clientGueltigkeit);
-		if (overlap.isEmpty()) {
-			return Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung.");
-		}
 
-		DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
-		Processing validationProcess = validateZeitabschnitteGueltigkeit(dto, overlap.get(), institutionGueltigkeit);
-		if (!validationProcess.isProcessingSuccess()) {
-			return validationProcess;
-		}
+		return gesuchsperiode.getOverlap(clientGueltigkeit)
+			.map(overlap -> {
+				DateRange institutionGueltigkeit = betreuung.getInstitutionStammdaten().getGueltigkeit();
+				Processing validationProcess = validateZeitabschnitteGueltigkeit(dto, overlap, institutionGueltigkeit);
+				if (!validationProcess.isProcessingSuccess()) {
+					return validationProcess;
+				}
 
-		ProcessingContext ctx = new ProcessingContext(betreuung, dto, overlap.get(), eventMonitor, singleClientForPeriod);
+				return processEventForExternalClient(eventMonitor, dto, betreuung, singleClientForPeriod, overlap);
+			})
+			.orElseGet(() -> Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung."));
+	}
 
-		Betreuungsstatus status = betreuung.getBetreuungsstatus();
+	@Nonnull
+	private Processing processEventForExternalClient(
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull Betreuung betreuung,
+		boolean singleClientForPeriod,
+		@Nonnull DateRange overlap
+	) {
+		Optional<Betreuung> lastGueltigeBetreuung =
+			betreuungService.findBetreuungByBGNummer(dto.getRefnr(), true, betreuung.extractGemeinde().getMandant());
 
-		if (isPlatzbestaetigungStatus(status, betreuung.extractGesuch().getStatus(), betreuung.extractGesuch().getTyp())) {
-			return handlePlatzbestaetigung(ctx);
-		}
+		// if there is an open Betreuungsmitteilung, make sure it's up to date regardless of Betreuungsstatus
+		Optional<Processing> processingMutationLastGueltig = lastGueltigeBetreuung
+			.filter(b -> !b.equals(betreuung))
+			.map(b -> toProcessingContext(eventMonitor, dto, b, singleClientForPeriod, overlap))
+			.filter(ctx -> ctx.getLatestOpenBetreuungsmitteilung() != null)
+			.map(this::handleMutationsMitteilung);
 
-		if (isMutationsMitteilungStatus(status)) {
-			return handleMutationsMitteilung(ctx);
-		}
+		ProcessingContext ctx = toProcessingContext(eventMonitor, dto, betreuung, singleClientForPeriod, overlap);
 
-		return Processing.failure("Die Betreuung hat einen ungültigen Status: " + status);
+		Set<ImportForm> importForms = importAs(ctx);
+
+		Optional<Processing> processingPlatzbestaetigung = importForms.contains(ImportForm.PLATZBESTAETIGUNG) ?
+			Optional.of(handlePlatzbestaetigung(ctx)) :
+			Optional.empty();
+
+		Optional<Processing> processingMutation = importForms.contains(ImportForm.MUTATIONS_MITTEILUNG) ?
+			Optional.of(handleMutationsMitteilung(ctx)) :
+			Optional.empty();
+
+		Map<ImportForm, Processing> result = new EnumMap<>(ImportForm.class);
+		processingMutationLastGueltig.ifPresent(p -> result.put(ImportForm.MUTATIONS_MITTEILUNG_LAST_GUELTIG, p));
+		processingPlatzbestaetigung.ifPresent(p -> result.put(ImportForm.PLATZBESTAETIGUNG, p));
+		processingMutation.ifPresent(p -> result.put(ImportForm.MUTATIONS_MITTEILUNG, p));
+
+		return Processing.fromImport(result);
+	}
+
+	@Nonnull
+	private ProcessingContext toProcessingContext(
+		@Nonnull EventMonitor eventMonitor,
+		@Nonnull BetreuungEventDTO dto,
+		@Nonnull Betreuung betreuung,
+		boolean singleClientForPeriod,
+		DateRange overlap
+	) {
+		Betreuungsmitteilung betreuungsmitteilung = findLatestOffeneBetreungsmitteilung(betreuung)
+			.orElse(null);
+
+		return new ProcessingContext(betreuung, betreuungsmitteilung, dto, overlap, eventMonitor, singleClientForPeriod);
 	}
 
 	@Nonnull
@@ -252,34 +291,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		return Processing.success();
-	}
-
-	protected boolean isPlatzbestaetigungStatus(
-		@Nonnull Betreuungsstatus status,
-		@Nonnull AntragStatus antragStatus,
-		@Nonnull AntragTyp antragTyp) {
-		if (antragTyp == AntragTyp.MUTATION) {
-			return false;
-		}
-		if (status == Betreuungsstatus.WARTEN) {
-			return true;
-		}
-
-		return status == Betreuungsstatus.BESTAETIGT && isNotYetFreigegeben(antragStatus);
-	}
-
-	private boolean isNotYetFreigegeben(@Nonnull AntragStatus antragStatus) {
-		return antragStatus == AntragStatus.IN_BEARBEITUNG_GS
-			|| antragStatus == AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
-	}
-
-	protected boolean isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
-		return
-			status == Betreuungsstatus.WARTEN
-			|| status == Betreuungsstatus.VERFUEGT
-			|| status == Betreuungsstatus.BESTAETIGT
-			|| status == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-			|| status == Betreuungsstatus.STORNIERT;
 	}
 
 	/**
@@ -422,17 +433,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				"Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
 		}
 
-		Collection<Betreuungsmitteilung> open =
-			mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
+		Betreuungsmitteilung latest = ctx.getLatestOpenBetreuungsmitteilung();
+		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest);
 
-		Optional<Betreuungsmitteilung> latest = findLatest(open);
-		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
-
-		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
+		if (latest != null && MITTEILUNG_COMPARATOR.compare(latest, betreuungsmitteilung) == 0) {
 			return Processing.ignore("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
 		}
 
-		if (latest.isEmpty() && isSame(betreuungsmitteilung, betreuung)) {
+		if (latest == null && isSame(betreuungsmitteilung, betreuung)) {
 			return Processing.ignore("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
@@ -440,7 +448,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		LOG.info(
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());
-		ctx.getEventMonitor().record("PlatzbestaetigungEvent: Mutationsmeldung erstellt");
+		ctx.getEventMonitor().record("PlatzbestaetigungEvent: Mutationsmeldung erstellt für " + betreuung.getId());
 
 		return Processing.success();
 	}
@@ -489,6 +497,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant) + ' ' + clientName);
 
 		return betreuungsmitteilung;
+	}
+
+	@Nonnull
+	private Optional<Betreuungsmitteilung> findLatestOffeneBetreungsmitteilung(Betreuung betreuung) {
+		Collection<Betreuungsmitteilung> open = mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
+
+		return findLatest(open);
 	}
 
 	@Nonnull
