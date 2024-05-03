@@ -74,7 +74,6 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -147,19 +146,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	class IgnoreEventTest {
 
 		@Test
-		void ignoreWhenMandantNotFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.empty());
-
-			testIgnored("Mandant konnte nicht gefunden werden.");
-		}
-
-		@Test
 		void ignoreEventWhenNoBetreuungFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, false, mandant))
+			expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
 				.andReturn(Optional.empty());
 
 			testIgnored("Betreuung nicht gefunden.");
@@ -366,10 +354,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void expectBetreuungFound(@Nonnull Betreuung foundBetreuung) {
-		expect(betreuungEventHelper.getMandantFromBgNummer(anyString()))
-			.andReturn(Optional.of(mandant));
-
-		expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, false, mandant))
+		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
 			.andReturn(Optional.of(foundBetreuung));
 	}
 

@@ -194,16 +194,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@Nested
 	class FailEventTest {
 
-		@Test
-		void failWhenMandantNotFound() {
-			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
-
-			expect(betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr()))
-				.andReturn(Optional.empty());
-
-			testFailed(dto, "Mandant konnte nicht gefunden werden.");
-		}
-
 		/**
 		 * Should use "Stornieren" API instead
 		 */
@@ -219,10 +209,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		void failWhenNoBetreuungFound() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
-			expect(betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr()))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant))
+			expect(betreuungService.findBetreuungByRefNr(dto.getRefnr(), false))
 				.andReturn(Optional.empty());
 
 			testFailed(dto, "Betreuung nicht gefunden.");
@@ -1335,7 +1322,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectLastGueltigeBetreuung(@Nullable Betreuung lastGueltigeBetreuung) {
-		expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, true, mandant))
+		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, true))
 			.andReturn(Optional.ofNullable(lastGueltigeBetreuung));
 	}
 
@@ -1347,10 +1334,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {
-		expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-			.andReturn(Optional.of(mandant));
-
-		expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, false, mandant))
+		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
 			.andReturn(Optional.of(betreuung));
 	}
 

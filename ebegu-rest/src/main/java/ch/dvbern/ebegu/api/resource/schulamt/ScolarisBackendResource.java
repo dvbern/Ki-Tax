@@ -150,7 +150,7 @@ public class ScolarisBackendResource {
 				return createBgNummerFormatError();
 			}
 
-			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByRefNr(referenznummer);
 
 			if (betreuungen == null || betreuungen.isEmpty()) {
 				// Betreuung not found
@@ -253,7 +253,7 @@ public class ScolarisBackendResource {
 			}
 
 			//check if Gemeinde Scolaris erlaubt:
-			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
+			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByRefNr(referenznummer);
 
 			if (anmeldungenList == null || anmeldungenList.isEmpty()) {
 				// Betreuung not found

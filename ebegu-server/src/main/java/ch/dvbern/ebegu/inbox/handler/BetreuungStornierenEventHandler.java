@@ -97,13 +97,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
-		String refnr = eventMonitor.getRefnr();
-		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
-		if (mandant.isEmpty()) {
-			return Processing.failure("Mandant konnte nicht gefunden werden.");
-		}
-
-		return betreuungService.findBetreuungByBGNummer(refnr, false, mandant.get())
+		return betreuungService.findBetreuungByRefNr(eventMonitor.getRefnr(), false)
 			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}

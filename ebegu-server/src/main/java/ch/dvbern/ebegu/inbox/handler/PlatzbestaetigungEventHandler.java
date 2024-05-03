@@ -155,12 +155,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Es wurden keine Zeitabschnitte übergeben.");
 		}
 
-		return betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr())
-			.map(mandant -> betreuungService.findBetreuungByBGNummer(dto.getRefnr(), false, mandant)
-				.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
-				.orElseGet(() -> Processing.failure("Betreuung nicht gefunden.")))
-			.orElseGet(() -> Processing.failure("Mandant konnte nicht gefunden werden."));
-
+		return betreuungService.findBetreuungByRefNr(dto.getRefnr(), false)
+			.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
+			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
 
 	@Nonnull
@@ -225,8 +222,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		boolean singleClientForPeriod,
 		@Nonnull DateRange overlap
 	) {
-		Optional<Betreuung> lastGueltigeBetreuung =
-			betreuungService.findBetreuungByBGNummer(dto.getRefnr(), true, betreuung.extractGemeinde().getMandant());
+		Optional<Betreuung> lastGueltigeBetreuung = betreuungService.findBetreuungByRefNr(dto.getRefnr(), true);
 
 		// if there is an open Betreuungsmitteilung, make sure it's up to date regardless of Betreuungsstatus
 		Optional<Processing> processingMutationLastGueltig = lastGueltigeBetreuung

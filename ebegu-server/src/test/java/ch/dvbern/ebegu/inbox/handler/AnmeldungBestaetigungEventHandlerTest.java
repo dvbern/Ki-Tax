@@ -144,12 +144,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoAnmeldungFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(
-				tagesschuleBestaetigungEventDTO.getRefnr(),
-				mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.empty());
 
 			replayAll();
@@ -158,20 +153,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 				anmeldungBestaetigungEventHandler.attemptProcessing(eventMonitor, tagesschuleBestaetigungEventDTO);
 
 			assertThat(result, failed("AnmeldungTagesschule nicht gefunden."));
-			verifyAll();
-		}
-
-		@Test
-		void ignoreWhenMandantNotFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
-				.andReturn(Optional.empty());
-
-			replayAll();
-
-			Processing result =
-				anmeldungBestaetigungEventHandler.attemptProcessing(eventMonitor, tagesschuleBestaetigungEventDTO);
-
-			assertThat(result, failed("Mandant konnte nicht gefunden werden."));
 			verifyAll();
 		}
 
@@ -258,14 +239,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testIgnored(@Nonnull TagesschuleBestaetigungEventDTO dto, @Nonnull String message) {
-			String refnr = dto.getRefnr();
-
-			expect(betreuungEventHelper.getMandantFromBgNummer(refnr))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(
-				tagesschuleBestaetigungEventDTO.getRefnr(),
-				mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.ofNullable(anmeldungTagesschule));
 
 			replayAll();
@@ -450,11 +424,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testSuccess(@Nonnull TagesschuleBestaetigungEventDTO dto) {
-			String refnr = dto.getRefnr();
-			expect(betreuungEventHelper.getMandantFromBgNummer(refnr))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(refnr, mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(dto.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 

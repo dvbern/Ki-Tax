@@ -32,6 +32,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -43,10 +44,12 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -87,6 +90,10 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	@Column(nullable = false)
 	private boolean gueltig = false;
+
+	@NotNull
+	@Column(nullable = false, updatable = false, length = Constants.DB_DEFAULT_SHORT_LENGTH)
+	private String refNr = "";
 
 	/**
 	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
@@ -211,14 +218,22 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	 */
 	@Transient
 	@SuppressFBWarnings("NM_CONFUSING")
+	@Deprecated
 	public String getBGNummer() {
-		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind().getGesuch() != null) {
+		return refNr;
+	}
+
+	public String getRefNr() {
+		return refNr;
+	}
+
+	@PrePersist
+	protected void setRefNr() {
+		if (StringUtils.isEmpty(refNr)) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
-			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
+			refNr = getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
 		}
-		return "";
 	}
 
 	@Override
