@@ -1181,7 +1181,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(
+				(PlatzbestaetigungProcessing) result,
+				ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch.")
+			);
 			verifyAll();
 		}
 
@@ -1197,8 +1200,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
-				result,
-				ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
+				(PlatzbestaetigungProcessing) result,
+				ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.")
+			);
 			verifyAll();
 		}
 
@@ -1235,7 +1239,10 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(
+				(PlatzbestaetigungProcessing) result,
+				ignored(MUTATIONS_MITTEILUNG, "Die Betreuungsmeldung und die Betreuung sind identisch.")
+			);
 			verifyAll();
 		}
 

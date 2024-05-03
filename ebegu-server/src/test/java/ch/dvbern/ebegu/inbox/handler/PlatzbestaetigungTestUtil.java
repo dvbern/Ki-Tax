@@ -204,10 +204,10 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
-	public static Matcher<Processing> failed(@Nonnull ImportForm importForm, @Nonnull Matcher<String> messageMatcher) {
-		return pojo(Processing.class)
-			.where(Processing::getState, is(ProcessingState.FAILURE))
-			.where(Processing::getImportProcessing, Matchers.hasEntry(is(importForm), failed(messageMatcher)));
+	public static Matcher<PlatzbestaetigungProcessing> failed(@Nonnull ImportForm importForm, @Nonnull Matcher<String> messageMatcher) {
+		return pojo(PlatzbestaetigungProcessing.class)
+			.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.FAILURE))
+			.where(PlatzbestaetigungProcessing::getImportProcessing, Matchers.hasEntry(is(importForm), failed(messageMatcher)));
 	}
 
 	@Nonnull
@@ -216,9 +216,10 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
-	public static Matcher<Processing> ignored(@Nonnull ImportForm importForm, @Nonnull String message) {
-		return pojo(Processing.class)
-			.where(Processing::getImportProcessing, Matchers.hasEntry(is(importForm), ignored(message)));
+	public static Matcher<PlatzbestaetigungProcessing> ignored(@Nonnull ImportForm importForm, @Nonnull String message) {
+		return pojo(PlatzbestaetigungProcessing.class)
+			.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.IGNORE))
+			.where(PlatzbestaetigungProcessing::getImportProcessing, Matchers.hasEntry(is(importForm), ignored(message)));
 	}
 
 	@Nonnull

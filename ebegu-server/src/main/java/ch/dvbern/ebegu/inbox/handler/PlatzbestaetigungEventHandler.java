@@ -252,7 +252,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		processingPlatzbestaetigung.ifPresent(p -> result.put(ImportForm.PLATZBESTAETIGUNG, p));
 		processingMutation.ifPresent(p -> result.put(ImportForm.MUTATIONS_MITTEILUNG, p));
 
-		return Processing.fromImport(result);
+		return PlatzbestaetigungProcessing.fromImport(result);
 	}
 
 	@Nonnull

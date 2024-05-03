@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
+import java.time.LocalDateTime;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,6 +28,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
+import ch.dvbern.ebegu.services.BetreuungMonitoringServiceBean;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import org.hamcrest.Matchers;
@@ -132,9 +135,9 @@ class PlatzbestaetigungImportFormTest {
 		return new ProcessingContext(
 			betreuung,
 			betreuungsmitteilung,
-			mock(BetreuungEventDTO.class),
-			mock(DateRange.class),
-			mock(EventMonitor.class),
+			new BetreuungEventDTO(),
+			new DateRange(),
+			new EventMonitor(new BetreuungMonitoringServiceBean(), LocalDateTime.now(), "1.2.3.4", "client"),
 			true);
 	}
 
