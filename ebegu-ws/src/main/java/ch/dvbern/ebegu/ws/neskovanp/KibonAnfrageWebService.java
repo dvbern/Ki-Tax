@@ -110,7 +110,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		catch (OIDCTokenException oidcTokenException) {
 			exceptionReceived = oidcTokenException;
 			LOGGER.error(oidcTokenException.getMessage());
-			throw oidcTokenException;
+			throw new OIDCTokenException(oidcTokenException.getMessage());
 		}
 		catch (Exception e) {
 			exceptionReceived = e;
@@ -199,8 +199,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			port = null;
 			LOGGER.error("Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
 			throw new OIDCTokenException(
-				"Could not initialze the Autorziation Token for KibonAnfrage Serivce",
-				e);
+				"Could not initialze the Autorziation Token for KibonAnfrage Serivce");
 		}
 	}
 
