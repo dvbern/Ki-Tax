@@ -48,3 +48,6 @@ ebegu-ws/src/test/
 
 .flattened-pom.xml
 .scannerwork
+
+.vscode
+.nx
