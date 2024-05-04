@@ -204,30 +204,16 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
-	public static Matcher<PlatzbestaetigungProcessing> failed(@Nonnull ImportForm importForm, @Nonnull Matcher<String> messageMatcher) {
-		return pojo(PlatzbestaetigungProcessing.class)
-			.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.FAILURE))
-			.where(PlatzbestaetigungProcessing::getImportProcessing, Matchers.hasEntry(is(importForm), failed(messageMatcher)));
-	}
-
-	@Nonnull
-	public static Matcher<Processing> ignored(@Nonnull String message) {
-		return ignored(is(message));
-	}
-
-	@Nonnull
 	public static Matcher<PlatzbestaetigungProcessing> ignored(@Nonnull ImportForm importForm, @Nonnull String message) {
 		return pojo(PlatzbestaetigungProcessing.class)
 			.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.IGNORE))
-			.where(PlatzbestaetigungProcessing::getImportProcessing, Matchers.hasEntry(is(importForm), ignored(message)));
+			.where(PlatzbestaetigungProcessing::getProcessed, Matchers.hasItem(pojo(PlatzbestaetigungProcessing.class)
+				.where(PlatzbestaetigungProcessing::getImportForm, is(importForm))
+				.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.IGNORE))
+				.where(PlatzbestaetigungProcessing::getMessage, is(message))
+			));
 	}
 
-	@Nonnull
-	public static Matcher<Processing> ignored(@Nonnull Matcher<String> messageMatcher) {
-		return pojo(Processing.class)
-			.where(Processing::getState, is(ProcessingState.IGNORE))
-			.where(Processing::getMessage, messageMatcher);
-	}
 
 	@Nonnull
 	public static IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z) {

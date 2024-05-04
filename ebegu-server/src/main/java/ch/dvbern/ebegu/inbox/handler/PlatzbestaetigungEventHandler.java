@@ -22,13 +22,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -51,8 +50,6 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
@@ -73,14 +70,17 @@ import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.importAs;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungProcessing.withImportFrom;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.COMPARATOR_WITH_GUELTIGKEIT;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_COMPARATOR;
+import static java.util.Objects.requireNonNull;
 
 @ApplicationScoped
 @NoArgsConstructor
@@ -91,6 +91,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private Logger logger = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
 
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
+
+	private static final Comparator<Mitteilung> LATEST_BETREUUNGSMITTEILUNG = Comparator
+		.comparing(Mitteilung::getSentDatum, Comparator.nullsFirst(Comparator.naturalOrder()))
+		.thenComparing(AbstractEntity::getTimestampErstellt, Comparator.nullsFirst(Comparator.naturalOrder()))
+		.thenComparing(AbstractEntity::getId);
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -222,33 +227,37 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		boolean singleClientForPeriod,
 		@Nonnull DateRange overlap
 	) {
-		Optional<Betreuung> lastGueltigeBetreuung = betreuungService.findBetreuungByRefNr(dto.getRefnr(), true);
+		var offeneBetreuungsmitteilungen = mitteilungService.findOffeneBetreuungsmitteilungenByRefNr(dto.getRefnr());
+
+		Map<Betreuung, Betreuungsmitteilung> offeneMeldungen = offeneBetreuungsmitteilungen.stream()
+			//			.filter(m -> m.getMitteilungStatus() != MitteilungStatus.ERLEDIGT) // TODO wollen wir sowas?
+			.collect(Collectors.toMap(Mitteilung::getBetreuung, m -> m, BinaryOperator.maxBy(LATEST_BETREUUNGSMITTEILUNG)));
 
 		// if there is an open Betreuungsmitteilung, make sure it's up to date regardless of Betreuungsstatus
-		Optional<Processing> processingMutationLastGueltig = lastGueltigeBetreuung
-			.filter(b -> !b.equals(betreuung))
-			.map(b -> toProcessingContext(eventMonitor, dto, b, singleClientForPeriod, overlap))
-			.filter(ctx -> ctx.getLatestOpenBetreuungsmitteilung() != null)
-			.map(this::handleMutationsMitteilung);
+		List<PlatzbestaetigungProcessing> updatedBetreuungsmitteilungen = offeneMeldungen.entrySet().stream()
+			.filter(e -> !e.getKey().equals(betreuung))
+			.map(e -> new ProcessingContext(e.getKey(), e.getValue(), dto, overlap, eventMonitor, singleClientForPeriod))
+			.map(this::handleMutationsMitteilung)
+			.map(p -> withImportFrom(ImportForm.OFFENE_MUTATIONS_MITTEILUNG, p))
+			.collect(Collectors.toList());
 
 		ProcessingContext ctx = toProcessingContext(eventMonitor, dto, betreuung, singleClientForPeriod, overlap);
 
 		Set<ImportForm> importForms = importAs(ctx);
 
-		Optional<Processing> processingPlatzbestaetigung = importForms.contains(ImportForm.PLATZBESTAETIGUNG) ?
-			Optional.of(handlePlatzbestaetigung(ctx)) :
+		Optional<PlatzbestaetigungProcessing> processingPlatzbestaetigung = importForms.contains(ImportForm.PLATZBESTAETIGUNG) ?
+			Optional.of(withImportFrom(ImportForm.PLATZBESTAETIGUNG, handlePlatzbestaetigung(ctx))) :
 			Optional.empty();
 
-		Optional<Processing> processingMutation = importForms.contains(ImportForm.MUTATIONS_MITTEILUNG) ?
-			Optional.of(handleMutationsMitteilung(ctx)) :
+		Optional<PlatzbestaetigungProcessing> processingMutation = importForms.contains(ImportForm.MUTATIONS_MITTEILUNG) ?
+			Optional.of(withImportFrom(ImportForm.MUTATIONS_MITTEILUNG, handleMutationsMitteilung(ctx))) :
 			Optional.empty();
 
-		Map<ImportForm, Processing> result = new EnumMap<>(ImportForm.class);
-		processingMutationLastGueltig.ifPresent(p -> result.put(ImportForm.MUTATIONS_MITTEILUNG_LAST_GUELTIG, p));
-		processingPlatzbestaetigung.ifPresent(p -> result.put(ImportForm.PLATZBESTAETIGUNG, p));
-		processingMutation.ifPresent(p -> result.put(ImportForm.MUTATIONS_MITTEILUNG, p));
+		List<PlatzbestaetigungProcessing> processings = Lists.newArrayList(updatedBetreuungsmitteilungen);
+		processingPlatzbestaetigung.ifPresent(processings::add);
+		processingMutation.ifPresent(processings::add);
 
-		return PlatzbestaetigungProcessing.fromImport(result);
+		return PlatzbestaetigungProcessing.fromImport(processings);
 	}
 
 	@Nonnull
@@ -355,14 +364,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		if (erweiterteBetreuung == null) {
 			return;
 		}
-		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
-			.orElseThrow(() -> new EbeguRuntimeException(
-				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
+		Mandant mandant = ctx.getBetreuung().extractGemeinde().getMandant();
 		LocalDate sprachfoerderungBesteatigtAktiviereungDatum =
 			applicationPropertyService.getSchnittstelleSprachfoerderungAktivAb(mandant);
-		Objects.requireNonNull(sprachfoerderungBesteatigtAktiviereungDatum);
 
-		if (sprachfoerderungBesteatigtAktiviereungDatum.isAfter(LocalDate.now())
+		if (requireNonNull(sprachfoerderungBesteatigtAktiviereungDatum).isAfter(LocalDate.now())
 			&& ctx.getDto().getSprachfoerderungBestaetigt() == null) {
 			erweiterteBetreuung.setSprachfoerderungBestaetigt(true);
 		} else {
@@ -474,9 +480,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 
 		Benutzer benutzer = betreuungEventHelper.getMutationsmeldungBenutzer(betreuung);
-		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
-			.orElseThrow(() -> new EbeguRuntimeException(
-				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
+		Mandant mandant = betreuung.extractGemeinde().getMandant();
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setBetreuung(betreuung);
@@ -507,12 +511,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Nonnull
 	private Optional<Betreuungsmitteilung> findLatest(@Nonnull Collection<Betreuungsmitteilung> open) {
-		Comparator<Mitteilung> bySentDateTime = Comparator
-			.comparing(Mitteilung::getSentDatum, Comparator.nullsFirst(Comparator.naturalOrder()))
-			.thenComparing(AbstractEntity::getTimestampErstellt, Comparator.nullsFirst(Comparator.naturalOrder()))
-			.thenComparing(AbstractEntity::getId);
-
-		return open.stream().max(bySentDateTime);
+		return open.stream().max(LATEST_BETREUUNGSMITTEILUNG);
 	}
 
 	protected boolean isSame(@Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull Betreuung betreuung) {

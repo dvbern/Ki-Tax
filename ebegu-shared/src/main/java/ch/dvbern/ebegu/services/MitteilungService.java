@@ -103,6 +103,9 @@ public interface MitteilungService {
 	@Nonnull
 	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
 
+	@Nonnull
+	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByRefNr(@Nonnull String refNr);
+
 	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */

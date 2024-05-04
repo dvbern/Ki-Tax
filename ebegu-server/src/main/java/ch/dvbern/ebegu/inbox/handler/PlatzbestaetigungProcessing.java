@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,31 +34,41 @@ import static ch.dvbern.ebegu.inbox.handler.ProcessingState.SUCCESS;
 @EqualsAndHashCode(callSuper = true)
 public class PlatzbestaetigungProcessing extends Processing {
 
-	private final Map<ImportForm, Processing> importProcessing;
+	@Nullable
+	private final ImportForm importForm;
+
+	private final List<PlatzbestaetigungProcessing> processed;
 
 	private PlatzbestaetigungProcessing(
 		@Nonnull ProcessingState state,
 		@Nullable String message,
-		@Nonnull Map<ImportForm, Processing> importProcessing
+		@Nullable ImportForm importForm,
+		@Nonnull List<PlatzbestaetigungProcessing> processed
 	) {
 		super(state, message);
-		this.importProcessing = importProcessing;
+		this.importForm = importForm;
+		this.processed = List.copyOf(processed);
 	}
 
 	@Nonnull
-	public static PlatzbestaetigungProcessing fromImport(@Nonnull Map<ImportForm, Processing> importProcessing) {
-		if (importProcessing.isEmpty()) {
-			return new PlatzbestaetigungProcessing(FAILURE, "Platzbestätigung oder Mutation nicht möglich.", Map.of());
+	public static PlatzbestaetigungProcessing withImportFrom(ImportForm importForm, @Nonnull Processing processed) {
+		return new PlatzbestaetigungProcessing(processed.getState(), processed.getMessage(), importForm, List.of());
+	}
+
+	@Nonnull
+	public static PlatzbestaetigungProcessing fromImport(@Nonnull List<PlatzbestaetigungProcessing> processed) {
+		if (processed.isEmpty()) {
+			return new PlatzbestaetigungProcessing(FAILURE, "Platzbestätigung oder Mutation nicht möglich.", null, List.of());
 		}
 
-		if (importProcessing.values().stream().anyMatch(p -> p.getState() == SUCCESS)) {
-			return new PlatzbestaetigungProcessing(SUCCESS, null, importProcessing);
+		if (processed.stream().anyMatch(p -> p.getState() == SUCCESS)) {
+			return new PlatzbestaetigungProcessing(SUCCESS, null, null, processed);
 		}
 
-		if (importProcessing.values().stream().allMatch(p -> p.getState() == IGNORE)) {
-			return new PlatzbestaetigungProcessing(IGNORE, null, importProcessing);
+		if (processed.stream().allMatch(p -> p.getState() == IGNORE)) {
+			return new PlatzbestaetigungProcessing(IGNORE, null, null, processed);
 		}
 
-		return new PlatzbestaetigungProcessing(FAILURE, null, importProcessing);
+		return new PlatzbestaetigungProcessing(FAILURE, null, null, processed);
 	}
 }

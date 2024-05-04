@@ -72,6 +72,6 @@ public class PlatzbestaetigungImportForm {
 	public enum ImportForm {
 		PLATZBESTAETIGUNG,
 		MUTATIONS_MITTEILUNG,
-		MUTATIONS_MITTEILUNG_LAST_GUELTIG
+		OFFENE_MUTATIONS_MITTEILUNG
 	}
 }

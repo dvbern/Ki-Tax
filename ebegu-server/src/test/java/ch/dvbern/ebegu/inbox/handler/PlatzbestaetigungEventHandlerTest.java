@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
@@ -111,6 +112,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -894,8 +896,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate aktivierungDatum) {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.of(mandant));
 			expect(applicationPropertyService.getSchnittstelleSprachfoerderungAktivAb(mandant))
 				.andReturn(aktivierungDatum);
 		}
@@ -1157,6 +1157,117 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@Test
+		void createsMutationForAllOpenBetreuungsmitteilungen() {
+			DateRange periode = gesuchsperiode.getGueltigkeit();
+
+			LocalDateTime now = LocalDateTime.now();
+
+			BetreuungsmitteilungPensum newestPensum = createBetreuungsmitteilungPensum(periode);
+			newestPensum.setPensum(BigDecimal.valueOf(75));
+			Betreuungsmitteilung newest = createBetreuungMitteilung(newestPensum);
+			newest.setSentDatum(now.minusMinutes(1));
+			newest.setBetreuung(betreuung);
+
+			BetreuungsmitteilungPensum otherOpenPensum = createBetreuungsmitteilungPensum(periode);
+			otherOpenPensum.setPensum(BigDecimal.valueOf(70));
+			Betreuungsmitteilung otherOpen = createBetreuungMitteilung(otherOpenPensum);
+			otherOpen.setSentDatum(now.minusHours(1));
+			Betreuung otherBetreuung = new Betreuung();
+			otherBetreuung.setKind(betreuung.getKind());
+			otherBetreuung.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
+			otherOpen.setBetreuung(otherBetreuung);
+
+			expectMutationsmeldung(List.of(otherOpen), newest);
+			expectMutationsmeldungCreated(otherBetreuung);
+
+			Capture<Betreuungsmitteilung> m1 = expectNewMitteilung();
+			Capture<Betreuungsmitteilung> m2 = expectNewMitteilung();
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
+			assertThat((PlatzbestaetigungProcessing) result, pojo(PlatzbestaetigungProcessing.class)
+				.where(PlatzbestaetigungProcessing::getProcessed, containsInAnyOrder(
+					pojo(PlatzbestaetigungProcessing.class)
+						.where(PlatzbestaetigungProcessing::getImportForm, is(ImportForm.OFFENE_MUTATIONS_MITTEILUNG))
+						.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.SUCCESS)),
+					pojo(PlatzbestaetigungProcessing.class)
+						.where(PlatzbestaetigungProcessing::getImportForm, is(MUTATIONS_MITTEILUNG))
+						.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.SUCCESS))
+				))
+			);
+
+			assertThat(m1.getValue().getBetreuung(), is(otherBetreuung));
+			assertThat(m2.getValue().getBetreuung(), is(betreuung));
+
+			verifyAll();
+		}
+
+		@Test
+		void createsMutationAndPlatzbestaetigung() {
+			DateRange periode = gesuchsperiode.getGueltigkeit();
+
+			LocalDateTime now = LocalDateTime.now();
+
+			// region setup platzbestätigung
+			betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
+			expect(einstellungService
+				.isEnabled(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, betreuung))
+				.andReturn(false);
+
+			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
+				.andReturn(betreuung);
+			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(null);
+
+			expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
+				.andReturn(unitTestPensumMapper());
+			// endregion
+
+			BetreuungsmitteilungPensum newestPensum = createBetreuungsmitteilungPensum(periode);
+			newestPensum.setPensum(BigDecimal.valueOf(75));
+			Betreuungsmitteilung newest = createBetreuungMitteilung(newestPensum);
+			newest.setSentDatum(now.minusMinutes(1));
+			newest.setBetreuung(betreuung);
+
+			BetreuungsmitteilungPensum otherOpenPensum = createBetreuungsmitteilungPensum(periode);
+			otherOpenPensum.setPensum(BigDecimal.valueOf(70));
+			Betreuungsmitteilung otherOpen = createBetreuungMitteilung(otherOpenPensum);
+			otherOpen.setSentDatum(now.minusHours(1));
+			Betreuung otherBetreuung = new Betreuung();
+			otherBetreuung.setKind(betreuung.getKind());
+			otherBetreuung.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
+			otherOpen.setBetreuung(otherBetreuung);
+
+			expectMutationsmeldung(List.of(otherOpen), newest);
+			expectMutationsmeldungCreated(otherBetreuung);
+
+			Capture<Betreuungsmitteilung> m1 = expectNewMitteilung();
+			Capture<Betreuungsmitteilung> m2 = expectNewMitteilung();
+
+			replayAll();
+
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
+			assertThat((PlatzbestaetigungProcessing) result, pojo(PlatzbestaetigungProcessing.class)
+				.where(PlatzbestaetigungProcessing::getProcessed, containsInAnyOrder(
+					pojo(PlatzbestaetigungProcessing.class)
+						.where(PlatzbestaetigungProcessing::getImportForm, is(ImportForm.PLATZBESTAETIGUNG))
+						.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.SUCCESS)),
+					pojo(PlatzbestaetigungProcessing.class)
+						.where(PlatzbestaetigungProcessing::getImportForm, is(ImportForm.OFFENE_MUTATIONS_MITTEILUNG))
+						.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.SUCCESS)),
+					pojo(PlatzbestaetigungProcessing.class)
+						.where(PlatzbestaetigungProcessing::getImportForm, is(MUTATIONS_MITTEILUNG))
+						.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.SUCCESS))
+				))
+			);
+
+			assertThat(m1.getValue().getBetreuung(), is(otherBetreuung));
+			assertThat(m2.getValue().getBetreuung(), is(betreuung));
+
+			verifyAll();
+		}
+
+		@Test
 		void ignoresBetreuungsmeldungWhenIdenticalToExistingBetreuung() {
 			// limit to periode gueltigkeit (default is periodeAb to END_OF_TIME)
 			betreuungspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
@@ -1277,9 +1388,21 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			verifyAll();
 		}
 
+		@SuppressWarnings("OverloadedVarargsMethod")
 		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
+			expectMutationsmeldung(List.of(), existing);
+		}
+
+		@SuppressWarnings("OverloadedVarargsMethod")
+		private void expectMutationsmeldung(
+			@Nonnull List<Betreuungsmitteilung> offeneBetreuungsmitteilungen,
+			@Nonnull Betreuungsmitteilung... existing
+		) {
 			expectBetreuungFound(betreuung);
-			expectLastGueltigeBetreuung(betreuung);
+			expectOffeneBetreuungsmitteilungen(offeneBetreuungsmitteilungen);
+
+			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
+				.andReturn(Arrays.asList(existing));
 
 			mockClients(clientGueltigkeit);
 
@@ -1288,23 +1411,21 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(institutionExternalClient.getExternalClient())
 				.andStubReturn(mockClient);
 
+			expectMutationsmeldungCreated(betreuung);
+		}
+
+		private void expectMutationsmeldungCreated(Betreuung mutierteBetreuung) {
 			Benutzer benutzer = mock(Benutzer.class);
-			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(benutzer);
+			expect(betreuungEventHelper.getMutationsmeldungBenutzer(mutierteBetreuung)).andReturn(benutzer);
 			expect(benutzer.getMandant()).andReturn(TestDataUtil.createMandant(MandantIdentifier.BERN)).anyTimes();
 
-			expect(mitteilungService.isBetreuungGueltigForMutation(betreuung)).andReturn(true);
-
-			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
-				.andReturn(Arrays.asList(existing));
+			expect(mitteilungService.isBetreuungGueltigForMutation(mutierteBetreuung)).andReturn(true);
 
 			expect(mitteilungService.createNachrichtForMutationsmeldung(anyObject(), anyObject(), anyObject()))
 				.andReturn("my test message");
 
 			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));
-
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.of(mandant));
 
 			expect(pensumMapperFactory.createForBetreuungsmitteilung(anyObject()))
 				.andReturn(unitTestPensumMapper());
@@ -1321,14 +1442,14 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
-	private void expectLastGueltigeBetreuung(@Nullable Betreuung lastGueltigeBetreuung) {
-		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, true))
-			.andReturn(Optional.ofNullable(lastGueltigeBetreuung));
+	private void expectOffeneBetreuungsmitteilungen(@Nonnull List<Betreuungsmitteilung> offeneBetreuungsmitteilungen) {
+		expect(mitteilungService.findOffeneBetreuungsmitteilungenByRefNr(REF_NUMMER))
+			.andReturn(offeneBetreuungsmitteilungen);
 	}
 
 	private void expectBetreuungIsLastGueltigeBetreuungNoOffeneBetreuungsmitteilung(Betreuung betreuung) {
 		expectBetreuungFound(betreuung);
-		expectLastGueltigeBetreuung(betreuung);
+		expectOffeneBetreuungsmitteilungen(List.of());
 		expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 			.andReturn(Collections.emptyList());
 	}

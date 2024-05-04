@@ -492,6 +492,28 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
+	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByRefNr(@Nonnull String refNr) {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+
+		CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
+		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
+
+		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
+
+		ParameterExpression<String> refNrParam = cb.parameter(String.class, AbstractPlatz_.REF_NR);
+
+		query.where(
+			cb.equal(betreuungJoin.get(AbstractPlatz_.refNr), refNrParam),
+			cb.isFalse(root.get(Betreuungsmitteilung_.applied))
+		);
+
+		return persistence.getEntityManager().createQuery(query)
+			.setParameter(refNrParam, refNr)
+			.getResultList();
+	}
+
+	@Nonnull
+	@Override
 	public Collection<Betreuungsmitteilung> findAllBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
