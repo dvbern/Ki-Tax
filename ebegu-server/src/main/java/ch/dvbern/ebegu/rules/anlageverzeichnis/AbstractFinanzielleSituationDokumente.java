@@ -179,8 +179,7 @@ abstract class AbstractFinanzielleSituationDokumente
 				abstractFinanzielleSituation.getGeleisteteAlimente() != null &&
 				abstractFinanzielleSituation.getGeleisteteAlimente().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_SCHULDEN:
-			return (!abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-				abstractFinanzielleSituation.getSteuererklaerungAusgefuellt()) &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 				abstractFinanzielleSituation.getSchulden() != null &&
 				abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
 		case ERFOLGSRECHNUNGEN_JAHR:
