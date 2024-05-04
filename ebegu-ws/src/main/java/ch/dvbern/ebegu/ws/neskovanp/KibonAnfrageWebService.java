@@ -199,7 +199,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			port = null;
 			LOGGER.error("Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
 			throw new OIDCTokenException(
-				"Could not initialze the Autorziation Token for KibonAnfrage Serivce");
+				"Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
 		}
 	}
 
