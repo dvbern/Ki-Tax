@@ -1177,7 +1177,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			otherBetreuung.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
 			otherOpen.setBetreuung(otherBetreuung);
 
-			expectMutationsmeldung(List.of(otherOpen), newest);
+			expectMutationsmeldung(null, List.of(otherOpen), newest);
 			expectMutationsmeldungCreated(otherBetreuung);
 
 			Capture<Betreuungsmitteilung> m1 = expectNewMitteilung();
@@ -1238,7 +1238,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			otherBetreuung.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
 			otherOpen.setBetreuung(otherBetreuung);
 
-			expectMutationsmeldung(List.of(otherOpen), newest);
+			expectMutationsmeldung(null, List.of(otherOpen), newest);
 			expectMutationsmeldungCreated(otherBetreuung);
 
 			Capture<Betreuungsmitteilung> m1 = expectNewMitteilung();
@@ -1390,16 +1390,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@SuppressWarnings("OverloadedVarargsMethod")
 		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
-			expectMutationsmeldung(List.of(), existing);
+			expectMutationsmeldung(null, List.of(), existing);
 		}
 
 		@SuppressWarnings("OverloadedVarargsMethod")
 		private void expectMutationsmeldung(
+			@Nullable Betreuung lastGueltigeBetreuung,
 			@Nonnull List<Betreuungsmitteilung> offeneBetreuungsmitteilungen,
 			@Nonnull Betreuungsmitteilung... existing
 		) {
 			expectBetreuungFound(betreuung);
 			expectOffeneBetreuungsmitteilungen(offeneBetreuungsmitteilungen);
+			expectMutationsmeldungForLastGueltigeBetreuung(lastGueltigeBetreuung);
 
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));
@@ -1412,6 +1414,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andStubReturn(mockClient);
 
 			expectMutationsmeldungCreated(betreuung);
+		}
+
+		private void expectMutationsmeldungForLastGueltigeBetreuung(@Nullable Betreuung lastGueltigeBetreuung) {
+			expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, true))
+				.andReturn(Optional.ofNullable(lastGueltigeBetreuung));
+
+			if (lastGueltigeBetreuung == null) {
+				return;
+			}
+
+			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(lastGueltigeBetreuung))
+				.andReturn(Collections.emptyList());
 		}
 
 		private void expectMutationsmeldungCreated(Betreuung mutierteBetreuung) {
@@ -1452,6 +1466,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expectOffeneBetreuungsmitteilungen(List.of());
 		expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 			.andReturn(Collections.emptyList());
+		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, true))
+			.andReturn(Optional.empty());
 	}
 
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {

@@ -214,34 +214,33 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					return validationProcess;
 				}
 
-				return processEventForExternalClient(eventMonitor, dto, betreuung, singleClientForPeriod, overlap);
+				var params = new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, overlap);
+
+				return processEventForExternalClient(params, betreuung);
 			})
 			.orElseGet(() -> Processing.failure("Der Client hat innerhalb der Periode keine Berechtigung."));
 	}
 
 	@Nonnull
-	private Processing processEventForExternalClient(
-		@Nonnull EventMonitor eventMonitor,
-		@Nonnull BetreuungEventDTO dto,
-		@Nonnull Betreuung betreuung,
-		boolean singleClientForPeriod,
-		@Nonnull DateRange overlap
-	) {
-		var offeneBetreuungsmitteilungen = mitteilungService.findOffeneBetreuungsmitteilungenByRefNr(dto.getRefnr());
+	private Processing processEventForExternalClient(@Nonnull ProcessingContextParams params, @Nonnull Betreuung betreuung) {
+		var offeneBetreuungsmitteilungen = mitteilungService.findOffeneBetreuungsmitteilungenByRefNr(params.getDto().getRefnr());
 
 		Map<Betreuung, Betreuungsmitteilung> offeneMeldungen = offeneBetreuungsmitteilungen.stream()
 			//			.filter(m -> m.getMitteilungStatus() != MitteilungStatus.ERLEDIGT) // TODO wollen wir sowas?
 			.collect(Collectors.toMap(Mitteilung::getBetreuung, m -> m, BinaryOperator.maxBy(LATEST_BETREUUNGSMITTEILUNG)));
 
 		// if there is an open Betreuungsmitteilung, make sure it's up to date regardless of Betreuungsstatus
-		List<PlatzbestaetigungProcessing> updatedBetreuungsmitteilungen = offeneMeldungen.entrySet().stream()
+		Set<ProcessingContext> mutations = offeneMeldungen.entrySet().stream()
 			.filter(e -> !e.getKey().equals(betreuung))
-			.map(e -> new ProcessingContext(e.getKey(), e.getValue(), dto, overlap, eventMonitor, singleClientForPeriod))
+			.map(e -> new ProcessingContext(e.getKey(), e.getValue(), params))
+			.collect(Collectors.toSet());
+
+		List<PlatzbestaetigungProcessing> updatedBetreuungsmitteilungen = mutations.stream()
 			.map(this::handleMutationsMitteilung)
 			.map(p -> withImportFrom(ImportForm.OFFENE_MUTATIONS_MITTEILUNG, p))
 			.collect(Collectors.toList());
 
-		ProcessingContext ctx = toProcessingContext(eventMonitor, dto, betreuung, singleClientForPeriod, overlap);
+		ProcessingContext ctx = toProcessingContext(params, betreuung);
 
 		Set<ImportForm> importForms = importAs(ctx);
 
@@ -253,25 +252,38 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			Optional.of(withImportFrom(ImportForm.MUTATIONS_MITTEILUNG, handleMutationsMitteilung(ctx))) :
 			Optional.empty();
 
+		// Falls die Betreuung bereits einmal verfügt war, die aktive Betreuung aber eine andere ist (e.g. in Bearbeitung
+		// Antragsteller), dann muss auch eine Mutations Mitteilung erstellt werden, damit die Daten nicht verloren gehen.
+		// Ansonsten gehen die Daten verloren, falls der Antragsteller die Betreuung nicht frei gibt.
+		Optional<PlatzbestaetigungProcessing> processingLastGueltig = findUnprocessedLastGueltigeBetreuung(ctx, mutations)
+			.map(b -> toProcessingContext(ctx.getParams(), b))
+			.map(this::handleMutationsMitteilung)
+			.map(p -> withImportFrom(ImportForm.MUTATIONS_MITTEILUNG, p));
+
 		List<PlatzbestaetigungProcessing> processings = Lists.newArrayList(updatedBetreuungsmitteilungen);
 		processingPlatzbestaetigung.ifPresent(processings::add);
 		processingMutation.ifPresent(processings::add);
+		processingLastGueltig.ifPresent(processings::add);
 
 		return PlatzbestaetigungProcessing.fromImport(processings);
 	}
 
 	@Nonnull
-	private ProcessingContext toProcessingContext(
-		@Nonnull EventMonitor eventMonitor,
-		@Nonnull BetreuungEventDTO dto,
-		@Nonnull Betreuung betreuung,
-		boolean singleClientForPeriod,
-		DateRange overlap
+	private Optional<Betreuung> findUnprocessedLastGueltigeBetreuung(
+		@Nonnull ProcessingContext ctx,
+		@Nonnull Set<ProcessingContext> mutations
 	) {
+		return ctx.getBetreuung().isGueltig() || mutations.stream().anyMatch(m -> m.getBetreuung().isGueltig()) ?
+			Optional.empty() :
+			betreuungService.findBetreuungByRefNr(ctx.getDto().getRefnr(), true);
+	}
+
+	@Nonnull
+	private ProcessingContext toProcessingContext(@Nonnull ProcessingContextParams params, @Nonnull Betreuung betreuung) {
 		Betreuungsmitteilung betreuungsmitteilung = findLatestOffeneBetreungsmitteilung(betreuung)
 			.orElse(null);
 
-		return new ProcessingContext(betreuung, betreuungsmitteilung, dto, overlap, eventMonitor, singleClientForPeriod);
+		return new ProcessingContext(betreuung, betreuungsmitteilung, params);
 	}
 
 	@Nonnull
