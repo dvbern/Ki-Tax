@@ -50,6 +50,6 @@ public class KindDokumenteVisitor implements MandantVisitor<AbstractDokumente<Ki
 
 	@Override
 	public AbstractDokumente<Kind, Object> visitSchwyz() {
-		return this.visitSolothurn();
+		return new SchwyzKindDokumente();
 	}
 }
