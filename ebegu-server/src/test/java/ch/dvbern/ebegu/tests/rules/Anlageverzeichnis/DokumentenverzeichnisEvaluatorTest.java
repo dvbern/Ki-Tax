@@ -729,10 +729,10 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		//Test wenn Steuererklärung nicht ausgefüllt ist
 		finanzielleSituationJA.setSteuererklaerungAusgefuellt(false);
 		dokumentGrunds = evaluator.calculate(testgesuchBern, Constants.DEFAULT_LOCALE);
-		Assertions.assertEquals(8, dokumentGrunds.size());
+		Assertions.assertEquals(10, dokumentGrunds.size());
 
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assertions.assertEquals(8, dokumentGrundGS1.size());
+		Assertions.assertEquals(10, dokumentGrundGS1.size());
 
 		assertType(dokumentGrundGS1, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuchBern.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
@@ -749,6 +749,10 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		assertType(dokumentGrundGS1, DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS1, testgesuchBern.getGesuchsteller1().extractFullName(), "2015",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 		assertType(dokumentGrundGS1, DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, testgesuchBern.getGesuchsteller1().extractFullName(), "2014",
+			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(dokumentGrundGS1, DokumentTyp.NACHWEIS_VERMOEGEN, testgesuchBern.getGesuchsteller1().extractFullName(), "2016",
+			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(dokumentGrundGS1, DokumentTyp.NACHWEIS_SCHULDEN, testgesuchBern.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
 
