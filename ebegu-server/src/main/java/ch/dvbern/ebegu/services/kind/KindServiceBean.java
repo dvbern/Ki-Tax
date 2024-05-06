@@ -1,37 +1,44 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.kind;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.WizardStepService;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -40,6 +47,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import java.util.*;
 
 /**
@@ -62,22 +70,19 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private ValidatorFactory validatorFactory;
 
 	@Inject
-	private EinstellungService einstellungService;
-
-	@Inject
-	private GesuchstellerService gesuchstellerService;
+	private KindServiceHandler kindServiceHandler;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
 
 	@Nonnull
 	@Override
-	public KindContainer saveKind(@Nonnull KindContainer kind) {
+	public KindContainer saveKind(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
 		Objects.requireNonNull(kind);
 		if (!kind.isNew()) {
 			// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
 			updateLuceneIndex(KindContainer.class, kind.getId());
 		}
-
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kind, alteEinschulungTyp);
 		final KindContainer mergedKind = persistence.merge(kind);
 		mergedKind.getGesuch().addKindContainer(mergedKind);
 
@@ -89,31 +94,13 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			throw new ConstraintViolationException(constraintViolations);
 		}
 
-		resetGesuchDataOnKindSave(kind);
+		kindServiceHandler.resetGesuchDataOnKindSave(mergedKind);
+
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(mergedKind, alteEinschulungTyp);
 
 		wizardStepService.updateSteps(kind.getGesuch().getId(), null, mergedKind.getKindJA(), WizardStepName.KINDER);
 
 		return mergedKind;
-	}
-
-	private void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
-		final Gesuch gesuch = kind.getGesuch();
-
-		Einstellung anspruchBeschaeftigungTyp = einstellungService.getEinstellungByMandant(
-				EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
-				gesuch
-					.getGesuchsperiode())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveKind",
-				"Einstellung ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM is missing for gesuchsperiode {}",
-				gesuch.getGesuchsperiode().getId()));
-
-		if (AnspruchBeschaeftigungAbhaengigkeitTyp.valueOf(anspruchBeschaeftigungTyp.getValue()) == AnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ && gesuch.getGesuchsteller2() != null) {
-			boolean hasKindWithUnterhaltspflichtGS2 = gesuch.getKindContainers().stream().map(KindContainer::getKindJA).anyMatch(kindJA -> Boolean.TRUE.equals(kindJA.getGemeinsamesGesuch()));
-			if (!hasKindWithUnterhaltspflichtGS2 && !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
-				gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
-				gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller2(), gesuch, 2, false);
-			}
-		}
 	}
 
 	@Override
@@ -213,7 +200,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.INNER);
 
-
 		query.multiselect(
 			joinGesuch.get(AbstractEntity_.id),
 			joinGesuch.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
@@ -254,7 +240,10 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 	@Nonnull
 	@Override
-	public Collection<KindContainer> findKinder(@Nonnull Integer fallNummer, @Nonnull Integer kindNummer, int gesuchsperiodeStartJahr) {
+	public Collection<KindContainer> findKinder(
+		@Nonnull Integer fallNummer,
+		@Nonnull Integer kindNummer,
+		int gesuchsperiodeStartJahr) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
 
@@ -280,8 +269,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Override
 	public void updateKeinSelbstbehaltFuerGemeinde(
 		Collection<KindContainer> kindContainers,
-		@Nonnull Boolean keinSelbstbehaltFuerGemeinde)
-	{
+		@Nonnull Boolean keinSelbstbehaltFuerGemeinde) {
 		kindContainers.forEach(kindContainer -> {
 			long fallNummer = kindContainer.getGesuch().getFall().getFallNummer();
 			// Flag nur setzen, falls das Kind immer noch die Checkbox kindAusAsylwesen aktiviert hat
