@@ -59,4 +59,8 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
                 'LABEL_NEIN' :
                 'LABEL_JA');
     }
+
+    public hasError(): boolean {
+        return false;
+    }
 }

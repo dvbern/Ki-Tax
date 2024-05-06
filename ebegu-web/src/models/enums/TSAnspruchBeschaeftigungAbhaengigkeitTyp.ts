@@ -18,5 +18,6 @@
 export enum TSAnspruchBeschaeftigungAbhaengigkeitTyp {
     ABHAENGING = 'ABHAENGING',
     UNABHAENGING = 'UNABHAENGING',
-    MINIMUM = 'MINIMUM'
+    MINIMUM = 'MINIMUM',
+    SCHWYZ = 'SCHWYZ'
 }

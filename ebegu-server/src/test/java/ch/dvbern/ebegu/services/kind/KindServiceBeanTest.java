@@ -1,19 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.services.kind;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -22,6 +24,7 @@ import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -129,7 +132,7 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		KindContainer neuesKindInMutation = TestDataUtil.createKindContainerWithoutFachstelle();
 
 		neuesKindInMutation.setGesuch(mutation);
-		kindService.saveKind(neuesKindInMutation);
+		kindService.saveKind(neuesKindInMutation, null);
 		assertEquals(2, kindService.findAllKinderFromGesuch(mutation.getId()).size());
 
 		wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
@@ -176,7 +179,7 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(kindContainer.getKindGS());
 		persistence.persist(kindContainer.getKindJA());
 
-		final KindContainer persistedKind = kindService.saveKind(kindContainer);
+		final KindContainer persistedKind = kindService.saveKind(kindContainer, null);
 		return persistedKind;
 	}
 

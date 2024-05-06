@@ -51,6 +51,7 @@ UPDATE application_property SET value = 'false' WHERE name = 'SCHNITTSTELLE_EVEN
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_MITTAGSTISCH_ENABLED' AND mandant_id = @mandant_id_schwyz;
 UPDATE application_property SET value = 'true' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @mandant_id_schwyz;
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = 'false' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @mandant_id_schwyz;
 
 # Gesuchsperiode
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchsperiode_24_25_id;

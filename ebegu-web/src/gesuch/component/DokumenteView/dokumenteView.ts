@@ -14,11 +14,11 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
@@ -58,7 +58,6 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         '$scope',
         '$timeout',
         'GesuchRS',
-        'AuthServiceRS'
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -83,7 +82,6 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         $scope: IScope,
         $timeout: ITimeoutService,
         private readonly gesuchRS: GesuchRS,
-        private readonly authServiceRS: AuthServiceRS
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -212,4 +210,12 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
     }
+
+    public getTagAnhandFinanzielleSituationTyp(): string | null {
+        if (this.gesuchModelManager.getGesuch().finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
+            return null;
+        }
+        return 'DOK_JAHR';
+    }
+
 }

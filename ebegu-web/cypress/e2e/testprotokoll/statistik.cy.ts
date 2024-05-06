@@ -1,3 +1,5 @@
+// noinspection MagicNumberJS
+
 import {StatistikPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
 
@@ -436,14 +438,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     // Check Bis
     expect(data[last - 1][69]).to.eq(45138);
     expect(data[last][69]).to.eq(45138);
-
-    // Check hidden field
-    expect(data[last - 1][70]).to.eq(0);
-    expect(data[last][70]).to.eq(0);
-
-    // Check hidden field
-    expect(data[last - 1][71]).to.eq(0);
-    expect(data[last][71]).to.eq(0);
 
     // Check Status
     expect(data[last - 1][72]).to.eq('Verfügt');

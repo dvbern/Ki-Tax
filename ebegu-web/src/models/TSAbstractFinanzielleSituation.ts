@@ -35,6 +35,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _abzuegeLiegenschaft: number;
     private _geschaeftsverlust: number;
     private _einkaeufeVorsorge: number;
+    private _bruttoLohn: number;
     private _steuerdatenAbfrageStatus: TSSteuerdatenAnfrageStatus;
 
     private _bruttoertraegeVermoegen: number;
@@ -154,6 +155,14 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set einkaeufeVorsorge(value: number) {
         this._einkaeufeVorsorge = value;
+    }
+
+    public get bruttoLohn(): number {
+        return this._bruttoLohn;
+    }
+
+    public set bruttoLohn(value: number) {
+        this._bruttoLohn = value;
     }
     public get gewinnungskosten(): number {
         return this._gewinnungskosten;

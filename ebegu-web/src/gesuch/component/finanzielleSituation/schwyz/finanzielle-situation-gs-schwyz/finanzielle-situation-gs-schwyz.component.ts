@@ -9,6 +9,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
 @Component({
     selector: 'dv-finanzielle-situation-gs-schwyz',
@@ -23,7 +24,8 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
         protected readonly wizardStepManager: WizardStepManager,
-        private readonly $stateParams: UIRouterGlobals
+        private readonly $stateParams: UIRouterGlobals,
+        private readonly finSitSchwyzService: FinanzielleSituationSchwyzService
     ) {
         super(gesuchmodelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
     }
@@ -62,6 +64,10 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
         return this.gesuchsteller.gesuchstellerJA.getFullName();
     }
 
+    public recalculateMassgebendesEinkommen(): void {
+        this.finSitSchwyzService.calculateMassgebendesEinkommen(this.model);
+    }
+
     public getSubStepName(): TSFinanzielleSituationSubStepName {
         return this.model.getGesuchstellerNumber() === 1 ?
             TSFinanzielleSituationSubStepName.SCHWYZ_GS1 :
@@ -78,10 +84,12 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation().then((finSitCon: TSFinanzielleSituationContainer) => {
-            onResult(finSitCon);
-            return finSitCon;
-        }) as Promise<TSFinanzielleSituationContainer>;
+        return this.gesuchModelManager.saveFinanzielleSituation()
+            .then(finSitCon => this.gesuchmodelManager.reloadGesuch().then(() => finSitCon))
+            .then((finSitCon: TSFinanzielleSituationContainer) => {
+                onResult(finSitCon);
+                return finSitCon;
+            }) as Promise<TSFinanzielleSituationContainer>;
     }
 
 }

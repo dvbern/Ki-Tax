@@ -198,9 +198,9 @@ public class BGCalculationInput {
 	private boolean gesuchBeendenKonkubinatMitZweiGS = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
-	private BigDecimal eingewoehnungPauschale = BigDecimal.ZERO;
+	private boolean betreuungInFerienzeit = false;
 
-	private Boolean isBetreuungWaehrendSchulzeit;
+	private BigDecimal eingewoehnungPauschale = BigDecimal.ZERO;
 
 	@Getter
 	@Setter
@@ -279,7 +279,7 @@ public class BGCalculationInput {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.finsitAccepted = toCopy.finsitAccepted;
 		this.eingewoehnungPauschale = toCopy.eingewoehnungPauschale;
-		this.isBetreuungWaehrendSchulzeit = toCopy.isBetreuungWaehrendSchulzeit;
+		this.betreuungInFerienzeit = toCopy.betreuungInFerienzeit;
 		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 	}
 
@@ -909,6 +909,7 @@ public class BGCalculationInput {
 		if (!other.finsitAccepted) {
 			this.finsitAccepted = false;
 		}
+		this.betreuungInFerienzeit = this.betreuungInFerienzeit || other.betreuungInFerienzeit;
 
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 	}
@@ -1117,7 +1118,8 @@ public class BGCalculationInput {
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
 			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
 			this.finsitAccepted == other.finsitAccepted &&
-			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
+			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale) &&
+			this.betreuungInFerienzeit == other.betreuungInFerienzeit;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1150,7 +1152,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
-			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale);
+			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale) &&
+			betreuungInFerienzeit == that.betreuungInFerienzeit;
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -1345,11 +1348,11 @@ public class BGCalculationInput {
 		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 
-	public Boolean isBetreuungWaehrendSchulzeit() {
-		return isBetreuungWaehrendSchulzeit;
+	public boolean isBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
 	}
 
-	public void setBetreuungWaehrendSchulzeit(Boolean betreuungWaehrendSchulzeit) {
-		isBetreuungWaehrendSchulzeit = betreuungWaehrendSchulzeit;
+	public void setBetreuungInFerienzeit(boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 }

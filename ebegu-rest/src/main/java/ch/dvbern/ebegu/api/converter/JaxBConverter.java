@@ -2661,6 +2661,7 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setEinkaeufeVorsorge(abstractFinanzielleSituationJAXP.getEinkaeufeVorsorge());
 		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
 		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
+		abstractFinanzielleSituation.setBruttoLohn(abstractFinanzielleSituationJAXP.getBruttoLohn());
 
 		if (abstractFinanzielleSituationJAXP.getSelbstdeklaration() != null) {
 			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
@@ -2714,6 +2715,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setBruttoertraegeVermoegen(persistedAbstractFinanzielleSituation.getBruttoertraegeVermoegen());
 		jaxAbstractFinanzielleSituation.setNettoVermoegen(persistedAbstractFinanzielleSituation.getNettoVermoegen());
 		jaxAbstractFinanzielleSituation.setAbzugSchuldzinsen(persistedAbstractFinanzielleSituation.getAbzugSchuldzinsen());
+		jaxAbstractFinanzielleSituation.setBruttoLohn(persistedAbstractFinanzielleSituation.getBruttoLohn());
 
 		jaxAbstractFinanzielleSituation.setSteuerbaresEinkommen(persistedAbstractFinanzielleSituation.getSteuerbaresEinkommen());
 		jaxAbstractFinanzielleSituation.setSteuerbaresVermoegen(persistedAbstractFinanzielleSituation.getSteuerbaresVermoegen());
@@ -2762,7 +2764,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
 		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
-		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
@@ -2851,7 +2852,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setVeranlagtVorjahr(persistedFinanzielleSituation.getVeranlagtVorjahr());
 
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
-		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
@@ -3578,6 +3578,7 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
 		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
+		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 		return betreuungspensum;
 	}
 
@@ -3623,6 +3624,7 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
 		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
 		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
+		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 
 		return betreuungspensum;
 	}
@@ -3637,6 +3639,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
 		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
+		jaxBetreuungspensum.setBetreuungInFerienzeit(betreuungspensum.getBetreuungInFerienzeit());
 
 		return jaxBetreuungspensum;
 	}
@@ -4111,6 +4114,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
 		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
+		jaxBetreuungspensum.setBetreuungInFerienzeit(betreuungspensum.getBetreuungInFerienzeit());
+
 		return jaxBetreuungspensum;
 	}
 

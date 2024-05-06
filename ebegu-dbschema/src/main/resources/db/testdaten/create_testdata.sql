@@ -84,6 +84,8 @@ UPDATE application_property SET value = '50000' WHERE name = 'LASTENAUSGLEICH_TA
 UPDATE application_property SET value = 'true' WHERE name = 'GEMEINDE_KENNZAHLEN_AKTIV' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'false' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @bern_mandant_id;
+
 
 # Gesuchsperiode
 UPDATE gesuchsperiode SET status = 'INAKTIV' WHERE ID = @gesuchsperiode_19_20;
@@ -116,6 +118,12 @@ INSERT IGNORE INTO berechtigung_history (id, timestamp_erstellt, timestamp_mutie
 INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, externaluuid, nachname, status, username, vorname, mandant_id, bemerkungen, zpv_nummer) VALUES (UNHEX('36949E5EAFA211EEA5AF00155D1D453D'), now(), now(), 'anonymous', 'anonymous', 0, null, 'jean.chambre.be@mailbucket.dvbern.ch', null, 'Chambre', 'AKTIV', 'chje', 'Jean', @bern_mandant_id, null, null);
 INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id, sozialdienst_id) VALUES (UNHEX('3BE07774AFA211EEA5AF00155D1D453D'), now(), now(), 'anonymous', 'anonymous', 0, null, '2024-01-09', '9999-12-31', 'GESUCHSTELLER', UNHEX('36949E5EAFA211EEA5AF00155D1D453D'), null, null, null);
 INSERT IGNORE INTO berechtigung_history (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, geloescht, gemeinden, role, status, username, institution_id, traegerschaft_id, sozialdienst_id) VALUES (UNHEX('3EE78AF5AFA211EEA5AF00155D1D453D'), now(), now(), 'anonymous', 'anonymous', 0, null, '2024-01-09', '9999-12-31', false, '', 'GESUCHSTELLER', 'AKTIV', 'chje', null, null, null);
+
+# Gemeinde Benutzer fuer e2e erstellen
+INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, externaluuid, nachname, status, username, vorname, mandant_id, bemerkungen, zpv_nummer) VALUES (UNHEX('4DBDCFEB5E474A298E92DDEF02F45414'), now(), now(), 'anonymous', 'anonymous', 0, null, 'joerg.keller.be@mailbucket.dvbern.ch', null, 'Keller', 'AKTIV', 'kejo', 'Jörg', @bern_mandant_id, null, null);
+INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id, sozialdienst_id) VALUES (UNHEX('EDB9D98BECFD11EEBD530242AC160002'), now(), now(), 'anonymous', 'anonymous', 0, null, '2024-01-09', '9999-12-31', 'SACHBEARBEITER_BG', UNHEX('4DBDCFEB5E474A298E92DDEF02F45414'), null, null, null);
+INSERT IGNORE INTO berechtigung_gemeinde VALUES (UNHEX('EDB9D98BECFD11EEBD530242AC160002'), @gemeinde_london);
+INSERT IGNORE INTO berechtigung_history (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, geloescht, gemeinden, role, status, username, institution_id, traegerschaft_id, sozialdienst_id) VALUES (UNHEX('6DB3EB58ECFD11EEBD530242AC160002'), '2024-01-09 15:08:10', '2024-01-09 15:08:10', 'anonymous', 'anonymous', 0, null, '2024-01-09', '9999-12-31', false, '', 'SACHBEARBEITER_BG', 'AKTIV', 'kejo', null, null, null);
 
 # Gemeinden Bern und Ostermundigen erstellen, inkl. Adressen und Gemeindestammdaten. Sequenz anpassen
 INSERT IGNORE INTO gemeinde (

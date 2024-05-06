@@ -29,13 +29,13 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KitaTagestrukturenSchwyzRechnerTest {
+class KitaTagestrukturenSchwyzRechnerTest {
 
 	public static final BigDecimal TAGE_100_PROZENT_PENSUM = new BigDecimal("20.50");
 	public static final BigDecimal TAGE_80_PROZENT_PENSUM = new BigDecimal("16.40");
@@ -43,7 +43,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	public static final BigDecimal MINIMALER_ELTERNBEITRAG = new BigDecimal("492.00");
 
 	@Test
-	public void testKind1() {
+	void testKind1() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -65,20 +65,21 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("750.40");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("750.40");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("574.00"), result.getVerguenstigung());
 		assertEquals(MINIMALER_ELTERNBEITRAG, result.getMinimalerElternbeitrag());
 		assertEquals(new BigDecimal("176.40"), result.getMinimalerElternbeitragGekuerzt());
 		assertEquals(new BigDecimal("315.60"), result.getElternbeitrag());
 	}
 
 	@Test
-	public void testKind1HalberMonat() {
+	void testKind1HalberMonat() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -102,13 +103,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
-		var gutschein = new BigDecimal("375.20");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("375.20");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("287.00"), result.getVerguenstigung());
 		assertEquals(
 			new BigDecimal("246.00"),
 			result.getMinimalerElternbeitrag());
@@ -117,7 +119,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind2() {
+	void testKind2() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -140,13 +142,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("558.80");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("558.80");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("558.80"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -155,7 +158,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind3() {
+	void testKind3() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -178,13 +181,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1066.00");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1066.00");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("574.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -193,7 +197,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind4() {
+	void testKind4() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -203,7 +207,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(false);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -217,13 +221,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1788.15");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1788.15");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1640.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -232,7 +237,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind5_MassgebendesEinkommenNaheObergrenze() {
+	void testKind5_MassgebendesEinkommenNaheObergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -242,7 +247,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input
 			.setMassgebendesEinkommenVorAbzugFamgr(parameter.getMaxMassgebendesEinkommen().subtract(BigDecimal.TEN));
 
@@ -258,13 +263,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("0.20");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("0.20");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("0.20"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -273,7 +279,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind6_MassgebendesEinkommenNaheUntergrenze() {
+	void testKind6_MassgebendesEinkommenNaheUntergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -284,7 +290,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		setDefaultInputs(input);
 
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input
 			.setMassgebendesEinkommenVorAbzugFamgr(parameter.getMinMassgebendesEinkommen().add(BigDecimal.TEN));
 
@@ -300,13 +306,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1836.65");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1836.65");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1640.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -315,7 +322,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testKind7_TagestarifTieferAlsNormkosten() {
+	void testKind7_TagestarifTieferAlsNormkosten() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -325,7 +332,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input.setMonatlicheBetreuungskosten(new BigDecimal(2000));
 
 		// when
@@ -340,13 +347,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1677.45");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1677.45");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1508.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -363,16 +371,17 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	private void setDefaultInputs(BGCalculationInput input) {
 		input.setBabyTarif(false);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(true);
+		input.setBetreuungInFerienzeit(false);
 		input.setAnzahlGeschwister(4);
 		input.setBetreuungspensumProzent(new BigDecimal(80));
 		input.setAnspruchspensumProzent(100);
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(50_000));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 		input.setMonatlicheBetreuungskosten(new BigDecimal(20 * 200));
 	}
 
 	@Test
-	public void testCalculateNormkostenForBabyTarif() {
+	void testCalculateNormkostenForBabyTarif() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -390,7 +399,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateNormkostenIfFreiwilligerKindergarten() {
+	void testCalculateNormkostenIfFreiwilligerKindergarten() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -407,7 +416,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateNormkostenIfNotEingeschult() {
+	void testCalculateNormkostenIfNotEingeschult() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -424,14 +433,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateNormkostenIfEingeschultAberAusserhalbDerSchulzeitBetreut() {
+	void testCalculateNormkostenIfEingeschultAberAusserhalbDerSchulzeitBetreut() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -442,14 +451,14 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateNormkostenIfEingeschultAberWaehrendDerSchulzeitBetreut() {
+	void testCalculateNormkostenIfEingeschultAberWaehrendDerSchulzeitBetreut() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(true);
+		input.setBetreuungInFerienzeit(false);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -460,7 +469,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateTagesTarif() {
+	void testCalculateTagesTarif() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 
@@ -477,7 +486,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	public void testCalculateTagesTarifZeroBetreuungstage() {
+	void testCalculateTagesTarifZeroBetreuungstage() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 

@@ -26,7 +26,7 @@ import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import lombok.Value;
 
 @Value
-public class PensumValueMapper implements PensumMapper {
+public class PensumValueMapper implements PensumMapper<AbstractMahlzeitenPensum> {
 
 	private final BigDecimal maxTageProMonat;
 	private final BigDecimal maxStundenProMonat;

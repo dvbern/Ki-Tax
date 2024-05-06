@@ -38,15 +38,13 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hibernate.envers.Audited;
 
 /**
  * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) als BigDecimal,
  * ein DateRange und ein PensumUnits beeinhalten.
  */
 @MappedSuperclass
-@Audited
-public class AbstractDecimalPensum extends AbstractDateRangedEntity {
+public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7136083144964149528L;
 

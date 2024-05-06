@@ -210,6 +210,8 @@ public interface MitteilungService {
 	@Nonnull
 	Mitteilung mitteilungWeiterleiten(@Nonnull String mitteilungId, @Nonnull String userName);
 
+	boolean showSchulergaenzendeBetreuung(@Nonnull Betreuung betreuung);
+
 	/**
 	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt. Wenn
 	 * das Flag includeClosed auf true

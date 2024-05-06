@@ -2936,7 +2936,7 @@
     "EINGEWOEHNUNG": "Est-il prévu que votre enfant bénéficie d’une période d’adaptation dans la structure d’accueil avant le début de votre activité ?",
     "EINGEWOEHNUNG_FKJV": "L’enfant nécessite un temps d’adaptation pour la période concernant cette confirmation de place. ",
     "EINGEWOEHNUNG_HELP": "Veuillez cocher la case mentionnant que l’enfant nécessite un temps d’adaptation s’il n’a pas été pris en charge au sein de votre institution auparavant. Si le temps d’adaptation a commencé lors de la période tarifaire précédente, elle ne peut être validée dans la confirmation de place que si elle n’était pas encore terminée au 1er août. ",
-    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungspauschale",
+    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungskosten in CHF",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX": "Es findet eine Eingewöhnung statt",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO": "Deklarieren Sie hier die Kosten, welche Sie für die Eingewöhnung den Eltern in Rechnung stellen. Wenn Sie keine separaten Kosten für die Eingewöhnung verrechnen, entfernen Sie das Häckchen bei 'Es findet eine Eingewöhnung statt'",
     "NIEDRIGES_BETREUUNGSPENSUM": "En vue de l’intégration linguistique, l’enfant doit en principe être pris en charge à hauteur de 40 % minimum pour obtenir un bon de garde. Veuillez cocher la case mentionnant que le taux de prise en charge minimum n’est pas atteint en raison de vacances ou d’absence pour cause de maladie.",
@@ -3082,6 +3082,7 @@
     "ANGEBOT_MITTAGSTISCH_ENABLED": "Angebot Mittagstisch aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "ABWEICHUNGEN_ENABLED": "Activer les différences",
     "MUTATIONSMELDUNG_BETREFF": "Annonce de changement",
     "VERARBEITET": "verarbeitet",
     "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Messages qui n'ont pas pu être traités en raison d'erreurs :",
@@ -3114,5 +3115,8 @@
     "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
     "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
     "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
+    "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
+    "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der Schulfreienzeit (Ferien) statt",
+    "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

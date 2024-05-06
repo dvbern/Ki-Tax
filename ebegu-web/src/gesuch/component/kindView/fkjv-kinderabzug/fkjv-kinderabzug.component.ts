@@ -31,6 +31,7 @@ import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -105,8 +106,10 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public gemeinsamesGesuchVisible(): boolean {
         return this.kindContainer?.kindJA.obhutAlternierendAusueben &&
             EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.familienErgaenzendeBetreuung) &&
-            EbeguUtil.isNotNullAndTrue(this.gesuchModelManager.getFamiliensituation().geteilteObhut) &&
-            this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+            (this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
+                || this.gesuchModelManager.getFamiliensituation().unterhaltsvereinbarung
+                === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+            );
     }
 
     public inErstausbildungVisible(): boolean {

@@ -21,5 +21,5 @@ export enum OnBeforePriorities {
     DEBUG = 100,
     AUTHENTICATION = 10,
     AUTHORISATION = 9,
-    DUMMY_LOGIN = 8,
+    CONFIGURATION = 8,
 }
