@@ -353,40 +353,13 @@ public class Kind extends AbstractPersonEntity {
 
 		switch (copyType) {
 		case MUTATION:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setPflegekind(this.getPflegekind());
-			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
-			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
-			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
-			target.setInErstausbildung(this.getInErstausbildung());
-			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
-			target.setAlimenteErhalten(this.getAlimenteErhalten());
-			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			copyKindForMutation(target, regelStartDatum);
 			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
-			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
-			target.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(this.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
-			target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setPflegekind(this.getPflegekind());
-			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
-			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
-			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
-			target.setInErstausbildung(this.getInErstausbildung());
-			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
-			target.setAlimenteErhalten(this.getAlimenteErhalten());
-			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
-			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
-			target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			copyKindForMutation(target, regelStartDatum);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
@@ -400,6 +373,24 @@ public class Kind extends AbstractPersonEntity {
 			break;
 		}
 		return target;
+	}
+
+	private void copyKindForMutation(@Nonnull Kind target, @Nonnull LocalDate regelStartDatum) {
+		target.setEinschulungTyp(this.getEinschulungTyp());
+		target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+		target.setPflegekind(this.getPflegekind());
+		target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+		target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+		target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+		target.setInErstausbildung(this.getInErstausbildung());
+		target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+		target.setAlimenteErhalten(this.getAlimenteErhalten());
+		target.setAlimenteBezahlen(this.getAlimenteBezahlen());
+		target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
+		target.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(this.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
+		target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum));
 	}
 
 	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
