@@ -17,18 +17,17 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import org.hibernate.envers.Audited;
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+
+import ch.dvbern.ebegu.enums.AntragCopyType;
 
 @MappedSuperclass
-@Audited
-public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
+public abstract class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 
 	private static final long serialVersionUID = 7183887010325524679L;
 

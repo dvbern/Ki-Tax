@@ -22,35 +22,50 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.containers.PensumUtil;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 
 @FunctionalInterface
-public interface PensumMapper {
+public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 
 	/**
 	 * read a @{link ZeitabschnittDTO} and write the values to the @{link AbstractMahlzeitenPensum}
 	 */
-	void toAbstractMahlzeitenPensum(@Nonnull AbstractMahlzeitenPensum target, @Nonnull ZeitabschnittDTO zeitabschnittDTO);
+	void toAbstractMahlzeitenPensum(@Nonnull T target, @Nonnull ZeitabschnittDTO zeitabschnittDTO);
 
+	@SafeVarargs
 	@Nonnull
-	static PensumMapper combine(@Nonnull PensumMapper... mappers) {
+	static <T extends AbstractMahlzeitenPensum> PensumMapper<T> combine(@Nonnull PensumMapper<? super T>... mappers) {
 		return (target, zeitabschnittDTO) -> Arrays.stream(mappers)
 			.forEach(m -> m.toAbstractMahlzeitenPensum(target, zeitabschnittDTO));
 	}
 
-	PensumMapper GUELTIGKEIT_MAPPER = (target, zeitabschnittDTO) -> {
+	static <T extends AbstractMahlzeitenPensum> PensumMapper<T> nop() {
+		return (target, zeitabschnittDTO) -> {
+		};
+	}
+
+	PensumMapper<AbstractMahlzeitenPensum> GUELTIGKEIT_MAPPER = (target, zeitabschnittDTO) -> {
 		target.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
 	};
 
-	PensumMapper KOSTEN_MAPPER = (target, zeitabschnittDTO) ->
+	PensumMapper<AbstractMahlzeitenPensum> KOSTEN_MAPPER = (target, zeitabschnittDTO) ->
 		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 
-	PensumMapper MITTAGSTISCH_MAPPER = (target, zeitabschnittDTO) -> {
-		GUELTIGKEIT_MAPPER.toAbstractMahlzeitenPensum(target, zeitabschnittDTO);
-		target.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
-		target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		PensumUtil.transformMittagstischPensum(target);
+	PensumMapper<AbstractMahlzeitenPensum> EINGEWOEHNUNG_PAUSCHALE_MAPPER = (target, zeitabschnittDTO) -> {
+		EingewoehnungDTO eingewoehnung = zeitabschnittDTO.getEingewoehnung();
+		if (eingewoehnung == null) {
+			target.setEingewoehnungPauschale(null);
+
+			return;
+		}
+
+		EingewoehnungPauschale pauschale = new EingewoehnungPauschale();
+		pauschale.setPauschale(eingewoehnung.getPauschale());
+		pauschale.getGueltigkeit().setGueltigAb(eingewoehnung.getVon());
+		pauschale.getGueltigkeit().setGueltigBis(eingewoehnung.getBis());
+		target.setEingewoehnungPauschale(pauschale);
 	};
 }
