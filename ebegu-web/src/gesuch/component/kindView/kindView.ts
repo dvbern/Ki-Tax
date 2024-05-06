@@ -123,6 +123,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private fachstellenPensumOverlapsMessageKey: string = undefined;
     private sozialeIntegrationBisSchulstufe: TSEinschulungTyp;
     private sprachlicheIntegrationBisSchulstufe: TSEinschulungTyp;
+    private isHoehereBeitraegeBeeintraechtigungAktiviert = false;
 
     private readonly unsubscribe$ = new Subject();
 
@@ -527,6 +528,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 this.loadEinstellungAusserordentlicherAnspruchTyp(einstellungen);
                 this.loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen);
                 this.loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen);
+                this.loadEinstellungHoehereBeitraegeBeeintraechtigung(einstellungen);
             }, error => LOG.error(error));
     }
 
@@ -595,6 +597,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.sprachlicheIntegrationBisSchulstufe = this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
     }
 
+    private loadEinstellungHoehereBeitraegeBeeintraechtigung(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT);
+        this.isHoehereBeitraegeBeeintraechtigungAktiviert = einstellung.getValueAsBoolean();
+    }
+
     public isEinschulungTypObligatorischerKindergarten(): boolean {
         return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
     }
@@ -657,5 +665,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             }
         }
         return errors;
+    }
+
+    public showHoehereBetraegeBeeintraechtigung(): boolean {
+        return this.isHoehereBeitraegeBeeintraechtigungAktiviert;
     }
 }
