@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
@@ -20,7 +20,7 @@ const LOG = LogFactory.createLog('FamiliensituationSchwyzComponent');
     templateUrl: './familiensituation-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionView {
+export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionView implements OnInit {
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,

@@ -13,13 +13,14 @@
         "createDefaultProgram": false
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "plugins": [
         "eslint-plugin-rxjs",
-        "eslint-plugin-jsdoc"
+        "eslint-plugin-jsdoc",
+        "@typescript-eslint",
+        "import"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
@@ -37,17 +38,43 @@
             "style": "camelCase"
           }
         ],
+        "@angular-eslint/no-empty-lifecycle-method": "off",
         "prefer-const": "error",
-        "no-console": "error",
+        "no-console": [
+          "error",
+          {
+            "allow": [
+              "log",
+              "warn",
+              "dir",
+              "timeLog",
+              "assert",
+              "clear",
+              "count",
+              "countReset",
+              "group",
+              "groupEnd",
+              "table",
+              "dirxml",
+              "error",
+              "groupCollapsed",
+              "Console",
+              "profile",
+              "profileEnd",
+              "timeStamp",
+              "context"
+            ]
+          }
+        ],
         "arrow-body-style": [
           "error",
           "as-needed"
         ],
-        "@angular-eslint/prefer-output-readonly": "error",
+        "@angular-eslint/prefer-output-readonly": "warn",
         "@typescript-eslint/no-unused-expressions": "error",
         "@angular-eslint/no-host-metadata-property": "error",
         "@angular-eslint/no-forward-ref": "error",
-        "@angular-eslint/no-output-on-prefix": "error",
+        "@angular-eslint/no-output-on-prefix": "off",
         "@angular-eslint/directive-class-suffix": "error",
         "@angular-eslint/use-lifecycle-interface": "error",
         "@angular-eslint/component-class-suffix": "error",
