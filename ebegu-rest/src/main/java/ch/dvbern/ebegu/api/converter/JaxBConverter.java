@@ -2314,6 +2314,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
 		jaxKind.setInPruefung(persistedKind.getInPruefung());
 		jaxKind.setUnterhaltspflichtig(persistedKind.getUnterhaltspflichtig());
+		jaxKind.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(persistedKind.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		jaxKind.setHoehereBeitraegeUnterlagenDigital(persistedKind.getHoehereBeitraegeUnterlagenDigital());
 		return jaxKind;
 	}
 
@@ -2483,6 +2485,8 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 		kind.setZukunftigeGeburtsdatum(kindJAXP.getZukunftigeGeburtsdatum());
 		kind.setInPruefung(kindJAXP.getInPruefung());
+		kind.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(kindJAXP.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		kind.setHoehereBeitraegeUnterlagenDigital(kindJAXP.getHoehereBeitraegeUnterlagenDigital());
 		return kind;
 	}
 

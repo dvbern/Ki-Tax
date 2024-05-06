@@ -2463,6 +2463,8 @@ export class EbeguRestUtil {
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
         restKind.unterhaltspflichtig = kind.unterhaltspflichtig;
+        restKind.hoehereBeitraegeWegenBeeintraechtigungBeantragen = kind.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+        restKind.hoehereBeitraegeUnterlagenDigital = kind.hoehereBeitraegeUnterlagenDigital;
         if (kind.pensumFachstellen) {
             restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
@@ -2539,6 +2541,9 @@ export class EbeguRestUtil {
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
             kindTS.unterhaltspflichtig = kindFromServer.unterhaltspflichtig;
+            kindTS.hoehereBeitraegeWegenBeeintraechtigungBeantragen =
+                kindFromServer.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+            kindTS.hoehereBeitraegeUnterlagenDigital = kindFromServer.hoehereBeitraegeUnterlagenDigital;
             if (kindFromServer.pensumFachstellen) {
                 kindTS.pensumFachstellen =
                     this.parsePensumFachstellen(kindFromServer.pensumFachstellen);

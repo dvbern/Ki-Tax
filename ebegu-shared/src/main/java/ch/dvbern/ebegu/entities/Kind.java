@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -115,6 +116,7 @@ public class Kind extends AbstractPersonEntity {
 	@Nonnull
 	private Boolean keinPlatzInSchulhort = false;
 
+
 	@Valid
 	@Nonnull
 	@OneToMany(mappedBy = "kind", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -148,6 +150,13 @@ public class Kind extends AbstractPersonEntity {
 	@Column(nullable = true)
 	@Nullable
 	private Boolean unterhaltspflichtig;
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen = false;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean hoehereBeitraegeUnterlagenDigital;
 
 	public Kind() {
 	}
@@ -358,6 +367,8 @@ public class Kind extends AbstractPersonEntity {
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
 			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
+			target.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(this.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+			target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -374,6 +385,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteErhalten(this.getAlimenteErhalten());
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
+			target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
@@ -448,6 +460,12 @@ public class Kind extends AbstractPersonEntity {
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
 			Objects.equals(getUnterhaltspflichtig(), otherKind.getUnterhaltspflichtig()) &&
+			Objects.equals(
+				getHoehereBeitraegeWegenBeeintraechtigungBeantragen(),
+				otherKind.hoehereBeitraegeWegenBeeintraechtigungBeantragen) &&
+			Objects.equals(
+				getHoehereBeitraegeUnterlagenDigital(),
+				otherKind.hoehereBeitraegeUnterlagenDigital) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			sameFachstellen &&
 			EbeguUtil.isSame(
@@ -497,5 +515,23 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setUnterhaltspflichtig(@Nullable Boolean unterhaltspflichtig) {
 		this.unterhaltspflichtig = unterhaltspflichtig;
+	}
+
+	public Boolean getHoehereBeitraegeWegenBeeintraechtigungBeantragen() {
+		return hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	public void setHoehereBeitraegeWegenBeeintraechtigungBeantragen(
+		Boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen) {
+		this.hoehereBeitraegeWegenBeeintraechtigungBeantragen = hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	@Nullable
+	public Boolean getHoehereBeitraegeUnterlagenDigital() {
+		return hoehereBeitraegeUnterlagenDigital;
+	}
+
+	public void setHoehereBeitraegeUnterlagenDigital(@Nullable Boolean hoehereBeitraegeUnterlagenDigital) {
+		this.hoehereBeitraegeUnterlagenDigital = hoehereBeitraegeUnterlagenDigital;
 	}
 }
