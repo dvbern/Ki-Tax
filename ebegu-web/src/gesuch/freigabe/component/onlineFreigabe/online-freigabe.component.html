@@ -28,9 +28,12 @@
     </article>
 
     <div class="row col-md-12 margin-bottom-30">
+        <section *ngIf="showReason()" class="well well-status-warten">
+            {{ getReason() | translate }}
+        </section>
         <form>
             <dv-checkbox-x
-                [readonly]="freigegeben"
+                [readonly]="checkboxDisabled()"
                 [displayBisher]="false"
                 [(model)]="model.userConfirmedCorrectness"
                 [label]="'ONLINEFREIGABE_CONFIRMATION_LABEL'"/>

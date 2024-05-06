@@ -24,6 +24,7 @@ import {TSFreigabe} from '../../../../models/TSFreigabe';
 import {AbstractGesuchViewX} from '../../../component/abstractGesuchViewX';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
+import {FreigabeService} from '../../freigabe.service';
 
 interface Model {
     userConfirmedCorrectness: boolean;
@@ -34,26 +35,27 @@ const STEP_NAME = TSWizardStepName.FREIGABE;
 @Component({
     templateUrl: './online-freigabe.component.html',
     selector: 'dv-online-freigabe',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
-    public freigegeben: boolean;
+    public alreadyFreigegeben: boolean;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
         wizardStepManager: WizardStepManager,
+        protected readonly freigabeService: FreigabeService,
     ) {
         super(gesuchModelManager, wizardStepManager, STEP_NAME);
 
         const unbesucht = wizardStepManager.getStepByName(STEP_NAME).wizardStepStatus === TSWizardStepStatus.UNBESUCHT;
-        this.freigegeben = isAtLeastFreigegeben(gesuchModelManager.getGesuch().status);
-        this.model = {userConfirmedCorrectness: this.freigegeben};
+        this.alreadyFreigegeben = isAtLeastFreigegeben(gesuchModelManager.getGesuch().status);
+        this.model = {userConfirmedCorrectness: this.alreadyFreigegeben};
 
-        if (!this.freigegeben && unbesucht) {
+        if (!this.alreadyFreigegeben && unbesucht) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
                 TSWizardStepStatus.IN_BEARBEITUNG);
-        } else if (this.freigegeben) {
+        } else if (this.alreadyFreigegeben) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
                 TSWizardStepStatus.OK);
@@ -78,6 +80,23 @@ export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
     }
 
     public freigebenButtonDisabled() {
-        return !this.model.userConfirmedCorrectness || this.freigegeben;
+        return !this.model.userConfirmedCorrectness || this.alreadyFreigegeben || this.cannotBeFreigegeben();
     }
+
+    public checkboxDisabled() {
+        return this.alreadyFreigegeben || this.cannotBeFreigegeben();
+    }
+
+    public getReason(): string {
+        return this.freigabeService.getTextForFreigebenNotAllowed();
+    }
+
+    public showReason(): boolean {
+        return this.cannotBeFreigegeben() && !this.alreadyFreigegeben;
+    }
+
+    public cannotBeFreigegeben(): boolean {
+        return !this.freigabeService.canBeFreigegeben();
+    }
+
 }

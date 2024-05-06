@@ -34,6 +34,7 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
+import {FreigabeService} from '../../freigabe/component/freigabe.service';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
@@ -66,7 +67,8 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'EinstellungRS'
+        'EinstellungRS',
+        'FreigabeService'
     ];
 
     public isFreigebenClicked: boolean = false;
@@ -86,7 +88,8 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
         private readonly $translate: TranslateService,
-        private readonly einstellungService: EinstellungRS
+        private readonly einstellungService: EinstellungRS,
+        private readonly freigabeService: FreigabeService
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
@@ -196,34 +199,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public getTextForFreigebenNotAllowed(): string {
-        const gesuch = this.gesuchModelManager.getGesuch();
-        if (gesuch && gesuch.gesperrtWegenBeschwerde) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT';
-        }
-        if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
-        }
-        if (gesuch && gesuch.hasProvisorischeBetreuungen()) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_PROVISORISCHE_BETREUUNG_TEXT';
-        }
-
-        return 'FREIGABEQUITTUNG_NOT_ALLOWED_TEXT';
+        return this.freigabeService.getTextForFreigebenNotAllowed();
     }
 
-    /**
-     * Die Methodes wizardStepManager.areAllStepsOK() erlaubt dass die Betreuungen in Status PLATZBESTAETIGUNG sind
-     * aber in diesem Fall duerfen diese nur OK sein, deswegen die Frage extra. Ausserdem darf es nur freigegebn werden
-     * wenn es nicht in ReadOnly modus ist
-     */
     public canBeFreigegeben(): boolean {
-        return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
-            this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
-            && !this.isGesuchReadonly()
-            && (this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-                || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST))
-            && (!this.gesuchModelManager.getFall().isSozialdienstFall()
-                || (this.gesuchModelManager.getFall().isSozialdienstFall()
-                    && this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV));
+        return this.freigabeService.canBeFreigegeben();
     }
 
     public isNotFreigegeben(): boolean {
