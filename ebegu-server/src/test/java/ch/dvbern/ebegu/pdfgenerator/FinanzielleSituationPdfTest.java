@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -79,7 +80,9 @@ import static org.hamcrest.Matchers.stringContainsInOrder;
 class FinanzielleSituationPdfTest {
 
 	private static final String PATH_PREFIX = FileUtils.getTempDirectoryPath() + "/kiBon/FinanzielleSituation/";
+	private static final Pattern PATTERN = Pattern.compile("\\r");
 
+	@SuppressWarnings({ "unused", "InstanceVariableMayNotBeInitialized" })
 	private Expect expect;
 
 	@BeforeAll
@@ -141,6 +144,7 @@ class FinanzielleSituationPdfTest {
 		@Nested
 		class WhenSingleGesuchsteller {
 
+			@SuppressWarnings({ "unused", "InstanceVariableMayNotBeInitialized", "InnerClassFieldHidesOuterClassField" })
 			private Expect expect;
 
 			@SnapshotName("finsit-schwyz-single-veranlagt")
@@ -204,6 +208,7 @@ class FinanzielleSituationPdfTest {
 		@Nested
 		class WhenMultipleGesuchsteller {
 
+			@SuppressWarnings({ "unused", "InstanceVariableMayNotBeInitialized", "InnerClassFieldHidesOuterClassField" })
 			private Expect expect;
 
 			@SnapshotName("finsit-schwyz-gemeinsam-veranlagt")
@@ -292,6 +297,17 @@ class FinanzielleSituationPdfTest {
 					BigDecimal.valueOf(2_000)
 				);
 				ekv1.setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
+
+				EinkommensverschlechterungContainer ekv2 =
+					addEinkommensVerschlechterung(requireNonNull(gesuch.getGesuchsteller2()));
+
+				Einkommensverschlechterung ekv2JABasisJahrPlus1 = new Einkommensverschlechterung();
+				ekv2JABasisJahrPlus1.setBruttoLohn(BigDecimal.valueOf(70_000));
+				ekv2.setEkvJABasisJahrPlus1(ekv2JABasisJahrPlus1);
+
+				Einkommensverschlechterung ekv2JABasisJahrPlus2 = new Einkommensverschlechterung();
+				ekv2JABasisJahrPlus2.setBruttoLohn(BigDecimal.valueOf(74_000));
+				ekv2.setEkvJABasisJahrPlus2(ekv2JABasisJahrPlus2);
 
 				EinkommensverschlechterungInfoContainer infoContainer = new EinkommensverschlechterungInfoContainer();
 				EinkommensverschlechterungInfo info = new EinkommensverschlechterungInfo();
@@ -441,6 +457,7 @@ class FinanzielleSituationPdfTest {
 
 	@Nonnull
 	private String textForSnapshot(String text) {
-		return text.replaceAll(Constants.DATE_FORMATTER.format(LocalDate.now()), "<TODAY>").replaceAll("\\r", "");
+		return PATTERN.matcher(text.replaceAll(Constants.DATE_FORMATTER.format(LocalDate.now()), "<TODAY>"))
+			.replaceAll("");
 	}
 }
