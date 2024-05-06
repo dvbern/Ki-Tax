@@ -23,7 +23,7 @@ public class OIDCTokenManagerBean {
 	public OIDCToken getValidOICDToken() throws OIDCServiceException {
 		if (currentToken == null || currentToken.isExpired()) {
 			if(currentToken != null) {
-				LOG.warn("There is an invalid Token: {}", currentToken.toString());
+				LOG.warn("There is an invalid Token: {}", currentToken);
 			}
 			issueOICDToken();
 		}
