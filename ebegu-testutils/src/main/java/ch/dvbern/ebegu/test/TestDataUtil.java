@@ -244,6 +244,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2;
+import static ch.dvbern.ebegu.enums.EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
@@ -2071,6 +2072,7 @@ public final class TestDataUtil {
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
 		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode, persistence);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
