@@ -17,32 +17,31 @@
 
 import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSFreigabe} from '../../../models/TSFreigabe';
-import {DateUtil} from '../../../utils/DateUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../../app/core/service/downloadRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSFreigabe} from '../../../../models/TSFreigabe';
+import {DateUtil} from '../../../../utils/DateUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
-import {FreigabeService} from '../../freigabe/component/freigabe.service';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {FreigabeService} from '../../freigabe.service';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../component/abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const dialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
 const LOG = LogFactory.createLog('FreigabeViewComponent');
 

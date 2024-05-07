@@ -118,7 +118,7 @@ import {finSitSchwyzRun} from './component/finanzielleSituation/schwyz/fin-sit-s
 import {
     FinanzielleSituationStartSolothurnComponent
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
-import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
+import {FreigabeViewComponentConfig} from './freigabe/component/freigabeView/freigabeView';
 import {
     InternePendenzDialogComponent
 } from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
