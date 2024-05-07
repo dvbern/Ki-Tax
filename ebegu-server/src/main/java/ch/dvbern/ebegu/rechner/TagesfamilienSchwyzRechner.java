@@ -25,48 +25,73 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
-public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
+public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 
-	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT = new BigDecimal(65);
-	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(100);
+	static final BigDecimal TFO_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT = new BigDecimal("3.60");
+	static final BigDecimal TFO_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(6);
+	static final BigDecimal VERMITTLUNGSGEBUEHR = new BigDecimal(4);
 
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(
 		BGRechnerParameterDTO parameterDTO,
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
-		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageKita());
+		BigDecimal tageProZeitAbschnitt = toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageTFO());
+		return EXACT.multiply(tageProZeitAbschnitt, parameterDTO.getOeffnungsstundenTFO());
 	}
 
 	@Override
 	protected BigDecimal getMinimalTarif(BGRechnerParameterDTO parameterDTO) {
-		return parameterDTO.getMinVerguenstigungProTg();
+		return parameterDTO.getMinVerguenstigungProStd();
 	}
 
 	@Override
 	protected PensumUnits getZeiteinheit() {
-		return PensumUnits.DAYS;
+		return PensumUnits.HOURS;
 	}
 
 	@Override
 	protected BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameter) {
+		BigDecimal normkostenOhneVermittlungsGebuehr = getNormkostenOhneVermittlungsGebuehr(input, parameter);
+		var vermittlungsGebuehr = getVermittlungsKosten(input, parameter);
+		return EXACT.add(normkostenOhneVermittlungsGebuehr, vermittlungsGebuehr);
+	}
+
+	protected BigDecimal getNormkostenOhneVermittlungsGebuehr(BGCalculationInput input, BGRechnerParameterDTO parameter) {
 		if (input.isBabyTarif()) {
-			return parameter.getMaxVerguenstigungVorschuleBabyProTg();
+			return parameter.getMaxVerguenstigungVorschuleBabyProStd();
 		}
 
 		var eingeschult = input.getEinschulungTyp() != null && input.getEinschulungTyp().isEingeschult();
 
 		if (!eingeschult) {
-			return parameter.getMaxVerguenstigungVorschuleKindProTg();
+			return parameter.getMaxVerguenstigungVorschuleKindProStd();
 		}
 
 		var betreuungInFerienzeit = input.isBetreuungInFerienzeit();
 
 		if (Boolean.TRUE.equals(betreuungInFerienzeit)) {
-			return KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT;
+			return TFO_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT;
 		}
 
-		return KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT;
+		return TFO_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT;
+	}
+
+	protected BigDecimal getVermittlungsKosten(BGCalculationInput input, BGRechnerParameterDTO parameter) {
+		if (input.getAnwesenheitsTageProMonat().compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+		return EXACT.multiply(EXACT.divide(
+			input.getAnwesenheitsTageProMonat(),
+			calculateEffektiveBetreuungsStundenProMonat(input, parameter)), VERMITTLUNGSGEBUEHR);
+	}
+
+	private BigDecimal calculateEffektiveBetreuungsStundenProMonat(BGCalculationInput input, BGRechnerParameterDTO parameter) {
+		BigDecimal oeffnungsTageProMonat = EXACT.divide(parameter.getOeffnungstageTFO(), BigDecimal.valueOf(12));
+		return EXACT.multiply(
+			oeffnungsTageProMonat,
+			parameter.getOeffnungsstundenTFO(),
+			EXACT.pctToFraction(input.getBetreuungspensumProzent()));
 	}
 
 	@Override
