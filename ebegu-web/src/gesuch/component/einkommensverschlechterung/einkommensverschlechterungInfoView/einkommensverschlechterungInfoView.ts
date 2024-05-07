@@ -154,7 +154,7 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showJahrPlus2(): boolean {
-        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
+        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
     }
 
     private hasMandantOnlyEKVBasisJahr(): boolean {
@@ -366,9 +366,9 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showAblehnungBasisJahrPlus2(): boolean {
-        return (!this.isAmt() && this.showEkvi() && this.showJahrPlus2()
+        return (!this.isAmt() && this.showJahrPlus2() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2
                 && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert && this.isGesuchFreigegeben())
-            || (this.isAmt() && this.showEkvi() && this.showJahrPlus2());
+            || (this.isAmt() && this.showJahrPlus2() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2);
     }
 
     public isFinanzielleSituationRequired(): boolean {

@@ -48,53 +48,11 @@ public enum EinschulungTyp {
 		this.ordinalitaet = ordinalitaet;
 	}
 
-	public static List<EinschulungTyp> getListBern() {
-		return List.of(
-				VORSCHULALTER,
-				KINDERGARTEN1,
-				KINDERGARTEN2,
-				KLASSE1,
-				KLASSE2,
-				KLASSE3,
-				KLASSE4,
-				KLASSE5,
-				KLASSE6,
-				KLASSE7,
-				KLASSE8,
-				KLASSE9
-		);
-
-	}
-
-	public static List<EinschulungTyp> getListLuzern() {
-		return List.of(
-				VORSCHULALTER,
-				FREIWILLIGER_KINDERGARTEN,
-				OBLIGATORISCHER_KINDERGARTEN,
-			    PRIMAR_SEKUNDAR_STUFE
-		);
-
-	}
-
-	public static List<EinschulungTyp> getListAR() {
-		return List.of(
-				VORSCHULALTER,
-				KLASSE1
-		);
-	}
-
-	public static List<EinschulungTyp> getListSZ() {
-		return List.of(
-			VORSCHULALTER,
-			PRIMARSTUFE,
-			SEKUNDAR_UND_HOEHER_STUFE
-		);
-	}
-
 	public boolean isEingeschult() {
 		return this != VORSCHULALTER && this != FREIWILLIGER_KINDERGARTEN;
 	}
 
+	// oh mann...
 	public boolean isEingeschultAppenzell() {
 		return this.getOrdinalitaet() >= 1;
 	}
