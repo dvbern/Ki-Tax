@@ -164,6 +164,7 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		target.setDiplomatenstatus(this.isDiplomatenstatus());
 		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
 		target.setZpvNummer(this.getZpvNummer());
+		target.setSozialversicherungsnummer(this.getSozialversicherungsnummer());
 		return target;
 	}
 

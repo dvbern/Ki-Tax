@@ -107,9 +107,13 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	}
 
 	@Override
-	public Gesuchsteller createGesuchsteller(String name, String vorname) {
-		Gesuchsteller gesuchsteller = super.createGesuchsteller(name, vorname);
-		gesuchsteller.setSozialversicherungsnummer("756.1234.5678.97");
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = super.createGesuchsteller(name, vorname, gesuchstellerNumber);
+		if (gesuchstellerNumber == 1) {
+			gesuchsteller.setSozialversicherungsnummer("756.1234.5678.97");
+		} else {
+			gesuchsteller.setSozialversicherungsnummer("756.1238.5678.93");
+		}
 		return gesuchsteller;
 	}
 }

@@ -56,7 +56,7 @@ public class Testfall_ASIV_01 extends AbstractASIVTestfall {
 	public Gesuch createErstgesuch() {
 		// Gesuch, Gesuchsteller
 		Gesuch erstgesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		erstgesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);
@@ -86,7 +86,7 @@ public class Testfall_ASIV_01 extends AbstractASIVTestfall {
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		// Gesuch, Gesuchsteller
 		Gesuch mutation = createVerheiratet(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15));
-		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(2);
 		mutation.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);

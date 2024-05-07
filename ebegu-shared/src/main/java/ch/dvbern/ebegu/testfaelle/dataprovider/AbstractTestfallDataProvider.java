@@ -111,7 +111,7 @@ public abstract class AbstractTestfallDataProvider {
 		return erwerbspensum;
 	}
 
-	public Gesuchsteller createGesuchsteller(String name, String vorname) {
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
 		Gesuchsteller gesuchsteller = new Gesuchsteller();
 		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
 		gesuchsteller.setNachname(name);

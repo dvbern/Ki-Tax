@@ -1911,12 +1911,4 @@ export class GesuchModelManager {
             this.getGesuch()
         ) && EbeguUtil.isNullOrUndefined(this.getGesuch().gesuchsteller2);
     }
-
-    public getsozialversicherungsnummer(): string {
-        return this._sozialversicherungsnummer;
-    }
-
-    public setsozialversicherungsnummer(value: string) {
-        this._sozialversicherungsnummer = value;
-    }
 }

@@ -20,7 +20,7 @@ public class CheckAhvFormatValidator implements ConstraintValidator<CheckAhvForm
 		String startDigits = "756";
 		int relevantDigitsSum = 0;
 		List<Integer> digits = new ArrayList<>();
-		for (char c : s.replace("\\.", "").toCharArray()) {
+		for (char c : s.replace(".", "").toCharArray()) {
 			digits.add(Integer.parseInt(String.valueOf(c)));
 		}
 

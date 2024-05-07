@@ -16,16 +16,13 @@ public class CheckAhvGesuchstellerValidator implements ConstraintValidator<Check
 
 	@Override
 	public boolean isValid(Gesuch gesuch, ConstraintValidatorContext constraintValidatorContext) {
-		if (gesuch.getGesuchsteller2() == null || gesuch.getGesuchsteller1() == null) {
+		if (gesuch.getGesuchsteller2() == null || gesuch.getGesuchsteller1() == null ||
+			gesuch.getGesuchsteller2().getGesuchstellerJA().getSozialversicherungsnummer() == null) {
 			return true;
 		}
 
-		if (gesuch.getGesuchsteller2().getGesuchstellerJA().getSozialversicherungsnummer() != null) {
-			return !Objects.equals(gesuch.getGesuchsteller2().getGesuchstellerJA().getSozialversicherungsnummer(),
+		return !Objects.equals(gesuch.getGesuchsteller2().getGesuchstellerJA().getSozialversicherungsnummer(),
 				gesuch.getGesuchsteller1().getGesuchstellerJA().getSozialversicherungsnummer());
-		} else {
-			return true;
-		}
 	}
 }
 
