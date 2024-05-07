@@ -128,7 +128,6 @@ export class GesuchModelManager {
     public numberInternePendenzen: number;
     public hasAbgelaufenePendenz: boolean;
     public isFKJVTexte: boolean;
-    private _sozialversicherungsnummer: string;
 
     public ewkResultat: TSEWKResultat;
 
