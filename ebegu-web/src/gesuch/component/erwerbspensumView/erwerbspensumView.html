@@ -151,7 +151,7 @@
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-small" ng-if="vm.wegzeitRequiredEinstellung">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float">
                                     <span data-translate="WEGZEIT" for="wegzeit"></span>
@@ -165,7 +165,9 @@
                                           maxlength="200"
                                           rows="2">
                                 </textarea>
-
+                                <dv-bisher gs="vm.model.erwerbspensumGS.wegzeit"
+                                           ja="vm.model.erwerbspensumJA.wegzeit"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                             </dv-input-container>
                         </div>
                     </div>

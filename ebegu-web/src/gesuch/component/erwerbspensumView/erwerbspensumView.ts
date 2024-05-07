@@ -250,10 +250,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id).subscribe(wegzeitRequired => {
                 this.wegzeitRequiredEinstellung = wegzeitRequired.value === 'true';
-
-                if (!this.wegzeitRequiredEinstellung) {
-                    return;
-                }
         }, errorWegzeit => LOG.error(errorWegzeit));
     }
 }
