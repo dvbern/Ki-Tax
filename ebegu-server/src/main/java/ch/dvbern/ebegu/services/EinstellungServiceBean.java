@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -60,6 +59,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /**
  * Service fuer Einstellungen
@@ -82,6 +82,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
+	@CanIgnoreReturnValue
 	public Einstellung saveEinstellung(@Nonnull Einstellung einstellung) {
 		Objects.requireNonNull(einstellung);
 		authorizer.checkWriteAuthorization(einstellung);
@@ -434,8 +435,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		return sorted;
 	}
 
+	@Override
 	public Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {
-		Map<EinstellungKey, Einstellung> ebeguRuleParameters = new HashMap<>();
+		Map<EinstellungKey, Einstellung> ebeguRuleParameters = new EnumMap<>(EinstellungKey.class);
 		keysToLoad.forEach(currentParamKey -> {
 			Einstellung einstellung = findEinstellung(currentParamKey, gemeinde, gesuchsperiode);
 			ebeguRuleParameters.put(einstellung.getKey(), einstellung);

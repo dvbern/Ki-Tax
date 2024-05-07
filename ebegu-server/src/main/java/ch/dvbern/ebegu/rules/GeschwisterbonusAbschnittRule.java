@@ -45,7 +45,7 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts = new ArrayList<>();
 
 		if (!kindCouldHaveBG(platz.getKind().getKindJA())) {

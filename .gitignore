@@ -46,6 +46,7 @@ ebegu-ws/src/test/
 /ebegu-dbschema/_dbNachher.sql
 /ebegu-dbschema/_dbVorher.sql
 
+*.snap.debug
 .flattened-pom.xml
 .scannerwork
 

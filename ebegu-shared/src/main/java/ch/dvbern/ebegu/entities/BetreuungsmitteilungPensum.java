@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -42,7 +41,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @AssociationOverride(name = "eingewoehnungPauschale",
 	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pensum_eingewoehnung_pauschale_id"))
-public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum implements Comparable<BetreuungsmitteilungPensum> {
+public class BetreuungsmitteilungPensum extends AbstractBetreuungsPensum implements Comparable<BetreuungsmitteilungPensum> {
 
 	private static final long serialVersionUID = -9032858720574672370L;
 
@@ -56,10 +55,6 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean betreuungInFerienzeit;
 
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
@@ -77,15 +72,6 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 
 	public void setBetreuungspensumAbweichung(@Nullable BetreuungspensumAbweichung betreuungspensumAbweichung) {
 		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
-	}
-
-	@Nullable
-	public Boolean getBetreuungInFerienzeit() {
-		return betreuungInFerienzeit;
-	}
-
-	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
-		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 
 	@Override

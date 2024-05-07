@@ -17,10 +17,10 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.types.DateRange;
@@ -34,19 +34,11 @@ public class ProcessingContext {
 	private final BetreuungEventDTO dto;
 	@Nonnull
 	private final DateRange gueltigkeitInPeriode;
-	private final boolean mahlzeitVerguenstigungEnabled;
-
 	@Nonnull
 	private final EventMonitor eventMonitor;
 
 	@Nonnull
-	private final BigDecimal maxTageProMonat;
-
-	@Nonnull
-	private final BigDecimal maxStundenProMonat;
-
-	@Nullable
-	private String humanConfirmationMessage = null;
+	private final Set<String> humanConfirmationMessages = new HashSet<>();
 
 	private boolean isReadyForBestaetigen = true;
 
@@ -56,16 +48,12 @@ public class ProcessingContext {
 		@Nonnull Betreuung betreuung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
-		boolean mahlzeitVerguenstigungEnabled,
 		@Nonnull EventMonitor eventMonitor,
-		@Nonnull BigDecimal maxTageProMonat, @Nonnull BigDecimal maxStundenProMonat, boolean singleClientForPeriod) {
+		boolean singleClientForPeriod) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
-		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
 		this.eventMonitor = eventMonitor;
-		this.maxTageProMonat = maxTageProMonat;
-		this.maxStundenProMonat = maxStundenProMonat;
 		this.singleClientForPeriod = singleClientForPeriod;
 	}
 
@@ -88,10 +76,6 @@ public class ProcessingContext {
 		return gueltigkeitInPeriode;
 	}
 
-	public boolean isMahlzeitVerguenstigungEnabled() {
-		return mahlzeitVerguenstigungEnabled;
-	}
-
 	public boolean isGueltigkeitCoveringPeriode() {
 		return gueltigkeitInPeriode.equals(betreuung.extractGesuchsperiode().getGueltigkeit());
 	}
@@ -100,23 +84,13 @@ public class ProcessingContext {
 		return isReadyForBestaetigen;
 	}
 
-	@Nullable
-	public String getHumanConfirmationMessage() {
-		return humanConfirmationMessage;
-	}
-
-	public void setHumanConfirmationMessage(@Nullable String humanConfirmationMessage) {
-		this.humanConfirmationMessage = humanConfirmationMessage;
-	}
-
 	@Nonnull
-	public BigDecimal getMaxTageProMonat() {
-		return maxTageProMonat;
+	public String getHumanConfirmationMessages() {
+		return String.join(", ", humanConfirmationMessages);
 	}
 
-	@Nonnull
-	public BigDecimal getMaxStundenProMonat() {
-		return maxStundenProMonat;
+	public void addHumanConfirmationMessage(@Nonnull String message) {
+		this.humanConfirmationMessages.add(message);
 	}
 
 	@Nonnull
