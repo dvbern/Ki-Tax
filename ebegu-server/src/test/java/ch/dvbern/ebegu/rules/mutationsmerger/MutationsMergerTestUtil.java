@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,28 +39,28 @@ import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechn
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.MonatsRule;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
 
 import static ch.dvbern.ebegu.test.TestDataUtil.START_PERIODE;
-import static org.junit.Assert.assertNotNull;
 
 public final class MutationsMergerTestUtil {
 
 	private static final int DEFAULT_PENSUM = 80;
 
-	private static MonatsRule monatsRule = new MonatsRule(false);
+	private static final MonatsRule MONATS_RULE = new MonatsRule(false);
 
-	protected static Verfuegung prepareErstGesuchVerfuegung(int pbPensum, BigDecimal massgegebenesEinkommenVorAbzug) {
+	private MutationsMergerTestUtil() {
+	}
+
+	static Verfuegung prepareErstGesuchVerfuegung(int pbPensum, BigDecimal massgegebenesEinkommenVorAbzug) {
 		Betreuung erstgesuchBetreuung = prepareData(massgegebenesEinkommenVorAbzug, AntragTyp.ERSTGESUCH, pbPensum, START_PERIODE);
 		return prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 	}
 
-	protected static Verfuegung prepareVerfuegungForBetreuung(Betreuung betreuung) {
+	static Verfuegung prepareVerfuegungForBetreuung(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(betreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
-			EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, betreuung, zabetrErtgesuch);
+			EbeguRuleTestsHelper.runSingleAbschlussRule(MONATS_RULE, betreuung, zabetrErtgesuch);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		betreuung.setVerfuegung(verfuegungErstgesuch);
 		betreuung.extractGesuch().setTimestampVerfuegt(LocalDateTime.now());
@@ -67,11 +68,11 @@ public final class MutationsMergerTestUtil {
 		return verfuegungErstgesuch;
 	}
 
-	protected static Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {
+	static Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {
 		return prepareData(massgebendesEinkommen, antragTyp, DEFAULT_PENSUM, START_PERIODE);
 	}
 
-	protected static Betreuung prepareData(
+	static Betreuung prepareData(
 		BigDecimal massgebendesEinkommen,
 		AntragTyp antragTyp,
 		int bpPensum,
@@ -91,12 +92,12 @@ public final class MutationsMergerTestUtil {
 
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
 			aenderungsDatumBpPensum, TestDataUtil.ENDE_PERIODE, bpPensum));
 
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()

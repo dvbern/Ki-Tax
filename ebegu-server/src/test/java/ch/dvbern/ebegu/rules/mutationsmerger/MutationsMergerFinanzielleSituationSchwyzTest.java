@@ -20,9 +20,11 @@ package ch.dvbern.ebegu.rules.mutationsmerger;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
@@ -38,65 +40,65 @@ import static ch.dvbern.ebegu.test.TestDataUtil.START_PERIODE;
 class MutationsMergerFinanzielleSituationSchwyzTest {
 
 	//01.09.XXXX
-	private final LocalDate START_VERFUEGUNG_ABSCHNITT_ERSTGESUCH = START_PERIODE.plusMonths(1);
+	private static final LocalDate START_VERFUEGUNG_ABSCHNITT_ERSTGESUCH = START_PERIODE.plusMonths(1);
 	//30.09.XXXX
-	private final LocalDate END_VERFUEGUNG_ABSCHNITT_ERSTGESUCH = START_PERIODE.plusMonths(2).minusDays(1);
+	private static final LocalDate END_VERFUEGUNG_ABSCHNITT_ERSTGESUCH = START_PERIODE.plusMonths(2).minusDays(1);
 
-	private final LocalDate EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT = START_PERIODE.plusMonths(1).plusDays(5);
+	private static final LocalDate EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT = START_PERIODE.plusMonths(1).plusDays(5);
 
 
-	private MutationsMergerFinanzielleSituationSchwyz mutationsMergerFinanzielleSituationSchwyz = new MutationsMergerFinanzielleSituationSchwyz(
+	private static final MutationsMergerFinanzielleSituationSchwyz MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ = new MutationsMergerFinanzielleSituationSchwyz(
 		Locale.GERMAN);
 
-	private final BigDecimal HUNDERT_THAUSEND = MathUtil.DEFAULT.from(100000);
-	private final BigDecimal ZWEI_HUNDERT_THAUSEND = MathUtil.DEFAULT.from(200000);
+	private static final BigDecimal HUNDERT_THAUSEND = Objects.requireNonNull(MathUtil.DEFAULT.from(100000));
+	private static final BigDecimal ZWEI_HUNDERT_THAUSEND = Objects.requireNonNull(MathUtil.DEFAULT.from(200000));
 
 	@Test
 	void test_hoereMassgegebeneseinkommens_MutationGleicheMonat_keineaenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(ZWEI_HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT);
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT);
+		Assertions.assertEquals(HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	@Test
 	void test_kleinerMassgegebeneseinkommens_MutationGleicheMonat_keineaenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(ZWEI_HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT);
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), ZWEI_HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(ZWEI_HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT);
+		Assertions.assertEquals(ZWEI_HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	@Test
 	void test_hoereMassgegebeneseinkommens_MutationAbFolgeMonat_keineaenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(ZWEI_HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.plusMonths(1));
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.plusMonths(1));
+		Assertions.assertEquals(HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	@Test
 	void test_kleinerMassgegebeneseinkommens_MutationAbFolgeMonat_keineaenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(ZWEI_HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.plusMonths(1));
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), ZWEI_HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(ZWEI_HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.plusMonths(1));
+		Assertions.assertEquals(ZWEI_HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	@Test
 	void test_hoereMassgegebeneseinkommens_MutationBevorMonat_aenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(ZWEI_HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.minusMonths(1));
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), ZWEI_HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.minusMonths(1));
+		Assertions.assertEquals(ZWEI_HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	@Test
 	void test_kleinerMassgegebeneseinkommens_MutationBevorMonat_aenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(HUNDERT_THAUSEND);
-		BGCalculationResult bgCalculationResult = initResultData(ZWEI_HUNDERT_THAUSEND);
-		mutationsMergerFinanzielleSituationSchwyz.handleEinkommen(bgCalculationInput, bgCalculationResult, null, EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.minusMonths(1));
-		Assertions.assertEquals(bgCalculationInput.getMassgebendesEinkommen(), HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(ZWEI_HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.minusMonths(1));
+		Assertions.assertEquals(HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 
 	private BGCalculationInput initInputData(BigDecimal massgegebendeseinkommen) {
