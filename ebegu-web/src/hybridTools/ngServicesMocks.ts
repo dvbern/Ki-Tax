@@ -146,6 +146,8 @@ class InstitutionRSMock extends InstitutionRS {
 class SearchRSMock extends SearchRS {
 }
 
+class BenutzerRSMock extends BenutzerRSX {}
+
 class KinderabzugExchangeServiceMock extends KinderabzugExchangeService {
 }
 
@@ -166,7 +168,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.service('InternePendenzenRS', InternePendenzenRS);
-    $provide.service('BenutzerRS', BenutzerRSX);
+    $provide.service('BenutzerRS', BenutzerRSMock);
     $provide.service('VersionService', VersionService);
     $provide.service('MandantService', MandantServiceMock);
     $provide.service('EinstellungRS', EinstellungRSMock);
