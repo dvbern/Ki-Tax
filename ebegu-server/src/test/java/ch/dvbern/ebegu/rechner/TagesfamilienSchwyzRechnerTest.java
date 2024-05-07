@@ -50,7 +50,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		input.setAnwesenheitsTageProMonat(BigDecimal.valueOf(10));
 		input.setBabyTarif(false);
-		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		input.setEinschulungTyp(EinschulungTyp.PRIMARSTUFE);
 		input.setBetreuungInFerienzeit(false);
 		input.setAnzahlGeschwister(4);
 		input.setBetreuungspensumProzent(new BigDecimal(40));
@@ -343,12 +343,12 @@ class TagesfamilienSchwyzRechnerTest {
 	}
 
 	@Test
-	void testGetNormkostenOhneVermittlungsGebuehrIfFreiwilligerKindergarten() {
+	void testGetNormkostenOhneVermittlungsGebuehrIfVorschulalter() {
 		// given
 		var testee = new TagesfamilienSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
-		input.setEinschulungTyp(EinschulungTyp.FREIWILLIGER_KINDERGARTEN);
+		input.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -380,7 +380,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var testee = new TagesfamilienSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
-		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		input.setEinschulungTyp(EinschulungTyp.PRIMARSTUFE);
 		input.setBetreuungInFerienzeit(true);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
@@ -397,7 +397,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var testee = new TagesfamilienSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
-		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		input.setEinschulungTyp(EinschulungTyp.PRIMARSTUFE);
 		input.setBetreuungInFerienzeit(false);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
