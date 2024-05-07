@@ -701,6 +701,37 @@
                                         </dv-betreuung-input>
                                     </div>
                                     <!--Monatliche Betreuungskosten-->
+                                    <div class="row" ng-if="vm.showAnwesenheitstageProMonatInput()">
+                                        <div class="col-sm-12 dv-input-container-medium">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="monatlicheAnwesenheitstage-{{$index}}">
+                                                    <span data-translate="ANWESENHEITSTAGE_PRO_MONAT"></span>
+                                                    <dv-tooltip input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                text="'ANWESENHEITSTAGE_PRO_MONAT_HELP' | translate"></dv-tooltip>
+                                                </label>
+                                                <div class="dv-input-container-medium-label">
+                                                    <input
+                                                        aria-describedby="monatlicheAnwesenheitstage-{{$index}}-error"
+                                                        id="monatlicheAnwesenheitstage-{{$index}}" type="number"
+                                                        name="monatlicheAnwesenheitstage-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.betreuuteTage"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_ONE_DECIMALS"
+                                                        ng-required="true"
+                                                        min="1"
+                                                        max="28.7"
+                                                        ng-attr-data-test="monatliche-anwesenheitstage#{{$index}}"
+                                                        ng-attr-placeholder="{{'TAGE_PLACEHOLDER' | translate}}">
+                                                    <dv-error-messages input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                       for="vm.form['monatlicheAnwesenheitstage-' + $index].$error"></dv-error-messages>
+                                                </div>
+
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
+                                    <!--Monatliche Betreuungskosten-->
                                     <div class="row" ng-if="vm.showBetreuungsKostenInput()">
                                         <div class="col-sm-12 dv-input-container-medium">
                                             <dv-input-container class="form-group">
@@ -718,6 +749,7 @@
                                                         ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
                                                         dv-max-length class="form-control"
                                                         ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        type="number"
                                                         ng-required="true"
                                                         ng-attr-data-test="monatliche-betreuungskosten#{{$index}}"
                                                         ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
