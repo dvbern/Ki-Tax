@@ -111,6 +111,9 @@ public abstract class AbstractTestfallDataProvider {
 		return erwerbspensum;
 	}
 
+	/**
+	 * @param gesuchstellerNumber is required in overriding methods
+	 */
 	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
 		Gesuchsteller gesuchsteller = new Gesuchsteller();
 		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
