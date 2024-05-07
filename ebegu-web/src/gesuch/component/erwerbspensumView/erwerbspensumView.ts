@@ -114,7 +114,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, err => LOG.error(err));
-        // TODO: Replace with angularX async template pipe during ablösung
+        // TODO: Replace with angularX async template pipe during ablÃ¶sung
         this.mandantService.mandant$.subscribe(mandant => {
             this.mandant = mandant;
         }, error => LOG.error(error));
