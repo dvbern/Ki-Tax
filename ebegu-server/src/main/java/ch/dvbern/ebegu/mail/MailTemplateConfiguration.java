@@ -415,8 +415,9 @@ public class MailTemplateConfiguration {
 	) {
 
 		Benutzer eingeladener = einladung.getEingeladener();
+		Mandant mandant = eingeladener.getMandant();
 
-		Map<Object, Object> paramMap = initParamMap(eingeladener.getMandant().getMandantIdentifier());
+		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
 		paramMap.put("acceptLink", benutzerService.createInvitationLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
@@ -424,7 +425,8 @@ public class MailTemplateConfiguration {
 		final boolean isFrenchEnabled = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.FRENCH_ENABLED,
 			eingeladener.getMandant()));
-		Locale locale = isFrenchEnabled ? DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
+		Locale locale = isFrenchEnabled ? new MandantLocaleVisitor(DEUTSCH_FRENCH_LOCALE).process(mandant) :
+			new MandantLocaleVisitor(Constants.DEUTSCH_LOCALE).process(mandant);
 
 		addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Constants.DEUTSCH_LOCALE);
 		if (isFrenchEnabled) {
