@@ -50,6 +50,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
@@ -160,6 +161,18 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
+	@Test
+	void tfoMitAnwesenheitstagen() {
+		BetreuungsmitteilungPensum pensum = createPensum();
+		pensum.setBetreuuteTage(BigDecimal.valueOf(8));
+		final Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(BetreuungsangebotTyp.TAGESFAMILIEN, pensum);
+		String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, false, false, true, pensum);
+
+		assertThat(
+			result,
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, Anwesenheitstage: 8, monatliche Betreuungskosten: CHF 1’230.35"));
+	}
+
 	@ParameterizedTest
 	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
 	void eingewoehnungPauschale(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
@@ -198,7 +211,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 				.getKindJA()
 				.setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
 
-			String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, pensum);
+			String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, Boolean.FALSE, pensum);
 
 			assertThat(result, not(containsString("während der schulfreien Zeit")));
 		}
@@ -211,7 +224,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
 			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
 
-			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, Boolean.FALSE, pensum);
 
 			assertThat(
 				result,
@@ -229,7 +242,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
 			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
 
-			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, Boolean.FALSE, pensum);
 
 			assertThat(
 				result,
@@ -259,7 +272,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	) {
 		Betreuungsmitteilung mitteilung = createBetreuungsmitteilung(angebotTyp, pensen);
 
-		return run(mitteilung, anzeigeTyp, mahlzeitenVerguenstigungEnabled, betreuungInFerienEnabled, pensen);
+		return run(mitteilung, anzeigeTyp, mahlzeitenVerguenstigungEnabled, betreuungInFerienEnabled, Boolean.FALSE, pensen);
 	}
 
 	@Nonnull
@@ -268,6 +281,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
 		@Nonnull Boolean mahlzeitenVerguenstigungEnabled,
 		@Nonnull Boolean betreuungInFerienEnabled,
+		@Nonnull Boolean anwesenheitstageEnabled,
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
@@ -299,6 +313,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		expect(einstellungService.findEinstellung(SCHULERGAENZENDE_BETREUUNGEN, gemeinde, periode))
 			.andReturn(new Einstellung(SCHULERGAENZENDE_BETREUUNGEN, betreuungInFerien, periode))
 			.anyTimes();
+
+		final String anwesenheitsTageEinstellungValue = anwesenheitstageEnabled.toString();
+		expect(einstellungService.findEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, gemeinde, periode))
+			.andReturn(new Einstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, anwesenheitsTageEinstellungValue, periode))
+				.anyTimes();
 
 		replayAll();
 

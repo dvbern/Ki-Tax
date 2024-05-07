@@ -153,10 +153,12 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.AnwesenheitstageMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
-import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.KostenMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenKostenMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.SchulergaenzendeBetreuungMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -1196,12 +1198,23 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			betreuung.extractGemeinde(),
 			betreuung.extractGesuchsperiode());
 
+		boolean anwesenheitstageProMonatEnabled = einstellungService.findEinstellung(
+			EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
+
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		BetreuungsmitteilungPensumMessageFactory pensumFactory = mvzEnabled ?
-			new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier) :
+		BetreuungsmitteilungPensumMessageFactory pensumFactory =
 			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+
+		BetreuungsmitteilungPensumMessageFactory kostenFactory = mvzEnabled ?
+			new MahlzeitenKostenMessageFactory(mandant, locale) : new KostenMessageFactory(mandant, locale);
+
+		BetreuungsmitteilungPensumMessageFactory anwesenheitstageProMonatFactory = anwesenheitstageProMonatEnabled ?
+			new AnwesenheitstageMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
 
 		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = showSchulergaenzendeBetreuung(betreuung) ?
 			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
@@ -1212,6 +1225,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			combine(
 				", ",
 				pensumFactory,
+				anwesenheitstageProMonatFactory,
+				kostenFactory,
 				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
 			),
 			schulergaenzendeBetreuungFactory
