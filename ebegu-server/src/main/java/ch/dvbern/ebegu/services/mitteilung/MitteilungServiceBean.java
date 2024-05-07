@@ -805,8 +805,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
-		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
+	public void replaceOpenBetreungsmitteilungenWithSameRefNr(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull String refNr
+	) {
+		findOffeneBetreuungsmitteilungenByRefNr(refNr).forEach(persistence::remove);
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 

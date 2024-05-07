@@ -182,7 +182,9 @@ public interface MitteilungService {
 	/**
 	 * Entfernt alle offenen Betreuungsmitteilungen und speichert stattdessen die übergebene Betreuungsmitteilung.
 	 */
-	void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung);
+	void replaceOpenBetreungsmitteilungenWithSameRefNr(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung,
+		@Nonnull String refNr);
 
 	/**
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt

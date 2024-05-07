@@ -24,10 +24,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -77,6 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.importAs;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.isNotYetFreigegeben;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungProcessing.withImportFrom;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.COMPARATOR_WITH_GUELTIGKEIT;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_COMPARATOR;
@@ -223,23 +222,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Nonnull
 	private Processing processEventForExternalClient(@Nonnull ProcessingContextParams params, @Nonnull Betreuung betreuung) {
-		var offeneBetreuungsmitteilungen = mitteilungService.findOffeneBetreuungsmitteilungenByRefNr(params.getDto().getRefnr());
-
-		Map<Betreuung, Betreuungsmitteilung> offeneMeldungen = offeneBetreuungsmitteilungen.stream()
-			//			.filter(m -> m.getMitteilungStatus() != MitteilungStatus.ERLEDIGT) // TODO wollen wir sowas?
-			.collect(Collectors.toMap(Mitteilung::getBetreuung, m -> m, BinaryOperator.maxBy(LATEST_BETREUUNGSMITTEILUNG)));
-
-		// if there is an open Betreuungsmitteilung, make sure it's up to date regardless of Betreuungsstatus
-		Set<ProcessingContext> mutations = offeneMeldungen.entrySet().stream()
-			.filter(e -> !e.getKey().equals(betreuung))
-			.map(e -> new ProcessingContext(e.getKey(), e.getValue(), params))
-			.collect(Collectors.toSet());
-
-		List<PlatzbestaetigungProcessing> updatedBetreuungsmitteilungen = mutations.stream()
-			.map(this::handleMutationsMitteilung)
-			.map(p -> withImportFrom(ImportForm.OFFENE_MUTATIONS_MITTEILUNG, p))
-			.collect(Collectors.toList());
-
 		ProcessingContext ctx = toProcessingContext(params, betreuung);
 
 		Set<ImportForm> importForms = importAs(ctx);
@@ -252,30 +234,22 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			Optional.of(withImportFrom(ImportForm.MUTATIONS_MITTEILUNG, handleMutationsMitteilung(ctx))) :
 			Optional.empty();
 
-		// Falls die Betreuung bereits einmal verfügt war, die aktive Betreuung aber eine andere ist (e.g. in Bearbeitung
-		// Antragsteller), dann muss auch eine Mutations Mitteilung erstellt werden, damit die Daten nicht verloren gehen.
-		// Ansonsten gehen die Daten verloren, falls der Antragsteller die Betreuung nicht frei gibt.
-		Optional<PlatzbestaetigungProcessing> processingLastGueltig = findUnprocessedLastGueltigeBetreuung(ctx, mutations)
+		// Falls die Betreuung noch nicht freigegeben ist und einen Vorgänger hat, dann ist sie in Bearbeitung Gesuchsteller.
+		// Damit keine Daten verloren gehen, falls der Gesuchsteller die Betreuung nie freigibt, muss eine Mutations Mitteilung
+		// erstellt werden.
+		Optional<PlatzbestaetigungProcessing> processingLastGueltig = Optional.ofNullable(betreuung.getVorgaengerId())
+			.filter(id -> isNotYetFreigegeben(betreuung))
+			.flatMap(id -> betreuungService.findBetreuung(id, false))
 			.map(b -> toProcessingContext(ctx.getParams(), b))
 			.map(this::handleMutationsMitteilung)
 			.map(p -> withImportFrom(ImportForm.MUTATIONS_MITTEILUNG, p));
 
-		List<PlatzbestaetigungProcessing> processings = Lists.newArrayList(updatedBetreuungsmitteilungen);
+		List<PlatzbestaetigungProcessing> processings = Lists.newArrayList();
 		processingPlatzbestaetigung.ifPresent(processings::add);
 		processingMutation.ifPresent(processings::add);
 		processingLastGueltig.ifPresent(processings::add);
 
 		return PlatzbestaetigungProcessing.fromImport(processings);
-	}
-
-	@Nonnull
-	private Optional<Betreuung> findUnprocessedLastGueltigeBetreuung(
-		@Nonnull ProcessingContext ctx,
-		@Nonnull Set<ProcessingContext> mutations
-	) {
-		return ctx.getBetreuung().isGueltig() || mutations.stream().anyMatch(m -> m.getBetreuung().isGueltig()) ?
-			Optional.empty() :
-			betreuungService.findBetreuungByRefNr(ctx.getDto().getRefnr(), true);
 	}
 
 	@Nonnull
@@ -461,7 +435,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.ignore("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
-		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
+		mitteilungService.replaceOpenBetreungsmitteilungenWithSameRefNr(betreuungsmitteilung, ctx.getDto().getRefnr());
 		logger.info(
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());

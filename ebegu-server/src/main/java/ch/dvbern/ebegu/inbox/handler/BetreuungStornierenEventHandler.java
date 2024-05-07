@@ -142,7 +142,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			String refnr = eventMonitor.getRefnr();
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refnr);
-			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
+			mitteilungService.replaceOpenBetreungsmitteilungenWithSameRefNr(betreuungsmitteilung, refnr);
 			LOG.info("Mutationsmeldung zum Stornieren der Betreuung erstellt mit RefNr: {}", refnr);
 			eventMonitor.record("Mutationsmeldung zum Stornieren der Betreuung erstellt");
 

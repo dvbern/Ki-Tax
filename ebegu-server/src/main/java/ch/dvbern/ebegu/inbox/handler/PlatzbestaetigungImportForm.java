@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import lombok.experimental.UtilityClass;
 
@@ -51,8 +50,7 @@ public class PlatzbestaetigungImportForm {
 		case WARTEN:
 			return ImportForm.PLATZBESTAETIGUNG;
 		case BESTAETIGT:
-			Gesuch gesuch = betreuung.extractGesuch();
-			return isNotYetFreigegeben(gesuch.getStatus()) ?
+			return isNotYetFreigegeben(betreuung) ?
 				ImportForm.PLATZBESTAETIGUNG :
 				ImportForm.MUTATIONS_MITTEILUNG;
 		case VERFUEGT:
@@ -64,6 +62,10 @@ public class PlatzbestaetigungImportForm {
 		}
 	}
 
+	public static boolean isNotYetFreigegeben(@Nonnull Betreuung betreuung) {
+		return isNotYetFreigegeben(betreuung.extractGesuch().getStatus());
+	}
+
 	private boolean isNotYetFreigegeben(@Nonnull AntragStatus antragStatus) {
 		return antragStatus == AntragStatus.IN_BEARBEITUNG_GS
 			|| antragStatus == AntragStatus.IN_BEARBEITUNG_SOZIALDIENST;
@@ -72,6 +74,5 @@ public class PlatzbestaetigungImportForm {
 	public enum ImportForm {
 		PLATZBESTAETIGUNG,
 		MUTATIONS_MITTEILUNG,
-		OFFENE_MUTATIONS_MITTEILUNG
 	}
 }
