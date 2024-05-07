@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import io.swagger.annotations.Api;
@@ -1135,7 +1135,7 @@ public class GesuchResource {
 		@Nonnull @NotNull KibonAnfrageDTO kibonAnfrage,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
-	) throws EbeguException, OIDCTokenException {
+	) throws EbeguException {
 
 		if(!configuration.getEbeguKibonAnfrageTestGuiEnabled()) {
 			String errorMessage = "Steuerschnittstelle Test GUI is disabled";

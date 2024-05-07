@@ -77,7 +77,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -466,7 +466,7 @@ public class FinanzielleSituationResource {
 		KibonAnfrageContext kibonAnfrageContext = null;
 		try {
 			kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
-		} catch (OIDCTokenException e) {
+		} catch (OIDCServiceException e) {
 			JsonObject errorJson = Json.createObjectBuilder()
 				.add("error", "Failed to obtain OIDC token")
 				.add("message", e.getMessage())

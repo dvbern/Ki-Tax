@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.ws.neskovanp.IKibonAnfrageWebService;
 
 @Stateless
@@ -39,7 +39,7 @@ public class KibonAnfrageServiceBean implements KibonAnfrageService {
 	@Override
 	@Nonnull
 	public SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
-		throws KiBonAnfrageServiceException, OIDCTokenException {
+		throws KiBonAnfrageServiceException, OIDCServiceException {
 		return kibonAnfrageWebService.getSteuerDaten(zpvNummer, geburtsdatum, gesuchId, gesuchsperiodeBeginnJahr);
 	}
 

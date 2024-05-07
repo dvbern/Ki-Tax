@@ -21,11 +21,11 @@ import java.time.LocalDate;
 
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 
 public interface IKibonAnfrageWebService {
 
 	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
-			throws
-			KiBonAnfrageServiceException, OIDCTokenException;
+		throws
+		KiBonAnfrageServiceException, OIDCServiceException;
 }

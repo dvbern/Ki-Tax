@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
@@ -156,7 +156,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		KibonAnfrageContext kibonAnfrageContext = null;
 		try {
 			kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
-		} catch (OIDCTokenException e) {
+		} catch (OIDCServiceException e) {
 			return Processing.failure("OIDC Server koennte nicht erreicht werden: " + key);
 		}
 

@@ -23,12 +23,12 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-import ch.dvbern.ebegu.errors.OIDCTokenException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 
 public interface KibonAnfrageService {
 
 	@Nonnull
 	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
 			throws
-			KiBonAnfrageServiceException, OIDCTokenException;
+			KiBonAnfrageServiceException, OIDCServiceException;
 }
