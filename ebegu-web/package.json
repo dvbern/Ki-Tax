@@ -31,7 +31,6 @@
     "test": "ng test",
     "pretest:ci": "npm run pretest",
     "test:ci": "ng test --progress=false --watch=false --code-coverage",
-    "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
     "postinstall": "npm run set-version && mkdirp build",
