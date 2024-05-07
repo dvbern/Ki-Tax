@@ -31,8 +31,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
-import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
-import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
+import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT;
+import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KitaTagestrukturenSchwyzRechnerTest {
@@ -447,7 +447,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		var normkosten = testee.calculateNormkosten(input, parameter);
 
 		// then
-		assertEquals(NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT, normkosten);
+		assertEquals(KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT, normkosten);
 	}
 
 	@Test
@@ -465,7 +465,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		var normkosten = testee.calculateNormkosten(input, parameter);
 
 		// then
-		assertEquals(NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT, normkosten);
+		assertEquals(KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT, normkosten);
 	}
 
 	@Test
