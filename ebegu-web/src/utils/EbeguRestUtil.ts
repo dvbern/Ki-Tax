@@ -612,6 +612,7 @@ export class EbeguRestUtil {
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
+            erwerbspensum.wegzeit = erwerbspensumFromServer.wegzeit;
             return erwerbspensum;
         }
         return undefined;
@@ -626,6 +627,7 @@ export class EbeguRestUtil {
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
+            restErwerbspensum.wegzeit = erwerbspensum.wegzeit;
             return restErwerbspensum;
         }
         return undefined;

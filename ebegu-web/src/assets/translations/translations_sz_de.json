@@ -24,7 +24,8 @@
     "FAM_ERGAENZENDE_BETREUUNG": "Wird dieses Kind extern betreut?",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Falls der Standardtext ausgewählt wird, wird am Ende der Verfügungen folgende Rechtsmittelbelehrung eingefügt: <br><br>Rechtsmittelbelehrung<br>Gegen diese Verfügung kann innert 10 Tagen ab Zustellung bei der Beschwerdekommission der Gemeinde Beschwerde erhoben werden. Beschwerdeentscheide können an das Departement des Innern weitergezogen werden. Die Beschwerde muss einen Antrag und eine Begründung enthalten. Der Beschwerdeschrift beizulegen sind wenn möglich die Beweismittel und die angefochtene Verfügung.",
     "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Nachweis Bruttolohn (Lohnausweis)",
-    "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Aktuellste Steuerveranlagung",
+    "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Letzte rechtskräftige Steuerveranlagung ",
+    "FINANZIELLESITUATION_NACHWEIS_ABGERECHNETE_QUELLENSTEUERN": "Bestätigung über abgerechnete Quellensteuern der Steuerverwaltung SZ",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "MANDANT_DIREKTION_BG": "Nino Freuler <br/>Pumag Consulting AG",
     "FACHLICHE_HILFE_BG": "Fachliche Hilfe",
@@ -110,5 +111,6 @@
     "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_EINKAEUFE_VORSORGE": "Nachweis/Nachweise über die Einkäufe berufliche Vorsorge (BVG/2. Säule)",
     "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_BRUTTOLOHN": "Nachweis/Nachweise über das Bruttoeinkommen",
     "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis/Nachweise über das Reinvermögen",
+    "NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT": "Die Bestätigung der kantonalen Steuerverwaltung kann formlos unter Angabe der Personalien und des vergangenen Kalenderjahres angefordert werden unter: <a href='mailto:quest.stv@sz.ch'>quest.stv@sz.ch</a> oder +41 41 819 13 77",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

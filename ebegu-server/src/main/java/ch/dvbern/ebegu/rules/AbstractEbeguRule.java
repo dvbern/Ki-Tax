@@ -170,7 +170,7 @@ public abstract class AbstractEbeguRule extends AbstractRule implements Rule  {
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
 
 	/**
 	 * Führt die aktuelle Rule aus, falls die Rule für den

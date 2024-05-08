@@ -39,8 +39,6 @@ public abstract class AbstractMutableEntity extends AbstractEntity {
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
 	private String vorgaengerId;
 
-	public AbstractMutableEntity() {}
-
 	@Nullable
 	public String getVorgaengerId() {
 		return vorgaengerId;

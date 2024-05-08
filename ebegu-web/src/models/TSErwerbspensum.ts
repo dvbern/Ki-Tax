@@ -32,6 +32,8 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _erwerbspensumInstitution: string;
 
+    private _wegzeit: string;
+
     public constructor() {
         super();
     }
@@ -74,5 +76,13 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set erwerbspensumInstitution(value: string) {
         this._erwerbspensumInstitution = value;
+    }
+
+    public get wegzeit(): string {
+        return this._wegzeit;
+    }
+
+    public set wegzeit(value: string) {
+        this._wegzeit = value;
     }
 }
