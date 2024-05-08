@@ -207,6 +207,10 @@ public class BGCalculationInput {
 	// Zu verstehen als "Anzahl anderer Kinder im gleichen Haushalt"
 	private int anzahlGeschwister = 0;
 
+	@Getter
+	@Setter
+	private BigDecimal anwesenheitsTageProMonat = BigDecimal.ZERO;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
