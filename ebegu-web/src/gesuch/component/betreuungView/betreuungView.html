@@ -1024,13 +1024,13 @@
                                                 <div class="col-sm-12 dv-input-container-small">
                                                     <dv-input-container class="form-group">
                                                         <label class="md-no-float"
-                                                               for="eingewoehnungKosten">
+                                                               for="eingewoehnungKosten-{{$index}}">
                                                             <span data-translate="EINGEWOEHNUNG_KOSTEN"></span>
-                                                            <dv-tooltip input-id="eingewoehnungKostenInfo-{{$index}}"
+                                                            <dv-tooltip input-id="eingewoehnungKosten-{{$index}}"
                                                                         text="'EINGEWOEHNUNG_KOSTEN_CHECKBOX_INFO' | translate"></dv-tooltip>
                                                         </label>
                                                         <div class="dv-input-container-small">
-                                                            <input aria-describedby="eingewoehnungKosten-error"
+                                                            <input aria-describedby="eingewoehnungKosten-{{$index}}-error"
                                                                    id="eingewoehnungKosten-{{$index}}"
                                                                    type="number" min="0" step="0.05"
                                                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
