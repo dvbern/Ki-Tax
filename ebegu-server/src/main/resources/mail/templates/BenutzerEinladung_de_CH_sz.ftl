@@ -9,7 +9,7 @@
 <#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${eingeladener.email}
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Einladung / Confirmation</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Einladung</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -17,7 +17,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Einladung / Confirmation</title>
+    <title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Einladung</title>
 
 </head>
 
@@ -27,7 +27,6 @@ ${templateConfiguration.mailCss}
     <p>
 		${contentDE}
     </p>
-	<p>
 	<ol type="1">
 		<li>Klick auf untenstehenden Link <a href="${acceptLink}">«Registrierung starten»</a>. Sie werden auf kiBon weitergeleitet.</li>
 		<li>Klick auf «Anmelden». Sie werden zur Anmeldemaske weitergeleitet. </li>
@@ -36,7 +35,6 @@ ${templateConfiguration.mailCss}
 		<li>Verifizieren Sie Ihre E-Mail-Adresse.</li>
 		<li>Klick auf «Registrierung abschliessen». </li>
 	</ol>
-	</p>
     <p>
 		Wichtig: Diese Einladung ist nur bis zum <strong>${acceptExpire}</strong> gültig.
     </p>
@@ -49,7 +47,7 @@ ${templateConfiguration.mailCss}
 						<td align="center" bgcolor="#d50025" style="background-color: #d50025; margin: auto; max-width: 600px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding: 10px 15px; " width="100%">
 							<!--[if mso]>&nbsp;<![endif]-->
 							<a href="${acceptLink}" target="_blank" style="color: #ffffff; font-weight:normal; text-align:center; background-color: #d50025; text-decoration: none; border: none; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; display: inline-block;">
-								<span style="color: #ffffff; font-weight:normal; line-height:1.5em; text-align:center;">EINLADUNG ANNEHMEN</span>
+								<span style="color: #ffffff; font-weight:normal; line-height:1.5em; text-align:center;">Registrierung starten</span>
 							</a>
 							<!--[if mso]>&nbsp;<![endif]-->
 						</td>
