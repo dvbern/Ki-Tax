@@ -68,6 +68,7 @@ public class PensumMapperFactory {
 		return PensumMapper.combine(
 			PensumMapper.GUELTIGKEIT_MAPPER,
 			PensumMapper.KOSTEN_MAPPER,
+			PensumMapper.BETREUUTE_TAGE_MAPPER,
 			pensumValueMapperFactory.createForPensum(ctx),
 			// the following mappers are (currently) not possible for Mittagstisch
 			eingewoehnungPauschaleMapperFactory.createForEingewoehnungPauschale(ctx),

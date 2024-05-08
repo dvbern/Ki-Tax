@@ -54,6 +54,9 @@ public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 	PensumMapper<AbstractMahlzeitenPensum> KOSTEN_MAPPER = (target, zeitabschnittDTO) ->
 		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
 
+	PensumMapper<AbstractMahlzeitenPensum> BETREUUTE_TAGE_MAPPER = (target, zeitabschnittDTO) ->
+		target.setBetreuuteTage(zeitabschnittDTO.getBetreuuteTage());
+
 	PensumMapper<AbstractMahlzeitenPensum> EINGEWOEHNUNG_PAUSCHALE_MAPPER = (target, zeitabschnittDTO) -> {
 		EingewoehnungDTO eingewoehnung = zeitabschnittDTO.getEingewoehnung();
 		if (eingewoehnung == null) {

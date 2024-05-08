@@ -1212,7 +1212,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		BetreuungsmitteilungPensumMessageFactory kostenFactory = mvzEnabled ?
 			new MahlzeitenKostenMessageFactory(mandant, locale) : new KostenMessageFactory(mandant, locale);
 
-		BetreuungsmitteilungPensumMessageFactory anwesenheitstageProMonatFactory = anwesenheitstageProMonatEnabled ?
+		final boolean anwesenheitstageProMonatFactoryEnabled = anwesenheitstageProMonatEnabled && betreuung.isAngebotTagesfamilien();
+
+		BetreuungsmitteilungPensumMessageFactory anwesenheitstageProMonatFactory = anwesenheitstageProMonatFactoryEnabled ?
 			new AnwesenheitstageMessageFactory(mandant, locale) :
 			BetreuungsmitteilungPensumMessageFactory.empty();
 
