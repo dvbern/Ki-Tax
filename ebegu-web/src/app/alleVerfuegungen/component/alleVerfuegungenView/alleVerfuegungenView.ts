@@ -154,11 +154,6 @@ export class AlleVerfuegungenViewController implements IController {
             });
     }
 
-    public getBetreuungsId(betreuung: TSBetreuung): string {
-        return this.ebeguUtil.calculateBetreuungsId(betreuung.gesuchsperiode, this.dossier.fall, this.dossier.gemeinde,
-            betreuung.kindNummer, betreuung.betreuungNummer);
-    }
-
     public $postLink(): void {
         const delay = 500;
         this.$timeout(() => {

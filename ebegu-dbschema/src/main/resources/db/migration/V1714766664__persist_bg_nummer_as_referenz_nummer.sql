@@ -17,10 +17,10 @@
 
 -- region betreuung
 ALTER TABLE betreuung
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 ALTER TABLE betreuung_aud
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 UPDATE betreuung b
 	INNER JOIN kind_container kc ON b.kind_id = kc.id
@@ -29,29 +29,26 @@ UPDATE betreuung b
 	INNER JOIN fall f ON d.fall_id = f.id
 	INNER JOIN gemeinde ON d.gemeinde_id = gemeinde.id
 	INNER JOIN gesuchsperiode gp ON g.gesuchsperiode_id = gp.id
-SET ref_nr = CONCAT(
+SET referenz_nummer = CONCAT_WS('.',
 	SUBSTR(gp.gueltig_ab, 3, 2),
-	'.',
 	LPAD(f.fall_nummer, 6, '0'),
-	'.',
 	LPAD(gemeinde.gemeinde_nummer, 3, '0'),
-	'.',
 	kc.kind_nummer,
-	'.',
-	betreuung_nummer);
+	betreuung_nummer)
+WHERE referenz_nummer IS NULL;
 
 ALTER TABLE betreuung
-	ALTER COLUMN ref_nr DROP DEFAULT;
+	ALTER COLUMN referenz_nummer DROP DEFAULT;
 
-CREATE INDEX IX_betreuung_refr_nr ON betreuung(ref_nr);
+CREATE INDEX IF NOT EXISTS IX_betreuung_referenz_nummer ON betreuung(referenz_nummer);
 -- endregion
 
 -- region ferieninsel
 ALTER TABLE anmeldung_ferieninsel
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 ALTER TABLE anmeldung_ferieninsel_aud
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 UPDATE anmeldung_ferieninsel b
 	INNER JOIN kind_container kc ON b.kind_id = kc.id
@@ -60,29 +57,26 @@ UPDATE anmeldung_ferieninsel b
 	INNER JOIN fall f ON d.fall_id = f.id
 	INNER JOIN gemeinde ON d.gemeinde_id = gemeinde.id
 	INNER JOIN gesuchsperiode gp ON g.gesuchsperiode_id = gp.id
-SET ref_nr = CONCAT(
+SET referenz_nummer = CONCAT_WS('.',
 	SUBSTR(gp.gueltig_ab, 3, 2),
-	'.',
 	LPAD(f.fall_nummer, 6, '0'),
-	'.',
 	LPAD(gemeinde.gemeinde_nummer, 3, '0'),
-	'.',
 	kc.kind_nummer,
-	'.',
-	betreuung_nummer);
+	betreuung_nummer)
+WHERE referenz_nummer IS NULL;
 
 ALTER TABLE anmeldung_ferieninsel
-	ALTER COLUMN ref_nr DROP DEFAULT;
+	ALTER COLUMN referenz_nummer DROP DEFAULT;
 
-CREATE INDEX IX_anmeldung_ferieninsel_refr_nr ON anmeldung_ferieninsel(ref_nr);
+CREATE INDEX IF NOT EXISTS IX_anmeldung_ferieninsel_referenz_nummer ON anmeldung_ferieninsel(referenz_nummer);
 -- endregion
 
 -- region tagesschule
 ALTER TABLE anmeldung_tagesschule
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 ALTER TABLE anmeldung_tagesschule_aud
-	ADD COLUMN ref_nr VARCHAR(100) DEFAULT NULL;
+	ADD COLUMN IF NOT EXISTS referenz_nummer VARCHAR(100) DEFAULT NULL;
 
 UPDATE anmeldung_tagesschule b
 	INNER JOIN kind_container kc ON b.kind_id = kc.id
@@ -91,19 +85,16 @@ UPDATE anmeldung_tagesschule b
 	INNER JOIN fall f ON d.fall_id = f.id
 	INNER JOIN gemeinde ON d.gemeinde_id = gemeinde.id
 	INNER JOIN gesuchsperiode gp ON g.gesuchsperiode_id = gp.id
-SET ref_nr = CONCAT(
+SET referenz_nummer = CONCAT_WS('.',
 	SUBSTR(gp.gueltig_ab, 3, 2),
-	'.',
 	LPAD(f.fall_nummer, 6, '0'),
-	'.',
 	LPAD(gemeinde.gemeinde_nummer, 3, '0'),
-	'.',
 	kc.kind_nummer,
-	'.',
-	b.betreuung_nummer);
+	b.betreuung_nummer)
+WHERE referenz_nummer IS NULL;
 
 ALTER TABLE anmeldung_tagesschule
-	ALTER COLUMN ref_nr DROP DEFAULT;
+	ALTER COLUMN referenz_nummer DROP DEFAULT;
 
-CREATE INDEX IX_anmeldung_tagesschule_refr_nr ON anmeldung_tagesschule(ref_nr);
+CREATE INDEX IF NOT EXISTS IX_anmeldung_tagesschule_referenz_nummer ON anmeldung_tagesschule(referenz_nummer);
 -- endregion

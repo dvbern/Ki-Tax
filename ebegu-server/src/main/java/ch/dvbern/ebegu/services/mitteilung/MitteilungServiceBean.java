@@ -492,7 +492,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByRefNr(@Nonnull String refNr) {
+	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByReferenzNummer(@Nonnull String referenzNummer) {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -500,15 +500,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
 
-		ParameterExpression<String> refNrParam = cb.parameter(String.class, AbstractPlatz_.REF_NR);
+		ParameterExpression<String> referenzNummerParam = cb.parameter(String.class, AbstractPlatz_.REFERENZ_NUMMER);
 
 		query.where(
-			cb.equal(betreuungJoin.get(AbstractPlatz_.refNr), refNrParam),
+			cb.equal(betreuungJoin.get(AbstractPlatz_.referenzNummer), referenzNummerParam),
 			cb.isFalse(root.get(Betreuungsmitteilung_.applied))
 		);
 
 		return persistence.getEntityManager().createQuery(query)
-			.setParameter(refNrParam, refNr)
+			.setParameter(referenzNummerParam, referenzNummer)
 			.getResultList();
 	}
 
@@ -805,10 +805,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void replaceOpenBetreungsmitteilungenWithSameRefNr(
-		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull String refNr
+	public void replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung,
+		@Nonnull String referenzNummer
 	) {
-		findOffeneBetreuungsmitteilungenByRefNr(refNr).forEach(persistence::remove);
+		findOffeneBetreuungsmitteilungenByReferenzNummer(referenzNummer).forEach(persistence::remove);
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 

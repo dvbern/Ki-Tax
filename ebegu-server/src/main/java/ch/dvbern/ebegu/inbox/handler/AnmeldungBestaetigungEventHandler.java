@@ -103,7 +103,7 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor, @Nonnull TagesschuleBestaetigungEventDTO dto) {
-		return betreuungService.findAnmeldungenTagesschuleByRefNr(dto.getRefnr())
+		return betreuungService.findAnmeldungenTagesschuleByReferenzNummer(dto.getRefnr())
 			.map(anmeldung -> processEventForAnmeldungBestaetigung(eventMonitor, dto, anmeldung))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}

@@ -1676,7 +1676,7 @@
     "CLEANDOWNLOADFILES_EXECUTED_ERROR": "Ein Fehler ist beim Löschen der Download-Files aufgetreten",
     "MAHNUNG_BATCH_EXECUTED_OK": "Die Prüfung der Mahnungen wurde erfolgreich durchgeführt",
     "MAHNUNG_BATCH_EXECUTED_ERROR": "Ein Fehler ist bei der Prüfung der Mahnungen aufgetreten",
-    "BGNUMMER": "Referenznummer",
+    "REFERENZ_NUMMER": "Referenznummer",
     "KIND_WAEHLEN": "Kind auswählen",
     "TAGESSCHULE_ERFASSEN": "Neue Tagesschule für die Periode {{gs}} erfassen",
     "FERIENINSEL_ERFASSEN": "Neue Ferieninsel für die Periode {{gs}} erfassen",

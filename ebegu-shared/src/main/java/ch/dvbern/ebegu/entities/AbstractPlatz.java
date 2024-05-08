@@ -92,8 +92,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	private boolean gueltig = false;
 
 	@NotNull
+	@Nonnull
 	@Column(nullable = false, updatable = false, length = Constants.DB_DEFAULT_SHORT_LENGTH)
-	private String refNr = "";
+	private String referenzNummer = "";
 
 	/**
 	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
@@ -213,26 +214,25 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			this);
 	}
 
+	@Nonnull
+	public String getReferenzNummer() {
+		if (StringUtils.isEmpty(referenzNummer)) {
+			// to keep compatibility with unit tests (where @PrePersist is never called), lazly initialize on demand
+			setReferenzNummer();
+		}
+		return referenzNummer;
+	}
+
 	/**
-	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
+	 * Erstellt die ReferenzNummer (auch RefNr oder BG-Nummer) als zusammengesetzten String aus Jahr, FallNummer,
+	 * GemeindeNummer, KindNummer und BetreuungsNummer
 	 */
-	@Transient
-	@SuppressFBWarnings("NM_CONFUSING")
-	@Deprecated
-	public String getBGNummer() {
-		return refNr;
-	}
-
-	public String getRefNr() {
-		return refNr;
-	}
-
 	@PrePersist
-	protected void setRefNr() {
-		if (StringUtils.isEmpty(refNr)) {
+	protected void setReferenzNummer() {
+		if (StringUtils.isEmpty(referenzNummer)) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
-			refNr = getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
+			referenzNummer = getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
 		}
 	}
 
@@ -336,7 +336,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Nonnull
 	@Override
 	public String getSearchResultSummary() {
-		return getKind().getSearchResultSummary() + ' ' + getBGNummer();
+		return getKind().getSearchResultSummary() + ' ' + getReferenzNummer();
 	}
 
 	@Nullable

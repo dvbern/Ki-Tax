@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -40,10 +41,10 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 	@Nonnull
 	private BigDecimal monatlicheNebenmahlzeiten;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal tarifProHauptmahlzeit;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal tarifProNebenmahlzeit;
 
 	@Nonnull
@@ -64,7 +65,7 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTarifProHauptmahlzeit() {
 		return tarifProHauptmahlzeit;
 	}
@@ -73,7 +74,7 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTarifProNebenmahlzeit() {
 		return tarifProNebenmahlzeit;
 	}

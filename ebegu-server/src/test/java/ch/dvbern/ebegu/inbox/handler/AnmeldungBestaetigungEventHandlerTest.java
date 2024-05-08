@@ -144,7 +144,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoAnmeldungFound() {
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(tagesschuleBestaetigungEventDTO.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.empty());
 
 			replayAll();
@@ -239,7 +239,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testIgnored(@Nonnull TagesschuleBestaetigungEventDTO dto, @Nonnull String message) {
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(tagesschuleBestaetigungEventDTO.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(tagesschuleBestaetigungEventDTO.getRefnr()))
 				.andReturn(Optional.ofNullable(anmeldungTagesschule));
 
 			replayAll();
@@ -424,7 +424,7 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testSuccess(@Nonnull TagesschuleBestaetigungEventDTO dto) {
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(dto.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(dto.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 

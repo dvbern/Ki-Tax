@@ -139,26 +139,26 @@ public class ScolarisBackendResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/anmeldung/{referenznummer}")
+	@Path("/anmeldung/{referenzNummer}")
 	@RolesAllowed(SUPER_ADMIN)
 	public Response getAnmeldung(
-		@Nonnull @PathParam("referenznummer") String referenznummer,
+		@Nonnull @PathParam("referenzNummer") String referenzNummer,
 		@Context HttpServletRequest request) {
 
 		try {
-			if (!BetreuungUtil.validateBGNummer(referenznummer)) {
-				return createBgNummerFormatError();
+			if (!BetreuungUtil.validateReferenzNummer(referenzNummer)) {
+				return createReferenzNummerFormatError();
 			}
 
-			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByRefNr(referenznummer);
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByReferenzNummer(referenzNummer);
 
 			if (betreuungen == null || betreuungen.isEmpty()) {
 				// Betreuung not found
-				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+				return createNoResultsResponse("No Betreuung with id " + referenzNummer + " found");
 			}
 			if (betreuungen.size() > 1) {
 				// More than one betreuung
-				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
+				return createTooManyResultsResponse("More than one Betreuung with id " + referenzNummer + " found");
 			}
 
 			final AbstractAnmeldung betreuung = betreuungen.get(0);
@@ -177,7 +177,7 @@ public class ScolarisBackendResource {
 
 				if (anmeldungTagesschule.isKeineDetailinformationen()) {
 					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_CONTENT zurueck
-					return createKeineDetailangabenResponse(referenznummer);
+					return createKeineDetailangabenResponse(referenzNummer);
 				}
 
 				try {
@@ -185,7 +185,7 @@ public class ScolarisBackendResource {
 						converter.anmeldungTagesschuleToScolaris(anmeldungTagesschule);
 					return Response.ok(jaxResult).build();
 				} catch (ScolarisException e) {
-					return createNoResultsResponse("No Scolaris Modules found for " + referenznummer);
+					return createNoResultsResponse("No Scolaris Modules found for " + referenzNummer);
 				}
 			}
 			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.FERIENINSEL) {
@@ -194,7 +194,7 @@ public class ScolarisBackendResource {
 				return Response.ok(converter.anmeldungFerieninselToScolaris(anmeldungFerieninsel)).build();
 			}
 			// Betreuung ist weder Tagesschule noch Ferieninsel
-			return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+			return createNoResultsResponse("No Betreuung with id " + referenzNummer + " found");
 
 		} catch (Exception e) {
 			LOG.error("getAnmeldung()", e);
@@ -203,7 +203,7 @@ public class ScolarisBackendResource {
 	}
 
 	@ApiOperation(value =
-		"Gibt das massgebende Einkommen fuer die uebergebene referenznummer zurueck. Falls das massgebende Einkommen noch "
+		"Gibt das massgebende Einkommen fuer die uebergebene referenzNummer zurueck. Falls das massgebende Einkommen noch "
 			+ "nicht erfasst wurde, wird 400 zurueckgegeben.",
 		response = JaxExternalFinanzielleSituation.class)
 	@ApiResponses({
@@ -219,7 +219,8 @@ public class ScolarisBackendResource {
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public Response getFinanzielleSituation(
 		@Nonnull @QueryParam("stichtag") String stichtagParam,
-		@Nonnull @QueryParam("referenznummer") String referenznummer,
+		// naming "referenznummer" is used to keep API compatibility
+		@Nonnull @QueryParam("referenznummer") String referenzNummer,
 		@Context HttpServletRequest request) {
 
 		try {
@@ -227,17 +228,17 @@ public class ScolarisBackendResource {
 			if (stichtagParam.isEmpty()) {
 				return createBadParameterResponse("stichtagParam is null or empty");
 			}
-			if (referenznummer.isEmpty()) {
-				return createBadParameterResponse("bgNummer is null or empty");
+			if (referenzNummer.isEmpty()) {
+				return createBadParameterResponse("referenznummer is null or empty");
 			}
 
 			// Parse Fallnummer
-			if (!BetreuungUtil.validateBGNummer(referenznummer)) {
-				return createBgNummerFormatError();
+			if (!BetreuungUtil.validateReferenzNummer(referenzNummer)) {
+				return createReferenzNummerFormatError();
 			}
 			long fallNummer;
 			try {
-				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(referenznummer);
+				fallNummer = BetreuungUtil.getFallnummerFromReferenzNummer(referenzNummer);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse bgNummer");
@@ -253,15 +254,15 @@ public class ScolarisBackendResource {
 			}
 
 			//check if Gemeinde Scolaris erlaubt:
-			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByRefNr(referenznummer);
+			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByReferenzNummer(referenzNummer);
 
 			if (anmeldungenList == null || anmeldungenList.isEmpty()) {
 				// Betreuung not found
-				return createNoResultsResponse("No Anmeldung with id " + referenznummer + " found");
+				return createNoResultsResponse("No Anmeldung with id " + referenzNummer + " found");
 			}
 			if (anmeldungenList.size() > 1) {
 				// More than one Anmeldung
-				return createTooManyResultsResponse("More than one Anmeldung with id " + referenznummer + " found");
+				return createTooManyResultsResponse("More than one Anmeldung with id " + referenzNummer + " found");
 			}
 
 			final AbstractAnmeldung anmeldung = anmeldungenList.get(0);
@@ -279,22 +280,19 @@ public class ScolarisBackendResource {
 			}
 
 			// Parse Gesuchsperiode
-			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
+			int yearFromReferenzNummer = BetreuungUtil.getYearFromReferenzNummer(referenzNummer);
 			// TODO: Mandantenfähigkeit: Wie läuft die Authentifizierung hier? Kann man den Mandanten über den Principal abfragen?
-			Gesuchsperiode gesuchsperiodeFromBGNummer =
+			Gesuchsperiode gesuchsperiodeFromReferenzNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(
-						LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
+						LocalDate.of(yearFromReferenzNummer, Month.AUGUST, 1),
 						mandantService.getMandantBern())
-					.orElseThrow(() -> new EbeguEntityNotFoundException(
-						"getFinanzielleSituation",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						referenznummer));
+					.orElseThrow(() -> new EbeguEntityNotFoundException("getFinanzielleSituation", referenzNummer));
 
-			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromBGNummer);
+			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromReferenzNummer);
 
 			//Get "neustes" Gesuch on Stichtag an fallnummer
 			Gemeinde gemeinde = anmeldung.extractGemeinde();
-			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gemeinde, gesuchsperiodeFromBGNummer,
+			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gemeinde, gesuchsperiodeFromReferenzNummer,
 					fallNummer)
 				.map(neustesGesuch -> toFinanzielleSituationDTO(fallNummer, stichtag, neustesGesuch)
 					.map(dto -> Response.ok(dto).build())
@@ -326,8 +324,8 @@ public class ScolarisBackendResource {
 		return stichtag;
 	}
 
-	private Response createBgNummerFormatError() {
-		// Wrong BGNummer format
+	private Response createReferenzNummerFormatError() {
+		// Wrong ReferenzNummer format
 		return Response.status(Response.Status.BAD_REQUEST).entity(
 			new JaxExternalError(
 				JaxExternalErrorCode.BAD_PARAMETER,
@@ -341,8 +339,8 @@ public class ScolarisBackendResource {
 				message)).build();
 	}
 
-	private Response createKeineDetailangabenResponse(String bgNumber) {
-		String message = MessageFormat.format("Keine Detailinformationen zu Anmeldung {0} vorhanden", bgNumber);
+	private Response createKeineDetailangabenResponse(String referenzNummer) {
+		String message = MessageFormat.format("Keine Detailinformationen zu Anmeldung {0} vorhanden", referenzNummer);
 		return Response.status(Response.Status.NO_CONTENT).entity(
 			new JaxExternalError(
 				JaxExternalErrorCode.NO_CONTENT,

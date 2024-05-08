@@ -74,9 +74,11 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -147,7 +149,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoBetreuungFound() {
-			expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
+			expect(betreuungService.findBetreuungByReferenzNummer(REF_NUMMER, false))
 				.andReturn(Optional.empty());
 
 			testIgnored("Betreuung nicht gefunden.");
@@ -341,11 +343,9 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 		@Nonnull
 		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-					.andReturn(Optional.of(mandant));
-			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
+			Capture<Betreuungsmitteilung> captured = newCapture();
 			//noinspection ConstantConditions
-			mitteilungService.replaceOpenBetreungsmitteilungenWithSameRefNr(EasyMock.capture(captured), EasyMock.eq(REF_NUMMER));
+			mitteilungService.replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(capture(captured), eq(REF_NUMMER));
 			expectLastCall();
 
 			return captured;
@@ -354,7 +354,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void expectBetreuungFound(@Nonnull Betreuung foundBetreuung) {
-		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
+		expect(betreuungService.findBetreuungByReferenzNummer(REF_NUMMER, false))
 			.andReturn(Optional.of(foundBetreuung));
 	}
 

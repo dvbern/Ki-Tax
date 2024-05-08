@@ -159,7 +159,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Es wurden keine Zeitabschnitte übergeben.");
 		}
 
-		return betreuungService.findBetreuungByRefNr(dto.getRefnr(), false)
+		return betreuungService.findBetreuungByReferenzNummer(dto.getRefnr(), false)
 			.map(betreuung -> processEventForBetreuung(eventMonitor, dto, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
@@ -435,7 +435,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.ignore("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
-		mitteilungService.replaceOpenBetreungsmitteilungenWithSameRefNr(betreuungsmitteilung, ctx.getDto().getRefnr());
+		mitteilungService.replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(betreuungsmitteilung, ctx.getDto().getRefnr());
 		logger.info(
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());

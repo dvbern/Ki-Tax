@@ -308,8 +308,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getBetreuungsangebotTyp()
-			+ ", institution: " + this.getInstitution().getMessageForAccessException();
+		return "betreuungsangebotTyp: " + betreuungsangebotTyp
+			+ ", institution: " + institution.getMessageForAccessException();
 	}
 
 	@Nullable

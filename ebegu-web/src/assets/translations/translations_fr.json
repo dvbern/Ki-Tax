@@ -1603,7 +1603,7 @@
     "CLEANDOWNLOADFILES_EXECUTED_ERROR": "Une erreur est survenue lors de la suppression des dossiers téléchargés.",
     "MAHNUNG_BATCH_EXECUTED_OK": "Les rappels ont été examinés avec succès. ",
     "MAHNUNG_BATCH_EXECUTED_ERROR": "Une erreur s'est produite lors de l'examen des rappels. ",
-    "BGNUMMER": "N° de réf.",
+    "REFERENZ_NUMMER": "N° de réf.",
     "KIND_WAEHLEN": "Sélectionner l'enfant",
     "TAGESSCHULE_ERFASSEN": "Saisir une nouvelle inscription à l'école à journée continue pour la période {{gs}}",
     "FERIENINSEL_ERFASSEN": "Saisir un nouveau accueil extrascolaire pendant les vacances pour la période {{gs}}",

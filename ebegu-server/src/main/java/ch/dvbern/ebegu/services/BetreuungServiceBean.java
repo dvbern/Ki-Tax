@@ -141,8 +141,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private MailService mailService;
 	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
-	@Inject
 	private GemeindeService gemeindeService;
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
@@ -214,22 +212,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (!isNew) {
 			LOG.info(
 				"Betreuung mit RefNr: {} wurde geaendert und gespeichert mit Status: {}",
-				mergedBetreuung.getRefNr(),
+				mergedBetreuung.getReferenzNummer(),
 				mergedBetreuung.getBetreuungsstatus());
 
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
-				mergedBetreuung.getRefNr(),
+				mergedBetreuung.getReferenzNummer(),
 				externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
 				"Die Betreuung wurde geaendert und gespeichert mit Status: " + mergedBetreuung.getBetreuungsstatus(),
 				LocalDateTime.now()));
 		} else {
 			LOG.info(
 				"Betreuung mit RefNr: {} wurde erstellt mit Status: {}",
-				mergedBetreuung.getRefNr(),
+				mergedBetreuung.getReferenzNummer(),
 				mergedBetreuung.getBetreuungsstatus());
 
 			betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
-				mergedBetreuung.getRefNr(),
+				mergedBetreuung.getReferenzNummer(),
 				externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
 				"Die Betreuung wurde erstellt mit Status: " + mergedBetreuung.getBetreuungsstatus(),
 				LocalDateTime.now()));
@@ -260,9 +258,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungTagesschule);
 		final AnmeldungTagesschule mergedBetreuung = persistence.merge(anmeldungTagesschule);
 
-		// We need to update (copy) all other Betreuungen with same refNr (on all other Mutationen and Erstgesuch)
-		final List<AbstractAnmeldung> anmeldungenByRefNr = findAnmeldungenByRefNr(mergedBetreuung.getRefNr());
-		anmeldungenByRefNr.stream()
+		// We need to update (copy) all other Betreuungen with same referenzNummer (on all other Mutationen and Erstgesuch)
+		String referenzNummer = mergedBetreuung.getReferenzNummer();
+		List<AbstractAnmeldung> anmeldungenByReferenzNummer = findAnmeldungenByReferenzNummer(referenzNummer);
+		anmeldungenByReferenzNummer.stream()
 			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(
 				anmeldungTagesschule.getId(),
 				b.getId()))
@@ -324,9 +323,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		updateGueltigFlagOnPlatzAndVorgaenger(anmeldungFerieninsel);
 		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(anmeldungFerieninsel);
 
-		// We need to update (copy) all other Betreuungen with same refNr (on all other Mutationen and Erstgesuch)
-		final List<AbstractAnmeldung> betreuungByRefNr = findAnmeldungenByRefNr(mergedBetreuung.getRefNr());
-		betreuungByRefNr.stream()
+		// We need to update (copy) all other Betreuungen with same referenzNummer (on all other Mutationen and Erstgesuch)
+		String referenzNummer = mergedBetreuung.getReferenzNummer();
+		List<AbstractAnmeldung> anmeldungenByReferenzNummer = findAnmeldungenByReferenzNummer(referenzNummer);
+		anmeldungenByReferenzNummer.stream()
 			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(
 				anmeldungFerieninsel.getId(),
 				b.getId()))
@@ -432,9 +432,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
-		LOG.info("Betreuung mit RefNr: {} wurde abgewiesen", betreuung.getRefNr());
+		LOG.info("Betreuung mit RefNr: {} wurde abgewiesen", betreuung.getReferenzNummer());
 		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
-			betreuung.getRefNr(),
+			betreuung.getReferenzNummer(),
 			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
 			"Die Betreuung wurde abgewiesen",
 			LocalDateTime.now()));
@@ -463,9 +463,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
-		LOG.info("Betreuung mit RefNr: {} wurde bestaetigt", betreuung.getRefNr());
+		LOG.info("Betreuung mit RefNr: {} wurde bestaetigt", betreuung.getReferenzNummer());
 		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
-			betreuung.getRefNr(),
+			betreuung.getReferenzNummer(),
 			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
 			"Die Betreuung wurde bestaetigt",
 			LocalDateTime.now()));
@@ -701,25 +701,25 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public List<AbstractAnmeldung> findAnmeldungenByRefNr(@Nonnull String refNr) {
+	public List<AbstractAnmeldung> findAnmeldungenByReferenzNummer(@Nonnull String referenzNummer) {
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByRefNr(AnmeldungTagesschule.class, refNr, false));
-		result.addAll(findAnmeldungenByRefNr(AnmeldungFerieninsel.class, refNr, false));
+		result.addAll(findAnmeldungenByReferenzNummer(AnmeldungTagesschule.class, referenzNummer, false));
+		result.addAll(findAnmeldungenByReferenzNummer(AnmeldungFerieninsel.class, referenzNummer, false));
 		return result;
 	}
 
 	@Override
-	public List<AbstractAnmeldung> findNewestAnmeldungByRefNr(@Nonnull String refNr) {
+	public List<AbstractAnmeldung> findNewestAnmeldungByReferenzNummer(@Nonnull String referenzNummer) {
 		List<AbstractAnmeldung> result = new ArrayList<>();
-		result.addAll(findAnmeldungenByRefNr(AnmeldungTagesschule.class, refNr, true));
-		result.addAll(findAnmeldungenByRefNr(AnmeldungFerieninsel.class, refNr, true));
+		result.addAll(findAnmeldungenByReferenzNummer(AnmeldungTagesschule.class, referenzNummer, true));
+		result.addAll(findAnmeldungenByReferenzNummer(AnmeldungFerieninsel.class, referenzNummer, true));
 		return result;
 	}
 
 	@Nonnull
-	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByRefNr(
+	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByReferenzNummer(
 		@Nonnull Class<T> clazz,
-		@Nonnull String refNr,
+		@Nonnull String referenzNummer,
 		boolean getOnlyAktuelle
 	) {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -730,12 +730,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Predicate predBetreuungAusgeloest = root.get(AbstractPlatz_.betreuungsstatus)
 			.in(Betreuungsstatus.getBetreuungsstatusForAnmeldungsstatusAusgeloestNotStorniert());
 
-		ParameterExpression<String> refNrParam = cb.parameter(String.class, AbstractPlatz_.REF_NR);
-		Predicate predRefNr = cb.equal(root.get(AbstractPlatz_.refNr), refNrParam);
+		ParameterExpression<String> referenzNummerParam = cb.parameter(String.class, AbstractPlatz_.REFERENZ_NUMMER);
+		Predicate predReferenzNummer = cb.equal(root.get(AbstractPlatz_.referenzNummer), referenzNummerParam);
 
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(predBetreuungAusgeloest);
-		predicates.add(predRefNr);
+		predicates.add(predReferenzNummer);
 
 		if (getOnlyAktuelle) {
 			Predicate predAktuelleBetreuung =
@@ -747,7 +747,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		return persistence.getEntityManager().createQuery(query)
-			.setParameter(refNrParam, refNr)
+			.setParameter(referenzNummerParam, referenzNummer)
 			.getResultList();
 	}
 
@@ -804,32 +804,32 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			if (resultList.size() == 1) {
 				return Optional.of(resultList.get(0));
 			}
-			throw new EbeguRuntimeException("findBetreuungByRefNr", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+			throw new EbeguRuntimeException("findSameBetreuungInDifferentGesuchsperiode", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
 		return Optional.empty();
 	}
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findBetreuungByRefNr(@Nonnull String refNr, boolean onlyGueltig) {
+	public Optional<Betreuung> findBetreuungByReferenzNummer(@Nonnull String referenzNummer, boolean onlyGueltig) {
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
 
-		ParameterExpression<String> refNrParam = cb.parameter(String.class, AbstractPlatz_.REF_NR);
-		Predicate predRefNr = cb.equal(root.get(AbstractPlatz_.refNr), refNrParam);
+		ParameterExpression<String> referenzNummerParam = cb.parameter(String.class, AbstractPlatz_.REFERENZ_NUMMER);
+		Predicate predReferenzNummer = cb.equal(root.get(AbstractPlatz_.referenzNummer), referenzNummerParam);
 
 
 		if (onlyGueltig) {
 			query.where(
-				predRefNr,
+				predReferenzNummer,
 				cb.equal(root.get(AbstractPlatz_.gueltig), Boolean.TRUE)
 			);
 
 			List<Betreuung> resultList = persistence.getEntityManager().createQuery(query)
-				.setParameter(refNrParam, refNr)
+				.setParameter(referenzNummerParam, referenzNummer)
 				.getResultList();
 
 			// TODO hat das jemals Sinn gemacht? Falls es mehr als 1 Resultat gab, wird einfach Optional.empty() zurück gegeben
@@ -837,14 +837,14 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			return singleResult(resultList);
 		}
 
-		query.where(predRefNr)
+		query.where(predReferenzNummer)
 			.orderBy(
 				cb.desc(root.get(AbstractEntity_.timestampErstellt)),
 				cb.desc(root.get(AbstractEntity_.id))
 			);
 
 		List<Betreuung> betreuungen = persistence.getEntityManager().createQuery(query)
-			.setParameter(refNrParam, refNr)
+			.setParameter(referenzNummerParam, referenzNummer)
 			.setMaxResults(1)
 			.getResultList();
 
@@ -958,9 +958,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// the betreuung needs to be removed from the object as well
 		gesuch.getKindContainers()
 			.forEach(kind -> kind.getBetreuungen().removeIf(bet -> bet.getId().equalsIgnoreCase(betreuung.getId())));
-		LOG.info("Betreuung mit RefNr: {} wurde geloescht", betreuung.getRefNr());
+		LOG.info("Betreuung mit RefNr: {} wurde geloescht", betreuung.getReferenzNummer());
 		betreuungMonitoringService.saveBetreuungMonitoring(new BetreuungMonitoring(
-			betreuung.getRefNr(),
+			betreuung.getReferenzNummer(),
 			externalClient != null ? externalClient : principalBean.getBenutzer().getUsername(),
 			"Die Betreuung wurde geloescht",
 			LocalDateTime.now()));
@@ -1379,7 +1379,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByRefNr(@Nonnull String refNr) {
+	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByReferenzNummer(@Nonnull String referenzNummer) {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
@@ -1387,17 +1387,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predGueltig = cb.equal(root.get(AbstractPlatz_.gueltig), Boolean.TRUE);
 
-		ParameterExpression<String> refNrParam = cb.parameter(String.class, AbstractPlatz_.REF_NR);
-		Predicate predRefNr = cb.equal(root.get(AbstractPlatz_.refNr), refNrParam);
+		ParameterExpression<String> referenzNummerParam = cb.parameter(String.class, AbstractPlatz_.REFERENZ_NUMMER);
+		Predicate predReferenzNummer = cb.equal(root.get(AbstractPlatz_.referenzNummer), referenzNummerParam);
 
-		query.where(predRefNr, predGueltig);
+		query.where(predReferenzNummer, predGueltig);
 
 		List<AnmeldungTagesschule> resultList = persistence.getEntityManager().createQuery(query)
-			.setParameter(refNrParam, refNr)
+			.setParameter(referenzNummerParam, referenzNummer)
 			.getResultList();
 
 		// TODO hat das jemals Sinn gemacht? Falls es mehr als 1 Resultat gab, wird einfach Optional.empty() zurück gegeben
-			//  woher kommt die Garantie, dass nur 1 Betreuung pro RefNr gültig ist?
+		//  woher kommt die Garantie, dass nur 1 Betreuung pro RefNr gültig ist?
 		return singleResult(resultList);
 	}
 

@@ -71,10 +71,10 @@ public class ScolarisConverter {
 			.getBelegungTagesschuleModule()
 			.forEach(modulTagesschule -> anmeldungen.add(modulToScolaris(modulTagesschule)));
 		if (CollectionUtils.isEmpty(anmeldungen)) {
-			throw new ScolarisException("No Modules found for " + betreuung.getBGNummer());
+			throw new ScolarisException("No Modules found for " + betreuung.getReferenzNummer());
 		}
 		return new JaxExternalAnmeldungTagesschule(
-			betreuung.getBGNummer(),
+			betreuung.getReferenzNummer(),
 			betreuungsstatusToScolaris(betreuung.getBetreuungsstatus()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			anmeldungen,
@@ -103,7 +103,7 @@ public class ScolarisConverter {
 			new JaxExternalFerieninsel(jaxExternalFerienName, tage, morgenmodule);
 
 		return new JaxExternalAnmeldungFerieninsel(
-			betreuung.getBGNummer(),
+			betreuung.getReferenzNummer(),
 			betreuungsstatusToScolaris(betreuung.getBetreuungsstatus()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			ferieninsel,

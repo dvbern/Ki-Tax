@@ -108,9 +108,11 @@ import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.GO_LIVE;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -212,7 +214,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		void failWhenNoBetreuungFound() {
 			BetreuungEventDTO dto = createBetreuungEventDTO(defaultZeitabschnittDTO());
 
-			expect(betreuungService.findBetreuungByRefNr(dto.getRefnr(), false))
+			expect(betreuungService.findBetreuungByReferenzNummer(dto.getRefnr(), false))
 				.andReturn(Optional.empty());
 
 			testFailed(dto, "Betreuung nicht gefunden.");
@@ -1418,9 +1420,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Nonnull
 		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
-			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
+			Capture<Betreuungsmitteilung> captured = newCapture();
 			//noinspection ConstantConditions
-			mitteilungService.replaceOpenBetreungsmitteilungenWithSameRefNr(EasyMock.capture(captured), EasyMock.eq(REF_NUMMER));
+			mitteilungService.replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(capture(captured), eq(REF_NUMMER));
 			expectLastCall();
 
 			return captured;
@@ -1434,7 +1436,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {
-		expect(betreuungService.findBetreuungByRefNr(REF_NUMMER, false))
+		expect(betreuungService.findBetreuungByReferenzNummer(REF_NUMMER, false))
 			.andReturn(Optional.of(betreuung));
 	}
 

@@ -135,16 +135,16 @@ public interface BetreuungService {
 	Optional<Betreuung> findBetreuung(@Nonnull String betreuungId, boolean doAuthCheck);
 
 	/**
-	 * @param refNr BGNummer der Anmeldung
+	 * @param referenzNummer BGNummer der Anmeldung
 	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
 	 */
-	List<AbstractAnmeldung> findAnmeldungenByRefNr(@Nonnull String refNr);
+	List<AbstractAnmeldung> findAnmeldungenByReferenzNummer(@Nonnull String referenzNummer);
 
 	/**
-	 * @param refNr BGNummer der Anmeldung
+	 * @param referenzNummer BGNummer der Anmeldung
 	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
-	List<AbstractAnmeldung> findNewestAnmeldungByRefNr(@Nonnull String refNr);
+	List<AbstractAnmeldung> findNewestAnmeldungByReferenzNummer(@Nonnull String referenzNummer);
 
 	/**
 	 * Findet die entsprechende Betreuung in der uebergebenen Gesuchsperiode
@@ -163,7 +163,7 @@ public interface BetreuungService {
 	 * Wenn onlyGueltig = false:
 	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findBetreuungByRefNr(@Nonnull String refNr, boolean onlyGueltig);
+	Optional<Betreuung> findBetreuungByReferenzNummer(@Nonnull String referenzNummer, boolean onlyGueltig);
 
 	/**
 	 * @param betreuungId PK (id) der Betreuung
@@ -264,7 +264,7 @@ public interface BetreuungService {
 	void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
 
 	@Nonnull
-	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByRefNr(@Nonnull String refNr);
+	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByReferenzNummer(@Nonnull String referenzNummer);
 
 	@Nonnull
 	Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(@Nonnull Set<BetreuungsmitteilungPensum> pensen, @Nonnull DateRange gueltigkeit);

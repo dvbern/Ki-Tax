@@ -65,7 +65,7 @@
                     <td class="ellipsis" title="{{row.kindFullname}}" ng-bind="row.kindFullname"></td>
                     <td class="ellipsis" title="{{row.institutionStammdaten.institution.name}}"
                         ng-bind="row.institutionStammdaten.institution.name"></td>
-                    <td ng-bind="vm.getBetreuungsId(row)"></td>
+                    <td ng-bind="row.referenzNummer"></td>
                     <td class="ellipsis" title="{{row.timestampErstellt  | amDateFormat : 'DD.MM.YYYY'}}"
                         ng-bind="row.verfuegung.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>
                     <td class="ellipsis" title="{{row.gesuchsperiode.gesuchsperiodeString}}"

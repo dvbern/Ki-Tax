@@ -111,7 +111,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void ignoreEventWhenNoAnmeldungFound() {
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.empty());
 
 			testIgnored("AnmeldungTagesschule nicht gefunden.");
@@ -122,7 +122,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		void ignoreEventWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
 			anmeldungTagesschule.extractGesuchsperiode().setStatus(status);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 
 			testIgnored("Die Gesuchsperiode ist nicht aktiv.");
@@ -134,7 +134,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 			LocalDateTime anmeldungMutiertTime = EVENT_TIME.plusSeconds(1);
 			anmeldungTagesschule.setTimestampMutiert(anmeldungMutiertTime);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 
 			testIgnored(
@@ -144,7 +144,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		@Test
 		void ignoreEventWhenNoExternalClient() {
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			expect(betreuungEventHelper.getExternalClients(CLIENT_NAME, anmeldungTagesschule))
 				.andReturn(new InstitutionExternalClients(null, Collections.emptyList()));
@@ -158,7 +158,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		@Test
 		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(new DateRange(2022));
 
@@ -172,7 +172,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		void ignoreWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
 			anmeldungTagesschule.setBetreuungsstatus(status);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 
@@ -197,7 +197,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 			expect(betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr()))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 			replayAll();

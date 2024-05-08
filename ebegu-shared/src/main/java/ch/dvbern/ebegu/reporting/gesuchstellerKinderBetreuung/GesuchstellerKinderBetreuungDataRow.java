@@ -17,18 +17,19 @@
 
 package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 public class GesuchstellerKinderBetreuungDataRow {
 
-	@Nullable private String bgNummer;
+	@Nullable private String referenzNummer;
 	@Nullable private String institution;
 	@Nullable private BetreuungsangebotTyp betreuungsTyp;
 	@Nullable private String periode;
@@ -125,18 +126,18 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String iban;
 	@Nullable private String kontoinhaber;
 
-	@Nonnull private boolean showBgSensitiveData = true;
+	private boolean showBgSensitiveData = true;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
 
 	@Nullable
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(@Nullable String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	@Nullable

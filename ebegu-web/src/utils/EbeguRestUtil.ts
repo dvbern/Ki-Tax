@@ -2821,7 +2821,7 @@ export class EbeguRestUtil {
                 this.parseBelegungFerieninsel(new TSBelegungFerieninsel(), betreuungFromServer.belegungFerieninsel);
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
-            betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.referenzNummer = betreuungFromServer.referenzNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             betreuungTS.anmeldungTagesschuleZeitabschnitts =

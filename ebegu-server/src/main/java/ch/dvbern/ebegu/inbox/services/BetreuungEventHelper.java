@@ -59,8 +59,8 @@ public class BetreuungEventHelper {
 	private GemeindeService gemeindeService;
 
 	@Nonnull
-	public Optional<Mandant> getMandantFromBgNummer(@Nonnull String refnr) {
-		int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
+	public Optional<Mandant> getMandantFromReferenzNummer(@Nonnull String referenzNummer) {
+		int gemeindeNummer = BetreuungUtil.getGemeindeFromReferenzNummer(referenzNummer);
 
 		return gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer)
 			.map(Gemeinde::getMandant);

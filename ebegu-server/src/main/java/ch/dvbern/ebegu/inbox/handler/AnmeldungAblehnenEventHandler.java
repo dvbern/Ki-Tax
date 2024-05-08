@@ -70,7 +70,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
-		return betreuungService.findAnmeldungenTagesschuleByRefNr(eventMonitor.getRefnr())
+		return betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr())
 			.map(anmeldungTagesschule -> processEventForAblehnung(eventMonitor, anmeldungTagesschule))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}

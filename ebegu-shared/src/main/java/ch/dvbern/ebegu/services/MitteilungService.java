@@ -104,7 +104,7 @@ public interface MitteilungService {
 	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
 
 	@Nonnull
-	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByRefNr(@Nonnull String refNr);
+	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByReferenzNummer(@Nonnull String referenzNummer);
 
 	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
@@ -182,9 +182,9 @@ public interface MitteilungService {
 	/**
 	 * Entfernt alle offenen Betreuungsmitteilungen und speichert stattdessen die übergebene Betreuungsmitteilung.
 	 */
-	void replaceOpenBetreungsmitteilungenWithSameRefNr(
+	void replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(
 		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung,
-		@Nonnull String refNr);
+		@Nonnull String referenzNummer);
 
 	/**
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt
