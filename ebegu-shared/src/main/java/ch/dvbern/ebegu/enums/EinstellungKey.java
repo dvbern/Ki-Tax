@@ -354,7 +354,9 @@ public enum EinstellungKey {
 	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll()),
 
 	// Die Antragsteller können eine Wegzeit angeben (KIBON-3436)
-	WEGZEIT_ERWERBSPENSUM(MandantIdentifier.SCHWYZ);
+	WEGZEIT_ERWERBSPENSUM(MandantIdentifier.SCHWYZ),
+
+	ERWEITERTE_BEDUERFNISSE_AKTIV(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

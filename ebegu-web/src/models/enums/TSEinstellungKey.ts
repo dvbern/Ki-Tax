@@ -137,6 +137,7 @@ export enum TSEinstellungKey {
     GESUCH_BEENDEN_BEI_TAUSCH_GS2 = 'GESUCH_BEENDEN_BEI_TAUSCH_GS2' as any,
     SCHULERGAENZENDE_BETREUUNGEN = 'SCHULERGAENZENDE_BETREUUNGEN' as any,
     WEGZEIT_ERWERBSPENSUM = 'WEGZEIT_ERWERBSPENSUM' as any,
+    ERWEITERTE_BEDUERFNISSE_AKTIV = 'ERWEITERTE_BEDUERFNISSE_AKTIV' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -246,6 +247,7 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
         TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
         TSEinstellungKey.WEGZEIT_ERWERBSPENSUM,
+        TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV,
     ];
 }
 
