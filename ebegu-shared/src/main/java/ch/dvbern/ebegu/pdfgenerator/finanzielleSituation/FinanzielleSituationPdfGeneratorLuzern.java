@@ -170,7 +170,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	private void createPageEkv(@Nonnull FinanzielleSituationResultateDTO finSitDTO, int basisJahr, @Nonnull Document document, boolean isPrintOnNewPage) {
 		if (isPrintOnNewPage) {
 			document.newPage();
-			document.add(createTitleEkv(null));
+			document.add(createTitleEkv());
 			document.add(createIntroEkv());
 		} else {
 			addSpacing(document);

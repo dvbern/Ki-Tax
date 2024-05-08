@@ -50,6 +50,7 @@ import com.google.common.primitives.Floats;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 
 import static ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.MassgebendesEinkommenColumn.column;
@@ -195,19 +196,19 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 
 	@Nonnull
 	protected final PdfPTable createIntroMassgebendesEinkommen() {
-		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
-		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
+		List<TableRowLabelValue> introMassgEinkommen = List.of(
+			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString()))
+		);
 		return PdfUtil.createIntroTable(introMassgEinkommen, sprache, mandant);
 	}
 
 	@Nonnull
 	protected PdfPTable createIntroBasisjahr() {
-		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introBasisjahr.add(new TableRowLabelValue(
-			BASISJAHR,
-			String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
+		List<TableRowLabelValue> introBasisjahr = List.of(
+			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(BASISJAHR, String.valueOf(gesuch.getGesuchsperiode().getBasisJahr()))
+		);
 		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
 	}
 
@@ -268,7 +269,11 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected Element createTitleEkv(@Nullable Integer basisJahr) {
 		String basisJahrString = basisJahr == null ? "" : printJahr(basisJahr);
 
-		return PdfUtil.createBoldParagraph(translate(EKV_TITLE, basisJahrString), 2);
+		return createTitleEkv(basisJahrString);
+	}
+
+	protected Paragraph createTitleEkv(Object... args) {
+		return PdfUtil.createBoldParagraph(translate(EKV_TITLE, args), 2);
 	}
 
 	protected FinanzielleSituationTable createFinSitTable() {

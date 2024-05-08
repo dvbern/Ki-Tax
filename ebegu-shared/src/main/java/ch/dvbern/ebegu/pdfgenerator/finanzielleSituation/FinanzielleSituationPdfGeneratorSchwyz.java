@@ -36,6 +36,8 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.familiensituation.FamiliensituationUtil;
 import ch.dvbern.ebegu.finanziellesituation.AbstractFinanzielleSituationContainer;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
@@ -52,6 +54,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
 
 public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituationPdfGenerator {
+
+	private static final String GESUCHSPERIODE = "PdfGeneration_FinSit_Gesuchsperiode";
 
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String STEUERBARES_EINKOMMEN = "PdfGeneration_FinSit_SteuerbaresEinkommen";
@@ -90,6 +94,16 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 	}
 
 	@Override
+	@Nonnull
+	protected PdfPTable createIntroBasisjahr() {
+		List<TableRowLabelValue> introBasisjahr = List.of(
+			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(GESUCHSPERIODE, gesuch.getGesuchsperiode().getGesuchsperiodeString())
+		);
+		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
+	}
+
+	@Override
 	protected void createPageBasisJahr(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		var gesuchsteller1 = requireNonNull(gesuch.getGesuchsteller1());
 		var finSit1 = requireFinanzielleSituation(gesuchsteller1);
@@ -125,6 +139,10 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 			document.add(createTableZusammenzug(finanzDatenDTO));
 		}
 
+		printFooters(generator);
+	}
+
+	private void printFooters(@Nonnull PdfGenerator generator) {
 		var translatedFooters = footers.stream()
 			.map(this::translate)
 			.collect(Collectors.toList());
@@ -209,18 +227,17 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 
 	@Override
 	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		createPageEkv(document, 1);
+		createPageEkv(generator, document, 1);
 	}
 
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		createPageEkv(document, 2);
+		createPageEkv(generator, document, 2);
 	}
 
-	private void createPageEkv(@Nonnull Document document, int jahrOffset) {
+	private void createPageEkv(@Nonnull PdfGenerator generator, @Nonnull Document document, int jahrOffset) {
 		GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		FinanzielleSituationResultateDTO resultateDTO = requireNonNull(jahrOffset == 1 ? ekvBasisJahrPlus1 : ekvBasisJahrPlus2);
-		int jahr = gesuch.getGesuchsperiode().getBasisJahr() + jahrOffset;
 
 		final boolean gemeinsameSteuererklaerung = FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch);
 		String name = gemeinsameSteuererklaerung ?
@@ -249,7 +266,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 
 		if (!tablesGS1.isEmpty() || !tablesGS2.isEmpty()) {
 			document.newPage();
-			document.add(createTitleEkv(jahr));
+			document.add(createTitleEkv());
 			document.add(createIntroEkv());
 			tablesGS1.forEach(document::add);
 			if (!tablesGS1.isEmpty()) {
@@ -260,6 +277,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 				document.add(createSpacing());
 				document.add(createTableZusammenzug(resultateDTO));
 			}
+			printFooters(generator);
 		}
 	}
 

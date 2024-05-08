@@ -250,7 +250,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	) {
 		if (isPrintOnNewPage) {
 			document.newPage();
-			document.add(createTitleEkv(null));
+			document.add(createTitleEkv());
 			document.add(createIntroEkv());
 		} else {
 			addSpacing(document);
