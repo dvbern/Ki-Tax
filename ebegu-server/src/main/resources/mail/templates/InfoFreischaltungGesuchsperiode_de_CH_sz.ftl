@@ -28,8 +28,7 @@ Content-Type: text/html;charset=utf-8
 	<p>
 		Sie können ab sofort für das nächste Schuljahr ${gesuchsperiode.gesuchsperiodeString} ein Gesuch für Beiträge zur
 		Kinderbetreuung stellen. Falls Sie nach dem 1. August ${gesuchsperiode.basisJahr} Beiträge erhalten wollen, müssen Sie in
-		jedem Fall ein neues
-		Gesuch stellen. <br>
+		jedem Fall ein neues Gesuch stellen.
 	</p>
 	<p>
 		Sie haben frühestens einen Monat nach Einreichung des vollständigen Gesuchs Anspruch auf Beiträge. Das heisst: Falls Sie
