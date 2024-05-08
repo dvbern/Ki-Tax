@@ -32,10 +32,8 @@ import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -44,7 +42,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.ModulTagesschuleService;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -93,10 +90,6 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
-	private GemeindeService gemeindeService;
-
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
-	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
@@ -114,15 +107,11 @@ public class AnmeldungBestaetigungEventHandlerTest extends EasyMockSupport {
 	private AnmeldungTagesschule anmeldungTagesschule;
 	private TagesschuleBestaetigungEventDTO tagesschuleBestaetigungEventDTO;
 	private EventMonitor eventMonitor = null;
-	private Mandant mandant;
-	private Gemeinde gemeinde;
 
 	@BeforeEach
 	void setUp() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
-		gemeinde = betreuung.extractGemeinde();
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		mandant = Objects.requireNonNull(gemeinde.getMandant());
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		tagesschuleBestaetigungEventDTO = AnmeldungTestUtil.createTagesschuleBestaetigungEventDTO();

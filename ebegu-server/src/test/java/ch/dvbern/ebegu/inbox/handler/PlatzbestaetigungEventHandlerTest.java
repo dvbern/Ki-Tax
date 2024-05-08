@@ -452,6 +452,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			ErweiterteBetreuung erweiterteBetreuung = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
 			assertThat(requireNonNull(erweiterteBetreuung).isSprachfoerderungBestaetigt(), is(isBestaetigt));
+			assertThat(result.isProcessingSuccess(), is(true));
 			verifyAll();
 		}
 

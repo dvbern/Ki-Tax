@@ -27,14 +27,12 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -77,22 +75,16 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	private BetreuungEventHelper betreuungEventHelper;
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
-	@Mock
-	private GemeindeService gemeindeService;
-
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private AnmeldungTagesschule anmeldungTagesschule;
 	private EventMonitor eventMonitor = null;
-	private Mandant mandant;
 
 	@BeforeEach
 	void setUp() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		mandant = gesuchsperiode.getMandant();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, REF_NUMMER, CLIENT_NAME);

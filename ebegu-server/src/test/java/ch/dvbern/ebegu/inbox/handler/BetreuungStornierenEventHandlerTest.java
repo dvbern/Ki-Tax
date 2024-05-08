@@ -21,9 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -38,8 +36,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -118,16 +114,11 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private Gesuch gesuch_1GS = null;
 	private Gemeinde gemeinde = null;
 	private EventMonitor eventMonitor = null;
-	private Mandant mandant;
 
 	@BeforeEach
 	void setUp() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
-		mandant = requireNonNull(gemeinde.getMandant());
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
 			new Testfall01_WaeltiDagmar(gesuchsperiode, false, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall_1GS.createFall();
