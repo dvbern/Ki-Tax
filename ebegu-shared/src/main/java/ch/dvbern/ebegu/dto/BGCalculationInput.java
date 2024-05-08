@@ -17,19 +17,29 @@
 
 package ch.dvbern.ebegu.dto;
 
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.*;
-import ch.dvbern.ebegu.rules.RuleValidity;
-import ch.dvbern.ebegu.util.MathUtil;
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.*;
+
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.util.MathUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BGCalculationInput {
 
@@ -200,7 +210,7 @@ public class BGCalculationInput {
 
 	private boolean betreuungInFerienzeit = false;
 
-	private BigDecimal eingewoehnungPauschale = BigDecimal.ZERO;
+	private BigDecimal eingewoehnungKosten = BigDecimal.ZERO;
 
 	@Getter
 	@Setter
@@ -282,7 +292,7 @@ public class BGCalculationInput {
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.finsitAccepted = toCopy.finsitAccepted;
-		this.eingewoehnungPauschale = toCopy.eingewoehnungPauschale;
+		this.eingewoehnungKosten = toCopy.eingewoehnungKosten;
 		this.betreuungInFerienzeit = toCopy.betreuungInFerienzeit;
 		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 		this.anwesenheitsTageProMonat = toCopy.anwesenheitsTageProMonat;
@@ -916,7 +926,7 @@ public class BGCalculationInput {
 		}
 		this.betreuungInFerienzeit = this.betreuungInFerienzeit || other.betreuungInFerienzeit;
 
-		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
+		this.eingewoehnungKosten = add(this.eingewoehnungKosten, other.eingewoehnungKosten);
 		this.anwesenheitsTageProMonat = add(this.anwesenheitsTageProMonat, other.anwesenheitsTageProMonat);
 	}
 
@@ -1010,7 +1020,7 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
-		this.eingewoehnungPauschale = calculatePercentage(this.eingewoehnungPauschale, percentage);
+		this.eingewoehnungKosten = calculatePercentage(this.eingewoehnungKosten, percentage);
 		this.anwesenheitsTageProMonat = calculatePercentage(this.anwesenheitsTageProMonat, percentage);
 	}
 
@@ -1125,7 +1135,7 @@ public class BGCalculationInput {
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
 			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
 			this.finsitAccepted == other.finsitAccepted &&
-			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale) &&
+			MathUtil.isSame(this.eingewoehnungKosten, other.eingewoehnungKosten) &&
 			this.betreuungInFerienzeit == other.betreuungInFerienzeit &&
 			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat;
 	}
@@ -1160,7 +1170,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
-			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale) &&
+			MathUtil.isSame(eingewoehnungKosten, that.eingewoehnungKosten) &&
 			MathUtil.isSame(anwesenheitsTageProMonat, that.anwesenheitsTageProMonat) &&
 			betreuungInFerienzeit == that.betreuungInFerienzeit;
 	}
@@ -1349,12 +1359,12 @@ public class BGCalculationInput {
 		this.finsitAccepted = finsitAccepted;
 	}
 
-	public BigDecimal getEingewoehnungPauschale() {
-		return eingewoehnungPauschale;
+	public BigDecimal getEingewoehnungKosten() {
+		return eingewoehnungKosten;
 	}
 
-	public void setEingewoehnungPauschale(BigDecimal eingewoehnungPauschale) {
-		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	public void setEingewoehnungKosten(BigDecimal eingewoehnungKosten) {
+		this.eingewoehnungKosten = eingewoehnungKosten;
 	}
 
 	public boolean isBetreuungInFerienzeit() {

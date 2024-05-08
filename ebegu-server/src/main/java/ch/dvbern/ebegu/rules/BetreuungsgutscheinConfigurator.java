@@ -15,6 +15,19 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -30,12 +43,52 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.RuleParameterUtil;
 import com.google.common.base.Enums;
 
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static ch.dvbern.ebegu.enums.EinstellungKey.*;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANGEBOT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_AB_X_MONATEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_MONATSWEISE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SOZIALVERSICHERUNGSNUMMER_PERIODE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.WEGZEIT_ERWERBSPENSUM;
 
 /**
  * Configurator, welcher die Regeln und ihre Reihenfolge konfiguriert. Als Parameter erhält er den Mandanten sowie
@@ -193,10 +246,9 @@ public class BetreuungsgutscheinConfigurator {
 				new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, ruleParameterUtil);
 
-		// Eingewoehnung Pauschale
-		EingewoehnungPauschaleAbschnittRule eingewoehnungPauschaleAbschnittRule =
-				new EingewoehnungPauschaleAbschnittRule(defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(eingewoehnungPauschaleAbschnittRule, ruleParameterUtil);
+		// Eingewoehnungkosten
+		EingewoehnungAbschnittRule eingewoehnungAbschnittRule = new EingewoehnungAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(eingewoehnungAbschnittRule, ruleParameterUtil);
 
 		// - Pensum Tagesschule
 		TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule =

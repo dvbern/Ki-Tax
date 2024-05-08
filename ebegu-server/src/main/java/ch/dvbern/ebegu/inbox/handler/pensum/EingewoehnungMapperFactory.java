@@ -33,7 +33,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 @ApplicationScoped
 @NoArgsConstructor
 @AllArgsConstructor
-public class EingewoehnungPauschaleMapperFactory {
+public class EingewoehnungMapperFactory {
 
 	@Inject
 	private EinstellungService einstellungService;
@@ -41,7 +41,7 @@ public class EingewoehnungPauschaleMapperFactory {
 	@Inject
 	private Validator validator;
 
-	public PensumMapper<AbstractMahlzeitenPensum> createForEingewoehnungPauschale(ProcessingContext ctx) {
+	public PensumMapper<AbstractMahlzeitenPensum> createForEingewoehnung(ProcessingContext ctx) {
 		EingewoehnungTyp eingewoehnungTyp =
 			EingewoehnungTyp.valueOf(einstellungService.findEinstellung(EINGEWOEHNUNG_TYP, ctx.getBetreuung()).getValue());
 

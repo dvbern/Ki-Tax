@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
@@ -89,7 +89,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			new BetreuungInFerienzeitMapperFactory(mitteilungService),
 			new MahlzeitVerguenstigungMapperFactory(einstellungService),
 			new PensumValueMapperFactory(einstellungService),
-			new EingewoehnungPauschaleMapperFactory(einstellungService, validator)
+			new EingewoehnungMapperFactory(einstellungService, validator)
 		);
 	}
 
@@ -202,9 +202,9 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			.where(AbstractBetreuungsPensum::getPensum, comparesEqualTo(z.getBetreuungspensum()))
 			.where(AbstractBetreuungsPensum::getUnitForDisplay, is(PensumUnits.valueOf(z.getPensumUnit().name())))
 			.where(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
-			.where(AbstractBetreuungsPensum::getEingewoehnungPauschale, pojo(EingewoehnungPauschale.class)
-				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(z.getEingewoehnung().getKosten()))
-				.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
+			.where(AbstractBetreuungsPensum::getEingewoehnung, pojo(Eingewoehnung.class)
+				.where(Eingewoehnung::getKosten, comparesEqualTo(z.getEingewoehnung().getKosten()))
+				.where(Eingewoehnung::getGueltigkeit, pojo(DateRange.class)
 					.where(DateRange::getGueltigAb, is(z.getEingewoehnung().getVon()))
 					.where(DateRange::getGueltigBis, is(z.getEingewoehnung().getBis()))
 				))

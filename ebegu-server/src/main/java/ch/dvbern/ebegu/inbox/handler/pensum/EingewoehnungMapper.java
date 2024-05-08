@@ -24,7 +24,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
@@ -48,18 +48,18 @@ public class EingewoehnungMapper implements PensumMapper<AbstractMahlzeitenPensu
 	) {
 		EingewoehnungDTO dto = zeitabschnittDTO.getEingewoehnung();
 		if (dto == null) {
-			target.setEingewoehnungPauschale(null);
+			target.setEingewoehnung(null);
 
 			return;
 		}
 
-		EingewoehnungPauschale eingewoehnung = new EingewoehnungPauschale();
-		eingewoehnung.setPauschale(dto.getKosten());
+		Eingewoehnung eingewoehnung = new Eingewoehnung();
+		eingewoehnung.setKosten(dto.getKosten());
 		eingewoehnung.getGueltigkeit().setGueltigAb(dto.getVon());
 		eingewoehnung.getGueltigkeit().setGueltigBis(dto.getBis());
-		Set<ConstraintViolation<EingewoehnungPauschale>> constraintViolations = validator.validate(eingewoehnung);
+		Set<ConstraintViolation<Eingewoehnung>> constraintViolations = validator.validate(eingewoehnung);
 		if (constraintViolations.isEmpty()) {
-			target.setEingewoehnungPauschale(eingewoehnung);
+			target.setEingewoehnung(eingewoehnung);
 		} else {
 			target.setVollstaendig(false);
 			ctx.requireHumanConfirmation();

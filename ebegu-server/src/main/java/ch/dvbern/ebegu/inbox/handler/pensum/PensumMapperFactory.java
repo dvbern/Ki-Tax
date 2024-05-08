@@ -41,7 +41,7 @@ public class PensumMapperFactory {
 	@Inject
 	private PensumValueMapperFactory pensumValueMapperFactory;
 	@Inject
-	private EingewoehnungPauschaleMapperFactory eingewoehnungPauschaleMapperFactory;
+	private EingewoehnungMapperFactory eingewoehnungMapperFactory;
 
 	@Nonnull
 	public PensumMapper<Betreuungspensum> createForPlatzbestaetigung(@Nonnull ProcessingContext ctx) {
@@ -71,7 +71,7 @@ public class PensumMapperFactory {
 			PensumMapper.BETREUTE_TAGE_MAPPER,
 			pensumValueMapperFactory.createForPensum(ctx),
 			// the following mappers are (currently) not possible for Mittagstisch
-			eingewoehnungPauschaleMapperFactory.createForEingewoehnungPauschale(ctx),
+			eingewoehnungMapperFactory.createForEingewoehnung(ctx),
 			mahlzeitVerguenstigungMapperFactory.createForMahlzeitenVerguenstigung(ctx),
 			betreuungInFerienzeitMapperFactory.createForBetreuungInFerienzeit(ctx)
 		);

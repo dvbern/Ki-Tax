@@ -13,34 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.dtos;
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-import javax.annotation.Nonnull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-import java.math.BigDecimal;
+export class TSEingewoehnung extends TSAbstractDateRangedEntity {
 
-/**
- * Superklasse fuer ein Pensum
- */
-@XmlTransient
-@XmlAccessorType(XmlAccessType.FIELD)
-public class JaxEingewoehnungPauschale extends JaxAbstractDateRangedDTO {
+    private _kosten: number;
 
+    public constructor() {
+        super();
+    }
 
-	private static final long serialVersionUID = 5161971483109161443L;
+    public get kosten(): number {
+        return this._kosten;
+    }
 
-	@Nonnull
-	private BigDecimal pauschale;
-
-
-	@Nonnull
-	public BigDecimal getPauschale() {
-		return pauschale;
-	}
-
-	public void setPauschale(@Nonnull BigDecimal pauschale) {
-		this.pauschale = pauschale;
-	}
+    public set kosten(value: number) {
+        this._kosten = value;
+    }
 }

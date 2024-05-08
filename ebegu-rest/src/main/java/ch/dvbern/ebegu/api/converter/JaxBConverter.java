@@ -70,7 +70,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
-import ch.dvbern.ebegu.api.dtos.JaxEingewoehnungPauschale;
+import ch.dvbern.ebegu.api.dtos.JaxEingewoehnung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
@@ -3776,13 +3776,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
-		if (abweichung.getVertraglicheEingewoehnungPauschale() != null) {
-			jaxAbweichung.setEingewoehnungPauschale(eingewoehnungPauschaleToJax(
-				abweichung.getVertraglicheEingewoehnungPauschale(),
-				new JaxEingewoehnungPauschale()));
-			if (abweichung.getEingewoehnungPauschale() != null) {
-				jaxAbweichung.getEingewoehnungPauschale().setId(abweichung.getEingewoehnungPauschale().getId());
+		if (abweichung.getVertraglicheEingewoehnung() != null) {
+			var jaxEingewoehnung = eingewoehnungToJax(abweichung.getVertraglicheEingewoehnung(), new JaxEingewoehnung());
+			if (abweichung.getEingewoehnung() != null) {
+				jaxEingewoehnung.setId(abweichung.getEingewoehnung().getId());
 			}
+			jaxAbweichung.setEingewoehnung(jaxEingewoehnung);
 		}
 
 		return jaxAbweichung;

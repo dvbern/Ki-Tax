@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -24,9 +27,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.math.BigDecimal;
-import java.util.Collections;
 
 
 public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
@@ -116,7 +116,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(485.25);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungPauschale(BigDecimal.valueOf(500));
+		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungKosten(BigDecimal.valueOf(500));
 
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);

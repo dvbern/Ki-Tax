@@ -22,6 +22,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 
 @FunctionalInterface

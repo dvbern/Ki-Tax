@@ -166,8 +166,8 @@ export class MitteilungRS {
         betreuung.betreuungspensumContainers.forEach(betpenContainer => {
             const pensumJA = angular.copy(betpenContainer.betreuungspensumJA);
             pensumJA.id = undefined; // the id must be set to undefined in order no to duplicate it
-            if (EbeguUtil.isNotNullOrUndefined(pensumJA.eingewoehnungPauschale)) {
-                pensumJA.eingewoehnungPauschale.id = undefined;
+            if (EbeguUtil.isNotNullOrUndefined(pensumJA.eingewoehnung)) {
+                pensumJA.eingewoehnung.id = undefined;
             }
             pensen.push(pensumJA);
         });
