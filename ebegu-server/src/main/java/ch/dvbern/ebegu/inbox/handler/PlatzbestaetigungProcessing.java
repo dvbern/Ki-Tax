@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 
 import static ch.dvbern.ebegu.inbox.handler.ProcessingState.FAILURE;
@@ -31,6 +32,7 @@ import static ch.dvbern.ebegu.inbox.handler.ProcessingState.IGNORE;
 import static ch.dvbern.ebegu.inbox.handler.ProcessingState.SUCCESS;
 
 @Value
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class PlatzbestaetigungProcessing extends Processing {
 
