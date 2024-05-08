@@ -440,6 +440,7 @@ describe('EbeguRestUtil', () => {
                     .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
                 expect(restErwerbspensum.gueltigBis)
                     .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
+                expect(restErwerbspensum.wegzeit).toEqual(erwerbspensumJA.wegzeit);
 
                 const transformedErwerbspensum = ebeguRestUtil.parseErwerbspensum(new TSErwerbspensum(),
                     restErwerbspensum);
