@@ -19,7 +19,8 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -34,51 +35,49 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 
 	private static final long serialVersionUID = -3035958327660443564L;
 
-	@Nonnull
+	@NotNull
 	private BigDecimal monatlicheHauptmahlzeiten;
 
-	@Nonnull
+	@NotNull
 	private BigDecimal monatlicheNebenmahlzeiten;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal tarifProHauptmahlzeit;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal tarifProNebenmahlzeit;
 
-	@Nonnull
 	public BigDecimal getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
 
-	public void setMonatlicheHauptmahlzeiten(@Nonnull BigDecimal monatlicheHauptmahlzeiten) {
+	public void setMonatlicheHauptmahlzeiten(BigDecimal monatlicheHauptmahlzeiten) {
 		this.monatlicheHauptmahlzeiten = monatlicheHauptmahlzeiten;
 	}
 
-	@Nonnull
 	public BigDecimal getMonatlicheNebenmahlzeiten() {
 		return monatlicheNebenmahlzeiten;
 	}
 
-	public void setMonatlicheNebenmahlzeiten(@Nonnull BigDecimal monatlicheNebenmahlzeiten) {
+	public void setMonatlicheNebenmahlzeiten(BigDecimal monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTarifProHauptmahlzeit() {
 		return tarifProHauptmahlzeit;
 	}
 
-	public void setTarifProHauptmahlzeit(@Nonnull BigDecimal tarifProHauptmahlzeit) {
+	public void setTarifProHauptmahlzeit(@Nullable BigDecimal tarifProHauptmahlzeit) {
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTarifProNebenmahlzeit() {
 		return tarifProNebenmahlzeit;
 	}
 
-	public void setTarifProNebenmahlzeit(@Nonnull BigDecimal tarifProNebenmahlzeit) {
+	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {
 		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 }

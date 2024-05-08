@@ -3249,9 +3249,13 @@ public class JaxBConverter extends AbstractConverter {
 	) {
 		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
 		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
-		abweichung.setTarifProHauptmahlzeit(jaxAbweichung.getTarifProHauptmahlzeit());
+		if (jaxAbweichung.getTarifProHauptmahlzeit() != null) {
+			abweichung.setTarifProHauptmahlzeit(jaxAbweichung.getTarifProHauptmahlzeit());
+		}
 		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
-		abweichung.setTarifProNebenmahlzeit(jaxAbweichung.getTarifProNebenmahlzeit());
+		if(jaxAbweichung.getTarifProNebenmahlzeit() != null) {
+			abweichung.setTarifProNebenmahlzeit(jaxAbweichung.getTarifProNebenmahlzeit());
+		}
 		abweichung.setStatus(jaxAbweichung.getStatus()); // the frontend should not be able to decide this...
 
 		return abweichung;
