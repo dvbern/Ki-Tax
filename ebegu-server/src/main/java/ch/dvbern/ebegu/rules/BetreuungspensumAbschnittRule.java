@@ -147,6 +147,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
 		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
 		zeitabschnitt.setPensumUnitForAsivAndGemeinde(betreuungspensum.getUnitForDisplay());
+		if (betreuungspensum.getBetreuuteTage() != null) {
+			zeitabschnitt.setAnwesenheitsTageProMonat(betreuungspensum.getBetreuuteTage());
+		}
 		// Anzahl Haupt und Nebenmahlzeiten übernehmen
 		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheNebenmahlzeiten());

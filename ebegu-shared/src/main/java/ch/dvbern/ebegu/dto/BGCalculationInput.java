@@ -285,6 +285,7 @@ public class BGCalculationInput {
 		this.eingewoehnungPauschale = toCopy.eingewoehnungPauschale;
 		this.betreuungInFerienzeit = toCopy.betreuungInFerienzeit;
 		this.anzahlGeschwister = toCopy.anzahlGeschwister;
+		this.anwesenheitsTageProMonat = toCopy.anwesenheitsTageProMonat;
 	}
 
 	@Nonnull
@@ -916,6 +917,7 @@ public class BGCalculationInput {
 		this.betreuungInFerienzeit = this.betreuungInFerienzeit || other.betreuungInFerienzeit;
 
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
+		this.anwesenheitsTageProMonat = add(this.anwesenheitsTageProMonat, other.anwesenheitsTageProMonat);
 	}
 
 	/**
@@ -1009,6 +1011,7 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
 		this.eingewoehnungPauschale = calculatePercentage(this.eingewoehnungPauschale, percentage);
+		this.anwesenheitsTageProMonat = calculatePercentage(this.anwesenheitsTageProMonat, percentage);
 	}
 
 	public void roundValuesAfterCalculateProportinaly() {
@@ -1123,7 +1126,8 @@ public class BGCalculationInput {
 			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
 			this.finsitAccepted == other.finsitAccepted &&
 			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale) &&
-			this.betreuungInFerienzeit == other.betreuungInFerienzeit;
+			this.betreuungInFerienzeit == other.betreuungInFerienzeit &&
+			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1157,6 +1161,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
 			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale) &&
+			MathUtil.isSame(anwesenheitsTageProMonat, that.anwesenheitsTageProMonat) &&
 			betreuungInFerienzeit == that.betreuungInFerienzeit;
 	}
 
