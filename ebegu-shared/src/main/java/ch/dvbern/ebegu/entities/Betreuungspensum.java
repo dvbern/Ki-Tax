@@ -64,7 +64,7 @@ public class Betreuungspensum extends AbstractBetreuungsPensum implements Compar
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
-		this.setBetreuuteTage(betPensumMitteilung.getBetreuuteTage());
+		this.setBetreuteTage(betPensumMitteilung.getBetreuteTage());
 
 		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
 			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();

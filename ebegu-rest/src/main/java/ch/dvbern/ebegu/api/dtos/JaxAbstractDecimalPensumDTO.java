@@ -58,7 +58,7 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	private JaxEingewoehnungPauschale eingewoehnungPauschale;
 
 	@Nullable
-	private BigDecimal betreuuteTage;
+	private BigDecimal betreuteTage;
 
 	@Nonnull
 	public PensumUnits getUnitForDisplay() {
@@ -106,11 +106,11 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuuteTage() {
-		return betreuuteTage;
+	public BigDecimal getBetreuteTage() {
+		return betreuteTage;
 	}
 
-	public void setBetreuuteTage(@Nullable BigDecimal betreuuteTage) {
-		this.betreuuteTage = betreuuteTage;
+	public void setBetreuteTage(@Nullable BigDecimal betreuteTage) {
+		this.betreuteTage = betreuteTage;
 	}
 }

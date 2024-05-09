@@ -16,16 +16,16 @@
  */
 
 ALTER TABLE betreuungsmitteilung_pensum
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);
 ALTER TABLE betreuungsmitteilung_pensum_aud
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);
 
 ALTER TABLE betreuungspensum
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);
 ALTER TABLE betreuungspensum_aud
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);
 
 ALTER TABLE betreuungspensum_abweichung
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);
 ALTER TABLE betreuungspensum_abweichung_aud
-	ADD betreuute_tage DECIMAL(19, 2);
+	ADD betreute_tage DECIMAL(19, 2);

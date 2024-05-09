@@ -46,7 +46,7 @@ public class AnwesenheitstageMessageFactory implements BetreuungsmitteilungPensu
 			messageKey,
 			locale,
 			mandant,
-			numberFormat.format(pensum.getBetreuuteTage() != null ? pensum.getBetreuuteTage() : BigDecimal.ZERO)
+			numberFormat.format(pensum.getBetreuteTage() != null ? pensum.getBetreuteTage() : BigDecimal.ZERO)
 		);
 	}
 }

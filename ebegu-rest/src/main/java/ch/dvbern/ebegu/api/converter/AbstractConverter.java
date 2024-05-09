@@ -245,7 +245,7 @@ public class AbstractConverter {
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setPensum(jaxPensum.getPensum());
 		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
-		pensumEntity.setBetreuuteTage(jaxPensum.getBetreuuteTage());
+		pensumEntity.setBetreuteTage(jaxPensum.getBetreuteTage());
 
 		if (jaxPensum.getEingewoehnungPauschale() != null) {
 			EingewoehnungPauschale eingewoehnungPauschale = pensumEntity.getEingewoehnungPauschale() != null ?
@@ -284,7 +284,7 @@ public class AbstractConverter {
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-		jaxPensum.setBetreuuteTage(pensum.getBetreuuteTage());
+		jaxPensum.setBetreuteTage(pensum.getBetreuteTage());
 		// TODO warum hier keine Eingewöhnungspauschale?
 	}
 
@@ -297,7 +297,7 @@ public class AbstractConverter {
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-		jaxPensum.setBetreuuteTage(pensum.getBetreuuteTage());
+		jaxPensum.setBetreuteTage(pensum.getBetreuteTage());
 		if (pensum.getEingewoehnungPauschale() != null) {
 			jaxPensum.setEingewoehnungPauschale(
 				eingewoehnungPauschaleToJax(pensum.getEingewoehnungPauschale(), new JaxEingewoehnungPauschale()));

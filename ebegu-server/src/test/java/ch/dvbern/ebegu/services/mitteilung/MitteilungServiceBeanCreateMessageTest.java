@@ -164,7 +164,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void tfoMitAnwesenheitstagen() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		pensum.setBetreuuteTage(BigDecimal.valueOf(8));
+		pensum.setBetreuteTage(BigDecimal.valueOf(8));
 		final Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(BetreuungsangebotTyp.TAGESFAMILIEN, pensum);
 		String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, false, false, true, pensum);
 

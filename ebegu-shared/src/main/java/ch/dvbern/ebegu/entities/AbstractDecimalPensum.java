@@ -76,7 +76,7 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Nullable
 	@Column(nullable = true)
 	@DecimalMin("0")
-	private BigDecimal betreuuteTage;
+	private BigDecimal betreuteTage;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -100,7 +100,7 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay()
 			&& this.getMonatlicheBetreuungskosten().compareTo(otherAbstDateRangedEntity.getMonatlicheBetreuungskosten()) == 0
 			&& MathUtil.isSame(this.getStuendlicheVollkosten(), otherAbstDateRangedEntity.getStuendlicheVollkosten())
-			&& MathUtil.isSame(this.getBetreuuteTage(), otherAbstDateRangedEntity.getBetreuuteTage())
+			&& MathUtil.isSame(this.getBetreuteTage(), otherAbstDateRangedEntity.getBetreuteTage())
 			&& EbeguUtil.isSame(this.getEingewoehnungPauschale(), otherAbstDateRangedEntity.getEingewoehnungPauschale());
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
-		target.setBetreuuteTage(this.getBetreuuteTage());
+		target.setBetreuteTage(this.getBetreuteTage());
 		if (this.getEingewoehnungPauschale() != null) {
 			target.setEingewoehnungPauschale(this.getEingewoehnungPauschale()
 				.copyEingewohnungEntity(new EingewoehnungPauschale(), copyType));
@@ -190,11 +190,11 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuuteTage() {
-		return betreuuteTage;
+	public BigDecimal getBetreuteTage() {
+		return betreuteTage;
 	}
 
-	public void setBetreuuteTage(@Nullable BigDecimal betreuuteTage) {
-		this.betreuuteTage = betreuuteTage;
+	public void setBetreuteTage(@Nullable BigDecimal betreuteTage) {
+		this.betreuteTage = betreuteTage;
 	}
 }

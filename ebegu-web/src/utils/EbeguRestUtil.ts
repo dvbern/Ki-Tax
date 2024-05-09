@@ -406,7 +406,7 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum ?? 0;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
-        restObj.betreuuteTage = betreuungspensumEntity.betreuuteTage;
+        restObj.betreuteTage = betreuungspensumEntity.betreuteTage;
         if (betreuungspensumEntity.eingewoehnungPauschale) {
             restObj.eingewoehnungPauschale =
                 this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
@@ -439,7 +439,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
-        betreuungspensumTS.betreuuteTage = betreuungspensumFromServer.betreuuteTage;
+        betreuungspensumTS.betreuteTage = betreuungspensumFromServer.betreuteTage;
         betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
             betreuungspensumFromServer.eingewoehnungPauschale);
         betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);

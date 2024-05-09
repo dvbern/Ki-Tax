@@ -1,9 +1,9 @@
 ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungSnapshotTest.mappingMustBeReconsideredWhenPropertiesChange=[
   {
+    "betreuteTage": null,
     "betreuungInFerienzeit": null,
     "betreuungsmitteilung": null,
     "betreuungspensumAbweichung": null,
-    "betreuuteTage": null,
     "eingewoehnungPauschale": {
       "gueltigkeit": {
         "gueltigAb": "2024-01-01",
