@@ -15,19 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.inbox.handler.pensum;
+package ch.dvbern.ebegu.betreuung;
 
-import javax.enterprise.context.ApplicationScoped;
+import lombok.Builder;
+import lombok.Value;
 
-import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
-import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-
-@ApplicationScoped
-public class BetreuungInFerienzeitMapperFactory {
-
-	public PensumMapper<AbstractBetreuungsPensum> createForBetreuungInFerienzeit(ProcessingContext ctx) {
-		return ctx.getEinstellungen().isSchulergaenzendeBetreuungEnabled() ?
-			new BetreuungInFerienzeitMapper(ctx) :
-			PensumMapper.nop();
-	}
+@Value
+@Builder
+public class BetreuungEinstellungen {
+	boolean betreuteTageEnabled;
+	boolean mahlzeitenVerguenstigungEnabled;
+	boolean schulergaenzendeBetreuungEnabled;
 }

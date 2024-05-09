@@ -32,6 +32,8 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -133,6 +135,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@Mock
 	private BetreuungService betreuungService;
+
+	@Mock
+	private BetreuungEinstellungenService betreuungEinstellungenService;
 
 	@Mock
 	private EinstellungService einstellungService;
@@ -378,7 +383,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			betreuung.setBetreuungsstatus(status);
 
 			expectBetreuungWithoutOffeneBetreuungsmitteilung(betreuung);
-
+			expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+				.andReturn(BetreuungEinstellungen.builder().build());
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
 			testFailed(dto, "Platzbestätigung oder Mutation nicht möglich.");
@@ -442,6 +448,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			dto.setSprachfoerderungBestaetigt(sprachfoerderung);
 			expectPlatzBestaetigung();
 			expectBetreuungWithoutOffeneBetreuungsmitteilung(betreuung);
+			expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+				.andReturn(BetreuungEinstellungen.builder().build());
 			expectGetSchnittstelleSprachfoerderungAktivAb(aktivierungDatum);
 			mockClients(clientGueltigkeit);
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
@@ -607,6 +615,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 				expectHumanConfirmation();
 				expectBetreuungWithoutOffeneBetreuungsmitteilung(betreuung);
+				expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+					.andReturn(BetreuungEinstellungen.builder().build());
 				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 1, 1));
 				mockClients(clientGueltigkeit, List.of(client2));
 				expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
@@ -882,7 +892,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		private void testProcessingSuccess(boolean erweitereBetreuung) {
 			expectBetreuungWithoutOffeneBetreuungsmitteilung(betreuung);
-
+			expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+				.andReturn(BetreuungEinstellungen.builder().build());
 			if (erweitereBetreuung) {
 				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 1, 1));
 			}
@@ -1388,6 +1399,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
 			expectBetreuungFound(betreuung);
+			expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+				.andReturn(BetreuungEinstellungen.builder().build());
 
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));

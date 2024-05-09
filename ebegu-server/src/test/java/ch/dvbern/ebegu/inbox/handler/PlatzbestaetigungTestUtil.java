@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
@@ -170,14 +171,17 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
-	public static ProcessingContext initProcessingContext(@Nonnull ZeitabschnittDTO zeitabschnitt) {
+	public static ProcessingContext initProcessingContext(
+		@Nonnull ZeitabschnittDTO zeitabschnitt,
+		@Nonnull BetreuungEinstellungen einstellungen
+	) {
 		Gesuch gesuch = PlatzbestaetigungTestUtil.initGesuch();
 		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(zeitabschnitt);
 
 		return new ProcessingContext(
 			betreuung,
-			null,
+			einstellungen,
 			betreuungEventDTO,
 			getClientPeriodeGueltigkeit(betreuung),
 			new EventMonitor(mock(BetreuungMonitoringService.class), LocalDateTime.now(), betreuungEventDTO.getRefnr(),

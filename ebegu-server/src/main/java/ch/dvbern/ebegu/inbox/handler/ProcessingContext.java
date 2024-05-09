@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.types.DateRange;
@@ -32,6 +33,12 @@ public class ProcessingContext {
 
 	@Nonnull
 	private final Betreuung betreuung;
+
+	@Nonnull
+	private final BetreuungEinstellungen einstellungen;
+
+	@Nonnull
+	private final BetreuungEventDTO dto;
 
 	@Nullable
 	private final Betreuungsmitteilung latestOpenBetreuungsmitteilung;
@@ -46,6 +53,7 @@ public class ProcessingContext {
 
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
+		@Nonnull BetreuungEinstellungen einstellungen,
 		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
@@ -53,16 +61,19 @@ public class ProcessingContext {
 		boolean singleClientForPeriod) {
 		this(
 			betreuung,
+			einstellungen,
 			latestOpenBetreuungsmitteilung,
 			new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, clientGueltigkeitInPeriode));
 	}
 
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
+		@Nonnull BetreuungEinstellungen einstellungen,
 		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
 		@Nonnull ProcessingContextParams params
 	) {
 		this.betreuung = betreuung;
+		this.einstellungen = einstellungen;
 		this.latestOpenBetreuungsmitteilung = latestOpenBetreuungsmitteilung;
 		this.params = params;
 	}
@@ -74,6 +85,11 @@ public class ProcessingContext {
 	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
+	}
+
+	@Nonnull
+	public BetreuungEinstellungen getEinstellungen() {
+		return einstellungen;
 	}
 
 	@Nullable

@@ -18,25 +18,15 @@
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.EinstellungService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @ApplicationScoped
-@AllArgsConstructor
-@NoArgsConstructor
 public class MahlzeitVerguenstigungMapperFactory {
 
-	@Inject
-	private EinstellungService einstellungService;
-
 	public PensumMapper<AbstractMahlzeitenPensum> createForMahlzeitenVerguenstigung(ProcessingContext ctx) {
-		return einstellungService.isEnabled(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, ctx.getBetreuung()) ?
+		return ctx.getEinstellungen().isMahlzeitenVerguenstigungEnabled() ?
 			new MahlzeitVerguenstigungMapper(ctx) :
 			PensumMapper.nop();
 	}

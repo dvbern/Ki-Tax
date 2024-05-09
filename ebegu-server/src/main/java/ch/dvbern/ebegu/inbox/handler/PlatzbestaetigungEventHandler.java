@@ -33,6 +33,8 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -101,6 +103,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Inject
 	private BetreuungService betreuungService;
+
+	@Inject
+	private BetreuungEinstellungenService betreuungEinstellungenService;
 
 	@Inject
 	private EinstellungService einstellungService;
@@ -212,6 +217,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				if (!validationProcess.isProcessingSuccess()) {
 					return validationProcess;
 				}
+
+				BetreuungEinstellungen einstellungen = betreuungEinstellungenService.getEinstellungen(betreuung);
+		ProcessingContext ctx =
+			new ProcessingContext(betreuung, einstellungen, dto, overlap.get(), eventMonitor, singleClientForPeriod);
 
 				var params = new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, overlap);
 

@@ -19,15 +19,14 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
-import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.initProcessingContext;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -48,9 +46,6 @@ class BetreuungInFerienzeitMapperFactoryTest extends EasyMockSupport {
 
 	@TestSubject
 	private final BetreuungInFerienzeitMapperFactory factory = new BetreuungInFerienzeitMapperFactory();
-
-	@Mock
-	private MitteilungService mitteilungService;
 
 	@AfterEach
 	void tearDown() {
@@ -64,9 +59,11 @@ class BetreuungInFerienzeitMapperFactoryTest extends EasyMockSupport {
 		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
 		z.setBetreuungInFerienzeit(betreuungInFerienzeit);
 
-		ProcessingContext ctx = initProcessingContext(z);
-		expect(mitteilungService.showSchulergaenzendeBetreuung(ctx.getBetreuung()))
-			.andReturn(true);
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.schulergaenzendeBetreuungEnabled(true)
+			.build();
+
+		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 
 		BetreuungsmitteilungPensum actual = convert(ctx, z);
 
@@ -82,9 +79,11 @@ class BetreuungInFerienzeitMapperFactoryTest extends EasyMockSupport {
 		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
 		z.setBetreuungInFerienzeit(true);
 
-		ProcessingContext ctx = initProcessingContext(z);
-		expect(mitteilungService.showSchulergaenzendeBetreuung(ctx.getBetreuung()))
-			.andReturn(false);
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.schulergaenzendeBetreuungEnabled(false)
+			.build();
+
+		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 
 		BetreuungsmitteilungPensum actual = convert(ctx, z);
 

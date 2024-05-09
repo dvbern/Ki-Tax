@@ -21,16 +21,14 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
-import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -40,9 +38,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.initProcessingContext;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.is;
@@ -52,9 +47,6 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 
 	@TestSubject
 	private final MahlzeitVerguenstigungMapperFactory factory = new MahlzeitVerguenstigungMapperFactory();
-
-	@Mock
-	private EinstellungService einstellungService;
 
 	@AfterEach
 	void tearDown() {
@@ -68,9 +60,11 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 		void doImport() {
 			ZeitabschnittDTO z = createZeitabschnittWithMahlzeiten();
 
-			expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-				.andReturn(true);
-			ProcessingContext ctx = initProcessingContext(z);
+			BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+				.mahlzeitenVerguenstigungEnabled(true)
+				.build();
+
+			ProcessingContext ctx = initProcessingContext(z, einstellungen);
 			BetreuungsmitteilungPensum actual = convert(ctx, z);
 
 			assertThat(actual, pojo(AbstractMahlzeitenPensum.class)
@@ -85,9 +79,11 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 			ZeitabschnittDTO z = createZeitabschnittWithMahlzeiten();
 			z.setTarifProHauptmahlzeiten(null);
 
-			expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-				.andReturn(true);
-			ProcessingContext ctx = initProcessingContext(z);
+			BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+				.mahlzeitenVerguenstigungEnabled(true)
+				.build();
+
+			ProcessingContext ctx = initProcessingContext(z, einstellungen);
 			BetreuungsmitteilungPensum actual = convert(ctx, z);
 
 			assertThat(ctx.isReadyForBestaetigen(), is(false));
@@ -99,9 +95,11 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 			ZeitabschnittDTO z = createZeitabschnittWithMahlzeiten();
 			z.setTarifProNebenmahlzeiten(null);
 
-			expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-				.andReturn(true);
-			ProcessingContext ctx = initProcessingContext(z);
+			BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+				.mahlzeitenVerguenstigungEnabled(true)
+				.build();
+
+			ProcessingContext ctx = initProcessingContext(z, einstellungen);
 			BetreuungsmitteilungPensum actual = convert(ctx, z);
 
 			assertThat(ctx.isReadyForBestaetigen(), is(false));
@@ -113,9 +111,11 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 	void ignoreWhenDisabled() {
 		ZeitabschnittDTO z = createZeitabschnittWithMahlzeiten();
 
-		expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-			.andReturn(false);
-		ProcessingContext ctx = initProcessingContext(z);
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.mahlzeitenVerguenstigungEnabled(false)
+			.build();
+
+		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 		BetreuungsmitteilungPensum actual = convert(ctx, z);
 
 		assertThat(actual, pojo(AbstractMahlzeitenPensum.class)

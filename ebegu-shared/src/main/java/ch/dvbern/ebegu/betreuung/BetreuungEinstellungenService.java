@@ -15,19 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.inbox.handler.pensum;
+package ch.dvbern.ebegu.betreuung;
 
-import javax.enterprise.context.ApplicationScoped;
+import ch.dvbern.ebegu.entities.Betreuung;
 
-import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
-import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
+public interface BetreuungEinstellungenService {
 
-@ApplicationScoped
-public class BetreuungInFerienzeitMapperFactory {
-
-	public PensumMapper<AbstractBetreuungsPensum> createForBetreuungInFerienzeit(ProcessingContext ctx) {
-		return ctx.getEinstellungen().isSchulergaenzendeBetreuungEnabled() ?
-			new BetreuungInFerienzeitMapper(ctx) :
-			PensumMapper.nop();
-	}
+	BetreuungEinstellungen getEinstellungen(Betreuung betreuung);
 }

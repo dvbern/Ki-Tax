@@ -61,6 +61,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
@@ -170,6 +172,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory.combine;
 import static java.util.Objects.requireNonNull;
@@ -224,6 +229,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
+
+	@Inject
+	private BetreuungEinstellungenService betreuungEinstellungenService;
 
 	@Override
 	@Nonnull
@@ -1213,37 +1221,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return new MittagstischMessageFactory(mandant, locale);
 		}
 
-		boolean mvzEnabled = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode()).getValueAsBoolean();
-
-		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
-			EinstellungKey.PENSUM_ANZEIGE_TYP,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-
-		boolean anwesenheitstageProMonatEnabled = einstellungService.findEinstellung(
-			EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode()).getValueAsBoolean();
-
+		BetreuungEinstellungen einstellungen = betreuungEinstellungenService.getEinstellungen(betreuung);
+		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, betreuung);
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		BetreuungsmitteilungPensumMessageFactory pensumFactory =
-			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+		var pensumFactory = new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
 
-		BetreuungsmitteilungPensumMessageFactory kostenFactory = mvzEnabled ?
-			new MahlzeitenKostenMessageFactory(mandant, locale) : new KostenMessageFactory(mandant, locale);
+		var kostenFactory = einstellungen.isMahlzeitenVerguenstigungEnabled() ?
+			new MahlzeitenKostenMessageFactory(mandant, locale) :
+			new KostenMessageFactory(mandant, locale);
 
-		final boolean anwesenheitstageProMonatFactoryEnabled = anwesenheitstageProMonatEnabled && betreuung.isAngebotTagesfamilien();
-
-		BetreuungsmitteilungPensumMessageFactory anwesenheitstageProMonatFactory = anwesenheitstageProMonatFactoryEnabled ?
+		var anwesenheitstageProMonatFactory = einstellungen.isBetreuteTageEnabled() ?
 			new AnwesenheitstageMessageFactory(mandant, locale) :
 			BetreuungsmitteilungPensumMessageFactory.empty();
 
-		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = showSchulergaenzendeBetreuung(betreuung) ?
+		var schulergaenzendeBetreuungFactory = einstellungen.isSchulergaenzendeBetreuungEnabled() ?
 			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
 			BetreuungsmitteilungPensumMessageFactory.empty();
 
@@ -1258,15 +1251,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			),
 			schulergaenzendeBetreuungFactory
 		);
-	}
-
-	@Override
-	public boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
-		return requireNonNull(betreuung.getKind().getKindJA().getEinschulungTyp()).isEingeschult()
-			&& einstellungService.findEinstellung(
-			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode()).getValueAsBoolean();
 	}
 
 	@Nonnull
@@ -1284,19 +1268,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
 		if (betreuung.isAngebotKita()) {
-			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA,
-					betreuung.extractGemeinde(),
-					betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+			BigDecimal oeffnungstageKita = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_KITA, betreuung);
+
 			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita,
 					BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 		}
-		BigDecimal oeffnungstageTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO,
-				betreuung.extractGemeinde(),
-				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 
-		BigDecimal oeffnungsstundenTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-				betreuung.extractGemeinde(),
-				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+		BigDecimal oeffnungstageTFO = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_TFO, betreuung);
+		BigDecimal oeffnungsstundenTFO = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSSTUNDEN_TFO, betreuung);
 
 		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO,
 				oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));

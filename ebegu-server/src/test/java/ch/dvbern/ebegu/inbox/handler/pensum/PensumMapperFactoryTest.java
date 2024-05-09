@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -81,8 +82,8 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void setUp() {
 		// EinstellungMock is initialized too late when trying to do field initializers instead.
 		factory = new PensumMapperFactory(
-			new BetreuungInFerienzeitMapperFactory(mitteilungService),
-			new MahlzeitVerguenstigungMapperFactory(einstellungService),
+			new BetreuungInFerienzeitMapperFactory(),
+			new MahlzeitVerguenstigungMapperFactory(),
 			new PensumValueMapperFactory(einstellungService),
 			new EingewoehnungPauschaleMapperFactory(einstellungService)
 		);
@@ -100,7 +101,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 		z.setTarifProHauptmahlzeiten(BigDecimal.valueOf(12.25));
 		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
 
-		ProcessingContext ctx = initProcessingContext(z);
+		ProcessingContext ctx = initProcessingContext(z, BetreuungEinstellungen.builder().build());
 
 		BigDecimal monatlicheHauptmahlzeiten = BigDecimal.valueOf(5);
 		BigDecimal tarifProHauptmahlzeit = BigDecimal.valueOf(10.5);
@@ -134,7 +135,8 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		mockEinstellungen();
 		replayAll();
-		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = factory.createPensumMapper(initProcessingContext(z));
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper =
+			factory.createPensumMapper(initProcessingContext(z, betreuungEinstellungen()));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
 
 		assertThat(actual, matches(z));
@@ -146,7 +148,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		mockEinstellungen();
 		replayAll();
-		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z));
+		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z, betreuungEinstellungen()));
 		Betreuungspensum actual = convert(forPlatzbestaetigung, z, Betreuungspensum::new);
 
 		assertThat(actual, matches(z));
@@ -158,10 +160,19 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		mockEinstellungen();
 		replayAll();
-		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z));
+		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z, betreuungEinstellungen()));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
 
 		assertThat(actual, matches(z));
+	}
+
+	@Nonnull
+	private BetreuungEinstellungen betreuungEinstellungen() {
+		return BetreuungEinstellungen.builder()
+			.betreuteTageEnabled(true)
+			.schulergaenzendeBetreuungEnabled(true)
+			.mahlzeitenVerguenstigungEnabled(true)
+			.build();
 	}
 
 	private <T extends AbstractBetreuungsPensum> T convert(
@@ -211,14 +222,6 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	}
 
 	private void mockEinstellungen() {
-		expect(mitteilungService.showSchulergaenzendeBetreuung(anyObject()))
-			.andReturn(true)
-			.anyTimes();
-
-		expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-			.andReturn(true)
-			.anyTimes();
-
 		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSTAGE_KITA), anyObject()))
 			.andReturn(BigDecimal.valueOf(240))
 			.anyTimes();
