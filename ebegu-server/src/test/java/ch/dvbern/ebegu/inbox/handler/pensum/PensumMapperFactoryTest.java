@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
@@ -73,6 +75,9 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	private EinstellungService einstellungService;
 
 	@Mock
+	private Validator validator;
+
+	@Mock
 	private MitteilungService mitteilungService;
 
 	private PensumMapperFactory factory;
@@ -84,7 +89,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			new BetreuungInFerienzeitMapperFactory(mitteilungService),
 			new MahlzeitVerguenstigungMapperFactory(einstellungService),
 			new PensumValueMapperFactory(einstellungService),
-			new EingewoehnungPauschaleMapperFactory(einstellungService)
+			new EingewoehnungPauschaleMapperFactory(einstellungService, validator)
 		);
 	}
 
@@ -132,7 +137,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void defaultMapperIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = factory.createPensumMapper(initProcessingContext(z));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
@@ -144,7 +149,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void platzbestaetigungIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z));
 		Betreuungspensum actual = convert(forPlatzbestaetigung, z, Betreuungspensum::new);
@@ -156,7 +161,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void betreuungsmitteilungIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
@@ -210,7 +215,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			.where(AbstractBetreuungsPensum::getBetreuungInFerienzeit, comparesEqualTo(z.getBetreuungInFerienzeit()));
 	}
 
-	private void mockEinstellungen() {
+	private void permissiveMocks() {
 		expect(mitteilungService.showSchulergaenzendeBetreuung(anyObject()))
 			.andReturn(true)
 			.anyTimes();
@@ -233,6 +238,10 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		expect(einstellungService.findEinstellung(eq(EINGEWOEHNUNG_TYP), anyObject()))
 			.andReturn(new Einstellung(EINGEWOEHNUNG_TYP, EingewoehnungTyp.PAUSCHALE.name(), mock(Gesuchsperiode.class)))
+			.anyTimes();
+
+		expect(validator.validate(anyObject()))
+			.andReturn(Set.of())
 			.anyTimes();
 	}
 }
