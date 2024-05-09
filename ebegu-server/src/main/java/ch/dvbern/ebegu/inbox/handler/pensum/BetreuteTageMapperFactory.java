@@ -22,11 +22,11 @@ import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class MahlzeitVerguenstigungMapperFactory {
+public class BetreuteTageMapperFactory {
 
-	public PensumMapper<AbstractMahlzeitenPensum> createForMahlzeitenVerguenstigung(ProcessingContext ctx) {
-		return ctx.getEinstellungen().isMahlzeitenVerguenstigungEnabled() ?
-			new MahlzeitVerguenstigungMapper(ctx) :
+	public PensumMapper<AbstractMahlzeitenPensum> createForBetreuteTage(ProcessingContext ctx) {
+		return ctx.getEinstellungen().isBetreuteTageEnabled() ?
+			new BetreuteTageMapper(ctx) :
 			PensumMapper.nop();
 	}
 }

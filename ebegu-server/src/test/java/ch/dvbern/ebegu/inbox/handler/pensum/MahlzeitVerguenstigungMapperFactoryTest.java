@@ -27,13 +27,8 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
-import org.easymock.EasyMockExtension;
-import org.easymock.EasyMockSupport;
-import org.easymock.TestSubject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.initProcessingContext;
@@ -42,16 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.is;
 
-@ExtendWith(EasyMockExtension.class)
-class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
-
-	@TestSubject
-	private final MahlzeitVerguenstigungMapperFactory factory = new MahlzeitVerguenstigungMapperFactory();
-
-	@AfterEach
-	void tearDown() {
-		verifyAll();
-	}
+class MahlzeitVerguenstigungMapperFactoryTest {
 
 	@Nested
 	class WhenEinstellungEnabled {
@@ -138,11 +124,8 @@ class MahlzeitVerguenstigungMapperFactoryTest extends EasyMockSupport {
 
 	@Nonnull
 	private BetreuungsmitteilungPensum convert(ProcessingContext ctx, ZeitabschnittDTO z) {
-		replayAll();
-		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForMahlzeitenVerguenstigung(ctx);
-
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
-		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
+		MahlzeitVerguenstigungMapperFactory.createForMahlzeitenVerguenstigung(ctx).toAbstractMahlzeitenPensum(actual, z);
 
 		return actual;
 	}

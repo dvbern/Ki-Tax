@@ -17,12 +17,11 @@
 
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
+import lombok.experimental.UtilityClass;
 
-@ApplicationScoped
+@UtilityClass
 public class BetreuungInFerienzeitMapperFactory {
 
 	public PensumMapper<AbstractBetreuungsPensum> createForBetreuungInFerienzeit(ProcessingContext ctx) {

@@ -17,7 +17,10 @@
 
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -35,26 +38,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-class BetreuungInFerienzeitMapperFactoryTest {
+class BetreuteTageMapperFactoryTest {
 
 	@ParameterizedTest
 	@NullSource
-	@ValueSource(booleans = { true, false })
-	void importBetreuungInFerienzeit(Boolean betreuungInFerienzeit) {
+	@ValueSource(strings = { "0", "2.5" })
+	void importBetreuteTage(@Nullable BigDecimal betreuteTage) {
 		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
-		z.setBetreuungInFerienzeit(betreuungInFerienzeit);
+		z.setBetreuteTage(betreuteTage);
 
 		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
-			.schulergaenzendeBetreuungEnabled(true)
+			.betreuteTageEnabled(true)
 			.build();
 
 		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 
 		BetreuungsmitteilungPensum actual = convert(ctx, z);
 
-		assertThat(actual.getBetreuungInFerienzeit(), is(betreuungInFerienzeit));
-		assertThat(ctx.isReadyForBestaetigen(), is(betreuungInFerienzeit != null));
-		if (betreuungInFerienzeit == null) {
+		assertThat(actual.getBetreuteTage(), is(betreuteTage));
+		assertThat(ctx.isReadyForBestaetigen(), is(betreuteTage != null));
+		if (betreuteTage == null) {
 			assertThat(actual.isVollstaendig(), is(false));
 		}
 	}
@@ -62,23 +65,23 @@ class BetreuungInFerienzeitMapperFactoryTest {
 	@Test
 	void ignoreWhenDisabled() {
 		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
-		z.setBetreuungInFerienzeit(true);
+		z.setBetreuteTage(BigDecimal.ONE);
 
 		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
-			.schulergaenzendeBetreuungEnabled(false)
+			.betreuteTageEnabled(false)
 			.build();
 
 		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 
 		BetreuungsmitteilungPensum actual = convert(ctx, z);
 
-		assertThat(actual.getBetreuungInFerienzeit(), is(nullValue()));
+		assertThat(actual.getBetreuteTage(), is(nullValue()));
 	}
 
 	@Nonnull
 	private BetreuungsmitteilungPensum convert(ProcessingContext ctx, ZeitabschnittDTO z) {
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
-		BetreuungInFerienzeitMapperFactory.createForBetreuungInFerienzeit(ctx).toAbstractMahlzeitenPensum(actual, z);
+		BetreuteTageMapperFactory.createForBetreuteTage(ctx).toAbstractMahlzeitenPensum(actual, z);
 
 		return actual;
 	}

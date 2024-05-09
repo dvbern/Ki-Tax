@@ -17,16 +17,29 @@
 
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import lombok.experimental.UtilityClass;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
+import lombok.Value;
 
-@UtilityClass
-public class MahlzeitVerguenstigungMapperFactory {
+@Value
+public class BetreuteTageMapper implements PensumMapper<AbstractMahlzeitenPensum> {
 
-	public PensumMapper<AbstractMahlzeitenPensum> createForMahlzeitenVerguenstigung(ProcessingContext ctx) {
-		return ctx.getEinstellungen().isMahlzeitenVerguenstigungEnabled() ?
-			new MahlzeitVerguenstigungMapper(ctx) :
-			PensumMapper.nop();
+	private final ProcessingContext ctx;
+
+	@Override
+	public void toAbstractMahlzeitenPensum(
+		@Nonnull AbstractMahlzeitenPensum target,
+		@Nonnull ZeitabschnittDTO zeitabschnittDTO
+	) {
+		target.setBetreuteTage(zeitabschnittDTO.getBetreuteTage());
+
+		if (target.getBetreuteTage() == null) {
+			target.setVollstaendig(false);
+			ctx.requireHumanConfirmation();
+			ctx.addHumanConfirmationMessage("BetreuteTage ist nicht gesetzt. Automatische Bestätigung nicht möglich.");
+		}
 	}
 }

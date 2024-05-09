@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
@@ -73,17 +72,12 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	@Mock
 	private EinstellungService einstellungService;
 
-	@Mock
-	private MitteilungService mitteilungService;
-
 	private PensumMapperFactory factory;
 
 	@BeforeEach
 	void setUp() {
 		// EinstellungMock is initialized too late when trying to do field initializers instead.
 		factory = new PensumMapperFactory(
-			new BetreuungInFerienzeitMapperFactory(),
-			new MahlzeitVerguenstigungMapperFactory(),
 			new PensumValueMapperFactory(einstellungService),
 			new EingewoehnungPauschaleMapperFactory(einstellungService)
 		);
