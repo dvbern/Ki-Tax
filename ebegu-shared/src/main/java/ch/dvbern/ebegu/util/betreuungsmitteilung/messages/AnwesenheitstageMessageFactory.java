@@ -17,13 +17,14 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+
+import static java.util.Objects.requireNonNull;
 
 public class AnwesenheitstageMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
 
@@ -41,12 +42,11 @@ public class AnwesenheitstageMessageFactory implements BetreuungsmitteilungPensu
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
 		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 
-		String messageKey = "mutationsmeldung_message_anwesenheitstage";
 		return ServerMessageUtil.getMessage(
-			messageKey,
+			"mutationsmeldung_message_anwesenheitstage",
 			locale,
 			mandant,
-			numberFormat.format(pensum.getBetreuteTage() != null ? pensum.getBetreuteTage() : BigDecimal.ZERO)
+			numberFormat.format(requireNonNull(pensum.getBetreuteTage()))
 		);
 	}
 }
