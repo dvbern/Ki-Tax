@@ -42,7 +42,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
@@ -67,7 +66,6 @@ import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -96,7 +94,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Institution;
@@ -749,33 +746,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.forEach(anmeldung -> {
 				betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
 			});
-	}
-
-	@Nonnull
-	@Override
-	public List<Gesuch> findGesuchByGSName(String nachname, String vorname) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.LEFT);
-		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
-
-		ParameterExpression<String> nameParam = cb.parameter(String.class, "nachname");
-		Path<Gesuchsteller> gsJAPath = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA);
-		Predicate namePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.nachname), nameParam);
-
-		ParameterExpression<String> vornameParam = cb.parameter(String.class, "vorname");
-		Predicate vornamePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.vorname), vornameParam);
-
-		Predicate mandantPredicate = cb.equal(fallJoin.get(Fall_.MANDANT), principalBean.getMandant());
-
-		query.where(namePredicate, vornamePredicate, mandantPredicate);
-		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(nameParam, nachname);
-		q.setParameter(vornameParam, vorname);
-
-		return q.getResultList();
 	}
 
 	@Override
