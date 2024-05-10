@@ -17,49 +17,34 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
-public class MahlzeitenVerguenstigungMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
+public class MahlzeitenKostenMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
 
 	private final Mandant mandant;
 	private final Locale locale;
-	private final BigDecimal pensumMultiplier;
-	private final String messageKey;
 
-	public MahlzeitenVerguenstigungMessageFactory(
+	public MahlzeitenKostenMessageFactory(
 		Mandant mandant,
-		Locale locale,
-		BetreuungspensumAnzeigeTyp anzeigeTyp,
-		BigDecimal pensumMultiplier
+		Locale locale
 	) {
 		this.mandant = mandant;
 		this.locale = locale;
-		this.pensumMultiplier = pensumMultiplier;
-		this.messageKey = anzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN ?
-			"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif_stunden" :
-			"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
 	}
-
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
 		NumberFormat decimalFormat = NumberFormat.getNumberInstance(locale);
 
+		String messageKey = "mutationsmeldung_message_kosten_mahlzeitverguenstigung";
 		return ServerMessageUtil.getMessage(
 			messageKey,
 			locale,
 			mandant,
-			index,
-			formatAb(pensum),
-			formatBis(pensum),
-			decimalFormat.format(MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier)),
 			decimalFormat.format(pensum.getMonatlicheBetreuungskosten()),
 			decimalFormat.format(pensum.getMonatlicheHauptmahlzeiten()),
 			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),

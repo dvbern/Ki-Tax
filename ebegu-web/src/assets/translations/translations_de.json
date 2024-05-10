@@ -3220,7 +3220,10 @@
     "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
     "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
     "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der schulfreien Zeit (Ferien) statt?",
+    "ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT": "Anwesenheitstage bei Tagesfamilienbetreuungen aktivieren",
     "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
     "ERWEITERTE_BEDUERFNISSE_AKTIV": "Erweitere Bedürfnisse Frage aktivieren",
+    "ANWESENHEITSTAGE_PRO_MONAT": "Anzahl Betreuungstage pro Monat",
+    "ANWESENHEITSTAGE_PRO_MONAT_HELP": "Erfassen Sie hier die Anzahl Tage, an denen das Kind die Tagesfamilie im Monatsmittel zumindest einmal anwesend ist. Ein Monat entspricht 4.1 Wochen. <ul> <li>Beispiel: Ein Kind besucht die Tagesfamilie den ganzen Montag und den ganzen Dienstag à 2 Tage pro Woche à 2 Tage pro Woche * 4.1 Wochen pro Monat = 8.2 Tage anwesend pro Monat.  </li> <li>Beispiel: Ein Kind besucht die Tagesfamilie je zwei Stunden am Montag, Dienstag, Mittwoch und Donnerstag und 10 Stunden am Freitag. Somit ist das Kind an allen 5 Wochentagen anwesend à 5 Tage pro Woche à 5 Tage pro Woche * 4.1 Wochen pro Monat = 20.5 Tage anwesend pro Monat.  </li> </ul>Wenn das Kind effektiv nur während eines Teils des Monats betreut wird, sind die Anwesenheitstage so anzugeben, wie wenn das Kind während des ganzen Monats betreut würde. Für Details und Beispiele wenden Sie sich an die <a target='_blank' href='assets/pdf/schwyz/Anleitung_Tagesfamilien_Schwyz.pdf'>Anleitung zur Platzbestätigung für Tagesfamilien</a>.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

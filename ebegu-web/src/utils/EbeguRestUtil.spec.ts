@@ -650,6 +650,7 @@ describe('EbeguRestUtil', () => {
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
         tsBetreuungspensum.eingewoehnungPauschale = undefined;
         tsBetreuungspensum.hasEingewoehnungsPauschale = false;
+        tsBetreuungspensum.betreuteTage = null;
         tsBetreuungspensum.betreuungInFerienzeit = false;
         return tsBetreuungspensum;
     }

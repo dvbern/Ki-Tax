@@ -336,6 +336,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
 		einstellungenMap.addEinstellung(SCHULERGAENZENDE_BETREUUNGEN,"false", gesuchsperiode);
 		einstellungenMap.addEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,"false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}

@@ -286,6 +286,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
@@ -2073,6 +2074,7 @@ public final class TestDataUtil {
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
 		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode, persistence);
+		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

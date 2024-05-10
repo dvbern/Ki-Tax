@@ -185,6 +185,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public auszahlungAnEltern: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    private isAnwesenheitstageProMonatAktiviert: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -378,6 +379,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
                         this.erweitereBeduerfnisseAktiv = true;
                     }
+                });
+            response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
+                .forEach(value => {
+                   this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
                 });
         }, error => LOG.error(error));
 
@@ -1944,4 +1949,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.KITA);
     }
 
+    public showAnwesenheitstageProMonatInput(): boolean {
+        return this.isBetreuungsangebotTagesfamilie() && this.isAnwesenheitstageProMonatAktiviert;
+    }
 }
