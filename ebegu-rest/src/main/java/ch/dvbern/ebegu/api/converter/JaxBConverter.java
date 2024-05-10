@@ -544,6 +544,7 @@ public class JaxBConverter extends AbstractConverter {
 		gesuchsteller.setTelefonAusland(gesuchstellerJAXP.getTelefonAusland());
 		gesuchsteller.setDiplomatenstatus(gesuchstellerJAXP.isDiplomatenstatus());
 		gesuchsteller.setKorrespondenzSprache(gesuchstellerJAXP.getKorrespondenzSprache());
+		gesuchsteller.setSozialversicherungsnummer(gesuchstellerJAXP.getSozialversicherungsnummer());
 
 		return gesuchsteller;
 	}
@@ -709,6 +710,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsteller.setTelefonAusland(persistedGesuchsteller.getTelefonAusland());
 		jaxGesuchsteller.setDiplomatenstatus(persistedGesuchsteller.isDiplomatenstatus());
 		jaxGesuchsteller.setKorrespondenzSprache(persistedGesuchsteller.getKorrespondenzSprache());
+		jaxGesuchsteller.setSozialversicherungsnummer(persistedGesuchsteller.getSozialversicherungsnummer());
 
 		return jaxGesuchsteller;
 	}

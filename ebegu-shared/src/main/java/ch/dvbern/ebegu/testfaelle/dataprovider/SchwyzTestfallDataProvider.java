@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -115,5 +116,16 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 			kind.setGemeinsamesGesuch(true);
 		}
 		return kind;
+	}
+
+	@Override
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = super.createGesuchsteller(name, vorname, gesuchstellerNumber);
+		if (gesuchstellerNumber == 1) {
+			gesuchsteller.setSozialversicherungsnummer("756.1234.5678.97");
+		} else {
+			gesuchsteller.setSozialversicherungsnummer("756.1238.5678.93");
+		}
+		return gesuchsteller;
 	}
 }

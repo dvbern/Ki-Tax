@@ -305,6 +305,7 @@ public final class FreigabeCopyUtil {
 		gesuchstellerGS.setTelefonAusland(gesuchstellerJA.getTelefonAusland());
 		gesuchstellerGS.setDiplomatenstatus(gesuchstellerJA.isDiplomatenstatus());
 		gesuchstellerGS.setKorrespondenzSprache(gesuchstellerJA.getKorrespondenzSprache());
+		gesuchstellerGS.setSozialversicherungsnummer(gesuchstellerJA.getSozialversicherungsnummer());
 	}
 
 	private static void copyGesuchstellerAdresseContainer(@Nullable GesuchstellerAdresseContainer container) {

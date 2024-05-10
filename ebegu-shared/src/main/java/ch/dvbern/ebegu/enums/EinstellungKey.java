@@ -359,7 +359,10 @@ public enum EinstellungKey {
 
 	ERWEITERTE_BEDUERFNISSE_AKTIV(MandantIdentifier.getAll()),
 
-	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll());
+	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll()),
+
+	//Die Antragsteller müssen eine Sozialversicherungsnummer angeben  (KIBON-3339)
+	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ);
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;
