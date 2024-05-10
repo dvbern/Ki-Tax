@@ -68,27 +68,6 @@ class SchwyzKindDokumenteTest {
 
 	@Nested
 	class NachweisHoehereBeitraegeBeintraechtigungTest {
-
-		@Test
-		void kindWithHoehereBeitraegeDigitalHochladen_shouldHaveKindNachweis() {
-			Gesuch gesuch = setupGesuch();
-			KindContainer kindContainer = setupKindContainer();
-			gesuch.getKindContainers().add(kindContainer);
-			final Kind kind = kindContainer.getKindJA();
-			kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
-			kind.setFamilienErgaenzendeBetreuung(true);
-			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-			kind.setUnterhaltspflichtig(true);
-			kind.setLebtKindAlternierend(true);
-			kind.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-			kind.setHoehereBeitraegeUnterlagenDigital(true);
-
-			Set<DokumentGrund> dokumentGrundSet = new HashSet<>();
-			schwyzKindDokumente.getAllDokumente(gesuch, dokumentGrundSet, Locale.GERMAN);
-
-			assertThat(dokumentGrundSet.size(), is(1));
-			assertThat(dokumentGrundSet.stream().findFirst().orElseThrow().getDokumentGrundTyp(), is(DokumentGrundTyp.KINDER));
-		}
 		@Test
 		void kindWithHoehereBeitraegeDigitalHochladen_shouldHaveNachweisHoehereBeitraegeBeeintraechtigung() {
 			Gesuch gesuch = setupGesuch();
@@ -107,6 +86,7 @@ class SchwyzKindDokumenteTest {
 			schwyzKindDokumente.getAllDokumente(gesuch, dokumentGrundSet, Locale.GERMAN);
 
 			assertThat(dokumentGrundSet.size(), is(1));
+			assertThat(dokumentGrundSet.stream().findFirst().orElseThrow().getDokumentGrundTyp(), is(DokumentGrundTyp.KINDER));
 			assertThat(
 				dokumentGrundSet.stream().findFirst().orElseThrow().getDokumentTyp(),
 				is(DokumentTyp.NACHWEIS_HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG));
