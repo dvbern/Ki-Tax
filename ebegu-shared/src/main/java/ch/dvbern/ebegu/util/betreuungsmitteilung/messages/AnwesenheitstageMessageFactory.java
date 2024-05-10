@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -46,7 +47,7 @@ public class AnwesenheitstageMessageFactory implements BetreuungsmitteilungPensu
 			"mutationsmeldung_message_anwesenheitstage",
 			locale,
 			mandant,
-			numberFormat.format(requireNonNull(pensum.getBetreuteTage()))
+			numberFormat.format(pensum.getBetreuteTage() != null ? pensum.getBetreuteTage() : BigDecimal.ZERO)
 		);
 	}
 }
