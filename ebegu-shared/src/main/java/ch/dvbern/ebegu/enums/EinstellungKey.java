@@ -354,6 +354,11 @@ public enum EinstellungKey {
 	// Addiert die Moeglichkeit Betreuung in die Schulferien getrennt zu melden
 	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll()),
 
+	// Die Antragsteller können eine Wegzeit angeben (KIBON-3436)
+	WEGZEIT_ERWERBSPENSUM(MandantIdentifier.SCHWYZ),
+
+	ERWEITERTE_BEDUERFNISSE_AKTIV(MandantIdentifier.getAll()),
+
 	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;

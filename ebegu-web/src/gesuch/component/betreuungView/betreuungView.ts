@@ -179,6 +179,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
     private schulergaenzendeBetreuungAktiv: boolean = false;
+
+    private erweitereBeduerfnisseAktiv: boolean = false;
     public abweichungenAktiviert: boolean;
 
     public auszahlungAnEltern: boolean;
@@ -370,6 +372,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(value => {
                     if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
                         this.schulergaenzendeBetreuungAktiv = true;
+                    }
+                });
+            response.filter(r => r.key === TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.erweitereBeduerfnisseAktiv = true;
                     }
                 });
             response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
@@ -1248,10 +1256,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
-            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
-                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+       const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+           || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
+           || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+               && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+       return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
     }
 
     public showKitaPlusZuschlag(): boolean {
