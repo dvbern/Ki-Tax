@@ -16,6 +16,11 @@ public class CheckAhvFormatValidator implements ConstraintValidator<CheckAhvForm
 
 	@Override
 	public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
+
+		if (s == null) {
+			return true;
+		}
+
 		int ahvlenght = 13;
 		String startDigits = "756";
 		int relevantDigitsSum = 0;
