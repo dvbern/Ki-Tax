@@ -123,7 +123,10 @@ public final class TestUtils {
 		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(30));
 		defaultParameter.setMaxVerguenstigungVorschuleBabyProTg(BigDecimal.valueOf(185));
 		defaultParameter.setMaxVerguenstigungVorschuleKindProTg(BigDecimal.valueOf(130));
-
+		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(10));
+		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
+		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(3));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(12));
 		return defaultParameter;
 	}
 }

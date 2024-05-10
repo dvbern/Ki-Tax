@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -68,11 +69,22 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		// required in all finsit
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
 		finanzielleSituation.setQuellenbesteuert(false);
+		applyVerfuegt(finanzielleSituation, vermoegen, einkommen, BigDecimal.ZERO, BigDecimal.ZERO);
+
+		return finanzielleSituation;
+	}
+
+	public static void applyVerfuegt(
+		AbstractFinanzielleSituation finanzielleSituation,
+		BigDecimal vermoegen,
+		BigDecimal einkommen,
+		BigDecimal abzuegeLiegenschaft,
+		BigDecimal einkaeufeVorsorge
+	) {
 		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
-		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
-		finanzielleSituation.setEinkaeufeVorsorge(BigDecimal.ZERO);
-		return finanzielleSituation;
+		finanzielleSituation.setAbzuegeLiegenschaft(abzuegeLiegenschaft);
+		finanzielleSituation.setEinkaeufeVorsorge(einkaeufeVorsorge);
 	}
 
 	@Override

@@ -48,6 +48,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	/**
 	 * calculate massgebendes einkommen for each antragsteller separately and stores variables in finSitResultDTO
 	 */
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // false postive
 	private void calculateFinSit(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,

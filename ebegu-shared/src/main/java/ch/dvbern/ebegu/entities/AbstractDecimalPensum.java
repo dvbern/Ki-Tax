@@ -29,6 +29,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -73,6 +74,11 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	private BigDecimal stuendlicheVollkosten;
 
 	@Nullable
+	@Column(nullable = true)
+	@DecimalMin("0")
+	private BigDecimal betreuteTage;
+
+	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "eingewoehnungPauschale"), nullable = true)
 	private EingewoehnungPauschale eingewoehnungPauschale;
@@ -92,9 +98,10 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		return super.isSame(otherAbstDateRangedEntity)
 			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay()
-			&& this.getMonatlicheBetreuungskosten().compareTo(((AbstractDecimalPensum) other).monatlicheBetreuungskosten) == 0
-			&& MathUtil.isSame(this.getStuendlicheVollkosten(), ((AbstractDecimalPensum) other).getStuendlicheVollkosten())
-			&& EbeguUtil.isSame(this.eingewoehnungPauschale, other);
+			&& this.getMonatlicheBetreuungskosten().compareTo(otherAbstDateRangedEntity.getMonatlicheBetreuungskosten()) == 0
+			&& MathUtil.isSame(this.getStuendlicheVollkosten(), otherAbstDateRangedEntity.getStuendlicheVollkosten())
+			&& MathUtil.isSame(this.getBetreuteTage(), otherAbstDateRangedEntity.getBetreuteTage())
+			&& EbeguUtil.isSame(this.getEingewoehnungPauschale(), otherAbstDateRangedEntity.getEingewoehnungPauschale());
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
@@ -106,6 +113,7 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
+		target.setBetreuteTage(this.getBetreuteTage());
 		if (this.getEingewoehnungPauschale() != null) {
 			target.setEingewoehnungPauschale(this.getEingewoehnungPauschale()
 				.copyEingewohnungEntity(new EingewoehnungPauschale(), copyType));
@@ -179,5 +187,14 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	public void setEingewoehnungPauschale(@Nullable EingewoehnungPauschale eingewoehnungPauschale) {
 		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuteTage() {
+		return betreuteTage;
+	}
+
+	public void setBetreuteTage(@Nullable BigDecimal betreuteTage) {
+		this.betreuteTage = betreuteTage;
 	}
 }

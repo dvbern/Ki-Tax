@@ -145,6 +145,13 @@ public abstract class AbstractTestfall {
 
 	public abstract String getVorname();
 
+	public Gesuch setupGesuch() {
+		createGesuch(gesuchsperiode.getDatumAktiviert());
+		fillInGesuch();
+
+		return getGesuch();
+	}
+
 	public Fall createFall(@Nullable Benutzer verantwortlicher) {
 		fall = new Fall();
 		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));
@@ -170,7 +177,6 @@ public abstract class AbstractTestfall {
 	private Mandant createDefaultMandant() {
 		this.mandant = new Mandant();
 		this.mandant.setMandantIdentifier(MandantIdentifier.BERN);
-		this.mandant.setName("Kanton Bern");
 		this.mandant.setName("Kanton Bern");
 		return this.mandant;
 	}

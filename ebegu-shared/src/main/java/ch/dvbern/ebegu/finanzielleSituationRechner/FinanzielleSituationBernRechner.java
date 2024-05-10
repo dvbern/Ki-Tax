@@ -17,6 +17,10 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
@@ -24,15 +28,13 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import org.apache.commons.lang.NotImplementedException;
 
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-
 public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituationRechner {
 
 	/**
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten und setzt sie direkt im dto.
 	 */
+	@Override
 	public void setFinanzielleSituationParameters(
 		@Nonnull Gesuch gesuch,
 		final FinanzielleSituationResultateDTO finSitResultDTO,
@@ -58,6 +60,7 @@ public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituatio
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten.
 	 */
+	@Override
 	public void setEinkommensverschlechterungParameters(
 		@Nonnull Gesuch gesuch, int basisJahrPlus,
 		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {

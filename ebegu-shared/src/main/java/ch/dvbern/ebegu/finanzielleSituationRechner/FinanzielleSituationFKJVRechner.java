@@ -17,12 +17,12 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import org.apache.commons.lang.NotImplementedException;
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
+
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
@@ -55,15 +55,15 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	) {
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
-			totalAbzuege = calcAbzuegeGesuchstelledne(totalAbzuege, finanzielleSituationGS1);
+			totalAbzuege = calcAbzuegeGesuchstellende(totalAbzuege, finanzielleSituationGS1);
 		}
 		if (finanzielleSituationGS2 != null) {
-			totalAbzuege = calcAbzuegeGesuchstelledne(totalAbzuege, finanzielleSituationGS2);
+			totalAbzuege = calcAbzuegeGesuchstellende(totalAbzuege, finanzielleSituationGS2);
 		}
 		return totalAbzuege;
 	}
 
-	private BigDecimal calcAbzuegeGesuchstelledne(
+	private BigDecimal calcAbzuegeGesuchstellende(
 		BigDecimal totalAbzuege,
 		AbstractFinanzielleSituation finanzielleSituationGS) {
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGeleisteteAlimente());
@@ -72,14 +72,9 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 		return totalAbzuege;
 	}
 
+	@Override
 	@Nonnull
 	public BigDecimal getZwischetotalAbzuege(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		return calcAbzuegeGesuchstelledne(BigDecimal.ZERO, abstractFinanzielleSituation);
-	}
-
-	@Override
-	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		// bei Bern rechnen wir nie nach Veranlagung.
-		throw new NotImplementedException();
+		return calcAbzuegeGesuchstellende(BigDecimal.ZERO, abstractFinanzielleSituation);
 	}
 }
