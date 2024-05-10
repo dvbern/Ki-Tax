@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class FinanzielleSituationRechnerFactory {
 
 	@Nonnull

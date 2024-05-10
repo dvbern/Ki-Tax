@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -26,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 public class FinanzielleSituationRow {
 
@@ -50,6 +52,8 @@ public class FinanzielleSituationRow {
 	@Nonnull
 	private String gs2Urspruenglich;
 
+	private boolean bold = false;
+
 
 	public FinanzielleSituationRow(@Nonnull String label, @Nonnull String gs1) {
 		this.label = label;
@@ -59,6 +63,31 @@ public class FinanzielleSituationRow {
 	public FinanzielleSituationRow(@Nonnull String label, @Nullable BigDecimal gs1) {
 		this.label = label;
 		this.gs1 = PdfUtil.printBigDecimal(gs1);
+	}
+
+	@CanIgnoreReturnValue
+	public FinanzielleSituationRow withFooter(String footer, List<String> footers) {
+		if (!footers.contains(footer)) {
+			footers.add(footer);
+		}
+		setSupertext(" " + (footers.indexOf(footer) + 1));
+
+		return this;
+	}
+
+	@CanIgnoreReturnValue
+	public FinanzielleSituationRow bold() {
+		return bold(true);
+	}
+
+	@CanIgnoreReturnValue
+	public FinanzielleSituationRow bold(boolean printBold) {
+		this.bold = printBold;
+		return this;
+	}
+
+	public boolean isBold() {
+		return bold;
 	}
 
 	@Nonnull
