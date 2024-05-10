@@ -3249,9 +3249,11 @@ public class JaxBConverter extends AbstractConverter {
 	) {
 		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
 		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
-		abweichung.setTarifProHauptmahlzeit(jaxAbweichung.getTarifProHauptmahlzeit());
+		jaxAbweichung.getTarifProHauptmahlzeit()
+			.ifPresent(abweichung::setTarifProHauptmahlzeit);
 		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
-		abweichung.setTarifProNebenmahlzeit(jaxAbweichung.getTarifProNebenmahlzeit());
+		jaxAbweichung.getTarifProNebenmahlzeit()
+			.ifPresent(abweichung::setTarifProNebenmahlzeit);
 		abweichung.setStatus(jaxAbweichung.getStatus()); // the frontend should not be able to decide this...
 
 		return abweichung;
@@ -3575,8 +3577,10 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
-		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
-		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
+		jaxBetreuungspensum.getTarifProHauptmahlzeit()
+			.ifPresent(betreuungspensum::setTarifProHauptmahlzeit);
+		jaxBetreuungspensum.getTarifProNebenmahlzeit()
+			.ifPresent(betreuungspensum::setTarifProNebenmahlzeit);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 		return betreuungspensum;
@@ -3622,8 +3626,10 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
 		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
-		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
-		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
+		jaxBetreuungspensum.getTarifProHauptmahlzeit()
+			.ifPresent(betreuungspensum::setTarifProHauptmahlzeit);
+		jaxBetreuungspensum.getTarifProNebenmahlzeit()
+			.ifPresent(betreuungspensum::setTarifProNebenmahlzeit);
 		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 
 		return betreuungspensum;
