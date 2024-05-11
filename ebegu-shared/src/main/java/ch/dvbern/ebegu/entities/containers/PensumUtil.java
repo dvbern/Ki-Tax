@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.util.BetreuungUtil;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class PensumUtil {
+public final class PensumUtil {
 
 	public static void transformBetreuungsPensumContainers(@Nonnull BetreuungAndPensumContainer container) {
 		container.findBetreuung()

@@ -17,8 +17,38 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
@@ -35,15 +65,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
-
-import javax.annotation.Nonnull;
-import java.io.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -123,7 +144,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AbstractFreigabequittungPdfGenerator
 				generator = new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
 	@ParameterizedTest
@@ -244,8 +265,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		InvoiceGeneratorException {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
-			new FinanzielleSituationBernRechner());
+		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 

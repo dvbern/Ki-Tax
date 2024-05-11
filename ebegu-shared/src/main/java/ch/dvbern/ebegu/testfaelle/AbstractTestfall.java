@@ -53,7 +53,6 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -71,7 +70,6 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.testfaelle.dataprovider.AbstractTestfallDataProvider;
 import ch.dvbern.ebegu.testfaelle.dataprovider.TestfallDataProviderVisitor;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
@@ -147,6 +145,13 @@ public abstract class AbstractTestfall {
 
 	public abstract String getVorname();
 
+	public Gesuch setupGesuch() {
+		createGesuch(gesuchsperiode.getDatumAktiviert());
+		fillInGesuch();
+
+		return getGesuch();
+	}
+
 	public Fall createFall(@Nullable Benutzer verantwortlicher) {
 		fall = new Fall();
 		fall.setTimestampErstellt(LocalDateTime.now().minusDays(7));
@@ -172,7 +177,6 @@ public abstract class AbstractTestfall {
 	private Mandant createDefaultMandant() {
 		this.mandant = new Mandant();
 		this.mandant.setMandantIdentifier(MandantIdentifier.BERN);
-		this.mandant.setName("Kanton Bern");
 		this.mandant.setName("Kanton Bern");
 		return this.mandant;
 	}
@@ -257,33 +261,16 @@ public abstract class AbstractTestfall {
 		return gesuch;
 	}
 
-	protected GesuchstellerContainer createGesuchstellerContainer() {
-		return createGesuchstellerContainer(getNachname(), getVorname());
+	protected GesuchstellerContainer createGesuchstellerContainer(int gesuchstellerNumber) {
+		return createGesuchstellerContainer(getNachname(), getVorname(), gesuchstellerNumber);
 	}
 
-	protected GesuchstellerContainer createGesuchstellerContainer(String name, String vorname) {
+	protected GesuchstellerContainer createGesuchstellerContainer(String name, String vorname, int gesuchstellerNumber) {
 		GesuchstellerContainer gesuchstellerCont = new GesuchstellerContainer();
 		gesuchstellerCont.setAdressen(new ArrayList<>());
-		gesuchstellerCont.setGesuchstellerJA(createGesuchsteller(name, vorname));
+		gesuchstellerCont.setGesuchstellerJA(testfallDataProvider.createGesuchsteller(name, vorname, gesuchstellerNumber));
 		gesuchstellerCont.getAdressen().add(createWohnadresseContainer(gesuchstellerCont));
 		return gesuchstellerCont;
-	}
-
-	protected Gesuchsteller createGesuchsteller(String name, String vorname) {
-		Gesuchsteller gesuchsteller = new Gesuchsteller();
-		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
-		gesuchsteller.setNachname(name);
-		gesuchsteller.setVorname(vorname);
-		gesuchsteller.setGeburtsdatum(LocalDate.of(1980, Month.MARCH, 25));
-		gesuchsteller.setDiplomatenstatus(false);
-		gesuchsteller.setMail("test@mailbucket.dvbern.ch");
-		gesuchsteller.setMobile("079 000 00 00");
-		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
-		return gesuchsteller;
-	}
-
-	protected Gesuchsteller createGesuchsteller() {
-		return createGesuchsteller(getNachname(), getVorname());
 	}
 
 	protected GesuchstellerAdresseContainer createWohnadresseContainer(GesuchstellerContainer gesuchstellerCont) {

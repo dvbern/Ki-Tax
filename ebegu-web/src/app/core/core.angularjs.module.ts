@@ -110,6 +110,8 @@ import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
 import {appRun} from './core.route';
 import {customTranslateLoader} from './custom-translate-provider';
+import {DvAhvCheck} from './directive/dv-ahv-check';
+import {DvAhvGesuchstellerCheck} from './directive/dv-ahv-gesuchsteller-check';
 import {DVBarcodeListener} from './directive/dv-barcode-listener';
 import {DVDatepicker} from './directive/dv-datepicker/dv-datepicker';
 import {DvDialog} from './directive/dv-dialog/dv-dialog';
@@ -283,6 +285,8 @@ export const CORE_JS_MODULE = angular
     .directive('dvBarcodeListener', DVBarcodeListener.factory())
     .directive('dvTrimEmpty', DVTrimEmpty.factory())
     .directive('dvSuppressFormSubmitOnEnter', DVSuppressFormSubmitOnEnter.factory())
+    .directive('dvAhvCheck', DvAhvCheck.factory())
+    .directive('dvAhvGesuchstellerCheck', DvAhvGesuchstellerCheck.factory())
     .service('FachstelleRS', FachstelleRS)
     .service('BerechnungsManager', BerechnungsManager)
     .service('HttpResponseInterceptor', HttpResponseInterceptor)

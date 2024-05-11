@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,17 +40,13 @@ import org.hibernate.envers.Audited;
 @Entity
 @AssociationOverride(name = "eingewoehnungPauschale",
 	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"))
-public class Betreuungspensum extends AbstractMahlzeitenPensum implements Comparable<Betreuungspensum> {
+public class Betreuungspensum extends AbstractBetreuungsPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
 
 	@NotNull
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean betreuungInFerienzeit;
 
 	public Betreuungspensum() {
 	}
@@ -69,6 +64,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
+		this.setBetreuteTage(betPensumMitteilung.getBetreuteTage());
 
 		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
 			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
@@ -89,15 +85,6 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 
 	public void setNichtEingetreten(@Nonnull Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
-	}
-
-	@Nullable
-	public Boolean getBetreuungInFerienzeit() {
-		return betreuungInFerienzeit;
-	}
-
-	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
-		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 
 	@Override

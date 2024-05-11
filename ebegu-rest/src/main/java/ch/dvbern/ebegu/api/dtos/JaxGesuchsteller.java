@@ -61,6 +61,9 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private Sprache korrespondenzSprache;
 
 	@Nullable
+	private String sozialversicherungsnummer;
+
+	@Nullable
 	public String getMail() {
 		return mail;
 	}
@@ -121,5 +124,14 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Override
 	public void setGeschlecht(Geschlecht geschlecht) {
 		this.geschlecht = geschlecht;
+	}
+
+	@Nullable
+	public String getSozialversicherungsnummer() {
+		return sozialversicherungsnummer;
+	}
+
+	public void setSozialversicherungsnummer(@Nullable String sozialversicherungsnummer) {
+		this.sozialversicherungsnummer = sozialversicherungsnummer;
 	}
 }

@@ -74,6 +74,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public isLuzern: boolean;
     public mandant: KiBonMandant;
     private isUnbezahlterUrlaubAktiv: boolean;
+    public wegzeitRequiredEinstellung: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -114,10 +115,11 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, err => LOG.error(err));
-        // TODO: Replace with angularX async template pipe during ablösung
+        // TODO: Replace with angularX async template pipe during ablÃ¶sung
         this.mandantService.mandant$.subscribe(mandant => {
             this.mandant = mandant;
         }, error => LOG.error(error));
+        this.initWegzeitEinstellung();
     }
 
     // TODO: replace with observable pipe during abloesung
@@ -243,4 +245,11 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
     }
 
+    private initWegzeitEinstellung(): void {
+        this.einstellungRS.findEinstellung(TSEinstellungKey.WEGZEIT_ERWERBSPENSUM,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id).subscribe(wegzeitRequired => {
+                this.wegzeitRequiredEinstellung = wegzeitRequired.value === 'true';
+        }, errorWegzeit => LOG.error(errorWegzeit));
+    }
 }

@@ -544,6 +544,7 @@ public class JaxBConverter extends AbstractConverter {
 		gesuchsteller.setTelefonAusland(gesuchstellerJAXP.getTelefonAusland());
 		gesuchsteller.setDiplomatenstatus(gesuchstellerJAXP.isDiplomatenstatus());
 		gesuchsteller.setKorrespondenzSprache(gesuchstellerJAXP.getKorrespondenzSprache());
+		gesuchsteller.setSozialversicherungsnummer(gesuchstellerJAXP.getSozialversicherungsnummer());
 
 		return gesuchsteller;
 	}
@@ -709,6 +710,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsteller.setTelefonAusland(persistedGesuchsteller.getTelefonAusland());
 		jaxGesuchsteller.setDiplomatenstatus(persistedGesuchsteller.isDiplomatenstatus());
 		jaxGesuchsteller.setKorrespondenzSprache(persistedGesuchsteller.getKorrespondenzSprache());
+		jaxGesuchsteller.setSozialversicherungsnummer(persistedGesuchsteller.getSozialversicherungsnummer());
 
 		return jaxGesuchsteller;
 	}
@@ -3021,6 +3023,7 @@ public class JaxBConverter extends AbstractConverter {
 		erwerbspensum.setErwerbspensumInstitution(jaxErwerbspensum.getErwerbspensumInstitution());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 		erwerbspensum.setUnregelmaessigeArbeitszeiten(jaxErwerbspensum.isUnregelmaessigeArbeitszeiten());
+		erwerbspensum.setWegzeit(jaxErwerbspensum.getWegzeit());
 
 		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
 			UnbezahlterUrlaub existingUrlaub = new UnbezahlterUrlaub();
@@ -3051,6 +3054,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
+		jaxErwerbspensum.setWegzeit(pensum.getWegzeit());
 		return jaxErwerbspensum;
 	}
 
@@ -3269,8 +3273,9 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(erweiterteBetreuungJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
-
-		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		if(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse() != null) {
+			erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		}
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());

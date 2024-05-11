@@ -84,6 +84,7 @@ class ApiCompatiblitityTest {
 	void tagesschuleAnmeldungStatus() {
 		Set<String> exchangeNames = names(TagesschuleAnmeldungStatus.class);
 
+		//noinspection FuseStreamOperations
 		Set<String> kiBonNames = names(Betreuungsstatus.class).stream()
 			.filter(name -> name.startsWith("SCHULAMT_"))
 			.filter(name -> !name.equals(Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT.name()))

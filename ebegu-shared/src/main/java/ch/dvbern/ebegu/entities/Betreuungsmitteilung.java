@@ -64,14 +64,14 @@ public class Betreuungsmitteilung extends Mitteilung implements BetreuungAndPens
 
 	@Nonnull
 	@Override
-	public List<AbstractMahlzeitenPensum> getBetreuungenGS() {
+	public List<BetreuungsmitteilungPensum> getBetreuungenGS() {
 		return List.of();
 	}
 
 	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
 	@Nonnull
 	@Override
-	public List<AbstractMahlzeitenPensum> getBetreuungenJA() {
+	public List<BetreuungsmitteilungPensum> getBetreuungenJA() {
 		return List.copyOf(betreuungspensen);
 	}
 

@@ -26,7 +26,8 @@ export enum TSBetreuungsangebotTyp {
 }
 
 export function getTSBetreuungsangebotTypValuesForMandant(
-    tagesschuleEnabledForMandant: boolean
+    tagesschuleEnabledForMandant: boolean,
+    mittagtischEnabledForMandant: boolean
 ): Array<TSBetreuungsangebotTyp> {
     const angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
@@ -34,6 +35,9 @@ export function getTSBetreuungsangebotTypValuesForMandant(
     if (tagesschuleEnabledForMandant) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
+    }
+    if (mittagtischEnabledForMandant) {
+        angebote.push(TSBetreuungsangebotTyp.MITTAGSTISCH);
     }
     return angebote;
 }

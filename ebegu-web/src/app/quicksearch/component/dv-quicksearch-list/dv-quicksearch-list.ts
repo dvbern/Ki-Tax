@@ -101,6 +101,7 @@ export class DVQuicksearchListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
     private anmeldungTSEnabled: boolean;
+    private angebotMittagstischEnabled: boolean;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -123,6 +124,7 @@ export class DVQuicksearchListController implements IController {
         this.updateGemeindenList();
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.anmeldungTSEnabled = res.angebotTSActivated;
+            this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
         });
     }
 
@@ -140,7 +142,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled(), this.angebotMittagstischEnabled);
     }
 
     public updateGesuchsperiodenList(): void {

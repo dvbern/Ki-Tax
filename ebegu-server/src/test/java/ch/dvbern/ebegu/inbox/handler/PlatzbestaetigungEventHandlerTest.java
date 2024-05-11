@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -55,6 +54,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
@@ -91,11 +91,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
@@ -105,6 +101,7 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.ignored;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.unitTestPensumMapper;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.GO_LIVE;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
@@ -146,6 +143,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@Mock
 	private InstitutionExternalClient institutionExternalClient;
+
+	@Mock
+	private PensumMapperFactory pensumMapperFactory;
 
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
@@ -414,8 +414,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectBetreuungFound(betreuung);
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
-			withMahlzeitenverguenstigung(true);
-			mockGetStundenTagenEinstellungen();
 
 			replayAll();
 
@@ -478,19 +476,21 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		void automaticPlatzbestaetigungSprachfoederungTest(
 			@Nullable Boolean sprachfoerderung,
 			@Nonnull LocalDate aktivierungDatum,
-			@Nonnull boolean isBestaetigt) {
+			boolean isBestaetigt
+		) {
 			dto.setSprachfoerderungBestaetigt(sprachfoerderung);
 			expectPlatzBestaetigung();
 			expectBetreuungFound(betreuung);
 			expectGetSchnittstelleSprachfoerderungAktivAb(aktivierungDatum);
 			mockClients(clientGueltigkeit);
-			withMahlzeitenverguenstigung(true);
-			mockGetStundenTagenEinstellungen();
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
+			expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
+				.andReturn(unitTestPensumMapper());
+
 			replayAll();
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			ErweiterteBetreuung erweiterteBetreuung = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
-			assertThat(erweiterteBetreuung.isSprachfoerderungBestaetigt(), is(isBestaetigt));
+			assertThat(requireNonNull(erweiterteBetreuung).isSprachfoerderungBestaetigt(), is(isBestaetigt));
 			verifyAll();
 		}
 
@@ -504,24 +504,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			gesuch.setStatus(antragStatus);
 
 			expectPlatzBestaetigung();
-
-			testProcessingSuccess();
-		}
-
-		@Test
-		void requrieHumanInteractionWhenHauptmahlZeitenTarifMissing() {
-			dto.getZeitabschnitte().get(0).setTarifProHauptmahlzeiten(null);
-
-			expectHumanConfirmation();
-
-			testProcessingSuccess();
-		}
-
-		@Test
-		void requrieHumanInteractionWhenNebenmahlZeitenTarifMissing() {
-			dto.getZeitabschnitte().get(0).setTarifProNebenmahlzeiten(null);
-
-			expectHumanConfirmation();
 
 			testProcessingSuccess();
 		}
@@ -665,8 +647,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				expectBetreuungFound(betreuung);
 				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
 				mockClients(clientGueltigkeit, List.of(client2));
-				withMahlzeitenverguenstigung(true);
-				mockGetStundenTagenEinstellungen();
+				expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
+					.andReturn(unitTestPensumMapper());
 				withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
 
 				replayAll();
@@ -726,7 +708,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 					overlapGueltigBis,
 					afterGueltigBis));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -762,7 +744,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 					overlapGueltigBis,
 					afterGueltigBis));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -785,7 +767,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(LocalDate.of(2020, 11, 1), LocalDate.of(2021, 4, 30));
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -804,7 +786,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -824,7 +806,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -844,7 +826,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -861,7 +843,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(gueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -883,7 +865,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				ZeitabschnittDTO z = createZeitabschnittDTO(clientGueltigkeit);
 				dto.setZeitabschnitte(Collections.singletonList(z));
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 
 				assertThat(betreuung.getBetreuungspensumContainers(), contains(
@@ -939,12 +921,13 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private void testProcessingSuccess(boolean erweitereBetreuung) {
 			expectBetreuungFound(betreuung);
 			if (erweitereBetreuung) {
-				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 1, 1));
 			}
 			mockClients(clientGueltigkeit);
-			withMahlzeitenverguenstigung(true);
-			mockGetStundenTagenEinstellungen();
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
+
+			expect(pensumMapperFactory.createForPlatzbestaetigung(anyObject()))
+				.andReturn(unitTestPensumMapper());
 
 			replayAll();
 
@@ -961,11 +944,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void withZusaetzlicherGutschein(boolean enabled) {
-			Einstellung einstellung = mock(Einstellung.class);
 			expect(einstellungService
-				.findEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gemeinde, gesuchsperiode))
-				.andReturn(einstellung);
-			expect(einstellung.getValueAsBoolean()).andReturn(enabled);
+				.isEnabled(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, betreuung))
+				.andReturn(enabled);
 		}
 
 		private void expectPlatzBestaetigung() {
@@ -987,7 +968,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private Betreuung betreuung = null;
 		private Betreuungspensum betreuungspensum = null;
 		private DateRange clientGueltigkeit = Constants.DEFAULT_GUELTIGKEIT;
-		private boolean withMahlzeitenEnabled = true;
 
 		/**
 		 * The default setup yields an Mutationsmeldung
@@ -1044,8 +1024,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void createsDefaultMessage() {
-			withMahlzeitenEnabled = false;
-
 			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
 
 			testProcessingSuccess();
@@ -1064,36 +1042,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
 				matches(zeitabschnittDTO, GO_LIVE, clientGueltigkeit.getGueltigBis()),
 				matches(betreuungspensum, clientGueltigkeit.getGueltigBis().plusDays(1), Constants.END_OF_TIME)
-			));
-		}
-
-		@Test
-		void setsIncompleteWhenHauptmahlZeitenTarifMissing() {
-			zeitabschnittDTO.setTarifProHauptmahlzeiten(null);
-
-			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
-
-			testProcessingSuccess();
-
-			assertThat(capture.getValue().getBetreuungspensen(), contains(
-				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
-				matches(zeitabschnittDTO)
-					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false))
-			));
-		}
-
-		@Test
-		void setsIncompleteWhenNebenmahlZeitenTarifMissing() {
-			zeitabschnittDTO.setTarifProNebenmahlzeiten(null);
-
-			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
-
-			testProcessingSuccess();
-
-			assertThat(capture.getValue().getBetreuungspensen(), contains(
-				matches(betreuungspensum, betreuungspensum.getGueltigkeit().getGueltigAb(), GO_LIVE.minusDays(1)),
-				matches(zeitabschnittDTO)
-					.where(AbstractMahlzeitenPensum::isVollstaendig, is(false))
 			));
 		}
 
@@ -1324,7 +1272,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		/**
 		 * regression test: when there is an existing Zeitabschnitt starting in client range but exceeding it, it
 		 * should only be included once (after the client's gueltigkeit).
-		 *
+		 * <p>
 		 * The setup requires to set distinct values to the Zeitabschnitte, here ensured with Betreuungskost, because
 		 * otherwise the Zeitabschnitte merging creates a single Zeitabschnitt (and thus does not show the problem).
 		 */
@@ -1375,9 +1323,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expect(institutionExternalClient.getExternalClient())
 				.andStubReturn(mockClient);
 
-			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
-			mockGetStundenTagenEinstellungen();
-
 			Benutzer benutzer = mock(Benutzer.class);
 			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(benutzer);
 			expect(benutzer.getMandant()).andReturn(TestDataUtil.createMandant(MandantIdentifier.BERN)).anyTimes();
@@ -1395,6 +1340,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
 				.andReturn(Optional.of(mandant));
+
+			expect(pensumMapperFactory.createForBetreuungsmitteilung(anyObject()))
+				.andReturn(unitTestPensumMapper());
 		}
 
 		@Nonnull
@@ -1443,30 +1391,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			.andStubReturn(clientGueltigkeit);
 
 		return client;
-	}
-
-	private void withMahlzeitenverguenstigung(boolean enabled) {
-		Einstellung einstellung = mock(Einstellung.class);
-		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
-			.andReturn(einstellung);
-		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
-	}
-
-	private void mockGetStundenTagenEinstellungen() {
-		Einstellung einstellungOeffnungsTage = mock(Einstellung.class);
-		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_KITA, gemeinde, gesuchsperiode))
-			.andReturn(einstellungOeffnungsTage);
-		expect(einstellungOeffnungsTage.getValueAsBigDecimal()).andReturn(new BigDecimal("20.00"));
-
-		Einstellung einstellungOeffnungsTageTFO = mock(Einstellung.class);
-		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_TFO, gemeinde, gesuchsperiode))
-			.andReturn(einstellungOeffnungsTageTFO);
-		expect(einstellungOeffnungsTageTFO.getValueAsBigDecimal()).andReturn(new BigDecimal("11.00"));
-
-		Einstellung einstellungOeffnungsStunden = mock(Einstellung.class);
-		expect(einstellungService.findEinstellung(OEFFNUNGSSTUNDEN_TFO, gemeinde, gesuchsperiode))
-			.andReturn(einstellungOeffnungsStunden);
-		expect(einstellungOeffnungsStunden.getValueAsBigDecimal()).andReturn(new BigDecimal("220.00"));
 	}
 
 	@Nonnull

@@ -198,9 +198,6 @@ import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
-    public constructor() {
-    }
-
     /**
      * Wandelt Data in einen TSApplicationProperty Array um, welches danach zurueckgeliefert wird
      */
@@ -409,6 +406,7 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum ?? 0;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        restObj.betreuteTage = betreuungspensumEntity.betreuteTage;
         if (betreuungspensumEntity.eingewoehnungPauschale) {
             restObj.eingewoehnungPauschale =
                 this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
@@ -441,6 +439,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.betreuteTage = betreuungspensumFromServer.betreuteTage;
         betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
             betreuungspensumFromServer.eingewoehnungPauschale);
         betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
@@ -552,6 +551,7 @@ export class EbeguRestUtil {
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
             restGesuchsteller.korrespondenzSprache = gesuchsteller.korrespondenzSprache;
+            restGesuchsteller.sozialversicherungsnummer = gesuchsteller.sozialversicherungsnummer;
             return restGesuchsteller;
         }
         return undefined;
@@ -566,6 +566,7 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
+            gesuchstellerTS.sozialversicherungsnummer = gesuchstellerFromServer.sozialversicherungsnummer;
             return gesuchstellerTS;
         }
         return undefined;
@@ -612,6 +613,7 @@ export class EbeguRestUtil {
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
+            erwerbspensum.wegzeit = erwerbspensumFromServer.wegzeit;
             return erwerbspensum;
         }
         return undefined;
@@ -626,6 +628,7 @@ export class EbeguRestUtil {
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
+            restErwerbspensum.wegzeit = erwerbspensum.wegzeit;
             return restErwerbspensum;
         }
         return undefined;
@@ -6333,7 +6336,7 @@ export class EbeguRestUtil {
             institution: filter.institution,
             traegerschaft: filter.traegerschaft,
             sozialdienst: filter.sozialdienst,
-            status: filter.status
+            status: filter.status,
         };
     }
 }
