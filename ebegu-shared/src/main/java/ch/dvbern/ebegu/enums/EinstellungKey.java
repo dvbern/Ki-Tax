@@ -362,7 +362,10 @@ public enum EinstellungKey {
 	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll()),
 
 	//Die Antragsteller müssen eine Sozialversicherungsnummer angeben  (KIBON-3339)
-	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ);
+	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ),
+
+	// Aktiviert die Frage und Berechung "Höhere Beiträge für Kind mit Beeinträchtigung"
+	HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

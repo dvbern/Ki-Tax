@@ -221,8 +221,11 @@ public final class FreigabeCopyUtil {
 		kindGS.setAlimenteErhalten(kindJA.getAlimenteErhalten());
 		kindGS.setAlimenteBezahlen(kindJA.getAlimenteBezahlen());
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
+		kindGS.setUnterhaltspflichtig(kindJA.getUnterhaltspflichtig());
 		kindGS.setSprichtAmtssprache(kindJA.getSprichtAmtssprache());
 		kindGS.setEinschulungTyp(kindJA.getEinschulungTyp());
+		kindGS.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(kindJA.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		kindGS.setHoehereBeitraegeUnterlagenDigital(kindJA.getHoehereBeitraegeUnterlagenDigital());
 	}
 
 	private static void copyBetreuungspensumContainer(@Nullable BetreuungspensumContainer container) {

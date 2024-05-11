@@ -542,6 +542,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
 		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

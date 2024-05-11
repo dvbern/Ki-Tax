@@ -339,6 +339,9 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,"false", gesuchsperiode);
 		einstellungenMap.addEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
 
+		//SZ
+		einstellungenMap.addEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode);
+
 		return einstellungenMap.getEinstellungen();
 	}
 

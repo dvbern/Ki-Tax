@@ -3125,7 +3125,14 @@
     "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
     "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
     "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der Schulfreienzeit (Ferien) statt",
+    "HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT": "Höhere Beiträge Beeinträchtigung aktiviert",
     "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
     "ERWEITERTE_BEDUERFNISSE_AKTIV": "Activer la question pour les besoins particuliers",
+    "HOHEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGEN": "Ich/Wir möchten aufgrund einer Beeinträchtigung oder einer Behinderung des Kindes höhere Beiträge beantragen",
+    "HOHEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGEN_INFO": "Nebst des regulären Kinderbetreuungsbeitrags können Erziehungsberechtigte Personen auch ein Gesuch für einen sogenannten höheren Beitrag stellen. Dies ist jedoch nur möglich, wenn die Kinderbetreuungsinstitution einen höheren Betreuungsaufwand aufgrund einer diagnostizierten Behinderung einer ausgeprägten Entwicklungsverzögerung oder einer ausgeprägten Verhaltensauffälligkeit des Kindes aufweist. (vgl. § 17 Kinderbetreuungsverordnung, SRSZ 370.31).",
+    "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_HINT": "Für die Überprüfung des Gesuchs für höhere Beiträge muss mindestens eines der folgenden Dokumente eingereicht werden: <br /> <ul><li>Ein Bericht der Invalidenversicherung (IV-Bericht)</li> <li>Ein Bericht eines Facharztes für Kinder- und Jugendmedizin </li> <li>Eine Verfügung des Amtes für Volksschule und Sport für eine pädagogisch-therapeutische Massnahme</li> <li>Eine Verfügung für heil-, audio- und/oder visiopädagogische Früherziehung oder integrierte Sonderschulung </li>",
+    "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN": "Möchten Sie die Daten/Unterlagen zur Bestätigung der Belegung digital hochladen?",
+    "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_NEIN_HINT": "Möchten Sie das erforderliche Dokument / die erforderlichen Dokumente nicht hochladen, so können Sie diese per Post an die kantonale Fachstelle für Kinderbetreuung senden. (Die Bearbeitungszeit wird voraussichtlich länger dauern.)",
+    "KINDER_NACHWEIS_HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG": "Nachweis zum Gesuch für höhere Beiträge (mindestens eines der folgenden Dokumente): Ein Bericht der Invalidenversicherung (IV-Bericht), ein Bericht eines Facharztes für Kinder- und Jugendmedizin, eine Verfügung des Amtes für Volksschule und Sport für eine pädagogisch-therapeutische Massnahme, eine Verfügung für heil-, audio- und/oder visiopädagogische Früherziehung oder integrierte Sonderschulung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
