@@ -282,13 +282,17 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SOZIALVERSICHERUNGSNUMMER_PERIODE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EXPORT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.WEGZEIT_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN;
@@ -348,7 +352,7 @@ public final class TestDataUtil {
 		gesuchstellerAdresse.setZusatzzeile("c/o Uwe Untermieter");
 		gesuchstellerAdresse.setPlz("3006");
 		gesuchstellerAdresse.setOrt("Bern");
-		gesuchstellerAdresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
+		gesuchstellerAdresse.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 		gesuchstellerAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
 		return gesuchstellerAdresse;
 	}
@@ -1433,6 +1437,7 @@ public final class TestDataUtil {
 			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
 		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.getGesuchsteller1().addAdresse(TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1()));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
@@ -2068,6 +2073,10 @@ public final class TestDataUtil {
 		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
+		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode, persistence);
+		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode, persistence);
+		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode, persistence);
+		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2272,34 +2281,6 @@ public final class TestDataUtil {
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(10);
 		return filterDTO;
-	}
-
-	public static void createDefaultAdressenForGS(final Gesuch gesuch, final boolean gs2) {
-		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		final GesuchstellerAdresseContainer adresseGS1 = TestDataUtil.
-			createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(adresseGS1.getGesuchstellerAdresseJA());
-		adresseGS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-		adresseGS1.getGesuchstellerAdresseJA()
-			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-		adressen1.add(adresseGS1);
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().setAdressen(adressen1);
-
-		if (gs2) {
-			List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			final GesuchstellerAdresseContainer adresseGS2 = TestDataUtil
-				.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(adresseGS2.getGesuchstellerAdresseJA());
-			adresseGS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-			adresseGS2.getGesuchstellerAdresseJA()
-				.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-			adressen2.add(adresseGS2);
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			gesuch.getGesuchsteller2().setAdressen(adressen2);
-		}
 	}
 
 	public static Mahnung createMahnung(MahnungTyp typ, Gesuch gesuch) {

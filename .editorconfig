@@ -20,3 +20,7 @@ indent_style = space
 # automatisches Umbrechen/Trimmen kann die Semantik vom Inhalt ändern
 max_line_length = off
 trim_trailing_whitespace = false
+
+[{*.snap, *.snap.debug}]
+trim_trailing_whitespace = false
+insert_final_newline = false

@@ -148,15 +148,19 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.AnwesenheitstageMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
-import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.KostenMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenKostenMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.SchulergaenzendeBetreuungMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -1024,7 +1028,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
 
-		Locale locale = LocaleThreadLocal.get();
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService).getLocale();
 
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
@@ -1068,7 +1072,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (betreuungspensen.isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, LocaleThreadLocal.get()));
+				Objects.requireNonNull(mitteilung.getBetreuung());
+				final Locale locale =
+					EbeguUtil.extractKorrespondenzsprache(mitteilung.getBetreuung().extractGesuch(), gemeindeService).getLocale();
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, locale));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1191,20 +1198,50 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			betreuung.extractGemeinde(),
 			betreuung.extractGesuchsperiode());
 
+		boolean anwesenheitstageProMonatEnabled = einstellungService.findEinstellung(
+			EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
+
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		if (mvzEnabled) {
-			return combine(
-				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
-			);
-		}
+		BetreuungsmitteilungPensumMessageFactory pensumFactory =
+			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+
+		BetreuungsmitteilungPensumMessageFactory kostenFactory = mvzEnabled ?
+			new MahlzeitenKostenMessageFactory(mandant, locale) : new KostenMessageFactory(mandant, locale);
+
+		final boolean anwesenheitstageProMonatFactoryEnabled = anwesenheitstageProMonatEnabled && betreuung.isAngebotTagesfamilien();
+
+		BetreuungsmitteilungPensumMessageFactory anwesenheitstageProMonatFactory = anwesenheitstageProMonatFactoryEnabled ?
+			new AnwesenheitstageMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
+
+		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = showSchulergaenzendeBetreuung(betreuung) ?
+			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
 
 		return combine(
-			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-			new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			" ",
+			combine(
+				", ",
+				pensumFactory,
+				anwesenheitstageProMonatFactory,
+				kostenFactory,
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			),
+			schulergaenzendeBetreuungFactory
 		);
+	}
+
+	@Override
+	public boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
+		return requireNonNull(betreuung.getKind().getKindJA().getEinschulungTyp()).isEingeschult()
+			&& einstellungService.findEinstellung(
+			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
 	}
 
 	@Nonnull

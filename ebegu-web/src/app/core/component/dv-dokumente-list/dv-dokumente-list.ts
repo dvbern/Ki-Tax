@@ -27,6 +27,7 @@ import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager'
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
+import {TSDokumentTyp} from '../../../../models/enums/TSDokumentTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDokument} from '../../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../../models/TSDokumentGrund';
@@ -53,7 +54,7 @@ export class DVDokumenteListConfig implements IComponentOptions {
         dokumente: '<',
         tableId: '@',
         tableTitle: '@',
-        tag: '@',
+        tag: '<',
         titleValue: '<',
         onUploadDone: '&',
         onRemove: '&',
@@ -83,7 +84,7 @@ export class DVDokumenteListController implements IController {
     public dokumente: TSDokumentGrund[];
     public tableId: string;
     public tableTitle: string;
-    public tag: string;
+    public tag: string | null;
     public titleValue: string;
     public onUploadDone: (dokumentGrund: any) => void;
     public onRemove: (attrs: any) => void;
@@ -336,6 +337,10 @@ export class DVDokumenteListController implements IController {
 
     public getTableTitleText(): string {
         return this.$translate.instant(this.tableTitle, {basisjahr: this.titleValue});
+    }
+
+    public get dokumentTyp(): typeof TSDokumentTyp {
+        return TSDokumentTyp;
     }
 
     private isAppenzellSpeziallFall(gesuch: TSGesuch): boolean {

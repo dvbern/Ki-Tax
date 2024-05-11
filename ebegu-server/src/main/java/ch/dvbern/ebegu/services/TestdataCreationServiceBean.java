@@ -34,6 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -65,7 +66,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
 
 	@PostConstruct
-	public void createFactory(){
+	public void createFactory() {
 		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
 	}
 
@@ -148,63 +149,63 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 		if (TestfallName.WAELTI_DAGMAR == fallid) {
 			return new Testfall01_WaeltiDagmar(
-					gesuchsperiode,
-					betreuungenBestaetigt,
+				gesuchsperiode,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.FEUTZ_IVONNE == fallid) {
 			return new Testfall02_FeutzYvonne(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.PERREIRA_MARCIA == fallid) {
 			return new Testfall03_PerreiraMarcia(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.WALTHER_LAURA == fallid) {
 			return new Testfall04_WaltherLaura(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.LUETHI_MERET == fallid) {
 			return new Testfall05_LuethiMeret(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.BECKER_NORA == fallid) {
 			return new Testfall06_BeckerNora(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.MEIER_MERET == fallid) {
 			return new Testfall07_MeierMeret(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.UMZUG_AUS == fallid) {
 			return new Testfall08_UmzugAusInAusBern(
 				gesuchsperiode,
-					betreuungenBestaetigt,
-				gemeinde, institutionStammdatenBuilder );
+				betreuungenBestaetigt,
+				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.UMZUG_VOR == fallid) {
 			return new Testfall10_UmzugVorGesuchsperiode(
 				gesuchsperiode,
-					betreuungenBestaetigt,
+				betreuungenBestaetigt,
 				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.ABWESENHEIT == fallid) {
 			return new Testfall09_Abwesenheit(
 				gesuchsperiode,
-					betreuungenBestaetigt,
-				gemeinde,  institutionStammdatenBuilder);
+				betreuungenBestaetigt,
+				gemeinde, institutionStammdatenBuilder);
 		}
 		if (TestfallName.ASIV1 == fallid) {
 			return new Testfall_ASIV_01(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
@@ -364,7 +365,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			saveInstitutionIfNecessary(institutionStammdaten.getInstitution());
 			Optional<InstitutionStammdaten> optionalStammdaten = institutionStammdatenService
 				.findInstitutionStammdaten(
-				institutionStammdaten.getId());
+					institutionStammdaten.getId());
 			if (!optionalStammdaten.isPresent()) {
 				institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 			}
@@ -392,7 +393,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.NcssMethodCount"})
+	@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "PMD.NcssMethodCount" })
 	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
@@ -455,8 +456,14 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, "0.00", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, "0.00", gesuchsperiode);
-		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
-		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
+		saveEinstellung(
+			GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
+			EinschulungTyp.VORSCHULALTER.name(),
+			gesuchsperiode);
+		saveEinstellung(
+			GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
+			EinschulungTyp.VORSCHULALTER.name(),
+			gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA, "0.00", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, "0.00", gesuchsperiode);
@@ -477,10 +484,13 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA, "0", gesuchsperiode);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, "0", gesuchsperiode);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE, "0", gesuchsperiode);
-		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG, "160000", gesuchsperiode);
+		saveEinstellung(
+			GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG,
+			"160000",
+			gesuchsperiode);
 		saveEinstellung(GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER, "false", gesuchsperiode);
-		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode);
-		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode);
+		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39", gesuchsperiode);
+		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2", gesuchsperiode);
 		String stichtag = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() + "-09-15";
 		saveEinstellung(LATS_STICHTAG, stichtag, gesuchsperiode);
 		saveEinstellung(EINGEWOEHNUNG_TYP, EingewoehnungTyp.KEINE.toString(), gesuchsperiode);
@@ -492,8 +502,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
 		saveEinstellung(ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		saveEinstellung(SCHNITTSTELLE_STEUERN_AKTIV, "false", gesuchsperiode);
-		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30",gesuchsperiode);
-		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60",gesuchsperiode);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG, "30", gesuchsperiode);
+		saveEinstellung(FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER, "60", gesuchsperiode);
 		saveEinstellung(FKJV_FAMILIENSITUATION_NEU, "false", gesuchsperiode);
 		saveEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode);
@@ -522,12 +532,16 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(BEGRUENDUNG_MUTATION_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode);
 		saveEinstellung(ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED, "false", gesuchsperiode);
-		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,"0", gesuchsperiode);
-		saveEinstellung(ANSPRUCH_AB_X_MONATEN,"0", gesuchsperiode);
-		saveEinstellung(KITA_STUNDEN_PRO_TAG,"10", gesuchsperiode);
-		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,"false", gesuchsperiode);
-		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN,"false", gesuchsperiode);
-		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2,"false", gesuchsperiode);
+		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK, "0", gesuchsperiode);
+		saveEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
+		saveEinstellung(KITA_STUNDEN_PRO_TAG, "10", gesuchsperiode);
+		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN, "false", gesuchsperiode);
+		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode);
+		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode);
+		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode);
+		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
+		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode);
+		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

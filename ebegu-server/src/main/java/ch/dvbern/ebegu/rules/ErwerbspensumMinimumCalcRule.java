@@ -48,7 +48,10 @@ public class ErwerbspensumMinimumCalcRule extends AbstractErwerbspensumCalcRule 
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Gesuch gesuch = platz.extractGesuch();
 		boolean has2Gs = hasSecondGSForZeit(gesuch, inputData.getParent().getGueltigkeit());
+		setAnspruch(inputData, has2Gs);
+	}
 
+	protected void setAnspruch(@Nonnull BGCalculationInput inputData, boolean has2Gs) {
 		if (isMimimumErwerpsmensumErreicht(inputData, has2Gs)) {
 			inputData.setAnspruchspensumProzent(100);
 		} else {

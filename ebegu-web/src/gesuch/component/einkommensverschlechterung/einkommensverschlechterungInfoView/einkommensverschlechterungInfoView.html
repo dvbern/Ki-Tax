@@ -62,6 +62,7 @@
                                 </span>
                                     <dv-radio-container name="einkommensverschlechterung"
                                                         ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
+                                                        ng-change="vm.onEinkommensverschlechterungChange()"
                                                         ng-required="true" class="radio input-element"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
@@ -128,7 +129,7 @@
 
                         <!-- Auswahl Basisjahr Plus 2 -->
                         <div class="row">
-                            <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
+                            <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showJahrPlus2()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus2"
                                                  data-test="ekv-fuer-basis-jahr-plus#2"

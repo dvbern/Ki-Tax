@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.rules.MonatsMergerRule;
+import ch.dvbern.ebegu.rules.MonatsRule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
@@ -328,7 +331,6 @@ public class MonatsMergerRuleTest {
 	private List<VerfuegungZeitabschnitt> createGesuchAndCalculateZeitabschnitt(boolean anspruchMonatsweise, final boolean gs2, ErwerbspensumContainer... erwerbspensumContainers) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		Arrays.stream(erwerbspensumContainers)
@@ -341,7 +343,6 @@ public class MonatsMergerRuleTest {
 	private Betreuung createBetreuungWithErwerpspensen(ErwerbspensumContainer... erwerbspensumContainers) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		Arrays.stream(erwerbspensumContainers)

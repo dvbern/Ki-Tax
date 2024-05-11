@@ -210,6 +210,7 @@
 
                             <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
                                                 input-id="provPensum"
+                                                index="$index"
                                                 is-disabled="!vm.isEnabled()"
                                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
                                                 betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
@@ -659,18 +660,77 @@
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
+                                    <!--Schulergaenzende Betreuung-->
+                                    <div class="row" ng-if="vm.showSchulergaezendeBetreuungFrage()">
+                                        <div class="col-sm-6 dv-input-container-question">
+                                            <dv-input-container class="form-group">
+                                                <span class="ebegu-h1 required">
+                                                    <span data-translate="SCHULERGAENZENDE_BETREUUNG_FRAGE"></span>
+                                                </span>
+
+                                                <dv-radio-container name="schulergaezendeBetreuung-{{$index}}"
+                                                                    class="input-element"
+                                                                    data-test="schulergaezende-betreuung-{{$index}}"
+                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.betreuungInFerienzeit"
+                                                                    aria-label="{{'SCHULERGAENZENDE_BETREUUNG_FRAGE'|translate}}"
+                                                                    aria-described-by="schulergaezendeBetreuung-{{$index}}-error"
+                                                                    ng-required="true"
+                                                                    dv-enable-element
+                                                                    dv-enable-expression="vm.isSchulergaezendeBetreuungEnabled()"
+                                                >
+                                                </dv-radio-container>
+                                                <dv-error-messages input-id="schulergaezendeBetreuung-{{$index}}"
+                                                                   for="vm.form['schulergaezendeBetreuung-' + $index].$error"
+                                                                   class="error"></dv-error-messages>
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
+
                                     <!--Betreuungspensum-->
                                     <div ng-if="vm.showBetreuungsPensumInput()">
                                         <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
                                                             input-id="betreuungspensum-{{$index}}"
                                                             betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
                                                             is-disabled="!vm.isPensumEditable()"
+                                                            index="$index"
                                                             multiplier-kita="vm.getMultiplierKita()"
                                                             multiplier-tfo="vm.getMultiplierTFO()"
                                                             betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
                                                             is-luzern="vm.isLuzern">
                                         </dv-betreuung-input>
                                     </div>
+                                    <!--Monatliche Betreuungskosten-->
+                                    <div class="row" ng-if="vm.showAnwesenheitstageProMonatInput()">
+                                        <div class="col-sm-12 dv-input-container-medium">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="monatlicheAnwesenheitstage-{{$index}}">
+                                                    <span data-translate="ANWESENHEITSTAGE_PRO_MONAT"></span>
+                                                    <dv-tooltip input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                text="'ANWESENHEITSTAGE_PRO_MONAT_HELP' | translate"></dv-tooltip>
+                                                </label>
+                                                <div class="dv-input-container-medium-label">
+                                                    <input
+                                                        aria-describedby="monatlicheAnwesenheitstage-{{$index}}-error"
+                                                        id="monatlicheAnwesenheitstage-{{$index}}" type="number"
+                                                        name="monatlicheAnwesenheitstage-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.betreuteTage"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_ONE_DECIMALS"
+                                                        ng-required="true"
+                                                        min="1"
+                                                        max="28.7"
+                                                        ng-attr-data-test="monatliche-anwesenheitstage#{{$index}}"
+                                                        ng-attr-placeholder="{{'TAGE_PLACEHOLDER' | translate}}">
+                                                    <dv-error-messages input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                       for="vm.form['monatlicheAnwesenheitstage-' + $index].$error"></dv-error-messages>
+                                                </div>
+
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
                                     <!--Monatliche Betreuungskosten-->
                                     <div class="row" ng-if="vm.showBetreuungsKostenInput()">
                                         <div class="col-sm-12 dv-input-container-medium">
@@ -689,6 +749,7 @@
                                                         ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
                                                         dv-max-length class="form-control"
                                                         ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        type="number"
                                                         ng-required="true"
                                                         ng-attr-data-test="monatliche-betreuungskosten#{{$index}}"
                                                         ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
@@ -954,8 +1015,7 @@
                                                                  aria-label="{{'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX'| translate}}">
                                                         <span data-translate="EINGEWOEHNUNG_PAUSCHALE_CHECKBOX"></span>
                                                     </md-checkbox>
-                                                    <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
-                                                                text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
+                                                    <div class="mock-dv-tooltip"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -965,8 +1025,10 @@
                                                 <div class="col-sm-12 dv-input-container-small">
                                                     <dv-input-container class="form-group">
                                                         <label class="md-no-float"
-                                                               data-translate="EINGEWOEHNUNG_PAUSCHALE"
                                                                for="eingewoehnungPauschale">
+                                                            <span data-translate="EINGEWOEHNUNG_PAUSCHALE"></span>
+                                                            <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
+                                                                        text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
                                                         </label>
                                                         <div class="dv-input-container-small">
                                                             <input aria-describedby="eingewoehnungPauschale-error"
@@ -1232,7 +1294,7 @@
 
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus">
+                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus && vm.abweichungenAktiviert">
                         <dv-loading-button button-click="vm.gotoBetreuungAbweichungen()"
                                            data-test="abweichungen-melden"
                                            aria-label="{{'ABWEICHUNGEN_MELDEN' | translate}}">

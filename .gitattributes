@@ -1,0 +1,14 @@
+# Let git decide which line-ending to check out with
+* text=auto
+
+# Unix-Newlines required
+Dockerfile text eol=lf
+*.sh       text eol=lf
+
+# Windows-Newlines required
+*.bat      text eol=crlf
+*.ps1      text eol=crlf
+
+# Java Snapshot testing
+*.snap	     text eol=lf
+*.snap.debug text eol=lf

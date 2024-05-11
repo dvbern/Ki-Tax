@@ -58,7 +58,7 @@ public class Testfall10_UmzugVorGesuchsperiode extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		gesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 
 		final int gesuchsperiodeFirstYear = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear();

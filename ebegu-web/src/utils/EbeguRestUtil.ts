@@ -198,9 +198,6 @@ import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
-    public constructor() {
-    }
-
     /**
      * Wandelt Data in einen TSApplicationProperty Array um, welches danach zurueckgeliefert wird
      */
@@ -409,6 +406,7 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum ?? 0;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        restObj.betreuteTage = betreuungspensumEntity.betreuteTage;
         if (betreuungspensumEntity.eingewoehnungPauschale) {
             restObj.eingewoehnungPauschale =
                 this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
@@ -441,6 +439,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.betreuteTage = betreuungspensumFromServer.betreuteTage;
         betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
             betreuungspensumFromServer.eingewoehnungPauschale);
         betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
@@ -552,6 +551,7 @@ export class EbeguRestUtil {
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
             restGesuchsteller.korrespondenzSprache = gesuchsteller.korrespondenzSprache;
+            restGesuchsteller.sozialversicherungsnummer = gesuchsteller.sozialversicherungsnummer;
             return restGesuchsteller;
         }
         return undefined;
@@ -566,6 +566,7 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
+            gesuchstellerTS.sozialversicherungsnummer = gesuchstellerFromServer.sozialversicherungsnummer;
             return gesuchstellerTS;
         }
         return undefined;
@@ -612,6 +613,7 @@ export class EbeguRestUtil {
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
+            erwerbspensum.wegzeit = erwerbspensumFromServer.wegzeit;
             return erwerbspensum;
         }
         return undefined;
@@ -626,6 +628,7 @@ export class EbeguRestUtil {
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
+            restErwerbspensum.wegzeit = erwerbspensum.wegzeit;
             return restErwerbspensum;
         }
         return undefined;
@@ -2022,7 +2025,6 @@ export class EbeguRestUtil {
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
         restFinanzielleSituation.veranlagtVorjahr = finanzielleSituation.veranlagtVorjahr;
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
-        restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
@@ -2053,6 +2055,7 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
         restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+        restAbstractFinanzielleSituation.bruttoLohn = abstractFinanzielleSituation.bruttoLohn;
 
         restAbstractFinanzielleSituation.gewinnungskosten = abstractFinanzielleSituation.gewinnungskosten;
         restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet =
@@ -2187,6 +2190,7 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahr;
             abstractFinanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
                 abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+            abstractFinanzielleSituationTS.bruttoLohn = abstractFinanzielleSituationFromServer.bruttoLohn;
 
             return abstractFinanzielleSituationTS;
         }
@@ -2213,7 +2217,6 @@ export class EbeguRestUtil {
             finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
             finanzielleSituationTS.veranlagtVorjahr = finanzielleSituationFromServer.veranlagtVorjahr;
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
-            finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
@@ -2753,6 +2756,7 @@ export class EbeguRestUtil {
             restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit ?? 0;
             restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit ?? 0;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
+            restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         }
         return restBetreuungspensum;
     }
@@ -2766,6 +2770,7 @@ export class EbeguRestUtil {
         restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
         restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit;
         restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit;
+        restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         return restBetreuungspensum;
     }
 
@@ -2949,6 +2954,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -2963,6 +2969,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -4608,6 +4615,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
+        publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
         return publicAppConfigTS;
     }
 
@@ -6165,8 +6173,8 @@ export class EbeguRestUtil {
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 
-    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
-        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value)) {
+    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: TSEinstellung): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value as any)) {
             return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
@@ -6323,7 +6331,7 @@ export class EbeguRestUtil {
             institution: filter.institution,
             traegerschaft: filter.traegerschaft,
             sozialdienst: filter.sozialdienst,
-            status: filter.status
+            status: filter.status,
         };
     }
 }

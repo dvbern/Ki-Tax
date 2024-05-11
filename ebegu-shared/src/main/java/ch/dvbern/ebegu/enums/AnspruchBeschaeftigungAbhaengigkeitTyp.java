@@ -23,6 +23,10 @@ public enum AnspruchBeschaeftigungAbhaengigkeitTyp {
 		public <T> T accept(AnspruchBeschaeftigungAbhangigkeitTypVisitor<T> visitor) {
 			return visitor.visitMinimum();
 		}
+	},
+	SCHWYZ {
+		@Override
+		public <T> T accept(AnspruchBeschaeftigungAbhangigkeitTypVisitor<T> visitor) { return visitor.visitSchwyz(); }
 	};
 
 	public boolean isAnspruchUnabhaengig() {

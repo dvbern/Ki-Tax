@@ -10,7 +10,8 @@
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
                 [showBisher]="isNotNullOrUndefined(finSitGS)"
                 [deklaration]="finSitGS?.bruttoLohn"
-                [korrektur]="finSitJA.bruttoLohn">
+                [korrektur]="finSitJA.bruttoLohn"
+                [dvOnBlur]="emitEvent">
             </dv-input-label-field>
         </div>
     </div>

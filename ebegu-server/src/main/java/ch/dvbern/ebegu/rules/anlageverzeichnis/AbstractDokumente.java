@@ -28,9 +28,10 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.familiensituation.FamiliensituationUtil;
 
 /**
- * Abstrakte Klasse zum berechnen der benötigten Dokumente
+ * Abstrakte Klasse zum Berechnen der benötigten Dokumente
  */
 abstract class AbstractDokumente<T1, T2> {
 
@@ -66,10 +67,9 @@ abstract class AbstractDokumente<T1, T2> {
 		@Nullable Integer personNumber,
 		@Nonnull DokumentGrundTyp dokumentGrundTyp) {
 
-		if (isDokumentNeeded(dokumentTyp, dataForDocument)) {
-			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
-		}
-		return null;
+		return isDokumentNeeded(dokumentTyp, dataForDocument) ?
+			new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp) :
+			null;
 	}
 
 	@Nullable
@@ -83,37 +83,24 @@ abstract class AbstractDokumente<T1, T2> {
 		@Nonnull DokumentGrundTyp dokumentGrundTyp,
 		@Nullable LocalDate stichtag) {
 
-		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2, stichtag)) {
-			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
-		}
-		return null;
+		return isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2, stichtag) ?
+			new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp) :
+			null;
 	}
 
 	protected boolean isGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
-		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
-
-		return familiensituation != null &&
-			familiensituation.getGemeinsameSteuererklaerung() != null &&
-			familiensituation.getGemeinsameSteuererklaerung();
+		return FamiliensituationUtil.isGemeinsameSteuererklaerung(gesuch);
 	}
 
 	protected boolean isVerguenstigungGewuenscht(@Nullable Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getVerguenstigungGewuenscht() != null &&
-			familiensituation.getVerguenstigungGewuenscht()
-		) {
-			return true;
-		}
-		return false;
+		return familiensituation != null
+			&& familiensituation.getVerguenstigungGewuenscht() != null
+			&& familiensituation.getVerguenstigungGewuenscht();
 	}
 
 	protected boolean isSozialhilfeempfaenger(@Nullable Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getSozialhilfeBezueger() != null &&
-			familiensituation.getSozialhilfeBezueger()
-		) {
-			return true;
-		}
-		return false;
+		return familiensituation != null
+			&& familiensituation.getSozialhilfeBezueger() != null
+			&& familiensituation.getSozialhilfeBezueger();
 	}
 }

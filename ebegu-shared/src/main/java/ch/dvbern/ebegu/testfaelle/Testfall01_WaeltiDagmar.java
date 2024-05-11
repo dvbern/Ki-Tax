@@ -67,7 +67,7 @@ public class Testfall01_WaeltiDagmar extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		gesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(80);

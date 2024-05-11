@@ -20,9 +20,11 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -67,11 +69,22 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		// required in all finsit
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
 		finanzielleSituation.setQuellenbesteuert(false);
+		applyVerfuegt(finanzielleSituation, vermoegen, einkommen, BigDecimal.ZERO, BigDecimal.ZERO);
+
+		return finanzielleSituation;
+	}
+
+	public static void applyVerfuegt(
+		AbstractFinanzielleSituation finanzielleSituation,
+		BigDecimal vermoegen,
+		BigDecimal einkommen,
+		BigDecimal abzuegeLiegenschaft,
+		BigDecimal einkaeufeVorsorge
+	) {
 		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
-		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
-		finanzielleSituation.setEinkaeufeVorsorge(BigDecimal.ZERO);
-		return finanzielleSituation;
+		finanzielleSituation.setAbzuegeLiegenschaft(abzuegeLiegenschaft);
+		finanzielleSituation.setEinkaeufeVorsorge(einkaeufeVorsorge);
 	}
 
 	@Override
@@ -103,5 +116,16 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 			kind.setGemeinsamesGesuch(true);
 		}
 		return kind;
+	}
+
+	@Override
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = super.createGesuchsteller(name, vorname, gesuchstellerNumber);
+		if (gesuchstellerNumber == 1) {
+			gesuchsteller.setSozialversicherungsnummer("756.1234.5678.97");
+		} else {
+			gesuchsteller.setSozialversicherungsnummer("756.1238.5678.93");
+		}
+		return gesuchsteller;
 	}
 }

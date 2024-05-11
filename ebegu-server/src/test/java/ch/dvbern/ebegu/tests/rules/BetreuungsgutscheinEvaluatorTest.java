@@ -233,8 +233,6 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		assertNotNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(gesuchsperiode.getGueltigAb(), gesuchsperiode.getGueltigBis(), 100));
-		// Adressen
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1
 		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, gesuchsperiode);
 		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
@@ -265,6 +263,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		// GS 1
 		GesuchstellerContainer gsContainer1 = new GesuchstellerContainer();
 		gsContainer1.setGesuchstellerJA(new Gesuchsteller());
+		gsContainer1.addAdresse(TestDataUtil.createDefaultGesuchstellerAdresseContainer(gsContainer1));
 		gesuch.setGesuchsteller1(gsContainer1);
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
@@ -308,8 +307,6 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 						antragPeriode.getGueltigkeit().getGueltigAb(),
 						antragPeriode.getGueltigkeit().getGueltigBis(),
 								100));
-		// Adressen
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1
 		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, antragPeriode.getGueltigkeit());
 		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);

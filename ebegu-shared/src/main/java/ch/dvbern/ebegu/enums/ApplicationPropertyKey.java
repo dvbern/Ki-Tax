@@ -236,6 +236,11 @@ public enum ApplicationPropertyKey {
 	 */
 	ANGEBOT_MITTAGSTISCH_ENABLED,
 
+	/**
+	 * Ist für den Mandanten die Möglichkeit Abweichungen zu melden zu deaktivieren
+	 */
+	ABWEICHUNGEN_ENABLED,
+
 	/*
 	 * Wenn dieses Datum überschritten wird, ist die SprachfoerderungBestaegit Flag Wert beruecksichtig.
 	 */

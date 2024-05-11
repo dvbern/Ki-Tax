@@ -640,6 +640,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBgStundenFaktor(bgStundenFaktor);
 	}
 
+	public void setAnwesenheitsTageProMonat(BigDecimal anwesenheitsTageProMonat) {
+		this.getBgCalculationInputAsiv().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
+		this.getBgCalculationInputGemeinde().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
+	}
+
 	public void setAnzahlGeschwister(int anzahlGeschwister) {
 		this.getBgCalculationInputAsiv().setAnzahlGeschwister(anzahlGeschwister);
 		this.getBgCalculationInputGemeinde().setAnzahlGeschwister(anzahlGeschwister);
@@ -898,5 +903,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setGesuchBeendenKonkubinatMitZweiGS(boolean gesuchBeenden) {
 		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
 		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
+	}
+
+	public void setBetreuungInFerienzeit(boolean betreuungInFerienzeit) {
+		this.bgCalculationInputAsiv.setBetreuungInFerienzeit(betreuungInFerienzeit);
+		this.bgCalculationInputGemeinde.setBetreuungInFerienzeit(betreuungInFerienzeit);
 	}
 }

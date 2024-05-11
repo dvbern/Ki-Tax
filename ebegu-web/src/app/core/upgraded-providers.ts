@@ -21,6 +21,7 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from '../../gesuch/service/einkommensverschlechterungContainerRS.rest';
+import {EinkommensverschlechterungInfoRS} from '../../gesuch/service/einkommensverschlechterungInfoRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
@@ -355,6 +356,19 @@ export const ekvContainerRSServiceProvider = {
     deps: ['$injector'],
 };
 
+
+// EKV Info RS
+export function ekvInfoRSFactory(i: IInjectorService): EinkommensverschlechterungInfoRS {
+    return i.get('EinkommensverschlechterungInfoRS');
+}
+
+export const ekvInfoRSProvider = {
+    provide: EinkommensverschlechterungInfoRS,
+    useFactory: ekvInfoRSFactory,
+    deps: ['$injector'],
+};
+
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -382,5 +396,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     listResourceRSProvider,
     gesuchstellerRSProvider,
     globalCacheServiceProvider,
-    ekvContainerRSServiceProvider
+    ekvContainerRSServiceProvider,
+    ekvInfoRSProvider
 ];

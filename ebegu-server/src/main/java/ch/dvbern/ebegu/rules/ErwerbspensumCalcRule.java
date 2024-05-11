@@ -89,7 +89,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractErwerbspensumCalcRul
 		inputData.setMinimalErforderlichesPensum(minimum);
 	}
 
-	private boolean isErwerbspensumRelevantForGS2(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+	protected boolean isErwerbspensumRelevantForGS2(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		final Gesuch gesuch = platz.extractGesuch();
 
 		if(!hasSecondGSForZeit(gesuch, inputData.getParent().getGueltigkeit())) {

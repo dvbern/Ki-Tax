@@ -42,6 +42,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
+import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -177,9 +178,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
+    private schulergaenzendeBetreuungAktiv: boolean = false;
+
+    private erweitereBeduerfnisseAktiv: boolean = false;
+    public abweichungenAktiviert: boolean;
 
     public auszahlungAnEltern: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    private isAnwesenheitstageProMonatAktiviert: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -301,6 +307,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         }
                     }
                 }
+                this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+                    this.abweichungenAktiviert = res.abweichungenEnabled;
+                });
                 this.initEinstellungen();
             });
 
@@ -358,6 +367,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
                 .forEach(einstellung => {
                     this.sprachfoerderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.schulergaenzendeBetreuungAktiv = true;
+                    }
+                });
+            response.filter(r => r.key === TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.erweitereBeduerfnisseAktiv = true;
+                    }
+                });
+            response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
+                .forEach(value => {
+                   this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
                 });
         }, error => LOG.error(error));
 
@@ -1068,6 +1093,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         return this.enableFieldsEditedByGemeinde();
     }
+
+    public isSchulergaezendeBetreuungEnabled(): boolean {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            return false;
+        }
+        return this.isPensumEditable();
+    }
+
     public resetAnspruchFachstelleWennPensumUnterschritten() {
         const unterschritten = this.getErweiterteBetreuungJA()?.anspruchFachstelleWennPensumUnterschritten;
         if (!EbeguUtil.isNullOrUndefined(unterschritten) && unterschritten) {
@@ -1223,10 +1256,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
-            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
-                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+       const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+           || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
+           || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+               && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+       return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
     }
 
     public showKitaPlusZuschlag(): boolean {
@@ -1903,5 +1937,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.$translate.instant('EINGEWOEHNUNG_FKJV');
         }
         return this.$translate.instant('EINGEWOEHNUNG');
+    }
+
+    public showSchulergaezendeBetreuungFrage(): boolean {
+        return this.schulergaenzendeBetreuungAktiv && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER
+            && this.isBetreuungsangebotTypForShulergaezendeBetreuung();
+    }
+
+    private isBetreuungsangebotTypForShulergaezendeBetreuung(): boolean {
+        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN) ||
+            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.KITA);
+    }
+
+    public showAnwesenheitstageProMonatInput(): boolean {
+        return this.isBetreuungsangebotTagesfamilie() && this.isAnwesenheitstageProMonatAktiviert;
     }
 }

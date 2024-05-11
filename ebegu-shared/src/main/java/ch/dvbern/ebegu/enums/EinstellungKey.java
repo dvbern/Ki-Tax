@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.enums;
 
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-
 import java.util.List;
+
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Keys für die Einstellungen
@@ -110,6 +110,7 @@ public enum EinstellungKey {
 
 	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
 	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
@@ -231,7 +232,7 @@ public enum EinstellungKey {
 
 	// "FKJV: Anspruchsberechnung monatsweise"
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
-	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN)),
+	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN, MandantIdentifier.SCHWYZ)),
 
 	// "FKJV: Textanpassungen"
 	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
@@ -348,7 +349,20 @@ public enum EinstellungKey {
 	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll()),
 
 	//Das Gesuch wird beendent, wenn der Gesuchsteller 2 innerhalb der Periode ändert KIBONBE-31, KIBON-2583
-	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll());
+	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll()),
+
+	// Addiert die Moeglichkeit Betreuung in die Schulferien getrennt zu melden
+	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll()),
+
+	// Die Antragsteller können eine Wegzeit angeben (KIBON-3436)
+	WEGZEIT_ERWERBSPENSUM(MandantIdentifier.SCHWYZ),
+
+	ERWEITERTE_BEDUERFNISSE_AKTIV(MandantIdentifier.getAll()),
+
+	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll()),
+
+	//Die Antragsteller müssen eine Sozialversicherungsnummer angeben  (KIBON-3339)
+	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ);
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

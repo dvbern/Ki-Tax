@@ -26,8 +26,8 @@ import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 public interface AbstractMahlzeitenPensumContainer {
 
 	@Nonnull
-	List<AbstractMahlzeitenPensum> getBetreuungenGS();
+	List<? extends AbstractMahlzeitenPensum> getBetreuungenGS();
 
 	@Nonnull
-	List<AbstractMahlzeitenPensum> getBetreuungenJA();
+	List<? extends AbstractMahlzeitenPensum> getBetreuungenJA();
 }

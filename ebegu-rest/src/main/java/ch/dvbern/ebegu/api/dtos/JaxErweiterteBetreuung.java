@@ -31,7 +31,7 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 2763541593212370507L;
 
-	@NotNull
+	@Nullable
 	private Boolean erweiterteBeduerfnisse;
 
 	private JaxFachstelle fachstelle;
@@ -67,12 +67,12 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 		this.betreuungInGemeinde = betreuungInGemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
 
-	public void setErweiterteBeduerfnisse(@Nonnull Boolean erweiterteBeduerfnisse) {
+	public void setErweiterteBeduerfnisse(@Nullable Boolean erweiterteBeduerfnisse) {
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 

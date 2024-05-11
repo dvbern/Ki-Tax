@@ -17,23 +17,25 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
+import java.time.LocalDate;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
+import lombok.experimental.UtilityClass;
 
-import javax.annotation.Nonnull;
-import java.time.LocalDate;
+@UtilityClass
+public final class FinanzielleSituationPdfGeneratorFactory {
 
-public abstract class FinanzielleSituationPdfGeneratorFactory {
 	public static DokumentAnFamilieGenerator getGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull LocalDate erstesEinreichungsdatum,
-		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
+		@Nonnull LocalDate erstesEinreichungsdatum
 	) {
 		switch (gesuch.getFinSitTyp()) {
 		case BERN_FKJV:
@@ -42,33 +44,35 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
+				erstesEinreichungsdatum
+			);
+		case SCHWYZ:
+			return new FinanzielleSituationPdfGeneratorSchwyz(
+				gesuch,
+				verfuegungFuerMassgEinkommen,
+				stammdaten,
+				erstesEinreichungsdatum
 			);
 		case SOLOTHURN:
-		case SCHWYZ: //Schwyz FinSitPDF wird in KIBON-3438 umgesetzt
 				return new FinanzielleSituationPdfGeneratorSolothurn(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
+				erstesEinreichungsdatum
 			);
 		case LUZERN:
 			return new FinanzielleSituationPdfGeneratorLuzern(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
+				erstesEinreichungsdatum
 			);
 		case APPENZELL:
 			return new FinanzielleSituationPdfGeneratorAppenzell(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
+				erstesEinreichungsdatum
 			);
 			default:
 			throw new EbeguRuntimeException("getGenerator", "No PDF Generator found for finSitTyp: " + gesuch.getFinSitTyp());

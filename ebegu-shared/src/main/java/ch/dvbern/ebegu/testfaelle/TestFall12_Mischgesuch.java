@@ -49,7 +49,7 @@ public class TestFall12_Mischgesuch extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		Gesuch gesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Pirmin");
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Pirmin", 1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(60);

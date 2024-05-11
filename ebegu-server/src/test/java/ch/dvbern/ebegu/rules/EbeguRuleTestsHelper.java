@@ -334,6 +334,10 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode);
 		einstellungenMap.addEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
+		einstellungenMap.addEinstellung(SCHULERGAENZENDE_BETREUUNGEN,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
@@ -524,7 +528,6 @@ public final class EbeguRuleTestsHelper {
 	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
@@ -554,8 +557,6 @@ public final class EbeguRuleTestsHelper {
 			Mandant mandant
 	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false, mandant);
-		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
