@@ -58,9 +58,9 @@ public class Testfall07_MeierMeret extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		gesuch = createVerheiratet();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Meret");
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Meret", 1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
-		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Jan");
+		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Jan", 2);
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(70);

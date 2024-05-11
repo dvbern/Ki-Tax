@@ -335,6 +335,12 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
 		einstellungenMap.addEinstellung(SCHULERGAENZENDE_BETREUUNGEN,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
+
+		//SZ
+		einstellungenMap.addEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}

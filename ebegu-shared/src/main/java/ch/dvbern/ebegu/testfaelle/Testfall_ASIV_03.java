@@ -66,7 +66,7 @@ public class Testfall_ASIV_03 extends AbstractASIVTestfall {
 	public Gesuch createErstgesuch() {
 		// Gesuch, Gesuchsteller
 		Gesuch erstgesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		erstgesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);

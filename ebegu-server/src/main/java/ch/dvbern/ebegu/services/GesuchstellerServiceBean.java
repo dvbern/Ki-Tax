@@ -87,7 +87,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(gsNumber);
 
-		validateGesuchstellerEmail(gesuch);
+		validateGesuchstellerSaveGroup(gesuch);
 
 		createFinSitInMutationIfNotExisting(gesuchsteller, gesuch, gsNumber);
 		createEKVInMutationIfNotExisting(gesuchsteller, gesuch, gsNumber);
@@ -112,7 +112,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		return persistence.merge(gesuchsteller);
 	}
 
-	private void validateGesuchstellerEmail(@Nonnull Gesuch gesuch) {
+	private void validateGesuchstellerSaveGroup(@Nonnull Gesuch gesuch) {
 		// Gesamt-Validierung durchführen
 		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
 		Set<ConstraintViolation<Gesuch>> constraintViolations =

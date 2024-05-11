@@ -58,9 +58,9 @@ public class Testfall_ASIV_12_MZV_Untermonatliche extends AbstractASIVTestfall {
 	public Gesuch createErstgesuch() {
 		// Gesuch, Gesuchsteller
 		Gesuch erstgesuch = createVerheiratetMitMVZ();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		erstgesuch.setGesuchsteller1(gesuchsteller1);
-		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(2);
 		erstgesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);

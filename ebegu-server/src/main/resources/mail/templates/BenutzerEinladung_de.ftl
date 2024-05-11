@@ -9,7 +9,7 @@
 <#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${eingeladener.email}
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Einladung / Confirmation</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Einladung</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -17,7 +17,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Einladung / Confirmation</title>
+    <title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Einladung</title>
 
 </head>
 

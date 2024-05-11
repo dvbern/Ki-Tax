@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 
 import javax.annotation.Nonnull;
 
@@ -10,11 +11,13 @@ import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -106,6 +109,22 @@ public abstract class AbstractTestfallDataProvider {
 		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(prozent);
 		return erwerbspensum;
+	}
+
+	/**
+	 * @param gesuchstellerNumber is required in overriding methods
+	 */
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = new Gesuchsteller();
+		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
+		gesuchsteller.setNachname(name);
+		gesuchsteller.setVorname(vorname);
+		gesuchsteller.setGeburtsdatum(LocalDate.of(1980, Month.MARCH, 25));
+		gesuchsteller.setDiplomatenstatus(false);
+		gesuchsteller.setMail("test@mailbucket.dvbern.ch");
+		gesuchsteller.setMobile("079 000 00 00");
+		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
+		return gesuchsteller;
 	}
 }
 

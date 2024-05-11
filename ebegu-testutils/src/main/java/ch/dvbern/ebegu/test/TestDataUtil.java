@@ -244,6 +244,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2;
+import static ch.dvbern.ebegu.enums.EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
@@ -283,13 +284,16 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SOZIALVERSICHERUNGSNUMMER_PERIODE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EXPORT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.WEGZEIT_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN;
@@ -2071,6 +2075,10 @@ public final class TestDataUtil {
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
 		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode, persistence);
+		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode, persistence);
+		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode, persistence);
+		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode, persistence);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

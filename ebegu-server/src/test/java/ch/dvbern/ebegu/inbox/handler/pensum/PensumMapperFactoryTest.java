@@ -198,7 +198,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			.where(AbstractBetreuungsPensum::getUnitForDisplay, is(PensumUnits.valueOf(z.getPensumUnit().name())))
 			.where(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
 			.where(AbstractBetreuungsPensum::getEingewoehnungPauschale, pojo(EingewoehnungPauschale.class)
-				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(z.getEingewoehnung().getPauschale()))
+				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(z.getEingewoehnung().getKosten()))
 				.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
 					.where(DateRange::getGueltigAb, is(z.getEingewoehnung().getVon()))
 					.where(DateRange::getGueltigBis, is(z.getEingewoehnung().getBis()))

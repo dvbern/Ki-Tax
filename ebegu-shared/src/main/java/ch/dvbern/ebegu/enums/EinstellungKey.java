@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.enums;
 
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-
 import java.util.List;
+
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Keys für die Einstellungen
@@ -110,6 +110,7 @@ public enum EinstellungKey {
 
 	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
 	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
@@ -352,6 +353,19 @@ public enum EinstellungKey {
 
 	// Addiert die Moeglichkeit Betreuung in die Schulferien getrennt zu melden
 	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll()),
+
+	// Die Antragsteller können eine Wegzeit angeben (KIBON-3436)
+	WEGZEIT_ERWERBSPENSUM(MandantIdentifier.SCHWYZ),
+
+	ERWEITERTE_BEDUERFNISSE_AKTIV(MandantIdentifier.getAll()),
+
+	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll()),
+
+	//Die Antragsteller müssen eine Sozialversicherungsnummer angeben  (KIBON-3339)
+	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ),
+
+	// Aktiviert die Frage und Berechung "Höhere Beiträge für Kind mit Beeinträchtigung"
+	HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT(MandantIdentifier.getAll()),
 
 	GESUCHFREIGABE_ONLINE(MandantIdentifier.getAll());
 

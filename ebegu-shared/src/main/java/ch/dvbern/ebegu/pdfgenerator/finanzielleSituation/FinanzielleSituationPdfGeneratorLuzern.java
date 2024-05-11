@@ -17,25 +17,26 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
+
+import static java.util.Objects.requireNonNull;
 
 public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituationPdfGenerator {
 
@@ -51,10 +52,6 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	private static final String ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION = "PdfGeneration_FinSit_AnrechenbaresVermoegenGemaessSelbstdeklaration";
 
 	@Nonnull
-	private Gesuchsteller gs1;
-	@Nonnull
-	private Gesuchsteller gs2;
-	@Nonnull
 	private FinanzielleSituationContainer basisJahrGS1;
 	@Nullable
 	private FinanzielleSituationContainer basisJahrGS2;
@@ -63,28 +60,19 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull LocalDate erstesEinreichungsdatum,
-		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
+		@Nonnull LocalDate erstesEinreichungsdatum
 	) {
-		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
+		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum);
 	}
 
 	@Override
 	protected void initializeValues() {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
-		basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer();
-
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getGesuchstellerJA());
-		gs1 = gesuch.getGesuchsteller1().getGesuchstellerJA();
+		requireNonNull(gesuch.getGesuchsteller1());
+		basisJahrGS1 = requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 
 		hasSecondGesuchsteller = false;
 		if (gesuchHasTwoFinSit()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getGesuchstellerJA());
-			gs2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+			basisJahrGS2 = requireNonNull(gesuch.getGesuchsteller2()).getFinanzielleSituationContainer();
 			hasSecondGesuchsteller = true;
 		}
 
@@ -97,157 +85,92 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		@Nonnull PdfGenerator generator,
 		@Nonnull Document document
 	) {
-		Objects.requireNonNull(finanzDatenDTO);
 		document.add(createIntroBasisjahr());
-
-		createMassgebendesEinkommenTableForGesuchsteller(
-			document,
-			basisJahrGS1.getFinanzielleSituationJA(),
-			basisJahrGS1.getFinanzielleSituationGS(),
-			getNameForFinSit1(),
-			1
-		);
+		document.add(createMassgebendesEinkommenTableForGesuchsteller(basisJahrGS1, getNameForFinSit1(), 1));
 
 		if (basisJahrGS2 != null) {
 			addSpacing(document);
-			createMassgebendesEinkommenTableForGesuchsteller(
-				document,
-				basisJahrGS2.getFinanzielleSituationJA(),
-				basisJahrGS2.getFinanzielleSituationGS(),
-				gs2.getFullName(),
-				2
-			);
+			String name = requireNonNull(gesuch.getGesuchsteller2()).extractFullName();
+			document.add(createMassgebendesEinkommenTableForGesuchsteller(basisJahrGS2, name, 2));
 
 			addSpacing(document);
-			createTablezusammenzug(document, gs1.getFullName(), gs2.getFullName());
+			addTablezusammenzug(document);
 		}
 	}
 
 	private String getNameForFinSit1() {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		// im konkubinat hat das gesuch zwei separate finSit
 		if (gesuchHasTwoFinSit()) {
 			return gesuch.getGesuchsteller1().extractFullName();
 		}
 		// bei verheiratet haben wir nur eine finSit. Als Titel brauchen wir aber beide Antragstellenden
 		if (isVerheiratet()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			return  gesuch.getGesuchsteller1().extractFullName() + " \n& " + gesuch.getGesuchsteller2().extractFullName();
+			return bothNames();
 		}
 		// alleinerziehende person. nur eine finSit.
 		return gesuch.getGesuchsteller1().extractFullName();
 	}
 
-	private void createMassgebendesEinkommenTableForGesuchsteller(
-		@Nonnull Document document,
-		@Nonnull FinanzielleSituation finanzielleSituationJA,
-		@Nonnull FinanzielleSituation finanzielleSituationGS,
+	private PdfPTable createMassgebendesEinkommenTableForGesuchsteller(
+		@Nonnull FinanzielleSituationContainer finSit,
 		@Nonnull String gesuchstellerName,
 		@Nonnull Integer gesuchstellerNumber
 	) {
-		if (finanzielleSituationRechner.calculateByVeranlagung(finanzielleSituationJA)) {
-			createTablesDeklarationByVeranlagung(document, finanzielleSituationJA, finanzielleSituationGS, gesuchstellerName, gesuchstellerNumber);
-		} else {
-			createTablesBySelbstdeklaration(document, gesuchstellerName, gesuchstellerNumber);
-		}
+		var massgebendesEinkommen = requireNonNull(finanzDatenDTO).getMassgebendesEinkVorAbzFamGr(gesuchstellerNumber);
+
+		return finanzielleSituationRechner.calculateByVeranlagung(finSit.getFinanzielleSituationJA())
+			? createTablesDeklarationByVeranlagung(finSit, gesuchstellerName, requireNonNull(massgebendesEinkommen))
+			: createTablesBySelbstdeklaration(gesuchstellerName, gesuchstellerNumber);
+
 	}
 
-	private void createTablesDeklarationByVeranlagung(
-		@Nonnull Document document,
-		@Nonnull FinanzielleSituation finanzielleSituationJA,
-		@Nonnull FinanzielleSituation finanzielleSituationGS,
+	private PdfPTable createTablesDeklarationByVeranlagung(
+		@Nonnull FinanzielleSituationContainer finSit,
 		@Nonnull String gesuchstellerName,
-		@Nonnull Integer gesuchstellerNumber
+		@Nonnull BigDecimal massgebendesEinkommen
 	) {
-		FinanzielleSituationTable table = createFinSitTable(false);
 
-		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(BERECHNUNG_GEMAESS_VERANLAGUNG, mandant), gesuchstellerName);
-
-		FinanzielleSituationRow steuerbaresEinkommen = createRow(
-			translate(STEUERBARES_EINKOMMEN, mandant),
-			FinanzielleSituation::getSteuerbaresEinkommen,
-			finanzielleSituationJA,
-			finanzielleSituationGS
+		return createFinSitTableSingleGS(
+			createRow(translate(BERECHNUNG_GEMAESS_VERANLAGUNG), gesuchstellerName),
+			createRow(translate(STEUERBARES_EINKOMMEN), FinanzielleSituation::getSteuerbaresEinkommen, finSit),
+			createRow(translate(STEUERBARES_VERMOEGEN), FinanzielleSituation::getSteuerbaresVermoegen, finSit),
+			createRow(translate(NETTOEINKUENFTE_LIEGENSCHAFTEN), FinanzielleSituation::getAbzuegeLiegenschaft, finSit),
+			createRow(translate(VERRECHENBARE_GESCHAEFTSVERLUSTE), FinanzielleSituation::getGeschaeftsverlust, finSit),
+			createRow(translate(EINKAEUFE_VORSORGE), FinanzielleSituation::getEinkaeufeVorsorge, finSit),
+			createRow(translate(MASSG_EINK), printCHF(massgebendesEinkommen))
+				.bold()
 		);
-
-		FinanzielleSituationRow steuerbaresVermoegen = createRow(
-			translate(STEUERBARES_VERMOEGEN, mandant),
-			FinanzielleSituation::getSteuerbaresVermoegen,
-			finanzielleSituationJA,
-			finanzielleSituationGS
-		);
-
-		FinanzielleSituationRow nettoLiegenschaften = createRow(
-			translate(NETTOEINKUENFTE_LIEGENSCHAFTEN, mandant),
-			FinanzielleSituation::getAbzuegeLiegenschaft,
-			finanzielleSituationJA,
-			finanzielleSituationGS
-		);
-
-		FinanzielleSituationRow verrechenbareGeschaeftsverluste = createRow(
-			translate(VERRECHENBARE_GESCHAEFTSVERLUSTE, mandant),
-			FinanzielleSituation::getGeschaeftsverlust,
-			finanzielleSituationJA,
-			finanzielleSituationGS
-		);
-
-		FinanzielleSituationRow einkaeufeVorsorge = createRow(
-			translate(EINKAEUFE_VORSORGE, mandant),
-			FinanzielleSituation::getEinkaeufeVorsorge,
-			finanzielleSituationJA,
-			finanzielleSituationGS
-		);
-
-		Objects.requireNonNull(finanzDatenDTO);
-		var massgebendesEinkommen =  finanzDatenDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumber);
-		FinanzielleSituationRow massgebendesEinkommenRow = new FinanzielleSituationRow(
-			translate(MASSG_EINK, mandant), massgebendesEinkommen);
-
-		table.addRow(title);
-		table.addRow(steuerbaresEinkommen);
-		table.addRow(steuerbaresVermoegen);
-		table.addRow(nettoLiegenschaften);
-		table.addRow(verrechenbareGeschaeftsverluste);
-		table.addRow(einkaeufeVorsorge);
-		table.addRow(massgebendesEinkommenRow);
-
-		document.add(table.createTable());
 	}
 
-	private void createTablesBySelbstdeklaration(
-		@Nonnull Document document,
+	private PdfPTable createTablesBySelbstdeklaration(
 		@Nonnull String gesuchstellerName,
 		@Nonnull Integer gesuchstellerNumber
 	) {
+		FinanzielleSituationRow title = createRow(translate(BERECHNUNG_GEMAESS_SELBSTDEKLARATION), gesuchstellerName);
 
-		Objects.requireNonNull(finanzDatenDTO);
-
-		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(BERECHNUNG_GEMAESS_SELBSTDEKLARATION), gesuchstellerName);
-
-		document.add(createTableSelbstdeklaration(false, gesuchstellerNumber, finanzDatenDTO, title));
+		return createTableSelbstdeklaration(false, gesuchstellerNumber, requireNonNull(finanzDatenDTO), title);
 	}
 
 	@Override
 	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		Objects.requireNonNull(ekvBasisJahrPlus1);
+		requireNonNull(ekvBasisJahrPlus1);
 		createPageEkv(ekvBasisJahrPlus1, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document, true);
 	}
 
 
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		Objects.requireNonNull(ekvBasisJahrPlus2);
+		requireNonNull(ekvBasisJahrPlus2);
 		//EKV2 only needs to be printed on new page if there is no ekv1
 		boolean isPrintOnNewPage =  ekvBasisJahrPlus1 == null;
 		createPageEkv(ekvBasisJahrPlus2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document, isPrintOnNewPage);
 	}
 
 	private void createPageEkv(@Nonnull FinanzielleSituationResultateDTO finSitDTO, int basisJahr, @Nonnull Document document, boolean isPrintOnNewPage) {
-		if(isPrintOnNewPage) {
+		if (isPrintOnNewPage) {
 			document.newPage();
-			document.add(createTitleEkv(null));
+			document.add(createTitleEkv());
 			document.add(createIntroEkv());
 		} else {
 			addSpacing(document);
@@ -255,11 +178,9 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 
 		String gesuchstellerName = getNameForFinSit1();
 
-		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(EKV_TITLE,  String.valueOf(basisJahr)), gesuchstellerName);
-		if(hasSecondGesuchsteller) {
-			assert gesuch.getGesuchsteller2() != null;
-			title.setGs2(gesuch.getGesuchsteller2().extractFullName());
+		FinanzielleSituationRow title = createRow(translate(EKV_TITLE,  printJahr(basisJahr)), gesuchstellerName);
+		if (hasSecondGesuchsteller) {
+			title.setGs2(requireNonNull(gesuch.getGesuchsteller2()).extractFullName());
 		}
 		//EKV Tabelle ist dieselbe wie die Selbstdeklarations-Tabelle
 		document.add(createTableSelbstdeklaration(hasSecondGesuchsteller, 1, finSitDTO, title));
@@ -271,19 +192,20 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		@Nonnull FinanzielleSituationResultateDTO finSitDTO,
 		@Nullable FinanzielleSituationRow titleRow) {
 
-		FinanzielleSituationTable table = createFinSitTable(hasSecondGS);
+		var table = createFinSitTable(hasSecondGS).addRows(
+			titleRow,
+			createRow(TOTAL_EINKUENFTE, finSitDTO.getEinkommen(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getEinkommenGS2()),
+			createRow(TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2()),
+			createRow(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2()),
+			createRow(
+				MASSG_EINK,
+				finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1),
+				hasSecondGS,
+				finSitDTO.getMassgebendesEinkVorAbzFamGrGS2())
+				.bold(!hasSecondGS),
+			hasSecondGS ? createRow(TOTAL_MASSG_EINK, null, true, finSitDTO.getMassgebendesEinkVorAbzFamGr()).bold() : null
+		);
 
-		if (titleRow != null) {
-			table.addRow(titleRow);
-		}
-
-		table.addRow(createRow(TOTAL_EINKUENFTE, finSitDTO.getEinkommen(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getEinkommenGS2()));
-		table.addRow(createRow(TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2()));
-		table.addRow(createRow(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2()));
-		table.addRow(createRow(MASSG_EINK, finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getMassgebendesEinkVorAbzFamGrGS2()));
-		if(hasSecondGS) {
-			table.addRow(createRow(TOTAL_MASSG_EINK, null, true, finSitDTO.getMassgebendesEinkVorAbzFamGr()));
-		}
 		return table.createTable();
 	}
 
@@ -299,8 +221,9 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	}
 
 	private boolean isVerheiratet() {
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		return gesuch.getFamiliensituationContainer().getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
+		requireNonNull(gesuch.getFamiliensituationContainer());
+		Familiensituation familiensituation = requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+
+		return familiensituation.getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
 	}
 }

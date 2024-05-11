@@ -640,6 +640,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBgStundenFaktor(bgStundenFaktor);
 	}
 
+	public void setAnwesenheitsTageProMonat(BigDecimal anwesenheitsTageProMonat) {
+		this.getBgCalculationInputAsiv().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
+		this.getBgCalculationInputGemeinde().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

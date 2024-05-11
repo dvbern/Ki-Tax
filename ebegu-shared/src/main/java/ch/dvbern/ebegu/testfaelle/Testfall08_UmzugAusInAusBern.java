@@ -64,7 +64,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		gesuch = createAlleinerziehend();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 
 		//Wohnadresse NICHT in Bern: 01.01.1900 - 14.12.2017

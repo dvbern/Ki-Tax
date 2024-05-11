@@ -23,18 +23,18 @@ import {Observable, Subject} from 'rxjs';
 @Injectable()
 export class KinderabzugExchangeService {
 
-    private _form: NgForm;
+    private readonly _forms: NgForm[] = [];
     private readonly _geburtsdatumChanged: Subject<moment.Moment> = new Subject();
     private readonly _formValidationTriggered: Subject<void> = new Subject();
 
     private readonly _familienErgaenzendeBetreuungChanged: Subject<moment.Moment> = new Subject();
 
-    public get form(): NgForm {
-        return this._form;
+    public get forms(): NgForm[] {
+        return this._forms;
     }
 
-    public set form(value: NgForm) {
-        this._form = value;
+    public addForm(toAdd: NgForm) {
+        this._forms.push(toAdd);
     }
 
     public getGeburtsdatumChanged$(): Observable<moment.Moment> {
@@ -51,8 +51,10 @@ export class KinderabzugExchangeService {
 
     public triggerFormValidation(): void {
         this._formValidationTriggered.next();
-        this._form?.form.markAllAsTouched();
-        this._form?.onSubmit(null);
+        for (const form of this.forms) {
+            form?.form.markAllAsTouched();
+            form?.onSubmit(null);
+        }
     }
 
     public getFamilienErgaenzendeBetreuungChanged$(): Observable<moment.Moment> {
@@ -61,5 +63,9 @@ export class KinderabzugExchangeService {
 
     public triggerFamilienErgaenzendeBetreuungChanged(): void {
         this._familienErgaenzendeBetreuungChanged.next();
+    }
+
+    public anyFormInvalid(): boolean {
+        return this._forms.reduce((prev, cur) => cur.invalid || prev, false);
     }
 }

@@ -125,6 +125,9 @@ import {
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {
+    HoehereBetraegeBeeintraechtigungComponent
+} from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
 import {FreigabeService} from './freigabe/freigabe.service';
 import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
@@ -243,6 +246,10 @@ export const GESUCH_JS_MODULE =
         .directive('dvFkjvKinderabzug', downgradeComponent({
             component: FkjvKinderabzugComponent,
             inputs: ['kindContainer']
+        }))
+        .directive('hoehereBetraegeBeeintraechtigung', downgradeComponent({
+            component: HoehereBetraegeBeeintraechtigungComponent,
+            inputs: ['kindContainer', 'readOnly']
         }))
         .directive('dvSchwyzKinderabzug', downgradeComponent({
             component: SchwyzKinderabzugComponent,

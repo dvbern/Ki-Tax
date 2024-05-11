@@ -63,9 +63,9 @@ public class Testfall04_WaltherLaura extends AbstractTestfall {
 	public Gesuch fillInGesuch() {
 		// Gesuch, Gesuchsteller
 		gesuch = createVerheiratet();
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Laura");
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Laura", 1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
-		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Thomas");
+		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Thomas", 2);
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(90);
