@@ -58,7 +58,7 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		var gesuch = platz.extractGesuch();
 		final DateRange gpGueltigkeit = platz.extractGesuchsperiode().getGueltigkeit();
 		var createdAbschnitte = gesuch.getKindContainers().stream()
