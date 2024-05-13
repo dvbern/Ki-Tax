@@ -194,9 +194,9 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
-		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
+		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false, BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
-		generateTestDocument(generator, mandant, dokumentname);
+		generateTestDocument(verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(gesuch.getFall().getMandant()), mandant, dokumentname);
 	}
 
 	@ParameterizedTest

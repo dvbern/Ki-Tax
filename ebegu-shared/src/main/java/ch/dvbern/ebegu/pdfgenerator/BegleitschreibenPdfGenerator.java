@@ -62,7 +62,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(createAnrede());
-			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT), 2));
+			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT, this.gemeindeStammdaten.getTelefonForGesuch(getGesuch()), this.gemeindeStammdaten.getEmailForGesuch(getGesuch())), 2));
 			document.add(createParagraphGruss());
 			document.add(PdfUtil.createParagraph(translate(DokumentAnFamilieGenerator.SACHBEARBEITUNG), 2));
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));

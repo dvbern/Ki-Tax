@@ -81,6 +81,6 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSchwyz() {
-		return this.visitSolothurn();
+		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
 	}
 }

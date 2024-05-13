@@ -58,6 +58,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -294,7 +295,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected Element createAntragNichtEintreten() {
-		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		LocalDate eingangsdatum = getEingangsdatum();
 		return PdfUtil.createBoldParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_8,
 			Constants.DATE_FORMATTER.format(eingangsdatum)), 2);
@@ -781,11 +782,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 		return PdfUtil.createParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_1,
+			Constants.DATE_FORMATTER.format(getEingangsdatum()),
 			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
-			kind.getFullName(),
-			betreuung.getInstitutionStammdaten().getInstitution().getName(),
-			betreuung.getBGNummer()));
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis())));
 	}
 
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
