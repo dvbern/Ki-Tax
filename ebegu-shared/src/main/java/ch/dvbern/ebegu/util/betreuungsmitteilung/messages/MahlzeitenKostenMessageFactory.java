@@ -47,8 +47,8 @@ public class MahlzeitenKostenMessageFactory implements BetreuungsmitteilungPensu
 			mandant,
 			decimalFormat.format(pensum.getMonatlicheBetreuungskosten()),
 			decimalFormat.format(pensum.getMonatlicheHauptmahlzeiten()),
-			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),
 			decimalFormat.format(pensum.getTarifProHauptmahlzeit()),
+			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),
 			decimalFormat.format(pensum.getTarifProNebenmahlzeit())
 		);
 	}
