@@ -365,7 +365,9 @@ public enum EinstellungKey {
 	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ),
 
 	// Aktiviert die Frage und Berechung "Höhere Beiträge für Kind mit Beeinträchtigung"
-	HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT(MandantIdentifier.getAll());
+	HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT(MandantIdentifier.getAll()),
+
+	GESUCHFREIGABE_ONLINE(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

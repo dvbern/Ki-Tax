@@ -17,30 +17,31 @@
 
 import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {DateUtil} from '../../../utils/DateUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../../app/core/service/downloadRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSFreigabe} from '../../../../models/TSFreigabe';
+import {DateUtil} from '../../../../utils/DateUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FreigabeDialogController} from '../../dialog/FreigabeDialogController';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {FreigabeService} from '../../freigabe.service';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../component/abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const dialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
 const LOG = LogFactory.createLog('FreigabeViewComponent');
 
@@ -65,7 +66,8 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'EinstellungRS'
+        'EinstellungRS',
+        'FreigabeService'
     ];
 
     public isFreigebenClicked: boolean = false;
@@ -85,7 +87,8 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
         private readonly $translate: TranslateService,
-        private readonly einstellungService: EinstellungRS
+        private readonly einstellungService: EinstellungRS,
+        private readonly freigabeService: FreigabeService
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
@@ -131,7 +134,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchFreigeben(): void {
         const gesuchID = this.gesuchModelManager.getGesuch().id;
-        this.gesuchModelManager.antragFreigeben(gesuchID, null, null);
+        this.gesuchModelManager.antragFreigeben(gesuchID, new TSFreigabe(null, null));
     }
 
     public freigabeZurueckziehen(): void {
@@ -195,34 +198,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public getTextForFreigebenNotAllowed(): string {
-        const gesuch = this.gesuchModelManager.getGesuch();
-        if (gesuch && gesuch.gesperrtWegenBeschwerde) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT';
-        }
-        if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
-        }
-        if (gesuch && gesuch.hasProvisorischeBetreuungen()) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_PROVISORISCHE_BETREUUNG_TEXT';
-        }
-
-        return 'FREIGABEQUITTUNG_NOT_ALLOWED_TEXT';
+        return this.freigabeService.getTextForFreigebenNotAllowed();
     }
 
-    /**
-     * Die Methodes wizardStepManager.areAllStepsOK() erlaubt dass die Betreuungen in Status PLATZBESTAETIGUNG sind
-     * aber in diesem Fall duerfen diese nur OK sein, deswegen die Frage extra. Ausserdem darf es nur freigegebn werden
-     * wenn es nicht in ReadOnly modus ist
-     */
     public canBeFreigegeben(): boolean {
-        return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
-            this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
-            && !this.isGesuchReadonly()
-            && (this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-                || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST))
-            && (!this.gesuchModelManager.getFall().isSozialdienstFall()
-                || (this.gesuchModelManager.getFall().isSozialdienstFall()
-                    && this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV));
+        return this.freigabeService.canBeFreigegeben();
     }
 
     public isNotFreigegeben(): boolean {

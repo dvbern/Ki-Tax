@@ -115,6 +115,7 @@ import {
 } from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
+import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
@@ -176,7 +177,8 @@ import {
         FamiliensituationAppenzellViewXComponent,
         FamiliensituationSchwyzComponent,
         ZahlungsstatusIconComponent,
-        KindFachstelleComponent
+        KindFachstelleComponent,
+        OnlineFreigabeComponent
     ],
     exports: [
         DvSwitchComponent,
