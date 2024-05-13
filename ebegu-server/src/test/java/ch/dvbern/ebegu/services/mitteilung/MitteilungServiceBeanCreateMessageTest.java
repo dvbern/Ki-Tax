@@ -110,7 +110,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		assertThat(
 			result,
 			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1’230.35, monatliche "
-				+ "Hauptmahlzeiten: 5 à CHF 7, monatliche Nebenmahlzeiten: 9.75 à CHF 0.35"));
+				+ "Hauptmahlzeiten: 5 à CHF 9.75, monatliche Nebenmahlzeiten: 7 à CHF 0.35"));
 
 	}
 
@@ -132,7 +132,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		assertThat(
 			result,
 			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 137.5 Stunden, monatliche Betreuungskosten: CHF 1’230.35, monatliche "
-				+ "Hauptmahlzeiten: 5 à CHF 7, monatliche Nebenmahlzeiten: 9.75 à CHF 0.35"));
+				+ "Hauptmahlzeiten: 5 à CHF 9.75, monatliche Nebenmahlzeiten: 7 à CHF 0.35"));
 	}
 
 	@ParameterizedTest

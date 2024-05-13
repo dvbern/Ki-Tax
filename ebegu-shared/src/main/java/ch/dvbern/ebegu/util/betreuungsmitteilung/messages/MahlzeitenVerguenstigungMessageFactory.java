@@ -62,8 +62,8 @@ public class MahlzeitenVerguenstigungMessageFactory implements Betreuungsmitteil
 			decimalFormat.format(MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier)),
 			decimalFormat.format(pensum.getMonatlicheBetreuungskosten()),
 			decimalFormat.format(pensum.getMonatlicheHauptmahlzeiten()),
-			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),
 			decimalFormat.format(pensum.getTarifProHauptmahlzeit()),
+			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),
 			decimalFormat.format(pensum.getTarifProNebenmahlzeit())
 		);
 	}
