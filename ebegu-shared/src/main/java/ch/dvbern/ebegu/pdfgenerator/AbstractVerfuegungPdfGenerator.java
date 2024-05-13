@@ -754,7 +754,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
 		}
 
-		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
+		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine(), stammdaten.getGemeinde().getName());
 		if (!stammdaten.getStandardRechtsmittelbelehrung()
 			&& stammdaten.getRechtsmittelbelehrung() != null) {
 			String belehrungInSprache = stammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
