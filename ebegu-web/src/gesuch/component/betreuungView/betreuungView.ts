@@ -1952,4 +1952,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showAnwesenheitstageProMonatInput(): boolean {
         return this.isBetreuungsangebotTagesfamilie() && this.isAnwesenheitstageProMonatAktiviert;
     }
+
+    public getMonatlicheBetreuungkostenKey(): string {
+        if (this.model.isAngebotTagesfamilien()) {
+            return 'MONATLICHE_BETREUUNGSKOSTEN_TFO';
+        }
+        return 'MONATLICHE_BETREUUNGSKOSTEN';
+    }
+
+    public getMonatlicheBetreuungkostenHelpKey(): string {
+        if (this.model.isAngebotTagesfamilien()) {
+            return 'MONATLICHE_BETREUUNGSKOSTEN_TFO_HELP';
+        }
+        return 'MONATLICHE_BETREUUNGSKOSTEN_HELP';
+    }
+
 }

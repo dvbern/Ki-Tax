@@ -737,9 +737,9 @@
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
                                                        for="monatlicheBetreuungskosten-{{$index}}">
-                                                    <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
+                                                    <span data-translate="{{vm.getMonatlicheBetreuungkostenKey()}}"></span>
                                                     <dv-tooltip input-id="monatlicheBetreuungskosten-{{$index}}"
-                                                                text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                                                text="vm.getMonatlicheBetreuungkostenHelpKey() | translate"></dv-tooltip>
                                                 </label>
                                                 <div class="dv-input-container-medium-label">
                                                     <input
