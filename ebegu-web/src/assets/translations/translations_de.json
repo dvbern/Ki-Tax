@@ -2988,7 +2988,7 @@
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten (FKJV, ASIV, KEINE)",
-    "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
+    "GESCHWISTERNBONUS_TYP": "Geschwisternbonustyp (LUZERN, SCHWYZ, NONE)",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Aufteilung finanzielle Situation zwischen {{gs1}} und {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Rest:",
     "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Bestimmte Einkommens- und Vermögenswerte müssen in kiBon pro Antragssteller*in angegeben werden. kiBon teilt die Werte bei Paaren automatisch hälftig zu. <br>Auf diesem Bildschirm können Sie die Werte zwischen {{gs1}} und {{gs2}} neu aufteilen. Die Aufteilung ist nur von Bedeutung, wenn im Lauf der Tarifperiode eine Trennung erfolgt. Die Summe der Werte muss dem aus den Steuerdaten abgerufenen Wert entsprechen.",

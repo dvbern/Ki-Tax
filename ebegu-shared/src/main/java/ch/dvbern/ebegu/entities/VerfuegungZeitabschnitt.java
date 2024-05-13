@@ -645,6 +645,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
 	}
 
+	public void setAnzahlGeschwister(int anzahlGeschwister) {
+		this.getBgCalculationInputAsiv().setAnzahlGeschwister(anzahlGeschwister);
+		this.getBgCalculationInputGemeinde().setAnzahlGeschwister(anzahlGeschwister);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

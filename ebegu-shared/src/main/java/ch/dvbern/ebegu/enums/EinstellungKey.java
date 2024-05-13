@@ -287,8 +287,8 @@ public enum EinstellungKey {
 	// Welche ausserordentliche Anspruch Rule soll verwendet werden
 	AUSSERORDENTLICHER_ANSPRUCH_RULE(MandantIdentifier.getAll()),
 
-	// Luzern: definiert, ob ein Geschwisternbonus ausbezahlt wird für Kind 2 oder 3
-	GESCHWISTERNBONUS_AKTIVIERT(MandantIdentifier.getAll()),
+	// definiert, welche Art von Geschwisternbonus ausbezahlt wird. Mögliche Werte sind LUZERN, SCHWYZ. NONE deaktiviert den Geschwisternbonus
+	GESCHWISTERNBONUS_TYP(MandantIdentifier.getAll()),
 
 	// Wie lange soll der Babytarif angewendet werden
 	DAUER_BABYTARIF(MandantIdentifier.getAll()),
