@@ -22,7 +22,7 @@
                 <span>{{vm.getBetreuungspensumLabel(vm.index + 1)}}</span>
                 <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte"
                             input-id="betreuungspensum-{{vm.index}}"
-                            text="'BETREUUNGSPENSUM_HELP' | translate"></dv-tooltip>
+                            text="vm.betreuungspensumHelpKey | translate"></dv-tooltip>
                 <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte"
                             input-id="betreuungspensum-{{vm.index}}"
                             text="'BETREUUNGSPENSUM_HELP_FKJV' | translate"></dv-tooltip>

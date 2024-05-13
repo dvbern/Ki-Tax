@@ -18,14 +18,14 @@
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class YoutubeLinkVisitor implements MandantVisitor<string> {
+export class YoutubeLinkVisitor implements MandantVisitor<string | null> {
     private readonly _isGerman: boolean;
 
     public constructor(isGerman: boolean) {
         this._isGerman = isGerman;
     }
 
-    public process(mandant: KiBonMandant): any {
+    public process(mandant: KiBonMandant): string | null {
         return mandant.accept(this);
     }
 
@@ -48,8 +48,8 @@ export class YoutubeLinkVisitor implements MandantVisitor<string> {
         return this.visitBern();
     }
 
-    public visitSchwyz(): string {
-        return this.visitSolothurn();
+    public visitSchwyz(): string | null {
+        return null;
     }
 
 }
