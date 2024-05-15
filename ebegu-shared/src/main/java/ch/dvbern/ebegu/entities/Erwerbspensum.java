@@ -64,6 +64,10 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	@Nullable
 	private String erwerbspensumInstitution;
 
+	@Column
+	@Nullable
+	private String wegzeit;
+
 
 	public Erwerbspensum() {
 	}
@@ -113,6 +117,15 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.erwerbspensumInstitution = erwerbspensumInstitution;
 	}
 
+	@Nullable
+	public String getWegzeit() {
+		return wegzeit;
+	}
+
+	public void setWegzeit(@Nullable String wegzeit) {
+		this.wegzeit = wegzeit;
+	}
+
 	@Override
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -156,6 +169,7 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			target.setTaetigkeit(this.getTaetigkeit());
 			target.setBezeichnung(this.getBezeichnung());
 			target.setErwerbspensumInstitution(this.getErwerbspensumInstitution());
+			target.setWegzeit(this.getWegzeit());
 			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:

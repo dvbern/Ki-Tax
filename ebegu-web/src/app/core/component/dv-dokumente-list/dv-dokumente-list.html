@@ -46,7 +46,6 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat-start="row in table" class="dokument-grund-row"
-                    ngf-select="vm.uploadAnhaenge($files, row)"
                     title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                     aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
                     ng-disabled="vm.isDokumenteUploadDisabled()">
@@ -54,33 +53,41 @@
                     <!--with and without tag-->
                     <td style="white-space: normal !important;"
                         headers="{{vm.tableId +'-dok'}}"
-                        ng-bind="vm.getDokumentText(row)"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'"
                         ngf-multiple="true"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color':vm.sonstige}"></td>
+                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color':vm.sonstige}">
+                        <span ngf-select="vm.uploadAnhaenge($files, row)">{{vm.getDokumentText(row)}}</span>
+                        <dv-tooltip ng-if="row.dokumentTyp === vm.dokumentTyp.NACHWEIS_ABGERECHNETE_QUELLENSTEUERN"
+                                    ng-disabled="true"
+                                    text="'NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT' | translate"></dv-tooltip>
+                    </td>
 
                     <!--with tag-->
                     <td headers="{{vm.tableId +'-tag'}}"
+                        ngf-select="vm.uploadAnhaenge($files, row)"
                         ng-bind="row.tag"
                         ng-if="!vm.sonstige && vm.tag"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'" ngf-multiple="true"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
                     <td ng-if="!vm.sonstige && !vm.tag"
+                        ngf-select="vm.uploadAnhaenge($files, row)"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'" ngf-multiple="true"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
 
                     <td headers="{{vm.tableId +'-fuer'}}" ng-bind="vm.extractFullName(row)"
+                        ngf-select="vm.uploadAnhaenge($files, row)"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"
                         ng-if="!vm.sonstige"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'" ngf-multiple="true"></td>
 
 
-                    <td ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}"></td>
+                    <td ngf-select="vm.uploadAnhaenge($files, row)" ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}"></td>
                     <td headers="{{vm.tableId +'-status'}}" ng-if="!vm.sonstige" class="symbol"
+                        ngf-select="vm.uploadAnhaenge($files, row)"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'" ngf-multiple="true">
@@ -89,19 +96,20 @@
                         <i ng-if="!row.needed && vm.hasDokuments(row)" class="fa fa-check check-warning"
                            aria-hidden="true"></i>
                     </td>
-                    <td ng-if="vm.sonstige" class="no-color">
+                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
 
                     </td>
-                    <td ng-if="vm.sonstige" class="no-color">
+                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
 
                     </td>
-                    <td ng-if="vm.sonstige" class="no-color">
+                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
 
                     </td>
                     <td headers="{{vm.tableId +'-upload'}}"
                         width="5%"
                         class="symbol"
                         tabindex="-1"
+                        ngf-select="vm.uploadAnhaenge($files, row)"
                         ng-click="$event.stopPropagation()"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}">
                         <button ngf-select="vm.uploadAnhaenge($files, row)" ngf-multiple="true"
@@ -164,8 +172,6 @@
                             aria-label="{{'DOKUMENT_DELETE' | translate}}"
                             style="color: black"></span>
                     </td>
-                </tr>
-
                 </tr>
                 <tr ng-repeat-end>
                     <td colspan="100%" class="dateien-spacer"></td>

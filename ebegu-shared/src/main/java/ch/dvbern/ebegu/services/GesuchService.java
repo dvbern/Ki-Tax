@@ -216,32 +216,11 @@ public interface GesuchService {
 	Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo);
 
 	/**
-	 * Gibt das Gesuch frei für das Jugendamt/Schulamt: Anpassung des Status inkl Kopieren der Daten des GS aus den
-	 * JA-Containern in die GS-Containern. Wird u.a. beim einlesen per Scanner aufgerufen
-	 */
-	@Nonnull
-	Gesuch antragFreigeben(@Nonnull String gesuchId, @Nullable String usernameJA, @Nullable String usernameSCH);
-
-	/**
 	 * Zieht die Freigabe wieder zurück.
 	 */
 	@Nonnull
 	Gesuch antragZurueckziehen(@Nonnull String gesuchId);
 
-	/**
-	 * Verantwortliche müssen gesetzt werden wenn in einem Papiergesuch oder Papiermutation eine Betreuung hinzugefügt
-	 * wird oder eine Online-Mutation freigegeben wird (direkte Freigabe). Beim Einlesen eines Papiergesuchs werden
-	 * die Veratnwortliche mittels Dialogfenster durch den Benutzer gesetzt
-	 *
-	 * @param persist speichert die Verantwortliche direkt auf der DB in Update-Query
-	 * @return true if Verantwortliche changed
-	 */
-	boolean setVerantwortliche(
-		@Nullable Benutzer verantwortlicherBG,
-		@Nullable Benutzer verantwortlicherTS,
-		@Nonnull Gesuch gesuch,
-		boolean onlyIfNotSet,
-		boolean persist);
 
 	/**
 	 * Setzt das gegebene Gesuch als Beschwerde hängig und bei allen Gescuhen der Periode den Flag

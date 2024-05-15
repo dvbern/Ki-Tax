@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckAhvFormat;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
@@ -82,6 +83,10 @@ public class Gesuchsteller extends AbstractPersonEntity {
 	@Column
 	private String zpvNummer = null;
 
+	@Nullable
+	@Column
+	@CheckAhvFormat
+	private String sozialversicherungsnummer;
 
 	public Gesuchsteller() {
 	}
@@ -159,6 +164,7 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		target.setDiplomatenstatus(this.isDiplomatenstatus());
 		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
 		target.setZpvNummer(this.getZpvNummer());
+		target.setSozialversicherungsnummer(this.getSozialversicherungsnummer());
 		return target;
 	}
 
@@ -192,5 +198,14 @@ public class Gesuchsteller extends AbstractPersonEntity {
 
 	public void setZpvNummer(@Nullable String zpvNummer) {
 		this.zpvNummer = zpvNummer;
+	}
+
+	@Nullable
+	public String getSozialversicherungsnummer() {
+		return sozialversicherungsnummer;
+	}
+
+	public void setSozialversicherungsnummer(@Nullable String sozialversicherungsnummer) {
+		this.sozialversicherungsnummer = sozialversicherungsnummer;
 	}
 }

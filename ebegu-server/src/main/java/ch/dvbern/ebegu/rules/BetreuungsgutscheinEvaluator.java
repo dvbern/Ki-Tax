@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
+import ch.dvbern.ebegu.rules.mutationsmerger.MutationsMerger;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;

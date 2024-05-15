@@ -15,16 +15,44 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.util.KinderabzugTypVisitor;
+
 /**
  * Enum fuer Typ des Kinderabzuges
  */
 public enum KinderabzugTyp {
-	ASIV,
-	FKJV,
-	FKJV_2,
-	SCHWYZ,
-	KEINE;
+	ASIV {
+		@Override
+		public <T> T accept(KinderabzugTypVisitor<T> visitor) {
+			return visitor.visitASIV();
+		}
+	},
+	FKJV {
+		@Override
+		public <T> T accept(KinderabzugTypVisitor<T> visitor) {
+			return visitor.visitFKJV();
+		}
+	},
+	FKJV_2 {
+		@Override
+		public <T> T accept(KinderabzugTypVisitor<T> visitor) {
+			return visitor.visitFKJV2();
+		}
+	},
+	SCHWYZ {
+		@Override
+		public <T> T accept(KinderabzugTypVisitor<T> visitor) {
+			return visitor.visitSchwyz();
+		}
+	},
+	KEINE {
+		@Override
+		public <T> T accept(KinderabzugTypVisitor<T> visitor) {
+			return visitor.visitKeine();
+		}
+	};
 
+	public abstract <T> T accept(KinderabzugTypVisitor<T> visitor);
 	public boolean isFKJV() {
 		return this == FKJV || this == FKJV_2;
 	}

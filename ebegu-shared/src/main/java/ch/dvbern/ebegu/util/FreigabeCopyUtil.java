@@ -221,8 +221,11 @@ public final class FreigabeCopyUtil {
 		kindGS.setAlimenteErhalten(kindJA.getAlimenteErhalten());
 		kindGS.setAlimenteBezahlen(kindJA.getAlimenteBezahlen());
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
+		kindGS.setUnterhaltspflichtig(kindJA.getUnterhaltspflichtig());
 		kindGS.setSprichtAmtssprache(kindJA.getSprichtAmtssprache());
 		kindGS.setEinschulungTyp(kindJA.getEinschulungTyp());
+		kindGS.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(kindJA.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		kindGS.setHoehereBeitraegeUnterlagenDigital(kindJA.getHoehereBeitraegeUnterlagenDigital());
 	}
 
 	private static void copyBetreuungspensumContainer(@Nullable BetreuungspensumContainer container) {
@@ -305,6 +308,7 @@ public final class FreigabeCopyUtil {
 		gesuchstellerGS.setTelefonAusland(gesuchstellerJA.getTelefonAusland());
 		gesuchstellerGS.setDiplomatenstatus(gesuchstellerJA.isDiplomatenstatus());
 		gesuchstellerGS.setKorrespondenzSprache(gesuchstellerJA.getKorrespondenzSprache());
+		gesuchstellerGS.setSozialversicherungsnummer(gesuchstellerJA.getSozialversicherungsnummer());
 	}
 
 	private static void copyGesuchstellerAdresseContainer(@Nullable GesuchstellerAdresseContainer container) {
@@ -525,6 +529,7 @@ public final class FreigabeCopyUtil {
 		erwerbspensumGS.setTaetigkeit(erwerbspensumJA.getTaetigkeit());
 		erwerbspensumGS.setBezeichnung(erwerbspensumJA.getBezeichnung());
 		erwerbspensumGS.setErwerbspensumInstitution(erwerbspensumJA.getErwerbspensumInstitution());
+		erwerbspensumGS.setWegzeit(erwerbspensumJA.getWegzeit());
 
 		if (erwerbspensumJA.getUnbezahlterUrlaub() == null) {
 			//noinspection ConstantConditions

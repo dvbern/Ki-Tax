@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
+import ch.dvbern.ebegu.rules.mutationsmerger.MutationsMerger;
 import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import org.slf4j.Logger;

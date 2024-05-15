@@ -119,6 +119,7 @@ export class DVAntragListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
     private tagesschulangebotEnabled: boolean;
+    private angebotMittagstischEnabled: boolean;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -158,6 +159,7 @@ export class DVAntragListController implements IController {
         });
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tagesschulangebotEnabled = res.angebotTSActivated;
+            this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
         });
     }
 
@@ -243,7 +245,7 @@ export class DVAntragListController implements IController {
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled(), this.angebotMittagstischEnabled);
     }
 
     /**

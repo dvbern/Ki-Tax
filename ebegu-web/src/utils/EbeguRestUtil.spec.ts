@@ -440,6 +440,7 @@ describe('EbeguRestUtil', () => {
                     .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
                 expect(restErwerbspensum.gueltigBis)
                     .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
+                expect(restErwerbspensum.wegzeit).toEqual(erwerbspensumJA.wegzeit);
 
                 const transformedErwerbspensum = ebeguRestUtil.parseErwerbspensum(new TSErwerbspensum(),
                     restErwerbspensum);
@@ -617,6 +618,7 @@ describe('EbeguRestUtil', () => {
         myGesuchsteller.telefonAusland = undefined;
         myGesuchsteller.diplomatenstatus = false;
         myGesuchsteller.korrespondenzSprache = undefined;
+        myGesuchsteller.sozialversicherungsnummer = undefined;
         myGesuchstellerCont.korrespondenzAdresse = undefined;
         myGesuchstellerCont.rechnungsAdresse = undefined;
         myGesuchstellerCont.adressen = [];
@@ -649,6 +651,7 @@ describe('EbeguRestUtil', () => {
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
         tsBetreuungspensum.eingewoehnungPauschale = undefined;
         tsBetreuungspensum.hasEingewoehnungsPauschale = false;
+        tsBetreuungspensum.betreuteTage = null;
         tsBetreuungspensum.betreuungInFerienzeit = false;
         return tsBetreuungspensum;
     }

@@ -284,6 +284,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private sortId: string;
     private filterId: string;
     private tagesschulangebotEnabled: boolean;
+    private angebotMittagstischEnabled: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -662,7 +663,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): TSBetreuungsangebotTyp[] {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled(), this.angebotMittagstischEnabled);
     }
 
     private isTagesschulangebotEnabled(): boolean {
@@ -814,6 +815,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initPublicProperties() {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tagesschulangebotEnabled = res.angebotTSActivated;
+            this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
         });
     }
 }

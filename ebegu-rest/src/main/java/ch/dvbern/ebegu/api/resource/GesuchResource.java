@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.JaxFreigabeDTO;
 import ch.dvbern.ebegu.dto.neskovanp.KibonAnfrageDTO;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.*;
@@ -33,6 +34,7 @@ import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.gesuch.freigabe.FreigabeService;
 import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
@@ -122,6 +124,9 @@ public class GesuchResource {
 
 	@Inject
 	private SimulationService simulationService;
+
+	@Inject
+	private FreigabeService freigabeService;
 
 	@Resource
 	private EJBContext context;    //fuer rollback
@@ -474,17 +479,14 @@ public class GesuchResource {
 		response = JaxGesuch.class)
 	@Nullable
 	@POST
-	@Path("/freigeben/{antragId}/JA/{usernameJA}/SCH/{usernameSCH}")
+	@Path("/freigeben/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
 		SACHBEARBEITER_TS, GESUCHSTELLER, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response antragFreigeben(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@Nullable @PathParam("usernameJA") String usernameJA,
-		@Nullable @PathParam("usernameSCH") String usernameSCH,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+		@NotNull JaxFreigabeDTO jaxFreigabe) {
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusForFreigabe(antragJaxId.getId());
@@ -493,7 +495,7 @@ public class GesuchResource {
 
 		final String antragId = converter.toEntityId(antragJaxId);
 
-		Gesuch gesuch = gesuchService.antragFreigeben(antragId, usernameJA, usernameSCH);
+		Gesuch gesuch = freigabeService.antragFreigeben(antragId, jaxFreigabe);
 
 		return Response.ok(converter.gesuchToJAX(gesuch)).build();
 	}

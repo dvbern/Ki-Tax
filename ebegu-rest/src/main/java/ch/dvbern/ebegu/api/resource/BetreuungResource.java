@@ -482,7 +482,7 @@ public class BetreuungResource {
 			kindContainer.getKindJA().setFamilienErgaenzendeBetreuung(true);
 			kindContainer.getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
 			kindContainer.getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
-			kindService.saveKind(kindContainer);
+			kindService.saveKind(kindContainer, null);
 		}
 
 		JaxBetreuung jaxBetreuung = jaxAnmeldungDTO.getBetreuung();
