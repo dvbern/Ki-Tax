@@ -92,7 +92,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"VERHEIRATET"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = {"VERHEIRATET", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromVerheiratetTo(EnumFamilienstatus newStatus) {
 			Gesuch gesuch = setupGesuch();
 			gesuch.setFamiliensituationContainer(createFamSitContainer(newStatus));
@@ -110,7 +110,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromKonkubinat(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();
@@ -129,7 +129,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT_KEIN_KIND"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT_KEIN_KIND", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromKonkubinatKeinKind(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();
@@ -148,7 +148,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"ALLEINERZIEHEND"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = {"ALLEINERZIEHEND", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromAlleinerziehend(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();

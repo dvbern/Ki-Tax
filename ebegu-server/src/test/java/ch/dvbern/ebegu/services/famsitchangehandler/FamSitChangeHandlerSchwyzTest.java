@@ -74,6 +74,40 @@ public class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 		}
 
 		@Test
+		void shouldNotsetInPruefungIfAlleineToAlleine() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			testee.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE)));
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(false));
+		}
+
+		@Test
+		void shouldNotsetInPruefungIfZuZweitToZuZweit() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			testee.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT)));
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(false));
+		}
+
+		@Test
 		void shouldResetOnChangeFromAlleineToZuZweit() {
 			Gesuch gesuch = new Gesuch();
 			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE));
@@ -139,6 +173,5 @@ public class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 		familiensituationContainer.getFamiliensituationJA().setGesuchstellerKardinalitaet(gesuchstellerKardinalitaet);
 		return familiensituationContainer;
 	}
-
 
 }
