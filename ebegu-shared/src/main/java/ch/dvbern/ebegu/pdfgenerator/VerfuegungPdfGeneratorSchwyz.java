@@ -67,9 +67,8 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		document.add(createNichtEintretenUnterlagenUnvollstaendigParagraph());
 		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4)));
 
-		document.newPage();
-
 		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_5)));
+		document.newPage();
 		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_9)));
 		document.add(createAntragNichtEintreten());
 		addZusatzTextIfAvailable(document);
