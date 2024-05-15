@@ -121,4 +121,9 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
 	}
+
+	@Override
+	protected void addSuperTextForKeinAnspruchAbschnitt(Paragraph paragraph) {
+		// wird nicht beim Schwyz angezeigt als keine Fussnotiz
+	}
 }
