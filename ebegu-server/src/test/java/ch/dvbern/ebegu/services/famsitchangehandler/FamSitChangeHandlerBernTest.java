@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.dataprovider.AbstractTestfallDataProvider;
+import ch.dvbern.ebegu.testfaelle.dataprovider.TestKindParameter;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.junit.jupiter.api.Nested;
@@ -92,7 +93,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"VERHEIRATET", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = { "VERHEIRATET", "SCHWYZ", "APPENZELL" }, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromVerheiratetTo(EnumFamilienstatus newStatus) {
 			Gesuch gesuch = setupGesuch();
 			gesuch.setFamiliensituationContainer(createFamSitContainer(newStatus));
@@ -110,7 +111,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = { "KONKUBINAT", "SCHWYZ", "APPENZELL" }, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromKonkubinat(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();
@@ -129,7 +130,9 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"KONKUBINAT_KEIN_KIND", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class,
+			names = { "KONKUBINAT_KEIN_KIND", "SCHWYZ", "APPENZELL" },
+			mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromKonkubinatKeinKind(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();
@@ -148,7 +151,7 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
-		@EnumSource(value = EnumFamilienstatus.class, names = {"ALLEINERZIEHEND", "SCHWYZ", "APPENZELL"}, mode = Mode.EXCLUDE)
+		@EnumSource(value = EnumFamilienstatus.class, names = { "ALLEINERZIEHEND", "SCHWYZ", "APPENZELL" }, mode = Mode.EXCLUDE)
 		void shouldResetAndSetInPruefungInStatusChangeFromAlleinerziehend(EnumFamilienstatus newStatus) {
 
 			Gesuch gesuch = setupGesuch();
@@ -170,14 +173,16 @@ public class FamSitChangeHandlerBernTest extends EasyMockSupport {
 			KindContainer kindContainer = new KindContainer();
 			Kind kind = new Kind();
 			AbstractTestfallDataProvider.setRequiredKindData(
-				kind,
-				Geschlecht.WEIBLICH,
-				"Lara",
-				"Testkind",
-				TestDataUtil.START_PERIODE.minusYears(5),
-				false,
-				Kinderabzug.GANZER_ABZUG,
-				true);
+				TestKindParameter.builder()
+					.kind(kind)
+					.geschlecht(Geschlecht.WEIBLICH)
+					.name("Testkind")
+					.vorname("Lara")
+					.geburtsdatum(TestDataUtil.START_PERIODE.minusYears(5))
+					.betreuung(true)
+					.is18GeburtstagBeforeGPEnds(false)
+					.kinderabzug(Kinderabzug.GANZER_ABZUG)
+					.build());
 			kindContainer.setKindJA(kind);
 			return kindContainer;
 		}

@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.dataprovider.SchwyzTestfallDataProvider;
+import ch.dvbern.ebegu.testfaelle.dataprovider.TestKindParameter;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.junit.jupiter.api.Nested;
@@ -144,13 +145,15 @@ public class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 		private KindContainer createDefaultKind() {
 			KindContainer kindContainer = new KindContainer();
 			Kind kind = new Kind();
-			SchwyzTestfallDataProvider.setRequiredKindData(
-				kind,
-				Geschlecht.WEIBLICH,
-				"Lara",
-				"Testkind",
-				TestDataUtil.START_PERIODE.minusYears(5),
-				true);
+			SchwyzTestfallDataProvider.setSchwyzKindData(
+				TestKindParameter.builder()
+					.kind(kind)
+					.geschlecht(Geschlecht.WEIBLICH)
+					.name("Testkind")
+					.vorname("Lara")
+					.geburtsdatum(TestDataUtil.START_PERIODE.minusYears(5))
+					.betreuung(true)
+					.build());
 			kindContainer.setKindJA(kind);
 			return kindContainer;
 		}

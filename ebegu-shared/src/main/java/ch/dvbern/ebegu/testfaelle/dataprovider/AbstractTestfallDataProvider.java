@@ -83,32 +83,37 @@ public abstract class AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
-		setRequiredKindData(kind, geschlecht, name, vorname, geburtsdatum, is18GeburtstagBeforeGPEnds, kinderabzug, betreuung);
+		final TestKindParameter testKindParameter =
+			TestKindParameter.builder()
+				.geburtsdatum(geburtsdatum)
+				.betreuung(betreuung)
+				.kind(kind)
+				.geschlecht(geschlecht)
+				.name(name)
+				.is18GeburtstagBeforeGPEnds(is18GeburtstagBeforeGPEnds)
+				.kinderabzug(kinderabzug)
+				.vorname(vorname)
+				.build();
+		setRequiredKindData(testKindParameter);
 
 		return kind;
 	}
 
-	public static void setRequiredKindData(
-		Kind kind, Geschlecht geschlecht,
-		String name,
-		String vorname,
-		LocalDate geburtsdatum,
-		boolean is18GeburtstagBeforeGPEnds,
-		Kinderabzug kinderabzug,
-		boolean betreuung) {
-		kind.setGeschlecht(geschlecht);
-		kind.setNachname(name);
-		kind.setVorname(vorname);
-		kind.setGeburtsdatum(geburtsdatum);
-		kind.setKinderabzugErstesHalbjahr(kinderabzug);
-		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
-		if (is18GeburtstagBeforeGPEnds) {
+	public static void setRequiredKindData(TestKindParameter testKindParameter) {
+		final Kind kind = testKindParameter.getKind();
+		kind.setGeschlecht(testKindParameter.getGeschlecht());
+		kind.setNachname(testKindParameter.getName());
+		kind.setVorname(testKindParameter.getVorname());
+		kind.setGeburtsdatum(testKindParameter.getGeburtsdatum());
+		kind.setKinderabzugErstesHalbjahr(testKindParameter.getKinderabzug());
+		kind.setKinderabzugZweitesHalbjahr(testKindParameter.getKinderabzug());
+		if (Boolean.TRUE.equals(testKindParameter.getIs18GeburtstagBeforeGPEnds())) {
 			kind.setInErstausbildung(false);
 		} else {
 			kind.setObhutAlternierendAusueben(false);
 		}
-		kind.setFamilienErgaenzendeBetreuung(betreuung);
-		if (betreuung) {
+		kind.setFamilienErgaenzendeBetreuung(testKindParameter.isBetreuung());
+		if (testKindParameter.isBetreuung()) {
 			kind.setSprichtAmtssprache(Boolean.TRUE);
 			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
