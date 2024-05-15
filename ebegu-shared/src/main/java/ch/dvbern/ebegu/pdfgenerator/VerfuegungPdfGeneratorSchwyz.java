@@ -25,10 +25,12 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -72,6 +74,17 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_9)));
 		document.add(createAntragNichtEintreten());
 		addZusatzTextIfAvailable(document);
+	}
+
+	@Override
+	protected Element createNichtEingetretenParagraph1() {
+		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
+
+		return PdfUtil.createParagraph(translate(
+			NICHT_EINTRETEN_CONTENT_1,
+			Constants.DATE_FORMATTER.format(getEingangsdatum()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis())));
 	}
 
 	@Override

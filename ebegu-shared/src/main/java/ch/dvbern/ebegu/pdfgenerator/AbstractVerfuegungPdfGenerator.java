@@ -83,7 +83,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
 	private static final String KEIN_ANSPRUCH_CONTENT_3 = "PdfGeneration_KeinAnspruch_Content_3";
 	private static final String KEIN_ANSPRUCH_CONTENT_4 = "PdfGeneration_KeinAnspruch_Content_4";
-	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
+	protected static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
@@ -782,9 +782,11 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 		return PdfUtil.createParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_1,
-			Constants.DATE_FORMATTER.format(getEingangsdatum()),
 			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-			Constants.DATE_FORMATTER.format(gp.getGueltigBis())));
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
+			kind.getFullName(),
+			betreuung.getInstitutionStammdaten().getInstitution().getName(),
+			betreuung.getBGNummer()));
 	}
 
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
