@@ -15,26 +15,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { UIRouterGlobals } from "@uirouter/core";
-import { combineLatest, Observable, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { AuthServiceRS } from "../../../../authentication/service/AuthServiceRS.rest";
-import { TSFerienbetreuungAngabenContainer } from "../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer";
-import { TSFerienbetreuungAngabenNutzung } from "../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung";
-import { ErrorService } from "../../../core/errors/service/ErrorService";
-import { LogFactory } from "../../../core/logging/LogFactory";
-import { WizardStepXRS } from "../../../core/service/wizardStepXRS.rest";
-import { numberValidator, ValidationType } from "../../../shared/validators/number-validator.directive";
-import { UnsavedChangesService } from "../../services/unsaved-changes.service";
-import { AbstractFerienbetreuungFormular } from "../abstract.ferienbetreuung-formular";
-import { FerienbetreuungService } from "../services/ferienbetreuung.service";
-import { EbeguUtil } from "../../../../utils/EbeguUtil";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { UIRouterGlobals } from '@uirouter/core';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AuthServiceRS } from '../../../../authentication/service/AuthServiceRS.rest';
+import { TSFerienbetreuungAngabenContainer } from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import { TSFerienbetreuungAngabenNutzung } from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
+import { ErrorService } from '../../../core/errors/service/ErrorService';
+import { LogFactory } from '../../../core/logging/LogFactory';
+import { WizardStepXRS } from '../../../core/service/wizardStepXRS.rest';
+import { numberValidator, ValidationType } from '../../../shared/validators/number-validator.directive';
+import { UnsavedChangesService } from '../../services/unsaved-changes.service';
+import { AbstractFerienbetreuungFormular } from '../abstract.ferienbetreuung-formular';
+import { FerienbetreuungService } from '../services/ferienbetreuung.service';
+import { EbeguUtil } from '../../../../utils/EbeguUtil';
 
-const LOG = LogFactory.createLog("FerienbetreuungNutzungComponent");
+const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
 
 @Component({
     selector: "dv-ferienbetreuung-nutzung",
@@ -89,7 +89,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                     this.unsavedChangesService.registerForm(this.form);
                     this.setupAbweichungenAnzahlKinder();
                 },
-                (error) => {
+                error => {
                     LOG.error(error);
                 }
             );
@@ -105,7 +105,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             this.writeBackFormValues();
             this.ferienbetreuungService.nutzungAbschliessen(this.container.id, this.nutzung).subscribe(
                 () => this.handleSaveSuccess(),
-                (error) => this.handleSaveErrors(error)
+                error => this.handleSaveErrors(error)
             );
         }
     }
@@ -138,7 +138,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
 
     private enableSpecialBetreuungstageFormValidation(): void {
         // betreuungstage
-        this.form.controls.anzahlBetreuungstageKinderBern.setValidators((control) => {
+        this.form.controls.anzahlBetreuungstageKinderBern.setValidators(control => {
             const diff =
                 this.form.value.anzahlBetreuungstageKinderBern -
                 this.form.value.betreuungstageKinderDieserGemeinde -
@@ -151,7 +151,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             return null;
         });
         // sonderschueler 1
-        this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.setValidators((control) => {
+        this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.setValidators(control => {
             const diff =
                 this.form.value.betreuungstageKinderDieserGemeinde -
                 this.form.value.betreuungstageKinderDieserGemeindeSonderschueler;
@@ -227,9 +227,9 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             () => {
                 this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
-                this.errorService.addMesageAsInfo(this.translate.instant("SPEICHERN_ERFOLGREICH"));
+                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             },
-            (err) => this.handleSaveErrors(err)
+            err => this.handleSaveErrors(err)
         );
     }
 
@@ -252,7 +252,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     public onFalscheAngaben(): void {
         this.ferienbetreuungService.falscheAngabenNutzung(this.container.id, this.nutzung).subscribe(
             () => this.handleSaveSuccess(),
-            (error) => this.handleSaveErrors(error)
+            error => this.handleSaveErrors(error)
         );
     }
 
@@ -281,12 +281,12 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             this.form.controls.anzahlBetreuteKinder2Zyklus.valueChanges,
             this.form.controls.anzahlBetreuteKinder3Zyklus.valueChanges,
         ]).subscribe(
-            (values) => {
+            values => {
                 this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3];
                 this.cd.markForCheck();
             },
             () => {
-                this.errorService.addMesageAsError("BAD_NUMBER_ERROR");
+                this.errorService.addMesageAsError('BAD_NUMBER_ERROR');
             }
         );
     }
