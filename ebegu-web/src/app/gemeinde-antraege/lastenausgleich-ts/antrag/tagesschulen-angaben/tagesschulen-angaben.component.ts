@@ -685,16 +685,11 @@ export class TagesschulenAngabenComponent implements OnInit {
 
     public allAnzahlFieldsEmpty(): boolean {
         return (
-            (this.form.value.anzahlEingeschriebeneKinderBasisstufe?.toString().length === 0 ||
-                this.form.value.anzahlEingeschriebeneKinderBasisstufe === null) &&
-            (this.form.value.anzahlEingeschriebeneKinder?.toString().length === 0 ||
-                this.form.value.anzahlEingeschriebeneKinder === null) &&
-            (this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length === 0 ||
-                this.form.value.anzahlEingeschriebeneKinderKindergarten === null) &&
-            (this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length === 0 ||
-                this.form.value.anzahlEingeschriebeneKinderPrimarstufe === null) &&
-            (this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length === 0 ||
-                this.form.value.anzahlEingeschriebeneKinderSekundarstufe === null)
+            EbeguUtil.isEmptyStringNullOrUndefined(this.form.value.anzahlEingeschriebeneKinderBasisstufe?.toString()) &&
+            EbeguUtil.isEmptyStringNullOrUndefined(this.form.value.anzahlEingeschriebeneKinder?.toString()) &&
+            EbeguUtil.isEmptyStringNullOrUndefined(this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString()) &&
+            EbeguUtil.isEmptyStringNullOrUndefined(this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString()) &&
+            EbeguUtil.isEmptyStringNullOrUndefined(this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString())
         );
     }
 
