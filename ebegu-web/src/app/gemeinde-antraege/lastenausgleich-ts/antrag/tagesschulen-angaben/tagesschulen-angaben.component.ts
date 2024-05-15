@@ -350,6 +350,23 @@ export class TagesschulenAngabenComponent implements OnInit {
     }
 
     public onFormSubmit(): void {
+        console.log(this.allAnzahlFieldsEmpty());
+
+        console.log(this.form.value.anzahlEingeschriebeneKinderBasisstufe?.toString().length === 0);
+        console.log(this.form.value.anzahlEingeschriebeneKinderBasisstufe === null);
+        console.log(this.form.value.anzahlEingeschriebeneKinder?.toString().length === 0);
+        console.log(this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length === 0);
+        console.log(this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length === 0);
+        console.log(this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length === 0);
+        
+        // &&
+        // this.form.value.anzahlEingeschriebeneKinder?.toString().length === 0 &&
+        // this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length === 0 &&
+        // this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length === 0 &&
+        // this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length === 0);
+        
+        
+
         this.resetBasicValidation();
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
@@ -675,6 +692,19 @@ export class TagesschulenAngabenComponent implements OnInit {
             this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length > 0 &&
             this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length > 0 &&
             this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length > 0;
+    }
+
+    public allAnzahlFieldsEmpty(): boolean {
+        return (this.form.value.anzahlEingeschriebeneKinderBasisstufe?.toString().length === 0 ||
+            this.form.value.anzahlEingeschriebeneKinderBasisstufe === null) &&
+            (this.form.value.anzahlEingeschriebeneKinder?.toString().length === 0 ||
+            this.form.value.anzahlEingeschriebeneKinder === null) &&
+            (this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length === 0 ||
+            this.form.value.anzahlEingeschriebeneKinderKindergarten === null) &&
+            (this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length === 0 ||
+            this.form.value.anzahlEingeschriebeneKinderPrimarstufe === null) &&
+            (this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length === 0 || 
+            this.form.value.anzahlEingeschriebeneKinderSekundarstufe === null);
     }
 
     private writeBackForm(angabenKorrektur: TSLastenausgleichTagesschuleAngabenInstitution): void {
