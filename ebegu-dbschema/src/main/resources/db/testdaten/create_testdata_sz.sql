@@ -89,7 +89,7 @@ INSERT IGNORE INTO gemeinde (
                       angebotts, angebotfi, gueltig_bis, besondere_volksschule, nur_lats, event_published, angebotbgtfo)
 SELECT @testgemeinde_schwyz_id, NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0,
 	   'Testgemeinde Schwyz', max(gemeinde_nummer)+1, @mandant_id_schwyz, 'AKTIV', 99992,
-	   '2016-01-01', '2020-08-01', '2020-08-01', TRUE, TRUE, FALSE, '9999-12-31', FALSE, FALSE, FALSE, TRUE from gemeinde;
+	   '2016-01-01', '2020-08-01', '2020-08-01', TRUE, FALSE, FALSE, '9999-12-31', FALSE, FALSE, FALSE, TRUE from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
 					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('c055f560-b3e6-11ee-829a-0242ac160002', '-', '')),
