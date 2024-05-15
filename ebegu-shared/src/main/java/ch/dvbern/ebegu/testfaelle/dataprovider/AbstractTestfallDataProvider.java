@@ -83,6 +83,19 @@ public abstract class AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
+		setRequiredKindData(kind, geschlecht, name, vorname, geburtsdatum, is18GeburtstagBeforeGPEnds, kinderabzug, betreuung);
+
+		return kind;
+	}
+
+	public static void setRequiredKindData(
+		Kind kind, Geschlecht geschlecht,
+		String name,
+		String vorname,
+		LocalDate geburtsdatum,
+		boolean is18GeburtstagBeforeGPEnds,
+		Kinderabzug kinderabzug,
+		boolean betreuung) {
 		kind.setGeschlecht(geschlecht);
 		kind.setNachname(name);
 		kind.setVorname(vorname);
@@ -99,8 +112,6 @@ public abstract class AbstractTestfallDataProvider {
 			kind.setSprichtAmtssprache(Boolean.TRUE);
 			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
-
-		return kind;
 	}
 
 	public Erwerbspensum createErwerbspensum(int prozent) {

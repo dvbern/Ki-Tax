@@ -102,6 +102,16 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
+		setRequiredKindData(kind, geschlecht, name, vorname, geburtsdatum, betreuung);
+		return kind;
+	}
+
+	public static void setRequiredKindData(
+		Kind kind, Geschlecht geschlecht,
+		String name,
+		String vorname,
+		LocalDate geburtsdatum,
+		boolean betreuung) {
 		kind.setGeschlecht(geschlecht);
 		kind.setGeburtsdatum(geburtsdatum);
 		kind.setVorname(vorname);
@@ -115,7 +125,6 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 			kind.setLebtKindAlternierend(true);
 			kind.setGemeinsamesGesuch(true);
 		}
-		return kind;
 	}
 
 	@Override
