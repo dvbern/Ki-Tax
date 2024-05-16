@@ -167,6 +167,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private ApplicationPropertyService applicationPropertyService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private VerantwortlicheService verantwortlicheService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -212,7 +214,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
-		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
+		verantwortlicheService.updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
 
 		if (!isNew) {
 			LOG.info(
@@ -292,7 +294,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isAnmeldungSchulamtAusgeloest =
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
 
-		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
+		verantwortlicheService.updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
 	}
@@ -350,7 +352,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		boolean isAnmeldungSchulamtAusgeloest =
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
-		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
+		verantwortlicheService.updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
 	}
@@ -381,44 +383,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 	}
 
-	private void updateVerantwortliche(
-		@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung,
-		boolean isAnmeldungSchulamtAusgeloest, boolean isNew) {
-		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), isAnmeldungSchulamtAusgeloest, isNew)) {
-			Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(mergedGesuch
-					.getDossier()
-					.getGemeinde()
-					.getId());
 
-			Benutzer benutzerBG = null;
-			Benutzer benutzerTS = null;
-			if (gemeindeStammdatenOptional.isPresent()) {
-				GemeindeStammdaten gemeindeStammdaten = gemeindeStammdatenOptional.get();
-				benutzerBG = gemeindeStammdaten.getDefaultBenutzerWithRoleBG().orElse(null);
-				benutzerTS = gemeindeStammdaten.getDefaultBenutzerWithRoleTS().orElse(null);
-			}
-			gesuchService.setVerantwortliche(benutzerBG, benutzerTS, mergedBetreuung.extractGesuch(), true, true);
-		}
-	}
-
-	private boolean updateVerantwortlicheNeeded(
-		Eingangsart eingangsart,
-		boolean isSchulamtAnmeldungAusgeloest,
-		boolean isNew) {
-		if (!isNew) {
-			// nur neue Betreuungen duerfen den Verantwortlichen setzen
-			return false;
-		}
-		if (eingangsart == Eingangsart.PAPIER) {
-			// immer bei eingangsart Papier
-			return true;
-		} else if (isSchulamtAnmeldungAusgeloest) {
-			// bei eingangsart Online nur wenn die Anmeldung direkt ausgelöst wurde (über TS oder FI hinzufügen Knöpfe)
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	@Nonnull

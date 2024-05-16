@@ -91,7 +91,7 @@ import {
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
 } from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
-
+import {freigabeRedirectState, freigabeMitQuittungState, freigabeOnlineState} from './freigabe/freigabe.route';
 /* eslint-disable */
 
 const gesuchTpl = require('./gesuch.html');
@@ -1112,27 +1112,7 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     };
 }
 
-export class EbeguFreigabeState implements Ng1StateDeclaration {
-    public name = 'gesuch.freigabe';
-    public url = '/freigabe/:gesuchId';
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
-        gesuchViewPort: {
-            template: '<freigabe-view>',
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
-    };
-}
 
 export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     public name = 'gesuch.mitteilung';
@@ -1270,7 +1250,9 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguEinkommensverschlechterungAppenzellState(),
     new EbeguEinkommensverschlechterungAppenzellResultateState(),
     new EbeguDokumenteState(),
-    new EbeguFreigabeState(),
+    freigabeRedirectState,
+    freigabeOnlineState,
+    freigabeMitQuittungState,
     new EbeguBetreuungMitteilungState(),
     new EbeguSozialhilfeZeitraumListState(),
     new EbeguSozialhilfeZeitraumState(),

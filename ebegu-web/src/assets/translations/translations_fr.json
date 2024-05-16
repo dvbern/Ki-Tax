@@ -2912,7 +2912,7 @@
     "BESONDERE_BEDUERFNISSE_BETRAG": "Montant des frais de garde extraordinaires",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Quelle cas particulier s'applique (FKJV, ASIV, KEINE)",
-    "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: activé le bonus de fratrie",
+    "GESCHWISTERNBONUS_TYP": "Typ de bonus de fratrie (LUZERN, SCHWYZ, NONE)",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Situation financière : répartition entre {{gs1}} et {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Reste:",
     "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Certains revenus et parts de fortune doivent être indiqués pour chaque personne requérante dans kiBon. Le système divise automatiquement les valeurs par deux lorsqu’il s’agit d’un couple.  \n\nDans cette fenêtre, vous avez la possibilité de réajuster les valeurs entre {{gs1}} et {{gs2}}. Cette opération est utile uniquement en cas de séparation pendant la période tarifaire. La somme de ces données doit correspondre à la valeur récupérée à partir des données fiscales.",

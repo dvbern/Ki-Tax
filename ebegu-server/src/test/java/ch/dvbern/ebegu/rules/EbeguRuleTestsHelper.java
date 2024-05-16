@@ -332,7 +332,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode);
 		// LU
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
-		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode);
 		einstellungenMap.addEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
 		einstellungenMap.addEinstellung(SCHULERGAENZENDE_BETREUUNGEN,"false", gesuchsperiode);
 		einstellungenMap.addEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);

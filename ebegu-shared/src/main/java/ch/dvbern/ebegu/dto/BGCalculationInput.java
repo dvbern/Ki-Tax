@@ -858,6 +858,7 @@ public class BGCalculationInput {
 		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
 		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
+		this.anzahlGeschwister = this.anzahlGeschwister + other.anzahlGeschwister;
 		this.isAuszahlungAnEltern = this.isAuszahlungAnEltern || other.isAuszahlungAnEltern;
 		if (null == this.partnerIdentischMitVorgesuch) {
 			this.partnerIdentischMitVorgesuch = other.partnerIdentischMitVorgesuch;
@@ -1115,6 +1116,7 @@ public class BGCalculationInput {
 			this.isKesbPlatzierung == other.isKesbPlatzierung &&
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
+			this.anzahlGeschwister == other.anzahlGeschwister &&
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&

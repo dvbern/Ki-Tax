@@ -14,15 +14,19 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
+import {first} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -58,6 +62,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         '$scope',
         '$timeout',
         'GesuchRS',
+        'EinstellungRS',
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -70,6 +75,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
     public massenversand: string[] = [];
+    public isOnlineFreigabeAktiv: boolean = false;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -82,6 +88,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         $scope: IScope,
         $timeout: ITimeoutService,
         private readonly gesuchRS: GesuchRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -89,6 +96,13 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             TSWizardStepName.DOKUMENTE,
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.calculate();
+
+        this.einstellungRS.getEinstellung(
+            this.gesuchModelManager.getGesuch().gesuchsperiode.id,
+            TSEinstellungKey.GESUCHFREIGABE_ONLINE,
+        ).pipe(first()).subscribe((onlineFreigabe: TSEinstellung) => {
+            this.isOnlineFreigabeAktiv = onlineFreigabe.getValueAsBoolean();
+        });
     }
 
     public calculate(): void {

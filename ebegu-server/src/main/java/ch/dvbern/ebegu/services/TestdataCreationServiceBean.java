@@ -516,7 +516,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode);
-		saveEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
+		saveEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode);
 		saveEinstellung(DAUER_BABYTARIF, "12", gesuchsperiode);
 		saveEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode);

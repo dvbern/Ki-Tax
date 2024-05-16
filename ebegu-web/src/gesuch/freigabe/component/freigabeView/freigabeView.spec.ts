@@ -16,25 +16,24 @@
 import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {of} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {translationsMock} from '../../../hybridTools/translationsMock';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSDossier} from '../../../models/TSDossier';
-import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSEinstellung} from '../../../models/TSEinstellung';
-import {TSFall} from '../../../models/TSFall';
-import {TSGemeinde} from '../../../models/TSGemeinde';
-import {TSGesuch} from '../../../models/TSGesuch';
-import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
-import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
-import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../../app/core/service/downloadRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../hybridTools/translationsMock';
+import {TSDossier} from '../../../../models/TSDossier';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../../models/TSEinstellung';
+import {TSFall} from '../../../../models/TSFall';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
+import {GESUCH_JS_MODULE} from '../../../gesuch.module';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../service/wizardStepManager';
+import {FreigabeService} from '../../freigabe.service';
 import {FreigabeViewController} from './freigabeView';
 
 describe('freigabeView', () => {
@@ -54,6 +53,7 @@ describe('freigabeView', () => {
     let fall: TSFall;
     let $translate: TranslateService;
     let einstellungRS: EinstellungRS;
+    let freigabeService: FreigabeService;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -74,6 +74,7 @@ describe('freigabeView', () => {
         $timeout = $injector.get('$timeout');
         $translate = $injector.get('$translate');
         einstellungRS = $injector.get('EinstellungRS');
+        freigabeService = $injector.get('FreigabeService');
 
         spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
@@ -101,43 +102,14 @@ describe('freigabeView', () => {
             authServiceRS,
             $timeout,
             $translate,
-            einstellungRS);
+            einstellungRS,
+            freigabeService);
 
         controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
         controller.form = TestDataUtil.createDummyForm();
     }));
-    describe('canBeFreigegeben', () => {
-        it('should return false when not all steps are true', () => {
-            spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(false);
-            spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
-            expect(controller.canBeFreigegeben()).toBe(false);
-        });
-        it('should return false when all steps are true but not all Betreuungen are accepted', () => {
-            spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
-            spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(false);
 
-            expect(controller.canBeFreigegeben()).toBe(false);
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(wizardStepManager.hasStepGivenStatus)
-                .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
-        });
-        it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly',
-            () => {
-                spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
-                spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(true);
-                expect(controller.canBeFreigegeben()).toBe(false);
-            });
-        it('should return true when all steps are true and all Betreuungen are accepted and the Gesuch is not ReadOnly',
-            () => {
-                spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
-                spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(false);
-                spyOn(controller, 'isGesuchInStatus').and.returnValue(true);
-                expect(controller.canBeFreigegeben()).toBe(true);
-            });
-    });
     describe('gesuchFreigeben', () => {
         it('should return undefined when the form is not valid', () => {
             controller.form.$valid = false;

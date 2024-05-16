@@ -17,44 +17,106 @@ package ch.dvbern.ebegu.util;
 
 import java.time.LocalDate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests fuer DateUtil
  */
-public class DateUtilTest {
+class DateUtilTest {
 
 	@Test
-	public void parseStringToDateOrReturnNowTestNullString() {
+	void parseStringToDateOrReturnNowTestNullString() {
 		final LocalDate now = LocalDate.now();
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow(null);
-		Assert.assertNotNull(returnedDate);
-		Assert.assertTrue(now.isEqual(returnedDate));
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertTrue(now.isEqual(returnedDate));
 	}
 
 	@Test
-	public void parseStringToDateOrReturnNowTestEmptyString() {
+	void parseStringToDateOrReturnNowTestEmptyString() {
 		final LocalDate now = LocalDate.now();
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow("");
-		Assert.assertNotNull(returnedDate);
-		Assert.assertTrue(now.isEqual(returnedDate));
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertTrue(now.isEqual(returnedDate));
 	}
 
 	@Test
-	public void parseStringToDateOrReturnNowTest() {
-		final LocalDate now = LocalDate.now();
+	void parseStringToDateOrReturnNowTest() {
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow("2015-12-31");
-		Assert.assertNotNull(returnedDate);
-		Assert.assertEquals(2015, returnedDate.getYear());
-		Assert.assertEquals(12, returnedDate.getMonthValue());
-		Assert.assertEquals(31, returnedDate.getDayOfMonth());
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertEquals(2015, returnedDate.getYear());
+		Assertions.assertEquals(12, returnedDate.getMonthValue());
+		Assertions.assertEquals(31, returnedDate.getDayOfMonth());
 	}
 
 	@Test
-	public void testIncrementYear() {
+	void testIncrementYear() {
 		final String oldDate = "2020-05-17";
 		final String newDate = DateUtil.incrementYear(oldDate);
-		Assert.assertEquals("2021-05-17", newDate);
+		Assertions.assertEquals("2021-05-17", newDate);
+	}
+
+	@Nested
+	class isSameOrBeforeTests {
+
+		@Test
+		void sameDateShouldBeTruthy() {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = LocalDate.from(date);
+
+			Assertions.assertTrue(DateUtil.isSameDateOrBefore(date, compareTo));
+		}
+
+		@ParameterizedTest
+		@ValueSource(ints = {1, 3, 10, 30})
+		void xNon0DaysLaerShouldBeFalsy(int minusDays) {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = date.minusDays(minusDays);
+
+			Assertions.assertFalse(DateUtil.isSameDateOrBefore(date, compareTo));
+		}
+
+		@ParameterizedTest
+		@ValueSource(ints = {1, 3, 10, 30})
+		void xNon0DaysEarlierShouldBeTruthy(int plusDays) {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = date.plusDays(plusDays);
+
+			Assertions.assertTrue(DateUtil.isSameDateOrBefore(date, compareTo));
+		}
+	}
+
+	@Nested
+	class isSameOrAfterTests {
+
+		@Test
+		void sameDateShouldBeTruthy() {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = LocalDate.from(date);
+
+			Assertions.assertTrue(DateUtil.isSameDateOrAfter(date, compareTo));
+		}
+
+		@ParameterizedTest
+		@ValueSource(ints = {1, 3, 10, 30})
+		void xNon0DaysEarlierShouldBeFalsy(int days) {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = date.plusDays(days);
+
+			Assertions.assertFalse(DateUtil.isSameDateOrAfter(date, compareTo));
+		}
+
+		@ParameterizedTest
+		@ValueSource(ints = {1, 3, 10, 30})
+		void xNon0DaysLaterShouldBeTruthy(int days) {
+			final LocalDate date = LocalDate.of(2017, 1, 1);
+			final LocalDate compareTo = date.minusDays(days);
+
+			Assertions.assertTrue(DateUtil.isSameDateOrAfter(date, compareTo));
+		}
 	}
 }
