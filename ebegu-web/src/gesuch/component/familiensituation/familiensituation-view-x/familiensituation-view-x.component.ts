@@ -49,6 +49,7 @@ import {FamiliensituationRS} from '../../../service/familiensituationRS.service'
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
+import {FamiliensituationUtil} from '../FamiliensituationUtil';
 
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 
@@ -211,14 +212,14 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         return this.getGesuch().gesuchsteller2
                 && this.getGesuch().gesuchsteller2.id
                 && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-                && this.isScheidung();
+                && FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation, this.getFamiliensituation(), bis);
     }
 
     private isChanged1To2Reverted(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.getGesuch().gesuchsteller2
                 && this.getGesuch().gesuchsteller2.id
-                && this.isScheidung()
+                && FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation, this.getFamiliensituation(), bis)
                 && this.model.familiensituationErstgesuch
                 && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
     }
@@ -227,12 +228,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
         return (this.getFamiliensituation()?.aenderungPer?.isBefore(ab)
                 && this.getGesuch().getRegelStartDatum().isBefore(ab));
-    }
-
-    private isScheidung(): boolean {
-        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-                && !this.getFamiliensituation()?.hasSecondGesuchsteller(bis);
     }
 
     public isStartKonkubinatDisabled(): boolean {
