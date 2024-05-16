@@ -68,7 +68,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	public void sendMessage(
 		@Nonnull String subject,
 		@Nonnull String messageBody,
-		@Nonnull String mailadress)
+		@Nonnull String mailadress,
+		@Nonnull MandantIdentifier mandantIdentifier)
 		throws MailException {
 
 		Objects.requireNonNull(subject);
@@ -79,7 +80,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(subject, messageBody, mailadress);
-			saveSentMails(subject, mailadress);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
 	}
 
@@ -87,8 +88,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		@Nonnull String subject,
 		@Nonnull String messageBody,
 		@Nonnull String mailadress,
-		@Nonnull UploadFileInfo uploadFileInfo
-	) throws MailException {
+		@Nonnull UploadFileInfo uploadFileInfo,
+		@Nonnull MandantIdentifier mandantIdentifier) throws MailException {
 
 		Objects.requireNonNull(subject);
 		Objects.requireNonNull(messageBody);
@@ -99,7 +100,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
-			saveSentMails(subject, mailadress);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
 	}
 
@@ -221,7 +222,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		} else {
 			doSendMessage(messageBody, mailadress, mandantIdentifier);
 			String subject = extractSubjectFromMessageBody(messageBody);
-			saveSentMails(subject, mailadress);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
 	}
 
@@ -290,11 +291,12 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		assertPositiveCompletion(client.getReplyCode());
 	}
 
-	private void saveSentMails(String subject, String mailadress) {
+	private void saveSentMails(String subject, String mailadress, MandantIdentifier mandant) {
 		LocalDateTime zeitpunktVersand = LocalDateTime.now();
 		String empfaengerAdresse = mailadress;
 		String betreff = subject;
-		VersendeteMail versendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff);
+		MandantIdentifier mandantIdentifier = mandant;
+		VersendeteMail versendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff, mandantIdentifier);
 		versendeteMailsService.saveVersendeteMail(versendeteMail);
 	}
 }

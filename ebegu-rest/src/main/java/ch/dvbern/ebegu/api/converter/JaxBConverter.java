@@ -6209,6 +6209,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxVersendeteMail.setZeitpunktVersand(versendeteMail.getZeitpunktVersand());
 		jaxVersendeteMail.setEmpfaengerAdresse(versendeteMail.getEmpfaengerAdresse());
 		jaxVersendeteMail.setBetreff(versendeteMail.getBetreff());
+		jaxVersendeteMail.setMandantIdentifier(versendeteMail.getMandantIdentifier());
 		return jaxVersendeteMail;
 	}
 }

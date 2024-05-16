@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 public class JaxVersendeteMail extends JaxAbstractDTO {
@@ -19,6 +20,9 @@ public class JaxVersendeteMail extends JaxAbstractDTO {
 
 	@Nonnull
 	private String betreff;
+
+	@Nonnull
+	private MandantIdentifier mandantIdentifier;
 
 	@Nonnull
 	public LocalDateTime getZeitpunktVersand() {
@@ -45,5 +49,14 @@ public class JaxVersendeteMail extends JaxAbstractDTO {
 
 	public void setBetreff(@Nonnull String betreff) {
 		this.betreff = betreff;
+	}
+
+	@Nonnull
+	public MandantIdentifier getMandantIdentifier() {
+		return mandantIdentifier;
+	}
+
+	public void setMandantIdentifier(@Nonnull MandantIdentifier mandantIdentifier) {
+		this.mandantIdentifier = mandantIdentifier;
 	}
 }
