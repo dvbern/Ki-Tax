@@ -94,7 +94,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
-	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
+	protected static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
 	protected static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN_FKJV = "PdfGeneration_NichtEintreten_Fusszeile2_FKJV";
@@ -750,12 +750,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	@Nonnull
 	public PdfPTable createRechtsmittelBelehrung() {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten();
-		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
-		if (beschwerdeAdresse == null) {
-			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
-		}
-
-		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine(), stammdaten.getGemeinde().getName());
+		String rechtsmittelbelehrung = getRechtsmittelbelehrungContent(stammdaten);
 		if (!stammdaten.getStandardRechtsmittelbelehrung()
 			&& stammdaten.getRechtsmittelbelehrung() != null) {
 			String belehrungInSprache = stammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
@@ -774,6 +769,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		innerTable.addCell(PdfUtil.createParagraph(rechtsmittelbelehrung));
 		table.addCell(innerTable);
 		return table;
+	}
+
+	protected String getRechtsmittelbelehrungContent(@Nonnull GemeindeStammdaten stammdaten) {
+		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
+		if (beschwerdeAdresse == null) {
+			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
+		}
+		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
 	}
 
 	protected Element createNichtEingetretenParagraph1() {

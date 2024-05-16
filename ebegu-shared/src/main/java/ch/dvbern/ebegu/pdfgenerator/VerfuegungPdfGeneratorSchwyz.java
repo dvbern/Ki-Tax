@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -106,6 +107,14 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 			kind.getFullName(),
 			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
 		return paragraphWithSupertext;
+	}
+
+	protected String getRechtsmittelbelehrungContent(@Nonnull GemeindeStammdaten stammdaten) {
+		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
+		if (beschwerdeAdresse == null) {
+			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
+		}
+		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine(), stammdaten.getGemeinde().getName());
 	}
 
 	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
