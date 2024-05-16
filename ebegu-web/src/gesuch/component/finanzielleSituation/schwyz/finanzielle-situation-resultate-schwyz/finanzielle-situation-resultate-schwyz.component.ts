@@ -67,7 +67,7 @@ export class FinanzielleSituationResultateSchwyzComponent extends AbstractGesuch
 
     public calculate(): void {
         this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(resultate => {
-                this.resultate = resultate;
+                this.resultate = resultate.finSitResultate;
                 this.ref.markForCheck();
             }, error => LOG.error(error),
         );
