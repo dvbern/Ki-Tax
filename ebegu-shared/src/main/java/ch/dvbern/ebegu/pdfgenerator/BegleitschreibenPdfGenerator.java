@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 
 public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
@@ -62,12 +63,16 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(createAnrede());
-			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT, this.gemeindeStammdaten.getTelefonForGesuch(getGesuch()), this.gemeindeStammdaten.getEmailForGesuch(getGesuch())), 2));
+			document.add(getCustomBegleitschreibenParagraph());
 			document.add(createParagraphGruss());
 			document.add(PdfUtil.createParagraph(translate(DokumentAnFamilieGenerator.SACHBEARBEITUNG), 2));
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
 			document.add(PdfUtil.createListInParagraph(getBeilagen()));
 		};
+	}
+
+	protected Paragraph getCustomBegleitschreibenParagraph() {
+		return PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT, 2));
 	}
 
 	@Nonnull
