@@ -25,9 +25,6 @@ import {GuidedTourModule} from 'ngx-guided-tour';
 import {AuszahlungsdatenComponent} from '../../gesuch/auszahlungsdaten/auszahlungsdaten.component';
 import {DvEingabeHintComponent} from '../../gesuch/component/dv-eingabe-hint/dv-eingabe-hint.component';
 import {
-    DvNgGsRemovalConfirmationDialogComponent
-} from '../../gesuch/component/familiensituation/dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
-import {
     SteuerveranlagungGemeinsamComponent
 } from '../../gesuch/component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
@@ -177,7 +174,6 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgOkDialogComponent,
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
-        DvNgGsRemovalConfirmationDialogComponent,
         DvNgBackDialogComponent,
         DvNgCancelDialogComponent,
         DvNgMultiSelectDialogComponent,
