@@ -40,7 +40,7 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         protected readonly authService: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly translate: TranslateService,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
@@ -59,10 +59,7 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
     }
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
-        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2) &&
-            FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation,
-                this.getFamiliensituation(),
-                this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis)
+        if (this.changeResetsGS2()
         ) {
             this.dialog.open<DvNgGsRemovalConfirmationDialogComponent, GSRemovalConfirmationDialogData>(
                 DvNgGsRemovalConfirmationDialogComponent,
@@ -81,6 +78,14 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
             return;
         }
         onResult(await this.save());
+    }
+
+    private changeResetsGS2(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2) &&
+            (this.isMutation() ||
+                FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation,
+                    this.getFamiliensituation(),
+                    this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis));
     }
 
     protected readonly TSGesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet;
