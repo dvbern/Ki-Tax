@@ -118,9 +118,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Nonnull
 	private ZahlungslaufHelper zahlungslaufHelper;
 
-	@Nonnull
-	private PrincipalBean principalBean;
-
 	private List<String> potentielleFehlerList = new ArrayList<>();
 	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	private int anzahlMonateInZukunft;
@@ -209,7 +206,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			final String serverName = ebeguConfiguration.getHostname(gemeinde.getMandant().getMandantIdentifier());
 			final String typ = ServerMessageUtil.translateEnumValue(zahlungslaufHelper.getZahlungslaufTyp(), Locale.GERMAN,
 					Objects.requireNonNull(gemeinde.getMandant()));
-			final MandantIdentifier mandantIdentifier = principalBean.getMandant().getMandantIdentifier();
+			final MandantIdentifier mandantIdentifier = gemeinde.getMandant().getMandantIdentifier();
 			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ", " + typ + ')';
 			String autragResult = "Pending";
 			if (potentielleFehlerList.isEmpty()) {
