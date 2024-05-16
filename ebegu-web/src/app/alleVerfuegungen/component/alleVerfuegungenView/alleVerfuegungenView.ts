@@ -27,6 +27,7 @@ import {TSDossier} from '../../../../models/TSDossier';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {BetreuungRS} from '../../../core/service/betreuungRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {IAlleVerfuegungenStateParams} from '../../alleVerfuegungen.route';
@@ -57,6 +58,7 @@ export class AlleVerfuegungenViewController implements IController {
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
     public dossierId: string;
+    private isAuszahlungAnAntragstellerEnabled = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -67,7 +69,8 @@ export class AlleVerfuegungenViewController implements IController {
         private readonly $log: ILogService,
         private readonly $timeout: ITimeoutService,
         private readonly dossierRS: DossierRS,
-        private readonly ebeguUtil: EbeguUtil
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -84,11 +87,11 @@ export class AlleVerfuegungenViewController implements IController {
                 this.cancel();
             }
             this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then(r => {
-                r.forEach(item => {
-                    this.alleVerfuegungen.push(item);
-                });
                 this.alleVerfuegungen = r;
             });
+        });
+        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
+            this.isAuszahlungAnAntragstellerEnabled = properties.auszahlungAnEltern;
         });
     }
 
@@ -124,6 +127,10 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public showVerfuegungPdfLink(betreuung: TSBetreuung): boolean {
+        if (this.isAuszahlungAnAntragstellerEnabled
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return false;
+        }
         return TSBetreuungsstatus.NICHT_EINGETRETEN !== betreuung.betreuungsstatus;
     }
 
