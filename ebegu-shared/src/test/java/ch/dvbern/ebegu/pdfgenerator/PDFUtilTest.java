@@ -29,7 +29,7 @@ public class PDFUtilTest {
 	private final String TEST = "TEST";
 
 	@Test
-	void testCreateParagraphHtmlEdgeCaseSingleChunk() {
+	void testCreateParagraphHtml_with_html_bold_tag() {
 		String test = "<b>"+TEST+"</b>";
 		Paragraph paragraph = PdfUtil.createParagraphHtml(test);
 		assertNotNull(paragraph);
@@ -39,11 +39,18 @@ public class PDFUtilTest {
 	}
 
 	@Test
-	void testCreateParagraphHtml() {
+	void testCreateParagraphHtml_ohne_html_tag() {
 		Paragraph paragraph = PdfUtil.createParagraphHtml(TEST);
 		assertNotNull(paragraph);
 		assertEquals(TEST, paragraph.getContent().trim());
 		assertEquals("OpenSans-Light",
 			((Chunk) paragraph.getChunks().get(1)).getFont().getBaseFont().getPostscriptFontName());
+	}
+
+	@Test
+	void testCreateParagraphHtml_unterstuetzt_kein_TextFormattierung() {
+		Paragraph paragraph = PdfUtil.createParagraphHtml(TEST + "\n" + TEST);
+		assertNotNull(paragraph);
+		assertEquals(TEST + " " + TEST, paragraph.getContent().trim());
 	}
 }

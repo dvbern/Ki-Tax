@@ -204,12 +204,8 @@ public final class PdfUtil {
 		try {
 			java.util.List<Element> parsedList = HTMLWorker.parseToList(new StringReader(text), new StyleSheet());
 			// if the text contains actual HTML, there must be more than one chunk -> use HTML parsed output
-			if (!parsedList.isEmpty() && parsedList.get(0).getChunks().size() >= 1) {
-				formatParsedHtml(parsedList);
-				paragraph.addAll(parsedList);
-			} else {
-				paragraph.add(text);
-			}
+			formatParsedHtml(parsedList);
+			paragraph.addAll(parsedList);
 			return paragraph;
 		} catch (IOException e) {
 			throw new EbeguRuntimeException("createParagraphHtml()","Fehler bei HTML Parsen", e);
