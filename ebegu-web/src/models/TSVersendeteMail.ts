@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './add-gemeinde.po';
-export * from './gemeinde-list.po';
-export * from './institution-list.po';
-export * from './tagesschule.po';
-export * from './test-faelle.po';
-export * from './uebersichtVersendeteMails.po'
+import {TSAbstractEntity} from './TSAbstractEntity';
+
+export class TSVersendeteMail extends TSAbstractEntity {
+    public zeitpunktVersand: moment.Moment;
+    public empfaengerAdresse: string;
+    public betreff: string;
+}

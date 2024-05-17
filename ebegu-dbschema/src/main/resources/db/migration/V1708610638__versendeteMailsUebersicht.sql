@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './add-gemeinde.po';
-export * from './gemeinde-list.po';
-export * from './institution-list.po';
-export * from './tagesschule.po';
-export * from './test-faelle.po';
-export * from './uebersichtVersendeteMails.po'
+create table if not exists versendete_mail (
+	id binary(16) not null,
+	timestamp_erstellt datetime not null,
+	timestamp_mutiert datetime not null,
+	user_erstellt varchar(255) not null,
+	user_mutiert varchar(255) not null,
+	version bigint not null,
+	zeitpunkt_versand datetime not null,
+	empfaenger_adresse varchar(255) not null,
+	betreff varchar(500) not null,
+	primary key (id)
+);

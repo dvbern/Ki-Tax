@@ -44,6 +44,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -67,6 +68,7 @@ import ch.dvbern.ebegu.services.util.ZahlungslaufUtil;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -204,11 +206,12 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			final String serverName = ebeguConfiguration.getHostname(gemeinde.getMandant().getMandantIdentifier());
 			final String typ = ServerMessageUtil.translateEnumValue(zahlungslaufHelper.getZahlungslaufTyp(), Locale.GERMAN,
 					Objects.requireNonNull(gemeinde.getMandant()));
+			final MandantIdentifier mandantIdentifier = gemeinde.getMandant().getMandantIdentifier();
 			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ", " + typ + ')';
 			String autragResult = "Pending";
 			if (potentielleFehlerList.isEmpty()) {
 				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
-					"Bezeichnung: " + beschrieb + ": Keine Fehler gefunden", administratorMail);
+					"Bezeichnung: " + beschrieb + ": Keine Fehler gefunden", administratorMail, mandantIdentifier);
 				autragResult = "OK";
 			} else {
 				StringBuilder sb = new StringBuilder();
@@ -224,7 +227,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 					sb.append("\n*************************************\n");
 				}
 				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
-					sb.toString(), administratorMail);
+					sb.toString(), administratorMail, mandantIdentifier);
 				autragResult = "Bezeichnung: " + beschrieb + ": Potentieller Fehler im Zahlungslauf: " + sb;
 				autragResult = StringUtils.abbreviate(autragResult, Constants.DB_TEXTAREA_LENGTH);
 

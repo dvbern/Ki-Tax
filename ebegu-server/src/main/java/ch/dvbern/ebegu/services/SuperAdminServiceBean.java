@@ -37,6 +37,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -57,6 +58,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.util.CsvCreator;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -114,6 +116,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Inject
 	private AlleFaelleViewService alleFaelleViewService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Override
 	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
@@ -264,8 +269,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 			final UploadFileInfo uploadFileInfo = fileSaverService.save(
 				result, "MassenMutationProtokoll.csv", "MassenMutation", new MimeType(MediaType.TEXT_PLAIN));
 			final String mailEmpfaenger = ebeguConfiguration.getMassenmutationEmpfaengerMail();
+			final MandantIdentifier mandantIdentifier = principalBean.getMandant().getMandantIdentifier();
 			mailService.sendMessageWithAttachment(
-				"Protokoll Massenmutation", new String(result, StandardCharsets.UTF_8), mailEmpfaenger, uploadFileInfo);
+				"Protokoll Massenmutation", new String(result, StandardCharsets.UTF_8), mailEmpfaenger, uploadFileInfo, mandantIdentifier);
 			LOG.info("... Massenmutation beendet");
 		} catch (IOException | MailException | MimeTypeParseException e) {
 			LOG.error("Could not create MassenMutation", e);

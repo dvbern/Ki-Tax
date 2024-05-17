@@ -15,38 +15,27 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {CONSTANTS} from '../constants/CONSTANTS';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {TSWorkJob} from '../../../models/TSWorkJob';
+import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {CONSTANTS} from '../constants/CONSTANTS';
 
-/**
- * liest information ueber batch jobs aus
- */
 @Injectable({
     providedIn: 'root'
 })
-export class BatchJobRS {
-
-    public readonly serviceURL = `${CONSTANTS.REST_API}admin/batch`;
+export class UebersichtVersendeteMailsRS {
+    public readonly serviceURL = `${CONSTANTS.REST_API}versendeteMails`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
-
     public constructor(
         public http: HttpClient
     ) {
     }
-
-    public getAllJobs(): Observable<TSWorkJob[]> {
-        return this.getInfo(`${this.serviceURL}/jobs`);
+    public getAllMails(): Observable<TSVersendeteMail[]> {
+        return this.getInfo(`${this.serviceURL}/allMails`);
     }
-
-    public getBatchJobsOfUser(): Observable<TSWorkJob[]> {
-        return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
-    }
-
-    private getInfo(url: string): Observable<Array<TSWorkJob>> {
+    private getInfo(url: string): Observable<Array<TSVersendeteMail>> {
         return this.http.get(url)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseWorkJobList(response)));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(response)));
     }
 }
