@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BegleitschreibenPdfGeneratorSchwyz extends BegleitschreibenPdfGenerator {
 
-	private final String BEGLEITSCHREIBEN_CONTENT_MIT_GEMEINDE_INFO = "PdfGeneration_Begleitschreiben_Content_Mit_Gemeinde_Info";
+	private static final String BEGLEITSCHREIBEN_CONTENT_MIT_GEMEINDE_INFO = "PdfGeneration_Begleitschreiben_Content_Mit_Gemeinde_Info";
 
 	public BegleitschreibenPdfGeneratorSchwyz(
 		@NotNull Gesuch gesuch,
