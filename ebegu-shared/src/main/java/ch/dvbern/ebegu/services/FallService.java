@@ -67,6 +67,9 @@ public interface FallService {
 	@Nonnull
 	Optional<Fall> findFallByBesitzer(@Nullable Benutzer benutzer);
 
+	@Nonnull
+	Optional<Fall> findAnyFallByGSName(String nachname, String vorname);
+
 	/**
 	 * Gibt alle existierenden Faelle zurueck.
 	 *
