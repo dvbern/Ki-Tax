@@ -4622,6 +4622,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
+        publicAppConfigTS.gemeindeVereinfachteKonfigAktiv = data.gemeindeVereinfachteKonfigAktiv;
         return publicAppConfigTS;
     }
 
