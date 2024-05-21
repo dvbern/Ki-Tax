@@ -94,6 +94,16 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
+	protected void addTitleBerechneterGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	}
+
+	@Override
 	protected void addValueGutscheinProStunde(
 		PdfPTable table,
 		@Nullable BigDecimal verguenstigungProZeiteinheit) {
