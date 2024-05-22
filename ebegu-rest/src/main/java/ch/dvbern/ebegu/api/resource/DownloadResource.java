@@ -126,6 +126,9 @@ public class DownloadResource {
 	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 	@ApiOperation("L&auml;dt das Dokument herunter, auf welches das &uuml;bergebene accessToken verweist")
@@ -431,7 +434,8 @@ public class DownloadResource {
 	}
 
 	private boolean isUserAllowedToDownloadVerfuegungPdf() {
-		return new VerfuegungDownloadAuthenticatorVisitor(principalBean.getBenutzer().getRole())
+		var isAuszahlungAnElternActive = applicationPropertyService.isAuszahlungAnElternAktiviert(principalBean.getMandant());
+		return new VerfuegungDownloadAuthenticatorVisitor(principalBean.getBenutzer().getRole(), isAuszahlungAnElternActive)
 			.isUserAllowed(principalBean.getMandant());
 	}
 

@@ -7,9 +7,11 @@ import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 public class VerfuegungDownloadAuthenticatorVisitor implements MandantVisitor<Boolean> {
 
 	private final UserRole role;
+	private final Boolean isAuszahlungAnElternActive;
 
-	public VerfuegungDownloadAuthenticatorVisitor(UserRole role) {
+	public VerfuegungDownloadAuthenticatorVisitor(UserRole role, Boolean isAuszahlungAnElternActive) {
 		this.role = role;
+		this.isAuszahlungAnElternActive = isAuszahlungAnElternActive;
 	}
 
 	public Boolean isUserAllowed(Mandant mandant) {
@@ -38,6 +40,9 @@ public class VerfuegungDownloadAuthenticatorVisitor implements MandantVisitor<Bo
 
 	@Override
 	public Boolean visitSchwyz() {
-		return this.visitSolothurn();
+		if (Boolean.TRUE.equals(this.isAuszahlungAnElternActive)) {
+			return !this.role.isInstitutionRole();
+		}
+		return Boolean.TRUE;
 	}
 }
