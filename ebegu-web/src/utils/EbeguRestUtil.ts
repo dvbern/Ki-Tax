@@ -983,7 +983,6 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
-            restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
             restGemeinde.betreuungsgutscheineStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
