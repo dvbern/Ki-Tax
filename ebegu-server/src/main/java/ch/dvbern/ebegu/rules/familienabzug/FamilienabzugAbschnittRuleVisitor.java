@@ -50,12 +50,12 @@ public class FamilienabzugAbschnittRuleVisitor implements KinderabzugTypVisitor<
 
 	@Override
 	public AbstractFamilienabzugAbschnittRule visitFKJV() {
-		return new FamilienabzugAbschnittRuleASIV(einstellungMap, validityPeriod, locale);
+		return new FamilienabzugAbschnittRuleFKJV(einstellungMap, validityPeriod, locale);
 	}
 
 	@Override
 	public AbstractFamilienabzugAbschnittRule visitFKJV2() {
-		return new FamilienabzugAbschnittRuleASIV(einstellungMap, validityPeriod, locale);
+		return new FamilienabzugAbschnittRuleFKJV(einstellungMap, validityPeriod, locale);
 	}
 
 	@Override
