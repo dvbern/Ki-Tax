@@ -100,15 +100,16 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		//default no-op: wird nur in Luzern angezeigt
 	}
 
+	@Override
 	@Nonnull
 	protected Paragraph createFirstParagraph(Kind kind) {
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+		return PdfUtil.createParagraph(translate(
 			VERFUEGUNG_CONTENT_1,
 			kind.getFullName(),
 			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
-		return paragraphWithSupertext;
 	}
 
+	@Override
 	protected String getRechtsmittelbelehrungContent(@Nonnull GemeindeStammdaten stammdaten) {
 		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
 		if (beschwerdeAdresse == null) {
@@ -117,8 +118,14 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine(), stammdaten.getGemeinde().getName());
 	}
 
+	@Override
 	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
-		//default: no-op: wird nicht in Schwyz verwendet
+		// no-op: wird nicht in Schwyz verwendet
+	}
+
+	@Override
+	protected void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		// no-op: wird nicht in Schwyz verwendet
 	}
 
 	@Override
