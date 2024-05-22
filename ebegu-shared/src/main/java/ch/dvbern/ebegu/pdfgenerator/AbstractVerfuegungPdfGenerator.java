@@ -806,7 +806,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return translate(FUSSZEILE_2_NICHT_EINTRETEN);
 	}
 
-	private void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+	protected void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(getFusszeile2NichtEintreten())
