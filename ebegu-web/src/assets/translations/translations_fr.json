@@ -3142,5 +3142,6 @@
     "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN": "Möchten Sie die Daten/Unterlagen zur Bestätigung der Belegung digital hochladen?",
     "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_NEIN_HINT": "Möchten Sie das erforderliche Dokument / die erforderlichen Dokumente nicht hochladen, so können Sie diese per Post an die kantonale Fachstelle für Kinderbetreuung senden. (Die Bearbeitungszeit wird voraussichtlich länger dauern.)",
     "KINDER_NACHWEIS_HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG": "Nachweis zum Gesuch für höhere Beiträge (mindestens eines der folgenden Dokumente): Ein Bericht der Invalidenversicherung (IV-Bericht), ein Bericht eines Facharztes für Kinder- und Jugendmedizin, eine Verfügung des Amtes für Volksschule und Sport für eine pädagogisch-therapeutische Massnahme, eine Verfügung für heil-, audio- und/oder visiopädagogische Früherziehung oder integrierte Sonderschulung",
+    "GESUCHFREIGABE_ONLINE": "Online Gesuchfreigabe",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
