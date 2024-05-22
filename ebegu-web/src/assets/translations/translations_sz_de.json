@@ -194,5 +194,6 @@
     "EKV_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen Einkommensänderung",
     "EKV_MASSGEBENDES_EINKOMMEN_GS": "Massgebendes Einkommen Einkommensänderung {{namegs}}",
     "EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT": "Massgebendes Einkommen finanzielle Verhältisse",
+    "EVK_IN_PROZENT": "Einkommensänderung in %",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
