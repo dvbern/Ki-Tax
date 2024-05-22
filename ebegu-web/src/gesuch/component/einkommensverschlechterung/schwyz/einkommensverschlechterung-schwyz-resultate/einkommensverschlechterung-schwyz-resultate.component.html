@@ -33,7 +33,7 @@
                             [inputDisabled]="true">
                         </dv-input-label-field>
                         <dv-input-label-field
-                            [model]="resultate?.veraenderung?.total + '%'"
+                            [model]="resultate?.veraenderung?.total ? resultate.veraenderung.total + '%' : ''"
                             [labelMessageKey]="'EVK_IN_PROZENT'"
                             [inputDisabled]="true">
                         </dv-input-label-field>
@@ -83,7 +83,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="resultate?.veraenderung?.total + '%'"
+                            [model]="resultate?.veraenderung?.total ? resultate.veraenderung.total + '%' : ''"
                             [labelMessageKey]="'EVK_IN_PROZENT'"
                             [inputDisabled]="true">
                         </dv-input-label-field>

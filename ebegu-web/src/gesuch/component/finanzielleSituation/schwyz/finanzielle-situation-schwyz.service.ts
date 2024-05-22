@@ -29,7 +29,7 @@ export interface MassgebendesEinkommenResultate {
 }
 
 interface MassgebendesEinkommenVeraenderung {
-    total?: string;
+    total: string;
 }
 
 @Injectable({
