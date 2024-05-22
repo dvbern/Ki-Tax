@@ -118,6 +118,7 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		return COLUMN_WIDTHS;
 	}
 
+	@Override
 	protected void addReferenzNummerCells(PdfPTable table) {
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
