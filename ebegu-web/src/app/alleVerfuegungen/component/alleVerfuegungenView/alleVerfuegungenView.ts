@@ -50,7 +50,8 @@ export class AlleVerfuegungenViewController implements IController {
         '$log',
         '$timeout',
         'DossierRS',
-        'EbeguUtil'
+        'EbeguUtil',
+        'ApplicationPropertyRS'
     ];
 
     public dossier: TSDossier;
@@ -132,6 +133,14 @@ export class AlleVerfuegungenViewController implements IController {
             return false;
         }
         return TSBetreuungsstatus.NICHT_EINGETRETEN !== betreuung.betreuungsstatus;
+    }
+
+    public showNichtEintretenVerfuegungPdfLink(betreuung: TSBetreuung): boolean {
+        if (this.isAuszahlungAnAntragstellerEnabled
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return false;
+        }
+        return TSBetreuungsstatus.NICHT_EINGETRETEN === betreuung.betreuungsstatus;
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
