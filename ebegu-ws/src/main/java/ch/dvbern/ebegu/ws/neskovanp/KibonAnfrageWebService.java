@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenRequest;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.services.SteuerdatenAnfrageLogService;
 import ch.dvbern.ebegu.ws.neskovanp.oicd.OIDCTokenManagerBean;
 import ch.dvbern.ebegu.ws.oicd.OIDCToken;
@@ -59,6 +60,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	@Inject
 	private EbeguConfiguration config;
 
+	@Nullable
 	private KiBonAnfragePort port;
 
 	@Inject
@@ -70,7 +72,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		Integer zpvNummer,
 		LocalDate geburtsdatum,
 		String gesuchId,
-		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
+		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException, OIDCServiceException {
 		final String methodName = "KibonAnfrageService#getSteuerdaten";
 		SteuerdatenResponse steuerdatenResponse = null;
 		Exception exceptionReceived = null;
@@ -106,6 +108,10 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			exceptionReceived = permissionDeniedFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, permissionDeniedFault.getFaultInfo().getErrorCode(), permissionDeniedFault.getFaultInfo().getUserMessage());
 		}
+		catch (OIDCServiceException oidcServiceException) {
+			exceptionReceived = oidcServiceException;
+			throw oidcServiceException;
+		}
 		catch (Exception e) {
 			exceptionReceived = e;
 			LOGGER.error(e.getMessage());
@@ -138,7 +144,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		steuerdatenAnfrageLogService.saveSteuerdatenAnfrageLog(anfrageLog);
 	}
 
-	private KiBonAnfragePort getServicePort() throws KiBonAnfrageServiceException {
+	private KiBonAnfragePort getServicePort() throws KiBonAnfrageServiceException, OIDCServiceException {
 		if (port == null) {
 			initKiBonAnfragePort();
 		}
@@ -148,7 +154,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	private void initKiBonAnfragePort() throws KiBonAnfrageServiceException {
-		LOGGER.info("Initialising GeresResidentInfoService:");
+		LOGGER.info("Initialising KiBonAnfrageService:");
 		if (port == null) {
 			String endpointURL = config.getKibonAnfrageEndpoint();
 			if (StringUtils.isEmpty(endpointURL)) {
@@ -172,30 +178,32 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 				port = service.getPort(KiBonAnfragePort.class);
 				LOGGER.info("KibonAnfrageService Port created: {}", port);
 				final BindingProvider bp = (BindingProvider) port;
-				bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+				Objects.requireNonNull(bp).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 			} catch (RuntimeException e) {
 				port = null;
-				throw new KiBonAnfrageServiceException("initKiBonAnfragePort",
-					"Could not create service-port KibonAnfrageService for endpoint " + endpointURL, e);
+				throw new KiBonAnfrageServiceException("initKiBonAnfragePort", "Could not create service-port KibonAnfrageService for endpoint " + endpointURL, e);
 			}
 		}
 		LOGGER.info("KibonAnfrageService erfolgreich initialisiert");
 	}
 
-	private void initAuthorizationForKibonAnfrageService() throws KiBonAnfrageServiceException {
+	private void initAuthorizationForKibonAnfrageService() throws OIDCServiceException, KiBonAnfrageServiceException {
 		try {
 			OIDCToken authToken = OIDCTokenManagerBean.getValidOICDToken();
 			Map<String, List<String>> requestHeaders = new HashMap<>();
 			requestHeaders.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(authToken.getAuthToken()));
 
 			final BindingProvider bp = (BindingProvider) port;
-			bp.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
+			Objects.requireNonNull(bp).getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
+		} catch (OIDCServiceException e) {
+			port = null;
+			throw e;
 		} catch (Exception e) {
 			port = null;
-			LOGGER.error("Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
+			LOGGER.error("Could not initialize the Authorization Token for KibonAnfrage Serivce", e);
 			throw new KiBonAnfrageServiceException(
 				"initAuthorizationForKibonAnfrageService",
-				"Could not initialze the Autorziation Token for KibonAnfrage Serivce",
+				"Unexpected error while preparing KibonAnfrage",
 				e);
 		}
 	}

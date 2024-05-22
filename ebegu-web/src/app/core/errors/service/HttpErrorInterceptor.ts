@@ -18,6 +18,7 @@ import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 import {ErrorService} from './ErrorService';
+import {isOIDCTokenInitialisationException} from './HttpErrorInterceptorUtil';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
 import IQService = angular.IQService;
@@ -40,7 +41,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
     public constructor(
         private readonly $q: IQService,
         private readonly errorService: ErrorService,
-        private readonly $log: ILogService
+        private readonly $log: ILogService,
     ) {
     }
 
@@ -75,7 +76,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         const http404 = 404;
         const url = response && response.config ? response.config.url : '';
         if (response.status === http404 && (
-                url.contains('ebegu.dvbern.ch')
+            url.contains('ebegu.dvbern.ch')
             || url.contains('ebegu-test.bern.ch')
             || url.contains('ebegu.bern.ch'))) {
             return [];
@@ -89,6 +90,12 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         } else if (this.isDataEbeguExceptionReport(response.data)) {
             errors = this.convertEbeguExceptionReport(response.data);
 
+        } else if (isOIDCTokenInitialisationException(response)) {
+            errors = [];
+            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                TSErrorLevel.SEVERE,
+                'ERROR_OIDC_TOKEN_INITIALISATION',
+                response.data));
         } else if (this.isFileUploadException(response.data)) {
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -127,7 +134,6 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
             .concat(this.convertToExceptionReport(data.fieldViolations))
             .concat(this.convertToExceptionReport(data.propertyViolations))
             .concat(this.convertToExceptionReport(data.returnValueViolations));
-
     }
 
     private convertToExceptionReport(violations: any): Array<TSExceptionReport> {
@@ -178,14 +184,14 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
 
     private isDataEbeguExceptionReport(data: any): boolean {
         if (data !== null && data !== undefined) {
-            const hassErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
+            const hasErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
             const hasExceptionName: boolean = data.hasOwnProperty('exceptionName');
             const hasMethodName: boolean = data.hasOwnProperty('methodName');
             const hasStackTrace: boolean = data.hasOwnProperty('stackTrace');
             const hasTranslatedMessage: boolean = data.hasOwnProperty('translatedMessage');
             const hasCustomMessage: boolean = data.hasOwnProperty('customMessage');
             const hasArgumentList: boolean = data.hasOwnProperty('argumentList');
-            return hassErrorCodeEnum && hasExceptionName && hasMethodName && hasStackTrace
+            return hasErrorCodeEnum && hasExceptionName && hasMethodName && hasStackTrace
                 && hasTranslatedMessage && hasCustomMessage && hasArgumentList;
         }
         return false;

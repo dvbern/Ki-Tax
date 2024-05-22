@@ -3257,5 +3257,6 @@
     "KINDER_NACHWEIS_HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG": "Nachweis zum Gesuch für höhere Beiträge (mindestens eines der folgenden Dokumente): Ein Bericht der Invalidenversicherung (IV-Bericht), ein Bericht eines Facharztes für Kinder- und Jugendmedizin, eine Verfügung des Amtes für Volksschule und Sport für eine pädagogisch-therapeutische Massnahme, eine Verfügung für heil-, audio- und/oder visiopädagogische Früherziehung oder integrierte Sonderschulung",
     "GEMEINDE_VEREINFACHTE_KONFIG_AKTIV" : "Gemeinde vereinfachte Konfiguration aktivieren",
     "GESUCHFREIGABE_ONLINE": "Online Gesuchfreigabe",
+    "ERROR_OIDC_TOKEN_INITIALISATION": "Beim Versuch die Steuerdaten abzurufen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
