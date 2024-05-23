@@ -67,6 +67,6 @@ export class EinkommensverschlechterungSchwyzResultateComponent extends Abstract
     }
 
     public veraenderungTotalToPercentageString(): string {
-        return this.resultate?.veraenderung?.total ? this.resultate.veraenderung.total + '%' : '';
+        return this.resultate?.veraenderung?.total ? `${this.resultate.veraenderung.total  }%` : '';
     }
 }
