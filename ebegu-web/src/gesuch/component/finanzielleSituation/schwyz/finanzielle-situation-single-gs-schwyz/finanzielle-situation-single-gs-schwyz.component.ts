@@ -1,16 +1,17 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
     selector: 'dv-finanzielle-situation-single-gs-schwyz',
     templateUrl: './finanzielle-situation-single-gs-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class FinanzielleSituationSingleGsSchwyzComponent {
+export class FinanzielleSituationSingleGsSchwyzComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -22,6 +23,17 @@ export class FinanzielleSituationSingleGsSchwyzComponent {
 
     @Output()
     public valueChanged = new EventEmitter<void>();
+
+    public isGesuchReadonly = false;
+    public isOnlineGesuch = true;
+
+    public constructor(private readonly gesuchModelManager: GesuchModelManager) {
+    }
+
+    public ngOnInit() {
+        this.isGesuchReadonly = this.gesuchModelManager.isGesuchReadonly();
+        this.isOnlineGesuch = this.gesuchModelManager.getGesuch().isOnlineGesuch();
+    }
 
     public onQuellenbesteuertChange(): void {
         if (EbeguUtil.isNullOrUndefined(this.getFinSitJA().quellenbesteuert)) {
