@@ -1,5 +1,5 @@
-@width100: 100%; 
-@height100: 100%; 
+@width100: 100%;
+@height100: 100%;
 @tour-zindex: 1081;
 @tour-step-color: #ffffff;
 @tour-text-color: #231f1f;
@@ -12,7 +12,7 @@
 @tour-orb-color: #625aff;
 @tour-shadow-color: #4c4c4c;
 
- 
+
 :host {
     z-index: 90000;
 
@@ -243,7 +243,6 @@
             overflow: hidden;
 
             button.link-button {
-                padding-left: 0;
                 font-size: 15px;
                 font-weight: bold;
                 max-width: none !important;
@@ -256,7 +255,7 @@
                 background-color: transparent;
                 position: relative;
                 outline: none;
-                padding: 0 15px;
+                padding: 0 15px 0 0;
                 -webkit-appearance: button;
                 appearance: button;
             }
@@ -316,7 +315,7 @@
         bottom: 100%;
         border-bottom: @opposite-border;
     }
-    
+
     & when (@direction = bottom) {
         left: 50%;
         transform: translateX(-50%);
@@ -330,7 +329,7 @@
         left: 100%;
         border-left: @opposite-border;
     }
-    
+
     & when (@direction = left) {
         @opposite-direction: right;
         right: 100%;
