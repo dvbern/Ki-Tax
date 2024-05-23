@@ -36,9 +36,6 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
@@ -668,25 +665,5 @@ class SharedFamSitChangeDefaultHandlerTest extends EasyMockSupport {
 		familiensituation.setAenderungPer(Constants.START_OF_TIME);
 		return familiensituation;
 	}
-
-
-	@Getter
-	@Setter
-	@Builder
-	private static class FamSitChangeTestConfiguration {
-		Familiensituation oldFamiliensituation;
-		Familiensituation newFamiliensituation;
-		String name;
-
-		@Override
-		public String toString() {
-			return this.name;
-		}
-
-		static FamSitChangeTestConfiguration of(String name, Familiensituation oldFamiliensituation) {
-			return FamSitChangeTestConfiguration.builder().name(name).oldFamiliensituation(oldFamiliensituation).build();
-		}
-	}
-
 
 }
