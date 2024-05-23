@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
 
-	private final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
+	private static final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
 
 	public VerfuegungPdfGeneratorSchwyz(
 		@Nonnull Betreuung betreuung,
