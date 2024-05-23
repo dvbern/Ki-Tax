@@ -65,4 +65,8 @@ export class EinkommensverschlechterungSchwyzResultateComponent extends Abstract
         return this.gesuchmodelManager.isGesuchsteller2Required()
             && EbeguUtil.isNotNullAndFalse(this.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung);
     }
+
+    public veraenderungTotalToPercentageString(): string {
+        return this.resultate?.veraenderung?.total ? this.resultate.veraenderung.total + '%' : '';
+    }
 }
