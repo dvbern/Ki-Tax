@@ -68,7 +68,6 @@ import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
 import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
-import {TSEWKResultat} from '../../models/TSEWKResultat';
 import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
 import {TSFall} from '../../models/TSFall';
@@ -129,8 +128,6 @@ export class GesuchModelManager {
     public numberInternePendenzen: number;
     public hasAbgelaufenePendenz: boolean;
     public isFKJVTexte: boolean;
-
-    public ewkResultat: TSEWKResultat;
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
@@ -235,7 +232,6 @@ export class GesuchModelManager {
             }
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
-        this.ewkResultat = undefined;
         this.activInstitutionenForGemeindeList = undefined;
 
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
