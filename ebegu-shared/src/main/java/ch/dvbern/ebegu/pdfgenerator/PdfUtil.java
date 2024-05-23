@@ -220,14 +220,14 @@ public final class PdfUtil {
 		// chunks
 		parsedList.stream()
 			.flatMap(element -> element.getChunks().stream())
-			.filter(chunkElement -> chunkElement instanceof Chunk)
-			.map(chunkElement -> (Chunk) chunkElement)
+			.filter(Chunk.class::isInstance)
+			.map(Chunk.class::cast)
 			.forEach(chunk -> chunk.setFont(getDefaultFont(Objects.requireNonNull(chunk.getFont()))));
 
 		// paragraphs (<p>)
 		parsedList.stream()
-			.filter(element -> element instanceof Paragraph)
-			.map(element -> (Paragraph) element)
+			.filter(Paragraph.class::isInstance)
+			.map(Paragraph.class::cast)
 			.forEach(PdfUtil::applyHTMLParagraphStyle);
 
 		// list (<ul>)
@@ -261,8 +261,8 @@ public final class PdfUtil {
 		}
 
 		list.getItems().stream()
-			.filter(element -> element instanceof ListItem)
-			.map(element -> (ListItem) element)
+			.filter(ListItem.class::isInstance)
+			.map(ListItem.class::cast)
 			.forEach(PdfUtil::applyHTMLListItemStyle);
 	}
 
