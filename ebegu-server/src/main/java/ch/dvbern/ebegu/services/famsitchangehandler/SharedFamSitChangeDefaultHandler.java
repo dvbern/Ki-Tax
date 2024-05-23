@@ -176,7 +176,7 @@ public class SharedFamSitChangeDefaultHandler implements FamSitChangeHandler {
 	 * Bei Mutation oder nach Freigabe kann der GS2 geloescht werden wenn er gar nicht mehr ins Gesuch
 	 * beruecksichtig wird. D.H. alle Daten die die FamSit / FinSit Regeln betreffen muessen geprueft werden
 	 */
-	private boolean isNeededToRemoveGesuchsteller2(
+	protected boolean isNeededToRemoveGesuchsteller2(
 		Gesuch gesuch,
 		Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch
