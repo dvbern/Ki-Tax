@@ -27,7 +27,10 @@ import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
+import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
@@ -35,7 +38,9 @@ import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../../../models/TSInstitutionStammdatenBetreuungsgutscheine';
+import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -44,11 +49,7 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
-import {TSKind} from '../../../models/TSKind';
-import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
-import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
-import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
-import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
+import ITranslateService = angular.translate.ITranslateService;
 /* eslint-disable max-len */
 describe('betreuungView', () => {
     const betreuungenState = 'gesuch.betreuungen';
@@ -70,6 +71,7 @@ describe('betreuungView', () => {
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let mandantService: MandantService;
     let ebeguRestUtil: EbeguRestUtil;
+    let $translateMock: jasmine.SpyObj<ITranslateService>;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -102,6 +104,7 @@ describe('betreuungView', () => {
         erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = true;
         betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+        betreuung.institutionStammdaten = createInstitutionStammdaten('1',TSBetreuungsangebotTyp.KITA);
 
         kind = new TSKindContainer();
         $stateParams = {betreuungNumber: '0', kindNumber: '0', betreuungsangebotTyp: TSBetreuungsangebotTyp.KITA};
@@ -130,6 +133,7 @@ describe('betreuungView', () => {
         spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(new TSEinstellung()));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
+        $translateMock = jasmine.createSpyObj<ITranslateService>('ITranslateService', ['instant']);
 
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
@@ -147,7 +151,7 @@ describe('betreuungView', () => {
             einstellungRS,
             $injector.get('GlobalCacheService'),
             $timeout,
-            undefined,
+            $translateMock,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
             ebeguRestUtil
@@ -159,6 +163,7 @@ describe('betreuungView', () => {
         $rootScope.$apply();
         betreuungView.model = betreuung;
         kind.betreuungen = [betreuung];
+        betreuungView.betreuungsangebot = TSBetreuungsangebotTyp.KITA;
 
         betreuungView.form = TestDataUtil.createDummyForm();
         betreuungView.minPensumSprachlicheIndikation = 40;
@@ -278,6 +283,7 @@ describe('betreuungView', () => {
             it('must change the status of the Betreuung to WARTEN', () => {
                 spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.resolve(new TSBetreuung()));
                 betreuungView.model.vertrag = true;
+                betreuungView.model.institutionStammdaten = createInstitutionStammdaten('3', TSBetreuungsangebotTyp.KITA);
                 // betreuung.timestampErstellt = undefined;
                 betreuungView.model.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
@@ -456,6 +462,17 @@ describe('betreuungView', () => {
                 expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(true);
             });
         });
+
+
+        it('should call addMesageAsError when betreuungsangebotTyp does not match', function() {
+            // Setup the model to have a different betreuungsangebotTyp
+            betreuungView.betreuungsangebot = TSBetreuungsangebotTyp.MITTAGSTISCH;
+            betreuungView.model.vertrag = true;
+            betreuungView.model.institutionStammdaten = createInstitutionStammdaten('2', TSBetreuungsangebotTyp.KITA);
+            betreuungView.platzAnfordern();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ERROR_FALSCHE_ANGEBOT'));
+        });
     });
 
     function initGesuch(typ: TSAntragTyp, status: TSAntragStatus, gesperrtWegenBeschwerde: boolean): TSGesuch {
@@ -489,6 +506,8 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
         spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {
         });
+        betreuungView.model.institutionStammdaten = createInstitutionStammdaten('1',TSBetreuungsangebotTyp.KITA);
+
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // eslint-disable-next-line @typescript-eslint/unbound-method
