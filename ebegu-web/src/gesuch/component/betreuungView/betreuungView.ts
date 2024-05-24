@@ -383,7 +383,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
             response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
                 .forEach(value => {
-                   this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
+                    this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
                 });
         }, error => LOG.error(error));
 
@@ -596,6 +596,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.errorService.clearAll();
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        if (this.getBetreuungModel().institutionStammdaten.betreuungsangebotTyp !== this.betreuungsangebot.key) {
+            this.errorService.addMesageAsError(this.$translate.instant('ERROR_FALSCHE_ANGEBOT'));
+            return;
+        }
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             if (!this.model.isAngebotSchulamt()) {
@@ -1257,11 +1261,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
-       const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-           || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
-           || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
-               && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
-       return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
+        const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
+            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+        return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
     }
 
     public showKitaPlusZuschlag(): boolean {
@@ -1678,8 +1682,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.MITTAGSTISCH) {
             this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
-        }
-        else {
+        } else {
             this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
         }
     }

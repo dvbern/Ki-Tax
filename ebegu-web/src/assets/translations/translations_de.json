@@ -45,6 +45,7 @@
     "ERROR_MAX_DATETIME": "Zeit wurde überschritten",
     "ERROR_NO_FUTURE_DATETIME": "Darf nicht in der Zukunft liegen",
     "ERROR_MINDESTENS_EIN_WERT": "Es muss mindestens ein Mutationsbereich gewählt werden",
+    "ERROR_FALSCHE_ANGEBOT": "Die ausgewählte Institution passt nicht zum ausgewählten Angebot",
     "ERROR_DATUM_GESETZT_BEI_MUTATION": "Bei einer Mutation muss die Familiensituation geändert werden, wenn ein Datum gesetzt ist.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS": "kiBon führt Sie Schritt für Schritt durch den Antrag für einen Betreuungsgutschein und/oder eine Tagesschulanmeldung.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS": "kiBon führt Sie Schritt für Schritt durch den Antrag für einen Betreuungsgutschein.",
