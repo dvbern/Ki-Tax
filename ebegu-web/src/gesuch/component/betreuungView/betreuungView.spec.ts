@@ -104,7 +104,7 @@ describe('betreuungView', () => {
         erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = true;
         betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
-        betreuung.institutionStammdaten = createInstitutionStammdaten('1',TSBetreuungsangebotTyp.KITA);
+        betreuung.institutionStammdaten = createInstitutionStammdaten('1', TSBetreuungsangebotTyp.KITA);
 
         kind = new TSKindContainer();
         $stateParams = {betreuungNumber: '0', kindNumber: '0', betreuungsangebotTyp: TSBetreuungsangebotTyp.KITA};
@@ -116,7 +116,7 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() =>
             // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
             // constructor der view und geben betreuung zurueck
-             betreuungView ? betreuungView.model : betreuung
+            betreuungView ? betreuungView.model : betreuung,
         );
         const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
@@ -154,11 +154,11 @@ describe('betreuungView', () => {
             $translateMock,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
-            ebeguRestUtil
+            ebeguRestUtil,
         );
     }));
 
-    beforeEach(function (done){
+    beforeEach(function (done) {
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
@@ -170,7 +170,7 @@ describe('betreuungView', () => {
         // You can call any async task, when done() is called the test will begin
         setTimeout(() => {
             done();
-            }, 100);
+        }, 100);
     });
 
     describe('API Usage', () => {
@@ -431,40 +431,39 @@ describe('betreuungView', () => {
 
             it('should not show checkbox if no betreuungspensum less than 40% pensum',
                 () => {
-                const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
-                pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+                    const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
+                    pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
 
-                kind.kindJA = new TSKind();
-                kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
+                    kind.kindJA = new TSKind();
+                    kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
 
-                const betreuungspensum = new TSBetreuungspensumContainer();
-                betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
-                betreuungspensum.betreuungspensumJA.pensum = 40;
+                    const betreuungspensum = new TSBetreuungspensumContainer();
+                    betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
+                    betreuungspensum.betreuungspensumJA.pensum = 40;
 
-                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
-                spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([betreuungspensum]);
-                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
-            });
+                    spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
+                    spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([betreuungspensum]);
+                    expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+                });
 
             it('should not show checkbox if betreuungspensum less than 40% pensum',
                 () => {
-                const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
-                pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
-                kind.kindJA = new TSKind();
-                kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
+                    const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
+                    pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+                    kind.kindJA = new TSKind();
+                    kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
 
-                const betreuungspensum = new TSBetreuungspensumContainer();
-                betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
-                betreuungspensum.betreuungspensumJA.pensum = 30;
+                    const betreuungspensum = new TSBetreuungspensumContainer();
+                    betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
+                    betreuungspensum.betreuungspensumJA.pensum = 30;
 
-                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
+                    spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
                     spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([betreuungspensum]);
-                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(true);
-            });
+                    expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(true);
+                });
         });
 
-
-        it('should call addMesageAsError when betreuungsangebotTyp does not match', function() {
+        it('should call addMesageAsError when betreuungsangebotTyp does not match', () => {
             // Setup the model to have a different betreuungsangebotTyp
             betreuungView.betreuungsangebot = TSBetreuungsangebotTyp.MITTAGSTISCH;
             betreuungView.model.vertrag = true;
@@ -506,7 +505,7 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
         spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {
         });
-        betreuungView.model.institutionStammdaten = createInstitutionStammdaten('1',TSBetreuungsangebotTyp.KITA);
+        betreuungView.model.institutionStammdaten = createInstitutionStammdaten('1', TSBetreuungsangebotTyp.KITA);
 
         betreuungView.platzAnfordern();
         $rootScope.$apply();
