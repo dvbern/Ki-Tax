@@ -45,7 +45,7 @@ export class BatchJobRS {
         return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
     }
 
-    private getInfo(url: string): Observable<Array<TSWorkJob> | never> {
+    private getInfo(url: string): Observable<Array<TSWorkJob>> {
         return this.http.get(url)
             .pipe(map((response: any) => this.ebeguRestUtil.parseWorkJobList(response)));
     }

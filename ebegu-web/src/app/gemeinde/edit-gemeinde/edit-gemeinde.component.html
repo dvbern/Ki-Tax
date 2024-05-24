@@ -17,7 +17,7 @@
 
 <dv-full-height-inner-padding-container>
     <form role="form"
-		  #form="ngForm"
+          #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten$ | async as stammdaten"
           (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
@@ -41,7 +41,8 @@
                                              [editMode]="editMode"
                                              [(altTSAdresse)]="altTSAdresse"
                                              [tageschuleEnabledForMandant]="tageschuleEnabledForMandant"
-                                             [tfoEnabledForMandant]="tfoEnabledForMandant">
+                                             [tfoEnabledForMandant]="tfoEnabledForMandant"
+                                             [gemeindeVereinfachteKonfigAktiv]="gemeindeVereinfachteKonfigAktiv">
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}" ngForm="gemeinde_bg"
@@ -53,7 +54,8 @@
                                      [(altBGAdresse)]="altBGAdresse"
                                      [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
                                      [beguStartDatum]="beguStartDatum"
-                                     [gemeindeList$]="gemeindeList$">
+                                     [gemeindeList$]="gemeindeList$"
+                                     [gemeindeVereinfachteKonfigAktiv]="gemeindeVereinfachteKonfigAktiv">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"

@@ -137,13 +137,6 @@ public interface GesuchService {
 	void removeGesuch(@Nonnull String gesuchId, GesuchDeletionCause deletionCause);
 
 	/**
-	 * Gibt eine Liste von Gesuchen zureck, deren Gesuchsteller 1 den angegebenen Namen und Vornamen hat.
-	 * Achtung, damit ist ein Gesuchsteller nicht eindeutig identifiziert!
-	 */
-	@Nonnull
-	List<Gesuch> findGesuchByGSName(String nachname, String vorname);
-
-	/**
 	 * Gibt alle Antraege des aktuell eingeloggten Benutzers
 	 */
 	@Nonnull

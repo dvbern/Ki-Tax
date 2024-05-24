@@ -46,8 +46,8 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
     @Input() public tfoEnabledForMandant: boolean;
+    @Input() public gemeindeVereinfachteKonfigAktiv: boolean;
     @Input() public altGemeindeKontakt: boolean;
-
     @Output() public readonly altGemeindeKontaktChange: EventEmitter<boolean> = new EventEmitter();
     public readonly CONSTANTS = CONSTANTS;
 

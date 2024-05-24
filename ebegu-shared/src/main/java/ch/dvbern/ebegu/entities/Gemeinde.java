@@ -56,7 +56,7 @@ import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name"),
 		@UniqueConstraint(columnNames = "bfsNummer", name = "UK_gemeinde_bfsnummer"),
-		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
+		@UniqueConstraint(columnNames = "gemeindeNummer", name = "UK_gemeinde_gemeindeNummer")
 	}
 )
 @CheckGemeindeAtLeastOneAngebot
@@ -72,7 +72,7 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	private Mandant mandant;
 
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long gemeindeNummer = 0;
 
@@ -120,7 +120,6 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean eventPublished = true;
 
-	@Nonnull
 	@NotNull
 	@Column(nullable = false)
 	private boolean besondereVolksschule = false;
@@ -138,11 +137,13 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private LocalDate gueltigBis = END_OF_TIME;
 
+	@Override
 	@Nonnull
 	public Mandant getMandant() {
 		return mandant;
 	}
 
+	@Override
 	public void setMandant(Mandant mandant) {
 		this.mandant = mandant;
 	}

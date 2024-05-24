@@ -52,7 +52,6 @@ public enum ApplicationPropertyKey {
 
 	/**
 	 * Key fuer Komma separierte Whiteliste von zugelassenen Filetypen fuer den upload
-	 *
 	 */
 	UPLOAD_FILETYPES_WHITELIST,
 
@@ -109,7 +108,8 @@ public enum ApplicationPropertyKey {
 	LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
 
 	/**
-	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung
+	 * ausgewählt wird
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
 
@@ -119,7 +119,8 @@ public enum ApplicationPropertyKey {
 	LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
 
 	/**
-	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgewählt wird
+	 * Setzt fest, ab welcher Anzahl Betreuungsstunden der LATS Antrag der deutschsprachigen Gemeinden zur Zweitprüfung ausgew
+	 * ählt wird
 	 */
 	LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
 
@@ -241,9 +242,14 @@ public enum ApplicationPropertyKey {
 	 */
 	ABWEICHUNGEN_ENABLED,
 
-	/*
+	/**
 	 * Wenn dieses Datum überschritten wird, ist die SprachfoerderungBestaegit Flag Wert beruecksichtig.
 	 */
-	SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB;
+	SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB,
 
+	/**
+	 * Gemeinde leichtere Konfiguration aktivieren. Es wird die TFO Angebot Wahl und ein paar Gesuchsperiode Gemeinde
+	 * Einstellungen ausblenden.
+	 */
+	GEMEINDE_VEREINFACHTE_KONFIG_AKTIV;
 }

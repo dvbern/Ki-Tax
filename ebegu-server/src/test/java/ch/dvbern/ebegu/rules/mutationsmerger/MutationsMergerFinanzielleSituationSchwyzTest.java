@@ -62,10 +62,26 @@ class MutationsMergerFinanzielleSituationSchwyzTest {
 	}
 
 	@Test
+	void test_hoereMassgegebeneseinkommens_MutationGleicheTag_keineaenderung() {
+		BGCalculationInput bgCalculationInput = initInputData(ZWEI_HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.withDayOfMonth(1));
+		Assertions.assertEquals(HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
+	}
+
+	@Test
 	void test_kleinerMassgegebeneseinkommens_MutationGleicheMonat_keineaenderung() {
 		BGCalculationInput bgCalculationInput = initInputData(HUNDERT_THAUSEND);
 		BGCalculationResult resultVorgaenger = initResultData(ZWEI_HUNDERT_THAUSEND);
 		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT);
+		Assertions.assertEquals(ZWEI_HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
+	}
+
+	@Test
+	void test_kleinerMassgegebeneseinkommens_MutationGleicheTag_keineaenderung() {
+		BGCalculationInput bgCalculationInput = initInputData(HUNDERT_THAUSEND);
+		BGCalculationResult resultVorgaenger = initResultData(ZWEI_HUNDERT_THAUSEND);
+		MUTATIONS_MERGER_FINANZIELLE_SITUATION_SCHWYZ.handleEinkommen(bgCalculationInput, resultVorgaenger, new Betreuung(), EINREICHEDATUM_INNERHALB_ERSTGESUCH_ABSCHNITT.withDayOfMonth(1));
 		Assertions.assertEquals(ZWEI_HUNDERT_THAUSEND, bgCalculationInput.getMassgebendesEinkommen());
 	}
 

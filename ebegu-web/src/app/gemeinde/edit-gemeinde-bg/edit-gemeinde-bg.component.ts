@@ -72,6 +72,7 @@ export class EditGemeindeBGComponent implements OnInit {
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public gemeindeList$: Observable<TSGemeinde[]>;
     @Input() public zusatzTextBG: boolean;
+    @Input() public gemeindeVereinfachteKonfigAktiv: boolean;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
