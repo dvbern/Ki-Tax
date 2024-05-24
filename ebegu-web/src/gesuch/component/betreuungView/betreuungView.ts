@@ -23,6 +23,7 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
+import {UnknownMittagstischIdVisitor} from '../../../app/core/constants/UnknownMittagstischIdVisitor';
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -1675,7 +1676,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
             this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
-        } else {
+        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
+        }
+        else {
             this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
         }
     }
