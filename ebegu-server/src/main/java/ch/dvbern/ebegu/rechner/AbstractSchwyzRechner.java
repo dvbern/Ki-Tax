@@ -56,7 +56,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 			toZeiteinheitProZeitabschnitt(parameterDTO, anspruchsPensumFaktor, anteilMonat);
 
 		var normKosten = calculateNormkosten(input, parameterDTO);
-		var tagesTarif = calculateTagesTarif(effektiveBetreuungsZeiteinheitProZeitabschnitt, input);
+		var tagesTarif = calculateTarifProZeiteinheit(parameterDTO, effektivesPensumFaktor, input);
 		var tarif = tagesTarif.min(normKosten);
 
 		var u = EXACT.multiply(EXACT.divide(minimalTarif, normKosten), EXACT.subtract(BigDecimal.ONE, geschwisterBonus));
@@ -143,9 +143,17 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		return EXACT.divide(anzahlGeschwister, BigDecimal.TEN);
 	}
 
-	protected abstract BigDecimal calculateTagesTarif(
-		BigDecimal effektiveBetreuungsZeiteinheitProZeitabschnitt,
-		BGCalculationInput input);
+	protected BigDecimal calculateTarifProZeiteinheit(BGRechnerParameterDTO parameterDTO, BigDecimal effektivesPensumFaktor,
+		BGCalculationInput input) {
+		var effektiveBetreuungsZeiteinheitenProMonat =
+			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, BigDecimal.ONE);
+
+		if (effektiveBetreuungsZeiteinheitenProMonat.compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+
+		return EXACT.divide(input.getMonatlicheBetreuungskosten(), effektiveBetreuungsZeiteinheitenProMonat);
+	}
 
 	protected abstract BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameterDTO);
 
