@@ -220,5 +220,6 @@
     "MASSENVERSAND": "Betreuungsbeiträge: Kontaktdaten für Serienbriefe",
     "HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_NEIN_HINT": "Möchten Sie das erforderliche Dokument / die erforderlichen Dokumente nicht hochladen, so können Sie diese per Post an die folgende Adresse senden: Abteilung Soziales, Fachstelle für Kinderbetreuung, Amt für Gesundheit und Soziales, Kollegiumstrasse 28, Postfach 2161, 6431 Schwyz. (Die Bearbeitungszeit wird voraussichtlich länger dauern.)",
     "ADRESSE_GUELTIGAB": "Letzter ganzer Tag an der alten Adresse",
+    "TOUR_STEP_SEARCH_CONTENT": "Über die Suche können Sie Fälle nach folgenden Punkten durchsuchen:\n<ul>\n<li>Fallnummer</li>\n<li>Referenznummer</li>\n<li>Vorname Antragstellerin bzw. Antragsteller</li>\n<li>Name Antragstellerin bzw. Antragsteller</li>\n<li>Vorname Kind</li>\n<li>Nachname Kind</li>\n<li>Geburtsdatum</li>\n</ul>\nDie Suche zeigt „live“ eine Vorschau an.\n<BR><BR>\nMit einem Klick auf einen Fall wird das neuste Gesuch dieses Falls geöffnet.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
