@@ -1,20 +1,20 @@
 <div class="row">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
-            <span class="ebegu-h1 required">{{'MOMENTAN_SELBSTSTAENDIG' | translate}}</span>
+            <span class="ebegu-h1 required">{{ 'MOMENTAN_SELBSTSTAENDIG' | translate }}</span>
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
-                        aria-labelledby="selbststaendig_id"
-                        name="selbststaendig"
-                        id="selbststaendig_id"
-                        required
                         #selbststaendig="ngModel"
+                        [(ngModel)]="model.finanzielleSituationJA.momentanSelbststaendig"
+                        [enableExpression]="canEdit() && !isGesuchReadonly() && !isKorrekturModusJugendamt()"
+                        aria-labelledby="selbststaendig_id"
                         dvEnableElement
-                        [enableExpression]="canEdit()"
-                        [(ngModel)]="model.finanzielleSituationJA.momentanSelbststaendig">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                        id="selbststaendig_id"
+                        name="selbststaendig"
+                        required>
+                        <mat-radio-button [value]="true">{{ 'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{ 'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-error-messages
                         *ngIf="selbststaendig.touched"
@@ -26,33 +26,46 @@
         </div>
     </div>
 </div>
-<div class="row" *ngIf="showVeranlagungErhalten()">
-	<div class="col-xs-12 dv-input-container-question">
-		<div class="form-group">
-			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1), basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)} }}</span>
-			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === true"  class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1), basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)} }}</span>
+<div *ngIf="showVeranlagungErhalten()" class="row">
+    <div class="col-xs-12 dv-input-container-question">
+        <div class="form-group">
+            <span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{
+                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{
+                        basisjahr: gesuchModelManager.getBasisjahr(),
+                        basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1),
+                        basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)
+                    }
+                }}</span>
+            <span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === true" class="ebegu-h1 required">{{
+                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG' | translate:{
+                        basisjahr: gesuchModelManager.getBasisjahr(),
+                        basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1),
+                        basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)
+                    }
+                }}</span>
             <dv-input-container-x [verticalAlign]="true">
-				<dv-radio-container-x>
-					<mat-radio-group
-							aria-labelledby="steuerveranlagungErhalten_id"
-							name="steuerveranlagungErhalten"
-							id="steuerveranlagungErhalten_id"
-							required
-							#steuerveranlagungErhalten="ngModel"
-							dvEnableElement
-							[enableExpression]="canEdit()"
-							[ngModel]="model.finanzielleSituationJA.steuerveranlagungErhalten"
-							(ngModelChange)="setSteuerveranlagungErhalten($event)">
-						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-						<mat-radio-button [value]="false">{{'LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT' | translate }}</mat-radio-button>
-					</mat-radio-group>
-				</dv-radio-container-x>
-				<dv-error-messages
-                        *ngIf="selbststaendig.touched"
-						[errorObject]="steuerveranlagungErhalten.errors"
-						inputId="steuerveranlagungErhalten_id">
-				</dv-error-messages>
-			</dv-input-container-x>
-		</div>
-	</div>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        #steuerveranlagungErhalten="ngModel"
+                        (ngModelChange)="setSteuerveranlagungErhalten($event)"
+                        [enableExpression]="canEdit() && !isGesuchReadonly() && !isKorrekturModusJugendamt()"
+                        [ngModel]="model.finanzielleSituationJA.steuerveranlagungErhalten"
+                        aria-labelledby="steuerveranlagungErhalten_id"
+                        dvEnableElement
+                        id="steuerveranlagungErhalten_id"
+                        name="steuerveranlagungErhalten"
+                        required>
+                        <mat-radio-button [value]="true">{{ 'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{ 'LABEL_NICHT_ERHALTEN_ODER_QUELLENBESTEUERT' | translate }}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+                <dv-error-messages
+                    *ngIf="selbststaendig.touched"
+                    [errorObject]="steuerveranlagungErhalten.errors"
+                    inputId="steuerveranlagungErhalten_id">
+                </dv-error-messages>
+            </dv-input-container-x>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -10,7 +10,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class SteuerveranlagungErhaltenComponent implements OnInit {
+export class SteuerveranlagungErhaltenComponent {
 
     @Input() public model: TSFinanzielleSituationContainer;
 
@@ -21,7 +21,12 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     ) {
     }
 
-    public ngOnInit(): void {
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
+
+    public isKorrekturModusJugendamt(): boolean {
+        return this.gesuchModelManager.isKorrekturModusJugendamt();
     }
 
     public setSteuerveranlagungErhalten(value: any): void {
@@ -34,6 +39,7 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     }
 
     public canEdit(): boolean {
+        console.log('this.gesuchModelManager.isGesuchReadonly()', this.gesuchModelManager.isGesuchReadonly());
         return !this.gesuchModelManager.isGesuchReadonly();
     }
 }
