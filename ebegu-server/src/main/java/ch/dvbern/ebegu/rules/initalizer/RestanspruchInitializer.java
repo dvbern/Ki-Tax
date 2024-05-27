@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.FERIENINSEL;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.MITTAGSTISCH;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
@@ -64,7 +65,7 @@ public class RestanspruchInitializer extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE, FERIENINSEL);
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE, FERIENINSEL, MITTAGSTISCH);
 	}
 
 	@Nonnull
