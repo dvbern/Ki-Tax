@@ -62,16 +62,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         });
     }
 
-    private setupForm(): void {
-        if (!this.getModel().finanzielleSituationJA.isNew()) {
-            return;
-        }
-        this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
-        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
-        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
-        this.getModel().finanzielleSituationJA.veranlagt = undefined;
-    }
-
     public showSelbstdeklaration(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.quellenbesteuert)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
@@ -151,25 +141,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.initOrResetDekarationen();
     }
 
-    private initOrResetDekarationen(): void {
-        if (this.showVeranlagung()) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
-        }
-        if (this.showSelbstdeklaration()) {
-            this.resetVeranlagungValues();
-            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
-        }
-    }
-
-    private resetVeranlagungValues(): void {
-        this.getModel().finanzielleSituationJA.steuerbaresEinkommen = undefined;
-        this.getModel().finanzielleSituationJA.steuerbaresVermoegen = undefined;
-        this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = undefined;
-        this.getModel().finanzielleSituationJA.geschaeftsverlust = undefined;
-        this.getModel().finanzielleSituationJA.einkaeufeVorsorge = undefined;
-        this.finSitLuService.calculateMassgebendesEinkommen(this.model);
-    }
-
     public getYearForVeranlagung(): number | string {
         if (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt)) {
             return this.getBasisjahr();
@@ -212,9 +183,13 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.gesuchModelManager.getGesuch();
     }
 
+    public getGesuchStatus(): TSAntragStatus {
+        return this.getGesuch().status;
+    }
+
     public isFinSitReadonly(): boolean {
         return this.isGesuchReadonly()
-           ||  (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
+            || (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
     }
 
     public showZahlungsinformationen(): boolean {
@@ -265,21 +240,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    protected abstract save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
-
     public getAntragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
-    }
-
-    /**
-     * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
-     */
-    protected updateWizardStepStatus(): IPromise<void> {
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
-                TSWizardStepStatus.OK);
     }
 
     public isRoleGemeindeOrSuperAdmin(): boolean {
@@ -309,5 +271,47 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public isSozialhilfeBezueger(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.model.familienSituation.sozialhilfeBezueger);
+    }
+
+    protected abstract save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
+
+    /**
+     * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
+     */
+    protected updateWizardStepStatus(): IPromise<void> {
+        return this.gesuchModelManager.getGesuch().isMutation() ?
+            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
+                TSWizardStepStatus.OK);
+    }
+
+    private setupForm(): void {
+        if (!this.getModel().finanzielleSituationJA.isNew()) {
+            return;
+        }
+        this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
+        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.veranlagt = undefined;
+    }
+
+    private initOrResetDekarationen(): void {
+        if (this.showVeranlagung()) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        }
+        if (this.showSelbstdeklaration()) {
+            this.resetVeranlagungValues();
+            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+        }
+    }
+
+    private resetVeranlagungValues(): void {
+        this.getModel().finanzielleSituationJA.steuerbaresEinkommen = undefined;
+        this.getModel().finanzielleSituationJA.steuerbaresVermoegen = undefined;
+        this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = undefined;
+        this.getModel().finanzielleSituationJA.geschaeftsverlust = undefined;
+        this.getModel().finanzielleSituationJA.einkaeufeVorsorge = undefined;
+        this.finSitLuService.calculateMassgebendesEinkommen(this.model);
     }
 }

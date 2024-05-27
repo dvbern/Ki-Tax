@@ -88,6 +88,14 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.save(onResult);
     }
 
+    public getFamiliensituation(): TSFamiliensituation {
+        return this.gesuchModelManager.getFamiliensituation();
+    }
+
+    public isNotSozialhilfeBezueger(): boolean {
+        return EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger);
+    }
+
     protected save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
@@ -104,15 +112,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
                 onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
                 return gesuch.gesuchsteller1.finanzielleSituationContainer;
             }).catch(error => {
-                throw(error);
+                throw (error);
             });
-    }
-
-    public getFamiliensituation(): TSFamiliensituation {
-        return this.gesuchModelManager.getFamiliensituation();
-    }
-
-    public isNotSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger);
     }
 }
