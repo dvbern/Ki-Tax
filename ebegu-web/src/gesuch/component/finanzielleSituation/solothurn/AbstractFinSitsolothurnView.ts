@@ -105,6 +105,10 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         return currentYear;
     }
 
+    public getPreviousYear(): number | string {
+        return this.getBasisjahr();
+    }
+
     public abstract isGemeinsam(): boolean;
 
     public abstract getAntragstellerNummer(): number;
