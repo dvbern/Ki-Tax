@@ -200,7 +200,7 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         description = `${this.vorname  } `;
         description += `${this.nachname  }, `;
         if(this.geburtsdatum) {
-            description += `${this.geburtsdatum?.format('DD.MM.YYYY')}, `;
+            description += `${this.geburtsdatum.format('DD.MM.YYYY')}, `;
         }
         if (this.adresse) {
             description += this.adresse.ort;
