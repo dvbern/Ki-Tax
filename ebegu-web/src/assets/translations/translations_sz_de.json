@@ -222,5 +222,7 @@
     "ADRESSE_GUELTIGAB": "Letzter ganzer Tag an der alten Adresse",
     "TOUR_STEP_SEARCH_CONTENT": "Über die Suche können Sie Fälle nach folgenden Punkten durchsuchen:\n<ul>\n<li>Fallnummer</li>\n<li>Referenznummer</li>\n<li>Vorname Antragstellerin bzw. Antragsteller</li>\n<li>Name Antragstellerin bzw. Antragsteller</li>\n<li>Vorname Kind</li>\n<li>Nachname Kind</li>\n<li>Geburtsdatum</li>\n</ul>\nDie Suche zeigt „live“ eine Vorschau an.\n<BR><BR>\nMit einem Klick auf einen Fall wird das neuste Gesuch dieses Falls geöffnet.",
     "IN_BEARBEITUNG_GS": "In Bearbeitung Gesuchsteller/in",
+    "KITAX_ERNEUERUNGSGESUCH": "kiBon - Gesuch",
+    "GEMEINDE_TAB_BG": "Betreuungsbeiträge",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
