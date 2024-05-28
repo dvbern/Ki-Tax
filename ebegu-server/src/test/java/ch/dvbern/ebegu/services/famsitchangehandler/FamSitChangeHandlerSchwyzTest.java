@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.dataprovider.SchwyzTestfallDataProvider;
+import ch.dvbern.ebegu.testfaelle.dataprovider.TestKindParameter;
 import ch.dvbern.ebegu.util.Constants;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
