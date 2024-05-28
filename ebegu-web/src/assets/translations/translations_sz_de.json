@@ -192,5 +192,6 @@
     "MUTATION_AUSWAHL_TEXT_3": "",
     "BETREUUNG_WARTEN_TEXT": "Warten auf Platzbestätigung von der ausgewählten Institution",
     "MUTATION_AUSWAHL_TEXT_1": "Um Ihr Gesuch zu bearbeiten, klicken Sie bitte die Punkte an, die Sie ändern möchten",
+    "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsbeitrag wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
