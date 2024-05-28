@@ -38,7 +38,11 @@ export class PersonensucheComponent {
     }
 
     public getShortDescription(ewkPerson: TSEWKPerson): string {
-        const description = `${ewkPerson.vorname}, ${ewkPerson.nachname}, ${ewkPerson.geburtsdatum.format('DD.MM.YYYY')}`;
-        return ewkPerson.adresse ? `${description}, ${ewkPerson.adresse.ort}` : description;
+        return [
+            ewkPerson.vorname,
+            ewkPerson.nachname,
+            ewkPerson.geburtsdatum?.format('DD.MM.YYYY'),
+            ewkPerson.adresse?.ort,
+        ].filter(token => !!token).join(', ');
     }
 }

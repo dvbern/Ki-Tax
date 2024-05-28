@@ -24,5 +24,12 @@ describe('getShortDescription', () => {
 
         expect(component.getShortDescription(personWithAdress)).toEqual('vorname, nachname, 11.10.2022, Ort');
     });
+
+    it('must produce a short description of a person without a birth date', () => {
+        const personWithAdress = new TSEWKPerson('id', 'nachname', 'vorname');
+        personWithAdress.adresse = new TSEWKAdresse(undefined, undefined, '23', undefined, 'Strasse', '3360', 'Ort');
+
+        expect(component.getShortDescription(personWithAdress)).toEqual('vorname, nachname, Ort');
+    });
 });
 });

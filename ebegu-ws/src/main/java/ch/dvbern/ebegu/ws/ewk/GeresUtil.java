@@ -39,8 +39,9 @@ public final class GeresUtil {
 	}
 
 	public static Predicate<EWKPerson> matches(AbstractPersonEntity personEntity) {
-		return ewkPerson -> personEntity.getNachname().equals(ewkPerson.getNachname()) && personEntity.getVorname()
-			.equals(ewkPerson.getVorname()) && personEntity.getGeburtsdatum()
-			.equals(ewkPerson.getGeburtsdatum());
+		return ewkPerson -> ewkPerson.getGeburtsdatum() != null &&
+			personEntity.getGeburtsdatum().equals(ewkPerson.getGeburtsdatum()) &&
+			personEntity.getNachname().equals(ewkPerson.getNachname()) &&
+			personEntity.getVorname().equals(ewkPerson.getVorname());
 	}
 }
