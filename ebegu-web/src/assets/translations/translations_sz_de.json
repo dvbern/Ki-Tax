@@ -8,7 +8,6 @@
     "EVK_EINKOMMEN_JAHR": "Massgebendes Einkommen {{basisjahr}}",
     "EKV_RESULTATE": "Resultate Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{antragstellende}}",
-    "EVK_IN_PROZENT": "Einkommensänderung in %",
     "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
     "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen (Kontoauszug per 31.12)",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
@@ -192,5 +191,9 @@
     "MUTATION_AUSWAHL_TEXT_3": "",
     "BETREUUNG_WARTEN_TEXT": "Warten auf Platzbestätigung von der ausgewählten Institution",
     "MUTATION_AUSWAHL_TEXT_1": "Um Ihr Gesuch zu bearbeiten, klicken Sie bitte die Punkte an, die Sie ändern möchten",
+    "EKV_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen Einkommensänderung",
+    "EKV_MASSGEBENDES_EINKOMMEN_GS": "Massgebendes Einkommen Einkommensänderung {{namegs}}",
+    "EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT": "Massgebendes Einkommen finanzielle Verhältisse",
+    "EVK_IN_PROZENT": "Einkommensänderung in %",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

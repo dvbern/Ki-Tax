@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
@@ -219,7 +220,9 @@ public class PDFServiceBean implements PDFService {
 
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
-		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
+		BegleitschreibenPdfGeneratorVisitor begleitschreibenPdfGeneratorVisitor = new BegleitschreibenPdfGeneratorVisitor(gesuch, stammdaten);
+
+		BegleitschreibenPdfGenerator pdfGenerator = begleitschreibenPdfGeneratorVisitor.visit(stammdaten.getGemeinde().getMandant());
 		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 

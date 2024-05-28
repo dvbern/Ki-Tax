@@ -91,7 +91,8 @@ describe('testdatenView', () => {
             institutionenDurchGemeindenEinladen: false,
             erlaubenInstitutionenZuWaehlen: false,
             auszahlungAnEltern: true,
-            abweichungenEnabled: true
+            abweichungenEnabled: true,
+            gemeindeVereinfachteKonfigAktiv: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

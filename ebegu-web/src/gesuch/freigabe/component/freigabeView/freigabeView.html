@@ -71,8 +71,8 @@
             <!-- Simulationsbutton fuer Quittung einlesen -->
             <div class="row margin-top-50" ng-if="vm.isFreigabequittungAusstehend()">
                 <span class="col-md-12" ng-if="vm.showGesuchFreigebenSimulationButton">
-                    <dv-loading-button type="button" button-click="vm.gesuchFreigeben()" data-test="container.antrag-freigeben-simulieren">
-                        <span data-translate="ANTRAG_FREIGEBEN_SIMULIEREN"></span>
+                    <dv-loading-button type="button" button-click="vm.gesuchFreigeben()">
+                        <span data-translate="ANTRAG_FREIGEBEN_SIMULIEREN" data-test="container.antrag-freigeben-simulieren"></span>
                     </dv-loading-button>
                 </span>
             </div>

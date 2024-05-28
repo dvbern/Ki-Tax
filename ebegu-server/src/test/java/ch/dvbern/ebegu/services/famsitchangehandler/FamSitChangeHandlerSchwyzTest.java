@@ -27,20 +27,25 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.testfaelle.dataprovider.SchwyzTestfallDataProvider;
 import ch.dvbern.ebegu.util.Constants;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +54,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -295,6 +301,126 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 	@Nonnull
 	private static FamiliensituationContainer getFamiliensituationContainerNullSafe(Gesuch gesuch) {
 		return Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+	}
+
+	@Nested
+	class KinderabzugResetTest {
+
+		@Test
+		void shouldNotsetInPruefungIfOldFamSitIsNull() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			handler.handlePossibleKinderabzugFragenReset(gesuch, getFamiliensituationJA(gesuch), null);
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(false));
+		}
+
+		@Test
+		void shouldNotsetInPruefungIfAlleineToAlleine() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			handler.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE)));
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(false));
+		}
+
+		@Test
+		void shouldNotsetInPruefungIfZuZweitToZuZweit() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			handler.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT)));
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(false));
+		}
+
+		@Test
+		void shouldResetOnChangeFromAlleineToZuZweit() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE));
+			KindContainer kind = createDefaultKind();
+			KindContainer before = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			handler.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT)));
+
+			assertThat(before.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(true));
+		}
+
+		@Test
+		void shouldResetOnChangeFromZuZweitToAlleine() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setFamiliensituationContainer(createFamSitContainer(EnumGesuchstellerKardinalitaet.ZU_ZWEIT));
+			KindContainer kind = createDefaultKind();
+			KindContainer copy = createDefaultKind();
+			gesuch.getKindContainers().add(kind);
+
+			handler.handlePossibleKinderabzugFragenReset(
+				gesuch,
+				getFamiliensituationJA(gesuch),
+				getFamiliensituationJA(createFamSitContainer(EnumGesuchstellerKardinalitaet.ALLEINE)));
+
+			assertThat(copy.getKindJA().getInPruefung(), is(false));
+			assertThat(kind.getKindJA().getInPruefung(), is(true));
+		}
+
+		private KindContainer createDefaultKind() {
+			KindContainer kindContainer = new KindContainer();
+			Kind kind = new Kind();
+			SchwyzTestfallDataProvider.setSchwyzKindData(
+				TestKindParameter.builder()
+					.kind(kind)
+					.geschlecht(Geschlecht.WEIBLICH)
+					.name("Testkind")
+					.vorname("Lara")
+					.geburtsdatum(TestDataUtil.START_PERIODE.minusYears(5))
+					.betreuung(true)
+					.build());
+			kindContainer.setKindJA(kind);
+			return kindContainer;
+		}
+
+	}
+
+	private static Familiensituation getFamiliensituationJA(FamiliensituationContainer famSitContainer) {
+		return Objects.requireNonNull(famSitContainer.getFamiliensituationJA());
+	}
+
+	private static Familiensituation getFamiliensituationJA(Gesuch gesuch) {
+		return getFamiliensituationJA(Objects.requireNonNull(gesuch.getFamiliensituationContainer()));
+	}
+
+	@Nonnull
+	private static FamiliensituationContainer createFamSitContainer(EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
+		final FamiliensituationContainer familiensituationContainer = TestDataUtil.createDefaultFamiliensituationContainer();
+		Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA());
+		familiensituationContainer.getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.SCHWYZ);
+		familiensituationContainer.getFamiliensituationJA().setGesuchstellerKardinalitaet(gesuchstellerKardinalitaet);
+		return familiensituationContainer;
 	}
 
 }

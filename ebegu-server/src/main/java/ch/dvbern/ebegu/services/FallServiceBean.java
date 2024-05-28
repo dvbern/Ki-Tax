@@ -37,6 +37,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -154,6 +155,35 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 			criteriaQueryHelper.getEntityByUniqueAttribute(Fall.class, benutzer, Fall_.besitzer);
 		fallOptional.ifPresent(fall -> authorizer.checkReadAuthorizationFall(fall));
 		return fallOptional;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Fall> findAnyFallByGSName(String nachname, String vorname) {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Fall> query = cb.createQuery(Fall.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier);
+		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
+
+		ParameterExpression<String> nameParam = cb.parameter(String.class, "nachname");
+		Path<Gesuchsteller> gsJAPath = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA);
+		Predicate namePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.nachname), nameParam);
+
+		ParameterExpression<String> vornameParam = cb.parameter(String.class, "vorname");
+		Predicate vornamePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.vorname), vornameParam);
+
+		Predicate mandantPredicate = cb.equal(fallJoin.get(Fall_.MANDANT), principalBean.getMandant());
+
+		query.select(fallJoin)
+			.where(namePredicate, vornamePredicate, mandantPredicate);
+		TypedQuery<Fall> q = persistence.getEntityManager().createQuery(query)
+			.setMaxResults(1)
+			.setParameter(nameParam, nachname)
+			.setParameter(vornameParam, vorname);
+
+		return q.getResultStream().findAny();
 	}
 
 	@Nonnull
