@@ -62,6 +62,11 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 	}
 
 	@Override
+	public AbstractMutationsMergerFinanzielleSituation visitFinSitAppenzell2() {
+		return new MutationsMergerFinanzielleSituationSchwyz(locale);
+	}
+
+	@Override
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitSchwyz() {
 		return new MutationsMergerFinanzielleSituationSchwyz(locale);
 	}

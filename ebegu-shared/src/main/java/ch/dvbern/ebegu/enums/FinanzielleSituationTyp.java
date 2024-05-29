@@ -49,6 +49,10 @@ public enum FinanzielleSituationTyp {
 		@Override
 		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitAppenzell();}
 	},
+	APPENZELL_2 {
+		@Override
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitAppenzell2();}
+	},
 	SCHWYZ {
 		@Override
 		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitSchwyz();}

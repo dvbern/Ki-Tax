@@ -68,6 +68,7 @@ public final class FinanzielleSituationPdfGeneratorFactory {
 				erstesEinreichungsdatum
 			);
 		case APPENZELL:
+		case APPENZELL_2:
 			return new FinanzielleSituationPdfGeneratorAppenzell(
 				gesuch,
 				verfuegungFuerMassgEinkommen,

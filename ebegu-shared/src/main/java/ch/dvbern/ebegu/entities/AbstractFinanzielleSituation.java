@@ -530,6 +530,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 					&& this.getEinkaeufeVorsorge() != null) ||
 			 this.getSelbstdeklaration() != null && this.getSelbstdeklaration().isVollstaendig();
 		case APPENZELL:
+		case APPENZELL_2:
 			return this.getFinSitZusatzangabenAppenzell() != null
 					&& this.getFinSitZusatzangabenAppenzell().isVollstaendig();
 		case SOLOTHURN:

@@ -34,13 +34,14 @@ public final class FinanzielleSituationRechnerFactory {
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV) {
 			return new FinanzielleSituationFKJVRechner();
 		}
-		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.SOLOTHURN) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SOLOTHURN) {
 			return new FinanzielleSituationSolothurnRechner();
 		}
-		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL
+			|| gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL_2) {
 			return new FinanzielleSituationAppenzellRechner();
 		}
-		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
 			return new FinanzielleSituationSchwyzRechner();
 		}
 		// per default ist der Berner Rechner genommen

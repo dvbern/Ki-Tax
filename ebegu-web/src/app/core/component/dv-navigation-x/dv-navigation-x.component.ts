@@ -104,6 +104,7 @@ export class DvNavigationXComponent implements OnInit {
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
                     case TSFinanzielleSituationTyp.APPENZELL:
+                    case TSFinanzielleSituationTyp.APPENZELL_2:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
                         break;
