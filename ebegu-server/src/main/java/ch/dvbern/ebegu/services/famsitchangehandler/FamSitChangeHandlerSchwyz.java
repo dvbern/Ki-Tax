@@ -68,6 +68,8 @@ public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler 
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA(), gesuch.getGesuchsteller1());
 
+			gesuch.setEinkommensverschlechterungInfoContainer(null);
+
 			if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
 				finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()

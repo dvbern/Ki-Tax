@@ -114,6 +114,36 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 			assertThat(gesuch.getGesuchsteller2(), notNullValue());
 		}
 
+		@ParameterizedTest
+		@MethodSource("provideFamSitChangeToRemoveGS2Arguments")
+		void changeShouldResetEKVInfoTest(FamSitChangeTestConfiguration configuration) {
+			Gesuch gesuch = setupGesuchWith2GS();
+			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
+
+			handler.adaptFinSitDataOnFamSitChange(
+				gesuch,
+				getFamiliensituationContainerNullSafe(gesuch),
+				configuration.newFamiliensituation
+			);
+
+			assertThat(gesuch.getEinkommensverschlechterungInfoContainer(), nullValue());
+		}
+
+		@ParameterizedTest
+		@MethodSource("provideFamSitChangeNotToRemoveGS2Arguments")
+		void changeShouldNotRemoveEKVInfoTest(FamSitChangeTestConfiguration configuration) {
+			Gesuch gesuch = setupGesuchWith2GS();
+			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
+
+			handler.adaptFinSitDataOnFamSitChange(
+				gesuch,
+				getFamiliensituationContainerNullSafe(gesuch),
+				configuration.newFamiliensituation
+			);
+
+			assertThat(gesuch.getGesuchsteller2(), notNullValue());
+		}
+
 		private Stream<Arguments> provideFamSitChangeToRemoveGS2Arguments() {
 			return Stream.of(
 				FamSitChangeTestConfiguration.of("Zu Zweit", createFamSitZuZweit())
@@ -177,7 +207,7 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 		@ParameterizedTest
 		@MethodSource("provideFamSitChangeToRemoveGS2Arguments")
 		void changeShouldRemoveGS2Test(FamSitChangeTestConfiguration configuration) {
-			Gesuch gesuch = setupMutationWith2GS();
+			Gesuch gesuch = setupMutationWith2GSWithoutEingangsdatum(eingangsdatum);
 			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
 
 			handler.removeGS2DataOnChangeFrom2To1GS(
@@ -188,6 +218,22 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 			);
 
 			assertThat(gesuch.getGesuchsteller2(), nullValue());
+		}
+
+
+		@ParameterizedTest
+		@MethodSource("provideFamSitChangeToRemoveGS2Arguments")
+		void changeShouldRemoveEKVInfoTest(FamSitChangeTestConfiguration configuration) {
+			Gesuch gesuch = setupMutationWith2GSWithoutEingangsdatum(eingangsdatum);
+			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
+
+			handler.adaptFinSitDataOnFamSitChange(
+				gesuch,
+				getFamiliensituationContainerNullSafe(gesuch),
+				configuration.newFamiliensituation
+			);
+
+			assertThat(gesuch.getEinkommensverschlechterungInfoContainer(), nullValue());
 		}
 
 		private Stream<Arguments> provideFamSitChangeToRemoveGS2Arguments() {
@@ -208,23 +254,6 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 				).map(Arguments::of));
 		}
 
-		@Nonnull
-		private Gesuch setupMutationWith2GS() {
-			Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-			Gesuch mutation =
-				TestDataUtil.createMutation(gesuch.getDossier(), gesuch.getGesuchsperiode(), AntragStatus.IN_BEARBEITUNG_GS, 1);
-			mutation.setFamiliensituationContainer(new FamiliensituationContainer());
-			mutation.setEingangsdatum(eingangsdatum);
-			mutation.setRegelnGueltigAb(mutation.getEingangsdatum());
-			final GesuchstellerContainer gs1Container = TestDataUtil.createDefaultGesuchstellerContainer();
-			gs1Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
-			final GesuchstellerContainer gs2Container = TestDataUtil.createDefaultGesuchstellerContainer();
-			gs2Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
-			mutation.setGesuchsteller1(gs1Container);
-			mutation.setGesuchsteller2(gs2Container);
-			mutation.setFinSitTyp(FinanzielleSituationTyp.SCHWYZ);
-			return mutation;
-		}
 	}
 
 	@TestInstance(Lifecycle.PER_CLASS)
@@ -235,7 +264,7 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 		@ParameterizedTest
 		@MethodSource("provideFamSitChangeToRemoveGS2Arguments")
 		void changeShouldRemoveGS2Test(FamSitChangeTestConfiguration configuration) {
-			Gesuch gesuch = setupMutationWith2GS();
+			Gesuch gesuch = setupMutationWith2GSWithoutEingangsdatum(eingangsdatum);
 			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
 
 			handler.removeGS2DataOnChangeFrom2To1GS(
@@ -246,6 +275,23 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 			);
 
 			assertThat(gesuch.getGesuchsteller2(), nullValue());
+		}
+
+
+
+		@ParameterizedTest
+		@MethodSource("provideFamSitChangeToRemoveGS2Arguments")
+		void changeShouldResetEKVInfoTest(FamSitChangeTestConfiguration configuration) {
+			Gesuch gesuch = setupMutationWith2GSWithoutEingangsdatum(eingangsdatum);
+			getFamiliensituationContainerNullSafe(gesuch).setFamiliensituationJA(configuration.newFamiliensituation);
+
+			handler.adaptFinSitDataOnFamSitChange(
+				gesuch,
+				getFamiliensituationContainerNullSafe(gesuch),
+				configuration.newFamiliensituation
+			);
+
+			assertThat(gesuch.getEinkommensverschlechterungInfoContainer(), nullValue());
 		}
 
 		private Stream<Arguments> provideFamSitChangeToRemoveGS2Arguments() {
@@ -266,24 +312,26 @@ class FamSitChangeHandlerSchwyzTest extends EasyMockSupport {
 				).map(Arguments::of));
 		}
 
+	}
 
-		@Nonnull
-		private Gesuch setupMutationWith2GS() {
-			Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-			Gesuch mutation =
-				TestDataUtil.createMutation(gesuch.getDossier(), gesuch.getGesuchsperiode(), AntragStatus.IN_BEARBEITUNG_GS, 1);
-			mutation.setFamiliensituationContainer(new FamiliensituationContainer());
-			mutation.setEingangsdatum(eingangsdatum);
-			mutation.setRegelnGueltigAb(mutation.getEingangsdatum());
-			final GesuchstellerContainer gs1Container = TestDataUtil.createDefaultGesuchstellerContainer();
-			gs1Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
-			final GesuchstellerContainer gs2Container = TestDataUtil.createDefaultGesuchstellerContainer();
-			gs2Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
-			mutation.setGesuchsteller1(gs1Container);
-			mutation.setGesuchsteller2(gs2Container);
-			mutation.setFinSitTyp(FinanzielleSituationTyp.SCHWYZ);
-			return mutation;
-		}
+	@Nonnull
+	private static Gesuch setupMutationWith2GSWithoutEingangsdatum(LocalDate eingangsdatum) {
+		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		Gesuch mutation =
+			TestDataUtil.createMutation(gesuch.getDossier(), gesuch.getGesuchsperiode(), AntragStatus.IN_BEARBEITUNG_GS, 1);
+		final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+		familiensituationContainer.setFamiliensituationErstgesuch(gesuch.extractFamiliensituation());
+		mutation.setFamiliensituationContainer(familiensituationContainer);
+		mutation.setRegelnGueltigAb(mutation.getEingangsdatum());
+		final GesuchstellerContainer gs1Container = TestDataUtil.createDefaultGesuchstellerContainer();
+		gs1Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
+		final GesuchstellerContainer gs2Container = TestDataUtil.createDefaultGesuchstellerContainer();
+		gs2Container.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensumContainer());
+		mutation.setGesuchsteller1(gs1Container);
+		mutation.setGesuchsteller2(gs2Container);
+		mutation.setFinSitTyp(FinanzielleSituationTyp.SCHWYZ);
+		mutation.setEingangsdatum(eingangsdatum);
+		return mutation;
 	}
 
 	private Familiensituation createFamSitAlleine(LocalDate eingangsdatum) {
