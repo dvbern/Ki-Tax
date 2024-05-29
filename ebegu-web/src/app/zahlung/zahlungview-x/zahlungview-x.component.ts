@@ -7,7 +7,7 @@ import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';

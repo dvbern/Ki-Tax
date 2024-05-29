@@ -25,7 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.services.reporting.ReportMahlzeitenServiceBean;
 

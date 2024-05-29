@@ -1,7 +1,7 @@
 package ch.dvbern.ebegu.util;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.InstitutionStammdatenInitalizerService;
 import com.sun.istack.NotNull;
 

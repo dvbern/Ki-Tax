@@ -36,7 +36,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

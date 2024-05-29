@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungspensumAbweichungStatus} from './enums/TSBetreuungspensumAbweichungStatus';
+import {TSBetreuungspensumAbweichungStatus} from './enums/betreuung/TSBetreuungspensumAbweichungStatus';
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
 export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {

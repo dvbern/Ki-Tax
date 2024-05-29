@@ -21,7 +21,7 @@ import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSEinstellung} from '../../../models/TSEinstellung';

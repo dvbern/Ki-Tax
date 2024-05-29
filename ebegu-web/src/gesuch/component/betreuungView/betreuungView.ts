@@ -39,8 +39,8 @@ import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
     TSBetreuungsangebotTyp,
-} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';

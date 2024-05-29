@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.rules.mutationsmerger;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.*;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.

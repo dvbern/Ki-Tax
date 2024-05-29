@@ -14,7 +14,7 @@
  */
 
 import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSMahnung} from '../../../models/TSMahnung';

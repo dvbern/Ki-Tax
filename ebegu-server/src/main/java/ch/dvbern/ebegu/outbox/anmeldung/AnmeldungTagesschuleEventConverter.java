@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.outbox.anmeldung;
 
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.*;
 import ch.dvbern.kibon.exchange.commons.types.*;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;

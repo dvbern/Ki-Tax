@@ -28,7 +28,7 @@ import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/en
 import {
     getTSBetreuungsangebotTypValuesForMandant,
     TSBetreuungsangebotTyp
-} from '../../../../models/enums/TSBetreuungsangebotTyp';
+} from '../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAbstractAntragDTO} from '../../../../models/TSAbstractAntragDTO';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';

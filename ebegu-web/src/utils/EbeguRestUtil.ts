@@ -30,7 +30,7 @@ import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
-import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSBetreuungspensumAbweichungStatus} from '../models/enums/betreuung/TSBetreuungspensumAbweichungStatus';
 import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
@@ -2683,6 +2683,7 @@ export class EbeguRestUtil {
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
         restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
         restBetreuung.begruendungAuszahlungAnInstitution = betreuung.begruendungAuszahlungAnInstitution;
+        restBetreuung.bedarfsstufe = betreuung.bedarfsstufe;
         return restBetreuung;
     }
 
@@ -2839,6 +2840,7 @@ export class EbeguRestUtil {
             betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
             betreuungTS.finSitRueckwirkendKorrigiertInThisMutation =
                 betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
+            betreuungTS.bedarfsstufe = betreuungFromServer.bedarfsstufe;
             return betreuungTS;
         }
         return undefined;

@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungAnfrageEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.KindDTO;

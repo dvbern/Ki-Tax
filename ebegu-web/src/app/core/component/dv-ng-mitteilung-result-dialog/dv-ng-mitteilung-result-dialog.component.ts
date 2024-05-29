@@ -18,7 +18,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
-import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSBetreuungsmitteilung} from '../../../../models/TSBetreuungsmitteilung';
 import {TSMitteilung} from '../../../../models/TSMitteilung';

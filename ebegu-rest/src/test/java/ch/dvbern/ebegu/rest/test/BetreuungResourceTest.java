@@ -20,8 +20,8 @@ import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.api.resource.*;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
@@ -47,10 +47,6 @@ import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-
-import javax.inject.Inject;
-import java.time.LocalDate;
-import java.util.*;
 
 /**
  * Testet BetreuungResource

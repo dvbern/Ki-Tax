@@ -17,12 +17,11 @@ package ch.dvbern.ebegu.reporting.gesuchstichtag;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 

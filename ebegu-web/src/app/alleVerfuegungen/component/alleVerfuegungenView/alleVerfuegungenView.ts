@@ -20,7 +20,7 @@ import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
-import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSAntragStatusHistory} from '../../../../models/TSAntragStatusHistory';
 import {TSBetreuung} from '../../../../models/TSBetreuung';
 import {TSDossier} from '../../../../models/TSDossier';
