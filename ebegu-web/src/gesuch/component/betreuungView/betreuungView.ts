@@ -1876,9 +1876,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showBetreuungsKostenInput(): boolean {
-        if (this.isBetreuungsangebotMittagstisch()) {
-            return false;
-        }
         return this.showBetreuungsPensumInput();
     }
 
@@ -1894,7 +1891,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 
-    private isBetreuungsangebotMittagstisch(): boolean {
+    public isBetreuungsangebotMittagstisch(): boolean {
         return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.MITTAGSTISCH;
     }
 
