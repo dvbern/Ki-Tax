@@ -50,15 +50,15 @@ public class MutationsMergerFinanzielleSituationSchwyz extends AbstractMutations
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
 		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
-		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0 && inputData.getParent()
+		LocalDate abschnittAnfangMonat = inputData.getParent()
 			.getGueltigkeit()
 			.getGueltigAb()
-			.withDayOfMonth(1)
-			.isBefore(mutationsEingansdatum)) {
+			.withDayOfMonth(1);
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0 &&
+			(abschnittAnfangMonat.isBefore(mutationsEingansdatum) || abschnittAnfangMonat.isEqual(mutationsEingansdatum))) {
 			// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 			// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten
-			// läuft
-			// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
+			// läuft. Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
 			setFinSitDataFromResultToInput(inputData, resultVorangehenderAbschnitt);
 		}
 	}

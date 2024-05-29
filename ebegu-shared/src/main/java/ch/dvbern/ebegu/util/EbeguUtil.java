@@ -554,6 +554,10 @@ public final class EbeguUtil {
 	}
 
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
+		// Nicht beim Schwyz
+		if(gesuch.getDossier().getFall().getMandant().getMandantIdentifier() == MandantIdentifier.SCHWYZ) {
+			return false;
+		}
 		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
 		if (!gesuch.getStatus().isAnyStatusOfVerfuegt()) {
 			return true;

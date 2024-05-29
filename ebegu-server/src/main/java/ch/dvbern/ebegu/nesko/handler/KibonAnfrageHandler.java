@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
+import ch.dvbern.ebegu.errors.OIDCServiceException;
 import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
 
@@ -40,7 +41,7 @@ public class KibonAnfrageHandler {
 	@Inject
 	private PrincipalBean principalBean;
 
-	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, GesuchstellerTyp gesuchstellerTyp) {
+	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, GesuchstellerTyp gesuchstellerTyp) throws OIDCServiceException {
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(gesuch);
 		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchstellerTyp, zpvBesitzer);
 
@@ -55,7 +56,8 @@ public class KibonAnfrageHandler {
 		return kibonAnfrageContext;
 	}
 
-	private KibonAnfrageContext retryWithOtherGesuchstellersGeburtsdatum(KibonAnfrageContext kibonAnfrageContext) {
+	private KibonAnfrageContext retryWithOtherGesuchstellersGeburtsdatum(KibonAnfrageContext kibonAnfrageContext)
+		throws OIDCServiceException {
 		kibonAnfrageContext.useGeburtrsdatumFromOtherGesuchsteller();
 
 		try {
@@ -68,7 +70,7 @@ public class KibonAnfrageHandler {
 	}
 
 	private void getSteuerdatenAndHandleResponse(KibonAnfrageContext kibonAnfrageContext)
-			throws KiBonAnfrageServiceException {
+		throws KiBonAnfrageServiceException, OIDCServiceException {
 
 		kibonAnfrageContext.setSteuerdatenAbfrageTimestampNow();
 

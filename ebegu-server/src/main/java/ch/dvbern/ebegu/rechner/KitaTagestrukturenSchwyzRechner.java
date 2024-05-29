@@ -23,8 +23,6 @@ import java.math.BigDecimal;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.enums.PensumUnits;
 
-import static ch.dvbern.ebegu.util.MathUtil.EXACT;
-
 public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 
 	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT = new BigDecimal(65);
@@ -69,12 +67,4 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 		return KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT;
 	}
 
-	@Override
-	protected BigDecimal calculateTagesTarif(BigDecimal effektiveBetreuungsZeiteinheitProZeitabschnitt, BGCalculationInput input) {
-		if (effektiveBetreuungsZeiteinheitProZeitabschnitt.compareTo(BigDecimal.ZERO) == 0) {
-			return BigDecimal.ZERO;
-		}
-
-		return EXACT.divide(input.getMonatlicheBetreuungskosten(), effektiveBetreuungsZeiteinheitProZeitabschnitt);
-	}
 }

@@ -39,38 +39,38 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 
-		var anteilMonat = calculateAnteilMonat(verfuegungZeitabschnitt);
+		var normKosten = calculateNormkosten(input, parameterDTO);
+
+		var minimalTarif = getMinimalTarif(parameterDTO);
+		var geschwisterBonus = calculateGeschwisterBonus(input);
+		var u = EXACT.multiply(EXACT.divide(minimalTarif, normKosten), EXACT.subtract(BigDecimal.ONE, geschwisterBonus));
+
 		var obergrenze = parameterDTO.getMaxMassgebendesEinkommen();
 		var untergrenze = parameterDTO.getMinMassgebendesEinkommen();
-		var minimalTarif = getMinimalTarif(parameterDTO);
-		var bgPensumFaktor = EXACT.pctToFraction(input.getBgPensumProzent());
-		var effektivesPensumFaktor = EXACT.pctToFraction(input.getBetreuungspensumProzent());
-		var anspruchsPensumFaktor = EXACT.pctToFraction(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
-		var anspruchsberechtigtesEinkommen = input.getMassgebendesEinkommen();
-		var geschwisterBonus = calculateGeschwisterBonus(input);
-		var effektiveBetreuungsZeiteinheitProZeitabschnitt =
-			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, anteilMonat);
-		var bgBetreuungsZeiteinheitProZeitabschnitt =
-			toZeiteinheitProZeitabschnitt(parameterDTO, bgPensumFaktor, anteilMonat);
-		var anspruchsberechtigteBetreuungsZeiteinheitProZeitabschnitt =
-			toZeiteinheitProZeitabschnitt(parameterDTO, anspruchsPensumFaktor, anteilMonat);
+		var z = EXACT.divide(EXACT.subtract(BigDecimal.ONE, u), EXACT.subtract(obergrenze, untergrenze));
 
-		var normKosten = calculateNormkosten(input, parameterDTO);
-		var tagesTarif = calculateTagesTarif(effektiveBetreuungsZeiteinheitProZeitabschnitt, input);
+		var effektivesPensumFaktor = EXACT.pctToFraction(input.getBetreuungspensumProzent());
+		var tagesTarif = calculateTarifProZeiteinheit(parameterDTO, effektivesPensumFaktor, input);
 		var tarif = tagesTarif.min(normKosten);
 
-		var u = EXACT.multiply(EXACT.divide(minimalTarif, normKosten), EXACT.subtract(BigDecimal.ONE, geschwisterBonus));
-		var z = EXACT.divide(EXACT.subtract(BigDecimal.ONE, u), EXACT.subtract(obergrenze, untergrenze));
+		var anspruchsberechtigtesEinkommen = input.getMassgebendesEinkommen();
 		var selbstbehaltFaktor = calculateSelbstbehaltFaktor(u, z, anspruchsberechtigtesEinkommen, untergrenze);
-
 		var selbstbehaltProZeiteinheit = EXACT.multiply(tarif, selbstbehaltFaktor);
-		var beitragProZeiteinheitVorAbzug = EXACT.multiply(tarif, EXACT.subtract(BigDecimal.ONE, selbstbehaltFaktor));
+
 		var minimalerBeitragDerErziehungsberechtigtenProZeiteinheit =
 			BigDecimal.ZERO.max(EXACT.subtract(minimalTarif, selbstbehaltProZeiteinheit));
+		var beitragProZeiteinheitVorAbzug = EXACT.multiply(tarif, EXACT.subtract(BigDecimal.ONE, selbstbehaltFaktor));
+
 		var totalBetreuungsbeitragProZeiteinheit =
 			BigDecimal.ZERO.max(EXACT.subtract(
 				beitragProZeiteinheitVorAbzug,
 				minimalerBeitragDerErziehungsberechtigtenProZeiteinheit));
+
+		var bgPensumFaktor = EXACT.pctToFraction(input.getBgPensumProzent());
+		var anteilMonat = calculateAnteilMonat(verfuegungZeitabschnitt);
+		var bgBetreuungsZeiteinheitProZeitabschnitt =
+			toZeiteinheitProZeitabschnitt(parameterDTO, bgPensumFaktor, anteilMonat);
+
 		var gutschein = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
 		var vollkosten = EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilMonat);
 		var gutscheinVorAbzugSelbstbehalt =
@@ -86,10 +86,19 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		// Mapping auf Verfuegung
 		// Punkt I
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
+
+		var effektiveBetreuungsZeiteinheitProZeitabschnitt =
+			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, anteilMonat);
 		result.setBetreuungspensumZeiteinheit(effektiveBetreuungsZeiteinheitProZeitabschnitt);
+
 		// Punkt II
 		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
+
+		var anspruchsPensumFaktor = EXACT.pctToFraction(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
+		var anspruchsberechtigteBetreuungsZeiteinheitProZeitabschnitt =
+			toZeiteinheitProZeitabschnitt(parameterDTO, anspruchsPensumFaktor, anteilMonat);
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteBetreuungsZeiteinheitProZeitabschnitt);
+
 		// Punkt III
 		result.setBgPensumZeiteinheit(bgBetreuungsZeiteinheitProZeitabschnitt);
 		// Punkt IV
@@ -143,9 +152,17 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		return EXACT.divide(anzahlGeschwister, BigDecimal.TEN);
 	}
 
-	protected abstract BigDecimal calculateTagesTarif(
-		BigDecimal effektiveBetreuungsZeiteinheitProZeitabschnitt,
-		BGCalculationInput input);
+	protected BigDecimal calculateTarifProZeiteinheit(BGRechnerParameterDTO parameterDTO, BigDecimal effektivesPensumFaktor,
+		BGCalculationInput input) {
+		var effektiveBetreuungsZeiteinheitenProMonat =
+			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, BigDecimal.ONE);
+
+		if (effektiveBetreuungsZeiteinheitenProMonat.compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+
+		return EXACT.divide(input.getMonatlicheBetreuungskosten(), effektiveBetreuungsZeiteinheitenProMonat);
+	}
 
 	protected abstract BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameterDTO);
 

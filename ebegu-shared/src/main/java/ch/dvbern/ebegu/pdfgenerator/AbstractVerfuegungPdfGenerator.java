@@ -58,6 +58,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -82,7 +83,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
 	private static final String KEIN_ANSPRUCH_CONTENT_3 = "PdfGeneration_KeinAnspruch_Content_3";
 	private static final String KEIN_ANSPRUCH_CONTENT_4 = "PdfGeneration_KeinAnspruch_Content_4";
-	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
+	protected static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
@@ -93,7 +94,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
-	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
+	protected static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
 	protected static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN_FKJV = "PdfGeneration_NichtEintreten_Fusszeile2_FKJV";
@@ -294,7 +295,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected Element createAntragNichtEintreten() {
-		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		LocalDate eingangsdatum = getEingangsdatum();
 		return PdfUtil.createBoldParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_8,
 			Constants.DATE_FORMATTER.format(eingangsdatum)), 2);
@@ -749,12 +750,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	@Nonnull
 	public PdfPTable createRechtsmittelBelehrung() {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten();
-		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
-		if (beschwerdeAdresse == null) {
-			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
-		}
-
-		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
+		String rechtsmittelbelehrung = getRechtsmittelbelehrungContent(stammdaten);
 		if (!stammdaten.getStandardRechtsmittelbelehrung()
 			&& stammdaten.getRechtsmittelbelehrung() != null) {
 			String belehrungInSprache = stammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
@@ -773,6 +769,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		innerTable.addCell(PdfUtil.createParagraph(rechtsmittelbelehrung));
 		table.addCell(innerTable);
 		return table;
+	}
+
+	protected String getRechtsmittelbelehrungContent(@Nonnull GemeindeStammdaten stammdaten) {
+		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
+		if (beschwerdeAdresse == null) {
+			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
+		}
+		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
 	}
 
 	protected Element createNichtEingetretenParagraph1() {
@@ -802,7 +806,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return translate(FUSSZEILE_2_NICHT_EINTRETEN);
 	}
 
-	private void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+	protected void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(getFusszeile2NichtEintreten())
