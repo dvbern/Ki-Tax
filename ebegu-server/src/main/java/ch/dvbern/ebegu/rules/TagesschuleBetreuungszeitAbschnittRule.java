@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
@@ -54,7 +53,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(TAGESSCHULE);
+		return List.of(TAGESSCHULE);
 	}
 
 	@Nonnull

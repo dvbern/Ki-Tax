@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
@@ -40,7 +39,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(TAGESSCHULE);
+		return List.of(TAGESSCHULE);
 	}
 
 	@Override
