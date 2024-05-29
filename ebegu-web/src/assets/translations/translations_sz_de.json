@@ -195,5 +195,6 @@
     "EKV_MASSGEBENDES_EINKOMMEN_GS": "Massgebendes Einkommen Einkommensänderung {{namegs}}",
     "EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT": "Massgebendes Einkommen finanzielle Verhältisse",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
+    "FAMILIENSITUATION_WARNING_BESCHREIBUNG": "Der/die Gesuchsteller/in {{gsfullname}} und alle seine Daten werden damit auch gelöscht.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
