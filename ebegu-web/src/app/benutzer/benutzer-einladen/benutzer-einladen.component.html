@@ -72,9 +72,9 @@
                         <input id="email_ID"
                                type="email"
                                name="email"
+                               email
                                [(ngModel)]="benutzer.email"
                                required
-                               pattern="{{CONSTANTS.PATTERN_EMAIL}}"
                                class="form-control">
                         <dv-error-messages [errorObject]="form.controls['email']?.errors"
                                            inputId="email_ID">
