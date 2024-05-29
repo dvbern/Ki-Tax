@@ -196,6 +196,13 @@ export class EditGemeindeComponent implements OnInit {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }
 
+        if (EbeguUtil.isNullOrUndefined(stammdaten.bgAdresse)) {
+            this.altBGAdresse = false;
+            stammdaten.bgAdresse = new TSAdresse();
+        } else {
+            this.altBGAdresse = true;
+        }
+
         if (EbeguUtil.isNullOrUndefined(stammdaten.tsAdresse)) {
             this.altTSAdresse = false;
             stammdaten.tsAdresse = new TSAdresse();

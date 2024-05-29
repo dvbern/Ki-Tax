@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
+
+	private static final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
 
 	public VerfuegungPdfGeneratorSchwyz(
 		@Nonnull Betreuung betreuung,
@@ -94,10 +97,38 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
+	protected void addTitleBerechneterGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	}
+
+	@Override
 	protected void addValueGutscheinProStunde(
 		PdfPTable table,
 		@Nullable BigDecimal verguenstigungProZeiteinheit) {
 		//default no-op: wird nur in Luzern angezeigt
+	}
+
+	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return COLUMN_WIDTHS;
+	}
+
+	@Override
+	protected void addReferenzNummerCells(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 	}
 
 	@Override
@@ -126,11 +157,6 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	@Override
 	protected void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		// no-op: wird nicht in Schwyz verwendet
-	}
-
-	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
 	}
 
 	@Override

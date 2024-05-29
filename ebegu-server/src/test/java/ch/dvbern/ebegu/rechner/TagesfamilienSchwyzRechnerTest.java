@@ -311,6 +311,56 @@ class TagesfamilienSchwyzRechnerTest {
 		assertEquals(new BigDecimal("221.40"), result.getElternbeitrag());
 	}
 
+	// Bug report: KIBON-3555
+	@Test
+	void mustCalculateTarifProZeiteinheitCorrectlyForUntermonatlicheZeitabschnitte() {
+		// given
+		var testee = new TagesfamilienSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
+			LocalDate.of(2024, Month.AUGUST, 12),
+			LocalDate.of(2024, Month.AUGUST, 31)));
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		input.setAnwesenheitsTageProMonat(BigDecimal.valueOf(10));
+		input.setBabyTarif(false);
+		input.setEinschulungTyp(null);
+		input.setBetreuungInFerienzeit(false);
+		input.setMonatlicheBetreuungskosten(new BigDecimal(246));
+		input.setBetreuungspensumProzent(new BigDecimal(60));
+		input.setAnspruchspensumProzent(60);
+		input.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(144_301));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
+		input.setAnzahlGeschwister(0);
+
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		checkMappedInputs(input, result);
+		assertEquals(new BigDecimal("79.35"), result.getAnspruchspensumZeiteinheit());
+		assertEquals(new BigDecimal("79.35"), result.getBgPensumZeiteinheit());
+		assertEquals(new BigDecimal("79.35"), result.getBetreuungspensumZeiteinheit());
+		assertEquals(new BigDecimal("158.70"), result.getVollkosten());
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("9.05");
+		assertEquals(
+			gutscheinVorAbzugSelbstbehalt,
+			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		assertEquals(
+			gutscheinVorAbzugSelbstbehalt,
+			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("0.00"), result.getVerguenstigung());
+		assertEquals(
+			new BigDecimal("238.05"),
+			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("88.40"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("149.65"), result.getElternbeitrag());
+	}
+
+
 	private void setGueltigkeitGanzerApril(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
 			LocalDate.of(2024, Month.APRIL, 1),
@@ -425,14 +475,33 @@ class TagesfamilienSchwyzRechnerTest {
 	}
 
 	@Test
-	void calculateTagesTarifMustReturnZeroIfZeroBetreuungsZeiteinheiten() {
+	void testCalculateTarifProZeiteinheit() {
+		// given
+		var testee = new TagesfamilienSchwyzRechner();
+
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMonatlicheBetreuungskosten(new BigDecimal(1640));
+		var effektivesPensumFaktor = new BigDecimal("0.8");
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+
+		// when
+		BigDecimal tagestarif =
+			testee.calculateTarifProZeiteinheit(parameter, effektivesPensumFaktor, verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+
+		// then
+		assertEquals(new BigDecimal("10.0000000000"), tagestarif);
+	}
+
+	@Test
+	void calculateTarifProZeiteinheitMustReturnZeroIfZeroBetreuungsZeiteinheiten() {
 		// given
 		var testee = new TagesfamilienSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
-		var tagesTarif = testee.calculateTagesTarif(BigDecimal.ZERO, input);
+		var tagesTarif = testee.calculateTarifProZeiteinheit(parameter, BigDecimal.ZERO, input);
 
 		// then
 		assertThat(tagesTarif, Matchers.is(BigDecimal.ZERO));
