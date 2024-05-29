@@ -23,7 +23,7 @@ import {
     Input,
     OnInit,
     Output,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
@@ -38,6 +38,7 @@ import {getGemeindspezifischeBGConfigKeys, TSEinstellungKey} from '../../../mode
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSGemeindeZusaetzlicherGutscheinTyp} from '../../../models/gemeindekonfiguration/TSGemeindeZusaetzlicherGutscheinTyp';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -81,6 +82,8 @@ export class EditGemeindeBGComponent implements OnInit {
     @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
     public readonly CONSTANTS = CONSTANTS;
+    public readonly TSEinstellungKey = TSEinstellungKey;
+    public readonly TSGemeindeZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp;
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
@@ -252,19 +255,28 @@ export class EditGemeindeBGComponent implements OnInit {
         }
     }
 
+    public changeKonfigZusaetzlicherGutscheinTyp(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP, gk.konfigZusaetzlicherGutscheinTyp, gk);
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (gk.konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL) {
+            this.resetKonfigZusaetzlicherGutscheinLinear(gk);
+        }
+        if (gk.konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR) {
+            this.resetKonfigZusaetzlicherGutscheinPauschal(gk);
+        }
+    }
+
     private resetKonfigZusaetzlicherGutschein(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
-        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
+        gk.konfigZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
 
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
-            gk.konfigZusaetzlicherGutscheinBetragKita, gk
-        );
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
-            gk.konfigZusaetzlicherGutscheinBetragTfo, gk
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP,
+            gk.konfigZusaetzlicherGutscheinTyp, gk
         );
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
@@ -274,6 +286,58 @@ export class EditGemeindeBGComponent implements OnInit {
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
             gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo, gk
         );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN,
+            gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN,
+            gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen, gk,
+        );
+
+        this.resetKonfigZusaetzlicherGutscheinLinear(gk);
+        this.resetKonfigZusaetzlicherGutscheinPauschal(gk);
+    }
+
+    private resetKonfigZusaetzlicherGutscheinLinear(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = 0;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN,
+            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
+        );
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX,
+            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
+        );
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN,
+            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
+        );
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX,
+            gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo, gk,
+        );
+    }
+
+    private resetKonfigZusaetzlicherGutscheinPauschal(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
+            gk.konfigZusaetzlicherGutscheinBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
+            gk.konfigZusaetzlicherGutscheinBetragTfo, gk
+        );
+
     }
 
     public changeKonfigZusaetzlicherGutscheinBetragKita(gk: TSGemeindeKonfiguration): void {
@@ -464,7 +528,7 @@ export class EditGemeindeBGComponent implements OnInit {
         this.changeErwerbspensumMinimumSchulkinder(gk);
     }
 
-    private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
+    public changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)
             .forEach(property => {

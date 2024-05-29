@@ -80,12 +80,12 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
-    private konfigZusaetzlicherGutscheinLinearMinBetragTfo: number;
-    private konfigZusaetzlicherGutscheinLinearMaxBetragTfo: number;
-    private konfigZusaetzlicherGutscheinLinearMinBetragKita: number;
-    private konfigZusaetzlicherGutscheinLinearMaxBetragKita: number;
-    private konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen: number;
-    private konfigZusaetzlicherGutscheinMinMassgebendesEinkommen: number;
+    public konfigZusaetzlicherGutscheinLinearMinBetragTfo: number;
+    public konfigZusaetzlicherGutscheinLinearMaxBetragTfo: number;
+    public konfigZusaetzlicherGutscheinLinearMinBetragKita: number;
+    public konfigZusaetzlicherGutscheinLinearMaxBetragKita: number;
+    public konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen: number;
+    public konfigZusaetzlicherGutscheinMinMassgebendesEinkommen: number;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum

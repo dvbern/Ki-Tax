@@ -777,10 +777,31 @@
                                                             </span>
                                                         </mat-checkbox>
                                                     </div>
+
+
+                                                    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp)">
+                                                        <mat-button-toggle-group name="konfigZusaetzlicherGutscheinTyp"
+                                                                                 aria-label="Zusätzlicher Gutschein Typ"
+                                                                                 [value]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
+                                                                                 [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
+                                                                                 (change)="changeKonfigZusaetzlicherGutscheinTyp(konfigurationsListe[i])">
+                                                            <mat-button-toggle [value]="TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL"
+                                                                               [checked]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
+                                                                {{'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP_PAUSCHAL' | translate}}
+                                                            </mat-button-toggle>
+                                                            <mat-button-toggle [value]="TSGemeindeZusaetzlicherGutscheinTyp.LINEAR"
+                                                                               [checked]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                                {{'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP_LINEAR' | translate}}
+                                                            </mat-button-toggle>
+                                                        </mat-button-toggle-group>
+                                                    </div>
                                                     <!--                                            Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
                                                     <div class="form-group"
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita)
-                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
                                                         <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
                                                                class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
                                                         <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
@@ -799,10 +820,12 @@
                                                             [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
                                                         </dv-error-messages>
                                                     </div>
+
                                                     <!--                                            Zusätzlicher Gutschein in CHF pro Stunde bei TFOs-->
                                                     <div class="form-group"
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo)
-                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
                                                         <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
                                                                class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE</label>
                                                         <input id="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
@@ -821,6 +844,100 @@
                                                             [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
                                                         </dv-error-messages>
                                                     </div>
+
+                                                    <!--                                            Min Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragKita)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                        <label for="zusaetzlicher_gutschein_min_betrag_kita_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MIN_KITA_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_min_betrag_kita_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_min_betrag_kita_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_min_betrag_kita='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragKita"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN, konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragKita, konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_min_betrag_kita_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_min_betrag_kita.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Max Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragKita)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                        <label for="zusaetzlicher_gutschein_max_betrag_kita_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MAX_KITA_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_max_betrag_kita_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_max_betrag_kita_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_max_betrag_kita='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragKita"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX, konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragKita, konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_max_betrag_kita_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_max_betrag_kita.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Min Zusätzlicher Gutschein in CHF pro Stunde bei TFOs-->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragTfo)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                        <label for="zusaetzlicher_gutschein_min_betrag_tfo_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MIN_TFO_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_min_betrag_tfo_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_min_betrag_tfo_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_min_betrag_tfo='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragTfo"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN, konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragTfo, konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_max_betrag_tfo_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_min_betrag_tfo.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Max Zusätzlicher Gutschein in CHF pro Stunde bei TFOs-->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragTfo)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                        <label for="zusaetzlicher_gutschein_max_betrag_tfo_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MAX_TFO_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_max_betrag_tfo_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_max_betrag_tfo_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_max_betrag_tfo='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragTfo"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX, konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragTfo, konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_max_betrag_tfo_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_max_betrag_tfo.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
                                                     <!--                                            Zusaetzlicher Gutschein bei Kitas anbieten bis und mit-->
                                                     <div class="form-group"
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita)
@@ -852,6 +969,48 @@
                                                                         [value]="etv">{{etv | translate}}
                                                             </mat-option>
                                                         </mat-select>
+                                                    </div>
+                                                    <!-- Zusaetzlicher Gutschein Minimales Massgebendes Einkommen -->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label for="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN</label>
+                                                        <input id="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_min_massgebendes_einkommen='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN, konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen, konfigurationsListe[i])">
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_min_massgebendes_einkommen.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!-- Zusaetzlicher Gutschein Minimales Massgebendes Einkommen -->
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label for="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN</label>
+                                                        <input id="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_max_massgebendes_einkommen='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen"
+                                                               (change)="changeKonfig(TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN, konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen, konfigurationsListe[i])">
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_max_massgebendes_einkommen.errors">
+                                                        </dv-error-messages>
                                                     </div>
 
                                                     <!-- Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
@@ -1564,18 +1723,41 @@
                                                      class="mt-2">
                                                     <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}
                                                         :</strong>
-                                                    <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita)">
+                                                    <p translate>
+                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp}}
+                                                    </p>
+                                                    <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita)
+                                                     && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
                                                         <p translate
                                                            [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita}">
                                                             ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE_READONLY
                                                         </p>
                                                     </div>
-                                                    <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo)">
+                                                    <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo)
+                                                     && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
                                                         <p translate
                                                            [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo}">
                                                             ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE_READONLY
                                                         </p>
                                                     </div>
+                                                    <ng-container *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR">
+                                                        <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragKita)"
+                                                           translate
+                                                           [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragKita}">
+                                                            ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MIN_VALUE_KITA_READONLY</p>
+                                                        <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragKita)"
+                                                           translate
+                                                           [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragKita}">
+                                                            ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MAX_VALUE_KITA_READONLY</p>
+                                                        <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragTfo)"
+                                                           translate
+                                                           [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMinBetragTfo}">
+                                                            ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MIN_VALUE_TFO_READONLY</p>
+                                                        <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragTfo)"
+                                                           translate
+                                                           [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinLinearMaxBetragTfo}">
+                                                            ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MAX_VALUE_TFO_READONLY</p>
+                                                    </ng-container>
                                                     <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita)">
                                                         <p>
                                                             {{'ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT' | translate}}
@@ -1589,6 +1771,14 @@
                                                         </p>
                                                     </div>
                                                 </div>
+                                                <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)"
+                                                   translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen}">
+                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN_READONLY</p>
+                                                <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)"
+                                                   translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen}">
+                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY</p>
                                                 <div
                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled)
                                                 && konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
