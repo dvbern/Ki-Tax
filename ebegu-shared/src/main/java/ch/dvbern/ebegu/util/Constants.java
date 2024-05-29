@@ -15,6 +15,9 @@
 
 package ch.dvbern.ebegu.util;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.types.DateRange;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -25,9 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Interface fuer Konstanten.
@@ -61,7 +61,7 @@ public final class Constants {
 	public static final String DATA = "Data";
 	public static final String REGEX_UUID =
 		"(^.*)([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})(.*$)";
-	public static final String REGEX_EMAIL = "[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}";
+
 	public static final String REGEX_TELEFON = "(0|\\+41|0041)[ ]*[\\d]{2}[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_TELEFON_MOBILE =
 		"(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";

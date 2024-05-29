@@ -17,34 +17,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckKontodatenGemeinde;
@@ -55,6 +27,16 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.*;
 
 import static ch.dvbern.ebegu.enums.ExternalClientType.GEMEINDE_SCOLARIS_SERVICE;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -123,7 +105,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
 
 	@NotNull
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	private String mail;
@@ -219,7 +201,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	@Email
 	private String bgEmail;
 
 	@Nullable
@@ -229,7 +211,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.email.message}")
+	@Email
 	private String tsEmail;
 
 	@Nonnull
