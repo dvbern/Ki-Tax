@@ -51,10 +51,24 @@ public enum EinstellungKey {
 
 	// Die Gemeinde gewährt einen zusätzlichen Beitrag zum Gutschein
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	// Die Art von zusätzlichem Gutschein, den die Gemeinde gewährt
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
-	// Betrag des zusätzlichen Beitrags zum Gutschein
+	// Betrag des zusätzlichen Beitrags zum Gutschein bei pauschalem Beitrag
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+
+	// Minimaler/Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei Kitas
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+
+	// Minimaler/Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei TFOs
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+
+	//Minimales/Maximales massgebendes Einkommen für zusätzlichen Beitrag zum Gutschein durch Gemeinden
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// Zusaetzlichen Gutschein anbieten bis und mit
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),

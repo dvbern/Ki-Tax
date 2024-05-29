@@ -21,6 +21,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from './enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSEinstellungKey} from './enums/TSEinstellungKey';
+import {TSGemeindeZusaetzlicherGutscheinTyp} from './gemeindekonfiguration/TSGemeindeZusaetzlicherGutscheinTyp';
 import {TSEinstellung} from './TSEinstellung';
 import {TSFerieninselStammdaten} from './TSFerieninselStammdaten';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
@@ -39,6 +40,7 @@ export class TSGemeindeKonfiguration {
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
     public konfigZusaetzlicherGutscheinEnabled: boolean; // only on client
+    public konfigZusaetzlicherGutscheinTyp: TSGemeindeZusaetzlicherGutscheinTyp; // only on client
     public konfigZusaetzlicherGutscheinBetragKita: number; // only on client
     public konfigZusaetzlicherGutscheinBetragTfo: number; // only on client
     public konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita: TSEinschulungTyp; // only on client
@@ -78,6 +80,12 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
+    private konfigZusaetzlicherGutscheinLinearMinBetragTfo: number;
+    private konfigZusaetzlicherGutscheinLinearMaxBetragTfo: number;
+    private konfigZusaetzlicherGutscheinLinearMinBetragKita: number;
+    private konfigZusaetzlicherGutscheinLinearMaxBetragKita: number;
+    private konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen: number;
+    private konfigZusaetzlicherGutscheinMinMassgebendesEinkommen: number;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -163,12 +171,40 @@ export class TSGemeindeKonfiguration {
                     this.konfigZusaetzlicherGutscheinEnabled = (property.value === 'true');
                     break;
                 }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP: {
+                    this.konfigZusaetzlicherGutscheinTyp = property.value as TSGemeindeZusaetzlicherGutscheinTyp;
+                    break;
+                }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA: {
                     this.konfigZusaetzlicherGutscheinBetragKita = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO: {
                     this.konfigZusaetzlicherGutscheinBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN: {
+                    this.konfigZusaetzlicherGutscheinLinearMinBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX: {
+                    this.konfigZusaetzlicherGutscheinLinearMaxBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN: {
+                    this.konfigZusaetzlicherGutscheinLinearMinBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX: {
+                    this.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN: {
+                    this.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN: {
+                    this.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA: {

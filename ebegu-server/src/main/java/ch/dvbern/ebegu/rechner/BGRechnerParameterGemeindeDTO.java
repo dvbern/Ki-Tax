@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.gemeindekonfiguration.GemeindeZusaetzlicherGutscheinTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
@@ -43,6 +44,13 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -52,11 +60,18 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	// (1) Zusaetzlicher Gutschein der Gemeinde
 	private Boolean gemeindeZusaetzlicherGutscheinEnabled;
+	private GemeindeZusaetzlicherGutscheinTyp gemeindeZusaetzlicherGutscheinTyp;
 	// Betrag des zusätzlichen Beitrags zum Gutschein
 	private BigDecimal gemeindeZusaetzlicherGutscheinBetragKita;
 	private BigDecimal gemeindeZusaetzlicherGutscheinBetragTfo;
-	// Zusaetzlichen Gutschein anbieten bis und mit
+	private BigDecimal gemeindeZusaetzlicherGutscheinLinearTfoMin;
+	private BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMin;
+	private BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMax;
+	private BigDecimal gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen;
+	private BigDecimal gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen;
 	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita;
+	// Zusaetzlichen Gutschein anbieten bis und mit
+	private BigDecimal gemeindeZusaetzlicherGutscheinLinearTfoMax;
 	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
 
 	// (2) Zusaetzlicher Baby-Gutschein
@@ -75,6 +90,13 @@ public final class BGRechnerParameterGemeindeDTO {
 	public BGRechnerParameterGemeindeDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		// (1) Zusaetzlicher Gutschein der Gemeinde
 		this.setGemeindeZusaetzlicherGutscheinEnabled(asBoolean(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gesuchsperiode, gemeinde));
+		this.gemeindeZusaetzlicherGutscheinTyp = getGemeindeZusaetzlicherGutscheinTyp(paramMap, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinLinearKitaMin = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinLinearKitaMax = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinLinearTfoMin = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinLinearTfoMax = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde);
+		this.gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen = asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde);
 		this.setGemeindeZusaetzlicherGutscheinBetragKita(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita(asSchulstufe(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA, gesuchsperiode, gemeinde));
@@ -93,6 +115,17 @@ public final class BGRechnerParameterGemeindeDTO {
 			GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG, gesuchsperiode, gemeinde));
 	}
 
+	private GemeindeZusaetzlicherGutscheinTyp getGemeindeZusaetzlicherGutscheinTyp(
+		Map<EinstellungKey, Einstellung> paramMap,
+		Gesuchsperiode gesuchsperiode,
+		Gemeinde gemeinde) {
+		Einstellung param = paramMap.get(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP);
+		if (param == null) {
+			throwParamNotFoundException(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP, gesuchsperiode, gemeinde);
+		}
+		return GemeindeZusaetzlicherGutscheinTyp.valueOf(param.getValue());
+	}
+
 	public BGRechnerParameterGemeindeDTO() {
 
 	}
@@ -105,9 +138,7 @@ public final class BGRechnerParameterGemeindeDTO {
 
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+			throwParamNotFoundException(paramKey, gesuchsperiode, gemeinde);
 		}
 		return param.getValueAsBigDecimal();
 	}
@@ -120,11 +151,21 @@ public final class BGRechnerParameterGemeindeDTO {
 
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+			throwParamNotFoundException(paramKey, gesuchsperiode, gemeinde);
 		}
 		return param.getValueAsBoolean();
+	}
+
+	private static void throwParamNotFoundException(
+		@Nonnull EinstellungKey paramKey,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
+		String message = "Required calculator parameter '" + paramKey
+			+ "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
+			+ '\'' + gesuchsperiode
+			+ '\'';
+		throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND,
+			paramKey);
 	}
 
 	private EinschulungTyp asSchulstufe(
@@ -135,9 +176,7 @@ public final class BGRechnerParameterGemeindeDTO {
 
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
+			throwParamNotFoundException(paramKey, gesuchsperiode, gemeinde);
 		}
 		return EinschulungTyp.valueOf(param.getValue());
 	}
@@ -245,5 +284,33 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	public void setGemeindePauschalbetragTfoPrimarschule(BigDecimal gemeindePauschalbetragTfoPrimarschule) {
 		this.gemeindePauschalbetragTfoPrimarschule = gemeindePauschalbetragTfoPrimarschule;
+	}
+
+	public GemeindeZusaetzlicherGutscheinTyp getGemeindeZusaetzlicherGutscheinTyp() {
+		return gemeindeZusaetzlicherGutscheinTyp;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinLinearTfoMax() {
+		return gemeindeZusaetzlicherGutscheinLinearTfoMax;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinLinearTfoMin() {
+		return gemeindeZusaetzlicherGutscheinLinearTfoMin;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinLinearKitaMin() {
+		return gemeindeZusaetzlicherGutscheinLinearKitaMin;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinLinearKitaMax() {
+		return gemeindeZusaetzlicherGutscheinLinearKitaMax;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen() {
+		return gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen;
+	}
+
+	public BigDecimal getGemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen() {
+		return gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen;
 	}
 }
