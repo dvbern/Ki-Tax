@@ -236,5 +236,6 @@
     "GSDASHBOARD_ANTRAEGE": "Aktuelle Gesuche",
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Gesuchsteller/in 2 in der Rubrik Gesuchstellende.",
     "DOK_PAPIERGESUCH": "Papiergesuch",
+    "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsbeitrag wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -89,12 +89,16 @@
                         </dv-loading-button>
                     </td>
                     <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()"
-                        class="symbol" ng-if="!vm.showVerfuegungPdfLink(row)">
+                        class="symbol" ng-if="vm.showNichtEintretenVerfuegungPdfLink(row)">
                         <dv-loading-button type="button" button-click="vm.openNichteintretenPDF(row);"
                                            button-class="dv-btn-operation" title="{{'OPEN_VERFUEGUNG_PDF' | translate}}"
                                            aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}">
                             <i class="fa fa-eye" aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}"></i>
                         </dv-loading-button>
+                    </td>
+                    <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()"
+                        class="symbol"
+                        ng-if="!vm.showVerfuegungPdfLink(row) && !vm.showNichtEintretenVerfuegungPdfLink(row)">
                     </td>
                 </tr>
 
