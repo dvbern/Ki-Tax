@@ -149,50 +149,41 @@ export class SteuerabfrageResponseHintsComponent
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED',
                     {gs1: this.getGS1Name()}
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM'
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM',
                     {namegs2: this.getGS2name()}
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM'
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG'
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT'
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT'
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV',
                     {email: this.getEmailBesitzende()}
                 );
-                break;
             case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2:
                 return this.translate.instant(
                     'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2',
                     {gs2: this.getGS2name()}
                 );
-                break;
             default:
                 return '';
         }
