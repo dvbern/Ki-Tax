@@ -122,7 +122,7 @@
                     }
                 ],
                 "arrow-parens": ["error", "as-needed"],
-                "brace-style": ["error", "1tbs"],
+                "brace-style": "off",
                 "comma-dangle": "off",
                 "default-case": "error",
                 "eqeqeq": ["error", "always"],
@@ -191,7 +191,8 @@
         {
             "files": ["**/*.spec.ts"],
             "rules": {
-                "@typescript-eslint/unbound-method": "off"
+                "@typescript-eslint/unbound-method": "off",
+                "max-len": "off"
             }
         },
         {

@@ -6,9 +6,9 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     selector:
         '[customMinMax][formControlName],[customMinMax][formControl],[customMinMax][ngModel]',
     providers: [
-        // eslint-disable-next-line @angular-eslint/no-forward-ref
         {
             provide: NG_VALIDATORS,
+            // eslint-disable-next-line @angular-eslint/no-forward-ref
             useExisting: forwardRef(() => NumbersMinMaxDirective),
             multi: true
         }

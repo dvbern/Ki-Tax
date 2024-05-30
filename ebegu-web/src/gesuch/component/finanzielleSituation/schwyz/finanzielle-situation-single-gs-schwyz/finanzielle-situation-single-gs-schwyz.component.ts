@@ -27,7 +27,7 @@ export class FinanzielleSituationSingleGsSchwyzComponent {
     public finanzModel: TSFinanzModel;
 
     @Output()
-    public valueChanged = new EventEmitter<void>();
+    public readonly valueChanged = new EventEmitter<void>();
 
     public onQuellenbesteuertChange(): void {
         if (EbeguUtil.isNullOrUndefined(this.getFinSitJA().quellenbesteuert)) {

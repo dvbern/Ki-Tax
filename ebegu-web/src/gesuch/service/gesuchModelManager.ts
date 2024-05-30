@@ -1721,6 +1721,7 @@ export class GesuchModelManager {
                         kindContainer.betreuungen.length !==
                         kindContainerVerfuegt.betreuungen.length
                     ) {
+                        // eslint-disable-next-line max-len
                         const msg = `ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht mit der berechneten Anzahl Betreuungen ueberein; erwartet: ${kindContainer.betreuungen.length} erhalten: ${kindContainerVerfuegt.betreuungen.length}`;
                         this.log.error(
                             msg,

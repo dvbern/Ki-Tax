@@ -103,9 +103,11 @@ export class UploadRS {
         rueckforderungDokumentTyp: TSRueckforderungDokumentTyp
     ): IPromise<TSRueckforderungDokument[]> {
         const names = this.encodeFileNames(files);
+        // eslint-disable-next-line max-len
+        const url = `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`;
         return this.upload
             .upload({
-                url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
+                url,
                 method: 'POST',
                 headers: {
                     'x-filename': names.join(';')

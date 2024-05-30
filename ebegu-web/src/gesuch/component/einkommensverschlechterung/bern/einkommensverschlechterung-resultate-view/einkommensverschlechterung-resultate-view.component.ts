@@ -123,9 +123,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         // eslint-disable-next-line
         return this.gesuchModelManager
             .saveEinkommensverschlechterungContainer()
-            .then(() => {
-                return this.updateStatus(true).then(onResult(true));
-            });
+            .then(() => this.updateStatus(true).then(onResult(true)));
     }
 
     public onValueChangeFunction = (): void => {

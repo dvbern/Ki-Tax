@@ -42,7 +42,7 @@ export class SozialhilfeZeitraumListViewComponentConfig
     public controllerAs = 'vm';
 }
 
-export class SozialhilfeZeitraumListViewController
+class SozialhilfeZeitraumListViewController
     extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer>
     implements IDVFocusableController
 {
