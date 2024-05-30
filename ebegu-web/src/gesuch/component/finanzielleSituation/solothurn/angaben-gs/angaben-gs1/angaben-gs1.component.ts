@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../../utils/EbeguUtil';
@@ -12,10 +12,7 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
     templateUrl: '../angaben-gs.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenGs1Component
-    extends AbstractFinSitsolothurnView
-    implements OnInit
-{
+export class AngabenGs1Component extends AbstractFinSitsolothurnView {
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         public readonly finSitSoService: FinanzielleSituationSolothurnService,
@@ -23,8 +20,6 @@ export class AngabenGs1Component
     ) {
         super(gesuchModelManager, wizardStepManager, finSitSoService, 1);
     }
-
-    public ngOnInit(): void {}
 
     public getAntragstellerNummer(): number {
         return 1;

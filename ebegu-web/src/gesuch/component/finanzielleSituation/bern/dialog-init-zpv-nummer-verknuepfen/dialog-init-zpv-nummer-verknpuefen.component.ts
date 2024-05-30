@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -29,7 +29,7 @@ import {NgForm} from '@angular/forms';
     selector: 'dv-ng-zpv-nummmer-verknuepfen-dialog',
     templateUrl: './dialog-init-zpv-nummer-verknpuefen.template.html'
 })
-export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
+export class DialogInitZPVNummerVerknuepfenComponent {
     private readonly gs: TSGesuchstellerContainer;
     private readonly korrespondenzSprache: TSSprache;
     public email: string;
@@ -45,8 +45,6 @@ export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
         this.gs = data.gs;
         this.korrespondenzSprache = data.korrespondenzSprache;
     }
-
-    public ngOnInit(): void {}
 
     public save(form: NgForm): void {
         if (!form.valid) {

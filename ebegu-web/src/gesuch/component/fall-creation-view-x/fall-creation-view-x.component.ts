@@ -162,7 +162,9 @@ export class FallCreationViewXComponent
         }
     }
 
-    public save(navigateFunction: (gesuch: TSGesuch | undefined | void) => void): void {
+    public save(
+        navigateFunction: (gesuch: TSGesuch | undefined | void) => void
+    ): void {
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
             navigateFunction(undefined);

@@ -30,7 +30,7 @@ const LOG = LogFactory.createLog('LangageSelectorComponent');
     styleUrls: ['./language-selector.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class LanguageSelectorComponent implements OnInit {
+export class LanguageSelectorComponent {
     @Input()
     public hideForLoggedUser: boolean = false;
 
@@ -41,8 +41,6 @@ export class LanguageSelectorComponent implements OnInit {
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly authService: AuthServiceRS
     ) {}
-
-    public ngOnInit(): void {}
 
     public changeLanguage(language: TSBrowserLanguage): void {
         this.i18nServiceRS.changeClientLanguage(language);

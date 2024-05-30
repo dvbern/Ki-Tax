@@ -34,7 +34,7 @@
  * - showBisher: Wenn das Flag auf false gesetzt wird, wird dv-bisher nie angezeigt
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
@@ -49,7 +49,7 @@ import {CONSTANTS} from '../../constants/CONSTANTS';
     styleUrls: ['./dv-bisher-x.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class DvBisherXComponent implements OnInit {
+export class DvBisherXComponent {
     /**
      * erster Wert. Z.B. Gesuchsteller, Gemeinde, etc.
      */
@@ -84,8 +84,6 @@ export class DvBisherXComponent implements OnInit {
     public blockExisted: boolean;
 
     public constructor(private readonly $translate: TranslateService) {}
-
-    public ngOnInit(): void {}
 
     public getBisher(): Array<string> {
         // noinspection IfStatementWithTooManyBranchesJS

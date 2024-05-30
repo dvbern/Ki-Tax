@@ -16,7 +16,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class VeranlagungSolothurnComponent implements OnInit {
+export class VeranlagungSolothurnComponent {
     @Input() public model: TSFinanzielleSituationContainer;
     @Input() public readOnly: boolean;
     @Input() public dvValueChange: () => void;
@@ -26,8 +26,6 @@ export class VeranlagungSolothurnComponent implements OnInit {
         new EventEmitter<number>();
 
     public constructor() {}
-
-    public ngOnInit(): void {}
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);

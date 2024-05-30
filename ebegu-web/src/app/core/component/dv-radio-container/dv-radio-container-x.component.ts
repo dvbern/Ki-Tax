@@ -1,7 +1,6 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    OnInit,
     ViewEncapsulation
 } from '@angular/core';
 
@@ -12,8 +11,6 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class DvRadioContainerXComponent implements OnInit {
+export class DvRadioContainerXComponent {
     public constructor() {}
-
-    public ngOnInit(): void {}
 }

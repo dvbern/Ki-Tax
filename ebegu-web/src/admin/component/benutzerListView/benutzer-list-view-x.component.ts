@@ -15,12 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    ChangeDetectionStrategy,
-    Component,
-    HostBinding,
-    OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostBinding} from '@angular/core';
 import {StateService} from '@uirouter/angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
@@ -34,7 +29,7 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
     styleUrls: ['./benutzer-list-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BenutzerListViewXComponent implements OnInit {
+export class BenutzerListViewXComponent {
     @HostBinding('class') public class = 'overflow-scroll';
     @HostBinding('flex') public flex = 'auto';
 
@@ -43,8 +38,6 @@ export class BenutzerListViewXComponent implements OnInit {
         private readonly benutzerRS: BenutzerRSX,
         private readonly authServiceRS: AuthServiceRS
     ) {}
-
-    public ngOnInit(): void {}
 
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch

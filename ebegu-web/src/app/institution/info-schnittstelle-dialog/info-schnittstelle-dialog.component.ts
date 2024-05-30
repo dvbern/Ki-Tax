@@ -26,7 +26,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
     templateUrl: './info-schnittstelle-dialog.template.html',
     styleUrls: ['./info-schnittstelle-dialog.component.less']
 })
-export class InfoSchnittstelleDialogComponent implements OnInit {
+export class InfoSchnittstelleDialogComponent {
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public institution: TSInstitution;
     public copied: any = {};
@@ -43,8 +43,6 @@ export class InfoSchnittstelleDialogComponent implements OnInit {
         this.institution = data.institution;
         this.editMode = data.editMode;
     }
-
-    public ngOnInit(): void {}
 
     public copyToClipboard(text: string, key: string): void {
         this.clipboard.copy(text);

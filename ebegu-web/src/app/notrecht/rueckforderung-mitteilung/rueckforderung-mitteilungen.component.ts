@@ -33,13 +33,11 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     styleUrls: ['./rueckforderung-mitteilungen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungMitteilungenComponent implements OnInit, OnChanges {
+export class RueckforderungMitteilungenComponent implements OnChanges {
     @Input()
     public rueckforderungMitteilungen: TSRueckforderungMitteilung[];
 
     public constructor() {}
-
-    public ngOnInit(): void {}
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (

@@ -70,6 +70,7 @@ describe('NewUserSelectDirective', () => {
                 ]
             })
             class Ng2Module implements DoBootstrap {
+                // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
                 public ngDoBootstrap(): void {}
             }
 

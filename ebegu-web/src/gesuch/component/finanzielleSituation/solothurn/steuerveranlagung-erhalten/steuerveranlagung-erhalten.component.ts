@@ -17,7 +17,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class SteuerveranlagungErhaltenComponent implements OnInit {
+export class SteuerveranlagungErhaltenComponent {
     @Input() public model: TSFinanzielleSituationContainer;
 
     @Output()
@@ -25,8 +25,6 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
         new EventEmitter<boolean>();
 
     public constructor(public gesuchModelManager: GesuchModelManager) {}
-
-    public ngOnInit(): void {}
 
     public setSteuerveranlagungErhalten(value: any): void {
         this.model.finanzielleSituationJA.steuerveranlagungErhalten = value;

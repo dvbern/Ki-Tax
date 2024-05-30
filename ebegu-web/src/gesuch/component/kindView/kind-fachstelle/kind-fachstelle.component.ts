@@ -60,7 +60,7 @@ export class KindFachstelleComponent
     public pensumFachstellenList: TSPensumFachstelle[];
 
     @Output()
-    public readonly onPensumFachstellenOverlaps = new EventEmitter<string>();
+    public readonly pensumFachstellenOverlaps = new EventEmitter<string>();
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -243,11 +243,11 @@ export class KindFachstelleComponent
         }
 
         if (this.pensumFachstellenList.length <= 1) {
-            this.onPensumFachstellenOverlaps.emit(null);
+            this.pensumFachstellenOverlaps.emit(null);
             return;
         }
 
-        this.onPensumFachstellenOverlaps.emit(
+        this.pensumFachstellenOverlaps.emit(
             this.getWarningIfFachstelleOverlaps()
         );
         return;

@@ -22,12 +22,10 @@ import {MatDialogRef} from '@angular/material/dialog';
     selector: 'dv-onboarding-help-dialog',
     templateUrl: './onboarding-help-dialog.template.html'
 })
-export class OnboardingHelpDialogComponent implements OnInit {
+export class OnboardingHelpDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<OnboardingHelpDialogComponent>
     ) {}
-
-    public ngOnInit(): void {}
 
     public close(): void {
         this.dialogRef.close();

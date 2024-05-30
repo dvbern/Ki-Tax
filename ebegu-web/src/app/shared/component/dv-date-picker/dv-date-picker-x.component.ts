@@ -20,7 +20,6 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnInit,
     Output
 } from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
@@ -34,7 +33,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     styleUrls: ['dv-date-picker-x.component.less'],
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class DvDatePickerXComponent implements OnInit {
+export class DvDatePickerXComponent {
     @Input()
     public label: string;
 
@@ -73,8 +72,6 @@ export class DvDatePickerXComponent implements OnInit {
     public randId = EbeguUtil.generateRandomName(10);
 
     public constructor() {}
-
-    public ngOnInit(): void {}
 
     public emit(): void {
         this.dateChange.emit(this.date);

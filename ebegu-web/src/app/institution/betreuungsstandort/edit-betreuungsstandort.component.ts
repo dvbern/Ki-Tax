@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {TSBetreuungsstandort} from '../../../models/TSBetreuungsstandort';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -9,15 +9,13 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     styleUrls: ['./edit-betreuungsstandort.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditBetreuungsstandortComponent implements OnInit {
+export class EditBetreuungsstandortComponent {
     @Input()
     public stammdaten: TSInstitutionStammdaten;
 
     public readonly CONSTANTS: any = CONSTANTS;
 
     public constructor() {}
-
-    public ngOnInit(): void {}
 
     public addStandort(): void {
         const newStandort = new TSBetreuungsstandort();

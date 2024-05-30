@@ -6,10 +6,8 @@ import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
     styleUrls: ['./warning.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WarningComponent implements OnInit {
+export class WarningComponent {
     @Input() public text: string;
 
     public constructor() {}
-
-    public ngOnInit(): void {}
 }

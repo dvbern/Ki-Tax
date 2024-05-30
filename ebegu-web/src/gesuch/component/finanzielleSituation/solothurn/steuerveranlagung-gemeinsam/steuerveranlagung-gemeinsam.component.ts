@@ -36,7 +36,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class SteuerveranlagungGemeinsamComponent implements OnInit {
+export class SteuerveranlagungGemeinsamComponent {
     @Input() public model: TSFinanzModel;
 
     @Output() public readonly gemeinsamChanged =
@@ -46,8 +46,6 @@ export class SteuerveranlagungGemeinsamComponent implements OnInit {
         public gesuchModelManager: GesuchModelManager,
         private readonly $translate: TranslateService
     ) {}
-
-    public ngOnInit(): void {}
 
     public change($event: MatRadioChange): void {
         this.gemeinsamChanged.emit($event);

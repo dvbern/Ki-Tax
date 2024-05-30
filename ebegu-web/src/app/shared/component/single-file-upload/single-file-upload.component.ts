@@ -20,7 +20,6 @@ import {
     EventEmitter,
     Input,
     OnChanges,
-    OnInit,
     Output,
     SimpleChanges
 } from '@angular/core';
@@ -38,9 +37,7 @@ export interface HTMLInputEvent extends Event {
     styleUrls: ['./single-file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SingleFileUploadComponent<T extends TSFile>
-    implements OnChanges, OnInit
-{
+export class SingleFileUploadComponent<T extends TSFile> implements OnChanges {
     @Input() public title: string;
     @Input() public readOnly: boolean;
     @Input() public tooltipText: string;
@@ -54,8 +51,6 @@ export class SingleFileUploadComponent<T extends TSFile>
     @Input() public file: TSFile;
     @Input() public hasFile: boolean;
     @Input() public allowedMimetypes: string = '';
-
-    public ngOnInit(): void {}
 
     public onDownload(file: T, attachment: boolean): void {
         this.download.emit([file, attachment]);
