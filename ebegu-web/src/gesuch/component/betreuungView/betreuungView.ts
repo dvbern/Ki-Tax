@@ -77,6 +77,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {createTSBetreuungspensum} from './betreuungView.util';
+import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -120,6 +121,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'ApplicationPropertyRS',
         'MandantService',
         'EbeguRestUtil'
+    ];
+    public bedarfsstufe: TSBedarfsstufe = null;
+    public bedarfsstufeValues: TSBedarfsstufe[] = [
+        TSBedarfsstufe.KEINE,
+        TSBedarfsstufe.BEDARFSSTUFE_1,
+        TSBedarfsstufe.BEDARFSSTUFE_2,
+        TSBedarfsstufe.BEDARFSSTUFE_3
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -319,6 +327,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return this.betreuungspensumAnzeigeTypEinstellung;
+    }
+
+    public changedBedarfsstufe() {
+        console.log(this.bedarfsstufe);
     }
 
     /**

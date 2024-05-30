@@ -582,6 +582,7 @@
                         </div>
                     </div>
 
+                    <!-- Infobox höhere Beiträge beantragt  -->
                     <div class="row form-group margin-bottom-20"
                          ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
 
@@ -589,6 +590,36 @@
                             {{ 'HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT'| translate }}
 
                         </div>
+                    </div>
+
+                    <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
+                    <div class="row form-group margin-bottom-20"
+                         ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
+                        <div class="col-sm-6 dv-input-container-medium">
+                            <div class="form-group">
+                                <label class="md-no-float"
+                                       for="bedarfsstufe">
+                                    <span class="required" data-translate="BEDARFSSTUFE_WAEHLEN"></span>
+                                </label>
+                                <div class="dv-select-style">
+                                    <select class="form-control"
+                                            id="bedarfsstufe"
+                                            name="bedarfsstufe"
+                                            ng-change="vm.changedBedarfsstufe()"
+                                            ng-disabled="false"
+                                            ng-model="vm.bedarfsstufe"
+                                            ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
+                                            ng-required="true">
+                                    </select>
+                                    <dv-error-messages for="vm.form.bedarfsstufe.$error"
+                                                       input-id="bedarfsstufe"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <dv-error-messages for="vm.form.bedarfsstufe.$error"
+                                           input-id="bedarfsstufe"></dv-error-messages>
+
                     </div>
 
                     <!--Eingewoehnung Periode-->
