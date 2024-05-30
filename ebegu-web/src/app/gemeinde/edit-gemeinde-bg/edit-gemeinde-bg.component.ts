@@ -271,8 +271,8 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = null;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = null;
 
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP,
@@ -300,10 +300,10 @@ export class EditGemeindeBGComponent implements OnInit {
     }
 
     private resetKonfigZusaetzlicherGutscheinLinear(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = 0;
-        gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = 0;
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = 0;
-        gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = null;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = null;
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = null;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = null;
 
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN,
@@ -327,8 +327,8 @@ export class EditGemeindeBGComponent implements OnInit {
     }
 
     private resetKonfigZusaetzlicherGutscheinPauschal(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
-        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinBetragKita = null;
+        gk.konfigZusaetzlicherGutscheinBetragTfo = null;
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
             gk.konfigZusaetzlicherGutscheinBetragKita, gk
@@ -532,6 +532,10 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)
             .forEach(property => {
+                if (konfig === null) {
+                    property.value = '';
+                    return;
+                }
                 property.value = String(konfig);
             });
     }
@@ -657,6 +661,9 @@ export class EditGemeindeBGComponent implements OnInit {
 
     public isUndefined(data: any): boolean {
         return EbeguUtil.isUndefined(data);
+    }
+    public isNullOrUndefined(data: any): boolean {
+        return EbeguUtil.isNullOrUndefined(data);
     }
 
     private initErlaubenInstitutionenZuWaehlen(): void {

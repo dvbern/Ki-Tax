@@ -781,10 +781,10 @@
 
                                                     <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
                                                     <div class="form-group"
-                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp)">
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp)
+                                                         && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <mat-button-toggle-group name="konfigZusaetzlicherGutscheinTyp"
                                                                                  aria-label="Zusätzlicher Gutschein Typ"
-                                                                                 [value]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
                                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
                                                                                  (change)="changeKonfigZusaetzlicherGutscheinTyp(konfigurationsListe[i])">
                                                             <mat-button-toggle [value]="TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL"
@@ -975,13 +975,12 @@
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)
                                                          && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <label for="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
-                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN</label>
+                                                               translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN</label>
                                                         <input id="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
                                                                name="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
                                                                class="form-control"
                                                                type="number"
                                                                #zusaetzlicher_gutschein_min_massgebendes_einkommen='ngModel'
-                                                               required
                                                                customMinMax
                                                                [minValue]="0"
                                                                [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen"
@@ -996,13 +995,12 @@
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)
                                                          && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <label for="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
-                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN</label>
+                                                               translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN</label>
                                                         <input id="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
                                                                name="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
                                                                class="form-control"
                                                                type="number"
                                                                #zusaetzlicher_gutschein_max_massgebendes_einkommen='ngModel'
-                                                               required
                                                                customMinMax
                                                                [minValue]="0"
                                                                [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen"
@@ -1770,15 +1768,15 @@
                                                             {{konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo | translate}}
                                                         </p>
                                                     </div>
+                                                    <p *ngIf="!isNullOrUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)"
+                                                       translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN_READONLY</p>
+                                                    <p *ngIf="!isNullOrUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)"
+                                                       translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY</p>
                                                 </div>
-                                                <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)"
-                                                   translate
-                                                   [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen}">
-                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN_READONLY</p>
-                                                <p *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)"
-                                                   translate
-                                                   [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen}">
-                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY</p>
                                                 <div
                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled)
                                                 && konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
