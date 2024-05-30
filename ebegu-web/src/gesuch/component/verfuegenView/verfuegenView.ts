@@ -108,7 +108,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     // this is the model...
     public bemerkungen: string;
-
     public showSchemas: boolean;
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
     public fragenObIgnorieren: boolean;
@@ -119,18 +118,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showPercent: boolean;
     public showHours: boolean;
     public showDays: boolean;
-    private isVerfuegungExportEnabled: boolean;
-
     public showVerfuegung: boolean;
     public betreuungVerfuegt: boolean = false;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
-    public isLuzern: boolean;
-    public isAppenzell: boolean;
+    private isVerfuegungExportEnabled: boolean;
+    private isLuzern: boolean;
+    private isAppenzell: boolean;
+    private isSchwyz: boolean;
     private isAuszahlungAnAntragstellerEnabled: boolean = false;
-
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
@@ -185,6 +183,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.APPENZELL_AUSSERRHODEN)).subscribe(isAppenzell => {
             this.isAppenzell = isAppenzell;
+        }, error => this.$log.error(error));
+
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.SCHWYZ)).subscribe(isSchwyz => {
+            this.isSchwyz = isSchwyz;
         }, error => this.$log.error(error));
 
         this.initView();
@@ -666,7 +668,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showVerfuegungPdfLink(): boolean {
-        if (this.isLuzern && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+        if (this.isAuszahlungAnAntragstellerEnabled && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             return false;
         }
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
@@ -1085,6 +1087,22 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public calculateSelbstbehaltProzent(beitragshoeheProzent: number): number {
         return Math.round(100 - beitragshoeheProzent);
+    }
+
+    public showGutscheinOhneBeruecksichtigungVollkosten(): boolean {
+        return !this.isLuzern && !this.isAppenzell && !this.isSchwyz;
+    }
+
+    public showElternMinimalerBeitragColumns(): boolean {
+        return !this.isLuzern && !this.isAppenzell;
+    }
+
+    public showSelbstbehaltProzent(): boolean {
+        return this.isAppenzell;
+    }
+
+    public showBeitragshoheProzent(): boolean {
+        return this.isAppenzell;
     }
 
     private getEinstellungenElternbeitrag(): void {

@@ -56,4 +56,5 @@ export class TSPublicAppConfig {
     public erlaubenInstitutionenZuWaehlen: boolean;
     public auszahlungAnEltern: boolean;
     public abweichungenEnabled: boolean;
+    public gemeindeVereinfachteKonfigAktiv: boolean;
 }

@@ -102,20 +102,33 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
-		kind.setGeschlecht(geschlecht);
-		kind.setGeburtsdatum(geburtsdatum);
-		kind.setVorname(vorname);
-		kind.setNachname(name);
+		setSchwyzKindData(TestKindParameter.builder()
+			.kind(kind)
+			.geschlecht(geschlecht)
+			.name(name)
+			.vorname(vorname)
+			.geburtsdatum(geburtsdatum)
+			.betreuung(betreuung)
+			.build());
+		return kind;
+	}
+
+	public static void setSchwyzKindData(TestKindParameter testKindParameter) {
+		final Kind kind = testKindParameter.getKind();
+
+		kind.setGeschlecht(testKindParameter.getGeschlecht());
+		kind.setGeburtsdatum(testKindParameter.getGeburtsdatum());
+		kind.setVorname(testKindParameter.getVorname());
+		kind.setNachname(testKindParameter.getName());
 		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		kind.setSprichtAmtssprache(true);
 		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
-		if (betreuung) {
+		if (testKindParameter.isBetreuung()) {
 			kind.setFamilienErgaenzendeBetreuung(true);
 			kind.setUnterhaltspflichtig(true);
 			kind.setLebtKindAlternierend(true);
 			kind.setGemeinsamesGesuch(true);
 		}
-		return kind;
 	}
 
 	@Override

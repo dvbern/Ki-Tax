@@ -305,7 +305,6 @@ public abstract class AbstractTestfall {
 		LocalDate geburtsdatum,
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
-
 		Kind kind = testfallDataProvider.createKind(geschlecht, name, vorname, geburtsdatum, is18GeburtstagBeforeGPEnds(geburtsdatum), kinderabzug, betreuung);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);

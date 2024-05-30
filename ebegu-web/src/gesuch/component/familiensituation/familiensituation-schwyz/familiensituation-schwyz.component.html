@@ -20,7 +20,7 @@
                 <!--Aenderung per-->
                 <div class="row" *ngIf="isMutation()">
                     <div class="col-md-12">
-                        <dv-input-container class="form-group">
+                        <dv-input-container-x class="form-group">
 
                             <div class="row">
                                 <div class="col-xs-12 dv-input-container-small">
@@ -39,7 +39,7 @@
                                                  [korrektur]="getFamiliensituation()?.aenderungPer"></dv-bisher-x>
                                 </div>
                             </div>
-                        </dv-input-container>
+                        </dv-input-container-x>
                     </div>
                 </div>
 
@@ -56,10 +56,10 @@
                                                  #gesuchstellerKardinalitaet="ngModel"
                                                  name="gesuchstellerKardinalitaet"
                                                  data-test="container.gesuchsteller-kardnalitaet"
-                                                 class="input-element sp" items="gesuchstellerKardinalitaetValues"
+                                                 class="input-element sp"
                                                  [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
-                                                 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
-                                                 aria-described-by="gesuchstellerKardinalitaet-error">
+                                                 [attr.aria-label]="'FAMILIENSITUATION_FRAGE_2' |translate"
+                                                 aria-describedby="gesuchstellerKardinalitaet-error">
                                     <mat-radio-button [value]="TSGesuchstellerKardinalitaet.ZU_ZWEIT">{{'LABEL_JA' | translate}}</mat-radio-button>
                                     <mat-radio-button [value]="TSGesuchstellerKardinalitaet.ALLEINE">{{'LABEL_NEIN' | translate}}</mat-radio-button>
                                 </mat-radio-group>

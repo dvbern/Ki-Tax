@@ -288,7 +288,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 			column(5, translate(VON), a -> Constants.DATE_FORMATTER.format(a.getGueltigkeit().getGueltigAb())),
 			column(5, translate(BIS), a -> Constants.DATE_FORMATTER.format(a.getGueltigkeit().getGueltigBis())),
 			column(10, translate(MASSG_EINK), a -> printCHF(a.getMassgebendesEinkommenVorAbzFamgr())),
-			column(10, translate(SOZIALABZUG), a -> printAnzahl(a.getAbzugFamGroesse())),
+			column(10, translate(SOZIALABZUG), a -> printCHF(a.getAbzugFamGroesse())),
 			column(10, translate(ANSBRUCHBERECHTIGTES_EINKOMMEN), a -> printCHF(a.getMassgebendesEinkommen()))
 		);
 	}
