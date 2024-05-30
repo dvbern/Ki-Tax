@@ -32,10 +32,9 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
-import ITranslateService = angular.translate.ITranslateService;
-import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
+import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('EbeguUtil');
 
@@ -239,9 +238,9 @@ export class EbeguUtil {
         return true;
     }
 
-    public static areSameOrWithoutValue(right: any, left: any): boolean{
+    public static areSameOrWithoutValue(right: any, left: any): boolean {
         return (EbeguUtil.isNullOrUndefined(right) && EbeguUtil.isNullOrUndefined(left)) ||
-                right === left;
+            right === left;
     }
 
     public static isNotNullAndTrue(data: boolean): boolean {
@@ -276,24 +275,6 @@ export class EbeguUtil {
     public static ceilToFiveRappen(betrag: number): number {
         const fraction = 20;
         return Math.ceil(betrag * fraction) / fraction;
-    }
-
-    private static getYear(gueltigkeit: TSDateRange): string {
-        return gueltigkeit.gueltigAb.year().toString().substring(2);
-    }
-
-    private static toBetreuungsId(
-        gueltigkeit: TSDateRange,
-        fall: TSFall,
-        gemeinde: TSGemeinde,
-        kindNr: number,
-        betreuungNumber: number
-    ): string {
-        const year = EbeguUtil.getYear(gueltigkeit);
-        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
-        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
-
-        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
     }
 
     /**
@@ -363,7 +344,7 @@ export class EbeguUtil {
 
     public static formatHrefUrl(url: string): string {
         if (EbeguUtil.isNotNullOrUndefined(url) && url.startsWith('www.')) {
-            return `http://${  url}`;
+            return `http://${url}`;
         }
         return url;
     }
@@ -420,6 +401,53 @@ export class EbeguUtil {
         return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
+    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
+        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
+            .filter(fachstelle =>
+                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
+
+        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
+            sprachlicheIntegrationen.length === 0);
+    }
+
+    public static roundDefaultBetreuungspensum(toRound: number): number {
+        return Number(toRound.toFixed(2));
+    }
+
+    public static getBoolean(value: string | boolean | number) {
+        switch (value) {
+            case true:
+            case 'true':
+            case 1:
+            case '1':
+            case 'on':
+            case 'yes':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static getYear(gueltigkeit: TSDateRange): string {
+        return gueltigkeit.gueltigAb.year().toString().substring(2);
+    }
+
+    private static toBetreuungsId(
+        gueltigkeit: TSDateRange,
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        kindNr: number,
+        betreuungNumber: number
+    ): string {
+        const year = EbeguUtil.getYear(gueltigkeit);
+        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
+        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
+
+        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
+    }
+
+    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
@@ -429,6 +457,8 @@ export class EbeguUtil {
         }
         return '';
     }
+
+    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
 
     public getAntragTextDateAsString(
         tsAntragTyp: TSAntragTyp,
@@ -454,8 +484,6 @@ export class EbeguUtil {
         return this.$filter('translate')(toTranslate).toString();
     }
 
-    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
-
     /**
      * Translates the given list using the angular translate filter
      *
@@ -469,8 +497,6 @@ export class EbeguUtil {
         });
         return listResult;
     }
-
-    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
 
     public addZerosToNumber(num: number, length: number): string {
         return EbeguUtil.addZerosToNumber(num, length);
@@ -550,18 +576,5 @@ export class EbeguUtil {
             }
         }
         return text;
-    }
-
-    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
-        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
-            .filter(fachstelle =>
-                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
-
-        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
-            sprachlicheIntegrationen.length === 0);
-    }
-
-    public static roundDefaultBetreuungspensum(toRound: number): number {
-        return Number(toRound.toFixed(2));
     }
 }
