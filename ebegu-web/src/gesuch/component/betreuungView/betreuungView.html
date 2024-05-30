@@ -583,7 +583,7 @@
                     </div>
 
                     <!-- Infobox höhere Beiträge beantragt  -->
-                    <div class="row form-group margin-bottom-20"
+                    <div class="row margin-bottom-20"
                          ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
 
                         <div class="well well-status-warten">
@@ -593,9 +593,9 @@
                     </div>
 
                     <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
-                    <div class="row form-group margin-bottom-20"
+                    <div class="row margin-bottom-20"
                          ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
-                        <div class="col-sm-6 dv-input-container-medium">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
                                 <label class="md-no-float"
                                        for="bedarfsstufe">
@@ -607,7 +607,7 @@
                                             name="bedarfsstufe"
                                             ng-change="vm.changedBedarfsstufe()"
                                             ng-disabled="false"
-                                            ng-model="vm.bedarfsstufe"
+                                            ng-model="vm.getBetreuungModel().bedarfsstufe"
                                             ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
                                             ng-required="true">
                                     </select>

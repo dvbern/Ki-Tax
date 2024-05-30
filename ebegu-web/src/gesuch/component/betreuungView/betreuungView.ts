@@ -330,7 +330,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public changedBedarfsstufe() {
-        console.log(this.bedarfsstufe);
+        return this.getBetreuungModel().bedarfsstufe;
     }
 
     /**
@@ -378,7 +378,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.isMutationsmeldungStatus && this.mutationsmeldungModel) {
             return this.mutationsmeldungModel;
         }
-
         return this.model;
     }
 
