@@ -52,6 +52,10 @@ public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler 
 
 		adaptSchwyzFinSitDataOnFamSitChange(gesuch, loadedFamiliensituation, newFamiliensituation);
 
+		final LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (!newFamiliensituation.hasSecondGesuchsteller(gueltigBis)) {
+			newFamiliensituation.setGemeinsameSteuererklaerung(null);
+		}
 
 		super.adaptFinSitDataOnFamSitChange(gesuch, familiensituationContainer, loadedFamiliensituation);
 	}

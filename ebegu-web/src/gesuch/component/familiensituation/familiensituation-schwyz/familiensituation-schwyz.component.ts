@@ -1,13 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
-import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
@@ -20,8 +16,6 @@ import {
     GSRemovalConfirmationDialogData,
 } from '../dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
 import {FamiliensituationUtil} from '../FamiliensituationUtil';
-
-const LOG = LogFactory.createLog('FamiliensituationSchwyzComponent');
 
 @Component({
     selector: 'dv-familiensituation-schwyz',
@@ -38,24 +32,12 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         protected readonly wizardStepManager: WizardStepManager,
         protected readonly familiensituationRS: FamiliensituationRS,
         protected readonly authService: AuthServiceRS,
-        private readonly einstellungRS: EinstellungRS,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
-    }
-
-    public ngOnInit(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
-                .forEach(value => {
-                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
-                });
-        }, error => LOG.error(error));
     }
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
