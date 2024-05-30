@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTOList;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
@@ -594,6 +595,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(boolean verguenstigungMahlzeitenBeantragt) {
 		this.getBgCalculationInputAsiv().setVerguenstigungMahlzeitenBeantragt(verguenstigungMahlzeitenBeantragt);
 		this.getBgCalculationInputGemeinde().setVerguenstigungMahlzeitenBeantragt(verguenstigungMahlzeitenBeantragt);
+	}
+
+	public void setBedarfsstufeForAsivAndGemeinde(@Nullable Bedarfsstufe bedarfsstufe) {
+		this.getBgCalculationInputAsiv().setBedarfsstufe(bedarfsstufe);
+		this.getBgCalculationInputGemeinde().setBedarfsstufe(bedarfsstufe);
 	}
 
 	public void setPensumUnitForAsivAndGemeinde(PensumUnits unit) {

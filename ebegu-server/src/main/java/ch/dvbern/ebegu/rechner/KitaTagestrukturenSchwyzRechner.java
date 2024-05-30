@@ -33,7 +33,7 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 		BGRechnerParameterDTO parameterDTO,
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
-		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageKita());
+		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, getOeffnungstageProJahr(parameterDTO));
 	}
 
 	@Override
@@ -44,6 +44,11 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 	@Override
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.DAYS;
+	}
+
+	@Override
+	protected BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getOeffnungstageKita();
 	}
 
 	@Override

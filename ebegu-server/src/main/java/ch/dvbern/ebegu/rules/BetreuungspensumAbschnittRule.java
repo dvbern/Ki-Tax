@@ -206,6 +206,16 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
 
+		// hier kind hoehereBeitraegeWegenBeeintraechtigungBeantragen pruefen
+		// dazu auch die gegebene Wert im Drop down beruchsichtigen wenn gesetzt und checkbox dann Wert im Input schreiben
+		if (betreuung.getKind().getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen()) {
+			zeitabschnitt.setBedarfsstufeForAsivAndGemeinde(betreuung.getBedarfsstufe());
+			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				MsgKey.BEDARFSSTUFE_MSG,
+				getLocale(),
+				betreuung.getBedarfsstufe());
+		}
+
 		return zeitabschnitt;
 	}
 

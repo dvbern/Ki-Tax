@@ -37,7 +37,7 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
 		BigDecimal tageProZeitAbschnitt =
-			toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageTFO());
+			toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, getOeffnungstageProJahr(parameterDTO));
 		return EXACT.multiply(tageProZeitAbschnitt, parameterDTO.getOeffnungsstundenTFO());
 	}
 
@@ -49,6 +49,11 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 	@Override
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.HOURS;
+	}
+
+	@Override
+	protected BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getOeffnungstageTFO();
 	}
 
 	@Override

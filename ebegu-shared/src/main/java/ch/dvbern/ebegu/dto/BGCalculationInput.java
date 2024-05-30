@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.dto;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -211,6 +212,10 @@ public class BGCalculationInput {
 	@Getter
 	@Setter
 	private BigDecimal anwesenheitsTageProMonat = BigDecimal.ZERO;
+
+	@Getter
+	@Setter
+	private Bedarfsstufe bedarfsstufe;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;

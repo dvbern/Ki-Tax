@@ -46,6 +46,11 @@ public class MittagstischSchwyzRechner extends AbstractSchwyzRechner {
 	}
 
 	@Override
+	protected BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO) {
+		return OEFFNUNGSTAGE;
+	}
+
+	@Override
 	protected BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameterDTO) {
 		return new BigDecimal("17");
 	}
