@@ -47,6 +47,7 @@
     "ERROR_MINDESTENS_EIN_WERT": "Choisir au moins un domaine de changement",
     "ERROR_DATUM_GESETZT_BEI_MUTATION": "En cas de changement, la situation familiale doit être modifiée si une date a été fixée.",
     "ERROR_SOZIALVERSICHERUNGSNUMMER_DOPPELT": "Le numéro SV indiqué a déjà été utilisé dans la demande.",
+    "ERROR_FALSCHE_ANGEBOT": "L'institution sélectionnée ne correspond pas à l'offre sélectionnée",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde et/ou insciption dans une école à journée continue.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_3": "Pour plus d'informations, cliquez sur l'icône Information ",
