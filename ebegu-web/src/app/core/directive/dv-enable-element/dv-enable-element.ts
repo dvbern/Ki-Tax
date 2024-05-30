@@ -40,8 +40,7 @@ export class DVEnableElement implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVEnableElement();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 
@@ -56,7 +55,7 @@ export class DVEnableElement implements IDirective {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
         scope.$watch(
             attributes.dvEnableAllowedRoles,
-            (newValue: any, _oldValue: any, _scope: any) => {
+            (newValue: any) => {
                 controller.dvAllowedRoles = newValue;
                 this.enableElement(controller, attributes);
             },
@@ -64,7 +63,7 @@ export class DVEnableElement implements IDirective {
         );
         scope.$watch(
             attributes.dvEnableExpression,
-            (newValue: any, _oldValue: any) => {
+            (newValue: any) => {
                 controller.dvExpression = newValue;
                 this.enableElement(controller, attributes);
             },

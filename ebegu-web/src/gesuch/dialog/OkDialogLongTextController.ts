@@ -28,8 +28,7 @@ export class OkDialogLongTextController {
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
         title: string,
-        body: string,
-        _okText: string
+        body: string
     ) {
         if (EbeguUtil.isNotNullOrUndefined(title)) {
             this.title = $translate.instant(title);

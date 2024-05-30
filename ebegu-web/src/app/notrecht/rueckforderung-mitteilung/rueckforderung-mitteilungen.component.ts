@@ -20,7 +20,6 @@ import {
     Component,
     Input,
     OnChanges,
-    OnInit,
     SimpleChanges
 } from '@angular/core';
 import * as moment from 'moment';

@@ -31,7 +31,6 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 describe('BenutzerEinladenComponent', () => {
     let component: BenutzerEinladenComponent;

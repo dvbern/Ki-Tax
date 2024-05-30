@@ -1,6 +1,5 @@
-import * as moment from 'moment';
-import {TSFile} from '../TSFile';
 import {TSUploadFile} from '../TSUploadFile';
+
 /*
  * Copyright (C) 2021 DV Bern AG, Switzerland
  *

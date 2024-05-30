@@ -32,8 +32,7 @@ export class DVLoading implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVLoading();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 
@@ -70,7 +69,7 @@ export class DVLoadingController {
         'HttpPendingService'
     ];
 
-    public isLoading: () => {};
+    public isLoading: () => boolean;
 
     public constructor(
         private readonly $http: IHttpService,

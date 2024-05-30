@@ -405,7 +405,7 @@ export class ZahlungsauftragViewXComponent
         this.zahlungsauftragToEdit = zahlungsauftrag;
     }
 
-    public save(_zahlungsauftrag: TSZahlungsauftrag): void {
+    public save(): void {
         if (!this.isEditValid()) {
             return;
         }

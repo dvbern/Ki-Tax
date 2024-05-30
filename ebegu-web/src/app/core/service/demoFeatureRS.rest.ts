@@ -17,12 +17,7 @@
 
 import {Injectable} from '@angular/core';
 import {IPromise} from 'angular';
-import {Observable, ReplaySubject} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
-import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
-import {LogFactory} from '../logging/LogFactory';
 import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 
 @Injectable({

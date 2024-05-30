@@ -21,6 +21,8 @@ import {IPromise} from 'angular';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
@@ -34,11 +36,6 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
-import {TSRole} from '../../../../models/enums/TSRole';
-import {
-    isAtLeastFreigegeben,
-    TSAntragStatus
-} from '../../../../models/enums/TSAntragStatus';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
     private isInfomazahlungenAktiv: boolean = false;

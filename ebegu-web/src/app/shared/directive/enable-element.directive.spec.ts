@@ -3,7 +3,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {EnableElementDirective} from './enable-element.directive';
 
 export class MockElementRef extends ElementRef {
-    public nativeElement: {};
+    public nativeElement: Element;
 }
 
 describe('DvEnableAllowedRolesDirective', () => {

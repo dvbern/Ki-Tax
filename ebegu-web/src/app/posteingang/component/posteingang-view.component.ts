@@ -545,16 +545,6 @@ export class PosteingangViewComponent
                 if (answer !== true) {
                     return;
                 }
-                const body = {
-                    pagination: {
-                        number: this.pageSize,
-                        start: this.page * this.pageSize
-                    },
-                    search: {
-                        predicateObject: this.filterPredicate
-                    },
-                    sort: this.sort
-                };
                 dialogConfig.data =
                     this.getOpenTsBetreuungsmitteilungenOfTable();
                 dialogConfig.disableClose = true;

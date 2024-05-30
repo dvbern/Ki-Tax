@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 

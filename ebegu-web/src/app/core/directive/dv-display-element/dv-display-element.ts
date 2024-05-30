@@ -82,14 +82,14 @@ export class DVDisplayElement implements IDirective {
         // transcluded wird und somit der Wert aendert sich.
         scope.$watch(
             attributes.dvDisplayAllowedRoles,
-            (newValue: any, _oldValue: any, _scope: any) => {
+            (newValue: any) => {
                 controller.dvAllowedRoles = newValue;
             },
             true
         );
         scope.$watch(
             attributes.dvDisplayExpression,
-            (newValue: any, _oldValue: any) => {
+            (newValue: any) => {
                 controller.dvExpression = newValue;
             },
             true
@@ -106,6 +106,6 @@ export class DVDisplayElement implements IDirective {
         arguments2: Array<any>
     ): void {
         attributes.ngShow = () => controller.checkValidity();
-        this.ngShow.link.apply(this.ngShow, arguments2);
+        this.ngShow.link(...arguments2);
     }
 }

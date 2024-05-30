@@ -60,7 +60,7 @@ export class DvTooltipController implements IDVFocusableController {
     /**
      * Sets the focus back to the tooltip icon.
      */
-    public setFocusBack(_elementID: string): void {
+    public setFocusBack(): void {
         angular.element(`#${this.inputId}.fa.fa-info-circle`).first().focus();
     }
 }

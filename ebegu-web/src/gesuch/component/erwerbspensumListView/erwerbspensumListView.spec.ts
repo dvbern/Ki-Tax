@@ -28,7 +28,6 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
-import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -56,7 +55,6 @@ describe('erwerbspensumListView', () => {
     let dossier: TSDossier;
     let gesuchsperiode: TSGesuchsperiode;
     let $httpBackend: IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
     let einstellungRS: EinstellungRS;
 
     beforeEach(
@@ -72,7 +70,6 @@ describe('erwerbspensumListView', () => {
             $q = $injector.get('$q');
             scope = $injector.get('$rootScope').$new();
             $httpBackend = $injector.get('$httpBackend');
-            ebeguRestUtil = $injector.get('EbeguRestUtil');
             einstellungRS = $injector.get('EinstellungRS');
 
             spyOn(

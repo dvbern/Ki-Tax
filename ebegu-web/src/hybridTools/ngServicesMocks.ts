@@ -19,7 +19,6 @@ import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
 import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import {MANDANTS, KiBonMandant} from '../app/core/constants/MANDANTS';
-import {TSDemoFeature} from '../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {DemoFeatureRS} from '../app/core/service/demoFeatureRS.rest';
@@ -38,9 +37,7 @@ import {HybridFormBridgeService} from '../gesuch/service/hybrid-form-bridge.serv
 import {SearchRS} from '../gesuch/service/searchRS.rest';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
-import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
-import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSDossier} from '../models/TSDossier';
 import {TSEinstellung} from '../models/TSEinstellung';
 import {TSExceptionReport} from '../models/TSExceptionReport';
@@ -66,13 +63,7 @@ class GesuchGeneratorMock extends GesuchGenerator {
         );
     }
 
-    public initGesuch(
-        eingangsart: TSEingangsart,
-        _creationAction: TSCreationAction,
-        _gesuchsperiodeId: string,
-        _currentFall: TSFall,
-        _currentDossier: TSDossier
-    ): angular.IPromise<TSGesuch> {
+    public initGesuch(eingangsart: TSEingangsart): angular.IPromise<TSGesuch> {
         const gesuch = new TSGesuch();
         gesuch.dossier = new TSDossier();
         gesuch.eingangsart = eingangsart;
@@ -97,7 +88,7 @@ class AuthLifeCycleServiceMock extends AuthLifeCycleService {
         return of(event);
     }
 
-    public changeAuthStatus(_status: TSAuthEvent, _message?: string): void {
+    public changeAuthStatus(): void {
         return;
     }
 }
@@ -131,19 +122,11 @@ class MandantServiceMock extends MandantService {
 }
 
 class EinstellungRSMock extends EinstellungRS {
-    // tslint:disable-next-line:no-unused
-    public findEinstellung(
-        key: TSEinstellungKey,
-        gemeindeId: string,
-        gesuchsperiodeId: string
-    ): Observable<TSEinstellung> {
+    public findEinstellung(): Observable<TSEinstellung> {
         return of(new TSEinstellung());
     }
 
-    // tslint:disable-next-line:no-unused
-    public getAllEinstellungenBySystemCached(
-        gesuchsperiodeId: string
-    ): Observable<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(): Observable<TSEinstellung[]> {
         return of([]);
     }
 }
@@ -173,9 +156,7 @@ class FamiliensituationRSMock extends FamiliensituationRS {}
 class HybridFormBridgeServiceMock extends HybridFormBridgeService {}
 
 class DemoFeatureRSMock extends DemoFeatureRS {
-    public isDemoFeatureAllowed(
-        dvDemoFeature: TSDemoFeature
-    ): IPromise<boolean> {
+    public isDemoFeatureAllowed(): IPromise<boolean> {
         return Promise.resolve(false);
     }
 }

@@ -20,7 +20,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from '../../../models/enums/TSVerfuegungZeitabschnittZahlungsstatus';
-import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSZahlungsstatusIconLabel} from './TSZahlungsstatusIconLabel';
 
 @Component({

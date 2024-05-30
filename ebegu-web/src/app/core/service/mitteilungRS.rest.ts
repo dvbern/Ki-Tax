@@ -349,41 +349,35 @@ export class MitteilungRS {
         // group mitteilungen by fall, so that we can apply them in parallel
         const mitteilungenByFall = this.groupMitteilungenByFall(mitteilungen);
 
-        Object.entries(mitteilungenByFall).forEach(
-            ([_, mitteilungenOfFall]) => {
-                from(mitteilungenOfFall ?? [])
-                    .pipe(
-                        // apply all mitteilungen of one fall in sequence
-                        concatMap(mitteilung =>
-                            this.applyBetreuungsmitteilungSilently(
-                                mitteilung
-                            ).pipe(
-                                catchError((errors: TSExceptionReport[]) => {
-                                    verarbeitung.addError(mitteilung, errors);
-                                    errors.forEach(error => {
-                                        // we want to display it in the dialog, not in the error bar
-                                        this.errorService.clearError(
-                                            error.msgKey
-                                        );
-                                    });
-                                    return EMPTY;
-                                })
-                            )
+        Object.entries(mitteilungenByFall).forEach(([, mitteilungenOfFall]) => {
+            from(mitteilungenOfFall ?? [])
+                .pipe(
+                    // apply all mitteilungen of one fall in sequence
+                    concatMap(mitteilung =>
+                        this.applyBetreuungsmitteilungSilently(mitteilung).pipe(
+                            catchError((errors: TSExceptionReport[]) => {
+                                verarbeitung.addError(mitteilung, errors);
+                                errors.forEach(error => {
+                                    // we want to display it in the dialog, not in the error bar
+                                    this.errorService.clearError(error.msgKey);
+                                });
+                                return EMPTY;
+                            })
                         )
                     )
-                    .subscribe(appliedMitteilung => {
-                        if (
-                            EbeguUtil.isEmptyStringNullOrUndefined(
-                                appliedMitteilung.errorMessage
-                            )
-                        ) {
-                            verarbeitung.addSuccess(appliedMitteilung);
-                        } else {
-                            verarbeitung.addFailure(appliedMitteilung);
-                        }
-                    });
-            }
-        );
+                )
+                .subscribe(appliedMitteilung => {
+                    if (
+                        EbeguUtil.isEmptyStringNullOrUndefined(
+                            appliedMitteilung.errorMessage
+                        )
+                    ) {
+                        verarbeitung.addSuccess(appliedMitteilung);
+                    } else {
+                        verarbeitung.addFailure(appliedMitteilung);
+                    }
+                });
+        });
 
         return verarbeitung.results;
     }

@@ -34,7 +34,7 @@ export function html(html: string): Element {
 
 export function bootstrap(
     platform: PlatformRef,
-    ng2Module: Type<{}>,
+    ng2Module: Type<unknown>,
     element: Element,
     ng1Module: angular.IModule
 ) {

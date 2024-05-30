@@ -23,7 +23,6 @@ import {
     OnInit
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';

@@ -20,7 +20,6 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnInit,
     Output
 } from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';

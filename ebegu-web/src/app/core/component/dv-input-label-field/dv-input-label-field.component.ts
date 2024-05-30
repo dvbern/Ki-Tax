@@ -34,9 +34,9 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 export class DvInputLabelFieldComponent {
     @Input() public inputId: string = 'inputFieldId';
     @Input() public labelMessageKey: string;
-    @Input() public labelMessageKeyArgs: {};
+    @Input() public labelMessageKeyArgs: Record<string, unknown>;
     @Input() public tooltipMessageKey: string;
-    @Input() public tooltipMessageKeyArgs: {};
+    @Input() public tooltipMessageKeyArgs: Record<string, unknown>;
     @Input() public model: any;
     @Input() public inputRequired: boolean = false;
     @Input() public inputDisabled: boolean = false;

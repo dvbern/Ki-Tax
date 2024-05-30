@@ -81,7 +81,7 @@ describe('NewUserSelectDirective', () => {
                 Ng2Module,
                 element,
                 ng1Module
-            ).then(upgrade => {
+            ).then(() => {
                 expect(element).toBeTruthy();
             });
         });

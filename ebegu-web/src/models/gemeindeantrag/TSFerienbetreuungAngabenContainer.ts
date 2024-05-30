@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSFerienbetreuungBerechnung} from '../../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {FerienbetreuungAngabenStatus} from '../enums/FerienbetreuungAngabenStatus';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';

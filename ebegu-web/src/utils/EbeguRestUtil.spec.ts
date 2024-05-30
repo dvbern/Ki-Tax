@@ -16,11 +16,10 @@
  */
 
 import * as moment from 'moment';
-import {CONSTANTS} from '../app/core/constants/CONSTANTS';
-import {TSAdressetyp} from '../models/enums/TSAdressetyp';
-import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/betreuung/TSBetreuungsstatus';
+import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSFachstelleName} from '../models/enums/TSFachstelleName';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
@@ -56,7 +55,6 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
 import {EbeguRestUtil} from './EbeguRestUtil';
 import {TestDataUtil} from './TestDataUtil.spec';
-import IProvideService = angular.auto.IProvideService;
 
 /* eslint-disable */
 describe('EbeguRestUtil', () => {

@@ -20,7 +20,6 @@ import {HookResult} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
-import ITranslateService = angular.translate.ITranslateService;
 
 languageEnabledHookRunBlock.$inject = [
     '$transitions',

@@ -148,8 +148,9 @@ export class NotrechtComponent implements OnInit {
                 case 'dokumente':
                     return item.verantwortlicherName;
                 default:
-                    // @ts-ignore
-                    return item[property];
+                    return item[property as keyof typeof item] as
+                        | string
+                        | number;
             }
         };
         this.rueckforderungFormulareSource.sort = this.sort;

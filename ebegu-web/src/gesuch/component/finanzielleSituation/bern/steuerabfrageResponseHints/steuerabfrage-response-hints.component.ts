@@ -25,7 +25,6 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    SimpleChanges,
     ViewEncapsulation
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -94,7 +93,7 @@ export class SteuerabfrageResponseHintsComponent
         private readonly errorService: ErrorService
     ) {}
 
-    public ngOnChanges(changes: SimpleChanges): void {
+    public ngOnChanges(): void {
         this.changeDetectorRef.markForCheck();
     }
 

@@ -307,7 +307,7 @@ export class DownloadRS {
         }
 
         // as soon as the window is ready send it to the download
-        this.redirectWindowToDownloadWhenReady(myWindow, href, accessToken);
+        this.redirectWindowToDownloadWhenReady(myWindow, href);
 
         // This would be the way to open file in new window (for now it's better to open in new tab)
         // this.$window.open(href, name, 'toolbar=0,location=0,menubar=0');
@@ -320,11 +320,7 @@ export class DownloadRS {
         );
     }
 
-    public redirectWindowToDownloadWhenReady(
-        win: Window,
-        href: string,
-        _name: string
-    ): void {
+    public redirectWindowToDownloadWhenReady(win: Window, href: string): void {
         // wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
         const count = 3000;
         const readyTimer = this.$interval(
@@ -421,7 +417,6 @@ export class DownloadRS {
     }
 
     public openDownload(blob: Blob, filename: string): void {
-        // @ts-ignore: webkitURL may exist in some browsers
         const url = this.$window.URL || this.$window.webkitURL;
         const downloadUrl = url.createObjectURL(blob); // use HTML5 a[download] attribute to specify filename
         const a = document.createElement('a');

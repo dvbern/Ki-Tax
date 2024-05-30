@@ -17,7 +17,6 @@
 
 import {
     Component,
-    OnInit,
     ChangeDetectionStrategy,
     Input,
     Output,

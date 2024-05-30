@@ -49,6 +49,7 @@ export class DvFooterComponent implements IController {
         );
     }
 
-    // we dont need a fallback here
-    public setFocusBack(_elementID: string): void {}
+    public setFocusBack(): void {
+        // we don't need a fallback here
+    }
 }

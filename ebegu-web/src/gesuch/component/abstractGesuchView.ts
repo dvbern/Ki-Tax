@@ -27,7 +27,6 @@ import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus'
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSBetreuung} from '../../models/TSBetreuung';
-import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSGesuch} from '../../models/TSGesuch';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -75,15 +74,12 @@ export class AbstractGesuchViewController<T> implements IController {
          * auf !dirty. Dann kann der Benutzer nochmal auf Speichern klicken und die Daten werden gespeichert.
          * Damit dies nicht passiert, hoeren wir in allen Views auf diesen Event und setzen das Form auf dirty
          */
-        this.$scope.$on(
-            TSMessageEvent[TSMessageEvent.ERROR_UPDATE],
-            (_event: any, _errors: TSExceptionReport[]) => {
-                if (this.form) {
-                    this.form.$dirty = true;
-                    this.form.$pristine = false;
-                }
+        this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], () => {
+            if (this.form) {
+                this.form.$dirty = true;
+                this.form.$pristine = false;
             }
-        );
+        });
     }
 
     public isGesuchReadonly(): boolean {

@@ -250,17 +250,18 @@ export class BenutzerListXComponent implements OnInit {
         });
     }
 
-    public applyFilter(value: any, property: string): void {
-        // @ts-ignore
-        this.filterPredicate[property] = value ? value : undefined;
+    public applyFilter(value: any, property: keyof BenutzerListFilter): void {
+        this.filterPredicate[property] = value ?? undefined;
         this.page = 0;
         this.searchUsers();
     }
 
     // für textinputs wollen wir nicht bei jedem KeyUp Event einen Request senden. Wir fügen ein Debounce hinzu
-    public applyFilterWithDebounce(value: any, property: string): void {
-        // @ts-ignore
-        this.filterPredicate[property] = value ? value : undefined;
+    public applyFilterWithDebounce(
+        value: any,
+        property: keyof BenutzerListFilter
+    ): void {
+        this.filterPredicate[property] = value ?? undefined;
         this.page = 0;
         clearTimeout(this.keyupTimeout);
         this.keyupTimeout = setTimeout(() => {

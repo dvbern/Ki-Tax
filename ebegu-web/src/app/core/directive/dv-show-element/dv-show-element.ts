@@ -82,14 +82,14 @@ export class DVShowElement implements IDirective {
         // transcluded wird und somit der Wert aendert sich.
         scope.$watch(
             attributes.dvShowAllowedRoles,
-            (newValue: any, _oldValue: any, _scope: any) => {
+            (newValue: any) => {
                 controller.dvAllowedRoles = newValue;
             },
             true
         );
         scope.$watch(
             attributes.dvShowExpression,
-            (newValue: any, _oldValue: any) => {
+            (newValue: any) => {
                 controller.dvExpression = newValue;
             },
             true
@@ -106,6 +106,6 @@ export class DVShowElement implements IDirective {
         arguments2: Array<any>
     ): void {
         attributes.ngIf = () => controller.checkValidity();
-        this.ngIf.link.apply(this.ngIf, arguments2);
+        this.ngIf.link(...arguments2);
     }
 }

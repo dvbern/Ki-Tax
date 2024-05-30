@@ -36,8 +36,7 @@ export class DvVerantwortlicherselect implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 }

@@ -9,6 +9,7 @@
                 "createDefaultProgram": false
             },
             "extends": [
+                "plugin:@typescript-eslint/recommended",
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates",
                 "prettier"
@@ -19,7 +20,10 @@
                 "@typescript-eslint",
                 "import"
             ],
-            "rules": {}
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-var-requires": "off"
+            }
         },
         {
             "files": ["**/*.spec.ts"],

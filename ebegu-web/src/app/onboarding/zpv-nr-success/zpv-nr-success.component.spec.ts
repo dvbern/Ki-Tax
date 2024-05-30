@@ -7,7 +7,6 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirectiv
 import {SharedModule} from '../../shared/shared.module';
 
 import {ZpvNrSuccessComponent} from './zpv-nr-success.component';
-import {of} from 'rxjs';
 
 describe('ZpvNrSuccessComponent', () => {
     let component: ZpvNrSuccessComponent;

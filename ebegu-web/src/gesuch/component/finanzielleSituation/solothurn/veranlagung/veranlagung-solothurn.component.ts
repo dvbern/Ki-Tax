@@ -1,10 +1,9 @@
 import {
-    Component,
-    OnInit,
     ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
     Input,
-    Output,
-    EventEmitter
+    Output
 } from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';

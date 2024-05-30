@@ -15,17 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
-import {TSAbstractEntity} from '../models/TSAbstractEntity';
-import {TSFall} from '../models/TSFall';
-import {TSGemeinde} from '../models/TSGemeinde';
-import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
-import {TSDateRange} from '../models/types/TSDateRange';
-import {EbeguUtil} from './EbeguUtil';
 import {MathUtil} from './MathUtil';
-import {TestDataUtil} from './TestDataUtil.spec';
-import IProvideService = angular.auto.IProvideService;
 
 /* eslint-disable no-magic-numbers */
 describe('MathUtil', () => {

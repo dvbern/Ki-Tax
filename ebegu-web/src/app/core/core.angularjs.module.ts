@@ -34,7 +34,6 @@ import 'angular-unsavedchanges';
 import 'angular-utf8-base64';
 import 'ng-file-upload';
 import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
-// tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../admin/service/ferieninselStammdatenRS.rest';

@@ -20,11 +20,9 @@ import {UIRouterModule} from '@uirouter/angular';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import RouterModule from '../../../../dvbModules/router/router.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSPublicAppConfig} from '../../../../models/TSPublicAppConfig';
-import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../shared/shared.module';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 

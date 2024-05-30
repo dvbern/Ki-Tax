@@ -17,7 +17,6 @@ import {BehaviorSubject, of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
-import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -35,7 +34,6 @@ import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {IKindStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -119,7 +117,6 @@ describe('kindView', () => {
     let kindView: KindViewController;
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
-    let ebeguUtil: EbeguUtil;
     let $q: angular.IQService;
     let betreuung: TSBetreuung;
     let kind: TSKindContainer;
@@ -130,7 +127,6 @@ describe('kindView', () => {
     let $stateParams: IKindStateParams;
     let $timeout: angular.ITimeoutService;
     let einstellungRS: EinstellungRS;
-    let institutionStammdatenRS: InstitutionStammdatenRS;
     let mandantService: MandantService;
     let ebeguRestUtil: EbeguRestUtil;
 
@@ -147,13 +143,11 @@ describe('kindView', () => {
         angular.mock.inject($injector => {
             gesuchModelManager = $injector.get('GesuchModelManager');
             berechnungsManager = $injector.get('BerechnungsManager');
-            ebeguUtil = $injector.get('EbeguUtil');
             $httpBackend = $injector.get('$httpBackend');
             $q = $injector.get('$q');
             $stateParams = $injector.get('$stateParams');
             $timeout = $injector.get('$timeout');
             einstellungRS = $injector.get('EinstellungRS');
-            institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
             mandantService = $injector.get('MandantService');
             ebeguRestUtil = $injector.get('EbeguRestUtil');
             const applicationPropertyRS = $injector.get(

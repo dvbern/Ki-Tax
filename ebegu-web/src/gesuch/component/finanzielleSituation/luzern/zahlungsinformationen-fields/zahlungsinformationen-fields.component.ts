@@ -21,7 +21,6 @@ import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.res
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../../../models/enums/TSAntragStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
-import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';

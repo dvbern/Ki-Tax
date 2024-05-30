@@ -249,7 +249,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initReceiverList(): void {
-        this.empfaengerValues = new Array();
+        this.empfaengerValues = [];
         if (
             this.isCurrentUserAmt() &&
             (this.dossier.fall.besitzer || this.dossier.fall.sozialdienstFall)
@@ -515,7 +515,7 @@ export class DVMitteilungListController implements IOnInit {
         );
     }
 
-    public canApplyBetreuungsmitteilung(_mitteilung: TSMitteilung): boolean {
+    public canApplyBetreuungsmitteilung(): boolean {
         return this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getAdministratorJugendamtRole()
         );
@@ -523,7 +523,7 @@ export class DVMitteilungListController implements IOnInit {
 
     public showBetreuungsmitteilungApply(mitteilung: TSMitteilung): boolean {
         return (
-            this.canApplyBetreuungsmitteilung(mitteilung) &&
+            this.canApplyBetreuungsmitteilung() &&
             this.isBetreuungsmitteilungNotApplied(mitteilung)
         );
     }
@@ -547,9 +547,7 @@ export class DVMitteilungListController implements IOnInit {
         );
     }
 
-    public canErledigenNeueVeranlagungsmitteilung(
-        _mitteilung: TSMitteilung
-    ): boolean {
+    public canErledigenNeueVeranlagungsmitteilung(): boolean {
         return this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getAdministratorOrAmtRole()
         );
@@ -559,7 +557,7 @@ export class DVMitteilungListController implements IOnInit {
         mitteilung: TSMitteilung
     ): boolean {
         return (
-            this.canErledigenNeueVeranlagungsmitteilung(mitteilung) &&
+            this.canErledigenNeueVeranlagungsmitteilung() &&
             this.isNeueVeranlagungsmitteilungNotErledigt(mitteilung)
         );
     }
@@ -695,7 +693,7 @@ export class DVMitteilungListController implements IOnInit {
                 // User confirmed message
                 this.mitteilungRS
                     .setMitteilungIgnoriert(mitteilung.id)
-                    .then((response: any) => {
+                    .then(() => {
                         this.loadAllMitteilungen();
                     });
             });

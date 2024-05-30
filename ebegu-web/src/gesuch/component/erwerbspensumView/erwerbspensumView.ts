@@ -30,11 +30,7 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {
-    getTSTaetigkeit,
-    getTSTaetigkeitWithFreiwilligenarbeit,
-    TSTaetigkeit
-} from '../../../models/enums/TSTaetigkeit';
+import {TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';

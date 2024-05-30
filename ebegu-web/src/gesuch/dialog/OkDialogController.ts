@@ -26,8 +26,7 @@ export class OkDialogController {
     public constructor(
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
-        title: string,
-        _okText: string
+        title: string
     ) {
         this.title = EbeguUtil.isNotNullOrUndefined(title)
             ? $translate.instant(title)

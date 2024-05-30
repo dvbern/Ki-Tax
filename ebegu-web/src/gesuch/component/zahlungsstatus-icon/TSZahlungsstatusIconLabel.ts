@@ -18,7 +18,6 @@
 import {TranslateService} from '@ngx-translate/core';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from '../../../models/enums/TSVerfuegungZeitabschnittZahlungsstatus';
-import {TSBetreuung} from '../../../models/TSBetreuung';
 
 const LOG = LogFactory.createLog('TSZahlungsstatusIconLabel');
 

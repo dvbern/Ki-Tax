@@ -43,7 +43,6 @@ module.exports = function (config) {
         // },
 
         // any of these options are valid:
-        // tslint:disable-next-line:max-line-length
         // https://github.com/istanbuljs/istanbul-api/blob/47b7803fbf7ca2fb4e4a15f3813a8884891ba272/lib/config.js#L33-L38
         coverageIstanbulReporter: {
             // reports can be any that are listed here:
@@ -63,7 +62,6 @@ module.exports = function (config) {
             // Most reporters accept additional config options. You can pass these through the `report-config` option
             'report-config': {
                 // all options available at:
-                // tslint:disable-next-line:max-line-length
                 // https://github.com/istanbuljs/istanbul-reports/blob/590e6b0089f67b723a1fdf57bc7ccc080ff189d7/lib/html/index.js#L135-L137
                 html: {
                     // outputs the report in ./coverage/html

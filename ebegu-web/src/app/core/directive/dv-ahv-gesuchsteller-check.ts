@@ -35,7 +35,6 @@ export class DvAhvGesuchstellerCheck {
             _attrs,
             ctrl: any
         ) => {
-            // @ts-ignore
             ctrl.$validators.dvAhvGesuchstellerCheck = (_modelValue: any) => {
                 if (
                     EbeguUtil.isNullOrUndefined(

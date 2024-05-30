@@ -610,7 +610,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private numberValidator(): ValidatorFn {
-        return (control: AbstractControl): {} | null =>
+        return (control: AbstractControl): {noNumberError: string} | null =>
             isNaN(control.value)
                 ? {
                       noNumberError: control.value
