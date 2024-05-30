@@ -38,7 +38,7 @@
                     <!--Aenderung per-->
                     <div class="row" *ngIf="isMutation()">
                         <div class="col-md-12">
-                            <dv-input-container class="form-group">
+                            <dv-input-container-x class="form-group">
 
                                 <div class="row">
                                     <div class="col-xs-12 dv-input-container-small">
@@ -57,7 +57,7 @@
                                                      [korrektur]="getFamiliensituation()?.aenderungPer"></dv-bisher-x>
                                     </div>
                                 </div>
-                            </dv-input-container>
+                            </dv-input-container-x>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@
                                                      name="geteilteObhut"
                                                      class="input-element sp"
                                                      [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
-                                                     aria-label="{{ 'FAMILIEN_SITUATION_OBHUT' |translate}}"
+                                                     [attr.aria-label]="'FAMILIEN_SITUATION_OBHUT' |translate"
                                                      aria-described-by="geteilteObhut-error">
                                         <mat-radio-button [value]="false">{{'LABEL_JA' | translate}}</mat-radio-button>
                                         <mat-radio-button [value]="true">{{'LABEL_NEIN' | translate}}</mat-radio-button>
@@ -110,7 +110,7 @@
                                                      name="gemeinsamerHaushalt"
                                                      class="input-element sp"
                                                      [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
-                                                     aria-label="{{ 'FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT' |translate}}"
+                                                     [attr.aria-label]="'FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT' |translate"
                                                      aria-described-by="gemeinsamerHaushalt-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
                                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
@@ -142,7 +142,7 @@
                                                      name="verheiratet"
                                                      class="input-element sp"
                                                      [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
-                                                     aria-label="{{ 'FAMILIEN_SITUATION_VERHEIRATET' |translate}}"
+                                                     [attr.aria-label]="'FAMILIEN_SITUATION_VERHEIRATET' | translate"
                                                      aria-described-by="verheiratet-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
                                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>

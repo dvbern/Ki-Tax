@@ -47,17 +47,9 @@ import {
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {
-    FamiliensituationAppenzellViewXComponent
-} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {
-    FamiliensituationSchwyzComponent
-} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
-import {
-    FamiliensituationViewXComponent
-} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
-import {
     FinSitFelderAppenzellComponent
 } from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
+import {FamiliensituationModule} from './component/familiensituation/familiensituation.module';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -131,7 +123,8 @@ import {
         UpgradeModule,
         SharedModule,
         FallToolbarModule,
-        FinanzielleSituationSchwyzModule
+        FinanzielleSituationSchwyzModule,
+        FamiliensituationModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
@@ -173,9 +166,6 @@ import {
         SteuerabfrageResponseHintsComponent,
         DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
-        FamiliensituationViewXComponent,
-        FamiliensituationAppenzellViewXComponent,
-        FamiliensituationSchwyzComponent,
         ZahlungsstatusIconComponent,
         KindFachstelleComponent,
         OnlineFreigabeComponent

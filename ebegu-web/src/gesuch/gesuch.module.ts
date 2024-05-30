@@ -82,6 +82,7 @@ import {
 import {
     FinSitFelderAppenzellComponent
 } from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
+import {familiensituationRun} from './component/familiensituation/familiensituation.route';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -159,6 +160,7 @@ export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .run(finSitSchwyzRun)
+        .run(familiensituationRun)
         .run([
             '$transitions',
             'ApplicationPropertyRS',

@@ -237,5 +237,6 @@
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Gesuchsteller/in 2 in der Rubrik Gesuchstellende.",
     "DOK_PAPIERGESUCH": "Papiergesuch",
     "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsbeitrag wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
+    "FAMILIENSITUATION_WARNING_BESCHREIBUNG": "Der/die Gesuchsteller/in {{gsfullname}} und alle seine Daten werden damit auch gelöscht.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
