@@ -580,15 +580,15 @@
                                 </dv-error-messages>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row form-group margin-bottom-20"
-                             ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
-                            <div class="col-xs-12">
-                                Für das Kind wurden höhere Beiträge beantragt. Eine Platzbestätigung bedeutet, dass das Kind in
-                                der Kinderbetreuungseinrichtung einen erhöhten Betreuungsaufwand benötigt.
-                            </div>
+                    <div class="row form-group margin-bottom-20"
+                         ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
+
+                        <div class="well well-status-warten">
+                            {{ 'HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT'| translate }}
+
                         </div>
-
                     </div>
 
                     <!--Eingewoehnung Periode-->
