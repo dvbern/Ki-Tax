@@ -1676,14 +1676,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private setUnbekannteInstitutionAccordingToAngebot(): void {
         /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
-        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
-        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
-        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
-        } else {
-            this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+        switch (this.betreuungsangebot?.key) {
+            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.TAGESSCHULE:
+                this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.KITA:
+                this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+                break;
+            default:
+                throw new Error('Unbekannte Institution nicht implementiert für Angebottyp ' + this.betreuungsangebot.key);
         }
     }
 
