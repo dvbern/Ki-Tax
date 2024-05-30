@@ -3258,5 +3258,10 @@
     "GESUCHFREIGABE_ONLINE": "Online Gesuchfreigabe",
     "ERROR_OIDC_TOKEN_INITIALISATION": "Beim Versuch die Steuerdaten abzurufen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
     "HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT": "Für das Kind wurden höhere Beiträge beantragt. Eine Platzbestätigung bedeutet, dass das Kind in der Kinderbetreuungseinrichtung einen erhöhten Betreuungsaufwand benötigt.",
+    "BEDARFSSTUFE_WAEHLEN": "Bedarfsstufe wählen",
+    "BEDARFSSTUFE_KEINE": "Keine höheren Beiträge",
+    "BEDARFSSTUFE_1": "Bedarfsstufe: 1 / leicht",
+    "BEDARFSSTUFE_2": "Bedarfsstufe: 2 / mittel",
+    "BEDARFSSTUFE_3": "Bedarfsstufe: 3 / ausgeprägt",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
