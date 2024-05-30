@@ -38,7 +38,7 @@ public final class FinanzielleSituationRechnerFactory {
 			return new FinanzielleSituationSolothurnRechner();
 		}
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL
-			|| gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL_2) {
+			|| gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL_FOLGEMONAT) {
 			return new FinanzielleSituationAppenzellRechner();
 		}
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {

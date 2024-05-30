@@ -279,7 +279,7 @@ public class EbeguUtilTest {
 
 	@ParameterizedTest
 	@EnumSource(value = FinanzielleSituationTyp.class,
-		names = { "APPENZELL","APPENZELL_2"},
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
 	public void isFinanzielleSituationIntroducedAndComplete_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		Gesuch gesuch = new Gesuch();
@@ -308,7 +308,7 @@ public class EbeguUtilTest {
 
 	@ParameterizedTest
 	@EnumSource(value = FinanzielleSituationTyp.class,
-		names = { "APPENZELL","APPENZELL_2"},
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
 	public void isFinanzielleSituationIntroducedAndComplete_isMandantSpecificFinSitGemeinsam_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
@@ -497,7 +497,7 @@ public class EbeguUtilTest {
 
 	@ParameterizedTest
 	@EnumSource(value = FinanzielleSituationTyp.class,
-		names = { "APPENZELL","APPENZELL_2"},
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
 	public void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();

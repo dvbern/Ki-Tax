@@ -402,7 +402,7 @@ public final class EbeguUtil {
 			return requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
 				== EnumFamilienstatus.VERHEIRATET;
 		case APPENZELL:
-		case APPENZELL_2:
+		case APPENZELL_FOLGEMONAT:
 		case SCHWYZ:
 			return Boolean.TRUE.equals(requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA())
 				.getGemeinsameSteuererklaerung());
@@ -427,7 +427,7 @@ public final class EbeguUtil {
 					&& finanzielleSituation.getUnterhaltsBeitraege() != null
 					&& finanzielleSituation.getAbzuegeKinderAusbildung() != null
 					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
-		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL) || finSitTyp.equals(FinanzielleSituationTyp.APPENZELL_2)) {
+		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL) || finSitTyp.equals(FinanzielleSituationTyp.APPENZELL_FOLGEMONAT)) {
 			valid = isFinSitAppenzellVollstaendig(finanzielleSituation);
 		} else if (finSitTyp == FinanzielleSituationTyp.SCHWYZ) {
 			valid = isFinSitSchwyzVollstaendig(finanzielleSituation);

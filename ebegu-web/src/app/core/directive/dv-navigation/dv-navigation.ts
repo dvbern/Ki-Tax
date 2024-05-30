@@ -149,7 +149,7 @@ export class NavigatorController implements IController {
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
                     case TSFinanzielleSituationTyp.APPENZELL:
-                    case TSFinanzielleSituationTyp.APPENZELL_2:
+                    case TSFinanzielleSituationTyp.APPENZELL_FOLGEMONAT:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
                         break;

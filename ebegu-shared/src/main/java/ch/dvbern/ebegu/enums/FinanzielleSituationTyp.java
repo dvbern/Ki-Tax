@@ -49,9 +49,9 @@ public enum FinanzielleSituationTyp {
 		@Override
 		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitAppenzell();}
 	},
-	APPENZELL_2 {
+	APPENZELL_FOLGEMONAT {
 		@Override
-		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitAppenzell2();}
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) { return visitor.visitFinSitAppenzellFolgemonat();}
 	},
 	SCHWYZ {
 		@Override

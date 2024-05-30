@@ -56,7 +56,7 @@ public class FinanzielleSituationDokumenteVisitor implements FinanzielleSituatio
 	}
 
 	@Override
-	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzell2() {
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzellFolgemonat() {
 		return new AppenzellFinanzielleSituationDokumente();
 	}
 

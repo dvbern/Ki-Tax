@@ -41,7 +41,7 @@ public class FamSitChangeHandlerAR extends SharedFamSitChangeDefaultHandler {
 		FamiliensituationContainer mergedFamiliensituationContainer,
 		Familiensituation oldFamiliensituation) {
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL
-			|| gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL_2) {
+			|| gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL_FOLGEMONAT) {
 			handleFamSitChangeAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
 	}
