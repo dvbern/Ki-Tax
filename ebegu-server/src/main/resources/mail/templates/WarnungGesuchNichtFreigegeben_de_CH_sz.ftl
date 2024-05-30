@@ -50,7 +50,7 @@ Content-Type: text/html;charset=utf-8
 		Beiträge erhalten Sie frühestens einen Monat nach Einreichung des vollständigen Gesuchs.
 	</p>
 	<p>
-		Bei Fragen melden Sie sich bei Ihrer Wohngemeinde. Die Kontaktangaben finden Sie unter folgendem Link: <a href="https://www.sz.ch/verwaltung/finanzdepartement/steuerverwaltung/steuerbezug-steuerrechnung/gemeinden-bezirke.html/8756-8758-8802-10332-10354-10494-10498">Gemeinden - Kanton Schwyz (sz.ch)</a>
+		Bei Fragen melden Sie sich bei Ihrer Wohngemeinde. Die Kontaktangaben finden Sie unter folgendem Link: <a href="https://www.sz.ch/public/upload/assets/75905/240508_gemeindeverzeichnis_kiba.pdf">Gemeinden - Kanton Schwyz (sz.ch)</a>
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

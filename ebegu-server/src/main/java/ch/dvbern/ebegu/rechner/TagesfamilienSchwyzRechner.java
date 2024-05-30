@@ -36,7 +36,8 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 		BGRechnerParameterDTO parameterDTO,
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
-		BigDecimal tageProZeitAbschnitt = toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageTFO());
+		BigDecimal tageProZeitAbschnitt =
+			toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageTFO());
 		return EXACT.multiply(tageProZeitAbschnitt, parameterDTO.getOeffnungsstundenTFO());
 	}
 
@@ -92,14 +93,5 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 			oeffnungsTageProMonat,
 			parameter.getOeffnungsstundenTFO(),
 			EXACT.pctToFraction(input.getBetreuungspensumProzent()));
-	}
-
-	@Override
-	protected BigDecimal calculateTagesTarif(BigDecimal effektiveBetreuungsZeiteinheitProZeitabschnitt, BGCalculationInput input) {
-		if (effektiveBetreuungsZeiteinheitProZeitabschnitt.compareTo(BigDecimal.ZERO) == 0) {
-			return BigDecimal.ZERO;
-		}
-
-		return EXACT.divide(input.getMonatlicheBetreuungskosten(), effektiveBetreuungsZeiteinheitProZeitabschnitt);
 	}
 }
