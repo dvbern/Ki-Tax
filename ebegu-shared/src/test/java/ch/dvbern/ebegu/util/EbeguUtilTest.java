@@ -281,7 +281,7 @@ public class EbeguUtilTest {
 	@EnumSource(value = FinanzielleSituationTyp.class,
 		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
-	public void isFinanzielleSituationIntroducedAndComplete_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+	void isFinanzielleSituationIntroducedAndComplete_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
@@ -310,7 +310,7 @@ public class EbeguUtilTest {
 	@EnumSource(value = FinanzielleSituationTyp.class,
 		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
-	public void isFinanzielleSituationIntroducedAndComplete_isMandantSpecificFinSitGemeinsam_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
+	void isFinanzielleSituationIntroducedAndComplete_isMandantSpecificFinSitGemeinsam_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
@@ -417,7 +417,7 @@ public class EbeguUtilTest {
 	@EnumSource(value = FinanzielleSituationTyp.class,
 		names = { "BERN","BERN_FKJV"},
 		mode = Mode.INCLUDE)
-	public void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_Test(FinanzielleSituationTyp finanzielleSituationTyp){
+	void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_Test(FinanzielleSituationTyp finanzielleSituationTyp){
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
@@ -499,7 +499,7 @@ public class EbeguUtilTest {
 	@EnumSource(value = FinanzielleSituationTyp.class,
 		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
 		mode = Mode.INCLUDE)
-	public void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
+	void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
