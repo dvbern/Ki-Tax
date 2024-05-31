@@ -208,7 +208,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		// hier kind hoehereBeitraegeWegenBeeintraechtigungBeantragen pruefen
 		// dazu auch die gegebene Wert im Drop down beruchsichtigen wenn gesetzt und checkbox dann Wert im Input schreiben
-		if (betreuung.getKind().getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen()) {
+		if (betreuung.getKind().getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen() && betreuung.getBedarfsstufe() != null) {
 			zeitabschnitt.setBedarfsstufeForAsivAndGemeinde(betreuung.getBedarfsstufe());
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 				MsgKey.BEDARFSSTUFE_MSG,

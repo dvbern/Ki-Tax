@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
 abstract class AbstractSchwyzRechner extends AbstractRechner {
+	private static final BigDecimal HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT = new BigDecimal(352);
 
 	@Override
 	public void calculate(
@@ -73,7 +74,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		var bgBetreuungsZeiteinheitProZeitabschnitt =
 			toZeiteinheitProZeitabschnitt(parameterDTO, bgPensumFaktor, anteilMonat);
 
-		var hohereBeitrag = calculateHoereBeitragProZeitAbschnitt(input, parameterDTO, bgPensumFaktor, anteilMonat);
+		var hohereBeitrag = calculateHoereBeitragProZeitAbschnitt(input, bgBetreuungsZeiteinheitProZeitabschnitt, anteilMonat);
 
 		var gutscheinOhneHohereBeitrag = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
 		var gutschein = EXACT.add(hohereBeitrag, gutscheinOhneHohereBeitrag);
@@ -110,12 +111,13 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		result.setVollkosten(vollkosten);
 		// Punkt V
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinVorAbzugSelbstbehalt);
-		// Punkt VI
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(gutscheinVorAbzugSelbstbehalt);
-		// Punkt VII
+		// Punkt VI
 		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
-		// Punkt VIII
+		// Punkt VII
 		result.setVerguenstigung(gutschein);
+		// Punkt VIII
+		result.setHohereBeitrag(hohereBeitrag);
 
 		result.setElternbeitrag(elternbeitrag);
 		result.setMinimalerElternbeitrag(minimalerBeitragProZeitAbschnitt);
@@ -129,24 +131,19 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 
 	private BigDecimal calculateHoereBeitragProZeitAbschnitt(
 		BGCalculationInput input,
-		BGRechnerParameterDTO parameterDTO,
-		BigDecimal bgPensumFaktor,
+		BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt,
 		BigDecimal anteilMonat) {
 		if (input.getBedarfsstufe() == null || input.getBedarfsstufe().equals(Bedarfsstufe.KEINE)) {
 			return BigDecimal.ZERO;
 		}
-		final BigDecimal basisBetrag = new BigDecimal(352); // TODO check if it goes in a class, or separate rechner
-		final BigDecimal mittelBetragProTag = new BigDecimal(66);
-		final BigDecimal hohereBetragProTag = new BigDecimal(132);
-		var basisBetragProZeitabschnitt = EXACT.multiply(basisBetrag, anteilMonat);
-		var tageProZeitabschnitt = toTageProZeitAbschnitt(bgPensumFaktor, anteilMonat, getOeffnungstageProJahr(parameterDTO));
+		var basisBetragProZeitabschnitt = EXACT.multiply(HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT, anteilMonat);
 		switch (input.getBedarfsstufe()) {
 		case BEDARFSSTUFE_1:
 			return basisBetragProZeitabschnitt;
 		case BEDARFSSTUFE_2:
-			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(tageProZeitabschnitt, mittelBetragProTag));
+			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getMittelBetragForAngebot()));
 		case BEDARFSSTUFE_3:
-			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(tageProZeitabschnitt, hohereBetragProTag));
+			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getHohereBetragForAngebot()));
 		}
 		return BigDecimal.ZERO;
 	}
@@ -205,5 +202,8 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 
 	protected abstract PensumUnits getZeiteinheit();
 
-	protected abstract BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO);
+	protected abstract BigDecimal getMittelBetragForAngebot();
+
+	protected abstract BigDecimal getHohereBetragForAngebot();
+
 }

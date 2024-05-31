@@ -292,6 +292,7 @@ public class BGCalculationInput {
 		this.betreuungInFerienzeit = toCopy.betreuungInFerienzeit;
 		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 		this.anwesenheitsTageProMonat = toCopy.anwesenheitsTageProMonat;
+		this.bedarfsstufe = toCopy.bedarfsstufe;
 	}
 
 	@Nonnull
@@ -925,6 +926,9 @@ public class BGCalculationInput {
 
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 		this.anwesenheitsTageProMonat = add(this.anwesenheitsTageProMonat, other.anwesenheitsTageProMonat);
+		if (other.bedarfsstufe != null) {
+			this.bedarfsstufe = other.bedarfsstufe;
+		}
 	}
 
 	/**
@@ -1135,7 +1139,8 @@ public class BGCalculationInput {
 			this.finsitAccepted == other.finsitAccepted &&
 			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale) &&
 			this.betreuungInFerienzeit == other.betreuungInFerienzeit &&
-			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat;
+			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat &&
+			Objects.equals(this.bedarfsstufe, other.bedarfsstufe);
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1170,7 +1175,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
 			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale) &&
 			MathUtil.isSame(anwesenheitsTageProMonat, that.anwesenheitsTageProMonat) &&
-			betreuungInFerienzeit == that.betreuungInFerienzeit;
+			betreuungInFerienzeit == that.betreuungInFerienzeit &&
+			Objects.equals(this.bedarfsstufe, that.bedarfsstufe);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

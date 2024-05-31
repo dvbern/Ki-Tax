@@ -31,13 +31,16 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 	static final BigDecimal TFO_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(6);
 	static final BigDecimal VERMITTLUNGSGEBUEHR = new BigDecimal(4);
 
+	static final BigDecimal MITTEL_BETRAG_PRO_STUNDE = new BigDecimal(6.6);
+	static final BigDecimal HOHERE_BETRAG_PRO_STUNDE = new BigDecimal(13.2);
+
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(
 		BGRechnerParameterDTO parameterDTO,
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
 		BigDecimal tageProZeitAbschnitt =
-			toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, getOeffnungstageProJahr(parameterDTO));
+			toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageTFO());
 		return EXACT.multiply(tageProZeitAbschnitt, parameterDTO.getOeffnungsstundenTFO());
 	}
 
@@ -52,8 +55,13 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 	}
 
 	@Override
-	protected BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO) {
-		return parameterDTO.getOeffnungstageTFO();
+	protected BigDecimal getMittelBetragForAngebot() {
+		return MITTEL_BETRAG_PRO_STUNDE;
+	}
+
+	@Override
+	protected BigDecimal getHohereBetragForAngebot() {
+		return HOHERE_BETRAG_PRO_STUNDE;
 	}
 
 	@Override

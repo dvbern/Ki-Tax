@@ -27,13 +27,15 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 
 	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT = new BigDecimal(65);
 	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(100);
+	static final BigDecimal MITTEL_BETRAG_PRO_TAG = new BigDecimal(66);
+	static final BigDecimal HOHERE_BETRAG_PRO_TAG = new BigDecimal(132);
 
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(
 		BGRechnerParameterDTO parameterDTO,
 		BigDecimal effektivesPensumFaktor,
 		BigDecimal anteilMonat) {
-		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, getOeffnungstageProJahr(parameterDTO));
+		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, parameterDTO.getOeffnungstageKita());
 	}
 
 	@Override
@@ -47,8 +49,13 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 	}
 
 	@Override
-	protected BigDecimal getOeffnungstageProJahr(BGRechnerParameterDTO parameterDTO) {
-		return parameterDTO.getOeffnungstageKita();
+	protected BigDecimal getMittelBetragForAngebot() {
+		return MITTEL_BETRAG_PRO_TAG;
+	}
+
+	@Override
+	protected BigDecimal getHohereBetragForAngebot() {
+		return HOHERE_BETRAG_PRO_TAG;
 	}
 
 	@Override
