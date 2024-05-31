@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
@@ -203,6 +204,11 @@ public class BGCalculationResult extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal hohereBeitrag;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	@Nullable
+	private Bedarfsstufe bedarfsstufe;
 
 	@Transient
 	@Nonnull
@@ -836,6 +842,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.hohereBeitrag = hohereBeitrag;
 	}
 
+	@Nullable
+	public Bedarfsstufe getBedarfsstufe() {
+		return bedarfsstufe;
+	}
+
+	public void setBedarfsstufe(@Nullable Bedarfsstufe bedarfsstufe) {
+		this.bedarfsstufe = bedarfsstufe;
+	}
+
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
 	public boolean differsIgnorableFrom(BGCalculationResult otherResult) {
 		return MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent)
@@ -850,7 +865,7 @@ public class BGCalculationResult extends AbstractEntity {
 			&&
 			babyTarif == otherResult.babyTarif
 			&&
-			hohereBeitrag == otherResult.hohereBeitrag
+			MathUtil.isSame(hohereBeitrag, otherResult.hohereBeitrag)
 			&&
 			((tsCalculationResultMitPaedagogischerBetreuung == null
 				&& otherResult.tsCalculationResultMitPaedagogischerBetreuung == null) ||

@@ -118,6 +118,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		result.setVerguenstigung(gutschein);
 		// Punkt VIII
 		result.setHohereBeitrag(hohereBeitrag);
+		result.setBedarfsstufe(input.getBedarfsstufe());
 
 		result.setElternbeitrag(elternbeitrag);
 		result.setMinimalerElternbeitrag(minimalerBeitragProZeitAbschnitt);
