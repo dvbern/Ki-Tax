@@ -2738,7 +2738,7 @@
     "FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS": "    - davon Kinder im 1. Zyklus (Kindergarten-2. Klasse)",
     "FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS": "    - davon Kinder im 2. Zyklus (3.-6. Klasse)",
     "FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS": "    - davon Kinder im 3. Zyklus (7.-9. Klasse)",
-    "FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT": "ohne Kinder mit Bedarf an besonderem Volksschulangebot",
+    "FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT": "inklusive Kinder mit Bedarf an besonderem Volksschulangebot",
     "FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT": "Die Trägerschaft des Ferienbetreuungsangebots ist eine Gemeinde, ein Schulverband oder ein Zusammenschluss von Gemeinden. Sind mehrere Gemeinden am Angebot beteiligt, rechnet eine von ihnen mit dem Kanton über die Beiträge an die Ferienbetreuung ab. Geben Sie die anderen Gemeinden unter \"weitere beteiligte Gemeinden\" an.",
     "FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN": "Weitere beteiligte Gemeinden",
     "FERIENBETREUUNG_ADRESSE_GEMEINDE": "Adresse der Gemeinde",

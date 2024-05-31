@@ -2659,7 +2659,7 @@
     "FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS": "- dont élèves du 1<sup>er</sup> cycle (1<sup>re</sup> à 4<sup>e</sup>)",
     "FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS": "- dont élèves du 2<sup>e</sup> cycle (5<sup>e</sup> à 8<sup>e</sup>)",
     "FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS": "- dont élèves du 3<sup>e</sup> cycle (9<sup>e</sup> à 11<sup>e</sup>)",
-    "FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT": "hors enfants relevant de l'offre spécialisée de l'école obligatoire",
+    "FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT": "y compris les enfants relevant de l'offre spécialisée de l'école obligatoire",
     "FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT": "L’organisme responsable de la structure d’accueil durant les vacances scolaires est une commune, une communauté scolaire ou un groupement de communes. Si plusieurs communes sont impliquées, seule l’une d’entre elles procède au décompte des contributions cantonales versées pour la structure d’accueil. Veuillez indiquer les autres communes sous « Autres communes impliquées ».",
     "FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN": "Autres communes impliquées",
     "FERIENBETREUUNG_ADRESSE_GEMEINDE": "Adresse de la commune",
