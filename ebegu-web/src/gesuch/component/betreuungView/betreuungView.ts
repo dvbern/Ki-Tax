@@ -167,6 +167,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
     public hoehereBeitraegeWegenBeeintraechtigungBeantragt: boolean = false;
     public isHoehereBeitraegeEinstellungAktiviert: boolean = false;
+    public canEditBedarfsstufen: boolean = false;
     protected minEintrittsdatum: moment.Moment;
     private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
@@ -1541,6 +1542,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return 'MONATLICHE_BETREUUNGSKOSTEN_HELP';
     }
 
+    public canRoleEditBedarfsstufe() {
+        this.canEditBedarfsstufen = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
+    }
+
+    public isBedarfsstufeEmpty() {
+        return !this.bedarfsstufe;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+
     private initEinstellungen(): void {
         this.loadAuszahlungAnEltern();
         const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
@@ -1637,9 +1649,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isHoehereBeitraegeEinstellungAktiviert = EbeguUtil.getBoolean(res.value);
         });
     }
-
-    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
-    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
 
     private loadAuszahlungAnEltern(): void {
         if (EbeguUtil.isNotNullOrUndefined(this.auszahlungAnEltern)) {

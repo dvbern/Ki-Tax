@@ -588,7 +588,6 @@
 
                         <div class="well well-status-warten">
                             {{ 'HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT'| translate }}
-
                         </div>
                     </div>
 
@@ -597,29 +596,38 @@
                          ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float"
+                                <label class="md-no-float margin-bottom-20"
                                        for="bedarfsstufe">
                                     <span class="required" data-translate="BEDARFSSTUFE_WAEHLEN"></span>
+                                    <dv-tooltip text="'BEDARFSSTUFE_INFOTEXT' | translate">
+                                    </dv-tooltip>
                                 </label>
                                 <div class="dv-select-style">
                                     <select class="form-control"
                                             id="bedarfsstufe"
                                             name="bedarfsstufe"
                                             ng-change="vm.changedBedarfsstufe()"
-                                            ng-disabled="false"
+                                            ng-disabled="!vm.canRoleEditBedarfsstufe()"
                                             ng-model="vm.getBetreuungModel().bedarfsstufe"
                                             ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
                                             ng-required="true">
                                     </select>
                                     <dv-error-messages for="vm.form.bedarfsstufe.$error"
                                                        input-id="bedarfsstufe"></dv-error-messages>
+
+                                    <div class="dv-error-messages margin-top-20 margin-bottom-20"
+                                         ng-if="vm.isBedarfsstufeEmpty()">
+                                        <div class="error"
+                                             ng-messages="vm.form.bedarfsstufe.$error">
+                                            <div data-translate="BEDARFSSTUFE_MISSING_BEDARFSSTUFE"
+                                                 for="vm.form.bedarfsstufe.$error"
+                                                 ng-message="required"
+                                                 role="alert"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <dv-error-messages for="vm.form.bedarfsstufe.$error"
-                                           input-id="bedarfsstufe"></dv-error-messages>
-
                     </div>
 
                     <!--Eingewoehnung Periode-->
