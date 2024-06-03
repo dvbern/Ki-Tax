@@ -607,10 +607,10 @@
                                             id="bedarfsstufe"
                                             name="bedarfsstufe"
                                             ng-change="vm.changedBedarfsstufe()"
-                                            ng-disabled="!vm.canRoleEditBedarfsstufe()"
+                                            ng-disabled="!vm.canEditBedarfsstufen"
                                             ng-model="vm.getBetreuungModel().bedarfsstufe"
                                             ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
-                                            ng-required="true">
+                                            ng-required="vm.canEditBedarfsstufen">
                                     </select>
 
                                     <dv-error-messages for="vm.form.bedarfsstufe.$error"

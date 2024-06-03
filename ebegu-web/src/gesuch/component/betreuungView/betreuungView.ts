@@ -291,6 +291,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
                     // just to read!
                     this.kindModel = this.gesuchModelManager.getKindToWorkWith();
+                    this.canRoleEditBedarfsstufe();
 
                     this.hoehereBeitraegeWegenBeeintraechtigungBeantragt =
                         this.hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(this.kindModel);
