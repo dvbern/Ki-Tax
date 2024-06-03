@@ -21,17 +21,12 @@ import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.KindService;
-import ch.dvbern.ebegu.services.WizardStepService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -47,7 +42,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
 import java.util.*;
 
 /**
@@ -57,6 +51,7 @@ import java.util.*;
 @Local(KindService.class)
 public class KindServiceBean extends AbstractBaseService implements KindService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
 	@Inject
 	private Persistence persistence;
 	@Inject
@@ -65,24 +60,20 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private GesuchService gesuchService;
 	@Inject
 	private BenutzerService benutzerService;
-
 	@Inject
 	private ValidatorFactory validatorFactory;
-
 	@Inject
 	private KindServiceHandler kindServiceHandler;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
-
 	@Nonnull
 	@Override
-	public KindContainer saveKind(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
+	public KindContainer saveKind(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
 		Objects.requireNonNull(kind);
 		if (!kind.isNew()) {
 			// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
 			updateLuceneIndex(KindContainer.class, kind.getId());
 		}
-		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kind, alteEinschulungTyp);
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kind, dbKind);
 		final KindContainer mergedKind = persistence.merge(kind);
 		mergedKind.getGesuch().addKindContainer(mergedKind);
 
@@ -96,7 +87,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 		kindServiceHandler.resetGesuchDataOnKindSave(mergedKind);
 
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(mergedKind, alteEinschulungTyp);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(mergedKind, dbKind);
 
 		wizardStepService.updateSteps(kind.getGesuch().getId(), null, mergedKind.getKindJA(), WizardStepName.KINDER);
 

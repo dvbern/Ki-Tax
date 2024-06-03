@@ -17,27 +17,26 @@
 
 package ch.dvbern.ebegu.services.kind;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
-import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Stateless
 public class KindServiceHandler {
@@ -50,11 +49,15 @@ public class KindServiceHandler {
 	@Inject
 	private BetreuungService betreuungService;
 
-	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
+	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
+		EinschulungTyp alteEinschulungTyp = null;
+		if (dbKind != null) {
+			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
+		}
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
 			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
 		}
-		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp)) {
+		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp) || compareHoehereBeitraegeChange(kind, dbKind)) {
 			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
 			betreuungTreeSet.addAll(kind.getBetreuungen());
 			betreuungTreeSet.forEach(betreuung -> {
@@ -69,6 +72,10 @@ public class KindServiceHandler {
 			kind.getBetreuungen().clear();
 			kind.getBetreuungen().addAll(betreuungTreeSet);
 		}
+	}
+
+	private boolean compareHoehereBeitraegeChange(KindContainer kind, KindContainer dbKind) {
+		return dbKind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen() != kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen();
 	}
 
 	public void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
@@ -96,7 +103,12 @@ public class KindServiceHandler {
 		}
 	}
 
-	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
+	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer kindContainer) {
+		EinschulungTyp alteEinschulungTyp = null;
+		if (kindContainer != null) {
+			alteEinschulungTyp = kindContainer.getKindJA().getEinschulungTyp();
+		}
+
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
 			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
 		}

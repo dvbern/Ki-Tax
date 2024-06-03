@@ -17,26 +17,12 @@
 
 package ch.dvbern.ebegu.services.kind;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
@@ -50,6 +36,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.easymock.EasyMock.expect;
 
@@ -68,7 +58,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 
 	@ParameterizedTest
 	@EnumSource(value = KinderabzugTyp.class,
-		names = { "SCHWYZ"},
+		names = {"SCHWYZ"},
 		mode = Mode.EXCLUDE)
 	void keinBetreuungsstatusResetOnKindSaveKinderabzugTypNichtSchwyz(KinderabzugTyp kinderabzugTyp) {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
@@ -78,15 +68,22 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, EinschulungTyp.VORSCHULALTER);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
 			betreuung.getBetreuungsstatus())).collect(Collectors.toList()).size(), kindContainer.getBetreuungen().size());
 		verifyAll();
 	}
 
+	private KindContainer createKindContainerEinschulungsTyp(EinschulungTyp einschulungTyp) {
+		KindContainer dbKindContainer = new KindContainer();
+		dbKindContainer.setKindJA(new Kind());
+		dbKindContainer.getKindJA().setEinschulungTyp(einschulungTyp);
+		return dbKindContainer;
+	}
+
 	@ParameterizedTest
 	@EnumSource(value = EinschulungTyp.class,
-		names = { "PRIMARSTUFE", "SEKUNDAR_UND_HOEHER_STUFE" },
+		names = {"PRIMARSTUFE", "SEKUNDAR_UND_HOEHER_STUFE"},
 		mode = Mode.INCLUDE)
 	void keinBetreuungsstatusResetOnKindSaveMitEinschulungAenderung_von_SCHULSTUFE_to_VORSCHULALTER(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
@@ -96,7 +93,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, einschulungTyp);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(einschulungTyp));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
 			betreuung.getBetreuungsstatus())).collect(Collectors.toList()).size(), kindContainer.getBetreuungen().size());
 		verifyAll();
@@ -104,7 +101,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 
 	@ParameterizedTest
 	@EnumSource(value = EinschulungTyp.class,
-		names = { "PRIMARSTUFE", "SEKUNDAR_UND_HOEHER_STUFE" },
+		names = {"PRIMARSTUFE", "SEKUNDAR_UND_HOEHER_STUFE"},
 		mode = Mode.INCLUDE)
 	void resetKindBetreuungenStatusOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_SCHULSTUFE(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(einschulungTyp, false);
@@ -116,7 +113,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		expect(betreuungService.saveBetreuung(kindContainer.getBetreuungen().stream().findFirst().get(), false, null)).andReturn(
 			kindContainer.getBetreuungen().stream().findFirst().get()).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, EinschulungTyp.VORSCHULALTER);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.WARTEN.equals(
 			betreuung.getBetreuungsstatus())).collect(Collectors.toList()).size(), kindContainer.getBetreuungen().size());
 		verifyAll();
@@ -131,7 +128,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, EinschulungTyp.VORSCHULALTER);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
 			betreuung.getBetreuungsstatus())).collect(Collectors.toList()).size(), kindContainer.getBetreuungen().size());
 		verifyAll();
@@ -139,7 +136,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 
 	@ParameterizedTest
 	@EnumSource(value = KinderabzugTyp.class,
-		names = { "SCHWYZ"},
+		names = {"SCHWYZ"},
 		mode = Mode.EXCLUDE)
 	void keinResetKindBetreuungenpensenFragenOnKindSaveKinderabzugTypNichtSchwyz(KinderabzugTyp kinderabzugTyp) {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
@@ -149,7 +146,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, EinschulungTyp.VORSCHULALTER);
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		Assertions.assertNotNull(kindContainer.getBetreuungen()
 			.stream()
 			.findFirst()
@@ -162,6 +159,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			.getBetreuungInFerienzeit());
 		verifyAll();
 	}
+
 	@Test
 	void resetKindBetreuungenpensenFragenOnKindSaveMitEinschulungAenderung_von_SCHULSTUFE_to_VORSCHULALTER() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
@@ -171,7 +169,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, EinschulungTyp.PRIMARSTUFE);
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.PRIMARSTUFE));
 		verifyAll();
 		Assertions.assertNull(kindContainer.getBetreuungen()
 			.stream()
@@ -194,7 +192,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
 		replayAll();
-		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, EinschulungTyp.VORSCHULALTER);
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		verifyAll();
 		Assertions.assertNotNull(kindContainer.getBetreuungen()
 			.stream()
