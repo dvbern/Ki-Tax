@@ -23,8 +23,10 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.gemeindekonfiguration.GemeindeZusaetzlicherGutscheinTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 
@@ -99,25 +101,48 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 	) {
 		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch *aufgrund des Einkommens* vorhanden
 		// also nicht, wenn nur Anspruch auf die Pauschale fuer erweiterte Betreuung!
-		if (!inputGemeinde.isKeinAnspruchAufgrundEinkommen() && inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
-			if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
-				BigDecimal betragKita = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBetragKita();
-				if (betragKita != null) {
-					addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragKita);
-					return betragKita;
-				}
-			} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
-				BigDecimal betragTfo = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBetragTfo();
-				if (betragTfo != null) {
-					addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_TFO, betragTfo);
-					return betragTfo;
-				}
-			} else {
-				throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
-			}
+		if (inputGemeinde.isKeinAnspruchAufgrundEinkommen()
+				|| inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) <= 0) {
+			return BigDecimal.ZERO;
 		}
-		// Kein Anspruch: Zusatzgutschein ebenfalls 0
+
+		GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp =
+				rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinTyp();
+
+		StaedtischerZuschlagRechner zuschlagRechner = getZuschlagRechner(zusaetzlicherGutscheinTyp);
+		BigDecimal staedtischerZuschlag = zuschlagRechner.calculate(inputGemeinde, rechnerParameterDTO);
+
+		if (staedtischerZuschlag != null) {
+			var messageKey = getZuschlagMessageKey(inputGemeinde.getBetreuungsangebotTyp());
+			addMessage(inputGemeinde, messageKey, staedtischerZuschlag);
+			return staedtischerZuschlag;
+		}
+
 		return BigDecimal.ZERO;
+	}
+
+	StaedtischerZuschlagRechner getZuschlagRechner(GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp) {
+		if (zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL) {
+			return new StaedtischerZuschlagPauschalRechner();
+		}
+
+		if (zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.LINEAR) {
+			return new StaedtischerZuschlagLinearRechner();
+		}
+
+		throw new IllegalArgumentException(String.format("No Rechner for Gutscheintyp %s", zusaetzlicherGutscheinTyp));
+	}
+
+	MsgKey getZuschlagMessageKey(BetreuungsangebotTyp betreuungsangebotTyp) {
+		if (betreuungsangebotTyp.isKita()) {
+			return MsgKey.ZUSATZGUTSCHEIN_JA_KITA;
+		}
+		if (betreuungsangebotTyp.isTagesfamilien()) {
+			return MsgKey.ZUSATZGUTSCHEIN_JA_TFO;
+		}
+		throw new IllegalArgumentException(String.format(
+				"Ungültiges Angebot für Zusatzgutschein: %s",
+				betreuungsangebotTyp));
 	}
 
 	@Nonnull

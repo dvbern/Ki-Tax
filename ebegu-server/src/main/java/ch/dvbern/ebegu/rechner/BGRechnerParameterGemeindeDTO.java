@@ -290,6 +290,10 @@ public final class BGRechnerParameterGemeindeDTO {
 		return gemeindeZusaetzlicherGutscheinTyp;
 	}
 
+	public void setGemeindeZusaetzlicherGutscheinTyp(GemeindeZusaetzlicherGutscheinTyp gemeindeZusaetzlicherGutscheinTyp) {
+		this.gemeindeZusaetzlicherGutscheinTyp = gemeindeZusaetzlicherGutscheinTyp;
+	}
+
 	public BigDecimal getGemeindeZusaetzlicherGutscheinLinearTfoMax() {
 		return gemeindeZusaetzlicherGutscheinLinearTfoMax;
 	}
@@ -310,7 +314,34 @@ public final class BGRechnerParameterGemeindeDTO {
 		return gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen;
 	}
 
+	public void setGemeindeZusaetzlicherGutscheinLinearTfoMin(BigDecimal gemeindeZusaetzlicherGutscheinLinearTfoMin) {
+		this.gemeindeZusaetzlicherGutscheinLinearTfoMin = gemeindeZusaetzlicherGutscheinLinearTfoMin;
+	}
+
+	public void setGemeindeZusaetzlicherGutscheinLinearKitaMin(BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMin) {
+		this.gemeindeZusaetzlicherGutscheinLinearKitaMin = gemeindeZusaetzlicherGutscheinLinearKitaMin;
+	}
+
+	public void setGemeindeZusaetzlicherGutscheinLinearKitaMax(BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMax) {
+		this.gemeindeZusaetzlicherGutscheinLinearKitaMax = gemeindeZusaetzlicherGutscheinLinearKitaMax;
+	}
+
+	public void setGemeindeZusaetzlicherGutscheinLinearTfoMax(BigDecimal gemeindeZusaetzlicherGutscheinLinearTfoMax) {
+		this.gemeindeZusaetzlicherGutscheinLinearTfoMax = gemeindeZusaetzlicherGutscheinLinearTfoMax;
+	}
+
+	public void setGemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen(BigDecimal gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen) {
+		this.gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen =
+				gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen;
+	}
+
+	public void setGemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen(BigDecimal gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen) {
+		this.gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen =
+				gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen;
+	}
+
 	public BigDecimal getGemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen() {
 		return gemeindeZusaetzlicherGutscheinMaxMassgebendesEinkommen;
 	}
+
 }

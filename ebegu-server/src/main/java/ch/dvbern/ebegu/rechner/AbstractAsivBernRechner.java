@@ -188,13 +188,12 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
-		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
-		BigDecimal augment = EXACT.divide(product, EXACT.subtract(minEinkommen, maxEinkommen));
-		BigDecimal verguenstigungProTag = EXACT.add(augment, maximaleVerguenstigungProTag);
-		// Max und Min beachten
-		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
-		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
+		BigDecimal verguenstigungProTag = KantonBernRechnerUtil.calculateKantonalerZuschlag(
+				minEinkommen,
+				maxEinkommen,
+				massgebendesEinkommen,
+				maximaleVerguenstigungProTag);
+
 		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
 		BigDecimal zuschlagFuerBesondereBeduerfnisse =
 			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);

@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.gemeindekonfiguration.GemeindeZusaetzlicherGutscheinTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
 import java.math.BigDecimal;
@@ -55,6 +56,7 @@ public final class TestUtils {
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherBabyGutscheinEnabled(false);
+		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinTyp(GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL);
 		parameterDTO.getMahlzeitenverguenstigungParameter().setEnabled(false);
 		parameterDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(false);
 		return parameterDTO;
