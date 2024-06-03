@@ -179,14 +179,15 @@ public final class PlatzbestaetigungTestUtil {
 		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(zeitabschnitt);
 
-		return new ProcessingContext(
-			betreuung,
-			einstellungen,
+		ProcessingContextParams params = new ProcessingContextParams(
 			betreuungEventDTO,
-			getClientPeriodeGueltigkeit(betreuung),
+			einstellungen,
 			new EventMonitor(mock(BetreuungMonitoringService.class), LocalDateTime.now(), betreuungEventDTO.getRefnr(),
 				"client"),
-			true);
+			true,
+			getClientPeriodeGueltigkeit(betreuung));
+
+		return new ProcessingContext(betreuung, null, params);
 	}
 
 	@Nonnull

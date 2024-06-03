@@ -34,12 +34,6 @@ public class ProcessingContext {
 	@Nonnull
 	private final Betreuung betreuung;
 
-	@Nonnull
-	private final BetreuungEinstellungen einstellungen;
-
-	@Nonnull
-	private final BetreuungEventDTO dto;
-
 	@Nullable
 	private final Betreuungsmitteilung latestOpenBetreuungsmitteilung;
 
@@ -53,27 +47,10 @@ public class ProcessingContext {
 
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
-		@Nonnull BetreuungEinstellungen einstellungen,
-		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
-		@Nonnull BetreuungEventDTO dto,
-		@Nonnull DateRange clientGueltigkeitInPeriode,
-		@Nonnull EventMonitor eventMonitor,
-		boolean singleClientForPeriod) {
-		this(
-			betreuung,
-			einstellungen,
-			latestOpenBetreuungsmitteilung,
-			new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, clientGueltigkeitInPeriode));
-	}
-
-	public ProcessingContext(
-		@Nonnull Betreuung betreuung,
-		@Nonnull BetreuungEinstellungen einstellungen,
 		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
 		@Nonnull ProcessingContextParams params
 	) {
 		this.betreuung = betreuung;
-		this.einstellungen = einstellungen;
 		this.latestOpenBetreuungsmitteilung = latestOpenBetreuungsmitteilung;
 		this.params = params;
 	}
@@ -89,7 +66,7 @@ public class ProcessingContext {
 
 	@Nonnull
 	public BetreuungEinstellungen getEinstellungen() {
-		return einstellungen;
+		return params.getEinstellungen();
 	}
 
 	@Nullable

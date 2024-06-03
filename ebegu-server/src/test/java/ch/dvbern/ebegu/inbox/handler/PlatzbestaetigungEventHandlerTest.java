@@ -1227,6 +1227,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			betreuung.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_GS);
 			betreuung.setVorgaengerId("my-vorgaenger-id");
 
+			expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+				.andReturn(BetreuungEinstellungen.builder().build());
+
 			// region setup platzbestätigung
 			betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 			expect(einstellungService

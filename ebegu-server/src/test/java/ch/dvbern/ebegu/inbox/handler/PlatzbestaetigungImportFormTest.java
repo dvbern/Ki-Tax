@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -132,13 +133,14 @@ class PlatzbestaetigungImportFormTest {
 		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
 		betreuung.setBetreuungsstatus(betreuungsstatus);
 
-		return new ProcessingContext(
-			betreuung,
-			betreuungsmitteilung,
+		ProcessingContextParams params = new ProcessingContextParams(
 			new BetreuungEventDTO(),
-			new DateRange(),
+			BetreuungEinstellungen.builder().build(),
 			new EventMonitor(new BetreuungMonitoringServiceBean(), LocalDateTime.now(), "1.2.3.4", "client"),
-			true);
+			true,
+			new DateRange());
+
+		return new ProcessingContext(betreuung, betreuungsmitteilung, params);
 	}
 
 	@Nonnull

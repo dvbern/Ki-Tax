@@ -219,10 +219,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				}
 
 				BetreuungEinstellungen einstellungen = betreuungEinstellungenService.getEinstellungen(betreuung);
-		ProcessingContext ctx =
-			new ProcessingContext(betreuung, einstellungen, dto, overlap.get(), eventMonitor, singleClientForPeriod);
 
-				var params = new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, overlap);
+				var params = new ProcessingContextParams(dto, einstellungen, eventMonitor, singleClientForPeriod, overlap);
 
 				return processEventForExternalClient(params, betreuung);
 			})

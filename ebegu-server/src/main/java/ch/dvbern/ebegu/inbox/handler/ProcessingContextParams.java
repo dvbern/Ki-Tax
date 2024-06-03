@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import lombok.Value;
@@ -28,6 +29,9 @@ public class ProcessingContextParams {
 
 	@Nonnull
 	BetreuungEventDTO dto;
+
+	@Nonnull
+	BetreuungEinstellungen einstellungen;
 
 	@Nonnull
 	EventMonitor eventMonitor;
