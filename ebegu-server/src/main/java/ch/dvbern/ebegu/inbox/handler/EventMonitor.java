@@ -25,7 +25,9 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import lombok.Value;
 
+@Value
 public class EventMonitor {
 
 	@Nonnull
@@ -39,17 +41,6 @@ public class EventMonitor {
 
 	@Nonnull
 	private final String clientName;
-
-	public EventMonitor(
-		@Nonnull BetreuungMonitoringService betreuungMonitoringService,
-		@Nonnull LocalDateTime eventTime,
-		@Nonnull String refnr,
-		@Nonnull String clientName) {
-		this.betreuungMonitoringService = betreuungMonitoringService;
-		this.eventTime = eventTime;
-		this.refnr = refnr;
-		this.clientName = clientName;
-	}
 
 	public boolean isTooLate(@Nullable LocalDateTime lastModification) {
 		return lastModification != null && lastModification.isAfter(eventTime);
@@ -68,20 +59,5 @@ public class EventMonitor {
 	@Nonnull
 	public BetreuungMonitoring record(@Nonnull String format, @Nonnull Object... args) {
 		return record(String.format(format, args));
-	}
-
-	@Nonnull
-	public LocalDateTime getEventTime() {
-		return eventTime;
-	}
-
-	@Nonnull
-	public String getRefnr() {
-		return refnr;
-	}
-
-	@Nonnull
-	public String getClientName() {
-		return clientName;
 	}
 }

@@ -25,7 +25,7 @@ import java.time.LocalDate;
  */
 public class LastenausgleichBGZeitabschnittDataRow {
 
-	private String referenznummer;
+	private String referenzNummer;
 	private long bfsNummer;
 	private String nameGemeinde;
 	private String nachname;
@@ -42,12 +42,12 @@ public class LastenausgleichBGZeitabschnittDataRow {
 
 	public LastenausgleichBGZeitabschnittDataRow() {}
 
-	public String getReferenznummer() {
-		return referenznummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setReferenznummer(String referenznummer) {
-		this.referenznummer = referenznummer;
+	public void setReferenzNummer(String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public long getBfsNummer() {

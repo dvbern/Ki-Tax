@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,25 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import java.util.Collection;
+package ch.dvbern.ebegu.inbox.handler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+import lombok.Value;
 
-public interface BetreuungMonitoringService {
-
-	@Nonnull
-	Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
-		@Nullable String refNummer,
-		@Nullable String benutzer);
+@Value
+public class ProcessingContextParams {
 
 	@Nonnull
-	@CanIgnoreReturnValue
-	BetreuungMonitoring saveBetreuungMonitoring(@Valid @Nonnull BetreuungMonitoring betreuungMonitoring);
+	BetreuungEventDTO dto;
+
+	@Nonnull
+	EventMonitor eventMonitor;
+
+	boolean singleClientForPeriod;
+
+	@Nonnull
+	DateRange gueltigkeitInPeriode;
 }

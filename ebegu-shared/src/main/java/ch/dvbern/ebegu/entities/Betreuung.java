@@ -47,7 +47,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
+import ch.dvbern.ebegu.dto.suchfilter.lucene.ReferenzNummerBridge;
 import ch.dvbern.ebegu.entities.containers.BetreuungAbweichung;
 import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -101,7 +101,7 @@ import org.hibernate.search.annotations.Indexed;
 )
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
-@ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
+@ClassBridge(name = "bGNummer", impl = ReferenzNummerBridge.class, analyze = Analyze.NO)
 public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContainer {
 
 	private static final long serialVersionUID = -6776987863150835840L;
@@ -501,7 +501,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getBGNummer()
+		return "referenzNummer: " + getReferenzNummer()
 			+ ", gesuchInfo: " + this.extractGesuch().getMessageForAccessException();
 	}
 

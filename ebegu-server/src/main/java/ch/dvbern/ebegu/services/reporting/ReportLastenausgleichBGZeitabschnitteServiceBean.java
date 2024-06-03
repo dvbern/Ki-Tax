@@ -19,10 +19,8 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
-import java.time.temporal.TemporalAdjuster;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +39,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
-import javax.xml.crypto.Data;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -230,7 +227,7 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 				var kind = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindJA();
 				var betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 
-				row.setReferenznummer(betreuung.getBGNummer());
+				row.setReferenzNummer(betreuung.getReferenzNummer());
 				row.setNameGemeinde(lastenausgleichDetail.getGemeinde().getName());
 				row.setBfsNummer(lastenausgleichDetail.getGemeinde().getBfsNummer());
 				row.setNachname(kind.getNachname());
@@ -261,7 +258,7 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 			Comparator
 				.comparing(LastenausgleichBGZeitabschnittDataRow::getKorrektur)
 				.thenComparing(LastenausgleichBGZeitabschnittDataRow::getNameGemeinde)
-				.thenComparing(LastenausgleichBGZeitabschnittDataRow::getReferenznummer)
+				.thenComparing(LastenausgleichBGZeitabschnittDataRow::getReferenzNummer)
 				.thenComparing(LastenausgleichBGZeitabschnittDataRow::getVon)
 		);
 

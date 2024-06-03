@@ -129,8 +129,8 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private String begruendungAuszahlungAnInstitution;
 
-	// transient (Not stored on server, just an information for client)
-	private String bgNummer;
+	@Nullable
+	private String referenzNummer;
 
 	// transient (Not stored on server, just an information for client)
 	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
@@ -328,12 +328,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 		this.anmeldungMutationZustand = anmeldungMutationZustand;
 	}
 
-	public String getBgNummer() {
-		return bgNummer;
+	@Nullable
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public boolean isKeineDetailinformationen() {

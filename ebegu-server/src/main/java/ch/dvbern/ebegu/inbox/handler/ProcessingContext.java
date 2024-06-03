@@ -21,8 +21,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 
@@ -30,31 +32,39 @@ public class ProcessingContext {
 
 	@Nonnull
 	private final Betreuung betreuung;
+
+	@Nullable
+	private final Betreuungsmitteilung latestOpenBetreuungsmitteilung;
+
 	@Nonnull
-	private final BetreuungEventDTO dto;
-	@Nonnull
-	private final DateRange gueltigkeitInPeriode;
-	@Nonnull
-	private final EventMonitor eventMonitor;
+	private final ProcessingContextParams params;
 
 	@Nonnull
 	private final Set<String> humanConfirmationMessages = new HashSet<>();
 
 	private boolean isReadyForBestaetigen = true;
 
-	private final boolean singleClientForPeriod;
-
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
+		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
 		@Nonnull EventMonitor eventMonitor,
 		boolean singleClientForPeriod) {
+		this(
+			betreuung,
+			latestOpenBetreuungsmitteilung,
+			new ProcessingContextParams(dto, eventMonitor, singleClientForPeriod, clientGueltigkeitInPeriode));
+	}
+
+	public ProcessingContext(
+		@Nonnull Betreuung betreuung,
+		@Nullable Betreuungsmitteilung latestOpenBetreuungsmitteilung,
+		@Nonnull ProcessingContextParams params
+	) {
 		this.betreuung = betreuung;
-		this.dto = dto;
-		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
-		this.eventMonitor = eventMonitor;
-		this.singleClientForPeriod = singleClientForPeriod;
+		this.latestOpenBetreuungsmitteilung = latestOpenBetreuungsmitteilung;
+		this.params = params;
 	}
 
 	public void requireHumanConfirmation() {
@@ -66,18 +76,28 @@ public class ProcessingContext {
 		return betreuung;
 	}
 
+	@Nullable
+	public Betreuungsmitteilung getLatestOpenBetreuungsmitteilung() {
+		return latestOpenBetreuungsmitteilung;
+	}
+
+	@Nonnull
+	public ProcessingContextParams getParams() {
+		return params;
+	}
+
 	@Nonnull
 	public BetreuungEventDTO getDto() {
-		return dto;
+		return params.getDto();
 	}
 
 	@Nonnull
 	public DateRange getGueltigkeitInPeriode() {
-		return gueltigkeitInPeriode;
+		return params.getGueltigkeitInPeriode();
 	}
 
 	public boolean isGueltigkeitCoveringPeriode() {
-		return gueltigkeitInPeriode.equals(betreuung.extractGesuchsperiode().getGueltigkeit());
+		return getGueltigkeitInPeriode().equals(betreuung.extractGesuchsperiode().getGueltigkeit());
 	}
 
 	public boolean isReadyForBestaetigen() {
@@ -95,10 +115,10 @@ public class ProcessingContext {
 
 	@Nonnull
 	public EventMonitor getEventMonitor() {
-		return eventMonitor;
+		return params.getEventMonitor();
 	}
 
 	public boolean isSingleClientForPeriod() {
-		return singleClientForPeriod;
+		return params.isSingleClientForPeriod();
 	}
 }

@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -64,16 +63,18 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
-	public Optional<BigDecimal> getTarifProHauptmahlzeit() {
-		return Optional.ofNullable(tarifProHauptmahlzeit);
+	@Nullable
+	public BigDecimal getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
 	}
 
 	public void setTarifProHauptmahlzeit(@Nullable BigDecimal tarifProHauptmahlzeit) {
 		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
 	}
 
-	public Optional<BigDecimal> getTarifProNebenmahlzeit() {
-		return Optional.ofNullable(tarifProNebenmahlzeit);
+	@Nullable
+	public BigDecimal getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
 	}
 
 	public void setTarifProNebenmahlzeit(@Nullable BigDecimal tarifProNebenmahlzeit) {

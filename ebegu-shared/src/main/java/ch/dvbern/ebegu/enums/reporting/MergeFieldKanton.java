@@ -69,7 +69,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
-	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
+	referenzNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
 	gesuchId(new SimpleMergeField<>("gesuchId", STRING_CONVERTER)),
 	name(new SimpleMergeField<>("name", STRING_CONVERTER)),
 	vorname(new SimpleMergeField<>("vorname", STRING_CONVERTER)),
