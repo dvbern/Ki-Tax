@@ -328,6 +328,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
+		this.hohereBeitrag = roundToFrankenRappen(hohereBeitrag);
 		return this;
 	}
 

@@ -916,4 +916,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationInputAsiv.setBetreuungInFerienzeit(betreuungInFerienzeit);
 		this.bgCalculationInputGemeinde.setBetreuungInFerienzeit(betreuungInFerienzeit);
 	}
+
+	@Nullable
+	public BigDecimal getHohereBeitrag() {
+		return getRelevantBgCalculationResult().getHohereBeitrag();
+	}
+
+	@Nullable
+	public Bedarfsstufe getBedarfsstufe() {
+		return getRelevantBgCalculationResult().getBedarfsstufe();
+	}
 }
