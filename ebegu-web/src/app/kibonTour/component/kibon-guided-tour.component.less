@@ -1,36 +1,41 @@
-/*!
- * Copyright (C) 2019 DV Bern AG, Switzerland
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+@width100: 100%;
+@height100: 100%;
+@tour-zindex: 1081;
+@tour-step-color: #ffffff;
+@tour-text-color: #231f1f;
+@tour-next-button-color: #D50025;
+@tour-next-button-hover: #BF0425;
+@tour-back-button-color: @tour-next-button-color;
+@tour-next-text-color: @tour-step-color;
+@tour-next-text-hover: @tour-step-color;
+@tour-skip-link-color: #5e5e5e;
+@tour-orb-color: #625aff;
+@tour-shadow-color: #4c4c4c;
 
-ngx-guided-tour {
+
+:host {
+    z-index: 90000;
+
     .guided-tour-user-input-mask {
         position: fixed;
         top: 0;
         left: 0;
         display: block;
-        height: 100%;
-        width: 100%;
+        height: @height100;
         max-height: 100vh;
+        width: @width100;
         text-align: center;
         opacity: 0;
+
+        z-index: @tour-zindex;
+        background: black;
     }
 
     .guided-tour-spotlight-overlay {
         position: fixed;
         box-shadow: 0 0 0 9999px rgba(0, 0, 0, .7), 0 0 1.5rem rgba(0, 0, 0, .5);
+        opacity: 0;
+        z-index: @tour-zindex + 1;
     }
 
     .tour-orb {
@@ -38,6 +43,9 @@ ngx-guided-tour {
         width: 20px;
         height: 20px;
         border-radius: 50%;
+        z-index: @tour-zindex - 2;
+        background-color: @tour-orb-color;
+        box-shadow: 0 0 0.3rem 0.1rem @tour-orb-color;
 
         .tour-orb-ring {
             width: 35px;
@@ -47,12 +55,14 @@ ngx-guided-tour {
             left: 50%;
             transform: translate(-50%, -50%);
             animation: pulse 2s linear infinite;
+            border: 1rem solid @tour-orb-color;
+            box-shadow: 0 0 0.1rem 0.1rem @tour-orb-color;
 
             &:after {
                 content: '';
                 display: inline-block;
-                height: 100%;
-                width: 100%;
+                height: @height100;
+                width: @width100;
                 border-radius: 50%;
             }
         }
@@ -69,21 +79,35 @@ ngx-guided-tour {
         }
     }
 
+
     .tour-step {
         position: fixed;
+        z-index: @tour-zindex + 2;
+
         &.page-tour-step {
-            //    max-width: 400px;
             width: 50%;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%)
+            transform: translate(-50%, -50%);
         }
+
+
         &.tour-bottom, &.tour-bottom-right, &.tour-bottom-left {
             .tour-arrow::before {
                 position: absolute;
             }
+
             .tour-block {
-                margin-top: 10px;
+                margin-top: 22px;
+
+                &::before {
+                    border-bottom: 22px solid #ffffff;
+                    .tour-triangle(topright, @tour-step-color);
+                    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                        top: 0;
+                        .tour-triangle(topright, black);
+                    }
+                }
             }
         }
 
@@ -94,8 +118,17 @@ ngx-guided-tour {
                 position: absolute;
                 bottom: 0;
             }
+
             .tour-block {
-                margin-bottom: 10px;
+                margin-bottom: 22px;
+
+                &::before {
+                    .tour-triangle(bottom, @tour-step-color);
+                    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                        top: 0;
+                        .tour-triangle(bottom, black);
+                    }
+                }
             }
         }
 
@@ -103,6 +136,11 @@ ngx-guided-tour {
             .tour-arrow::before {
                 transform: translateX(-50%);
                 left: 50%;
+            }
+
+            .tour-block::before {
+                left: 50%;
+                transform: translateX(-50%);
             }
         }
 
@@ -112,7 +150,8 @@ ngx-guided-tour {
                 right: 14px;
                 left: auto;
             }
-            transform: translateX(20px);
+
+            transform: translateX(22px);
         }
 
         &.tour-top-right {
@@ -135,9 +174,15 @@ ngx-guided-tour {
                 transform: translateX(-100%);
                 top: 5px;
             }
+
             .tour-block {
-                margin-right: 10px;
+                margin-right: 22px;
+
+                &::before {
+                    .tour-triangle(right, @tour-step-color);
+                }
             }
+
             transform: translateY(-18px);
         }
 
@@ -147,13 +192,32 @@ ngx-guided-tour {
                 left: 0;
                 top: 5px;
             }
+
             .tour-block {
-                margin-left: 10px;
+                margin-left: 22px;
+
+                &::before {
+                    .tour-triangle(left, @tour-step-color);
+                }
             }
         }
 
         .tour-block {
             padding: 15px 25px;
+            color: @tour-text-color;
+            background-color: @tour-step-color;
+            -webkit-filter: drop-shadow(0px 3px 4px rgba(70, 70, 70, 1));
+            filter: drop-shadow(0px 3px 4px rgba(70, 70, 70, 1));
+        }
+
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            .tour-block {
+                &::before {
+                    display: block;
+                }
+
+                border: 2px solid black
+            }
         }
 
         .tour-title {
@@ -164,21 +228,21 @@ ngx-guided-tour {
         h3.tour-title {
             font-size: 20px;
         }
+
         h2.tour-title {
             font-size: 30px;
         }
 
         .tour-content {
+            font-size: 15px;
             min-height: 80px;
             padding-bottom: 30px;
-            font-size: 15px;
         }
 
         .tour-buttons {
-            overflow: hidden; // clearfix
+            overflow: hidden;
 
             button.link-button {
-                padding-left: 0;
                 font-size: 15px;
                 font-weight: bold;
                 max-width: none !important;
@@ -191,8 +255,13 @@ ngx-guided-tour {
                 background-color: transparent;
                 position: relative;
                 outline: none;
-                padding: 0 15px;
+                padding: 0 15px 0 0;
                 -webkit-appearance: button;
+                appearance: button;
+            }
+
+            button.skip-button {
+                color: @tour-skip-link-color;
             }
 
             button.skip-button.link-button {
@@ -202,6 +271,7 @@ ngx-guided-tour {
 
             .back-button {
                 float: right;
+                color: @tour-back-button-color;
             }
 
             .next-button {
@@ -213,7 +283,62 @@ ngx-guided-tour {
                 outline: none;
                 padding-left: 10px;
                 padding-right: 10px;
+
+                background-color: @tour-next-button-color;
+                color: @tour-next-text-color;
+
+                &:hover {
+                    background-color: @tour-next-button-hover;
+                    color: @tour-next-text-hover;
+                }
             }
         }
     }
+}
+
+.tour-triangle(@direction, @color: currentColor, @size: 22px) {
+    @opposite-direction: top;
+    position: absolute;
+    width: 0;
+    height: 0;
+    content: '';
+    z-index: 2;
+    @perpendicular-borders: @size solid transparent;
+    border-left: @perpendicular-borders;
+    border-right: @perpendicular-borders;
+    @opposite-border: @size solid @color;
+
+    & when (@direction = top) {
+        left: 50%;
+        transform: translateX(-50%);
+        @opposite-direction: bottom;
+        bottom: 100%;
+        border-bottom: @opposite-border;
+    }
+
+    & when (@direction = bottom) {
+        left: 50%;
+        transform: translateX(-50%);
+        @opposite-direction: top;
+        top: 100%;
+        border-top: @opposite-border;
+    }
+
+    & when (@direction = right) {
+        @opposite-direction: left;
+        left: 100%;
+        border-left: @opposite-border;
+    }
+
+    & when (@direction = left) {
+        @opposite-direction: right;
+        right: 100%;
+        border-right: @opposite-border;
+    }
+
+    & when (@direction = topright) {
+        @opposite-direction: bottom;
+        bottom: 100%;
+    }
+
 }
