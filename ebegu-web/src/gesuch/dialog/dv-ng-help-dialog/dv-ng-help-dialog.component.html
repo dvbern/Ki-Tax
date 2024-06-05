@@ -58,7 +58,15 @@
         <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{ 'MANDANT_TEL_BKD' | translate }}</a></p>
     </div>
 
-    <ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
+    <!--<ng-container [ngTemplateOutlet]="tourStarten"></ng-container>-->
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a (click)="startTour()" href="">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
 
     <ng-container [ngTemplateOutlet]="blog"></ng-container>
 </ng-template>
@@ -102,17 +110,6 @@
     </div>
 </ng-template>
 
-<ng-template #so>
-    <div class="margin-top-40">
-        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
-        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
-        <p><a href="tel:+41 58 258 16 82">+41 58 258 16 82</a></p>
-        <p><a href="mailto:kibon@vseg.ch">kibon&#64;vseg.ch</a></p>
-    </div>
-
-    <ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
-</ng-template>
-
 <ng-template #lu>
     <div class="margin-top-40">
         <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
@@ -122,7 +119,14 @@
         <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
     </div>
 
-    <ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a (click)="startTour()" href="">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
 </ng-template>
 
 <ng-template #ar>
@@ -132,7 +136,14 @@
         <p><a href="mailto:kibeg@sovar.ch">kibeg&#64;sovar.ch</a></p>
     </div>
 
-    <ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a (click)="startTour()" href="">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
 </ng-template>
 
 
@@ -150,5 +161,14 @@
     <div class="margin-top-40">
         <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
         <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a (click)="startTour()" href="">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
     </div>
 </ng-template>
