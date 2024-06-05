@@ -16,19 +16,21 @@ import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
 import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 import {
     DvNgGsRemovalConfirmationDialogComponent,
-    GSRemovalConfirmationDialogData,
+    GSRemovalConfirmationDialogData
 } from '../dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
 import {FamiliensituationUtil} from '../FamiliensituationUtil';
+import {MatDialog} from '@angular/material/dialog';
 
 const LOG = LogFactory.createLog('FamiliensituationSchwyzComponent');
 
 @Component({
     selector: 'dv-familiensituation-schwyz',
     templateUrl: './familiensituation-schwyz.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionView implements OnInit {
 
+    protected readonly TSGesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet;
     private readonly initialFamiliensituation: TSFamiliensituation;
 
     public constructor(
@@ -39,7 +41,7 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         protected readonly authService: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly translate: TranslateService,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
@@ -48,13 +50,24 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
 
     public ngOnInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
                 .forEach(value => {
                     this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                 });
         }, error => LOG.error(error));
+    }
+
+    public getBisherText(): string {
+        return this.translate.instant(
+            this.getFamiliensituationGS()?.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE ?
+                'LABEL_NEIN' :
+                'LABEL_JA');
+    }
+
+    public hasError(): boolean {
+        return false;
     }
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
@@ -65,8 +78,8 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
                 {
                     data: {
                         gsFullName: this.getGesuch().gesuchsteller2
-                            ? this.getGesuch().gesuchsteller2.extractFullName() : '',
-                    },
+                            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
+                    }
                 }).afterClosed().toPromise().then(async hasConfirmed => {
                 if (hasConfirmed) {
                     onResult(await this.save());
@@ -85,19 +98,6 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
                 FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation,
                     this.getFamiliensituation(),
                     this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis));
-    }
-
-    protected readonly TSGesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet;
-
-    public getBisherText(): string {
-        return this.translate.instant(
-            this.getFamiliensituationGS()?.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE ?
-                'LABEL_NEIN' :
-                'LABEL_JA');
-    }
-
-    public hasError(): boolean {
-        return false;
     }
 
 }
