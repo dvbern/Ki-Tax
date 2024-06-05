@@ -235,7 +235,7 @@ public class BetreuungsgutscheinEvaluator {
 				// Die Initialen Zeitabschnitte sind die "Restansprüche" aus der letzten Betreuung
 				List<VerfuegungZeitabschnitt> zeitabschnitte = restanspruchZeitabschnitte;
 				if (isDebug) {
-					LOG.info("BG-Nummer: {}", platz.getBGNummer());
+					LOG.info("RefNr: {}", platz.getReferenzNummer());
 					LOG.info("{}: ", RestanspruchInitializer.class.getSimpleName());
 					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 						LOG.info(verfuegungZeitabschnitt.toString());

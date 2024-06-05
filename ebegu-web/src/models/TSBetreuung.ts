@@ -54,7 +54,7 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _belegungTagesschule: TSBelegungTagesschule;
     private _belegungFerieninsel: TSBelegungFerieninsel;
     private _anmeldungMutationZustand: TSAnmeldungMutationZustand;
-    private _bgNummer: string;
+    private _referenzNummer: string;
     private _keineDetailinformationen: boolean = false;
     private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
     private _eingewoehnung: boolean = false;
@@ -314,12 +314,12 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         this._anmeldungMutationZustand = value;
     }
 
-    public get bgNummer(): string {
-        return this._bgNummer;
+    public get referenzNummer(): string {
+        return this._referenzNummer;
     }
 
-    public set bgNummer(value: string) {
-        this._bgNummer = value;
+    public set referenzNummer(value: string) {
+        this._referenzNummer = value;
     }
 
     public get anmeldungTagesschuleZeitabschnitts(): Array<TSAnmeldungTagesschuleZeitabschnitt> {

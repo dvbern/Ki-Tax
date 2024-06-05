@@ -15,11 +15,9 @@
 
 package ch.dvbern.ebegu.reporting.gesuchstichtag;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public class GesuchStichtagDataRow {
 
-	private String bgNummer;
+	private String referenzNummer;
 	private String gemeinde;
 	private Integer gesuchLaufNr;
 	private String institution;
@@ -30,7 +28,7 @@ public class GesuchStichtagDataRow {
 	private Integer beschwerde;
 
 	public GesuchStichtagDataRow(
-		String bgNummer,
+		String referenzNummer,
 		String gemeinde,
 		Integer gesuchLaufNr,
 		String institution,
@@ -40,7 +38,7 @@ public class GesuchStichtagDataRow {
 		Integer mahnungen,
 		Integer beschwerde
 	) {
-		this.bgNummer = bgNummer;
+		this.referenzNummer = referenzNummer;
 		this.gesuchLaufNr = gesuchLaufNr;
 		this.institution = institution;
 		this.betreuungsTyp = betreuungsTyp;
@@ -51,13 +49,12 @@ public class GesuchStichtagDataRow {
 		this.gemeinde = gemeinde;
 	}
 
-	@SuppressFBWarnings("NM_CONFUSING")
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public Integer getGesuchLaufNr() {

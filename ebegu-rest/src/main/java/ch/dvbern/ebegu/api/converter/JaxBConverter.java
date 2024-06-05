@@ -3691,7 +3691,7 @@ public class JaxBConverter extends AbstractConverter {
 				.getGesuchsperiode()));
 		}
 		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
-		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
+		jaxBetreuung.setReferenzNummer(betreuungFromServer.getReferenzNummer());
 		jaxBetreuung.setFinSitRueckwirkendKorrigiertInThisMutation(betreuungFromServer.isFinSitRueckwirkendKorrigiertInThisMutation());
 		return jaxBetreuung;
 	}

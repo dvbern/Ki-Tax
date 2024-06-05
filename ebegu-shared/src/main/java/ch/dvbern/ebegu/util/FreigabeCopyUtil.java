@@ -352,6 +352,7 @@ public final class FreigabeCopyUtil {
 		gs.setErsatzeinkommen(ja.getErsatzeinkommen());
 		gs.setErhalteneAlimente(ja.getErhalteneAlimente());
 		gs.setBruttovermoegen(ja.getBruttovermoegen());
+		gs.setBruttoLohn(ja.getBruttoLohn());
 		gs.setSchulden(ja.getSchulden());
 		gs.setGeschaeftsgewinnBasisjahr(ja.getGeschaeftsgewinnBasisjahr());
 		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
@@ -492,7 +493,6 @@ public final class FreigabeCopyUtil {
 		gs.setVeranlagtVorjahr(ja.getVeranlagtVorjahr());
 		gs.setUnterhaltsBeitraege(ja.getUnterhaltsBeitraege());
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
-		gs.setBruttoLohn(ja.getBruttoLohn());
 		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
 		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 		copyFinSitZusatzangabenAppenzell(gs, ja);

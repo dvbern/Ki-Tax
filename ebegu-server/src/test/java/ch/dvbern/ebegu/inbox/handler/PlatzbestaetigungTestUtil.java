@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
@@ -35,6 +36,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumValueMapper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
@@ -50,6 +52,7 @@ import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.spotify.hamcrest.pojo.IsPojo;
 import lombok.experimental.UtilityClass;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -168,18 +171,23 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
-	public static ProcessingContext initProcessingContext(@Nonnull ZeitabschnittDTO zeitabschnitt) {
+	public static ProcessingContext initProcessingContext(
+		@Nonnull ZeitabschnittDTO zeitabschnitt,
+		@Nonnull BetreuungEinstellungen einstellungen
+	) {
 		Gesuch gesuch = PlatzbestaetigungTestUtil.initGesuch();
 		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
 		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(zeitabschnitt);
 
-		return new ProcessingContext(
-			betreuung,
+		ProcessingContextParams params = new ProcessingContextParams(
 			betreuungEventDTO,
-			getClientPeriodeGueltigkeit(betreuung),
+			einstellungen,
 			new EventMonitor(mock(BetreuungMonitoringService.class), LocalDateTime.now(), betreuungEventDTO.getRefnr(),
 				"client"),
-			true);
+			true,
+			getClientPeriodeGueltigkeit(betreuung));
+
+		return new ProcessingContext(betreuung, null, params);
 	}
 
 	@Nonnull
@@ -196,23 +204,21 @@ public final class PlatzbestaetigungTestUtil {
 	@Nonnull
 	public static Matcher<Processing> failed(@Nonnull Matcher<String> messageMatcher) {
 		return pojo(Processing.class)
-			.where(Processing::isProcessingSuccess, is(false))
-			.where(Processing::isProcessingIgnored, is(false))
+			.where(Processing::getState, is(ProcessingState.FAILURE))
 			.where(Processing::getMessage, messageMatcher);
 	}
 
 	@Nonnull
-	public static Matcher<Processing> ignored(@Nonnull String message) {
-		return ignored(is(message));
+	public static Matcher<PlatzbestaetigungProcessing> ignored(@Nonnull ImportForm importForm, @Nonnull String message) {
+		return pojo(PlatzbestaetigungProcessing.class)
+			.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.IGNORE))
+			.where(PlatzbestaetigungProcessing::getProcessed, Matchers.hasItem(pojo(PlatzbestaetigungProcessing.class)
+				.where(PlatzbestaetigungProcessing::getImportForm, is(importForm))
+				.where(PlatzbestaetigungProcessing::getState, is(ProcessingState.IGNORE))
+				.where(PlatzbestaetigungProcessing::getMessage, is(message))
+			));
 	}
 
-	@Nonnull
-	public static Matcher<Processing> ignored(@Nonnull Matcher<String> messageMatcher) {
-		return pojo(Processing.class)
-			.where(Processing::isProcessingSuccess, is(false))
-			.where(Processing::isProcessingIgnored, is(true))
-			.where(Processing::getMessage, messageMatcher);
-	}
 
 	@Nonnull
 	public static IsPojo<AbstractMahlzeitenPensum> matches(@Nonnull ZeitabschnittDTO z) {

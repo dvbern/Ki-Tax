@@ -25,7 +25,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
@@ -71,13 +70,7 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
-		String refnr = eventMonitor.getRefnr();
-		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
-		if (mandant.isEmpty()) {
-			return Processing.failure("Mandant konnte nicht gefunden werden.");
-		}
-
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(refnr, mandant.get())
+		return betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr())
 			.map(anmeldungTagesschule -> processEventForAblehnung(eventMonitor, anmeldungTagesschule))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}

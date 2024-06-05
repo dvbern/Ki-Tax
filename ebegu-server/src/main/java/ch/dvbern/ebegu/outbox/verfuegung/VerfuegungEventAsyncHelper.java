@@ -36,6 +36,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Objects.requireNonNull;
+
 @Stateless
 public class VerfuegungEventAsyncHelper {
 
@@ -69,7 +71,7 @@ public class VerfuegungEventAsyncHelper {
 
 		LOG.info(
 			"Converting {} in Thread {} and Transaction {}",
-			verfuegung.getBetreuung().getBGNummer(),
+			requireNonNull(verfuegung.getBetreuung()).getReferenzNummer(),
 			Thread.currentThread(),
 			txReg.getTransactionKey());
 

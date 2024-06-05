@@ -67,33 +67,33 @@ public final class BetreuungUtil {
 		return BigDecimal.ZERO;
 	}
 
-	public static Long getFallnummerFromBGNummer(String bgNummer) {
+	public static Long getFallnummerFromReferenzNummer(String referenzNummer) {
 		// 17.000120.003.1.2 -> 120 (long)
-		return Long.valueOf(COMPILE.matcher(bgNummer.substring(3, 9)).replaceFirst(""));
+		return Long.valueOf(COMPILE.matcher(referenzNummer.substring(3, 9)).replaceFirst(""));
 	}
 
-	public static int getYearFromBGNummer(String bgNummer) {
+	public static int getYearFromReferenzNummer(String referenzNummer) {
 		// 17.000120.003.1.2 -> 17 (int)
-		return Integer.valueOf(bgNummer.substring(0, 2)) + 2000;
+		return Integer.valueOf(referenzNummer.substring(0, 2)) + 2000;
 	}
 
-	public static int getGemeindeFromBGNummer(String bgNummer) {
+	public static int getGemeindeFromReferenzNummer(String referenzNummer) {
 		// 17.000120.003.1.2 -> 3 (int)
-		return Integer.valueOf(bgNummer.split("\\.", -1)[2]);
+		return Integer.valueOf(referenzNummer.split("\\.", -1)[2]);
 	}
 
-	public static int getKindNummerFromBGNummer(String bgNummer) {
+	public static int getKindNummerFromReferenzNummer(String referenzNummer) {
 		// 17.000120.003.1.2 -> 1 (int) can have more than 9 Kind
-		return Integer.valueOf(bgNummer.split("\\.", -1)[3]);
+		return Integer.valueOf(referenzNummer.split("\\.", -1)[3]);
 	}
 
-	public static int getBetreuungNummerFromBGNummer(String bgNummer) {
+	public static int getBetreuungNummerFromReferenzNummer(String referenzNummer) {
 		// 17.000120.003.1.2 -> 2 (int)
-		return Integer.valueOf(bgNummer.split("\\.", -1)[4]);
+		return Integer.valueOf(referenzNummer.split("\\.", -1)[4]);
 	}
 
-	public static boolean validateBGNummer(String bgNummer) {
-		return bgNummer.matches("^\\d{2}\\.\\d{6}.\\d{3}\\.\\d+\\.\\d+$");
+	public static boolean validateReferenzNummer(String referenzNummer) {
+		return referenzNummer.matches("^\\d{2}\\.\\d{6}.\\d{3}\\.\\d+\\.\\d+$");
 	}
 
 	@Nonnull

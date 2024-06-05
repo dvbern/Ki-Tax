@@ -359,29 +359,10 @@ export class DVMitteilungListController implements IOnInit {
         }
     }
 
-    public getBgNummer(): string {
-        let bgNummer = '';
-        if (this.betreuung) {
-            bgNummer = this.ebeguUtil.calculateBetreuungsId(this.betreuung.gesuchsperiode,
-                this.dossier.fall,
-                this.dossier.gemeinde,
-                this.betreuung.kindNummer,
-                this.betreuung.betreuungNummer);
-        }
-        return bgNummer;
-    }
-
     public betreuungAsString(mitteilung: TSMitteilung): string {
-        let betreuungAsString: string;
-        if (mitteilung.betreuung) {
-            const bgNummer = this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode,
-                mitteilung.dossier.fall,
-                mitteilung.dossier.gemeinde,
-                mitteilung.betreuung.kindNummer,
-                mitteilung.betreuung.betreuungNummer);
-            betreuungAsString = `${mitteilung.betreuung.kindFullname}, ${bgNummer}`;
-        }
-        return betreuungAsString;
+        return mitteilung.betreuung ?
+            `${mitteilung.betreuung.kindFullname}, ${(mitteilung.betreuung.referenzNummer)}` :
+            '';
     }
 
     public gotoBetreuung(mitteilung: TSMitteilung): void {

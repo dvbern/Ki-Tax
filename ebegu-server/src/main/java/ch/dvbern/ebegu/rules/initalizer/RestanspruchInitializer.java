@@ -31,10 +31,10 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
-import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.FERIENINSEL;
 import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.MITTAGSTISCH;
 import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
 
@@ -64,7 +64,7 @@ public class RestanspruchInitializer extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE, FERIENINSEL);
+		return List.of(BetreuungsangebotTyp.values());
 	}
 
 	@Nonnull

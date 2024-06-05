@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
@@ -121,7 +122,8 @@ class EingewoehnungPauschaleMapperFactoryTest extends EasyMockSupport {
 	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
 		replayAll();
 
-		ProcessingContext ctx = initProcessingContext(z);
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+		ProcessingContext ctx = initProcessingContext(z, einstellungen);
 		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnungPauschale(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();

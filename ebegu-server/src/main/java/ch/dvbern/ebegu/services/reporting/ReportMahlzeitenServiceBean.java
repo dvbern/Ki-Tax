@@ -177,7 +177,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		zeitabschnittList.addAll(getAnmeldungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, gemeinde));
 		List<MahlzeitenverguenstigungDataRow> dataRows = convertToMahlzeitDataRow(zeitabschnittList);
 
-		dataRows.sort(Comparator.comparing(MahlzeitenverguenstigungDataRow::getBgNummer)
+		dataRows.sort(Comparator.comparing(MahlzeitenverguenstigungDataRow::getReferenzNummer)
 			.thenComparing(MahlzeitenverguenstigungDataRow::getZeitabschnittVon));
 
 		return dataRows;
@@ -412,7 +412,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			row.setTraegerschaft(platz.getInstitutionStammdaten().getInstitution().getTraegerschaft().getName());
 		}
 		row.setBetreuungsTyp(platz.getBetreuungsangebotTyp());
-		row.setBgNummer(platz.getBGNummer());
+		row.setReferenzNummer(platz.getReferenzNummer());
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

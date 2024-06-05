@@ -21,9 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -38,8 +36,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -74,10 +70,11 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -117,16 +114,11 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private Gesuch gesuch_1GS = null;
 	private Gemeinde gemeinde = null;
 	private EventMonitor eventMonitor = null;
-	private Mandant mandant;
 
 	@BeforeEach
 	void setUp() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
-		mandant = requireNonNull(gemeinde.getMandant());
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
 			new Testfall01_WaeltiDagmar(gesuchsperiode, false, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall_1GS.createFall();
@@ -147,19 +139,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	class IgnoreEventTest {
 
 		@Test
-		void ignoreWhenMandantNotFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.empty());
-
-			testIgnored("Mandant konnte nicht gefunden werden.");
-		}
-
-		@Test
 		void ignoreEventWhenNoBetreuungFound() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-				.andReturn(Optional.of(mandant));
-
-			expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, false, mandant))
+			expect(betreuungService.findBetreuungByReferenzNummer(REF_NUMMER, false))
 				.andReturn(Optional.empty());
 
 			testIgnored("Betreuung nicht gefunden.");
@@ -353,11 +334,9 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 		@Nonnull
 		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-					.andReturn(Optional.of(mandant));
-			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
+			Capture<Betreuungsmitteilung> captured = newCapture();
 			//noinspection ConstantConditions
-			mitteilungService.replaceBetreungsmitteilungen(EasyMock.capture(captured));
+			mitteilungService.replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(capture(captured), eq(REF_NUMMER));
 			expectLastCall();
 
 			return captured;
@@ -366,10 +345,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void expectBetreuungFound(@Nonnull Betreuung foundBetreuung) {
-		expect(betreuungEventHelper.getMandantFromBgNummer(anyString()))
-			.andReturn(Optional.of(mandant));
-
-		expect(betreuungService.findBetreuungByBGNummer(REF_NUMMER, false, mandant))
+		expect(betreuungService.findBetreuungByReferenzNummer(REF_NUMMER, false))
 			.andReturn(Optional.of(foundBetreuung));
 	}
 

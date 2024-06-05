@@ -28,13 +28,13 @@ import org.hibernate.search.bridge.TwoWayFieldBridge;
  * Damit die bridge in queries gebraucht werden kann ist es ausserdem eine {@link TwoWayFieldBridge} welche
  * mit strings umgehen kann
  */
-public class BGNummerBridge implements TwoWayFieldBridge {
+public class ReferenzNummerBridge implements TwoWayFieldBridge {
 
 	@Override
 	public void set(
 		String name, Object value, Document document, LuceneOptions luceneOptions) {
 		Betreuung betreuung = (Betreuung) value;
-		String fieldValue = betreuung.getBGNummer();
+		String fieldValue = betreuung.getReferenzNummer();
 		Field field = new StringField(name, fieldValue, luceneOptions.getStore());
 		field.setBoost(luceneOptions.getBoost());
 		document.add(field);
