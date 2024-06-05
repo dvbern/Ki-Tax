@@ -26,6 +26,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
+import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
@@ -266,7 +267,8 @@ export class EditGemeindeBGComponent implements OnInit {
         }
     }
 
-    public changeKonfigZusaetzlicherGutscheinTyp(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigZusaetzlicherGutscheinTyp(gk: TSGemeindeKonfiguration, $event: MatButtonToggleChange): void {
+        gk.konfigZusaetzlicherGutscheinTyp = $event.value;
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP, gk.konfigZusaetzlicherGutscheinTyp, gk);
         // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen

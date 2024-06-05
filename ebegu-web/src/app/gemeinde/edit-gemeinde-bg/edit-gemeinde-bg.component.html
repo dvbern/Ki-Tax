@@ -785,8 +785,8 @@
                                                          && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <mat-button-toggle-group name="konfigZusaetzlicherGutscheinTyp"
                                                                                  aria-label="Zusätzlicher Gutschein Typ"
-                                                                                 [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
-                                                                                 (change)="changeKonfigZusaetzlicherGutscheinTyp(konfigurationsListe[i])">
+                                                                                 [value]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp"
+                                                                                 (change)="changeKonfigZusaetzlicherGutscheinTyp(konfigurationsListe[i], $event)">
                                                             <mat-button-toggle [value]="TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL"
                                                                                [checked]="konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
                                                                 {{'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP_PAUSCHAL' | translate}}
