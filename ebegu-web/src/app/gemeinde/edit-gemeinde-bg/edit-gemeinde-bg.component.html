@@ -975,11 +975,13 @@
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMinMassgebendesEinkommen)
                                                          && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <label for="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
+                                                               class="required"
                                                                translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN</label>
                                                         <input id="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
                                                                name="zusaetzlicher_gutschein_min_massgebendes_einkommen_id_{{i}}"
                                                                class="form-control"
                                                                type="number"
+                                                               required
                                                                #zusaetzlicher_gutschein_min_massgebendes_einkommen='ngModel'
                                                                customMinMax
                                                                [minValue]="0"
@@ -995,11 +997,13 @@
                                                          *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen)
                                                          && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
                                                         <label for="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
+                                                               class="required"
                                                                translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN</label>
                                                         <input id="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
                                                                name="zusaetzlicher_gutschein_max_massgebendes_einkommen_id_{{i}}"
                                                                class="form-control"
                                                                type="number"
+                                                               required
                                                                #zusaetzlicher_gutschein_max_massgebendes_einkommen='ngModel'
                                                                customMinMax
                                                                [minValue]="0"
