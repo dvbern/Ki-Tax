@@ -27,42 +27,26 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterGemeindeDTO;
 import ch.dvbern.ebegu.rechner.KantonBernRechnerUtil;
 
-import static ch.dvbern.ebegu.util.MathUtil.EXACT;
-
 public class StaedtischerZuschlagLinearRechner extends StaedtischerZuschlagRechner {
 
 	@Override
 	public BigDecimal calculateForTfo(
 			BGCalculationInput inputGemeinde,
 			BGRechnerParameterDTO rechnerParameterDTO) {
-		BigDecimal zuschlag = calculateStaedtischerZuschlag(rechnerParameterDTO, inputGemeinde,
+		return calculateStaedtischerZuschlag(
+				rechnerParameterDTO,
+				inputGemeinde,
 				BGRechnerParameterGemeindeDTO::getGemeindeZusaetzlicherGutscheinLinearTfoMax);
-		BigDecimal tfoStundenProMonat = getTfoStundenProMonat(rechnerParameterDTO);
-		return EXACT.multiply(
-				zuschlag,
-				tfoStundenProMonat,
-				EXACT.pctToFraction(inputGemeinde.getBgPensumProzent()));
-	}
-
-	private BigDecimal getTfoStundenProMonat(BGRechnerParameterDTO rechnerParameterDTO) {
-		return EXACT.multiply(
-				EXACT.divide(rechnerParameterDTO.getOeffnungstageTFO(), BigDecimal.valueOf(12)),
-				rechnerParameterDTO.getOeffnungsstundenTFO());
 	}
 
 	@Override
 	public BigDecimal calculateForKita(
 			BGCalculationInput inputGemeinde,
 			BGRechnerParameterDTO rechnerParameterDTO) {
-		BigDecimal zuschlag = calculateStaedtischerZuschlag(rechnerParameterDTO, inputGemeinde,
+		return calculateStaedtischerZuschlag(
+				rechnerParameterDTO,
+				inputGemeinde,
 				BGRechnerParameterGemeindeDTO::getGemeindeZusaetzlicherGutscheinLinearKitaMax);
-		BigDecimal oeffnungsTageKitaProMonat =
-				EXACT.divide(rechnerParameterDTO.getOeffnungstageKita(), BigDecimal.valueOf(12));
-
-		return EXACT.multiply(
-				zuschlag,
-				oeffnungsTageKitaProMonat,
-				EXACT.pctToFraction(inputGemeinde.getBgPensumProzent()));
 	}
 
 	private BigDecimal calculateStaedtischerZuschlag(

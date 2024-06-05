@@ -68,11 +68,11 @@ class StaedtischerZuschlagLinearRechnerTest {
 		BigDecimal zuschlag = testee.calculate(input, rechnerParameterDTO);
 
 		// verify
-		assertThat(zuschlag, is(closeTo(new BigDecimal("460.20"), new BigDecimal("0.05"))));
+		assertThat(zuschlag, is(closeTo(new BigDecimal("2.87"), new BigDecimal("0.05"))));
 	}
 
 	@ParameterizedTest(name = "Einkommen: {0}, Zuschlag: {1}")
-	@MethodSource("calculationSource")
+	@MethodSource("calculationSourceTfo")
 	@DisplayName("Linearer Zuschlag fuer TFO")
 	void mustCalculateLinearerZuschlagTfo(BigDecimal massgebendesEinkommen, BigDecimal erwarteterZuschlag) {
 		// given
@@ -103,7 +103,7 @@ class StaedtischerZuschlagLinearRechnerTest {
 	}
 
 	@ParameterizedTest(name = "Einkommen: {0}, Zuschlag: {1}")
-	@MethodSource("calculationSource")
+	@MethodSource("calculationSourceKita")
 	@DisplayName("Linearer Zuschlag fuer KITA")
 	void mustCalculateLinearerZuschlagKita(BigDecimal massgebendesEinkommen, BigDecimal erwarteterZuschlag) {
 		// given
@@ -132,16 +132,29 @@ class StaedtischerZuschlagLinearRechnerTest {
 		assertThat(zuschlag, is(closeTo(erwarteterZuschlag, new BigDecimal("0.05"))));
 	}
 
-	public static Stream<Arguments> calculationSource() {
+	public static Stream<Arguments> calculationSourceKita() {
 		return Stream.of(
 				// Einkommen zwischen Minimum und Maximum
-				Arguments.of(new BigDecimal(50000), new BigDecimal("460.20")),
+				Arguments.of(new BigDecimal(50000), new BigDecimal("28.75")),
 				// Zuschlag darf bei Einkommen tiefer als Minimum nicht grösser werden als das Maximum
-				Arguments.of(new BigDecimal("25000"), new BigDecimal("496.00")),
+				Arguments.of(new BigDecimal("25000"), new BigDecimal("31.00")),
 				// Zuschlag muss bei Einkommen nahe dem Maxmium sehr klein werden
-				Arguments.of(new BigDecimal("139500"), new BigDecimal("2.55")),
+				Arguments.of(new BigDecimal("139500"), new BigDecimal("0.16")),
 				// Zuschlag muss bei Einkommen nahe dem Minimum nahe beim Maximalwert liegen
-				Arguments.of(new BigDecimal("43500"), new BigDecimal("493.40"))
+				Arguments.of(new BigDecimal("43500"), new BigDecimal("30.85"))
+		);
+	}
+
+	public static Stream<Arguments> calculationSourceTfo() {
+		return Stream.of(
+				// Einkommen zwischen Minimum und Maximum
+				Arguments.of(new BigDecimal(50000), new BigDecimal("2.87")),
+				// Zuschlag darf bei Einkommen tiefer als Minimum nicht grösser werden als das Maximum
+				Arguments.of(new BigDecimal("25000"), new BigDecimal("3.10")),
+				// Zuschlag muss bei Einkommen nahe dem Maxmium sehr klein werden
+				Arguments.of(new BigDecimal("139500"), new BigDecimal("0.016")),
+				// Zuschlag muss bei Einkommen nahe dem Minimum nahe beim Maximalwert liegen
+				Arguments.of(new BigDecimal("43500"), new BigDecimal("3.085"))
 		);
 	}
 }
