@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import * as Raven from 'raven-js';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -36,6 +37,7 @@ export class PulldownUserMenuComponent implements OnInit {
     // Replace with Observable once ApplicationPropertyRS is migrated in KIBON-2963
     public multimandantAktiv: boolean = false;
     public frenchEnabled: boolean = false;
+    public testfaelleEnabled: boolean = false;
 
     public constructor(
         private readonly authService: AuthServiceRS,
@@ -47,6 +49,7 @@ export class PulldownUserMenuComponent implements OnInit {
     public ngOnInit(): void {
         this.initMandantSwitch();
         this.initFrenchEnabled();
+        this.initTestFaelleEnabled().catch(e => Raven.captureException(e));
     }
 
     public getFullName(): Observable<string> {
@@ -99,6 +102,10 @@ export class PulldownUserMenuComponent implements OnInit {
         ).then(enabled => {
             this.frenchEnabled = enabled;
         });
+    }
+
+    private async initTestFaelleEnabled(): Promise<void> {
+        this.testfaelleEnabled = await this.applicationPropertyRS.isTestfaelleEnabled();
     }
 
     public logout(): void {

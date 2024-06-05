@@ -52,4 +52,6 @@ public class JaxPublicAppConfig {
 	private boolean auszahlungAnEltern;
 	private boolean abweichungenEnabled;
 	private boolean gemeindeVereinfachteKonfigAktiv;
+	private boolean testfaelleEnabled;
+
 }

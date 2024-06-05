@@ -286,6 +286,7 @@ public class ApplicationPropertyResource {
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
 		boolean isEbeguKibonAnfrageTestGuiEnabled = ebeguConfiguration.getEbeguKibonAnfrageTestGuiEnabled();
+		boolean testfaelleEnabled = ebeguConfiguration.isTestfaelleEnabled();
 
 		ApplicationProperty einreichefristOeffentlich =
 				getApplicationProperty(
@@ -427,6 +428,7 @@ public class ApplicationPropertyResource {
 				.auszahlungAnEltern(stringToBool(auszahlungAnEltern.getValue()))
 				.abweichungenEnabled(stringToBool(abweichungenEnabled.getValue()))
 				.gemeindeVereinfachteKonfigAktiv(stringToBool(gemeindeVereinfachteKonfigAktiv.getValue()))
+				.testfaelleEnabled(testfaelleEnabled)
 				.build();
 
 		return Response.ok(pubAppConf).build();
