@@ -19,7 +19,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import org.apache.commons.lang3.StringUtils;
 
 /**

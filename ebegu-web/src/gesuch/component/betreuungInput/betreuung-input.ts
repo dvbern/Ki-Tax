@@ -17,7 +17,7 @@
 
 import {IComponentOptions, IController} from 'angular';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';

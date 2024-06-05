@@ -17,7 +17,7 @@ import {IHttpBackendService, IQService} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';

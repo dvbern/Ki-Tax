@@ -25,7 +25,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';

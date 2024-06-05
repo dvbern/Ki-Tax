@@ -17,7 +17,7 @@
 
 import * as moment from 'moment';
 import {EbeguUtil} from '../utils/EbeguUtil';
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
 import {TSRueckforderungInstitutionTyp} from './enums/TSRueckforderungInstitutionTyp';
 import {TSRueckforderungStatus} from './enums/TSRueckforderungStatus';
 import {TSSprache} from './enums/TSSprache';

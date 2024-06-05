@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldGesuchStichtag;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
