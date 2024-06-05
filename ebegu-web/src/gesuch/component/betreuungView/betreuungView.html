@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-4 text-right">
             <h2 class="ebegu-h2" aria-hidden>
-                {{vm.model.bgNummer}}
+                {{vm.model.referenzNummer}}
             </h2>
         </div>
     </div>
@@ -204,9 +204,9 @@
                         </div>
                     </div>
 
-                    <!--provisorische Betreuung-->
+                    <!--provisorische Betreuung KITA TFO-->
                     <fieldset>
-                        <div ng-if="vm.isProvisorischeBetreuung() && !vm.getBetreuungModel().keineDetailinformationen">
+                        <div ng-if="vm.isProvisorischeBetreuung() && !vm.getBetreuungModel().keineDetailinformationen && !vm.isBetreuungsangebotMittagstisch()">
 
                             <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
                                                 input-id="provPensum"
@@ -246,7 +246,67 @@
                             </div>
                         </div>
                     </fieldset>
-
+                    <!--provisorische Betreuung Mittagstisch-->
+                    <fieldset>
+                        <div ng-if="vm.isProvisorischeBetreuung() && !vm.getBetreuungModel().keineDetailinformationen && vm.isBetreuungsangebotMittagstisch()">
+                            <div class="row">
+                                <!-- Anzahl Mahlzeiten -->
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <div class="form-group">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   for="prov-monatlicheHauptmahlzeiten}">
+                                                <span data-translate="PENSUM_MAHLZEITEN"></span>
+                                                <dv-tooltip input-id="prov-monatlicheHauptmahlzeiten-tooltip"
+                                                            text="'PENSUM_MAHLZEITEN_HELP' | translate"></dv-tooltip>
+                                            </label>
+                                            <div class="dv-input-container-small" style="padding-right:32px;">
+                                                <input aria-describedby="prov-monatlicheHauptmahlzeiten-error"
+                                                       id="prov-monatlicheHauptmahlzeiten"
+                                                       type="number" min="0" step="0.01"
+                                                       name="prov-monatlicheHauptmahlzeiten"
+                                                       ng-model="vm.getBetreuungspensum(0).betreuungspensumJA.monatlicheHauptmahlzeiten"
+                                                       class="form-control"
+                                                       ng-attr-data-test="monatliche-hauptmahlzeiten#"
+                                                       ng-required="true">
+                                                <dv-error-messages input-id="prov-monatlicheHauptmahlzeiten"
+                                                                   step="0.01"
+                                                                   for="vm.form['prov-monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
+                                            </div>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Kosten pro Mahlzeit -->
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               for="prov-kostenProMahlzeit">
+                                            <span data-translate="KOSTEN_PRO_MAHLZEIT"></span>
+                                            <dv-tooltip input-id="prov-kostenProMahlzeit"
+                                                        text="'KOSTEN_PRO_MAHLZEIT_HELP' | translate"></dv-tooltip>
+                                        </label>
+                                        <div class="dv-input-container-medium-label">
+                                            <input
+                                                aria-describedby="prov-kostenProMahlzeit-error"
+                                                id="prov-kostenProMahlzeit" type="number"
+                                                name="prov-kostenProMahlzeit"
+                                                ng-model="vm.getBetreuungspensum(0).betreuungspensumJA.tarifProHauptmahlzeit"
+                                                dv-max-length class="form-control"
+                                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                min="0"
+                                                ng-required="true"
+                                                ng-attr-data-test="kosten-pro-mahlzeit"
+                                                ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                            <dv-error-messages input-id="prov-kostenProMahlzeit"
+                                                               for="vm.form['prov-kostenProMahlzeit-' + $index].$error"></dv-error-messages>
+                                        </div>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                     <!--Institutionen-->
                     <div ng-if="vm.getBetreuungModel().vertrag">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
@@ -701,14 +761,45 @@
                                         </dv-betreuung-input>
                                     </div>
                                     <!--Monatliche Betreuungskosten-->
+                                    <div class="row" ng-if="vm.showAnwesenheitstageProMonatInput()">
+                                        <div class="col-sm-12 dv-input-container-medium">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="monatlicheAnwesenheitstage-{{$index}}">
+                                                    <span data-translate="ANWESENHEITSTAGE_PRO_MONAT"></span>
+                                                    <dv-tooltip input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                text="'ANWESENHEITSTAGE_PRO_MONAT_HELP' | translate"></dv-tooltip>
+                                                </label>
+                                                <div class="dv-input-container-medium-label">
+                                                    <input
+                                                        aria-describedby="monatlicheAnwesenheitstage-{{$index}}-error"
+                                                        id="monatlicheAnwesenheitstage-{{$index}}" type="number"
+                                                        name="monatlicheAnwesenheitstage-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.betreuteTage"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_ONE_DECIMALS"
+                                                        ng-required="true"
+                                                        min="1"
+                                                        max="28.7"
+                                                        ng-attr-data-test="monatliche-anwesenheitstage#{{$index}}"
+                                                        ng-attr-placeholder="{{'TAGE_PLACEHOLDER' | translate}}">
+                                                    <dv-error-messages input-id="monatlicheAnwesenheitstage-{{$index}}"
+                                                                       for="vm.form['monatlicheAnwesenheitstage-' + $index].$error"></dv-error-messages>
+                                                </div>
+
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
+                                    <!--Monatliche Betreuungskosten-->
                                     <div class="row" ng-if="vm.showBetreuungsKostenInput()">
                                         <div class="col-sm-12 dv-input-container-medium">
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
                                                        for="monatlicheBetreuungskosten-{{$index}}">
-                                                    <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
+                                                    <span data-translate="{{vm.getMonatlicheBetreuungkostenKey()}}"></span>
                                                     <dv-tooltip input-id="monatlicheBetreuungskosten-{{$index}}"
-                                                                text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                                                text="vm.getMonatlicheBetreuungkostenHelpKey() | translate"></dv-tooltip>
                                                 </label>
                                                 <div class="dv-input-container-medium-label">
                                                     <input
@@ -718,6 +809,7 @@
                                                         ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
                                                         dv-max-length class="form-control"
                                                         ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        type="number"
                                                         ng-required="true"
                                                         ng-attr-data-test="monatliche-betreuungskosten#{{$index}}"
                                                         ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">

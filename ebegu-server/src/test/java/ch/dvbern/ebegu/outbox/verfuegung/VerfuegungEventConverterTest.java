@@ -94,11 +94,11 @@ public class VerfuegungEventConverterTest {
 		Assert.assertNotNull(betreuung);
 		Gesuchsperiode gesuchsperiode = verfuegung.getBetreuung().extractGesuchsperiode();
 		String institutionId = betreuung.getInstitutionStammdaten().getInstitution().getId();
-		String bgNummer = betreuung.getBGNummer();
+		String referenzNummer = betreuung.getReferenzNummer();
 		Gemeinde gemeinde = betreuung.extractGesuch().extractGemeinde();
 
 		assertThat(event, is(pojo(ExportedEvent.class)
-			.where(ExportedEvent::getAggregateId, is(bgNummer))
+			.where(ExportedEvent::getAggregateId, is(referenzNummer))
 			.where(ExportedEvent::getAggregateType, is("Verfuegung"))
 			.where(ExportedEvent::getType, is("VerfuegungVerfuegt")))
 		);
@@ -110,7 +110,7 @@ public class VerfuegungEventConverterTest {
 		long expectedVerfuegtAm = TIMESTAMP_ERSTELLT.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
 		assertThat(specificRecord, is(pojo(VerfuegungEventDTO.class)
-			.where(VerfuegungEventDTO::getRefnr, is(bgNummer))
+			.where(VerfuegungEventDTO::getRefnr, is(referenzNummer))
 			.where(VerfuegungEventDTO::getInstitutionId, is(institutionId))
 			.where(VerfuegungEventDTO::getVon, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
 			.where(VerfuegungEventDTO::getBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()))

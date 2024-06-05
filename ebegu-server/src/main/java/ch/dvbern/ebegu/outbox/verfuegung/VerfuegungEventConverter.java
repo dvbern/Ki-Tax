@@ -80,9 +80,8 @@ public class VerfuegungEventConverter {
 		}
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		Objects.requireNonNull(verfuegung.getBetreuung());
 		return Optional.of(new VerfuegungVerfuegtEvent(
-			verfuegung.getBetreuung().getBGNummer(),
+			requireNonNull(verfuegung.getBetreuung()).getReferenzNummer(),
 			payload,
 			dto.getSchema()));
 	}
@@ -106,7 +105,7 @@ public class VerfuegungEventConverter {
 			.setKind(toKindDTO(kindContainer))
 			.setGesuchsteller(toGesuchstellerDTO(gesuchsteller))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()))
-			.setRefnr(betreuung.getBGNummer())
+			.setRefnr(betreuung.getReferenzNummer())
 			.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId())
 			.setVon(periode.getGueltigAb())
 			.setBis(periode.getGueltigBis())

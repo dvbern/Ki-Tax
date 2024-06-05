@@ -181,6 +181,7 @@ import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
+import {TSVersendeteMail} from '../models/TSVersendeteMail';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
@@ -197,9 +198,6 @@ import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
-
-    public constructor() {
-    }
 
     /**
      * Wandelt Data in einen TSApplicationProperty Array um, welches danach zurueckgeliefert wird
@@ -409,6 +407,7 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum ?? 0;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        restObj.betreuteTage = betreuungspensumEntity.betreuteTage;
         if (betreuungspensumEntity.eingewoehnungPauschale) {
             restObj.eingewoehnungPauschale =
                 this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
@@ -441,6 +440,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.betreuteTage = betreuungspensumFromServer.betreuteTage;
         betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
             betreuungspensumFromServer.eingewoehnungPauschale);
         betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
@@ -552,6 +552,7 @@ export class EbeguRestUtil {
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
             restGesuchsteller.korrespondenzSprache = gesuchsteller.korrespondenzSprache;
+            restGesuchsteller.sozialversicherungsnummer = gesuchsteller.sozialversicherungsnummer;
             return restGesuchsteller;
         }
         return undefined;
@@ -566,6 +567,7 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
+            gesuchstellerTS.sozialversicherungsnummer = gesuchstellerFromServer.sozialversicherungsnummer;
             return gesuchstellerTS;
         }
         return undefined;
@@ -612,6 +614,7 @@ export class EbeguRestUtil {
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
+            erwerbspensum.wegzeit = erwerbspensumFromServer.wegzeit;
             return erwerbspensum;
         }
         return undefined;
@@ -626,6 +629,7 @@ export class EbeguRestUtil {
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
+            restErwerbspensum.wegzeit = erwerbspensum.wegzeit;
             return restErwerbspensum;
         }
         return undefined;
@@ -979,7 +983,6 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
-            restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
             restGemeinde.betreuungsgutscheineStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
@@ -2463,6 +2466,8 @@ export class EbeguRestUtil {
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
         restKind.unterhaltspflichtig = kind.unterhaltspflichtig;
+        restKind.hoehereBeitraegeWegenBeeintraechtigungBeantragen = kind.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+        restKind.hoehereBeitraegeUnterlagenDigital = kind.hoehereBeitraegeUnterlagenDigital;
         if (kind.pensumFachstellen) {
             restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
@@ -2539,6 +2544,9 @@ export class EbeguRestUtil {
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
             kindTS.unterhaltspflichtig = kindFromServer.unterhaltspflichtig;
+            kindTS.hoehereBeitraegeWegenBeeintraechtigungBeantragen =
+                kindFromServer.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+            kindTS.hoehereBeitraegeUnterlagenDigital = kindFromServer.hoehereBeitraegeUnterlagenDigital;
             if (kindFromServer.pensumFachstellen) {
                 kindTS.pensumFachstellen =
                     this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
@@ -2821,7 +2829,7 @@ export class EbeguRestUtil {
                 this.parseBelegungFerieninsel(new TSBelegungFerieninsel(), betreuungFromServer.belegungFerieninsel);
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
-            betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.referenzNummer = betreuungFromServer.referenzNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             betreuungTS.anmeldungTagesschuleZeitabschnitts =
@@ -4613,6 +4621,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
+        publicAppConfigTS.gemeindeVereinfachteKonfigAktiv = data.gemeindeVereinfachteKonfigAktiv;
         return publicAppConfigTS;
     }
 
@@ -6328,7 +6337,28 @@ export class EbeguRestUtil {
             institution: filter.institution,
             traegerschaft: filter.traegerschaft,
             sozialdienst: filter.sozialdienst,
-            status: filter.status
+            status: filter.status,
         };
+    }
+
+    public parseTSUebersichtVersendeteMailsList(data: any): TSVersendeteMail[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+        ? data.map(item => this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), item))
+        : [this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), data)];
+    }
+    private parseTSUebersichtVersendeteMails(
+        uebersichtVersendeteMails: TSVersendeteMail,
+        uebersichtVersendeteMailsFromServer: any
+    ): TSVersendeteMail {
+        this.parseAbstractEntity(uebersichtVersendeteMails, uebersichtVersendeteMailsFromServer);
+        uebersichtVersendeteMails.zeitpunktVersand = DateUtil.localDateTimeToMoment(
+            uebersichtVersendeteMailsFromServer.zeitpunktVersand
+        );
+        uebersichtVersendeteMails.empfaengerAdresse = uebersichtVersendeteMailsFromServer.empfaengerAdresse;
+        uebersichtVersendeteMails.betreff = uebersichtVersendeteMailsFromServer.betreff;
+        return uebersichtVersendeteMails;
     }
 }

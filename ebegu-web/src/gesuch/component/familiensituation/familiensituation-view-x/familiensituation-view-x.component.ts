@@ -21,14 +21,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {isNullOrUndefined} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
-import {
-    DvNgRemoveDialogComponent
-} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
-import {TSDemoFeature} from '../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
-import {DemoFeatureRS} from '../../../../app/core/service/demoFeatureRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
@@ -42,13 +37,16 @@ import {
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
-import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
+import {
+    DvNgGsRemovalConfirmationDialogComponent, GSRemovalConfirmationDialogData,
+} from '../dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
+import {FamiliensituationUtil} from '../FamiliensituationUtil';
 
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 
@@ -104,16 +102,15 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
         if (this.isConfirmationRequired()) {
-            const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
-                gsfullname: this.getGesuch().gesuchsteller2
-                        ? this.getGesuch().gesuchsteller2.extractFullName() : ''
-            });
-            const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
-                data: {
-                    title: 'FAMILIENSITUATION_WARNING',
-                    text: descriptionText
-                }
-            }).afterClosed().toPromise();
+            const dialogResult =
+                await this.dialog.open<DvNgGsRemovalConfirmationDialogComponent, GSRemovalConfirmationDialogData>(
+                    DvNgGsRemovalConfirmationDialogComponent,
+                    {
+                        data: {
+                            gsFullName: this.getGesuch().gesuchsteller2
+                                ? this.getGesuch().gesuchsteller2.extractFullName() : '',
+                        },
+                    }).afterClosed().toPromise();
 
             if (dialogResult) {
                 const savedContaier = await this.save();
@@ -211,14 +208,14 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         return this.getGesuch().gesuchsteller2
                 && this.getGesuch().gesuchsteller2.id
                 && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-                && this.isScheidung();
+                && FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation, this.getFamiliensituation(), bis);
     }
 
     private isChanged1To2Reverted(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.getGesuch().gesuchsteller2
                 && this.getGesuch().gesuchsteller2.id
-                && this.isScheidung()
+                && FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation, this.getFamiliensituation(), bis)
                 && this.model.familiensituationErstgesuch
                 && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
     }
@@ -227,12 +224,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
         return (this.getFamiliensituation()?.aenderungPer?.isBefore(ab)
                 && this.getGesuch().getRegelStartDatum().isBefore(ab));
-    }
-
-    private isScheidung(): boolean {
-        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-                && !this.getFamiliensituation()?.hasSecondGesuchsteller(bis);
     }
 
     public isStartKonkubinatDisabled(): boolean {

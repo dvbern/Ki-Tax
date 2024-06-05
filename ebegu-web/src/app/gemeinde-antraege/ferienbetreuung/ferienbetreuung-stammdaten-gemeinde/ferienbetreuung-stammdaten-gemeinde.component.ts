@@ -192,7 +192,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             Validators.pattern(CONSTANTS.PATTERN_PHONE)
         );
         this.form.controls.stammdatenKontaktpersonEmail.setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_EMAIL)
+            Validators.email
         );
 
         this.enableStammdatenAuszahlungValidation();
@@ -302,7 +302,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.form.controls.stammdatenKontaktpersonTelefon.setValidators(
             [Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
         this.form.controls.stammdatenKontaktpersonEmail.setValidators(
-            [Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
+            [Validators.required, Validators.email]);
     }
 
     public save(): void {

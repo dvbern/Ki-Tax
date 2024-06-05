@@ -63,7 +63,7 @@ public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 		}
 
 		EingewoehnungPauschale pauschale = new EingewoehnungPauschale();
-		pauschale.setPauschale(eingewoehnung.getPauschale());
+		pauschale.setPauschale(eingewoehnung.getKosten());
 		pauschale.getGueltigkeit().setGueltigAb(eingewoehnung.getVon());
 		pauschale.getGueltigkeit().setGueltigBis(eingewoehnung.getBis());
 		target.setEingewoehnungPauschale(pauschale);

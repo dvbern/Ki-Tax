@@ -48,7 +48,7 @@ import org.needle4j.annotation.ObjectUnderTest;
 public class GeschwistertenBonusAbschnittRuleTest {
 
 	@ObjectUnderTest
-	private GeschwisterbonusAbschnittRule ruleToTest;
+	private GeschwisterbonusLuzernAbschnittRule ruleToTest;
 
 	@Nonnull
 	private Betreuung betreuung;
@@ -70,7 +70,7 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		DateRange validy = new DateRange(LocalDate.of(1000, 1, 1), LocalDate.of(3000, 1, 1));
 		betreuung = createBetreuung();
 		gesuch = betreuung.extractGesuch();
-		ruleToTest = new GeschwisterbonusAbschnittRule(EinschulungTyp.VORSCHULALTER, validy, Constants.DEUTSCH_LOCALE);
+		ruleToTest = new GeschwisterbonusLuzernAbschnittRule(EinschulungTyp.VORSCHULALTER, validy, Constants.DEUTSCH_LOCALE);
 	}
 
 	private Betreuung createBetreuung() {

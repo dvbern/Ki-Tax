@@ -92,7 +92,7 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		gesuch = createAlleinerziehend();
 
 		// Gesuchsteller
-		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(1);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(80);

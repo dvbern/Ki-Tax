@@ -311,6 +311,12 @@
                             </div>
                         </div>
 
+                        <hoehere-betraege-beeintraechtigung
+                            ng-if="vm.showHoehereBetraegeBeeintraechtigung()"
+                            [kind-container]="vm.getContainer()"
+                            [read-only]="vm.isGesuchReadonly()">
+                        </hoehere-betraege-beeintraechtigung>
+
                         <dv-schwyz-kinderabzug
                             ng-if="vm.showSchwyzKinderabzug()"
                             [kind-container]="vm.getContainer()"

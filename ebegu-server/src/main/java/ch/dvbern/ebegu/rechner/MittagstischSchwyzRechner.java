@@ -21,11 +21,18 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.enums.PensumUnits;
 
-public class MittagstischSchwyzRechner extends KitaTagestrukturenSchwyzRechner {
+public class MittagstischSchwyzRechner extends AbstractSchwyzRechner {
+
+	public static final BigDecimal OEFFNUNGSTAGE = new BigDecimal("246");
+
 	@Override
-	BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameter) {
-		return new BigDecimal("17");
+	protected BigDecimal toZeiteinheitProZeitabschnitt(
+		BGRechnerParameterDTO parameterDTO,
+		BigDecimal effektivesPensumFaktor,
+		BigDecimal anteilMonat) {
+		return toTageProZeitAbschnitt(effektivesPensumFaktor, anteilMonat, OEFFNUNGSTAGE);
 	}
 
 	@Override
@@ -34,12 +41,20 @@ public class MittagstischSchwyzRechner extends KitaTagestrukturenSchwyzRechner {
 	}
 
 	@Override
-	protected BigDecimal getOeffnungstage(BGRechnerParameterDTO parameterDTO) {
-		return new BigDecimal("246");
+	protected PensumUnits getZeiteinheit() {
+		return PensumUnits.DAYS;
 	}
 
 	@Override
-	BigDecimal calculateTagesTarif(BigDecimal betreuungsTageProZeitabschnitt, BGCalculationInput input) {
+	protected BigDecimal calculateNormkosten(BGCalculationInput input, BGRechnerParameterDTO parameterDTO) {
+		return new BigDecimal("17");
+	}
+
+	@Override
+	protected BigDecimal calculateTarifProZeiteinheit(
+		BGRechnerParameterDTO parameterDTO,
+		BigDecimal effektivesPensumFaktor,
+		BGCalculationInput input) {
 		return input.getTarifHauptmahlzeit();
 	}
 

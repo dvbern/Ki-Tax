@@ -41,7 +41,7 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	jahrTitle(new SimpleMergeField<>("jahrTitle", STRING_CONVERTER)),
 	jahr(new SimpleMergeField<>("jahr", INTEGER_CONVERTER)),
 
-	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
+	referenzNummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	bfsNummerTitle(new SimpleMergeField<>("bfsNummerTitle", STRING_CONVERTER)),
 	nameGemeindeTitle(new SimpleMergeField<>("nameGemeindeTitle", STRING_CONVERTER)),
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
@@ -59,7 +59,7 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	eingabeLastenausgleichTitle(new SimpleMergeField<>("eingabeLastenausgleichTitle", STRING_CONVERTER)),
 	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
 
-	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
+	referenzNummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bfsNummer(new SimpleMergeField<>("bfsNummer", LONG_CONVERTER)),
 	nameGemeinde(new SimpleMergeField<>("nameGemeinde", STRING_CONVERTER)),

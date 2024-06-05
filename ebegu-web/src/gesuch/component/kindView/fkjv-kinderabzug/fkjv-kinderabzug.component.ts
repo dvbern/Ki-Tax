@@ -84,7 +84,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public ngAfterViewInit(): void {
-        this.fkjvExchangeService.form = this.form;
+        this.fkjvExchangeService.addForm(this.form);
     }
 
     public ngOnDestroy(): void {

@@ -15,12 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration, StateParams} from '@uirouter/angularjs';
-import {StateService} from '@uirouter/core';
-import {delay, take} from 'rxjs/operators';
-import {FamiliensituationVisitor} from '../app/core/constants/FamiliensituationVisitor';
+import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {KindRS} from '../app/core/service/kindRS.rest';
-import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
@@ -52,15 +48,6 @@ import {
 } from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {
-    FamiliensituationAppenzellViewXComponent
-} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {
-    FamiliensituationSchwyzComponent
-} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
-import {
-    FamiliensituationViewXComponent
-} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
-import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {
@@ -91,7 +78,7 @@ import {
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
 } from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
-
+import {freigabeRedirectState, freigabeMitQuittungState, freigabeOnlineState} from './freigabe/freigabe.route';
 /* eslint-disable */
 
 const gesuchTpl = require('./gesuch.html');
@@ -221,87 +208,7 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     };
 }
 
-export class EbeguFamiliensituationState implements Ng1StateDeclaration {
-    public name = 'gesuch.familiensituation';
-    public url = '/familiensituation-route/:gesuchId';
-    onEnter =  redirectToFamiliensituation
-}
 
-redirectToFamiliensituation.$inject = ['MandantService', '$state', '$stateParams'];
-function redirectToFamiliensituation(mandantService: MandantService, $state: StateService, $stateParams: StateParams) {
-    mandantService.mandant$
-        .pipe(take(1), delay(1))
-        .subscribe((mandant) => {
-            const route = new FamiliensituationVisitor().process(mandant);
-            $state.transitionTo(route, {gesuchId:$stateParams.gesuchId});
-        });
-}
-
-export class EbeguFamiliensituationDefaultState implements Ng1StateDeclaration {
-    public name = 'gesuch.familiensituation-default';
-    public url = '/familiensituation/:gesuchId';
-
-    public views: any = {
-        gesuchViewPort: {
-            component: FamiliensituationViewXComponent,
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
-    };
-}
-
-export class EbeguFamiliensituationAppenzellState implements Ng1StateDeclaration {
-    public name = 'gesuch.familiensituation-appenzell';
-    public url = '/familiensituation-ar/:gesuchId';
-
-    public views: any = {
-        gesuchViewPort: {
-            component: FamiliensituationAppenzellViewXComponent,
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
-    };
-}
-
-export class EbeguFamiliensituationSchwyzState implements Ng1StateDeclaration {
-    public name = 'gesuch.familiensituation-schwyz';
-    public url = '/familiensituation-sz/:gesuchId';
-
-    public views: any = {
-        gesuchViewPort: {
-            component: FamiliensituationSchwyzComponent,
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
-    };
-}
 
 export class EbeguStammdatenState implements Ng1StateDeclaration {
     public name = 'gesuch.stammdaten';
@@ -1112,27 +1019,7 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     };
 }
 
-export class EbeguFreigabeState implements Ng1StateDeclaration {
-    public name = 'gesuch.freigabe';
-    public url = '/freigabe/:gesuchId';
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
-        gesuchViewPort: {
-            template: '<freigabe-view>',
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
-    };
-}
 
 export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     public name = 'gesuch.mitteilung';
@@ -1230,10 +1117,6 @@ export class EbeguInternePendenzenState implements Ng1StateDeclaration {
 
 const ng1States: Ng1StateDeclaration[] = [
     new EbeguGesuchState(),
-    new EbeguFamiliensituationState(),
-    new EbeguFamiliensituationDefaultState(),
-    new EbeguFamiliensituationAppenzellState(),
-    new EbeguFamiliensituationSchwyzState(),
     new EbeguStammdatenState(),
     new EbeguUmzugState(),
     new EbeguKinderListState(),
@@ -1270,7 +1153,9 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguEinkommensverschlechterungAppenzellState(),
     new EbeguEinkommensverschlechterungAppenzellResultateState(),
     new EbeguDokumenteState(),
-    new EbeguFreigabeState(),
+    freigabeRedirectState,
+    freigabeOnlineState,
+    freigabeMitQuittungState,
     new EbeguBetreuungMitteilungState(),
     new EbeguSozialhilfeZeitraumListState(),
     new EbeguSozialhilfeZeitraumState(),

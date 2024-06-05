@@ -24,6 +24,7 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';
 import {TSSteuerdatenResponse} from '../../models/neskovanp/TSSteuerdatenResponse';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
+import {TSFreigabe} from '../../models/TSFreigabe';
 import {TSGesuch} from '../../models/TSGesuch';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {WizardStepManager} from './wizardStepManager';
@@ -100,11 +101,9 @@ export class GesuchRS implements IEntityRS {
             .then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
     }
 
-    public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
-        const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}/JA/${usernameJA}/SCH/${usernameSCH}`;
-        return this.$http.post(url, null, {
-            headers: {'Content-Type': 'text/plain'}
-        }).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    public antragFreigeben(antragId: string, freigabe: TSFreigabe): IPromise<TSGesuch> {
+        const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}`;
+        return this.$http.post(url, freigabe).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {

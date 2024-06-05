@@ -237,6 +237,9 @@ deploy:iat:
         -   if: $CI_COMMIT_TAG
             when: manual
             allow_failure: true
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+            when: manual
+            allow_failure: true
     environment:
         name: iat
         url: https://iat.kibon.ch

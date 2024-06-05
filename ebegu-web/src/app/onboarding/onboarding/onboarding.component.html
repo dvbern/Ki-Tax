@@ -55,9 +55,9 @@
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
-        <div class="onboarding-iframe-tutorial">
+        <div class="onboarding-iframe-tutorial" *ngIf="(this.youtubeLink$ | async) as link">
             <iframe
-                    [src]="this.youtubeLink$ | async"
+                    [src]="link"
                     frameborder="0"
                     allow="accelerometer;
                     encrypted-media;

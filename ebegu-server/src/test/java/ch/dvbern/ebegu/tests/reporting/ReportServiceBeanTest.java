@@ -113,7 +113,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 		List<GesuchStichtagDataRow> rowsSorted = reportData
 			.stream()
-			.sorted(Comparator.comparing(GesuchStichtagDataRow::getBgNummer).thenComparing(GesuchStichtagDataRow::getGesuchLaufNr))
+			.sorted(Comparator.comparing(GesuchStichtagDataRow::getReferenzNummer).thenComparing(GesuchStichtagDataRow::getGesuchLaufNr))
 			.collect(Collectors.toList());
 
 		assertNotNull(rowsSorted);
@@ -135,7 +135,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 		List<GesuchZeitraumDataRow> rowsSorted = reportData
 			.stream()
-			.sorted(Comparator.comparing(GesuchZeitraumDataRow::getBgNummer).thenComparing(GesuchZeitraumDataRow::getGesuchLaufNr))
+			.sorted(Comparator.comparing(GesuchZeitraumDataRow::getReferenzNummer).thenComparing(GesuchZeitraumDataRow::getGesuchLaufNr))
 			.collect(Collectors.toList());
 
 		assertNotNull(rowsSorted);
@@ -194,22 +194,28 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	}
 
-	private void assertGesuchStichtagDataRow(GesuchStichtagDataRow row, String bgNummer, Integer nichtFreigegeben, Integer mahnung, Integer beschwerde) {
+	private void assertGesuchStichtagDataRow(
+		GesuchStichtagDataRow row,
+		String referenzNummer,
+		Integer nichtFreigegeben,
+		Integer mahnung,
+		Integer beschwerde
+	) {
 		assertNotNull(row);
-		assertEquals(bgNummer, row.getBgNummer());
+		assertEquals(referenzNummer, row.getReferenzNummer());
 		assertEquals(nichtFreigegeben, row.getNichtFreigegeben());
 		assertEquals(mahnung, row.getMahnungen());
 		assertEquals(beschwerde, row.getBeschwerde());
 	}
 
-	private void assertGesuchZeitraumDataRow(GesuchZeitraumDataRow row, String bgNummer,
+	private void assertGesuchZeitraumDataRow(GesuchZeitraumDataRow row, String referenzNummer,
 		Integer anzahlMutationAbwesenheit, Integer anzahlMutationBetreuung, Integer anzahlMutationKind,
 		Integer anzahlMahnungen, Integer anzahlBeschwerde,
 		Integer anzahlSteueramtAusgeloest, Integer anzahlSteueramtGeprueft,
 		Integer anzahlVerfuegungen,
 		Integer anzahlVerfuegungenNormal, Integer anzahlVerfuegungenNichtEintreten) {
 		assertNotNull(row);
-		assertEquals(bgNummer, row.getBgNummer());
+		assertEquals(referenzNummer, row.getReferenzNummer());
 		assertEquals(anzahlMutationAbwesenheit, row.getAnzahlMutationAbwesenheit());
 		assertEquals(anzahlMutationBetreuung, row.getAnzahlMutationBetreuung());
 		assertEquals(anzahlMutationKind, row.getAnzahlMutationKinder());

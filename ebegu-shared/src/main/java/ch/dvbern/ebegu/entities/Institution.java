@@ -179,7 +179,6 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getName()
-			+ ", status: " + this.getStatus();
+		return "name: " + name + ", status: " + status;
 	}
 }

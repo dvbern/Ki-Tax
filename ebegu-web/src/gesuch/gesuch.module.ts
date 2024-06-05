@@ -82,6 +82,7 @@ import {
 import {
     FinSitFelderAppenzellComponent
 } from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
+import {familiensituationRun} from './component/familiensituation/familiensituation.route';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -118,14 +119,19 @@ import {finSitSchwyzRun} from './component/finanzielleSituation/schwyz/fin-sit-s
 import {
     FinanzielleSituationStartSolothurnComponent
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
-import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
+import {FreigabeViewComponentConfig} from './freigabe/component/freigabeView/freigabeView';
 import {
     InternePendenzDialogComponent
 } from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {
+    HoehereBetraegeBeeintraechtigungComponent
+} from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
+import {FreigabeService} from './freigabe/freigabe.service';
+import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
 import {HybridFormBridgeService} from './service/hybrid-form-bridge.service';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
@@ -154,6 +160,7 @@ export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .run(finSitSchwyzRun)
+        .run(familiensituationRun)
         .run([
             '$transitions',
             'ApplicationPropertyRS',
@@ -242,6 +249,10 @@ export const GESUCH_JS_MODULE =
             component: FkjvKinderabzugComponent,
             inputs: ['kindContainer']
         }))
+        .directive('hoehereBetraegeBeeintraechtigung', downgradeComponent({
+            component: HoehereBetraegeBeeintraechtigungComponent,
+            inputs: ['kindContainer', 'readOnly']
+        }))
         .directive('dvSchwyzKinderabzug', downgradeComponent({
             component: SchwyzKinderabzugComponent,
             inputs: ['kindContainer']
@@ -261,4 +272,6 @@ export const GESUCH_JS_MODULE =
                 outputs: ['tryAgainEvent']
             }))
         .directive('dvZahlungsstatusIcon', downgradeComponent({component: ZahlungsstatusIconComponent}))
+        .component('dvOnlineFreigabe', downgradeComponent({component: OnlineFreigabeComponent}))
+        .factory('FreigabeService', downgradeInjectable(FreigabeService))
 ;

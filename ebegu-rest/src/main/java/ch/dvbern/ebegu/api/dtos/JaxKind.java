@@ -103,6 +103,11 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private Boolean unterhaltspflichtig;
 
+	private boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+
+	@Nullable
+	private Boolean hoehereBeitraegeUnterlagenDigital;
+
 	@Nullable
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
 		return kinderabzugErstesHalbjahr;
@@ -301,5 +306,23 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setUnterhaltspflichtig(@Nullable Boolean unterhaltspflichtig) {
 		this.unterhaltspflichtig = unterhaltspflichtig;
+	}
+
+	public boolean getHoehereBeitraegeWegenBeeintraechtigungBeantragen() {
+		return hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	public void setHoehereBeitraegeWegenBeeintraechtigungBeantragen(
+		boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen) {
+		this.hoehereBeitraegeWegenBeeintraechtigungBeantragen = hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	@Nullable
+	public Boolean getHoehereBeitraegeUnterlagenDigital() {
+		return hoehereBeitraegeUnterlagenDigital;
+	}
+
+	public void setHoehereBeitraegeUnterlagenDigital(@Nullable Boolean hoehereBeitraegeUnterlagenDigital) {
+		this.hoehereBeitraegeUnterlagenDigital = hoehereBeitraegeUnterlagenDigital;
 	}
 }

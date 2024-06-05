@@ -385,7 +385,7 @@ public class ApplicationPropertyResource {
 		ApplicationProperty angebotMittagstischEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_MITTAGSTISCH_ENABLED, mandant).orElseThrow(() -> notFound);
 		ApplicationProperty angebotTFOEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TFO_ENABLED, mandant).orElseThrow(() -> notFound);
 		ApplicationProperty abweichungenEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ABWEICHUNGEN_ENABLED, mandant).orElseThrow(() -> notFound);
-
+		ApplicationProperty gemeindeVereinfachteKonfigAktiv = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_VEREINFACHTE_KONFIG_AKTIV, mandant).orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -445,7 +445,8 @@ public class ApplicationPropertyResource {
 			stringToBool(angebotMittagstischEnabled.getValue()),
 			stringToBool(angebotTFOEnabled.getValue()),
 			stringToBool(auszahlungAnEltern.getValue()),
-			stringToBool(abweichungenEnabled.getValue())
+			stringToBool(abweichungenEnabled.getValue()),
+			stringToBool(gemeindeVereinfachteKonfigAktiv.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

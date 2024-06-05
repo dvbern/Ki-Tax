@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Service zum Versenden von E-Mails
@@ -52,7 +53,8 @@ public interface MailService {
 	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt
 	 * werden
 	 */
-	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
+	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress,
+		@Nonnull MandantIdentifier mandantIdentifier)
 		throws MailException;
 
 	/**
@@ -63,8 +65,8 @@ public interface MailService {
 		@Nonnull String subject,
 		@Nonnull String messageBody,
 		@Nonnull String mailadress,
-		@Nonnull UploadFileInfo uploadFileInfo
-	) throws MailException;
+		@Nonnull UploadFileInfo uploadFileInfo,
+		MandantIdentifier mandantIdentifier) throws MailException;
 
 	/**
 	 * Sendet eine Supportanfrage an die definierte Support-Email

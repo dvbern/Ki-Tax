@@ -93,7 +93,7 @@ public class BetreuungsgutscheinConfigurator {
 				MINIMALDAUER_KONKUBINAT,
 				ANSPRUCH_MONATSWEISE,
 				KITAPLUS_ZUSCHLAG_AKTIVIERT,
-				GESCHWISTERNBONUS_AKTIVIERT,
+				GESCHWISTERNBONUS_TYP,
 				AUSSERORDENTLICHER_ANSPRUCH_RULE,
 				DAUER_BABYTARIF,
 				KINDERABZUG_TYP,
@@ -103,7 +103,11 @@ public class BetreuungsgutscheinConfigurator {
 				ANSPRUCH_AB_X_MONATEN,
 				SPRACHFOERDERUNG_BESTAETIGEN,
 			    GESUCH_BEENDEN_BEI_TAUSCH_GS2,
-				SCHULERGAENZENDE_BETREUUNGEN
+				SCHULERGAENZENDE_BETREUUNGEN,
+				WEGZEIT_ERWERBSPENSUM,
+				ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,
+				SOZIALVERSICHERUNGSNUMMER_PERIODE,
+				HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT
 		);
 	}
 
@@ -190,6 +194,10 @@ public class BetreuungsgutscheinConfigurator {
 				new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, ruleParameterUtil);
 
+		AuszahlungAnAbschnittRule auszahlungAnAbschnittRule =
+			new AuszahlungAnAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(auszahlungAnAbschnittRule, ruleParameterUtil);
+
 		// Eingewoehnung Pauschale
 		EingewoehnungPauschaleAbschnittRule eingewoehnungPauschaleAbschnittRule =
 				new EingewoehnungPauschaleAbschnittRule(defaultGueltigkeit, locale);
@@ -204,13 +212,18 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleAbschnittRule, ruleParameterUtil);
 
-		// - GeschwisterBonus
+		// - GeschwisterBonus LU
 		Einstellung einstellungBgAusstellenBisStufe =
 				ruleParameterUtil.getEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
-		GeschwisterbonusAbschnittRule geschwisterbonusAbschnittRule =
-				new GeschwisterbonusAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(geschwisterbonusAbschnittRule, ruleParameterUtil);
+		GeschwisterbonusLuzernAbschnittRule geschwisterbonusLuzernAbschnittRule =
+				new GeschwisterbonusLuzernAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusLuzernAbschnittRule, ruleParameterUtil);
+
+		// - GeschwisterBonus Schwyz
+		GeschwisterbonusSchwyzAbschnittRule geschwisterbonusSchwyzAbschnittRule =
+			new GeschwisterbonusSchwyzAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusSchwyzAbschnittRule, ruleParameterUtil);
 
 		// - Ausserordentlicher Anspruch
 		AusserordentlicherAnspruchAbschnittRule ausserordntl =
