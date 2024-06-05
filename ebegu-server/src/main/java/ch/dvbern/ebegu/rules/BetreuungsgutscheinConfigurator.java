@@ -21,6 +21,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.rules.familienabzug.AbstractFamilienabzugAbschnittRule;
+import ch.dvbern.ebegu.rules.familienabzug.FamilienabzugAbschnittRuleVisitor;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -91,7 +93,7 @@ public class BetreuungsgutscheinConfigurator {
 				MINIMALDAUER_KONKUBINAT,
 				ANSPRUCH_MONATSWEISE,
 				KITAPLUS_ZUSCHLAG_AKTIVIERT,
-				GESCHWISTERNBONUS_AKTIVIERT,
+				GESCHWISTERNBONUS_TYP,
 				AUSSERORDENTLICHER_ANSPRUCH_RULE,
 				DAUER_BABYTARIF,
 				KINDERABZUG_TYP,
@@ -101,7 +103,11 @@ public class BetreuungsgutscheinConfigurator {
 				ANSPRUCH_AB_X_MONATEN,
 				SPRACHFOERDERUNG_BESTAETIGEN,
 			    GESUCH_BEENDEN_BEI_TAUSCH_GS2,
-				SCHULERGAENZENDE_BETREUUNGEN
+				SCHULERGAENZENDE_BETREUUNGEN,
+				WEGZEIT_ERWERBSPENSUM,
+				ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT,
+				SOZIALVERSICHERUNGSNUMMER_PERIODE,
+				HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT
 		);
 	}
 
@@ -161,28 +167,11 @@ public class BetreuungsgutscheinConfigurator {
 				new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(unbezahlterUrlaubAbschnittRule, ruleParameterUtil);
 
-		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_4 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_5 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
-		Einstellung param_minimaldauer_konkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
-		Einstellung param_kinderabzug_typ = ruleParameterUtil.getEinstellung(KINDERABZUG_TYP);
+		KinderabzugTyp kinderAbzugTyp = KinderabzugTyp.valueOf(ruleParameterUtil.getEinstellung(KINDERABZUG_TYP).getValue());
+		AbstractFamilienabzugAbschnittRule familienabzugAbschnittRuleToUse = new FamilienabzugAbschnittRuleVisitor(ruleParameterUtil.getEinstellungen(),
+			defaultGueltigkeit, locale).getFamilienabzugAbschnittRule(kinderAbzugTyp);
 
-		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(
-				defaultGueltigkeit,
-				param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_4.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
-				param_minimaldauer_konkubinat.getValueAsInteger(),
-				KinderabzugTyp.valueOf(param_kinderabzug_typ.getValue()),
-				locale);
-		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, ruleParameterUtil);
+		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRuleToUse, ruleParameterUtil);
 
 		// Betreuungsgutscheine Gueltigkeit
 		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule =
@@ -205,6 +194,10 @@ public class BetreuungsgutscheinConfigurator {
 				new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, ruleParameterUtil);
 
+		AuszahlungAnAbschnittRule auszahlungAnAbschnittRule =
+			new AuszahlungAnAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(auszahlungAnAbschnittRule, ruleParameterUtil);
+
 		// Eingewoehnung Pauschale
 		EingewoehnungPauschaleAbschnittRule eingewoehnungPauschaleAbschnittRule =
 				new EingewoehnungPauschaleAbschnittRule(defaultGueltigkeit, locale);
@@ -219,13 +212,18 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleAbschnittRule, ruleParameterUtil);
 
-		// - GeschwisterBonus
+		// - GeschwisterBonus LU
 		Einstellung einstellungBgAusstellenBisStufe =
 				ruleParameterUtil.getEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
-		GeschwisterbonusAbschnittRule geschwisterbonusAbschnittRule =
-				new GeschwisterbonusAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(geschwisterbonusAbschnittRule, ruleParameterUtil);
+		GeschwisterbonusLuzernAbschnittRule geschwisterbonusLuzernAbschnittRule =
+				new GeschwisterbonusLuzernAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusLuzernAbschnittRule, ruleParameterUtil);
+
+		// - GeschwisterBonus Schwyz
+		GeschwisterbonusSchwyzAbschnittRule geschwisterbonusSchwyzAbschnittRule =
+			new GeschwisterbonusSchwyzAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusSchwyzAbschnittRule, ruleParameterUtil);
 
 		// - Ausserordentlicher Anspruch
 		AusserordentlicherAnspruchAbschnittRule ausserordntl =
@@ -253,9 +251,10 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(abwesenheitAbschnittRule, ruleParameterUtil);
 
 		// Zivilstandsaenderung
+		Einstellung minimaldauerKonkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(
 				defaultGueltigkeit,
-				param_minimaldauer_konkubinat.getValueAsInteger(),
+				minimaldauerKonkubinat.getValueAsInteger(),
 				locale);
 		addToRuleSetIfRelevantForGemeinde(zivilstandsaenderungAbschnittRule, ruleParameterUtil);
 

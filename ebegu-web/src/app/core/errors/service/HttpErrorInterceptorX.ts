@@ -23,6 +23,7 @@ import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 import {HTTP_CODES} from '../../constants/CONSTANTS';
 import {LogFactory} from '../../logging/LogFactory';
 import {ErrorServiceX} from './ErrorServiceX';
+import {isOIDCTokenInitialisationException} from './HttpErrorInterceptorUtil';
 
 const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 
@@ -30,7 +31,7 @@ const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 export class HttpErrorInterceptorX implements HttpInterceptor {
 
     public constructor(
-        private readonly errorService: ErrorServiceX
+        private readonly errorService: ErrorServiceX,
     ) {
     }
 
@@ -64,7 +65,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
 
                 throw err;
 
-            })
+            }),
         );
     }
 
@@ -77,7 +78,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
      */
     private async handleErrorResponse(
         request: HttpRequest<any>,
-        response: HttpErrorResponse
+        response: HttpErrorResponse,
     ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
         if (response.status === HTTP_CODES.NOT_FOUND && (
@@ -96,6 +97,12 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
             } else if (this.isDataEbeguExceptionReport(response.error)) {
                 errors = this.convertEbeguExceptionReport(response.error);
 
+            } else if (isOIDCTokenInitialisationException(response)) {
+                errors = [];
+                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_OIDC_TOKEN_INITIALISATION',
+                    response.error));
             } else if (this.isBlob(response.error)) {
                 errors = [];
                 const errorObject = JSON.parse(await response.error.text());
@@ -114,7 +121,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                     response.message));
             } else {
                 LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-                LOG.error(`ResponseData:${  JSON.stringify(response.message)}`);
+                LOG.error(`ResponseData:${JSON.stringify(response.message)}`);
                 // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
                 errors = [];
                 errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -126,19 +133,21 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         } catch (e) {
             LOG.error('Could not handle error');
             LOG.error(response);
-            return [new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_UNEXPECTED',
-                response.message)];
+            return [
+                new TSExceptionReport(TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_UNEXPECTED',
+                    response.message),
+            ];
         }
     }
 
     private convertViolationReport(data: any): Array<TSExceptionReport> {
         return [].concat(this.convertToExceptionReport(data.parameterViolations))
-        .concat(this.convertToExceptionReport(data.classViolations))
-        .concat(this.convertToExceptionReport(data.fieldViolations))
-        .concat(this.convertToExceptionReport(data.propertyViolations))
-        .concat(this.convertToExceptionReport(data.returnValueViolations));
+            .concat(this.convertToExceptionReport(data.classViolations))
+            .concat(this.convertToExceptionReport(data.fieldViolations))
+            .concat(this.convertToExceptionReport(data.propertyViolations))
+            .concat(this.convertToExceptionReport(data.returnValueViolations));
 
     }
 

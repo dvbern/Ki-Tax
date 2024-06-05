@@ -30,7 +30,7 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 
 	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
 
 		if (!this.familiensituationBeendenActivated) {

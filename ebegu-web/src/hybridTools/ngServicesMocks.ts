@@ -181,6 +181,8 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('DemoFeatureRS', DemoFeatureRSMock);
     $provide.service('KinderabzugExchangeService', KinderabzugExchangeServiceMock);
     $provide.service('HybridFormBridgeService', HybridFormBridgeServiceMock);
+    $provide.factory('FreigabeService',
+        () => jasmine.createSpyObj('FreigabeService', ['canBeFreigegeben', 'getTextForFreigebenNotAllowed']));
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

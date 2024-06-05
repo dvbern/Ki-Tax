@@ -54,11 +54,9 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private BigDecimal erweitereteBeduerfnisseBetrag;
 
-	@Nonnull
 	@Column(nullable = false)
 	private boolean anspruchFachstelleWennPensumUnterschritten = false;
 
-	@Nonnull
 	@Column(nullable = false)
 	private boolean sprachfoerderungBestaetigt = false;
 

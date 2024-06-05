@@ -40,8 +40,6 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -97,13 +95,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor) {
-		String refnr = eventMonitor.getRefnr();
-		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(refnr);
-		if (mandant.isEmpty()) {
-			return Processing.failure("Mandant konnte nicht gefunden werden.");
-		}
-
-		return betreuungService.findBetreuungByBGNummer(refnr, false, mandant.get())
+		return betreuungService.findBetreuungByReferenzNummer(eventMonitor.getRefnr(), false)
 			.map(betreuung -> processEventForStornierung(eventMonitor, betreuung))
 			.orElseGet(() -> Processing.failure("Betreuung nicht gefunden."));
 	}
@@ -148,7 +140,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			String refnr = eventMonitor.getRefnr();
 			//Betreuung schon Bestaetigt => MutationMitteilung mit Storniereung erfassen
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsStornierenMitteilung(betreuung, refnr);
-			mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
+			mitteilungService.replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(betreuungsmitteilung, refnr);
 			LOG.info("Mutationsmeldung zum Stornieren der Betreuung erstellt mit RefNr: {}", refnr);
 			eventMonitor.record("Mutationsmeldung zum Stornieren der Betreuung erstellt");
 
@@ -191,13 +183,11 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 	@Nonnull
 	private Betreuungsmitteilung createBetreuungsStornierenMitteilung(
 		@Nonnull Betreuung betreuung,
-		@Nonnull String refNummer) {
+		@Nonnull String referenzNummer) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		Mandant mandant =
-			betreuungEventHelper.getMandantFromBgNummer(refNummer).orElseThrow(() -> new EbeguRuntimeException(
-				KibonLogLevel.ERROR, "createBetreuungsStornierenMitteilung", "Mandant konnte nicht gefunden werden"));
+		Mandant mandant = betreuung.extractGemeinde().getMandant();
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
@@ -216,7 +206,7 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			.collect(Collectors.toList());
 		betreuungsmitteilung.getBetreuungspensen().addAll(betreuungsMitteilungPensen);
 		betreuungsmitteilung.getBetreuungspensen().forEach(p -> p.setBetreuungsmitteilung(betreuungsmitteilung));
-		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale, mandant, refNummer));
+		betreuungsmitteilung.setMessage(ServerMessageUtil.getMessage(MESSAGE_KEY, locale, mandant, referenzNummer));
 
 		return betreuungsmitteilung;
 	}

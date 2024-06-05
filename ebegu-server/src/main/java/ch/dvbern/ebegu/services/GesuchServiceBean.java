@@ -42,7 +42,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
@@ -57,8 +56,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 
@@ -67,7 +64,6 @@ import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -96,7 +92,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
 import ch.dvbern.ebegu.entities.Institution;
@@ -130,12 +125,11 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.gesuch.freigabe.GesuchValidatorService;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.FreigabeCopyUtil;
-import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.CheckFachstellenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
@@ -213,6 +207,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private InternePendenzService internePendenzService;
 	@Inject
 	private Validator validator;
+	@Inject
+	private GesuchValidatorService gesuchValidationService;
+
 
 	@Nonnull
 	@Override
@@ -751,33 +748,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			});
 	}
 
-	@Nonnull
-	@Override
-	public List<Gesuch> findGesuchByGSName(String nachname, String vorname) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.LEFT);
-		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
-
-		ParameterExpression<String> nameParam = cb.parameter(String.class, "nachname");
-		Path<Gesuchsteller> gsJAPath = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA);
-		Predicate namePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.nachname), nameParam);
-
-		ParameterExpression<String> vornameParam = cb.parameter(String.class, "vorname");
-		Predicate vornamePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.vorname), vornameParam);
-
-		Predicate mandantPredicate = cb.equal(fallJoin.get(Fall_.MANDANT), principalBean.getMandant());
-
-		query.where(namePredicate, vornamePredicate, mandantPredicate);
-		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(nameParam, nachname);
-		q.setParameter(vornameParam, vorname);
-
-		return q.getResultList();
-	}
-
 	@Override
 	@Nonnull
 	public List<Gesuch> getAntraegeOfDossier(@Nonnull Dossier dossier) {
@@ -1031,8 +1001,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo) {
 		authorizer.checkWriteAuthorization(gesuch);
 
-		// Zum jetzigen Zeitpunkt muss das Gesuch zwingend in einem kompletten / gueltigen Zustand sein
-		validateGesuchComplete(gesuch);
+		gesuchValidationService.validateGesuchComplete(gesuch);
 
 		gesuch.setFreigabeDatum(LocalDate.now());
 
@@ -1047,103 +1016,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.FREIGABE);
 
 		return updateGesuch(gesuch, true, null);
-	}
-
-	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	@Nonnull
-	@Override
-	public Gesuch antragFreigeben(
-		@Nonnull String gesuchId, @Nullable String usernameJA,
-		@Nullable String usernameSCH) {
-		//direkt ueber persistence da wir eigentlich noch nicht leseberechtigt sind)
-		Optional<Gesuch> gesuchOptional = Optional.ofNullable(persistence.find(Gesuch.class, gesuchId));
-		if (gesuchOptional.isPresent()) {
-			Gesuch gesuch = gesuchOptional.get();
-
-			// Zum jetzigen Zeitpunkt muss das Gesuch zwingend in einem kompletten / gueltigen Zustand sein
-			validateGesuchComplete(gesuch);
-
-			if (gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG && gesuch.getStatus() != AntragStatus
-				.IN_BEARBEITUNG_GS && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
-				throw new EbeguRuntimeException(
-					"antragFreigeben",
-					"Gesuch war im falschen Status: "
-						+ gesuch.getStatus()
-						+ " wir erwarten aber nur Freigabequittung oder In Bearbeitung GS",
-					"Das Gesuch wurde bereits freigegeben");
-			}
-
-			this.authorizer.checkWriteAuthorization(gesuch);
-
-			// Die Daten des GS in die entsprechenden Containers kopieren
-			FreigabeCopyUtil.copyForFreigabe(gesuch);
-			// Je nach Status
-			if (gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
-				// Es handelt sich um eine Mutation ohne Freigabequittung: Wir setzen das Tagesdatum als FreigabeDatum
-				// an dem es der Gesuchsteller einreicht
-				gesuch.setFreigabeDatum(LocalDate.now());
-			}
-
-			// Eventuelle Schulamt-Anmeldungen auf AUSGELOEST setzen
-			for (AbstractAnmeldung anmeldung : gesuch.extractAllAnmeldungen()) {
-				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
-					anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-				}
-				// Set noch nicht freigegebene Betreuungen to aktuelle Anmeldung bei Freigabe
-				if (anmeldung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-					anmeldung.setGueltig(true);
-					if (anmeldung.getVorgaengerId() != null) {
-						final Optional<? extends AbstractAnmeldung> anmeldungOptional =
-							betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
-						anmeldungOptional.ifPresent(abstractAnmeldung -> {
-							abstractAnmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
-							betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
-						});
-					}
-				}
-			}
-
-			// Den Gesuchsstatus auf Freigegeben setzen (auch bei reinen Schulamt-Gesuchen)
-			gesuch.setStatus(AntragStatus.FREIGEGEBEN);
-
-			// Step Freigabe gruen
-			wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.FREIGABE);
-
-			//VERANTWORTLICHE
-			if (!gesuch.isMutation()) {
-				// in case of erstgesuch: Verantwortliche werden beim einlesen gesetzt und kommen vom client
-				setVerantwortliche(usernameJA, usernameSCH, gesuch);
-			} else {
-				// in case of mutation, we take default Verantwortliche and set them only if not set...
-				Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
-					gemeindeService.getGemeindeStammdatenByGemeindeId(gesuchId);
-
-				Benutzer benutzerBG = null;
-				Benutzer benutzerTS = null;
-				if (gemeindeStammdatenOptional.isPresent()) {
-					GemeindeStammdaten gemeindeStammdaten = gemeindeStammdatenOptional.get();
-					benutzerBG = gemeindeStammdaten.getDefaultBenutzerWithRoleBG().orElse(null);
-					benutzerTS = gemeindeStammdaten.getDefaultBenutzerWithRoleTS().orElse(null);
-				}
-
-				setVerantwortliche(benutzerBG, benutzerTS, gesuch, true, false);
-			}
-
-			// Falls es ein OnlineGesuch war: Das Eingangsdatum setzen
-			if (Eingangsart.ONLINE == gesuch.getEingangsart()) {
-				gesuch.setEingangsdatum(LocalDate.now());
-			}
-
-			final Gesuch merged = persistence.merge(gesuch);
-			antragStatusHistoryService.saveStatusChange(merged, null);
-			//Bei Freigabe muessen die Anmeldung an der Exchange Service exportiert werden
-			merged.extractAllAnmeldungenTagesschule().forEach(anmeldungTagesschule -> betreuungService.fireAnmeldungTagesschuleAddedEvent(anmeldungTagesschule));
-
-			return merged;
-		}
-
-		throw new EbeguEntityNotFoundException("antragFreigeben", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 
 	@Nonnull
@@ -1191,78 +1063,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		throw new EbeguEntityNotFoundException("antragZurueckziehen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 
-	private boolean setVerantwortliche(
-		@Nullable String usernameBG,
-		@Nullable String usernameTS,
-		@Nonnull Gesuch gesuch) {
 
-		Benutzer verantwortlicherBG = null;
-		Benutzer verantwortlicherTS = null;
-
-		if (usernameBG != null) {
-			verantwortlicherBG = benutzerService.findBenutzer(usernameBG, gesuch.extractGemeinde().getMandant()).orElse(null);
-		}
-		if (usernameTS != null) {
-			verantwortlicherTS = benutzerService.findBenutzer(usernameTS, gesuch.extractGemeinde().getMandant()).orElse(null);
-		}
-
-		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, false, false);
-	}
-
-	@Override
-	public boolean setVerantwortliche(
-		@Nullable Benutzer verantwortlicherBG,
-		@Nullable Benutzer verantwortlicherTS,
-		@Nonnull Gesuch gesuch,
-		boolean onlyIfNotSet,
-		boolean persist) {
-
-		boolean hasVerantwortlicheChanged = false;
-
-		if (verantwortlicherBG != null && gesuch.hasBetreuungOfJugendamt()) {
-			hasVerantwortlicheChanged =
-				setVerantwortlicherIfNecessaryBG(verantwortlicherBG, gesuch, onlyIfNotSet, persist);
-		}
-		if (verantwortlicherTS != null && gesuch.hasBetreuungOfSchulamt()) {
-			hasVerantwortlicheChanged =
-				setVerantwortlicherIfNecessaryTS(verantwortlicherTS, gesuch, onlyIfNotSet, persist);
-		}
-		return hasVerantwortlicheChanged;
-	}
-
-	private boolean setVerantwortlicherIfNecessaryBG(
-		Benutzer user,
-		Gesuch gesuch,
-		boolean onlyIfNotSet,
-		boolean persist) {
-
-		if (user.getRole().isRoleGemeindeOrBG() && (gesuch.getDossier().getVerantwortlicherBG() == null
-			|| !onlyIfNotSet)) {
-			if (persist) {
-				dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
-			}
-			gesuch.getDossier().setVerantwortlicherBG(user);
-			return true;
-		}
-		return false;
-	}
-
-	private boolean setVerantwortlicherIfNecessaryTS(
-		Benutzer user,
-		Gesuch gesuch,
-		boolean onlyIfNotSet,
-		boolean persist) {
-
-		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null
-			|| !onlyIfNotSet)) {
-			if (persist) {
-				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
-			}
-			gesuch.getDossier().setVerantwortlicherTS(user);
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	@Nonnull
@@ -2121,8 +1922,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuch.getStatus() != AntragStatus.GEPRUEFT) {
 			throw new EbeguRuntimeException("verfuegenStarten", ErrorCodeEnum.ERROR_ONLY_IN_GEPRUEFT_ALLOWED);
 		}
-		// Zum jetzigen Zeitpunkt muss das Gesuch zwingend in einem kompletten / gueltigen Zustand sein
-		validateGesuchComplete(gesuch);
+		gesuchValidationService.validateGesuchComplete(gesuch);
 
 		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
 			throw new EbeguRuntimeException("verfuegenStarten", ErrorCodeEnum.ERROR_ONLY_SCHULAMT_NOT_ALLOWED);
@@ -2137,15 +1937,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistedGesuch;
 	}
 
-	private void validateGesuchComplete(@Nonnull Gesuch gesuch) {
-		// Gesamt-Validierung durchführen
-		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<Gesuch>> constraintViolations =
-			validator.validate(gesuch, AntragCompleteValidationGroup.class);
-		if (!constraintViolations.isEmpty()) {
-			throw new ConstraintViolationException(constraintViolations);
-		}
-	}
 
 	@Override
 	public void postGesuchVerfuegen(@Nonnull Gesuch gesuch) {
@@ -2695,7 +2486,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Gesuch mutationIgnorieren(Gesuch gesuch) {
 
-		validateGesuchComplete(gesuch);
+		gesuchValidationService.validateGesuchComplete(gesuch);
 		KindContainer[] kindArray =
 			gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
 		for (int i = 0; i < gesuch.getKindContainers().size(); i++) {

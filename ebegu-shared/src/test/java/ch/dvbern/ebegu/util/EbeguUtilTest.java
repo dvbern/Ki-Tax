@@ -159,8 +159,14 @@ public class EbeguUtilTest {
 	@Test
 	public void isErlaeuterungenZurVerfuegungMit1AnspruchRequiredFuerAppenzellTest() {
 		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.APPENZELL_AUSSERRHODEN, 1);
-		// 0 Anspruch aber beim Appenzell ist einer Ausnahme so es muss immer sein:
 		Assert.assertTrue(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
+	}
+
+	@Test
+	public void isErlaeuterungenZurVerfuegungFuerSchwyzRequiredTest() {
+		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.SCHWYZ, 1);
+		// Beim Schwyz sollte immer false sein
+		Assert.assertFalse(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
 	}
 
 	@Test

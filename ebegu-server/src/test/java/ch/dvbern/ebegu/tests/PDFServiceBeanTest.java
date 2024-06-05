@@ -196,7 +196,7 @@ public class PDFServiceBeanTest {
 		if (betreuung.isPresent()) {
 			byte[] bytes = pdfService.generateNichteintreten(betreuung.get(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 			Assert.assertNotNull(bytes);
-			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getBGNummer() + ").pdf");
+			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getReferenzNummer() + ").pdf");
 		} else {
 			throw new Exception(String.format("%s", "testPrintNichteintreten()"));
 		}

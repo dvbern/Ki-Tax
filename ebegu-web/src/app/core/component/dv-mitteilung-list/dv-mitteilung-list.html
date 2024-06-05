@@ -33,7 +33,7 @@
                           data-translate="NEUE_MITTEILUNG_BETREUUNG"
                           data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
                           data-translate-value-kind="{{vm.betreuung.kindFullname}} / {{vm.betreuung.institutionStammdaten.institution.name}}"></span>
-                    <span ng-if="vm.betreuung" class="pull-right bg-nummer">{{vm.getBgNummer()}}</span>
+                    <span ng-if="vm.betreuung" class="pull-right bg-nummer">{{vm.betreuung.referenzNummer}}</span>
 
                 </h1>
                 <hr class="header"/>

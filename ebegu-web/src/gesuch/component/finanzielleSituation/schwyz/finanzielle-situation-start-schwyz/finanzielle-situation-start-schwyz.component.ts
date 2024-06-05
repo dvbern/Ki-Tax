@@ -128,7 +128,7 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     public setupCalculation(): void {
         this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(resultate => {
-                this.resultate = resultate;
+                this.resultate = resultate.finSitResultate;
                 this.ref.markForCheck();
             }, error => LOG.error(error),
         );

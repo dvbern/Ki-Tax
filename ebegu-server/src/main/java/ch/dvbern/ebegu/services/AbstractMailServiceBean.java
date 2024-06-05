@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.VersendeteMail;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -36,6 +37,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -55,13 +59,17 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	@Inject
 	private EbeguConfiguration configuration;
 
+	@Inject
+	private VersendeteMailsService versendeteMailsService;
+
 	@Resource
 	private TransactionSynchronizationRegistry txReg;
 
 	public void sendMessage(
 		@Nonnull String subject,
 		@Nonnull String messageBody,
-		@Nonnull String mailadress)
+		@Nonnull String mailadress,
+		@Nonnull MandantIdentifier mandantIdentifier)
 		throws MailException {
 
 		Objects.requireNonNull(subject);
@@ -72,6 +80,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(subject, messageBody, mailadress);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
 	}
 
@@ -79,8 +88,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		@Nonnull String subject,
 		@Nonnull String messageBody,
 		@Nonnull String mailadress,
-		@Nonnull UploadFileInfo uploadFileInfo
-	) throws MailException {
+		@Nonnull UploadFileInfo uploadFileInfo,
+		@Nonnull MandantIdentifier mandantIdentifier) throws MailException {
 
 		Objects.requireNonNull(subject);
 		Objects.requireNonNull(messageBody);
@@ -91,6 +100,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
 	}
 
@@ -211,7 +221,46 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(messageBody, mailadress, mandantIdentifier);
+			String subject = extractSubjectFromMessageBody(messageBody);
+			saveSentMails(subject, mailadress, mandantIdentifier);
 		}
+	}
+
+	private String extractSubjectFromMessageBody(String messageBody) {
+		String decodedSubject = messageBody.substring(messageBody.indexOf("Subject: ")+9, messageBody.indexOf("Content-Type"));
+		return decodeMixedBase64String(decodedSubject);
+	}
+
+	public static String decodeMixedBase64String(String mixedString) {
+		StringBuilder decodedBuilder = new StringBuilder();
+		int start = 0; // Start index for the non-encoded part
+
+		while (start < mixedString.length()) {
+			int startIndex = mixedString.indexOf("=?", start);
+			if (startIndex == -1) {
+				// No more encoded parts, append the rest of the string and break
+				decodedBuilder.append(mixedString.substring(start));
+				return decodedBuilder.toString();
+			}
+			// Append non-encoded part before the encoded section
+			if (startIndex != start) {
+				decodedBuilder.append(mixedString.substring(start, startIndex));
+			}
+			int endIndex = mixedString.indexOf("?=", startIndex) + 2;
+			if (endIndex == 1) { // No closing tag found, break to avoid an infinite loop
+				return decodedBuilder.toString();
+			}
+			// Extract the encoded part without the MIME and encoding prefix and suffix
+			String encodedPart = mixedString.substring(startIndex + 10, endIndex - 2);
+			// Decode and append the encoded part
+			byte[] decodedBytes = Base64.getDecoder().decode(encodedPart);
+			decodedBuilder.append(new String(decodedBytes, StandardCharsets.UTF_8));
+
+			// Move start index forward
+			start = endIndex;
+		}
+
+		return decodedBuilder.toString();
 	}
 
 	private void pretendToSendMessage(final String messageBody, final String mailadress) {
@@ -240,5 +289,14 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	private void assertPositiveCompletion(final SMTPSClient client) {
 		assertPositiveCompletion(client.getReplyCode());
+	}
+
+	private void saveSentMails(String subject, String mailadress, MandantIdentifier mandant) {
+		LocalDateTime zeitpunktVersand = LocalDateTime.now();
+		String empfaengerAdresse = mailadress;
+		String betreff = subject;
+		MandantIdentifier mandantIdentifier = mandant;
+		VersendeteMail versendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff, mandantIdentifier);
+		versendeteMailsService.saveVersendeteMail(versendeteMail);
 	}
 }

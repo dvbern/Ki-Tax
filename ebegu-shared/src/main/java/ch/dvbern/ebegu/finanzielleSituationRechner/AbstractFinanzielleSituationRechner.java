@@ -17,16 +17,27 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import ch.dvbern.ebegu.dto.FinanzDatenDTO;
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.util.MathUtil;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.dto.FinanzDatenDTO;
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.finanziellesituation.FinanzielleSituationUtil;
+import ch.dvbern.ebegu.util.MathUtil;
+import org.jetbrains.annotations.Contract;
+
+import static java.util.Objects.requireNonNullElse;
 
 /**
  * Abstract Class basiert auf dem Berner Finanzielle Situation Berechnung
@@ -489,12 +500,13 @@ public abstract class AbstractFinanzielleSituationRechner {
 			abstractFinanzielleSituation.getDurchschnittlicherGeschaeftsgewinn(),
 			BigDecimal.ZERO);
 
-		return einkommenZwischentotal != null ? einkommenZwischentotal : BigDecimal.ZERO;
+		return einkommenZwischentotal;
 	}
 
 	@Nonnull
 	public BigDecimal getZwischentotalVermoegen(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		BigDecimal vermoegenPlus = MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, abstractFinanzielleSituation.getBruttovermoegen());
+
 		return MathUtil.DEFAULT.subtractNullSafe(vermoegenPlus, abstractFinanzielleSituation.getSchulden());
 	}
 
@@ -504,25 +516,22 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	protected static BigDecimal add(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
-		value1 = value1 != null ? value1 : BigDecimal.ZERO;
-		value2 = value2 != null ? value2 : BigDecimal.ZERO;
-		return value1.add(value2);
+		return requireNonNullElse(value1, BigDecimal.ZERO)
+			.add(requireNonNullElse(value2, BigDecimal.ZERO));
 	}
 
 	protected static BigDecimal subtract(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
-		value1 = value1 != null ? value1 : BigDecimal.ZERO;
-		value2 = value2 != null ? value2 : BigDecimal.ZERO;
-		return value1.subtract(value2);
+		return requireNonNullElse(value1, BigDecimal.ZERO)
+			.subtract(requireNonNullElse(value2, BigDecimal.ZERO));
 	}
 
 	protected static BigDecimal percent(@Nullable BigDecimal value, int percent) {
-		BigDecimal total = value != null ? value : BigDecimal.ZERO;
-		total = total.multiply(new BigDecimal(String.valueOf(percent)));
-		total = total.divide(new BigDecimal("100"), RoundingMode.HALF_UP);
-		return total;
+		return requireNonNullElse(value, BigDecimal.ZERO)
+			.multiply(new BigDecimal(String.valueOf(percent)))
+			.divide(new BigDecimal("100"), RoundingMode.HALF_UP);
 	}
 
-	@Nullable
+	@Nonnull
 	private BigDecimal calcEinkommen(
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
 		@Nullable BigDecimal geschaeftsgewinnDurchschnitt1,
@@ -536,7 +545,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
-	public BigDecimal calcErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	public BigDecimal calcErsatzeinkommen(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation == null) {
 			return null;
 		}
@@ -546,6 +555,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 		return totalErsatzeinkommen;
 	}
 
+	@Contract("null, _, null -> null; _, _, _ -> !null")
 	@Nullable
 	protected BigDecimal calcEinkommenProGS(
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
@@ -579,23 +589,18 @@ public abstract class AbstractFinanzielleSituationRechner {
 	@Nullable
 	protected Einkommensverschlechterung getEinkommensverschlechterungGS(
 		@Nullable GesuchstellerContainer gesuchsteller,
-		int basisJahrPlus) {
-		if (gesuchsteller != null && gesuchsteller.getEinkommensverschlechterungContainer() != null) {
-			if (basisJahrPlus == 2) {
-				return gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
-			} else {
-				return gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-			}
-		}
-		return null;
+		int basisJahrPlus
+	) {
+		return Optional.ofNullable(gesuchsteller)
+			.map(GesuchstellerContainer::getEinkommensverschlechterungContainer)
+			.map(c -> basisJahrPlus == 2 ? c.getEkvJABasisJahrPlus2() : c.getEkvJABasisJahrPlus1())
+			.orElse(null);
 	}
 
 	@Nullable
 	protected FinanzielleSituation getFinanzielleSituationGS(@Nullable GesuchstellerContainer gesuchsteller) {
-		if (gesuchsteller != null && gesuchsteller.getFinanzielleSituationContainer() != null) {
-			return gesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA();
-		}
-		return null;
+		return FinanzielleSituationUtil.findFinanzielleSituationJA(gesuchsteller)
+			.orElse(null);
 	}
 
 	public abstract boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);

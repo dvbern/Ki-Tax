@@ -1,0 +1,34 @@
+ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungSnapshotTest.mappingMustBeReconsideredWhenPropertiesChange=[
+  {
+    "betreuteTage": null,
+    "betreuungInFerienzeit": null,
+    "betreuungsmitteilung": null,
+    "betreuungspensumAbweichung": null,
+    "eingewoehnungPauschale": {
+      "gueltigkeit": {
+        "gueltigAb": "2024-01-01",
+        "gueltigBis": "2024-12-31",
+        "stichtag": false,
+        "valid": true
+      },
+      "pauschale": 0,
+      "vorgaengerId": null
+    },
+    "gueltigkeit": {
+      "gueltigAb": "2024-01-01",
+      "gueltigBis": "2024-12-31",
+      "stichtag": false,
+      "valid": true
+    },
+    "monatlicheBetreuungskosten": 0,
+    "monatlicheHauptmahlzeiten": 0,
+    "monatlicheNebenmahlzeiten": 0,
+    "pensum": 0,
+    "stuendlicheVollkosten": null,
+    "tarifProHauptmahlzeit": 0,
+    "tarifProNebenmahlzeit": 0,
+    "unitForDisplay": "PERCENTAGE",
+    "vollstaendig": true,
+    "vorgaengerId": null
+  }
+]

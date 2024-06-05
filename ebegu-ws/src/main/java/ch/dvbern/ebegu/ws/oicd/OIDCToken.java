@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.ws.oicd;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.time.LocalDateTime;
 
@@ -42,5 +43,13 @@ public class OIDCToken {
 
 	public void setRequestTime(LocalDateTime requestTime) {
 		this.requestTime = requestTime;
+	}
+
+	public String toString(){
+		return new ToStringBuilder(this)
+			.append("Token", token)
+			.append("expiresIn", expiresIn)
+			.append("expiersAt", expiersAt)
+			.toString();
 	}
 }

@@ -143,7 +143,7 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		// Row: Referenznummer
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
-		table.addCell(new Phrase(translate(REFERENZNUMMER), defaultFont));
+		table.addCell(new Phrase(translate(REFERENZ_NUMMER), defaultFont));
 		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), defaultFont));
 		table.addCell(new Phrase());
 		// Row: Gesuchersteller-Adressen
@@ -182,13 +182,13 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 		table.setKeepTogether(true);
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_KIND)));
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_INSTITUTION)));
-		table.addCell(PdfUtil.createTitleCell(translate(REFERENZNUMMER)));
+		table.addCell(PdfUtil.createTitleCell(translate(REFERENZ_NUMMER)));
 
 		getGesuch().extractAllPlaetze().forEach(platz -> {
 			final Font defaultFont = getPageConfiguration().getFonts().getFont();
 			table.addCell(new Phrase(platz.getKind().getKindJA().getFullName(), defaultFont));
 			table.addCell(new Phrase(platz.getInstitutionAndBetreuungsangebottyp(sprache), defaultFont));
-			table.addCell(new Phrase(platz.getBGNummer(), defaultFont));
+			table.addCell(new Phrase(platz.getReferenzNummer(), defaultFont));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;

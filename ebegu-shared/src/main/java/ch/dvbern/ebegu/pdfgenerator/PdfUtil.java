@@ -23,17 +23,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.lib.invoicegenerator.dto.fonts.FontBuilder;
+import ch.dvbern.lib.invoicegenerator.dto.fonts.FontModifier;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Chunk;
@@ -47,6 +52,8 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.html.simpleparser.HTMLWorker;
+import com.lowagie.text.html.simpleparser.StyleSheet;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfGState;
@@ -192,12 +199,96 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
+	public static Paragraph createParagraphHtml(@Nonnull String text) {
+		Paragraph paragraph = createParagraph("");
+		try {
+			java.util.List<Element> parsedList = HTMLWorker.parseToList(new StringReader(text), new StyleSheet());
+			// if the text contains actual HTML, there must be more than one chunk -> use HTML parsed output
+			formatParsedHtml(parsedList);
+			paragraph.addAll(parsedList);
+			return paragraph;
+		} catch (IOException e) {
+			throw new EbeguRuntimeException("createParagraphHtml()","Fehler bei HTML Parsen", e);
+		}
+	}
+
+	/**
+	 * By default, the parsed html elements will have a font that differs from the one used in the rest of the PDF.
+	 * This method adjusts that as well as some other formatting issues.
+	 */
+	private static void formatParsedHtml(@Nonnull java.util.List<Element> parsedList) {
+		// chunks
+		parsedList.stream()
+			.flatMap(element -> element.getChunks().stream())
+			.filter(Chunk.class::isInstance)
+			.map(Chunk.class::cast)
+			.forEach(chunk -> chunk.setFont(getDefaultFont(Objects.requireNonNull(chunk.getFont()))));
+
+		// paragraphs (<p>)
+		parsedList.stream()
+			.filter(Paragraph.class::isInstance)
+			.map(Paragraph.class::cast)
+			.forEach(PdfUtil::applyHTMLParagraphStyle);
+
+		// list (<ul>)
+		// Appart from the font, also sets an indentation
+		parsedList.stream()
+			.filter(element -> element instanceof com.lowagie.text.List)
+			.map(element -> (com.lowagie.text.List) element)
+			.forEach(PdfUtil::applyHTMListStyle);
+	}
+
+
+	@Nonnull
 	public static Paragraph createListInParagraph(java.util.List<String> list) {
 		Paragraph paragraph = new Paragraph();
 		final List itextList = createList(list);
 		paragraph.add(itextList);
 		return paragraph;
 	}
+
+	private static void applyHTMLParagraphStyle(@Nonnull Paragraph paragraph) {
+		paragraph.setFont(getDefaultFont(paragraph.getFont()));
+		paragraph.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
+	}
+
+	private static void applyHTMListStyle(@Nonnull com.lowagie.text.List list) {
+		list.setIndentationLeft(0);
+		Font font = list.getSymbol().getFont();
+		if (font != null) {
+			// make sure the symbol also uses our default font
+			list.getSymbol().setFont(getDefaultFont(font));
+		}
+
+		list.getItems().stream()
+			.filter(ListItem.class::isInstance)
+			.map(ListItem.class::cast)
+			.forEach(PdfUtil::applyHTMLListItemStyle);
+	}
+
+	private static void applyHTMLListItemStyle(@Nonnull ListItem listItem) {
+		listItem.setFont(getDefaultFont(listItem.getFont()));
+		listItem.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
+		listItem.setIndentationLeft(0, false);
+		listItem.setSpacingBefore(0);
+		listItem.setSpacingAfter(0);
+	}
+
+	@Nonnull
+	private static Font getDefaultFont(@Nonnull Font font) {
+		if (font.isBold()) {
+			return FontBuilder.of(DEFAULT_FONT_BOLD)
+				// don't apply the bold style, because that would make a bold font even bolder!
+				.with(FontModifier.style(font.getStyle() & ~(Font.BOLD)))
+				.build();
+		}
+
+		return FontBuilder.of(DEFAULT_FONT)
+			.with(FontModifier.style(font.getStyle()))
+			.build();
+	}
+
+
 
 	@Nonnull
 	public static List createList(java.util.List<String> list) {
@@ -225,8 +316,11 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable createIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale, @Nonnull
-			Mandant mandant) {
+	public static PdfPTable createIntroTable(
+		@Nonnull java.util.List<TableRowLabelValue> entries,
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
+	) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = { 1, 2 };
@@ -444,4 +538,6 @@ public final class PdfUtil {
 		newFont.setColor(color);
 		return newFont;
 	}
+
+
 }

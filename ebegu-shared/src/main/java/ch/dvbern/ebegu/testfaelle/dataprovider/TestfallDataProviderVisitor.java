@@ -3,7 +3,7 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 import java.time.LocalDate;
 import java.time.Month;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -18,7 +18,7 @@ public class TestfallDataProviderVisitor implements MandantVisitor<AbstractTestf
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	public AbstractTestfallDataProvider getTestDataProvider(@NotNull Mandant mandant) {
+	public AbstractTestfallDataProvider getTestDataProvider(@Nonnull Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);
 	}
 

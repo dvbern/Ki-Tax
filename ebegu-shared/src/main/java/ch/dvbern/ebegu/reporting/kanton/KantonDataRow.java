@@ -26,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class KantonDataRow {
 
 	private String gemeinde;
-	private String bgNummer;
+	private String referenzNummer;
 	private String gesuchId;
 	private String name;
 	private String vorname;
@@ -45,12 +45,12 @@ public class KantonDataRow {
 
 	private Boolean babyTarif;
 
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")

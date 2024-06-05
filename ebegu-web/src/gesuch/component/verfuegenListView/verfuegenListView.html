@@ -38,7 +38,7 @@
                                 <th data-translate="KIND" width="20%"></th>
                                 <th data-translate="INSTITUTION" width="20%"></th>
                                 <th data-translate="BETREUUNGSANGEBOT" width="20%"></th>
-                                <th data-translate="BGNUMMER" width="20%"></th>
+                                <th data-translate="REFERENZ_NUMMER" width="20%"></th>
                                 <th data-translate="STATUS" width="15%"></th>
                                 <th data-translate="GUELTIGE_BETREUUNG" width="20%" ng-show="vm.isSuperAdmin()"></th>
                                 <th width="5%"></th>
@@ -242,7 +242,8 @@
                                        data-translate="MAHNUNG_FRISTABLAUF"></label>
                                 <dv-datepicker input-id="datumFristablaufID" name="datumFristablauf"
                                                class="input-element-small"
-                                               ng-model="vm.mahnung.datumFristablauf" ng-required="true">
+                                               ng-model="vm.mahnung.datumFristablauf" ng-required="true"
+                                               data-test="fristablauf-mahnung">
                                 </dv-datepicker>
                                 <dv-error-messages input-id="datumFristablaufID" for="vm.form.datumFristablauf.$error"
                                                    class="error"></dv-error-messages>
@@ -319,12 +320,14 @@
                 <dv-loading-button input-id="button_ersteMahnung" button-click="vm.ersteMahnungErstellen()"
                                    button-click="vm.ersteMahnungErstellen()"
                                    aria-label="{{'ERSTE_MAHNUNG' | translate}}"
-                                   ng-if="vm.showErsteMahnungErstellen()">
+                                   ng-if="vm.showErsteMahnungErstellen()"
+                                   data-test="erste-mahnung">
                     <span class="uppercase" data-translate="ERSTE_MAHNUNG"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="buttonErsteMahnungAusloesen" type="submit" button-click="vm.saveMahnung()"
                                    aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN' | translate}}"
-                                   ng-if="vm.showErsteMahnungAusloesen()">
+                                   ng-if="vm.showErsteMahnungAusloesen()"
+                                   data-test="erste-mahnung-auslösen">
                     <span class="uppercase" data-translate="ERSTE_MAHNUNG_AUSLOESEN"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="buttonZweiteMahnung" button-click="vm.zweiteMahnungErstellen()"

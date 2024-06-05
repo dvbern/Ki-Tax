@@ -20,6 +20,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -39,7 +40,7 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@NotNull
 	private Geschlecht geschlecht;
 
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	private String mail;
@@ -59,6 +60,9 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 
 	@Nullable
 	private Sprache korrespondenzSprache;
+
+	@Nullable
+	private String sozialversicherungsnummer;
 
 	@Nullable
 	public String getMail() {
@@ -121,5 +125,14 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Override
 	public void setGeschlecht(Geschlecht geschlecht) {
 		this.geschlecht = geschlecht;
+	}
+
+	@Nullable
+	public String getSozialversicherungsnummer() {
+		return sozialversicherungsnummer;
+	}
+
+	public void setSozialversicherungsnummer(@Nullable String sozialversicherungsnummer) {
+		this.sozialversicherungsnummer = sozialversicherungsnummer;
 	}
 }

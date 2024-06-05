@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import lombok.Value;
@@ -36,13 +35,13 @@ public class BetreuungAbweichung implements BetreuungAndPensumContainer {
 
 	@Nonnull
 	@Override
-	public List<AbstractMahlzeitenPensum> getBetreuungenGS() {
+	public List<BetreuungspensumAbweichung> getBetreuungenGS() {
 		return List.of();
 	}
 
 	@Nonnull
 	@Override
-	public List<AbstractMahlzeitenPensum> getBetreuungenJA() {
+	public List<BetreuungspensumAbweichung> getBetreuungenJA() {
 		return List.copyOf(abweichungen);
 	}
 

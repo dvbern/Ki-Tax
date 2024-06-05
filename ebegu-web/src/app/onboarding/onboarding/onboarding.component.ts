@@ -21,6 +21,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {YoutubeLinkVisitor} from '../../core/constants/YoutubeLinkVisitor';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../shared/services/mandant.service';
@@ -45,7 +46,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     public isMultimandantEnabled$: Observable<boolean>;
     public isLuzern$: Observable<boolean>;
     private readonly unsubscribe$ = new Subject<void>();
-    public youtubeLink$: Observable<SafeResourceUrl>;
+    public youtubeLink$: Observable<SafeResourceUrl | null>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -99,6 +100,9 @@ export class OnboardingComponent implements OnInit, OnDestroy {
         this.youtubeLink$ = combineLatest([mandant$, isGerman$])
                 .pipe(map(([mandant, isGerman]) => {
                     const url = new YoutubeLinkVisitor(isGerman).process(mandant);
+                    if (EbeguUtil.isNullOrUndefined(url)) {
+                        return null;
+                    }
                     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
                 }));
     }

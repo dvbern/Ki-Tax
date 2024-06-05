@@ -1,0 +1,239 @@
+ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfTest$SchwyzTest$WhenMultipleGesuchsteller.beideQuellenbesteuert=[
+Berechnung der finanziellen Verhältnisse (Beilage 1) 
+ 
+ 
+ 
+Referenznummer 17.000001.002
+Gesuchsperiode 2017/2018
+Einkünfte Tim Tester
+Bruttolohn 33’333.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 6’667.00
+Massgebendes Einkommen in CHF 26’666.00
+Einkünfte Hanna Tester
+Bruttolohn 55’555.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 11’111.00
+Massgebendes Einkommen in CHF 44’444.00
+Zusammenzug
+Massgebendes Einkommen Tim Tester 26’666.00
+Massgebendes Einkommen Hanna Tester 44’444.00
+Massgebendes Einkommen in CHF 71’110.00
+Jugendamt
+Nussbaumstrasse 21
+3006 Bern
+Telefon 031 123 12 12
+info@bern.ch
+www.bern.ch
+Bern, <TODAY>
+Tim Tester
+Hanna Tester
+Nussbaumstrasse 21
+3006 Bern
+Massgebendes Einkommen
+ 
+Referenznummer 17.000001.002
+Name Tim Tester, Hanna Tester
+Von Bis Massgebendes
+Einkommen in CHF
+Sozialabzug /
+Kinderabzug in CHF
+Anspruchsberechtigtes
+Einkommen in CHF
+01.08.2017 31.08.2017 0.00 0.00 0.00
+
+]
+
+
+ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfTest$SchwyzTest$WhenMultipleGesuchsteller.mixed=[
+Berechnung der finanziellen Verhältnisse (Beilage 1) 
+ 
+ 
+ 
+Referenznummer 17.000001.002
+Gesuchsperiode 2017/2018
+Einkünfte Tim Tester
+Bruttolohn 80’000.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 16’000.00
+Massgebendes Einkommen in CHF 64’000.00
+Einkünfte Hanna Tester
+Reineinkommen 88’000.00
+Einkäufe berufliche Vorsorge (BVG / 2. Säule) 5’000.00
+Abzüge
+Ausserordentlicher Liegenschaftsaufwand 1’000.00
+Vermögen
+Reinvermögen 1 123’456.00
+Massgebendes Einkommen in CHF 94’000.00
+Zusammenzug
+Massgebendes Einkommen Tim Tester 64’000.00
+Massgebendes Einkommen Hanna Tester 94’000.00
+Massgebendes Einkommen in CHF 158’000.00
+1 Für die Berechnung des massgebenden Einkommens sind 10% des Reinvermögens nach Abzug des Freibetrages von 200'000 CHF
+relevant.
+Jugendamt
+Nussbaumstrasse 21
+3006 Bern
+Telefon 031 123 12 12
+info@bern.ch
+www.bern.ch
+Bern, <TODAY>
+Tim Tester
+Hanna Tester
+Nussbaumstrasse 21
+3006 Bern
+Massgebendes Einkommen
+ 
+Referenznummer 17.000001.002
+Name Tim Tester, Hanna Tester
+Von Bis Massgebendes
+Einkommen in CHF
+Sozialabzug /
+Kinderabzug in CHF
+Anspruchsberechtigtes
+Einkommen in CHF
+01.08.2017 31.08.2017 0.00 0.00 0.00
+
+]
+
+
+ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfTest$SchwyzTest$WhenMultipleGesuchsteller.withEinkommensverschlaechterung=[
+Berechnung der finanziellen Verhältnisse (Beilage 1) 
+ 
+ 
+ 
+Referenznummer 17.000001.002
+Gesuchsperiode 2017/2018
+Einkünfte Tim Tester
+Reineinkommen 88’000.00
+Einkäufe berufliche Vorsorge (BVG / 2. Säule) 5’000.00
+Abzüge
+Ausserordentlicher Liegenschaftsaufwand 1’000.00
+Vermögen
+Reinvermögen 1 123’456.00
+Massgebendes Einkommen in CHF 94’000.00
+Einkünfte Hanna Tester
+Bruttolohn 80’000.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 16’000.00
+Massgebendes Einkommen in CHF 64’000.00
+Zusammenzug
+Massgebendes Einkommen Tim Tester 94’000.00
+Massgebendes Einkommen Hanna Tester 64’000.00
+Massgebendes Einkommen in CHF 158’000.00
+1 Für die Berechnung des massgebenden Einkommens sind 10% des Reinvermögens nach Abzug des Freibetrages von 200'000 CHF
+relevant.
+Jugendamt
+Nussbaumstrasse 21
+3006 Bern
+Telefon 031 123 12 12
+info@bern.ch
+www.bern.ch
+Bern, <TODAY>
+Tim Tester
+Hanna Tester
+Nussbaumstrasse 21
+3006 Bern
+Provisorisches Einkommen (Einkommensänderung)
+ 
+ 
+ 
+Referenznummer 17.000001.002
+Einkünfte Tim Tester
+Reineinkommen 75’000.00
+Einkäufe berufliche Vorsorge (BVG / 2. Säule) 4’000.00
+Abzüge
+Ausserordentlicher Liegenschaftsaufwand 2’000.00
+Vermögen
+Reinvermögen 1 90’000.00
+Massgebendes Einkommen in CHF 81’000.00
+Einkünfte Hanna Tester
+Bruttolohn 70’000.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 14’000.00
+Massgebendes Einkommen in CHF 56’000.00
+Zusammenzug
+Massgebendes Einkommen Tim Tester 81’000.00
+Massgebendes Einkommen Hanna Tester 56’000.00
+Massgebendes Einkommen in CHF 137’000.00
+1 Für die Berechnung des massgebenden Einkommens sind 10% des Reinvermögens nach Abzug des Freibetrages von 200'000 CHF
+relevant.
+Provisorisches Einkommen (Einkommensänderung)
+ 
+ 
+ 
+Referenznummer 17.000001.002
+Einkünfte Tim Tester
+Reineinkommen 70’000.00
+Einkäufe berufliche Vorsorge (BVG / 2. Säule) 2’000.00
+Abzüge
+Ausserordentlicher Liegenschaftsaufwand 500.00
+Vermögen
+Reinvermögen 1 85’000.00
+Massgebendes Einkommen in CHF 81’000.00
+Einkünfte Hanna Tester
+Bruttolohn 74’000.00
+Abzüge
+20% Bruttopauschale vom Bruttoeinkommen 18’000.00
+Massgebendes Einkommen in CHF 56’000.00
+Zusammenzug
+Massgebendes Einkommen Tim Tester 81’000.00
+Massgebendes Einkommen Hanna Tester 56’000.00
+Massgebendes Einkommen in CHF 137’000.00
+1 Für die Berechnung des massgebenden Einkommens sind 10% des Reinvermögens nach Abzug des Freibetrages von 200'000 CHF
+relevant.
+Massgebendes Einkommen
+ 
+Referenznummer 17.000001.002
+Name Tim Tester, Hanna Tester
+Von Bis Massgebendes
+Einkommen in CHF
+Sozialabzug /
+Kinderabzug in CHF
+Anspruchsberechtigtes
+Einkommen in CHF
+01.08.2017 31.08.2017 0.00 0.00 0.00
+
+]
+
+
+finsit-schwyz-gemeinsam-veranlagt=[
+Berechnung der finanziellen Verhältnisse (Beilage 1) 
+ 
+Referenznummer 17.000001.002
+Gesuchsperiode 2017/2018
+Einkünfte Tim Tester
+& Hanna Tester
+Reineinkommen 88’000.00
+Einkäufe berufliche Vorsorge (BVG / 2. Säule) 5’000.00
+Abzüge
+Ausserordentlicher Liegenschaftsaufwand 1’000.00
+Vermögen
+Reinvermögen 1 123’456.00
+Massgebendes Einkommen in CHF 94’000.00
+1 Für die Berechnung des massgebenden Einkommens sind 10% des Reinvermögens nach Abzug des Freibetrages von 200'000 CHF
+relevant.
+Jugendamt
+Nussbaumstrasse 21
+3006 Bern
+Telefon 031 123 12 12
+info@bern.ch
+www.bern.ch
+Bern, <TODAY>
+Tim Tester
+Hanna Tester
+Nussbaumstrasse 21
+3006 Bern
+Massgebendes Einkommen
+ 
+Referenznummer 17.000001.002
+Name Tim Tester, Hanna Tester
+Von Bis Massgebendes
+Einkommen in CHF
+Sozialabzug /
+Kinderabzug in CHF
+Anspruchsberechtigtes
+Einkommen in CHF
+01.08.2017 31.08.2017 0.00 0.00 0.00
+
+]

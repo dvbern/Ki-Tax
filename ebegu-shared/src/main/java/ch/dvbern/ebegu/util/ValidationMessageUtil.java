@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
  */
 public final class ValidationMessageUtil {
 
-	private static final Map<String, ResourceBundle> BUNDLES = new HashMap<>();
+	static final Map<String, ResourceBundle> BUNDLES = new HashMap<>();
 
 	static {
 		BUNDLES.put(Constants.DEUTSCH_LOCALE.getLanguage(), ResourceBundle.getBundle(Constants.VALIDATION_MESSAGE_BUNDLE_NAME, Constants.DEUTSCH_LOCALE));

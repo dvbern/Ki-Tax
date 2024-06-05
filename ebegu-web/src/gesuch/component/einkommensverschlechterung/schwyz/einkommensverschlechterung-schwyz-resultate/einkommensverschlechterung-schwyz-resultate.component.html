@@ -23,8 +23,18 @@
                 <div class="row margin-bottom-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="massgebendesEinkommen"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
+                            [model]="resultate?.finSitResultate?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT'"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                        <dv-input-label-field
+                            [model]="resultate?.ekvResultate?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN'"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                        <dv-input-label-field
+                            [model]="veraenderungTotalToPercentageString()"
+                            [labelMessageKey]="'EVK_IN_PROZENT'"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
@@ -32,11 +42,11 @@
             </ng-template>
 
             <ng-template #multipleGS>
-                <div class="row margin-bottom-20">
-                    <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-6 margin-bottom-20">
                         <dv-input-label-field
-                            [model]="massgebendesEinkommen"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
+                            [model]="resultate?.finSitResultate?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT'"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
@@ -44,8 +54,8 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="massgebendesEinkommenGS1"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                            [model]="resultate?.ekvResultate?.massgebendesEinkVorAbzFamGrGS1"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_GS'"
                             [labelMessageKeyArgs]="{namegs: extractFullNameGS1()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
@@ -54,9 +64,27 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="massgebendesEinkommenGS2"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                            [model]="resultate?.ekvResultate?.massgebendesEinkVorAbzFamGrGS2"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_GS'"
                             [labelMessageKeyArgs]="{namegs: extractFullNameGS2()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="resultate?.ekvResultate?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN'"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="veraenderungTotalToPercentageString()"
+                            [labelMessageKey]="'EVK_IN_PROZENT'"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>

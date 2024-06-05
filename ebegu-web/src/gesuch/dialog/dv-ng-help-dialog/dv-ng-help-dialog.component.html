@@ -20,6 +20,7 @@
         <ng-container *ngSwitchCase="mandantTypes.LUZERN" [ngTemplateOutlet]="lu"></ng-container>
         <ng-container *ngSwitchCase="mandantTypes.SOLOTHURN" [ngTemplateOutlet]="so"></ng-container>
         <ng-container *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN" [ngTemplateOutlet]="ar"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.SCHWYZ" [ngTemplateOutlet]="sz"></ng-container>
         <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
     </ng-container>
 </mat-dialog-content>
@@ -57,15 +58,12 @@
         <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{'MANDANT_TEL_BKD' | translate}}</a></p>
     </div>
 
-    <div class="margin-top-40">
-        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
-        <p>
-            <a href="" (click)="startTour()">
-                <span translate="TOUR_STARTEN"></span>
-            </a>
-        </p>
-    </div>
+<ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
 
+    <ng-container [ngTemplateOutlet]="blog"></ng-container>
+</ng-template>
+
+<ng-template #blog>
     <div class="margin-top-40" *ngIf="hasRoleGemeinde || hasRoleInstitution">
         <h2>Blog</h2>
         <p *ngIf="hasRoleMandant">
@@ -86,14 +84,7 @@
     </div>
 </ng-template>
 
-<ng-template #so>
-    <div class="margin-top-40">
-        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
-        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
-        <p><a href="tel:+41 58 258 16 82">+41 58 258 16 82</a></p>
-        <p><a href="mailto:kibon@vseg.ch">kibon@vseg.ch</a></p>
-    </div>
-
+<ng-template #tourStarten>
     <div class="margin-top-40">
         <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
         <p>
@@ -102,6 +93,17 @@
             </a>
         </p>
     </div>
+</ng-template>
+
+<ng-template #so>
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
+        <p><a href="tel:+41 58 258 16 82">+41 58 258 16 82</a></p>
+        <p><a href="mailto:kibon@vseg.ch">kibon@vseg.ch</a></p>
+    </div>
+
+<ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
 </ng-template>
 
 <ng-template #lu>
@@ -113,14 +115,7 @@
         <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
     </div>
 
-    <div class="margin-top-40">
-        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
-        <p>
-            <a href="" (click)="startTour()">
-                <span translate="TOUR_STARTEN"></span>
-            </a>
-        </p>
-    </div>
+<ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
 </ng-template>
 
 <ng-template #ar>
@@ -130,12 +125,24 @@
         <p><a href="mailto:kibeg@sovar.ch">kibeg@sovar.ch</a></p>
     </div>
 
+<ng-container [ngTemplateOutlet]="tourStarten"></ng-container>
+</ng-template>
+
+
+
+<ng-template #sz>
+    <div class="margin-top-10">
+        <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
+        <p>DV Bern AG</p>
+        <a class="a-link" (click)="openSupportanfrage()">
+            <i class="fa fa-question-circle-o">&nbsp;</i>
+            <span translate="SUPPORTANFRAGE_STELLEN"></span>
+        </a>
+        <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
+        <p><a href="https://get.teamviewer.com/dvbv11" target="_blank" rel="noopener noreferrer" translate>TEAMVIEWER_LINK</a></p>
+    </div>
     <div class="margin-top-40">
-        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
-        <p>
-            <a href="" (click)="startTour()">
-                <span translate="TOUR_STARTEN"></span>
-            </a>
-        </p>
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
     </div>
 </ng-template>

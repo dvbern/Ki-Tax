@@ -15,11 +15,9 @@
 
 package ch.dvbern.ebegu.reporting.gesuchzeitraum;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public class GesuchZeitraumDataRow {
 
-	private String bgNummer;
+	private String referenzNummer;
 	private String gemeinde;
 	private Integer gesuchLaufNr;
 	private String institution;
@@ -49,7 +47,7 @@ public class GesuchZeitraumDataRow {
 	private Integer anzahlSteueramtGeprueft;
 
 	public GesuchZeitraumDataRow(
-		String bgNummer, String gemeinde, Integer gesuchLaufNr, String institution, String betreuungsTyp,
+		String referenzNummer, String gemeinde, Integer gesuchLaufNr, String institution, String betreuungsTyp,
 		String periode, Integer anzahlGesuchOnline, Integer anzahlGesuchPapier, Integer anzahlMutationOnline,
 		Integer anzahlMutationPapier, Integer anzahlMutationAbwesenheit, Integer anzahlMutationBetreuung,
 		Integer anzahlMutationEV, Integer anzahlMutationEwerbspensum, Integer anzahlMutationFamilienSitutation,
@@ -59,7 +57,7 @@ public class GesuchZeitraumDataRow {
 		Integer anzahlVerfuegungenNormal, Integer anzahlVerfuegungenMaxEinkommen, Integer anzahlVerfuegungenKeinPensum,
 		Integer anzahlVerfuegungenNichtEintreten
 	) {
-		this.bgNummer = bgNummer;
+		this.referenzNummer = referenzNummer;
 		this.gemeinde = gemeinde;
 		this.gesuchLaufNr = gesuchLaufNr;
 		this.institution = institution;
@@ -89,13 +87,12 @@ public class GesuchZeitraumDataRow {
 		this.anzahlSteueramtGeprueft = anzahlSteueramtGeprueft;
 	}
 
-	@SuppressFBWarnings("NM_CONFUSING")
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public String getGemeinde() {
