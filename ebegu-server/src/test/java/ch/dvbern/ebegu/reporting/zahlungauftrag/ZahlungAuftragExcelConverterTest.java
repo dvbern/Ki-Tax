@@ -43,12 +43,18 @@ public class ZahlungAuftragExcelConverterTest {
 		Assert.assertEquals(notInvertedZahlungsposition, filteredList.get(0));
 	}
 
-	private Zahlungsposition createZahlungsposition(String bgNummer, LocalDate ab, LocalDate bis, BigDecimal bgPensum, BigDecimal betragCHF) {
+	private Zahlungsposition createZahlungsposition(
+		String referenzNummer,
+		LocalDate ab,
+		LocalDate bis,
+		BigDecimal bgPensum,
+		BigDecimal betragCHF
+	) {
 		Zahlungsposition zahlungsposition = EasyMock.createMock(Zahlungsposition.class);
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = EasyMock.createMock(VerfuegungZeitabschnitt.class);
 		Verfuegung verfuegung = EasyMock.createMock(Verfuegung.class);
 		Betreuung betreuung = EasyMock.createMock(Betreuung.class);
-		EasyMock.expect(betreuung.getBGNummer()).andStubReturn(bgNummer);
+		EasyMock.expect(betreuung.getReferenzNummer()).andStubReturn(referenzNummer);
 		EasyMock.expect(verfuegung.getBetreuung()).andStubReturn(betreuung);
 		EasyMock.expect(verfuegungZeitabschnitt.getVerfuegung()).andStubReturn(verfuegung);
 		EasyMock.expect(zahlungsposition.getVerfuegungZeitabschnitt()).andStubReturn(verfuegungZeitabschnitt);

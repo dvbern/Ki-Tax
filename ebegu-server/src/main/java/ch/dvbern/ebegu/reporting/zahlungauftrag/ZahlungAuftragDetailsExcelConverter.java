@@ -99,8 +99,7 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vorname, zahlungsposition.getKind().getVorname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.gebDatum, zahlungsposition.getKind().getGeburtsdatum());
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.verfuegung,
-							betreuung.getBGNummer());
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.verfuegung, betreuung.getReferenzNummer());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vonDatum,
 							zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bisDatum,
@@ -124,8 +123,8 @@ public class ZahlungAuftragDetailsExcelConverter implements ExcelConverter {
 					Objects.requireNonNull(betreuungVerfuegung);
 					final Betreuung betreuungZahlungsposition = zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung();
 					Objects.requireNonNull(betreuungZahlungsposition);
-					return betreuungVerfuegung.getBGNummer()
-						.equals(betreuungZahlungsposition.getBGNummer())
+					return betreuungVerfuegung.getReferenzNummer()
+						.equals(betreuungZahlungsposition.getReferenzNummer())
 					&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()
 						.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb())
 					&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()

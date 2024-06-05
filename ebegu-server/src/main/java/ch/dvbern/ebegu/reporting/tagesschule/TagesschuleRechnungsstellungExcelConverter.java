@@ -17,18 +17,19 @@
 
 package ch.dvbern.ebegu.reporting.tagesschule;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschuleRechnungsstellung;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.Dependent;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -59,7 +60,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.nachnameKind, dataRow.getNachnameKind());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.vornameKind, dataRow.getVornameKind());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.geburtsdatumKind, dataRow.getGeburtsdatumKind());
-			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.referenznummer, dataRow.getReferenznummer());
+			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.referenzNummer, dataRow.getReferenzNummer());
 
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseVorname, dataRow.getRechnungsadresseVorname());
 			excelRowGroup.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseNachname, dataRow.getRechnungsadresseNachname());
@@ -92,7 +93,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameKindTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale, mandant));
-		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.referenznummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.referenzNummerTitle, ServerMessageUtil.getMessage("Reports_referenzNummerTitle", locale, mandant));
 
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechungsadresseTitle, ServerMessageUtil.getMessage("Reports_rechungsadresseTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.rechnungsadresseVornameTitle, ServerMessageUtil.getMessage("Reports_rechnungsadresseVornameTitle", locale, mandant));

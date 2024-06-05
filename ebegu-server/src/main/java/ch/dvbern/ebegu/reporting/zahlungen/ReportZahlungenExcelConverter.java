@@ -16,21 +16,26 @@
  */
 package ch.dvbern.ebegu.reporting.zahlungen;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungen;
-import ch.dvbern.oss.lib.excelmerger.*;
-import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungen;
+import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import ch.dvbern.oss.lib.excelmerger.RowFiller;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 @Dependent
 public class ReportZahlungenExcelConverter implements ExcelConverter {
@@ -50,7 +55,7 @@ public class ReportZahlungenExcelConverter implements ExcelConverter {
             excelRowGroup.addValue(MergeFieldZahlungen.timestampZahlungslauf, row.getTimestampZahlungslauf());
             excelRowGroup.addValue(MergeFieldZahlungen.kindVorname, row.getKindVorname());
             excelRowGroup.addValue(MergeFieldZahlungen.kindNachname, row.getKindNachname());
-            excelRowGroup.addValue(MergeFieldZahlungen.referenznummer, row.getReferenznummer());
+            excelRowGroup.addValue(MergeFieldZahlungen.referenzNummer, row.getReferenzNummer());
             excelRowGroup.addValue(MergeFieldZahlungen.zeitabschnittVon, row.getZeitabschnittVon());
             excelRowGroup.addValue(MergeFieldZahlungen.zeitabschnittBis, row.getZeitabschnittBis());
             excelRowGroup.addValue(MergeFieldZahlungen.bgPensum, row.getBgPensum());
