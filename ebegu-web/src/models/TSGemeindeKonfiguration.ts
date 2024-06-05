@@ -176,37 +176,35 @@ export class TSGemeindeKonfiguration {
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA: {
-                    this.konfigZusaetzlicherGutscheinBetragKita = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinBetragKita = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO: {
-                    this.konfigZusaetzlicherGutscheinBetragTfo = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinBetragTfo = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN: {
-                    this.konfigZusaetzlicherGutscheinLinearMinBetragKita = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinLinearMinBetragKita = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX: {
-                    this.konfigZusaetzlicherGutscheinLinearMaxBetragKita = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinLinearMaxBetragKita = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN: {
-                    this.konfigZusaetzlicherGutscheinLinearMinBetragTfo = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinLinearMinBetragTfo = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX: {
-                    this.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN: {
-                    this.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen =
-                        property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN: {
-                    this.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen =
-                        property.value === '' ? null : Number(property.value);
+                    this.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA: {
