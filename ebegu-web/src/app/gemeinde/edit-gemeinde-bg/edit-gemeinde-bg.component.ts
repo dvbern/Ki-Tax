@@ -26,6 +26,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
+import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
@@ -94,6 +95,7 @@ export class EditGemeindeBGComponent implements OnInit {
     public anspruchBeschaeftigungAbhaengigkeitTypValues: Array<TSAnspruchBeschaeftigungAbhaengigkeitTyp>;
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
+    private readonly gesuchsperiodenMaxMassgebendesEinkommen: Map<string, number> = new Map<string, number>();
 
     public constructor(
         private readonly $transition$: Transition,
@@ -129,6 +131,16 @@ export class EditGemeindeBGComponent implements OnInit {
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
         this.initErlaubenInstitutionenZuWaehlen();
+        this.loadAllGPMaxMassgebendesEinkommen();
+    }
+
+    private loadAllGPMaxMassgebendesEinkommen(): void {
+        this.gesuchsperiodenMaxMassgebendesEinkommen.clear();
+        this.einstellungRS.findEinstellungByKey(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN).subscribe(response => {
+            response.forEach(einstellung => {
+                this.gesuchsperiodenMaxMassgebendesEinkommen.set(einstellung.gesuchsperiodeId, Number(einstellung.value));
+            });
+        });
     }
 
     private initDauerBabytarifEinstellungen(): void {
@@ -255,7 +267,8 @@ export class EditGemeindeBGComponent implements OnInit {
         }
     }
 
-    public changeKonfigZusaetzlicherGutscheinTyp(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigZusaetzlicherGutscheinTyp(gk: TSGemeindeKonfiguration, $event: MatButtonToggleChange): void {
+        gk.konfigZusaetzlicherGutscheinTyp = $event.value;
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP, gk.konfigZusaetzlicherGutscheinTyp, gk);
         // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
@@ -271,8 +284,9 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = null;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = null;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
+        gk.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen =
+            this.gesuchsperiodenMaxMassgebendesEinkommen.get(gk.gesuchsperiode.id);
 
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP,
@@ -300,10 +314,10 @@ export class EditGemeindeBGComponent implements OnInit {
     }
 
     private resetKonfigZusaetzlicherGutscheinLinear(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = null;
-        gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = null;
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = null;
-        gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = null;
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = 0;
 
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN,
@@ -327,8 +341,8 @@ export class EditGemeindeBGComponent implements OnInit {
     }
 
     private resetKonfigZusaetzlicherGutscheinPauschal(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinBetragKita = null;
-        gk.konfigZusaetzlicherGutscheinBetragTfo = null;
+        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
             gk.konfigZusaetzlicherGutscheinBetragKita, gk
@@ -532,10 +546,6 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)
             .forEach(property => {
-                if (konfig === null) {
-                    property.value = '';
-                    return;
-                }
                 property.value = String(konfig);
             });
     }
