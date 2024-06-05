@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -93,7 +94,14 @@ class PensumValueMapperFactoryTest extends EasyMockSupport {
 	@Nonnull
 	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
 		replayAll();
-		PensumValueMapper pensumMapper = factory.createForPensum(initProcessingContext(z));
+
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.betreuteTageEnabled(true)
+			.schulergaenzendeBetreuungEnabled(true)
+			.mahlzeitenVerguenstigungEnabled(true)
+			.build();
+
+		PensumValueMapper pensumMapper = factory.createForPensum(initProcessingContext(z, einstellungen));
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);

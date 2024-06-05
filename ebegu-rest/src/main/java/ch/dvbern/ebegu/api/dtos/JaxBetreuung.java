@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -129,11 +130,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private String begruendungAuszahlungAnInstitution;
 
-	// transient (Not stored on server, just an information for client)
-	private String bgNummer;
+	@Nullable
+	private String referenzNummer;
 
 	// transient (Not stored on server, just an information for client)
 	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
+
+	@Nullable
+	private Bedarfsstufe bedarfsstufe;
 
 
 	public JaxInstitutionStammdatenSummary getInstitutionStammdaten() {
@@ -328,12 +332,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 		this.anmeldungMutationZustand = anmeldungMutationZustand;
 	}
 
-	public String getBgNummer() {
-		return bgNummer;
+	@Nullable
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public boolean isKeineDetailinformationen() {
@@ -402,5 +407,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
 		this.finSitRueckwirkendKorrigiertInThisMutation = finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	@Nullable
+	public Bedarfsstufe getBedarfsstufe() {
+		return bedarfsstufe;
+	}
+
+	public void setBedarfsstufe(@Nullable Bedarfsstufe bedarfsstufe) {
+		this.bedarfsstufe = bedarfsstufe;
 	}
 }

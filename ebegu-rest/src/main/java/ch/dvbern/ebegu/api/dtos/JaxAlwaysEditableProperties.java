@@ -17,13 +17,14 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import ch.dvbern.ebegu.util.Constants;
+
 import javax.annotation.Nullable;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -32,7 +33,7 @@ public class JaxAlwaysEditableProperties {
 
 	private JaxId  gesuchId;
 
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	private String mailGS1;
@@ -48,7 +49,7 @@ public class JaxAlwaysEditableProperties {
 	@Nullable
 	private String telefonAuslandGS1;
 
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Nullable
 	private String mailGS2;

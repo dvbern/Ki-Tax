@@ -18,7 +18,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {isBgInstitutionenBetreuungsangebot} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isBgInstitutionenBetreuungsangebot} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';

@@ -75,7 +75,7 @@ public class ExportConverter {
 		Betreuung betreuung = verfuegung.getBetreuung();
 
 		VerfuegungExportDTO verfuegungDTO = new VerfuegungExportDTO();
-		verfuegungDTO.setRefnr(betreuung.getBGNummer());
+		verfuegungDTO.setRefnr(requireNonNull(betreuung).getReferenzNummer());
 		DateRange periode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		verfuegungDTO.setVon(periode.getGueltigAb());
 		verfuegungDTO.setBis(periode.getGueltigBis());

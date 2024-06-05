@@ -30,8 +30,8 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -200,9 +200,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}
-
-		// Information, ob die Zahlung an die Eltern oder Institution ausbezahlt wird übernehmen.
-		zeitabschnitt.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
 
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
 

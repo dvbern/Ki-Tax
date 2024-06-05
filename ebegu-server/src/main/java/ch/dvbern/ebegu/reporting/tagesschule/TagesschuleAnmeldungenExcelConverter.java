@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschuleAnmeldungen;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -136,7 +136,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.mobileAntragsteller2, dataRow.getMobileAntragsteller2());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.telefonAntragsteller2, dataRow.getTelefonAntragsteller2());
 
-		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.referenznummer, dataRow.getReferenznummer());
+		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.referenzNummer, dataRow.getReferenzNummer());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatum, dataRow.getEintrittsdatum());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.status, ServerMessageUtil.translateEnumValue(
 			dataRow.getStatus(), locale, gesuchsperiode.getMandant())
@@ -195,8 +195,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.emailTitle, ServerMessageUtil.getMessage("Reports_emailTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.mobileTitle, ServerMessageUtil.getMessage("Reports_mobileTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.telefonTitle, ServerMessageUtil.getMessage("Reports_telefonTitle", locale, mandant));
-		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.referenznummerTitle, ServerMessageUtil.getMessage(
-			"Reports_bgNummerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.referenzNummerTitle, ServerMessageUtil.getMessage("Reports_referenzNummerTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale, mandant));
 

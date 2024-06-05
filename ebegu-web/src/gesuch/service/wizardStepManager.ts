@@ -23,7 +23,7 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegtOrKeinKontingent, TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../models/enums/TSRole';

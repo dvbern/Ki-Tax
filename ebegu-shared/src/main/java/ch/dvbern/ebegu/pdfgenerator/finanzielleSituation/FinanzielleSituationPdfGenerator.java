@@ -197,7 +197,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	@Nonnull
 	protected final PdfPTable createIntroMassgebendesEinkommen() {
 		List<TableRowLabelValue> introMassgEinkommen = List.of(
-			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()),
 			new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString()))
 		);
 		return PdfUtil.createIntroTable(introMassgEinkommen, sprache, mandant);
@@ -206,7 +206,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	@Nonnull
 	protected PdfPTable createIntroBasisjahr() {
 		List<TableRowLabelValue> introBasisjahr = List.of(
-			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()),
 			new TableRowLabelValue(BASISJAHR, String.valueOf(gesuch.getGesuchsperiode().getBasisJahr()))
 		);
 		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
@@ -237,8 +237,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 
 	@Nonnull
 	protected PdfPTable createIntroEkv() {
-		var introEkv1 = List.of(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-
+		var introEkv1 = List.of(new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		return PdfUtil.createIntroTable(introEkv1, sprache, mandant);
 	}
 

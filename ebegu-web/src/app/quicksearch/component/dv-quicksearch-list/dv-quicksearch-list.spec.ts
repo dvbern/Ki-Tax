@@ -24,7 +24,7 @@ import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
 import {TSGesuch} from '../../../../models/TSGesuch';

@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DateUtil;
 import org.junit.jupiter.api.Nested;

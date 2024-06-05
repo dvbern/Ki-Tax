@@ -20,11 +20,10 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
-import org.apache.poi.ss.usermodel.Sheet;
-
 import ch.dvbern.ebegu.enums.reporting.MergeFieldGesuchZeitraum;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +32,7 @@ public class GesuchZeitraumExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
-		sheet.autoSizeColumn(0); // bgNummer
+		sheet.autoSizeColumn(0); // referenzNummer
 		sheet.autoSizeColumn(1); // institution
 		sheet.autoSizeColumn(2); // betreuungsTyp
 		sheet.autoSizeColumn(3); // periode
@@ -47,7 +46,7 @@ public class GesuchZeitraumExcelConverter implements ExcelConverter {
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchZeitraum.repeatGesuchZeitraumRow);
-			excelRowGroup.addValue(MergeFieldGesuchZeitraum.bgNummer, dataRow.getBgNummer());
+			excelRowGroup.addValue(MergeFieldGesuchZeitraum.referenzNummer, dataRow.getReferenzNummer());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.gemeinde, dataRow.getGemeinde());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.institution, dataRow.getInstitution());
