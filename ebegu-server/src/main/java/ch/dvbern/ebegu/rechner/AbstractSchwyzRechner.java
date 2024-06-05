@@ -37,6 +37,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 	private static final BigDecimal HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT = new BigDecimal(352);
 
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {

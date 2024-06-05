@@ -31,8 +31,8 @@ public class TagesfamilienSchwyzRechner extends AbstractSchwyzRechner {
 	static final BigDecimal TFO_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(6);
 	static final BigDecimal VERMITTLUNGSGEBUEHR = new BigDecimal(4);
 
-	static final BigDecimal MITTEL_BETRAG_PRO_STUNDE = new BigDecimal(6.6);
-	static final BigDecimal HOHERE_BETRAG_PRO_STUNDE = new BigDecimal(13.2);
+	static final BigDecimal MITTEL_BETRAG_PRO_STUNDE = new BigDecimal("6.60");
+	static final BigDecimal HOHERE_BETRAG_PRO_STUNDE = new BigDecimal("13.20");
 
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(

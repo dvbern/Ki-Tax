@@ -169,13 +169,12 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		handleEinreichfrist(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		handleAnspruch(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
-		handleBedarfsstufe(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+		handleBedarfsstufe(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
 
 	private void handleBedarfsstufe(
 		BGCalculationInput inputAktuel,
 		BGCalculationResult resultVorgaenger,
-		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 		if (isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum)) {
 			inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
