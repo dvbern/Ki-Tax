@@ -21,7 +21,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {BerechnungsManager} from '../../../../../gesuch/service/berechnungsManager';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
-import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSGemeinde} from '../../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../../../models/TSInstitution';

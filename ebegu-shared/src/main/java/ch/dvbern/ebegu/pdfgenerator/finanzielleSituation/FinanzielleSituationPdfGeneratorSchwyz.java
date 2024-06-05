@@ -97,7 +97,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 	@Nonnull
 	protected PdfPTable createIntroBasisjahr() {
 		List<TableRowLabelValue> introBasisjahr = List.of(
-			new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()),
+			new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()),
 			new TableRowLabelValue(GESUCHSPERIODE, gesuch.getGesuchsperiode().getGesuchsperiodeString())
 		);
 		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);

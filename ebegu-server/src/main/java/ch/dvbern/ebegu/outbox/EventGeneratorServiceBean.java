@@ -22,6 +22,8 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.outbox.gemeinde.GemeindeEventConverter;
 import ch.dvbern.ebegu.outbox.gemeindekennzahlen.GemeindeKennzahlenEventConverter;
 import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;

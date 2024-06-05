@@ -22,7 +22,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

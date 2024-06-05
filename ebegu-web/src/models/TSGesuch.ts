@@ -23,8 +23,8 @@ import {
     isJugendamt,
     isOfAnyBetreuungsangebotTyp,
     TSBetreuungsangebotTyp
-} from './enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
+} from './enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from './enums/betreuung/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinanzielleSituationTyp} from './enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';

@@ -44,9 +44,9 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -59,7 +59,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -121,7 +121,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private List<String> potentielleFehlerList = new ArrayList<>();
 	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	private int anzahlMonateInZukunft;
-	private List<String> whiteListOfBgNummmern = new ArrayList<>();
+	private List<String> whiteListOfReferenzNummmern = new ArrayList<>();
 
 
 	@Asynchronous
@@ -143,7 +143,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		final String whitelistString =
 			ebeguConfiguration.getEbeguZahlungenUeberpruefungWhitelist();
 		if (StringUtils.isNotEmpty(whitelistString)) {
-			whiteListOfBgNummmern = Arrays.asList(whitelistString.split(";"));
+			whiteListOfReferenzNummmern = Arrays.asList(whitelistString.split(";"));
 		}
 
 		this.zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
@@ -319,10 +319,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				} else {
 					if (betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
 						LOGGER.warn("ZAHLUNGSUEBERPRUEFUNG: Die Betreuung war neu im letzten Antrag, wurde aber ohne Verfuegung geschlossen: {}",
-							betreuung.getBGNummer());
+							betreuung.getReferenzNummer());
 					} else {
 						potentielleFehlerList.add("Keine gueltige Betreuung gefunden fuer BG "
-							+ betreuung.getBGNummer());
+							+ betreuung.getReferenzNummer());
 					}
 				}
 			}
@@ -338,11 +338,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull LocalDate dateAusbezahltBis,
 		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
-		final String bgNummer = betreuung.getBGNummer();
-		if (whiteListOfBgNummmern.contains(bgNummer)) {
+		final String referenzNummer = betreuung.getReferenzNummer();
+		if (whiteListOfReferenzNummmern.contains(referenzNummer)) {
 			LOGGER.warn(
 				"ZAHLUNGSUEBERPRUEFUNG: Betreuung in Whitelist gefunden, breche Ueberpruefung ab: {}",
-				betreuung.getBGNummer());
+				betreuung.getReferenzNummer());
 			return;
 		}
 
@@ -364,7 +364,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	) {
 		StringBuilder sb = new StringBuilder();
 		BigDecimal differenz = DEFAULT.subtract(betragIst, betragSoll);
-		sb.append("Soll und Ist nicht identisch: ").append(betreuung.getBGNummer()).append(" Soll: ").append(betragSoll).append(" Ist: ").append
+		sb.append("Soll und Ist nicht identisch: ").append(betreuung.getReferenzNummer()).append(" Soll: ").append(betragSoll).append(" Ist: ").append
 			(betragIst).append('\n').append(" Differenz: ").append(differenz).append('\n');
 		sb.append("Aktuell gueltige Betreuung: ").append(betreuung.getId()).append('\n');
 		sb.append("Vergangene Zeitabschnitte").append('\n');
@@ -375,7 +375,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			sb.append(zahlungslaufHelper.getZahlungsstatus(verfuegungZeitabschnitt)).append('\n');
 		}
 		sb.append("Zahlungspositionen: \n");
-		List<Zahlungsposition> zahlungspositions = zahlungenIstMap.get(betreuung.getBGNummer());
+		List<Zahlungsposition> zahlungspositions = zahlungenIstMap.get(betreuung.getReferenzNummer());
 		if (zahlungspositions != null) {
 			zahlungspositions.sort(Comparator.comparing(o -> o.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()));
 			for (Zahlungsposition zahlungsposition : zahlungspositions) {
@@ -389,8 +389,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			}
 		}
 		potentielleFehlerList.add(sb.toString());
-		potenzielleFehlerListZusammenfassung.add(betreuung.getBGNummer() + ": " + differenz);
-		LOGGER.warn("ZAHLUNGSUEBERPRUEFUNG: " + sb.toString());
+		potenzielleFehlerListZusammenfassung.add(betreuung.getReferenzNummer() + ": " + differenz);
+		LOGGER.warn("ZAHLUNGSUEBERPRUEFUNG: {}", sb);
 	}
 
 	@Nonnull
@@ -427,8 +427,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Nonnull
 	private BigDecimal getBetragIst(@Nonnull Betreuung betreuung, @Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap) {
 		BigDecimal betragIst = BigDecimal.ZERO;
-		if (zahlungenIstMap.containsKey(betreuung.getBGNummer())) {
-			List<Zahlungsposition> zahlungspositionList = zahlungenIstMap.get(betreuung.getBGNummer());
+		if (zahlungenIstMap.containsKey(betreuung.getReferenzNummer())) {
+			List<Zahlungsposition> zahlungspositionList = zahlungenIstMap.get(betreuung.getReferenzNummer());
 			for (Zahlungsposition zahlungsposition : zahlungspositionList) {
 				betragIst = DEFAULT.add(betragIst, zahlungsposition.getBetrag());
 			}
@@ -472,7 +472,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull Zahlungsposition zahlungsposition
 	) {
 		Objects.requireNonNull(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung());
-		String key = zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer();
+		AbstractPlatz abstractPlatz = zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung();
+		String key = abstractPlatz.getReferenzNummer();
 		if (!zahlungenIst.containsKey(key)) {
 			zahlungenIst.put(key, new ArrayList<>());
 		}

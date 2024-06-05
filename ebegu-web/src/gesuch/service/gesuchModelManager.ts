@@ -45,8 +45,8 @@ import {
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
+import {isSchulamt} from '../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';

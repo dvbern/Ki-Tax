@@ -27,7 +27,7 @@ import {
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';

@@ -58,7 +58,7 @@ public class BetreuungAnfrageEventConverterTest {
 		BetreuungAnfrageAddedEvent event = converter.of(kitaBetreuung);
 
 		assertThat(event, is(pojo(ExportedEvent.class)
-			.where(ExportedEvent::getAggregateId, is(kitaBetreuung.getBGNummer()))
+			.where(ExportedEvent::getAggregateId, is(kitaBetreuung.getReferenzNummer()))
 			.where(ExportedEvent::getAggregateType, is("BetreuungAnfrage"))
 			.where(ExportedEvent::getType, is("BetreuungAnfrageAdded")))
 		);
@@ -67,7 +67,7 @@ public class BetreuungAnfrageEventConverterTest {
 		BetreuungAnfrageEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		assertThat(specificRecord, is(pojo(BetreuungAnfrageEventDTO.class)
-			.where(BetreuungAnfrageEventDTO::getRefnr, is(kitaBetreuung.getBGNummer()))
+			.where(BetreuungAnfrageEventDTO::getRefnr, is(kitaBetreuung.getReferenzNummer()))
 			.where(BetreuungAnfrageEventDTO::getInstitutionId,
 				is(kitaBetreuung.getInstitutionStammdaten().getInstitution().getId()))
 			.where(BetreuungAnfrageEventDTO::getPeriodeVon,

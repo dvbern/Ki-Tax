@@ -20,7 +20,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 
 /**
  * This is a DTO that is used to export the relevant Information about a {@link ch.dvbern.ebegu.entities.Betreuung}.

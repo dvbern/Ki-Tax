@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.api.util;
 import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.google.common.net.UrlEscapers;

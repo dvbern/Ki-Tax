@@ -15,7 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -297,8 +297,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getBetreuungsangebotTyp()
-			+ ", institution: " + this.getInstitution().getMessageForAccessException();
+		return "betreuungsangebotTyp: " + betreuungsangebotTyp
+			+ ", institution: " + institution.getMessageForAccessException();
 	}
 
 	@Nullable

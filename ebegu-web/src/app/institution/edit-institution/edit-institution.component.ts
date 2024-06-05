@@ -37,7 +37,7 @@ import {
     getBgInstitutionenBetreuungsangebote,
     isJugendamt,
     TSBetreuungsangebotTyp
-} from '../../../models/enums/TSBetreuungsangebotTyp';
+} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
