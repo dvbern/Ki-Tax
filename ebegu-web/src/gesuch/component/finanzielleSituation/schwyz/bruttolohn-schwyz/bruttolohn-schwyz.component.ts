@@ -21,7 +21,7 @@ export class BruttolohnSchwyzComponent {
     public finSitGS?: TSAbstractFinanzielleSituation;
 
     @Output()
-    public valueChanged = new EventEmitter<void>();
+    public readonly valueChanged = new EventEmitter<void>();
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
