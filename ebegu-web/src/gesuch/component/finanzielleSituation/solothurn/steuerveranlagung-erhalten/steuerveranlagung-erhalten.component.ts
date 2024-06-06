@@ -39,7 +39,6 @@ export class SteuerveranlagungErhaltenComponent {
     }
 
     public canEdit(): boolean {
-        console.log('this.gesuchModelManager.isGesuchReadonly()', this.gesuchModelManager.isGesuchReadonly());
         return !this.gesuchModelManager.isGesuchReadonly();
     }
 }
