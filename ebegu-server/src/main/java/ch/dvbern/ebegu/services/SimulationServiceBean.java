@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -67,8 +67,8 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 	private static void logDifference(StringBuilder log, Betreuung b, BigDecimal sumNew, BigDecimal sumOld) {
 		log
-			.append("BG-Nummer: ")
-			.append(b.getBGNummer())
+			.append("RefNr: ")
+			.append(b.getReferenzNummer())
 			.append("; Gemeinde: ")
 			.append(b.getKind().getGesuch().getDossier().getGemeinde().getName())
 			.append("; Betreuung mit id ")

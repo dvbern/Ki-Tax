@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.PensumUnits;

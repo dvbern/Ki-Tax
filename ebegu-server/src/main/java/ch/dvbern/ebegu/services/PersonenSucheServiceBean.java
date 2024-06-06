@@ -158,6 +158,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 		// versuche die gesuchte person zu matchen. wenn gefunde
 			List<EWKPerson> personenInHaushalt = resultat.getPersonen().stream()
 				.filter(person ->
+					person.getGeburtsdatum() != null &&
 					geburtsdatum.isEqual(person.getGeburtsdatum())
 						&& name.equals(person.getNachname())
 				        && vorname.equals(person.getVorname()))

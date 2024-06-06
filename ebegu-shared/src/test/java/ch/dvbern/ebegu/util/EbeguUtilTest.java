@@ -43,7 +43,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -277,10 +277,13 @@ public class EbeguUtilTest {
 		Assert.assertTrue(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
 	}
 
-	@Test
-	public void isFinanzielleSituationIntroducedAndComplete_AR_Test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+	@ParameterizedTest
+	@EnumSource(value = FinanzielleSituationTyp.class,
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
+		mode = Mode.INCLUDE)
+	void isFinanzielleSituationIntroducedAndComplete_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setFinSitTyp(FinanzielleSituationTyp.APPENZELL);
+		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
 		gesuch.getFamiliensituationContainer().setFamiliensituationJA(new Familiensituation());
 		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
@@ -303,10 +306,13 @@ public class EbeguUtilTest {
 		Assert.assertTrue(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
 	}
 
-	@Test
-	public void isFinanzielleSituationIntroducedAndComplete_isMandantSpecificFinSitGemeinsam_AR_Test() {
+	@ParameterizedTest
+	@EnumSource(value = FinanzielleSituationTyp.class,
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
+		mode = Mode.INCLUDE)
+	void isFinanzielleSituationIntroducedAndComplete_isMandantSpecificFinSitGemeinsam_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setFinSitTyp(FinanzielleSituationTyp.APPENZELL);
+		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
 		gesuch.getFamiliensituationContainer().setFamiliensituationJA(new Familiensituation());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(false);
@@ -411,7 +417,7 @@ public class EbeguUtilTest {
 	@EnumSource(value = FinanzielleSituationTyp.class,
 		names = { "BERN","BERN_FKJV"},
 		mode = Mode.INCLUDE)
-	public void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_Test(FinanzielleSituationTyp finanzielleSituationTyp){
+	void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_Test(FinanzielleSituationTyp finanzielleSituationTyp){
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
@@ -489,10 +495,13 @@ public class EbeguUtilTest {
 		Assert.assertTrue(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.EINKOMMENSVERSCHLECHTERUNG));
 	}
 
-	@Test
-	public void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_AR_Test() {
+	@ParameterizedTest
+	@EnumSource(value = FinanzielleSituationTyp.class,
+		names = { "APPENZELL","APPENZELL_FOLGEMONAT"},
+		mode = Mode.INCLUDE)
+	void isFinanzielleSituationIntroducedAndComplete_EKV_Vollstaendig_AR_Test(FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
-		gesuch.setFinSitTyp(FinanzielleSituationTyp.APPENZELL);
+		gesuch.setFinSitTyp(finanzielleSituationTyp);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
 		gesuch.getFamiliensituationContainer().setFamiliensituationJA(new Familiensituation());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(false);

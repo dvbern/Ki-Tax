@@ -68,7 +68,7 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 	) {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldMahlzeitenverguenstigung.repeatRow);
-			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.bgNummer, dataRow.getBgNummer());
+			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.referenzNummer, dataRow.getReferenzNummer());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.fallNummer, dataRow.getFallNummer());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(
@@ -189,8 +189,8 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_gesuchsteller2Title", locale, mandant));
 
 		mergerDTO.addValue(
-			MergeFieldMahlzeitenverguenstigung.bgNummerTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant));
+			MergeFieldMahlzeitenverguenstigung.referenzNummerTitle.getMergeField(),
+			ServerMessageUtil.getMessage("Reports_referenzNummerTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.fallNummerTitle.getMergeField(),

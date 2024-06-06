@@ -103,6 +103,9 @@ public interface MitteilungService {
 	@Nonnull
 	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenForBetreuung(@Nonnull Betreuung betreuung);
 
+	@Nonnull
+	Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByReferenzNummer(@Nonnull String referenzNummer);
+
 	/**
 	 * Returns all Betreuungsmitteilungen that are linked with the given Betreuung.
 	 */
@@ -179,7 +182,9 @@ public interface MitteilungService {
 	/**
 	 * Entfernt alle offenen Betreuungsmitteilungen und speichert stattdessen die übergebene Betreuungsmitteilung.
 	 */
-	void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung);
+	void replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung,
+		@Nonnull String referenzNummer);
 
 	/**
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt
@@ -209,8 +214,6 @@ public interface MitteilungService {
 	 */
 	@Nonnull
 	Mitteilung mitteilungWeiterleiten(@Nonnull String mitteilungId, @Nonnull String userName);
-
-	boolean showSchulergaenzendeBetreuung(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt. Wenn

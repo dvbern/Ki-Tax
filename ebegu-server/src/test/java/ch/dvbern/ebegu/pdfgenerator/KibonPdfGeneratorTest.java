@@ -42,7 +42,7 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;

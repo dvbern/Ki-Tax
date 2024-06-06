@@ -50,7 +50,7 @@ import ch.dvbern.ebegu.entities.RueckforderungFormular_;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.UserRole;

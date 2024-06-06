@@ -36,12 +36,11 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Erstellt aus den gewählten Modulen der Tagesschule einen Zeitabschnitt
@@ -54,7 +53,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(TAGESSCHULE);
+		return List.of(TAGESSCHULE);
 	}
 
 	@Nonnull

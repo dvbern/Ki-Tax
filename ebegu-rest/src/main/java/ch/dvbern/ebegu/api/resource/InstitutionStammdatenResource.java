@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

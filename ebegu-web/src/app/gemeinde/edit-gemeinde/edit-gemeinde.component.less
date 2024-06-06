@@ -18,7 +18,7 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-::ng-deep .mdc-tab--active {
+::ng-deep .mat-mdc-tab.mdc-tab--active {
     background-color: @lgrey;
     opacity: 1 !important;
 
@@ -32,7 +32,7 @@
     font-weight: 600;
 }
 
-::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__content .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__content .mdc-tab__text-label {
     color: @black;
 }
 

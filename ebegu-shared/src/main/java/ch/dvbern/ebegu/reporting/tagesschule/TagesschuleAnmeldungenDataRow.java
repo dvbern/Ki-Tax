@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.reporting.FleischOption;
 
 /**
@@ -65,7 +65,7 @@ public class TagesschuleAnmeldungenDataRow {
 	@Nullable
 	private String telefonAntragsteller2;
 	@Nullable
-	private String referenznummer;
+	private String referenzNummer;
 	@Nullable
 	private String bemerkung;
 	@Nullable
@@ -162,12 +162,12 @@ public class TagesschuleAnmeldungenDataRow {
 	}
 
 	@Nullable
-	public String getReferenznummer() {
-		return referenznummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setReferenznummer(@Nullable String referenznummer) {
-		this.referenznummer = referenznummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	@Nullable

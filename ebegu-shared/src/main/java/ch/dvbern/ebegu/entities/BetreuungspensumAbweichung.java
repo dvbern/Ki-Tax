@@ -32,7 +32,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;

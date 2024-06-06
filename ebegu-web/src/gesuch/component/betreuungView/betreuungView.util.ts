@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';

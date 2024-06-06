@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.tests.validations;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnungValidator;
 import org.junit.jupiter.api.Assertions;

@@ -1,6 +1,6 @@
 package ch.dvbern.ebegu.util;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 
 import javax.annotation.Nullable;

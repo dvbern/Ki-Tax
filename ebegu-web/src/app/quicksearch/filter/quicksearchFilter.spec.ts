@@ -16,7 +16,7 @@
 import * as moment from 'moment';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';

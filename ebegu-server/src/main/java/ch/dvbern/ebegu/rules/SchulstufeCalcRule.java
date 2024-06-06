@@ -23,13 +23,10 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 
 /**
  * Regel, welche den Anspruch für das Angebot Kita für die gesamte Periode auf 0 stellen kann
