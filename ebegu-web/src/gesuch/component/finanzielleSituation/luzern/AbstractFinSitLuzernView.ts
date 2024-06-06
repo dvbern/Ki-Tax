@@ -21,6 +21,8 @@ import {IPromise} from 'angular';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
@@ -34,8 +36,6 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
-import {TSRole} from '../../../../models/enums/TSRole';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -45,7 +45,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
-        protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
+        protected finSitLuService: FinanzielleSituationLuzernService,
         protected authServiceRS: AuthServiceRS,
         protected readonly translate: TranslateService,
         protected readonly applicationPropertyRS: ApplicationPropertyRS
@@ -151,16 +151,16 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return '';
     }
 
-    public getYearForSelbstdeklaration(): number | string {
+    public getYearForSelbstdeklaration(): string {
         if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
-            return this.getBasisjahr();
+            return this.getBasisjahr().toString();
         }
         if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
-            return this.getBasisjahrPlus1();
+            return this.getBasisjahrPlus1().toString();
         }
         if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagtVorjahr)) {
-            return this.getBasisjahr();
+            return this.getBasisjahr().toString();
         }
         return '';
     }

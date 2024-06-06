@@ -42,7 +42,7 @@
                                       [readOnly]=" this.gesuchModelManager.isGesuchReadonly()"
                                       [finanzModel]="model"
                                       [model]="this.model.getEkvToWorkWith()"
-                                      [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith()"
+                                      [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith().toString()"
                                       [basisJahrPlus]="this.gesuchModelManager.getBasisJahrPlusNumber()"
                                       [isEKV]="true"
                                       [isQuellenbesteuert]="this.model.getFiSiConToWorkWith().finanzielleSituationJA.quellenbesteuert"

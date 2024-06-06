@@ -42,7 +42,7 @@ export class SelbstdeklarationComponent implements OnInit {
     public isGemeinsam: boolean;
 
     @Input()
-    public basisJahr: number;
+    public basisJahr: string;
 
     @Input()
     public basisJahrPlus: number; // number years added to basisjahr. for EKV. can be 1 oder 2
