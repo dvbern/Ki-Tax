@@ -636,8 +636,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         let isSelected = false;
 
         kinderWithBetreuung.forEach(kind => {
-            if (kind.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
-                kind.betreuungen.forEach(betreuung => {
+            if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
+                kind.betreuungen?.forEach(betreuung => {
                     if (EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)) {
                         isSelected = true;
                     }
@@ -650,7 +650,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isRolleGemeinde(): boolean {
-        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
+        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
+            || this.authServiceRs.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
     }
 
     public isFinSitAbglehnt(): boolean {

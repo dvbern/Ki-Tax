@@ -373,7 +373,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(kindModel: TSKindContainer): boolean {
-        return kindModel.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+        return kindModel.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
     }
 
     public getBetreuungModel(): TSBetreuung {
