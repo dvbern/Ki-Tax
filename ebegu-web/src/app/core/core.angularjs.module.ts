@@ -33,8 +33,6 @@ import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'angular-utf8-base64';
 import 'ng-file-upload';
-import 'raven-js';
-import 'raven-js/plugins/angular';
 import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
@@ -197,7 +195,7 @@ const dynamicDependencies = (): string[] => {
 
     // hier kommen plugins die wir fuer dev disablen wollen
     if (environment.sentryDSN) {
-        return ['ngRaven'];
+        return ['ngSentry'];
     }
     return [];
 };

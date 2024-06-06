@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import * as Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -49,7 +49,7 @@ export class PulldownUserMenuComponent implements OnInit {
     public ngOnInit(): void {
         this.initMandantSwitch();
         this.initFrenchEnabled();
-        this.initTestFaelleEnabled().catch(e => Raven.captureException(e));
+        this.initTestFaelleEnabled().catch(e => Sentry.captureException(e));
     }
 
     public getFullName(): Observable<string> {
