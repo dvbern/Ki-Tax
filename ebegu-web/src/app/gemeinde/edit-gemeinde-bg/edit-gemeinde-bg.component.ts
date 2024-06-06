@@ -145,7 +145,7 @@ export class EditGemeindeBGComponent implements OnInit {
         });
     }
     private loadAllGPMinMassgebendesEinkommen(): void {
-        this.gesuchsperiodenMaxMassgebendesEinkommen.clear();
+        this.gesuchsperiodenMinMassgebendesEinkommen.clear();
         this.einstellungRS.findEinstellungByKey(TSEinstellungKey.MIN_MASSGEBENDES_EINKOMMEN).subscribe(response => {
             response.forEach(einstellung => {
                 this.gesuchsperiodenMinMassgebendesEinkommen.set(einstellung.gesuchsperiodeId, Number(einstellung.value));
@@ -317,7 +317,7 @@ export class EditGemeindeBGComponent implements OnInit {
         );
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN,
-            gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen, gk,
+            gk.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen, gk,
         );
 
         this.resetKonfigZusaetzlicherGutscheinLinear(gk);
