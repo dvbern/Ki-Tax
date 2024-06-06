@@ -101,9 +101,8 @@
 
                 <!-- Bedarfsstufe Error Message -->
                 <div class="row margin-top-30"
-                     ng-if="!vm.isBedarfsstufeSelected()">
-                    <div class="well well-status-abgewiesen">
-                        {{ 'BEDARFSSTUFE_MISSING_BEDARFSSTUFE' | translate }}
+                     ng-if="!vm.isBedarfsstufeSelected() && vm.isRolleGemeinde()">
+                    <div class="well well-status-abgewiesen" ng-bind-html="'BEDARFSSTUFE_MISSING_BEDARFSSTUFE' | translate">
                     </div>
                 </div>
 
@@ -295,7 +294,7 @@
                   dv-show-element
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button aria-label="{{'GEPRUEFT' | translate}}" button-click="vm.setGesuchStatusGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen() && !vm.isBedarfsstufeSelected()"
+                                   button-disabled="!vm.isBedarfsstufeSelected() && !vm.isFinSitChoosen()"
                                    data-test="container.geprueft"
                                    input-id="button_geprueft" ng-if="vm.showGeprueft()"
                                    type="button">
