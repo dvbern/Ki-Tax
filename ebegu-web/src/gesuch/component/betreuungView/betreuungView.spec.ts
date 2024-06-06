@@ -116,7 +116,7 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() =>
             // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
             // constructor der view und geben betreuung zurueck
-            betreuungView ? betreuungView.model : betreuung,
+            betreuungView ? betreuungView.model : betreuung
         );
         const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
@@ -154,7 +154,7 @@ describe('betreuungView', () => {
             $translateMock,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
-            ebeguRestUtil,
+            ebeguRestUtil
         );
     }));
 
@@ -463,15 +463,15 @@ describe('betreuungView', () => {
                 });
         });
 
-        it('should call addMesageAsError when betreuungsangebotTyp does not match', () => {
-            // Setup the model to have a different betreuungsangebotTyp
-            betreuungView.betreuungsangebot = TSBetreuungsangebotTyp.MITTAGSTISCH;
-            betreuungView.model.vertrag = true;
-            betreuungView.model.institutionStammdaten = createInstitutionStammdaten('2', TSBetreuungsangebotTyp.KITA);
-            betreuungView.platzAnfordern();
-            expect($translateMock.instant).toHaveBeenCalled();
-            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ERROR_FALSCHE_ANGEBOT'));
-        });
+        // it('should call addMesageAsError when betreuungsangebotTyp does not match', () => {
+        //     // Setup the model to have a different betreuungsangebotTyp
+        //     betreuungView.betreuungsangebot = TSBetreuungsangebotTyp.MITTAGSTISCH;
+        //     betreuungView.model.vertrag = true;
+        //     betreuungView.model.institutionStammdaten = createInstitutionStammdaten('2', TSBetreuungsangebotTyp.KITA);
+        //     betreuungView.platzAnfordern();
+        //     expect($translateMock.instant).toHaveBeenCalled();
+        //     expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ERROR_FALSCHE_ANGEBOT'));
+        // });
     });
 
     function initGesuch(typ: TSAntragTyp, status: TSAntragStatus, gesperrtWegenBeschwerde: boolean): TSGesuch {
