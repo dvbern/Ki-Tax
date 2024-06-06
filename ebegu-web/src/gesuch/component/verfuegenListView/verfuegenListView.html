@@ -294,7 +294,7 @@
                   dv-show-element
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button aria-label="{{'GEPRUEFT' | translate}}" button-click="vm.setGesuchStatusGeprueft()"
-                                   button-disabled="!vm.isBedarfsstufeSelected() && !vm.isFinSitChoosen()"
+                                   button-disabled="!vm.isBedarfsstufeSelected() || !vm.isFinSitChoosen()"
                                    data-test="container.geprueft"
                                    input-id="button_geprueft" ng-if="vm.showGeprueft()"
                                    type="button">
