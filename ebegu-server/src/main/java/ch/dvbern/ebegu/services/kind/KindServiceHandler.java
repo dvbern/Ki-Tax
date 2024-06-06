@@ -75,7 +75,7 @@ public class KindServiceHandler {
 	}
 
 	private boolean compareHoehereBeitraegeChange(KindContainer kind, KindContainer dbKind) {
-		return dbKind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen() != kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen();
+		return dbKind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen().equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
 	}
 
 	public void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
