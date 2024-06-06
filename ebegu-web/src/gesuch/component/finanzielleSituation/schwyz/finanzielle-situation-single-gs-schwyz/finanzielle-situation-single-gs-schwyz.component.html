@@ -9,7 +9,7 @@
             #quellenbesteuert="ngModel"
             (ngModelChange)="onQuellenbesteuertChange()"
             [(ngModel)]="getFinSitJA().quellenbesteuert"
-            [enableExpression]="!isGesuchReadonly && !isOnlineGesuch"
+            [enableExpression]="!readonly && !korrekturModusJugendamt"
             dvEnableElement
             id="quellenbesteuert_id"
             name="quellenbesteuert"

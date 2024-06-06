@@ -21,8 +21,9 @@
     </div>
     <form #form="ngForm">
         <dv-finanzielle-situation-single-gs-schwyz [readonly]="gesuchmodelManager.isGesuchReadonly()"
-                                            (valueChanged)="recalculateMassgebendesEinkommen()"
-                                            [finanzModel]="model">
+                                                   [korrekturModusJugendamt]="gesuchmodelManager.isKorrekturModusJugendamt()"
+                                                   (valueChanged)="recalculateMassgebendesEinkommen()"
+                                                   [finanzModel]="model">
         </dv-finanzielle-situation-single-gs-schwyz>
     </form>
 
