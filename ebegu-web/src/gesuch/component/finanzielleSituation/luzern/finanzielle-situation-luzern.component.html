@@ -140,8 +140,7 @@
                                 #quellenbesteuert="ngModel"
                                 (change)="quellenBesteuertChange($event)"
                                 [(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"
-                                [enableExpression]="getGesuchStatus() === 'IN_BEARBEITUNG_GS'"
-                                dvEnableElement
+                                [disabled]="isFinSitReadonly() || isKorrekturModusJugendamt()"
                                 id="quellenbesteuert_id"
                                 name="quellenbesteuert"
                                 required>
@@ -171,7 +170,7 @@
                                 #gemeinsameSteuererklaerung="ngModel"
                                 (change)="gemeinsameStekChange($event)"
                                 [(ngModel)]="getModel().finanzielleSituationJA.gemeinsameStekVorjahr"
-                                [disabled]="isFinSitReadonly()"
+                                [disabled]="isFinSitReadonly() || isKorrekturModusJugendamt()"
                                 id="gemeinsameSteuererklaerung_id"
                                 name="gemeinsameSteuererklaerung"
                                 required>
@@ -193,7 +192,7 @@
                                 #alleinigeStekVorjahr="ngModel"
                                 (change)="alleinigeStekVorjahrChange($event)"
                                 [(ngModel)]="getModel().finanzielleSituationJA.alleinigeStekVorjahr"
-                                [disabled]="isFinSitReadonly()"
+                                [disabled]="isFinSitReadonly() || isKorrekturModusJugendamt()"
                                 id="alleinigeStekVorjahr_id"
                                 name="alleinigeStekVorjahr"
                                 required>
@@ -215,7 +214,7 @@
                                 #veranlagt="ngModel"
                                 (change)="veranlagtChange()"
                                 [(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
-                                [disabled]="isFinSitReadonly()"
+                                [disabled]="isFinSitReadonly() || isKorrekturModusJugendamt()"
                                 id="veranlagt_id"
                                 name="veranlagt"
                                 required>
@@ -247,7 +246,7 @@
                                 #veranlagtVorjahr="ngModel"
                                 (change)="veranlagtVorjahrChange()"
                                 [(ngModel)]="getModel().finanzielleSituationJA.veranlagtVorjahr"
-                                [disabled]="isFinSitReadonly()"
+                                [disabled]="isFinSitReadonly() || isKorrekturModusJugendamt()"
                                 id="veranlagtVorjahr_id"
                                 name="veranlagtVorjahr"
                                 required>

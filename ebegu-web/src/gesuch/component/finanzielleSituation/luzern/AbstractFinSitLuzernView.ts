@@ -183,10 +183,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.gesuchModelManager.getGesuch();
     }
 
-    public getGesuchStatus(): TSAntragStatus {
-        return this.getGesuch().status;
-    }
-
     public isFinSitReadonly(): boolean {
         return this.isGesuchReadonly()
             || (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
