@@ -631,11 +631,26 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return !!(this.getGesuch() && this.getGesuch().finSitStatus);
     }
 
-    public isBedarfsstufeSelected() {
-        return this.gesuchModelManager.getKinderWithBetreuungList().find(res =>
-            EbeguUtil.isNotNullOrUndefined(res.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen) &&
-            res.betreuungen.some(betreuung => EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe))
-        );
+    public isBedarfsstufeSelected(): boolean {
+        const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
+        let isSelected = false;
+
+        kinderWithBetreuung.forEach(kind => {
+            if (kind.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
+                kind.betreuungen.forEach(betreuung => {
+                    if (EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)) {
+                        isSelected = true;
+                    }
+                });
+            }
+
+        });
+
+        return isSelected;
+    }
+
+    public isRolleGemeinde(): boolean {
+        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
     }
 
     public isFinSitAbglehnt(): boolean {
