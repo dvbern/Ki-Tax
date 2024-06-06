@@ -1428,7 +1428,10 @@
                                                         [errorObject]="hohe_einkommensklassen_massgebendeneinkommen.errors">
                                                     </dv-error-messages>
                                                 </div>
-
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
                                                 <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
                                                 <div class="form-group"
                                                      *ngIf="isSuperAdmin()">
@@ -1721,7 +1724,7 @@
                                                 <!-- Zusaetzlicher Gutschein der Gemeinde -->
                                                 <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled)
                                                 && konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
-                                                     class="mt-2">
+                                                     class="mt-2 margin-bottom-20">
                                                     <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}
                                                         :</strong>
                                                     <p translate>
