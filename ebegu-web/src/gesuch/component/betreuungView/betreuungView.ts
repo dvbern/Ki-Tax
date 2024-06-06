@@ -1544,7 +1544,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public canRoleEditBedarfsstufe() {
-        this.canEditBedarfsstufen = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles());
+        this.canEditBedarfsstufen = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
     }
 
     public isBedarfsstufeEmpty() {
