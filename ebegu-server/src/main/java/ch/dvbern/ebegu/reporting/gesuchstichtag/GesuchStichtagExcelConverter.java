@@ -22,12 +22,11 @@ import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-import org.apache.poi.ss.usermodel.Sheet;
-
 import ch.dvbern.ebegu.enums.reporting.MergeFieldGesuchStichtag;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -36,7 +35,7 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
-		sheet.autoSizeColumn(0); // bgNummer
+		sheet.autoSizeColumn(0); // referenzNummer
 		sheet.autoSizeColumn(1); // institution
 		sheet.autoSizeColumn(2); // betreuungsTyp
 		sheet.autoSizeColumn(3); // periode
@@ -53,7 +52,7 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchStichtag.repeatGesuchStichtagRow);
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.gemeinde, dataRow.getGemeinde());
-			excelRowGroup.addValue(MergeFieldGesuchStichtag.bgNummer, dataRow.getBgNummer());
+			excelRowGroup.addValue(MergeFieldGesuchStichtag.referenzNummer, dataRow.getReferenzNummer());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.betreuungsTyp,
@@ -69,7 +68,8 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale, @Nonnull Mandant mandant) {
 		excelMerger.addValue(MergeFieldGesuchStichtag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
-		excelMerger.addValue(MergeFieldGesuchStichtag.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.referenzNummerTitle, ServerMessageUtil.getMessage(
+			"Reports_referenzNummerTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGesuchStichtag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGesuchStichtag.angebotTitle, ServerMessageUtil.getMessage("Reports_angebotTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGesuchStichtag.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale, mandant));

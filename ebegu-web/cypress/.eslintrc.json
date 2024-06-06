@@ -1,12 +1,22 @@
 {
-    "extends": ["plugin:cypress/recommended", "../../.eslintrc.json"],
-    "ignorePatterns": ["!**/*"],
-    "overrides": [
-        {
-            "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-            "rules": {
-                "@typescript-eslint/no-namespace": 0
-            }
-        }
-    ]
+  "extends": [
+    "plugin:cypress/recommended",
+    "../../.eslintrc.json"
+  ],
+  "ignorePatterns": [
+    "!**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {
+        "@typescript-eslint/no-namespace": 0
+      }
+    }
+  ]
 }

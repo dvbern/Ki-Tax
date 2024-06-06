@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortable} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -24,18 +24,19 @@ import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 @Component({
     selector: 'dv-uebersicht-Versendete-Mails',
     templateUrl: './uebersichtVersendeteMails.component.html',
-    styleUrls: ['./uebersichtVersendeteMails.component.less'],
+    styleUrls: ['./uebersichtVersendeteMails.component.less']
 })
 
-export class UebersichtVersendeteMailsComponent {
+export class UebersichtVersendeteMailsComponent implements OnInit, AfterViewInit {
     public displayedColumns: string[] = ['zeitpunktVersand', 'empfaengerAdresse', 'betreff'];
 
     public dataSource: MatTableDataSource<TableUebersichtVersendeteMails>;
-    @ViewChild(MatSort, {static:true}) public sort: MatSort;
+    @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
+
     public constructor(
         private readonly uebersichtVersendeteMailsRS: UebersichtVersendeteMailsRS,
-        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -51,13 +52,22 @@ export class UebersichtVersendeteMailsComponent {
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
+
+    public doFilter(value: string): void {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    protected parseMomentToString(versand: moment.Moment): string {
+        return versand.format('DD.MM.YYYY HH:mm:ss');
+    }
+
     private assignResultToDataSource(result: TSVersendeteMail[]): void {
         this.dataSource.data = result.map(
             item => ({
                 zeitpunktVersand: this.parseMomentToString(item.zeitpunktVersand),
                 empfaengerAdresse: item.empfaengerAdresse,
-                betreff: item.betreff,
-            } as TableUebersichtVersendeteMails),
+                betreff: item.betreff
+            } as TableUebersichtVersendeteMails)
         );
         this.dataSource.paginator = this.paginator;
     }
@@ -71,14 +81,6 @@ export class UebersichtVersendeteMailsComponent {
                 },
                 () => {
                 });
-    }
-
-    protected parseMomentToString(versand: moment.Moment): string {
-        return versand.format('DD.MM.YYYY HH:mm:ss');
-    }
-
-    public doFilter(value: string): void {
-        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 
     private sortTable(): void {

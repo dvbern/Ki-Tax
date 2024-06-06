@@ -20,46 +20,40 @@ package ch.dvbern.ebegu.inbox.handler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Processing {
 
-	private final boolean processingSuccess;
-
-	private final boolean processingIgnored;
+	@Nonnull
+	private final ProcessingState state;
 
 	@Nullable
 	private final String message;
 
-	private Processing(boolean processingSuccess, boolean processingIgnored, @Nullable String message) {
-		this.processingSuccess = processingSuccess;
-		this.processingIgnored = processingIgnored;
-		this.message = message;
-	}
-
 	@Nonnull
 	public static Processing success() {
-		return new Processing(true, false, null);
+		return new Processing(ProcessingState.SUCCESS, null);
 	}
 
 	@Nonnull
 	public static Processing failure(@Nonnull String message) {
-		return new Processing(false, false, message);
+		return new Processing(ProcessingState.FAILURE, message);
 	}
 
 	@Nonnull
 	public static Processing ignore(@Nonnull String message) {
-		return new Processing(false, true, message);
+		return new Processing(ProcessingState.IGNORE, message);
 	}
 
 	public boolean isProcessingSuccess() {
-		return processingSuccess;
-	}
-
-	public boolean isProcessingIgnored() {
-		return processingIgnored;
-	}
-
-	@Nullable
-	public String getMessage() {
-		return message;
+		return state == ProcessingState.SUCCESS;
 	}
 }

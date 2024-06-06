@@ -21,6 +21,7 @@
 @import 'font-awesome/less/font-awesome';
 //@fa-font-path: "~font-awesome/fonts/";
 
+@import 'style/atoms/mat-menu.less';
 @import 'style/atoms/button.less';
 @import 'style/atoms/checkbox.less';
 @import 'style/atoms/radio.less';
@@ -96,10 +97,12 @@ mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
 body {
     .ebeguFont-family();
     font-size: 1.6rem;
+
     .starter-template {
         padding: 4rem 1.5rem;
         text-align: center;
     }
+
     &.ebegu {
         background-color: @contrast-lightest;
     }
@@ -167,6 +170,7 @@ body {
 
     .md-container {
         background: none;
+
         .md-bar {
             background: @contrast;
             height: 0.5rem;
@@ -174,8 +178,9 @@ body {
     }
 
 }
+
 .mat-progress-bar-fill:after {
-    background-color:#FFFFFF;
+    background-color: #FFFFFF;
     height: 0.5rem;
 }
 
@@ -186,10 +191,11 @@ body {
 
 .mat-progress-bar[mode=indeterminate], .mat-progress-bar[mode=query] {
     .mat-progress-bar-primary, .mat-progress-bar-primary:after {
-        animation: mat-progress-bar-primary-indeterminate-translate1 4s infinite!important;
+        animation: mat-progress-bar-primary-indeterminate-translate1 4s infinite !important;
     }
+
     .mat-progress-bar-secondary, .mat-progress-bar-secondary:after {
-        animation: mat-progress-bar-secondary-indeterminate-translate1 4s infinite,  mat-progress-bar-secondary-indeterminate-scale-translate1 4s infinite !important;
+        animation: mat-progress-bar-secondary-indeterminate-translate1 4s infinite, mat-progress-bar-secondary-indeterminate-scale-translate1 4s infinite !important;
     }
 }
 
@@ -214,7 +220,9 @@ body {
     }
     100% {
         left: 95.4444%;
-        transform: scaleX(0.1); } }
+        transform: scaleX(0.1);
+    }
+}
 
 @keyframes mat-progress-bar-primary-indeterminate-translate1 {
     0% {
@@ -237,7 +245,9 @@ body {
     }
     100% {
         left: 95.4444%;
-        transform: scaleX(0.1); } }
+        transform: scaleX(0.1);
+    }
+}
 
 @-webkit-keyframes mat-progress-bar-secondary-indeterminate-scale-translate1 {
     0% {
@@ -260,7 +270,9 @@ body {
     }
     100% {
         -webkit-transform: scaleX(0.1);
-        transform: scaleX(0.1); } }
+        transform: scaleX(0.1);
+    }
+}
 
 @keyframes mat-progress-bar-secondary-indeterminate-scale-translate1 {
     0% {
@@ -283,7 +295,9 @@ body {
     }
     100% {
         -webkit-transform: scaleX(0.1);
-        transform: scaleX(0.1); } }
+        transform: scaleX(0.1);
+    }
+}
 
 @-webkit-keyframes mat-progress-bar-secondary-indeterminate-translate1 {
     0% {
@@ -302,7 +316,9 @@ body {
         left: 29.5%;
     }
     100% {
-        left: 117.38889%; } }
+        left: 117.38889%;
+    }
+}
 
 @keyframes mat-progress-bar-secondary-indeterminate-translate1 {
     0% {
@@ -321,7 +337,9 @@ body {
         left: 29.5%;
     }
     100% {
-        left: 117.38889%; } }
+        left: 117.38889%;
+    }
+}
 
 #Intro {
     align-content: flex-end;
@@ -341,6 +359,7 @@ dv-home-icon, dv-countdown, dv-downloadmenu {
     justify-content: center;
     text-align: center;
     width: @navbar-height;
+
     &:nth-child(2) {
         margin-left: auto;
     }
@@ -363,12 +382,14 @@ dv-home-icon, dv-countdown, dv-downloadmenu {
     user-select: none;
     vertical-align: middle;
     width: @navbar-height;
+
     &:hover, &:focus:hover {
         background: @contrast;
         -webkit-box-shadow: none;
         box-shadow: none;
         outline: 0;
     }
+
     &:focus {
         background: @contrast;
         -webkit-box-shadow: none;
@@ -420,19 +441,22 @@ form {
                 .ErrorInput();
             }
         }
+
         dv-valueinput.input-element.ng-invalid {
             form-control {
                 .ErrorInput();
             }
         }
     }
+
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
         &.ng-touched {
             .ErrorInput();
         }
     }
-    dv-valueinput.input-element{
+
+    dv-valueinput.input-element {
         &.ng-invalid.ng-touched {
             .form-control {
                 .ErrorInput();
@@ -462,6 +486,7 @@ md-backdrop.md-dialog-backdrop {
 
 md-dialog.md-default-theme, md-dialog {
     border-radius: 0;
+
     .md-dialog-content {
         padding: 2.5rem;
     }
@@ -487,14 +512,17 @@ md-dialog.md-default-theme, md-dialog {
 
 .md-autocomplete-suggestions-container li {
     color: @contrast-lightest;
+
     .highlight {
         color: @contrast-lightest;
         font-weight: bold;
     }
+
     .allresults-link {
         background: transparent;
         color: @contrast-lightest;
     }
+
     &:hover, &:focus {
         background: @secondary-dark;
     }
@@ -506,12 +534,14 @@ dv-quicksearchbox {
     justify-content: center;
     min-width: 43rem;
     text-align: center;
+
     md-autocomplete, md-autocomplete input:not(.md-input) {
         background: @contrast-light;
         height: @navbar-height;
 
         md-autocomplete-wrap {
             height: @navbar-height;
+
             input {
                 transition: all 0.5s ease;
             }
@@ -522,18 +552,21 @@ dv-quicksearchbox {
                 opacity: 1 !important;
                 text-align: right;
             }
+
             input:-moz-placeholder {
                 color: @contrast-darkest;
                 font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
             }
+
             input::-moz-placeholder {
                 color: @contrast-darkest;
                 font-family: FontAwesome, sans-serif;
                 opacity: 1 !important;
                 text-align: right;
             }
+
             input:-ms-input-placeholder {
                 color: @contrast-darkest;
                 font-family: FontAwesome, sans-serif;
@@ -543,10 +576,12 @@ dv-quicksearchbox {
 
         }
     }
+
     md-autocomplete {
         md-progress-linear.md-default-theme .md-bar, md-progress-linear .md-bar {
             background-color: @secondary;
         }
+
         md-progress-linear.md-default-theme .md-container, md-progress-linear .md-container {
             background-color: @contrast-light;
         }
@@ -555,8 +590,10 @@ dv-quicksearchbox {
     .md-whiteframe-z1 {
         box-shadow: none;
     }
+
     button:hover, button:focus, button:active {
         background: none;
+
         &:after {
             content: none;
         }
@@ -564,11 +601,12 @@ dv-quicksearchbox {
 }
 
 .betreuung-view,
-.dv-antrag-list{
+.dv-antrag-list {
     md-autocomplete {
         border-radius: 0;
         height: 4rem;
         padding: 0;
+
         :focus {
             box-shadow: none /*@secondary-dark*/;
             outline: 2px solid @contrast-darkest;
@@ -644,7 +682,7 @@ dv-quicksearchbox {
 
     .md-autocomplete-suggestions {
         li:hover,
-        li:focus{
+        li:focus {
             background: @grey;
             color: @black;
         }
@@ -657,11 +695,13 @@ dv-quicksearchbox {
 
 .skiplinks {
     display: block !important;
+
     .skiplinks-list {
         height: 0;
         list-style: none;
         margin: 0;
     }
+
     .skip {
         height: 1px;
         left: -1000px;
@@ -671,6 +711,7 @@ dv-quicksearchbox {
         top: -1000px;
         width: 1px;
         z-index: 108;
+
         &:active,
         &:focus,
         &:hover {
@@ -712,6 +753,7 @@ dv-quicksearchbox {
     top: -1000px;
     width: 1px;
     z-index: 108;
+
     &:active,
     &:focus,
     &:hover {
@@ -758,20 +800,21 @@ mat-dialog-content.dv-dialog-content.mat-mdc-dialog-content {
     width: 100%;
 
     .dv-btn {
-        flex-basis:auto;
-        flex-grow:1;
-        flex-shrink:0;
+        flex-basis: auto;
+        flex-grow: 1;
+        flex-shrink: 0;
         // flex:1; is not the same in IE11 as in other browsers:
         margin: 0 0.75em;
         max-width: 25rem;
         text-transform: uppercase;
     }
 }
-@media all and (-ms-high-contrast:none) {
+
+@media all and (-ms-high-contrast: none) {
     .dv-dialog-actions {
 
         .dv-btn {
-            flex-basis:200px;
+            flex-basis: 200px;
         }
     }
 }
@@ -781,7 +824,7 @@ html.cdk-global-scrollblock {
 }
 
 .uppercase,
-.uppercase span{
+.uppercase span {
     text-transform: uppercase;
 }
 
@@ -791,6 +834,7 @@ html.cdk-global-scrollblock {
 _:-ms-fullscreen, .mat-cell {
     padding-top: 15px;
 }
+
 /*stylelint-enable*/
 .mat-cell-clickable {
     cursor: pointer;
@@ -831,6 +875,7 @@ _:-ms-fullscreen, .mat-cell {
         margin: 1rem 0 0 1rem;
         width: auto;
     }
+
     span {
         margin: 1rem;
         width: auto;

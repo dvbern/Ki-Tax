@@ -15,31 +15,21 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -72,10 +62,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	private @NotNull Institution institution;
 
 	@Column(nullable = false)
-	private @NotNull
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	String mail;
+	private @NotNull String mail;
 
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
@@ -308,8 +297,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getBetreuungsangebotTyp()
-			+ ", institution: " + this.getInstitution().getMessageForAccessException();
+		return "betreuungsangebotTyp: " + betreuungsangebotTyp
+			+ ", institution: " + institution.getMessageForAccessException();
 	}
 
 	@Nullable

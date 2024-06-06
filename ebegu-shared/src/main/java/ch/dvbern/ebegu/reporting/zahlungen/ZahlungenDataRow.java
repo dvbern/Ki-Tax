@@ -17,12 +17,12 @@
 
 package ch.dvbern.ebegu.reporting.zahlungen;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DTO für den Lastenausgleich von KiBon
@@ -52,7 +52,7 @@ public class ZahlungenDataRow {
     private String kindNachname;
     @Getter
     @Setter
-    private String referenznummer;
+    private String referenzNummer;
     @Getter
     @Setter
     private LocalDate zeitabschnittVon;

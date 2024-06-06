@@ -26,11 +26,11 @@
                     <div class="form-group">
                         <label translate for="email">EMAIL</label>
                         <input id="email"
-                               type="text"
+                               type="email"
                                name="email"
-                               [pattern]="CONSTANTS.PATTERN_EMAIL"
                                [(ngModel)]="email"
-                               class="form-control">
+                               class="form-control"
+                               email>
                     </div>
                 </div>
             </div>

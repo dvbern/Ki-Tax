@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDate;
@@ -133,7 +132,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return List.of(KITA, TAGESFAMILIEN);
 	}
 
 	static class EingewohenungAbschnittHelper {

@@ -32,6 +32,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -43,10 +44,12 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -87,6 +90,11 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	@Column(nullable = false)
 	private boolean gueltig = false;
+
+	@NotNull
+	@Nonnull
+	@Column(nullable = false, updatable = false, length = Constants.DB_DEFAULT_SHORT_LENGTH)
+	private String referenzNummer = "";
 
 	/**
 	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
@@ -206,19 +214,26 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			this);
 	}
 
+	@Nonnull
+	public String getReferenzNummer() {
+		if (StringUtils.isEmpty(referenzNummer)) {
+			// to keep compatibility with unit tests (where @PrePersist is never called), lazly initialize on demand
+			setReferenzNummer();
+		}
+		return referenzNummer;
+	}
+
 	/**
-	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
+	 * Erstellt die ReferenzNummer (auch RefNr oder BG-Nummer) als zusammengesetzten String aus Jahr, FallNummer,
+	 * GemeindeNummer, KindNummer und BetreuungsNummer
 	 */
-	@Transient
-	@SuppressFBWarnings("NM_CONFUSING")
-	public String getBGNummer() {
-		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind().getGesuch() != null) {
+	@PrePersist
+	protected void setReferenzNummer() {
+		if (StringUtils.isEmpty(referenzNummer)) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
-			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
+			referenzNummer = getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
 		}
-		return "";
 	}
 
 	@Override
@@ -321,7 +336,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Nonnull
 	@Override
 	public String getSearchResultSummary() {
-		return getKind().getSearchResultSummary() + ' ' + getBGNummer();
+		return getKind().getSearchResultSummary() + ' ' + getReferenzNummer();
 	}
 
 	@Nullable

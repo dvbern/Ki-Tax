@@ -86,14 +86,6 @@ export class DvNgMitteilungResultDialogComponent implements OnInit {
         this.dialogRef.close(true);
     }
 
-    public getRererenceNummer(mitteilung: TSBetreuungsmitteilung): string {
-        return this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode,
-            mitteilung.dossier.fall,
-            mitteilung.dossier.gemeinde,
-            mitteilung.betreuung.kindNummer,
-            mitteilung.betreuung.betreuungNummer);
-    }
-
     public getBetreuungUrl(mitteilung: TSMitteilung): string {
         const url = this.$state.href('gesuch.betreuung', {
             betreuungNumber: mitteilung.betreuung.betreuungNummer,

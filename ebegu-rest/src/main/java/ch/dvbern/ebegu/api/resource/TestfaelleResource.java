@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.SchulungService;
 import ch.dvbern.ebegu.services.TestfaelleService;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +37,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -253,7 +252,7 @@ public class TestfaelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response testAllMails(
-		@PathParam("mailadresse") @Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}") String mailadresse) {
+		@PathParam("mailadresse") @Email String mailadresse) {
 
 		assertTestfaelleAccessAllowed();
 

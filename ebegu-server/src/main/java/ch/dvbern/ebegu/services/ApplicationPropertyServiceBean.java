@@ -308,4 +308,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		}
 		return null;
 	}
+
+	@Nullable
+	@Override
+	public Boolean isAuszahlungAnElternAktiviert(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.AUSZAHLUNGEN_AN_ELTERN, mandant);
+	}
 }

@@ -20,6 +20,7 @@ import {LogFactory} from '../app/core/logging/LogFactory';
 import {Displayable} from '../app/shared/interfaces/displayable';
 import {TSBetreuungsnummerParts} from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
 import {TSAbstractGemeindeStammdaten} from '../models/TSAbstractGemeindeStammdaten';
 import {TSAdresse} from '../models/TSAdresse';
@@ -30,10 +31,9 @@ import {TSFall} from '../models/TSFall';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
+import {TSKindContainer} from '../models/TSKindContainer';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
-import {TSKindContainer} from '../models/TSKindContainer';
-import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
 import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('EbeguUtil');
@@ -446,8 +446,6 @@ export class EbeguUtil {
         return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
     }
 
-    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
-
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
@@ -457,8 +455,6 @@ export class EbeguUtil {
         }
         return '';
     }
-
-    // bgNummer is also stored on betreuung when Betreuung is loaded from server! (Don't use this function if you load
 
     public getAntragTextDateAsString(
         tsAntragTyp: TSAntragTyp,
@@ -502,7 +498,6 @@ export class EbeguUtil {
         return EbeguUtil.addZerosToNumber(num, length);
     }
 
-    // betreuung from server)
     public calculateBetreuungsId(
         gesuchsperiode: TSGesuchsperiode,
         fall: TSFall,
@@ -515,7 +510,6 @@ export class EbeguUtil {
             '';
     }
 
-    // betreuung from server)
     public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
         return betreuung && fall ?
             EbeguUtil.toBetreuungsId(betreuung.gesuchsperiode.gueltigkeit,
