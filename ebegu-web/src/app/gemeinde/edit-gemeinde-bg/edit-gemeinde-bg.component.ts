@@ -294,7 +294,8 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = this.gesuchsperiodenMinMassgebendesEinkommen.get(gk.gesuchsperiode.id);
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen =
+            this.gesuchsperiodenMinMassgebendesEinkommen.get(gk.gesuchsperiode.id);
         gk.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen =
             this.gesuchsperiodenMaxMassgebendesEinkommen.get(gk.gesuchsperiode.id);
 
