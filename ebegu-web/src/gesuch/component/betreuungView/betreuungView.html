@@ -592,7 +592,7 @@
                     </div>
 
                     <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
-                    <div class="row margin-bottom-4rem"
+                    <div class="row margin-bottom-20"
                          ng-if="vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt && vm.isHoehereBeitraegeEinstellungAktiviert">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
@@ -615,17 +615,6 @@
 
                                     <dv-error-messages for="vm.form.bedarfsstufe.$error"
                                                        input-id="bedarfsstufe"></dv-error-messages>
-
-                                    <div class="dv-error-messages margin-top-40 margin-bottom-20"
-                                         ng-if="vm.isBedarfsstufeEmpty()">
-                                        <div class="error"
-                                             ng-messages="vm.form.bedarfsstufe.$error">
-                                            <div data-translate="BEDARFSSTUFE_MISSING_BEDARFSSTUFE"
-                                                 for="vm.form.bedarfsstufe.$error"
-                                                 ng-message="required"
-                                                 role="alert"></div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
