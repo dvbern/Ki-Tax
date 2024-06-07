@@ -38,6 +38,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -129,8 +130,9 @@ class KindServiceHandlerTest extends EasyMockSupport {
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
-		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
-			betreuung.getBetreuungsstatus())).collect(Collectors.toList()).size(), kindContainer.getBetreuungen().size());
+		List<Betreuung> bestaetigteBetreuungen = kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
+			betreuung.getBetreuungsstatus())).collect(Collectors.toList());
+		Assertions.assertEquals(bestaetigteBetreuungen.size(), kindContainer.getBetreuungen().size());
 		verifyAll();
 	}
 
