@@ -112,10 +112,10 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 
 	private KindData createKind1Data() {
 		return new KindData()
-			.setVorname("Linus")
+			.setVorname("Liuns")
 			.setNachname("Müller")
 			.setGeschlecht(Geschlecht.MAENNLICH)
-			.setGeburtsdatum(LocalDate.of(2022, Month.APRIL, 4))
+			.setGeburtsdatum(LocalDate.of(2019, Month.APRIL, 4))
 			.setKinderabzug(Kinderabzug.GANZER_ABZUG)
 			.setEinschulungTyp(EinschulungTyp.PRIMARSTUFE)
 			.setFamilienergaenzendBetreuug(true)
@@ -125,24 +125,8 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 			.setHohereBeitraege(false);
 	}
 
+
 	private BetreuungData createBeteruung1() {
-		BetreuungData betreuungData = new BetreuungData()
-			.setAuszahlungAnEltern(false)
-			.setBegruendung("Test")
-			.setInstiutionId(institutionStammdatenBuilder.getIdInstitutionStammdatenBruennen())
-			.setBestaetigt(betreuungenBestaetigt);
-
-		betreuungData.getBetreuungspensum().add(new PensumData()
-			.setPensum(50)
-			.setMonatlicheBetreuungskosten(BigDecimal.valueOf(1000))
-			.setGueltigAb(LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1))
-			.setGueltigBis(LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31)));
-
-		return betreuungData;
-	}
-
-
-	private BetreuungData createBeteruung2() {
 		BetreuungData betreuung = new BetreuungData()
 			.setAuszahlungAnEltern(false)
 			.setBegruendung("Test")
@@ -284,7 +268,7 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 		return betreuung;
 	}
 
-	private BetreuungData createBeteruung3() {
+	private BetreuungData createBeteruung2() {
 		BetreuungData betreuungData = new BetreuungData()
 			.setAuszahlungAnEltern(false)
 			.setBegruendung("Test")
@@ -306,7 +290,6 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 		KindData kindData = createKind1Data();
 		kindData.getBetreuungDataList().add(createBeteruung1());
 		kindData.getBetreuungDataList().add(createBeteruung2());
-		kindData.getBetreuungDataList().add(createBeteruung3());
 		return createKindContainer(kindData);
 	}
 

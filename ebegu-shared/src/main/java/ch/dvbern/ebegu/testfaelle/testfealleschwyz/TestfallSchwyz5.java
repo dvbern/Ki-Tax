@@ -103,7 +103,7 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 	private GesuchstellerData createGS2Data() {
 		return new GesuchstellerData()
 			.setGesuchstellerNummer(2)
-			.setVorname("Moriz")
+			.setVorname("Moritz")
 			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.MAENNLICH)
 			.setGeburtsdatum(LocalDate.of(2000, Month.FEBRUARY, 18))
