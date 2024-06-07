@@ -637,23 +637,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isBedarfsstufeSelected(): boolean {
-        if (this.isHoehereBeitraegeBeeintraechtigungAktiviert()) {
-            const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
-            let isSelected = false;
+        const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
+        let isSelected = false;
 
-            kinderWithBetreuung.forEach(kind => {
-                if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
-                    kind.betreuungen?.forEach(betreuung => {
-                        if (EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)) {
-                            isSelected = true;
-                        }
-                    });
-                }
-            });
-            return isSelected;
-        } else {
-            return false;
-        }
+        kinderWithBetreuung.forEach(kind => {
+            if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
+                kind.betreuungen?.every(betreuung => {
+                    if (EbeguUtil.isNullOrUndefined(betreuung.bedarfsstufe)) {
+                        return (isSelected = false);
+                    } else {
+                        return (isSelected = true);
+                    }
+                });
+            }
+        });
+        return isSelected;
     }
 
     public isRolleGemeinde(): boolean {
@@ -863,7 +861,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id
             ).subscribe(response => {
+                console.log(response);
                 this.hoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
+                console.log(this.hoehereBeitraegeBeeintraechtigungAktiviert);
             }, error => LOG.error(error));
         }
 
