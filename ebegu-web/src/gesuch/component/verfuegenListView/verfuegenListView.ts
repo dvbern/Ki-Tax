@@ -644,9 +644,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
                 kind.betreuungen?.every(betreuung => {
                     if (EbeguUtil.isNullOrUndefined(betreuung.bedarfsstufe)) {
-                        return (isSelected = false);
+                        isSelected = false;
+                        return isSelected;
                     } else {
-                        return (isSelected = true);
+                        isSelected = true;
+                        return isSelected;
                     }
                 });
             }
