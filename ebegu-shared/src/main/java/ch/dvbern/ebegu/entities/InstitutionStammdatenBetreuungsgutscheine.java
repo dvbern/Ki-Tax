@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -27,8 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -114,7 +113,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	@Nullable
 	@Column(nullable = true)
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Email
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	private String alternativeEmailFamilienportal;
 

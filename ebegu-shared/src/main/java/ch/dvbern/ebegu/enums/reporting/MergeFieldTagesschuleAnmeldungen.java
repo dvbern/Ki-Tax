@@ -49,7 +49,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	mobileTitle(new SimpleMergeField<>("mobileTitle", STRING_CONVERTER)),
 	telefonTitle(new SimpleMergeField<>("telefonTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
-	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
+	referenzNummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	abholungTagesschuleTitle(new SimpleMergeField<>("abholungTagesschuleTitle", STRING_CONVERTER)),
@@ -96,7 +96,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	mobileAntragsteller2(new SimpleMergeField<>("mobileAntragsteller2", STRING_CONVERTER)),
 	telefonAntragsteller2(new SimpleMergeField<>("telefonAntragsteller2", STRING_CONVERTER)),
 
-	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
+	referenzNummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 

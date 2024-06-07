@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -106,6 +106,6 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
 		return translate(BEILAGE_VERFUEGUNG,
 			betreuung.getKind().getKindJA().getNachname() + ' ' + betreuung.getKind().getKindJA().getVorname(),
-			betreuung.getBGNummer());
+			betreuung.getReferenzNummer());
 	}
 }

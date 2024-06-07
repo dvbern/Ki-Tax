@@ -19,7 +19,7 @@
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
@@ -36,7 +36,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
@@ -54,7 +54,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
@@ -72,7 +72,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
@@ -90,7 +90,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
@@ -108,14 +108,14 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
 			 'flyway' as user_mutiert,
 			 0 as version,
 			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN' as einstellung_key,
-			 '0' as value,
+			 (SELECT value FROM einstellung WHERE einstellung_key = 'MIN_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = gp.id AND gemeinde_id IS NULL) as value,
 			 NULL as gemeinde_id,
 			 gp.id as gesuchsperiode_id,
 			 gp.mandant_id as mandant_id
@@ -126,14 +126,14 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) as id,
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
 			 '2020-01-01 00:00:00' as timestamp_erstellt,
 			 '2020-01-01 00:00:00' as timestamp_mutiert,
 			 'flyway' as user_erstellt,
 			 'flyway' as user_mutiert,
 			 0 as version,
 			 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN' as einstellung_key,
-			 (SELECT value FROM einstellung WHERE einstellung_key = 'MAX_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = gp.id) ,
+			 (SELECT value FROM einstellung WHERE einstellung_key = 'MAX_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = gp.id AND gemeinde_id IS NULL),
 			 NULL as gemeinde_id,
 			 gp.id as gesuchsperiode_id,
 			 gp.mandant_id as mandant_id

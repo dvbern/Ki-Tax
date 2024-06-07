@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -11,11 +12,9 @@ import java.util.stream.IntStream;
 
 import ch.dvbern.ebegu.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
-import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,17 +24,14 @@ import static ch.dvbern.ebegu.api.util.health.DVLoggedInHealthCheck.TIME_SERIES_
 
 @RunWith(EasyMockRunner.class)
 public class DVLoggedInHealthCheckTest {
-
 	@Mock
 	private AuthService authServiceMock;
-	@Mock
-	private HealthCheckResponseBuilder mockedBuilder;
 
 	@Test
 	public void testReturnedValues() throws IOException {
 
 		//setup
-		Collection<String> userList = ImmutableList.of("eberhard.gugler@mailinator.com", "jemand@irgendwo.com");
+		Collection<String> userList = List.of("eberhard.gugler@mailinator.com", "jemand@irgendwo.com");
 		EasyMock.expect(authServiceMock.findActiveSince(EasyMock.anyInt()))
 			.andReturn(userList);
 		EasyMock.replay(authServiceMock); // im replay modus wird bei aufrufen die definierte antwort zurueckgegeben

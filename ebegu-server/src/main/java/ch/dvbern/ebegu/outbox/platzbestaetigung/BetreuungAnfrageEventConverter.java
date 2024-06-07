@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungAnfrageEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.KindDTO;
@@ -39,19 +39,16 @@ public class BetreuungAnfrageEventConverter {
 		BetreuungAnfrageEventDTO dto = toBetreuungAnfrageEvent(betreuung);
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new BetreuungAnfrageAddedEvent(betreuung.getBGNummer(), payload, dto.getSchema());
+		return new BetreuungAnfrageAddedEvent(betreuung.getReferenzNummer(), payload, dto.getSchema());
 	}
 
 	/**
 	 * Convert einen Kibon Betreuung Entity in einer BetreuungAnfrageEventDTO
-	 *
-	 * @param betreuung
-	 * @return
 	 */
 	@Nonnull
 	private BetreuungAnfrageEventDTO toBetreuungAnfrageEvent(@Nonnull Betreuung betreuung) {
 		return BetreuungAnfrageEventDTO.newBuilder()
-			.setRefnr(betreuung.getBGNummer())
+			.setRefnr(betreuung.getReferenzNummer())
 			.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId())
 			.setGesuchsteller(toGesuchstellerDTO(requireNonNull(betreuung.extractGesuch().getGesuchsteller1()).getGesuchstellerJA()))
 			.setKind(toKindDTO(betreuung.getKind().getKindJA()))

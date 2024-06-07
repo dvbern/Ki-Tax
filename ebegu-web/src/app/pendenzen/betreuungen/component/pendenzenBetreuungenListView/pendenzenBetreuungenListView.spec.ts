@@ -21,7 +21,7 @@ import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../../../hybridTools/translationsMock';
-import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPendenzBetreuung} from '../../../../../models/TSPendenzBetreuung';
 import {TestDataUtil} from '../../../../../utils/TestDataUtil.spec';
 import {GesuchsperiodeRS} from '../../../../core/service/gesuchsperiodeRS.rest';

@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.dto.dataexport.v1.KindExportDTO;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungExportDTO;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungenExportDTO;
 import ch.dvbern.ebegu.dto.dataexport.v1.ZeitabschnittExportDTO;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Land;
 import org.junit.Assert;
 import org.junit.Rule;

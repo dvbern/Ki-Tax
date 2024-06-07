@@ -129,6 +129,7 @@ public final class TestUtils {
 		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
 		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(3));
 		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(12));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(9));
 		return defaultParameter;
 	}
 }

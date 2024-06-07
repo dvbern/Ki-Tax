@@ -24,7 +24,7 @@ import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {getWeekdaysValues} from '../../../models/enums/TSDayOfWeek';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
 import {TSBelegungFerieninsel} from '../../../models/TSBelegungFerieninsel';

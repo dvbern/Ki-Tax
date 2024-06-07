@@ -17,7 +17,7 @@
 
 import {IController} from 'angular';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../models/enums/TSAntragStatus';
-import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsstatus} from '../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';

@@ -96,6 +96,7 @@ export class EditGemeindeBGComponent implements OnInit {
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     private readonly gesuchsperiodenMaxMassgebendesEinkommen: Map<string, number> = new Map<string, number>();
+    private readonly gesuchsperiodenMinMassgebendesEinkommen: Map<string, number> = new Map<string, number>();
 
     public constructor(
         private readonly $transition$: Transition,
@@ -132,6 +133,7 @@ export class EditGemeindeBGComponent implements OnInit {
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
         this.initErlaubenInstitutionenZuWaehlen();
         this.loadAllGPMaxMassgebendesEinkommen();
+        this.loadAllGPMinMassgebendesEinkommen();
     }
 
     private loadAllGPMaxMassgebendesEinkommen(): void {
@@ -139,6 +141,14 @@ export class EditGemeindeBGComponent implements OnInit {
         this.einstellungRS.findEinstellungByKey(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN).subscribe(response => {
             response.forEach(einstellung => {
                 this.gesuchsperiodenMaxMassgebendesEinkommen.set(einstellung.gesuchsperiodeId, Number(einstellung.value));
+            });
+        });
+    }
+    private loadAllGPMinMassgebendesEinkommen(): void {
+        this.gesuchsperiodenMinMassgebendesEinkommen.clear();
+        this.einstellungRS.findEinstellungByKey(TSEinstellungKey.MIN_MASSGEBENDES_EINKOMMEN).subscribe(response => {
+            response.forEach(einstellung => {
+                this.gesuchsperiodenMinMassgebendesEinkommen.set(einstellung.gesuchsperiodeId, Number(einstellung.value));
             });
         });
     }
@@ -284,7 +294,8 @@ export class EditGemeindeBGComponent implements OnInit {
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
         gk.konfigZusaetzlicherGutscheinTyp = TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL;
-        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen = 0;
+        gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen =
+            this.gesuchsperiodenMinMassgebendesEinkommen.get(gk.gesuchsperiode.id);
         gk.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen =
             this.gesuchsperiodenMaxMassgebendesEinkommen.get(gk.gesuchsperiode.id);
 
@@ -306,7 +317,7 @@ export class EditGemeindeBGComponent implements OnInit {
         );
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN,
-            gk.konfigZusaetzlicherGutscheinMinMassgebendesEinkommen, gk,
+            gk.konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen, gk,
         );
 
         this.resetKonfigZusaetzlicherGutscheinLinear(gk);

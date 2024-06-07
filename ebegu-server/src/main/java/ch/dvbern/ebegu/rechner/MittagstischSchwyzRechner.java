@@ -51,7 +51,10 @@ public class MittagstischSchwyzRechner extends AbstractSchwyzRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateTagesTarif(BigDecimal effektiveBetreuungsZeiteinheitProZeitabschnitt, BGCalculationInput input) {
+	protected BigDecimal calculateTarifProZeiteinheit(
+		BGRechnerParameterDTO parameterDTO,
+		BigDecimal effektivesPensumFaktor,
+		BGCalculationInput input) {
 		return input.getTarifHauptmahlzeit();
 	}
 

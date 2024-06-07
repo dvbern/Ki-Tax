@@ -49,3 +49,6 @@ ebegu-ws/src/test/
 *.snap.debug
 .flattened-pom.xml
 .scannerwork
+
+.vscode
+.nx

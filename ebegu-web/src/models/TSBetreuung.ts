@@ -14,9 +14,10 @@
  */
 
 import * as moment from 'moment';
+import {TSBedarfsstufe} from './enums/betreuung/TSBedarfsstufe';
 import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
+import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/betreuung/TSBetreuungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAbwesenheitContainer} from './TSAbwesenheitContainer';
 import {TSAnmeldungTagesschuleZeitabschnitt} from './TSAnmeldungTagesschuleZeitabschnitt';
@@ -53,7 +54,7 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _belegungTagesschule: TSBelegungTagesschule;
     private _belegungFerieninsel: TSBelegungFerieninsel;
     private _anmeldungMutationZustand: TSAnmeldungMutationZustand;
-    private _bgNummer: string;
+    private _referenzNummer: string;
     private _keineDetailinformationen: boolean = false;
     private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
     private _eingewoehnung: boolean = false;
@@ -61,6 +62,8 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _begruendungAuszahlungAnInstitution: string;
 
     private _finSitRueckwirkendKorrigiertInThisMutation: boolean = false;
+
+    private _bedarfsstufe: TSBedarfsstufe;
 
     public constructor() {
         super();
@@ -311,12 +314,12 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         this._anmeldungMutationZustand = value;
     }
 
-    public get bgNummer(): string {
-        return this._bgNummer;
+    public get referenzNummer(): string {
+        return this._referenzNummer;
     }
 
-    public set bgNummer(value: string) {
-        this._bgNummer = value;
+    public set referenzNummer(value: string) {
+        this._referenzNummer = value;
     }
 
     public get anmeldungTagesschuleZeitabschnitts(): Array<TSAnmeldungTagesschuleZeitabschnitt> {
@@ -357,5 +360,13 @@ export class TSBetreuung extends TSAbstractMutableEntity {
 
     public set finSitRueckwirkendKorrigiertInThisMutation(value: boolean) {
         this._finSitRueckwirkendKorrigiertInThisMutation = value;
+    }
+
+    public get bedarfsstufe(): TSBedarfsstufe {
+        return this._bedarfsstufe;
+    }
+
+    public set bedarfsstufe(value: TSBedarfsstufe) {
+        this._bedarfsstufe = value;
     }
 }

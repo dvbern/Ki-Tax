@@ -57,7 +57,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 	@Nullable
 	private LocalDate geburtsdatumKind;
 	@Nullable
-	private String referenznummer;
+	private String referenzNummer;
 
 	@Nullable
 	private String rechnungsadresseVorname;
@@ -132,12 +132,12 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 	}
 
 	@Nullable
-	public String getReferenznummer() {
-		return referenznummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setReferenznummer(@Nullable String referenznummer) {
-		this.referenznummer = referenznummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	@Nullable
@@ -317,7 +317,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		final AnmeldungTagesschule anmeldungTagesschule = zeitabschnitt.getVerfuegung().getAnmeldungTagesschule();
 		if (anmeldungTagesschule != null) {
 			dataRow.tagesschule = anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName();
-			dataRow.referenznummer = anmeldungTagesschule.getBGNummer();
+			dataRow.referenzNummer = anmeldungTagesschule.getReferenzNummer();
 			final KindContainer kindContainer = anmeldungTagesschule.getKind();
 			final Kind kind = kindContainer.getKindJA();
 			if (kind != null) {
@@ -456,7 +456,7 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 		}
 
 		TagesschuleRechnungsstellungDataRow that = (TagesschuleRechnungsstellungDataRow) o;
-		return Objects.equals(getReferenznummer(), that.getReferenznummer())
+		return Objects.equals(getReferenzNummer(), that.getReferenzNummer())
 			&& Objects.equals(getDatumAb(), that.getDatumAb());
 	}
 
@@ -466,13 +466,13 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 			return 0;
 		}
 		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getReferenznummer(), o.getReferenznummer());
+		builder.append(this.getReferenzNummer(), o.getReferenzNummer());
 		builder.append(this.getDatumAb(), o.getDatumAb());
 		return builder.toComparison();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(referenznummer, datumAb);
+		return Objects.hash(referenzNummer, datumAb);
 	}
 }

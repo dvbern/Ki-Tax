@@ -22,11 +22,11 @@ import java.time.LocalDate;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 
 public class MahlzeitenverguenstigungDataRow {
 
-	@Nullable private String bgNummer;
+	@Nullable private String referenzNummer;
 	@Nullable private Long fallNummer;
 	@Nullable private BetreuungsangebotTyp betreuungsTyp;
 	@Nullable private String institution;
@@ -64,12 +64,12 @@ public class MahlzeitenverguenstigungDataRow {
 	}
 
 	@Nullable
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(@Nullable String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(@Nullable String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	@Nullable

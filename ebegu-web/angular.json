@@ -34,7 +34,8 @@
               "lodash",
               "iban",
               "raven-js",
-              "angular"
+              "angular",
+              "randomcolor"
             ]
           },
           "configurations": {
@@ -93,17 +94,17 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "ebegu:build",
+            "buildTarget": "ebegu:build",
             "proxyConfig": "src/proxy.conf.json",
             "port": 4200,
             "host": "0.0.0.0"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ebegu:build:production"
+              "buildTarget": "ebegu:build:production"
             },
             "development": {
-              "browserTarget": "ebegu:build:development"
+              "buildTarget": "ebegu:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -111,7 +112,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ebegu:build"
+            "buildTarget": "ebegu:build"
           }
         },
         "test": {

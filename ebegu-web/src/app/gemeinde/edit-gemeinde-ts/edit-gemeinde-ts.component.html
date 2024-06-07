@@ -112,11 +112,11 @@
                                         <label translate for="email_ts_id">ALTERNATIVE_EMAIL
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
-                                        <input id="email_ts_id" type="text" name="email_ts_id"
+                                        <input id="email_ts_id" type="email" name="email_ts_id"
                                                #nameEmailTS="ngModel"
                                                [(ngModel)]="stammdaten.tsEmail"
-                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
-                                               class="form-control">
+                                               class="form-control"
+                                               email>
                                         <dv-error-messages [errorObject]="nameEmailTS.errors"
                                                            inputId="email_ts_id"></dv-error-messages>
                                     </div>

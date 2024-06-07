@@ -16,8 +16,8 @@
 package ch.dvbern.ebegu.util.testdata;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 
 /**
  * Konfiguration fuer die Erstellung einer (Schulamt-) Anmeldung zu einem Gesuch

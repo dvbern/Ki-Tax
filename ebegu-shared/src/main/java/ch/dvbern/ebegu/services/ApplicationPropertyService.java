@@ -146,4 +146,7 @@ public interface ApplicationPropertyService {
 
 	@Nullable
 	LocalDate getSchnittstelleSprachfoerderungAktivAb(@Nonnull Mandant mandant);
+
+	@Nullable
+	Boolean isAuszahlungAnElternAktiviert(@Nonnull Mandant mandant);
 }
