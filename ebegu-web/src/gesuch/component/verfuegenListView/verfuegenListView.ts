@@ -863,7 +863,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id
             ).subscribe(response => {
-                console.log('cb res: ');
                 this.hoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
             }, error => LOG.error(error));
         }
