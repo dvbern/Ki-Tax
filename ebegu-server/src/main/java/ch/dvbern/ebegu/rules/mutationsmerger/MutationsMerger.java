@@ -179,7 +179,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		if (isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum)) {
 			inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
 			inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
-			if (inputAktuel.getBedarfsstufe() != null && !inputAktuel.getBedarfsstufe().equals(Bedarfsstufe.KEINE)) {
+			if (inputAktuel.getBedarfsstufe() != null && inputAktuel.getBedarfsstufe() != Bedarfsstufe.KEINE) {
 				inputAktuel.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.BEDARFSSTUFE_MSG, locale, inputAktuel.getBedarfsstufe());
 			}
 		}

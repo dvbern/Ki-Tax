@@ -75,10 +75,10 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		var bgBetreuungsZeiteinheitProZeitabschnitt =
 			toZeiteinheitProZeitabschnitt(parameterDTO, bgPensumFaktor, anteilMonat);
 
-		var hohereBeitrag = calculateHoereBeitragProZeitAbschnitt(input, bgBetreuungsZeiteinheitProZeitabschnitt, anteilMonat);
+		var hoehererBeitrag = calculateHoereBeitragProZeitAbschnitt(input, bgBetreuungsZeiteinheitProZeitabschnitt, anteilMonat);
 
-		var gutscheinOhneHohereBeitrag = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
-		var gutschein = EXACT.add(hohereBeitrag, gutscheinOhneHohereBeitrag);
+		var gutscheinOhneHoehererBeitrag = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
+		var gutschein = EXACT.add(hoehererBeitrag, gutscheinOhneHoehererBeitrag);
 		var vollkosten = EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilMonat);
 		var gutscheinVorAbzugSelbstbehalt =
 			Objects.requireNonNull(EXACT.multiply(beitragProZeiteinheitVorAbzug, bgBetreuungsZeiteinheitProZeitabschnitt));
@@ -118,7 +118,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		// Punkt VII
 		result.setVerguenstigung(gutschein);
 		// Punkt VIII
-		result.setHohereBeitrag(hohereBeitrag);
+		result.setHoehererBeitrag(hoehererBeitrag);
 		result.setBedarfsstufe(input.getBedarfsstufe());
 
 		result.setElternbeitrag(elternbeitrag);
@@ -135,19 +135,28 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		BGCalculationInput input,
 		BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt,
 		BigDecimal anteilMonat) {
-		if (input.getBedarfsstufe() == null || input.getBedarfsstufe().equals(Bedarfsstufe.KEINE)) {
+		if (input.getBedarfsstufe() == null || input.getBedarfsstufe().equals(Bedarfsstufe.KEINE)
+		|| bgBetreuungsZeiteinheitProZeitabschnitt.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
 		}
-		var basisBetragProZeitabschnitt = EXACT.multiply(HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT, anteilMonat);
+		var basisBetragProZeitabschnitt = EXACT.multiply(HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT, anteilMonat); // nur wenn bgBetreuungsZeiteinheitProZeitabschnitt > 0
 		switch (input.getBedarfsstufe()) {
 		case BEDARFSSTUFE_1:
 			return basisBetragProZeitabschnitt;
 		case BEDARFSSTUFE_2:
-			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getMittelBetragForAngebot()));
+			return calculateHoereBeitragFuerBedarfsstufeZwei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
 		case BEDARFSSTUFE_3:
-			return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getHohereBetragForAngebot()));
+			return calculateHoereBeitragFuerBedarfsstufeDrei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
 		}
 		return BigDecimal.ZERO;
+	}
+
+	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeZwei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {
+		return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getBedarfsstufeZweiBetragForAngebot()));
+	}
+
+	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeDrei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {
+		return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getBedarfsstufeDreiBetragForAngebot()));
 	}
 
 	protected static BigDecimal toTageProZeitAbschnitt(
@@ -181,7 +190,8 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 	}
 
 	protected BigDecimal calculateTarifProZeiteinheit(
-		BGRechnerParameterDTO parameterDTO, BigDecimal effektivesPensumFaktor,
+		BGRechnerParameterDTO parameterDTO,
+		BigDecimal effektivesPensumFaktor,
 		BGCalculationInput input) {
 		var effektiveBetreuungsZeiteinheitenProMonat =
 			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, BigDecimal.ONE);
@@ -203,9 +213,8 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 	protected abstract BigDecimal getMinimalTarif(BGRechnerParameterDTO parameterDTO);
 
 	protected abstract PensumUnits getZeiteinheit();
+	protected abstract BigDecimal getBedarfsstufeZweiBetragForAngebot();
 
-	protected abstract BigDecimal getMittelBetragForAngebot();
-
-	protected abstract BigDecimal getHohereBetragForAngebot();
+	protected abstract BigDecimal getBedarfsstufeDreiBetragForAngebot();
 
 }

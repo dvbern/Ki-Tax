@@ -927,6 +927,9 @@ public class BGCalculationInput {
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 		this.anwesenheitsTageProMonat = add(this.anwesenheitsTageProMonat, other.anwesenheitsTageProMonat);
 		if (other.bedarfsstufe != null) {
+			if (this.bedarfsstufe != null && this.bedarfsstufe == other.bedarfsstufe) {
+				throw new IllegalArgumentException("Bedarfsstufe können nicht gemerged werden");
+			}
 			this.bedarfsstufe = other.bedarfsstufe;
 		}
 	}

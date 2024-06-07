@@ -918,8 +918,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	@Nullable
-	public BigDecimal getHohereBeitrag() {
-		return getRelevantBgCalculationResult().getHohereBeitrag();
+	public BigDecimal getHoehererBeitrag() {
+		return getRelevantBgCalculationResult().getHoehererBeitrag();
 	}
 
 	@Nullable

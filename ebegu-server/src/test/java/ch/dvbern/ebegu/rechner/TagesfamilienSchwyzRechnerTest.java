@@ -519,7 +519,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.KEINE);
 
 		// when
@@ -551,7 +551,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(bedarfsstufe);
 
 		// when
@@ -579,7 +579,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1);
 
 		// when
@@ -588,6 +588,8 @@ class TagesfamilienSchwyzRechnerTest {
 		// then 89.20 + 352 =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("441.20"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("352.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -600,7 +602,7 @@ class TagesfamilienSchwyzRechnerTest {
 			LocalDate.of(2024, Month.APRIL, 1),
 			LocalDate.of(2024, Month.APRIL, 15)));
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1);
 
 		// when
@@ -609,6 +611,8 @@ class TagesfamilienSchwyzRechnerTest {
 		// then, AnteilMonat 0.5 => (89.20 * 0.5) + (352 * 0.5) =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("220.60"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("176.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -619,7 +623,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_2);
 
 		// when
@@ -628,6 +632,8 @@ class TagesfamilienSchwyzRechnerTest {
 		// then 89.20 + 352 + (8.2 * 66) =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("982.40"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("893.20"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -640,7 +646,7 @@ class TagesfamilienSchwyzRechnerTest {
 			LocalDate.of(2024, Month.APRIL, 1),
 			LocalDate.of(2024, Month.APRIL, 15)));
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_2);
 
 		// when
@@ -649,6 +655,8 @@ class TagesfamilienSchwyzRechnerTest {
 		// then, AnteilMonat 0.5 => (89.20 * 0.5) + (352 * 0.5) + (4.1 * 66) =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("491.20"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("446.60"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -659,7 +667,7 @@ class TagesfamilienSchwyzRechnerTest {
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_3);
 
 		// when
@@ -668,6 +676,8 @@ class TagesfamilienSchwyzRechnerTest {
 		// then 89.20 + 352 + (8.2 * 132) =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("1523.60"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("1434.40"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -680,7 +690,7 @@ class TagesfamilienSchwyzRechnerTest {
 			LocalDate.of(2024, Month.APRIL, 1),
 			LocalDate.of(2024, Month.APRIL, 15)));
 
-		var input = createBasisInputForBedarfstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+		var input = createBasisInputForBedarfsstufeTest(verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_3);
 
 		// when
@@ -689,9 +699,11 @@ class TagesfamilienSchwyzRechnerTest {
 		// then, AnteilMonat 0.5 => (89.20 * 0.5) + (352 * 0.5) + (4.1 * 132) =
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("761.80"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("717.20"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
 	}
 
-	private BGCalculationInput createBasisInputForBedarfstufeTest(BGCalculationInput input) {
+	private BGCalculationInput createBasisInputForBedarfsstufeTest(BGCalculationInput input) {
 		input.setAnwesenheitsTageProMonat(BigDecimal.valueOf(10));
 		input.setBabyTarif(false);
 		input.setEinschulungTyp(EinschulungTyp.PRIMARSTUFE);

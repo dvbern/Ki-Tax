@@ -624,6 +624,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then 574.00 + 352
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("926.00"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("352.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -646,6 +648,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then (574.00 * 0.5) + (352 * 0.5)
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("463.00"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("176.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -666,6 +670,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then 574.00 + 352 + (16.4 * 66)
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("2008.40"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("1434.40"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -688,6 +694,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then (574.00 * 0.5) + (352 * 0.5) + (8.2 * 66)
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("1004.20"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("717.20"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -708,6 +716,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then 574.00 + 352 + (16.4 * 132)
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("3090.80"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("2516.80"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
 	}
 
 	@Test
@@ -730,6 +740,8 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// then (574.00 * 0.5) + (352 * 0.5) + (8.2 * 132)
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		assertEquals(new BigDecimal("1545.40"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("1258.40"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
 	}
 
 

@@ -25,10 +25,15 @@ import java.time.Month;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -167,12 +172,7 @@ class MittagstischSchwyzRechnerTest {
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
-		input.setAnspruchspensumProzent(100);
-		input.setBetreuungspensumProzent(BigDecimal.valueOf(100));
-		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(63_300));
-		input.setAnzahlGeschwister(1);
-		input.setTarifHauptmahlzeit(BigDecimal.valueOf(11.5));
-		input.setAbzugFamGroesse(BigDecimal.ZERO);
+		setDefaultInputs(input);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -279,6 +279,185 @@ class MittagstischSchwyzRechnerTest {
 			result.getMinimalerElternbeitrag());
 		assertEquals(new BigDecimal("10.35"), result.getMinimalerElternbeitragGekuerzt());
 		assertEquals(new BigDecimal("81.90"), result.getElternbeitrag());
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = Bedarfsstufe.class,
+		names = { "KEINE" },
+		mode = Mode.EXCLUDE)
+	void testHoereBeitragBedarfsstufe_NurGutscheinErhoert(Bedarfsstufe bedarfsstufe) {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(bedarfsstufe);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("120.55");
+		assertEquals(
+			gutscheinVorAbzugSelbstbehalt,
+			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		assertEquals(
+			gutscheinVorAbzugSelbstbehalt,
+			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("153.75"), result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("38.55"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("115.20"), result.getElternbeitrag());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_1() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then 82.00 + 352
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("434.00"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("352.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_1_untermonatlich() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
+			LocalDate.of(2024, Month.APRIL, 1),
+			LocalDate.of(2024, Month.APRIL, 15)));
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then (82.00 * 0.5) + (352 * 0.5)
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("217.00"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("176.00"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_1, result.getBedarfsstufe());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_2() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_2);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then 82.00 + 352 + (20.5 * 9.90)
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("636.95"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("554.95"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_2_untermonatlich() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
+			LocalDate.of(2024, Month.APRIL, 1),
+			LocalDate.of(2024, Month.APRIL, 15)));
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_2);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then (82.00 * 0.5) + (352 * 0.5) + (10.25 * 9.9)
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("318.50"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("277.50"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_2, result.getBedarfsstufe());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_3() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_3);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then 82.00 + 352 + (20.5 * 19.80)
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("839.90"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("757.90"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
+	}
+
+	@Test
+	void testHoereBeitragBedarfsstufe_BEDARFSSTUFE_3_untermonatlich() {
+		// given
+		var testee = new MittagstischSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(new DateRange(
+			LocalDate.of(2024, Month.APRIL, 1),
+			LocalDate.of(2024, Month.APRIL, 15)));
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_3);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then (82.00 * 0.5) + (352 * 0.5) + (10.25 * 19.80)
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		assertEquals(new BigDecimal("419.95"), result.getVerguenstigung());
+		assertEquals(new BigDecimal("378.95"), result.getHoehererBeitrag());
+		assertEquals(Bedarfsstufe.BEDARFSSTUFE_3, result.getBedarfsstufe());
+	}
+
+	private void setDefaultInputs(BGCalculationInput input) {
+		input.setAnspruchspensumProzent(100);
+		input.setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(63_300));
+		input.setAnzahlGeschwister(1);
+		input.setTarifHauptmahlzeit(BigDecimal.valueOf(11.5));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 	}
 
 	private void setGueltigkeitGanzerApril(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {

@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -229,7 +230,7 @@ class MutationsMergerSchwyzTest {
 	private void checkAllBefore(
 		List<VerfuegungZeitabschnitt> zeitabschnitte,
 		LocalDate mutationDatum,
-		java.util.function.Consumer<? super VerfuegungZeitabschnitt> assertion) {
+		Consumer<? super VerfuegungZeitabschnitt> assertion) {
 
 		zeitabschnitte.stream().
 			filter(za -> za.getGueltigkeit().getGueltigAb().getMonth().getValue() <= mutationDatum.getMonth().getValue() &&

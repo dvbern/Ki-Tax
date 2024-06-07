@@ -203,7 +203,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal hohereBeitrag;
+	private BigDecimal hoehererBeitrag;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
@@ -262,7 +262,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
 		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
-		this.hohereBeitrag = toCopy.hohereBeitrag;
+		this.hoehererBeitrag = toCopy.hoehererBeitrag;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -301,7 +301,7 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
 		sozialhilfeAkzeptiert = that.sozialhilfeAkzeptiert;
 		gutscheinEingewoehnung = that.gutscheinEingewoehnung;
-		hohereBeitrag = that.hohereBeitrag;
+		hoehererBeitrag = that.hoehererBeitrag;
 	}
 
 	@CanIgnoreReturnValue
@@ -328,7 +328,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
-		this.hohereBeitrag = roundToFrankenRappen(hohereBeitrag);
+		this.hoehererBeitrag = roundToFrankenRappen(hoehererBeitrag);
 		return this;
 	}
 
@@ -362,7 +362,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
 			.add("eingewoehnungAnteil", gutscheinEingewoehnung)
-			.add("hohereBeitrag", hohereBeitrag)
+			.add("hoehererBeitrag", hoehererBeitrag)
 			.toString();
 	}
 
@@ -395,7 +395,8 @@ public class BGCalculationResult extends AbstractEntity {
 			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
 			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert &&
 			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung) &&
-			MathUtil.isSame(hohereBeitrag, otherResult.hohereBeitrag);
+			MathUtil.isSame(hoehererBeitrag, otherResult.hoehererBeitrag) &&
+			bedarfsstufe == otherResult.bedarfsstufe;
 	}
 
 	public static boolean isSameSichtbareDaten(
@@ -425,7 +426,7 @@ public class BGCalculationResult extends AbstractEntity {
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
 				thisEntity.babyTarif == otherEntity.babyTarif &&
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
-				MathUtil.isSame(thisEntity.hohereBeitrag, otherEntity.hohereBeitrag)
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
@@ -442,7 +443,7 @@ public class BGCalculationResult extends AbstractEntity {
 				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
-				MathUtil.isSame(thisEntity.hohereBeitrag, otherEntity.hohereBeitrag)
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
@@ -486,7 +487,7 @@ public class BGCalculationResult extends AbstractEntity {
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
 				thisEntity.sozialhilfeAkzeptiert == otherEntity.sozialhilfeAkzeptiert &&
 				MathUtil.isSame(thisEntity.gutscheinEingewoehnung, otherEntity.gutscheinEingewoehnung) &&
-				MathUtil.isSame(thisEntity.hohereBeitrag, otherEntity.hohereBeitrag)
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
@@ -835,12 +836,12 @@ public class BGCalculationResult extends AbstractEntity {
 	}
 
 	@Nullable
-	public BigDecimal getHohereBeitrag() {
-		return hohereBeitrag;
+	public BigDecimal getHoehererBeitrag() {
+		return hoehererBeitrag;
 	}
 
-	public void setHohereBeitrag(@Nullable BigDecimal hohereBeitrag) {
-		this.hohereBeitrag = hohereBeitrag;
+	public void setHoehererBeitrag(@Nullable BigDecimal hoehererBeitrag) {
+		this.hoehererBeitrag = hoehererBeitrag;
 	}
 
 	@Nullable
@@ -866,7 +867,9 @@ public class BGCalculationResult extends AbstractEntity {
 			&&
 			babyTarif == otherResult.babyTarif
 			&&
-			MathUtil.isSame(hohereBeitrag, otherResult.hohereBeitrag)
+			MathUtil.isSame(hoehererBeitrag, otherResult.hoehererBeitrag)
+			&&
+			bedarfsstufe == otherResult.bedarfsstufe
 			&&
 			((tsCalculationResultMitPaedagogischerBetreuung == null
 				&& otherResult.tsCalculationResultMitPaedagogischerBetreuung == null) ||

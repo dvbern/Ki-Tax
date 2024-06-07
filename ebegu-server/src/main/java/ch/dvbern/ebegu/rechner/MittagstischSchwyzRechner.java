@@ -27,6 +27,10 @@ public class MittagstischSchwyzRechner extends AbstractSchwyzRechner {
 
 	public static final BigDecimal OEFFNUNGSTAGE = new BigDecimal("246");
 
+	static final BigDecimal BEDARFSSTUFE_2_BETRAG_PRO_MITTAGSTISCH = new BigDecimal("9.90");
+	static final BigDecimal BEDARFSSTUFE_3_BETRAG_PRO_MITTAGSTISCH = new BigDecimal("19.80");
+
+
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(
 		BGRechnerParameterDTO parameterDTO,
@@ -46,13 +50,13 @@ public class MittagstischSchwyzRechner extends AbstractSchwyzRechner {
 	}
 
 	@Override
-	protected BigDecimal getMittelBetragForAngebot() {
-		return BigDecimal.ZERO;
-	}
+	protected BigDecimal getBedarfsstufeZweiBetragForAngebot() {
+		return BEDARFSSTUFE_2_BETRAG_PRO_MITTAGSTISCH;
+	} //
 
 	@Override
-	protected BigDecimal getHohereBetragForAngebot() {
-		return BigDecimal.ZERO;
+	protected BigDecimal getBedarfsstufeDreiBetragForAngebot() {
+		return BEDARFSSTUFE_3_BETRAG_PRO_MITTAGSTISCH;
 	}
 
 	@Override

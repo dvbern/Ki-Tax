@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE bgcalculation_result ADD COLUMN IF NOT EXISTS hohere_beitrag DECIMAL(19,2);
-ALTER TABLE bgcalculation_result_aud ADD COLUMN IF NOT EXISTS hohere_beitrag DECIMAL(19,2);
+ALTER TABLE bgcalculation_result ADD COLUMN IF NOT EXISTS hoeherer_beitrag DECIMAL(19,2);
+ALTER TABLE bgcalculation_result_aud ADD COLUMN IF NOT EXISTS hoeherer_beitrag DECIMAL(19,2);
 ALTER TABLE bgcalculation_result ADD COLUMN IF NOT EXISTS bedarfsstufe varchar(255);
 ALTER TABLE bgcalculation_result_aud ADD COLUMN IF NOT EXISTS bedarfsstufe varchar(255);
