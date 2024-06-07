@@ -4628,6 +4628,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
         publicAppConfigTS.gemeindeVereinfachteKonfigAktiv = data.gemeindeVereinfachteKonfigAktiv;
+        publicAppConfigTS.testfaelleEnabled = data.testfaelleEnabled;
         return publicAppConfigTS;
     }
 

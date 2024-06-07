@@ -145,4 +145,9 @@ export class ApplicationPropertyRS {
             response.institutionenDurchGemeindenEinladen
         );
     }
+
+    public async isTestfaelleEnabled(): Promise<boolean> {
+        const publicAppConfig = await this.getPublicPropertiesCached();
+        return publicAppConfig.testfaelleEnabled;
+    }
 }

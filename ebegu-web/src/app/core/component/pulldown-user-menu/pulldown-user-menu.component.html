@@ -23,7 +23,7 @@
 <mat-menu #menu="matMenu" class="pulldown-user-menu">
     <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
                                   [uiSRef]="'admin.debugging'">{{'DEBUGGING' | translate}}</dv-pulldown-user-menu-button>
-    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+    <dv-pulldown-user-menu-button *ngIf="testfaelleEnabled" [allowedRoles]="getSuperAdminRoles()"
                                   [uiSRef]="'admin.testdaten'">{{'TESTDATEN' | translate}}</dv-pulldown-user-menu-button>
     <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
                                   [uiSRef]="'admin.batchjobTrigger'">{{'BATCHJOBTRIGGER' | translate}}</dv-pulldown-user-menu-button>
