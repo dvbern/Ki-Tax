@@ -69,7 +69,7 @@ EWK Suche starten kann -->
                 </div>
                 <div>
                     <span class="ewk-label">{{ "EWK_GESCHLECHT" | translate }}</span>
-                    {{ person.isMaennlich() ? 'MAENNLICH' : 'WEIBLICH' | translate }}
+                    {{ person.geschlecht | translate }}
                 </div>
 
                 <details *ngIf="person.adresse" class="adresse">
