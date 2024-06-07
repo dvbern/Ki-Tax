@@ -77,7 +77,7 @@ public class TestfallSchwyz3 extends AbstractSZTestfall {
 			.setErwerbGueltigkeit(new DateRange(LocalDate.of(2024, Month.MAY, 1), Constants.END_OF_TIME))
 			.setReineinkommen(BigDecimal.valueOf(27521))
 			.setIban(new IBAN("CH6389144457847957247"))
-			.setKontoInhaber("Sarah Fischer");
+			.setKontoinhaber("Sarah Fischer");
 	}
 
 	private KindData createKindData() {

@@ -94,9 +94,9 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 			.setTaetigkeit(Taetigkeit.ANGESTELLT)
 			.setErwerbGueltigkeit(new DateRange(LocalDate.of(2023, Month.MARCH, 1), Constants.END_OF_TIME))
 			.setQuellenbesteuert(true)
-			.setBruttolohn(BigDecimal.valueOf(72000))
+			.setBruttoLohn(BigDecimal.valueOf(72000))
 			.setIban(new IBAN("CH8189144657532686446"))
-			.setKontoInhaber("Melanie Bauer")
+			.setKontoinhaber("Melanie Bauer")
 			.setGemeinsameSteuererklaerung(false);
 	}
 
@@ -109,7 +109,7 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 			.setGeburtsdatum(LocalDate.of(2000, Month.FEBRUARY, 18))
 			.setSvNummer("756.6894.9687.94")
 			.setQuellenbesteuert(true)
-			.setBruttolohn(BigDecimal.valueOf(56000));
+			.setBruttoLohn(BigDecimal.valueOf(56000));
 	}
 
 	private KindData createKind1Data() {

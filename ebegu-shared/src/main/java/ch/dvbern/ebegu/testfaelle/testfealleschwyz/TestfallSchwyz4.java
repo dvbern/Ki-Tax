@@ -82,7 +82,7 @@ public class TestfallSchwyz4 extends AbstractSZTestfall {
 					LocalDate.of(2024, Month.NOVEMBER, 30)))
 			.setReineinkommen(BigDecimal.valueOf(47450))
 			.setIban(new IBAN("CH5589144686714478187"))
-			.setKontoInhaber("Bruno Fischer");
+			.setKontoinhaber("Bruno Fischer");
 	}
 
 	private KindData createKindData() {

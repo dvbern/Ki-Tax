@@ -90,7 +90,7 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 			.setReineinkommen(BigDecimal.valueOf(69192))
 			.setReinvermoegen(BigDecimal.valueOf(72500))
 			.setIban(new IBAN("CH2889144129525238874"))
-			.setKontoInhaber("Laura Müller")
+			.setKontoinhaber("Laura Müller")
 			.setGemeinsameSteuererklaerung(true);
 	}
 

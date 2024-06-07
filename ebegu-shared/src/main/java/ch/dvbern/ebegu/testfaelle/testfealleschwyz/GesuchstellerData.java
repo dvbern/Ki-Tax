@@ -67,13 +67,13 @@ public class GesuchstellerData {
 	private BigDecimal reinvermoegen = BigDecimal.ZERO;
 
 	@Getter @Setter
-	private BigDecimal bruttolohn = BigDecimal.ZERO;
+	private BigDecimal bruttoLohn = BigDecimal.ZERO;
 
 	@Getter @Setter
 	private IBAN iban;
 
 	@Getter @Setter
-	private String kontoInhaber;
+	private String kontoinhaber;
 
 
 	public boolean hasAdress() {

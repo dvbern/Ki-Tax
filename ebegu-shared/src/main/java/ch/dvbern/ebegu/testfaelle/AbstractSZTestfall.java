@@ -181,7 +181,7 @@ public abstract class AbstractSZTestfall extends AbstractTestfall {
 		FinanzielleSituationContainer finsit = createFinanzielleSituationContainer(gsData.getReinvermoegen(), gsData.getReineinkommen());
 		if (gsData.isQuellenbesteuert()) {
 			finsit.getFinanzielleSituationJA().setQuellenbesteuert(true);
-			finsit.getFinanzielleSituationJA().setBruttoLohn(gsData.getBruttolohn());
+			finsit.getFinanzielleSituationJA().setBruttoLohn(gsData.getBruttoLohn());
 			finsit.getFinanzielleSituationJA().setSteuerbaresVermoegen(BigDecimal.ZERO);
 			finsit.getFinanzielleSituationJA().setSteuerbaresEinkommen(BigDecimal.ZERO);
 		}
@@ -196,7 +196,7 @@ public abstract class AbstractSZTestfall extends AbstractTestfall {
 
 		Auszahlungsdaten a = erstgesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten();
 		a.setIban(gsData.getIban());
-		a.setKontoinhaber(gsData.getKontoInhaber());
+		a.setKontoinhaber(gsData.getKontoinhaber());
 	}
 
 	@Override
