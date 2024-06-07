@@ -13,40 +13,34 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package ch.dvbern.ebegu.services.famsitchangehandler;
+package ch.dvbern.ebegu.services.personensuche;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FinanzielleSituationService;
-import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.mandant.MandantCookieUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.ebegu.ws.ewk.GeresClient;
 
 @ApplicationScoped
-public class FamSitChangeHandlerProducer {
+public class PersonenSucheProducer {
 
 	@Produces
 	@RequestScoped
-	public FamSitChangeHandler produceFinSitResetService(
-		EinstellungService einstellungService,
-		GesuchstellerService gesuchstellerService,
-		HttpServletRequest request,
-		FinanzielleSituationService finanzielleSituationService) {
-		switch (MandantCookieUtil.getMandantFromCookie(request)) {
-		case LUZERN:
-			return new FamSitChangeHandlerLU(gesuchstellerService, einstellungService);
-		case APPENZELL_AUSSERRHODEN:
-			return new FamSitChangeHandlerAR(gesuchstellerService, einstellungService);
+	public PersonenSucheService getPersonenSucheService(HttpServletRequest request, GeresClient geresClient) {
+		MandantIdentifier mandant = MandantCookieUtil.getMandantFromCookie(request);
+		switch (mandant) {
+		case BERN:
+			return new PersonenSucheBernService(geresClient);
 		case SCHWYZ:
-			return new FamSitChangeHandlerSchwyz(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new PersonenSucheSchwyzService(geresClient);
 		default:
-			return new SharedFamSitChangeDefaultHandler(gesuchstellerService, einstellungService);
+			throw new IllegalStateException(String.format("Personensuche not implemented for Mandant %s", mandant.name()));
 		}
 	}
-
 }

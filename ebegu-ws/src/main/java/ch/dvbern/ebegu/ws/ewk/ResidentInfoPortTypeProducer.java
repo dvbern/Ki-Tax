@@ -13,40 +13,40 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package ch.dvbern.ebegu.services.famsitchangehandler;
+package ch.dvbern.ebegu.ws.ewk;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FinanzielleSituationService;
-import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.ResidentInfoPortType;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.util.mandant.MandantCookieUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.ebegu.ws.ewk.sts.WSSSecurityGeresAssertionOutboundHandler;
 
 @ApplicationScoped
-public class FamSitChangeHandlerProducer {
-
+public class ResidentInfoPortTypeProducer {
 	@Produces
 	@RequestScoped
-	public FamSitChangeHandler produceFinSitResetService(
-		EinstellungService einstellungService,
-		GesuchstellerService gesuchstellerService,
+	public ResidentInfoPortType createResidentInfoPortType(
 		HttpServletRequest request,
-		FinanzielleSituationService finanzielleSituationService) {
-		switch (MandantCookieUtil.getMandantFromCookie(request)) {
-		case LUZERN:
-			return new FamSitChangeHandlerLU(gesuchstellerService, einstellungService);
-		case APPENZELL_AUSSERRHODEN:
-			return new FamSitChangeHandlerAR(gesuchstellerService, einstellungService);
+		WSSSecurityGeresAssertionOutboundHandler wssUsernameTokenSecurityHandler,
+		EbeguConfiguration configuration) throws PersonenSucheServiceException {
+
+		MandantIdentifier mandant = MandantCookieUtil.getMandantFromCookie(request);
+		switch (mandant) {
+		case BERN:
+			return new GeresBernPortFactory(configuration, wssUsernameTokenSecurityHandler).getPort();
 		case SCHWYZ:
-			return new FamSitChangeHandlerSchwyz(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new GeresSchwyzPortFactory(configuration).getPort();
 		default:
-			return new SharedFamSitChangeDefaultHandler(gesuchstellerService, einstellungService);
+			throw new IllegalStateException(String.format("GERES not configured for Mandant %s", mandant));
 		}
 	}
-
 }
