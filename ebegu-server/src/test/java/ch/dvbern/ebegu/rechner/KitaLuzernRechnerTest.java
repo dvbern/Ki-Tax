@@ -339,7 +339,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
 
 		//gutschein pro Monat = 123
-		//expected pauschale * verguenstigung / vollkosten => 500 * 123 / 1600 = 38.44 (38.45 auf 5rp gerundet
+		//expected kosten * verguenstigung / vollkosten => 500 * 123 / 1600 = 38.44 (38.45 auf 5rp gerundet
 		testValues.expectedGutscheinEingewoehnung = BigDecimal.valueOf(38.45);
 
 		//expected verguenstigung = gutschein pro Monat + gutschein eingewoehnung => 123 + 38.45 = 161.45

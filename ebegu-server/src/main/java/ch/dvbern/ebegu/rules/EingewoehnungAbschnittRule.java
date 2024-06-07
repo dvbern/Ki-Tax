@@ -81,7 +81,7 @@ public class EingewoehnungAbschnittRule extends AbstractAbschnittRule {
 		DateRange gueltigkeit = calculateGueltigkeitForEingewoehnungZa(gueltigkeitBetreuungspensum);
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		zeitabschnitt.setEingewoehnungKosten(eingewoehnung.getKosten());
-		zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINGEWOEHUNG_PASCHALE, getLocale());
+		zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINGEWOEHUNG_KOSTEN, getLocale());
 		return zeitabschnitt;
 	}
 

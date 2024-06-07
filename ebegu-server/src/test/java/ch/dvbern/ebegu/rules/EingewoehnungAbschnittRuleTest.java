@@ -39,7 +39,7 @@ class EingewoehnungAbschnittRuleTest {
 		assertThat(result, notNullValue());
 		assertThat(result.size(), Matchers.is(1));
 		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungKosten(), is(BigDecimal.ZERO));
-		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(false));
 	}
 
 	@Test
@@ -61,11 +61,11 @@ class EingewoehnungAbschnittRuleTest {
 		assertThat(result, notNullValue());
 		assertThat(result.size(), Matchers.is(2));
 		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungKosten(), Matchers.is(eingewoehnungKosten));
-		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(true));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(true));
 		assertThat(result.get(0).getGueltigkeit(), is(gueltigkeitFirstMonth));
 
 		assertThat(result.get(1).getBgCalculationInputAsiv().getEingewoehnungKosten(), is(BigDecimal.ZERO));
-		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(false));
 		assertThat(result.get(1).getGueltigkeit(), is(gueltigkeitWithoutFirstMonth));
 	}
 
@@ -91,15 +91,15 @@ class EingewoehnungAbschnittRuleTest {
 		assertThat(result.size(), Matchers.is(3));
 
 		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungKosten(), Matchers.is(BigDecimal.ZERO));
-		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(false));
 		assertThat(result.get(0).getGueltigkeit(), is(gueltigkeitFirstMonthFirstPart));
 
 		assertThat(result.get(1).getBgCalculationInputAsiv().getEingewoehnungKosten(), Matchers.is(eingewoehnungKosten));
-		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(true));
+		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(true));
 		assertThat(result.get(1).getGueltigkeit(), is(gueltigkeitFirstMonthSecondPart));
 
 		assertThat(result.get(2).getBgCalculationInputAsiv().getEingewoehnungKosten(), is(BigDecimal.ZERO));
-		assertThat(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+		assertThat(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(false));
 		assertThat(result.get(2).getGueltigkeit(), is(gueltigkeitWithoutFirstMonth));
 	}
 
@@ -124,11 +124,11 @@ class EingewoehnungAbschnittRuleTest {
 		assertThat(result.size(), Matchers.is(2));
 
 		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungKosten(), Matchers.is(eingewoehnungKosten));
-		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(true));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(true));
 		assertThat(result.get(0).getGueltigkeit(), is(gueltigkeitFirstMonthFirstPart));
 
 		assertThat(result.get(1).getBgCalculationInputAsiv().getEingewoehnungKosten(), is(BigDecimal.ZERO));
-		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+		assertThat(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN), is(false));
 		assertThat(result.get(1).getGueltigkeit(), is(gueltigkeitWithoutFirstPartOfFirstMonth));
 	}
 

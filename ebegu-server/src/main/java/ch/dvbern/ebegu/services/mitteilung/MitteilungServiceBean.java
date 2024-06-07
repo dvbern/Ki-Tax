@@ -1046,7 +1046,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen =
 				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
-		// (2) Da die Eingewöhnungspauschale in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
+		// (2) Da die Eingewöhnungskosten in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
 		// übernehmen
 		initialAbweichungen.forEach(abweichung -> {
 			if (abweichung.getEingewoehnung() == null && abweichung.getVertraglicheEingewoehnung() != null) {

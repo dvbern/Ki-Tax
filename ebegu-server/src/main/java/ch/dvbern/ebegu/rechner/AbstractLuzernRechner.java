@@ -151,7 +151,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt zeitabschnitt
 	) {
 		if (input.getEingewoehnungKosten().compareTo(BigDecimal.ZERO) <= 0 || vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
-			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN);
 			return BigDecimal.ZERO;
 		}
 
@@ -173,7 +173,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	) {
 		VerfuegungsBemerkungDTO eingewoehungBemerkung = zeitabschnitt
 			.getBemerkungenDTOList()
-			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN);
 
 		if (eingewoehungBemerkung == null) {
 			return;

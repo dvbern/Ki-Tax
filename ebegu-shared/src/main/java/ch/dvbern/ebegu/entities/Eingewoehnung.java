@@ -52,7 +52,7 @@ public class Eingewoehnung extends AbstractDateRangedEntity {
 		return target;
 	}
 
-	public void addPauschale(BigDecimal pauschaleToAdd) {
-		this.kosten = this.kosten.add(pauschaleToAdd);
+	public void addKosten(BigDecimal kostenToAdd) {
+		this.kosten = this.kosten.add(kostenToAdd);
 	}
 }

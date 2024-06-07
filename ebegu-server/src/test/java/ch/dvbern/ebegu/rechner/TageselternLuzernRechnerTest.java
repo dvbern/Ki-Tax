@@ -109,7 +109,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(22.55);
 
 		//gutschein pro Monat = 205.59
-		//expected pauschale * verguenstigung / vollkosten => 500 * 205.60 / 367.55 = 279.66 (279.65 auf 5rp gerundet)
+		//expected kosten * verguenstigung / vollkosten => 500 * 205.60 / 367.55 = 279.66 (279.65 auf 5rp gerundet)
 		testValues.expectedGutscheinEingewoehnung = BigDecimal.valueOf(279.65);
 
 		//expected verguenstigung = gutschein pro Monat + gutschein eingewoehnung => 205.59 + 279.65 = 485.24 (485.25 auf 5rp gerundet)

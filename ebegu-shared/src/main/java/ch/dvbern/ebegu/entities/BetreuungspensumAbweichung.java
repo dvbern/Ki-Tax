@@ -199,7 +199,7 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			return;
 		}
 
-		this.getVertraglicheEingewoehnung().addPauschale(eingewoehnung.getKosten());
+		this.getVertraglicheEingewoehnung().addKosten(eingewoehnung.getKosten());
 
 		this.getVertraglicheEingewoehnung()
 			.getGueltigkeit()
