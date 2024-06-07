@@ -42,7 +42,7 @@
                                 <th data-translate="REFERENZ_NUMMER"></th>
                                 <th class="dv-th-verfuegen-status" data-translate="STATUS"></th>
                                 <th data-translate="GUELTIGE_BETREUUNG" ng-show="vm.isSuperAdmin()"></th>
-                                <th width="5%"></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody ng-init="kindIndex = $index" ng-repeat="kindContainer in displayedCollection">
@@ -65,7 +65,7 @@
                                 <td ng-show="vm.isSuperAdmin()">
                                     <span>{{ betreuung.gueltig ? 'LABEL_JA' : 'LABEL_NEIN' | translate }}</span>
                                 </td>
-                                <td ng-click="$event.stopPropagation()" role="cell" tabindex="-1" width="5%">
+                                <td class="dv-td-verfuegen" ng-click="$event.stopPropagation()" role="cell" tabindex="-1">
                                     <dv-loading-button aria-label="{{'TABLE_EDIT'|translate}}"
                                                        button-class="dv-btn-operation dv-btn-row"
                                                        button-click="vm.openVerfuegung(kindContainer, betreuung);"

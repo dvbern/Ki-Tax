@@ -812,16 +812,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         if (!this.berechnungsManager.finanzielleSituationResultate) {
             this.berechnungsManager.calculateFinanzielleSituation(gesuch);
         }
-        if (gesuch
-            && gesuch.extractEinkommensverschlechterungInfo()
-            && gesuch.extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
+        if (gesuch?.extractEinkommensverschlechterungInfo()?.ekvFuerBasisJahrPlus1
             && !this.berechnungsManager.einkommensverschlechterungResultateBjP1) {
 
             this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 1);
         }
-        if (gesuch
-            && gesuch.extractEinkommensverschlechterungInfo()
-            && gesuch.extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
+        if (gesuch?.extractEinkommensverschlechterungInfo()?.ekvFuerBasisJahrPlus2
             && !this.berechnungsManager.einkommensverschlechterungResultateBjP2) {
 
             this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 2);
