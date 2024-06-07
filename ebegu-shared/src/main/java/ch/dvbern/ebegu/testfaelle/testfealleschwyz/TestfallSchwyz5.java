@@ -20,6 +20,8 @@ import java.util.Objects;
 
 public class TestfallSchwyz5 extends AbstractSZTestfall {
 
+	private static final String NACHNAME = "Bauer";
+
 
 	public TestfallSchwyz5(@Nonnull Gesuchsperiode gesuchsperiode, boolean betreuungenBestaetigt, @Nonnull Gemeinde gemeinde, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
@@ -78,7 +80,7 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 	private GesuchstellerData createGS1Data() {
 		return new GesuchstellerData()
 			.setGesuchstellerNummer(1)
-			.setVorname("Bauer")
+			.setVorname(NACHNAME)
 			.setNachname("Melanie")
 			.setGeschlecht(Geschlecht.WEIBLICH)
 			.setGeburtsdatum(LocalDate.of(2001, Month.AUGUST, 29))
@@ -102,7 +104,7 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 		return new GesuchstellerData()
 			.setGesuchstellerNummer(2)
 			.setVorname("Moriz")
-			.setNachname("Bauer")
+			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.MAENNLICH)
 			.setGeburtsdatum(LocalDate.of(2000, Month.FEBRUARY, 18))
 			.setSvNummer("756.6894.9687.94")
@@ -112,7 +114,7 @@ public class TestfallSchwyz5 extends AbstractSZTestfall {
 
 	private KindData createKind1Data() {
 		return new KindData()
-			.setVorname("Bauer")
+			.setVorname(NACHNAME)
 			.setNachname("Marco")
 			.setGeschlecht(Geschlecht.MAENNLICH)
 			.setGeburtsdatum(LocalDate.of(2021, Month.OCTOBER, 9))

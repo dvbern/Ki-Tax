@@ -291,8 +291,6 @@ public class TestfallSchwyz1 extends AbstractSZTestfall {
 			.setInstiutionId(institutionStammdatenBuilder.getIdInstitutionStammdatenMittagstisch())
 			.setBestaetigt(betreuungenBestaetigt);
 
-		Betreuungspensum b = new Betreuungspensum();
-
 		betreuungData.getBetreuungspensum().add(new PensumData()
 			.setPensum(60)
 			.setMonatlicheBetreuungskosten(BigDecimal.valueOf(147.60))

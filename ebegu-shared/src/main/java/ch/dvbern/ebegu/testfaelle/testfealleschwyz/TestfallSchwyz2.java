@@ -19,6 +19,8 @@ import java.time.Month;
 
 public class TestfallSchwyz2 extends AbstractSZTestfall {
 
+	private static final String NACHNAME = "Weber";
+
 
 	public TestfallSchwyz2(@Nonnull Gesuchsperiode gesuchsperiode, boolean betreuungenBestaetigt, @Nonnull Gemeinde gemeinde, InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		super(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder);
@@ -73,7 +75,7 @@ public class TestfallSchwyz2 extends AbstractSZTestfall {
 		return new GesuchstellerData()
 			.setGesuchstellerNummer(1)
 			.setVorname("Tino")
-			.setNachname("Weber")
+			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.MAENNLICH)
 			.setGeburtsdatum(LocalDate.of(1993, Month.APRIL, 6))
 			.setSvNummer("756.1234.5687.95")
@@ -96,7 +98,7 @@ public class TestfallSchwyz2 extends AbstractSZTestfall {
 		return new GesuchstellerData()
 			.setGesuchstellerNummer(2)
 			.setVorname("Tanja")
-			.setNachname("Weber")
+			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.WEIBLICH)
 			.setGeburtsdatum(LocalDate.of(1993, Month.NOVEMBER, 26))
 			.setSvNummer("756.1234.4687.98")
@@ -109,7 +111,7 @@ public class TestfallSchwyz2 extends AbstractSZTestfall {
 	private KindData createKind1Data() {
 		return new KindData()
 			.setVorname("Tabea")
-			.setNachname("Weber")
+			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.WEIBLICH)
 			.setGeburtsdatum(LocalDate.of(2021, Month.NOVEMBER, 19))
 			.setKinderabzug(Kinderabzug.GANZER_ABZUG)
@@ -139,7 +141,7 @@ public class TestfallSchwyz2 extends AbstractSZTestfall {
 	private KindData createKind2Data() {
 		return new KindData()
 			.setVorname("Tamara")
-			.setNachname("Weber")
+			.setNachname(NACHNAME)
 			.setGeschlecht(Geschlecht.WEIBLICH)
 			.setGeburtsdatum(LocalDate.of(2024, Month.MAY, 29))
 			.setKinderabzug(Kinderabzug.GANZER_ABZUG)
