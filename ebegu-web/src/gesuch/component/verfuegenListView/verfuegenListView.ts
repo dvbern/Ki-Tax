@@ -104,6 +104,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public finSitStatus: Array<string>;
     public finSitStatusUpdateIsRunning: boolean = false;
     public readonly demoFeatureFachstelleUebergangsloesung = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    public hoehereBeitraegeBeeintraechtigungAktiviert: boolean;
     private kinderWithBetreuungList: Array<TSKindContainer>;
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -631,22 +632,28 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return !!(this.getGesuch() && this.getGesuch().finSitStatus);
     }
 
+    public isHoehereBeitraegeBeeintraechtigungAktiviert() {
+        return this.hoehereBeitraegeBeeintraechtigungAktiviert;
+    }
+
     public isBedarfsstufeSelected(): boolean {
-        const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
-        let isSelected = false;
+        if (this.isHoehereBeitraegeBeeintraechtigungAktiviert()) {
+            const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
+            let isSelected = false;
 
-        kinderWithBetreuung.forEach(kind => {
-            if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
-                kind.betreuungen?.forEach(betreuung => {
-                    if (EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)) {
-                        isSelected = true;
-                    }
-                });
-            }
-
-        });
-
-        return isSelected;
+            kinderWithBetreuung.forEach(kind => {
+                if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
+                    kind.betreuungen?.forEach(betreuung => {
+                        if (EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)) {
+                            isSelected = true;
+                        }
+                    });
+                }
+            });
+            return isSelected;
+        } else {
+            return false;
+        }
     }
 
     public isRolleGemeinde(): boolean {
@@ -849,6 +856,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.getGesuchsperiode().id
             ).subscribe(response => {
                 this.minPensumSprachlicheIndikation = Number(response.value);
+            }, error => LOG.error(error));
+
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).subscribe(response => {
+                console.log('cb res: ');
+                this.hoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
             }, error => LOG.error(error));
         }
 
