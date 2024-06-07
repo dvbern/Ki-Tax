@@ -78,6 +78,32 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 			finSitGS2 != null && Boolean.TRUE.equals(finSitGS2.getQuellenbesteuert()));
 	}
 
+	@Override
+	protected void handleEKV1(
+		@Nonnull FinanzDatenDTO finanzDatenDTO,
+		BigDecimal massgebendesEinkommenEKV1,
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal minimumProzentFuerEKV
+	) {
+		// Immer akkzeptiert bei SZ
+		finanzDatenDTO.setEkv1Erfasst(true);
+		finanzDatenDTO.setEkv1Accepted(true);
+		finanzDatenDTO.setMassgebendesEinkBjP1VorAbzFamGr(massgebendesEinkommenEKV1);
+	}
+
+	@Override
+	protected void handleEKV2(
+		@Nonnull FinanzDatenDTO finanzDatenDTO,
+		BigDecimal massgebendesEinkommenEKV2,
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal minimumProzentFuerEKV
+	) {
+		// Immer akkzeptiert bei SZ
+		finanzDatenDTO.setEkv2Erfasst(true);
+		finanzDatenDTO.setEkv2Accepted(true);
+		finanzDatenDTO.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenEKV2);
+	}
+
 	@SuppressWarnings("PMD.UnusedPrivateMethod")
 	private void calculateAbstractFinSit(
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO,

@@ -89,6 +89,9 @@
                     <mat-error *ngIf="form.controls.anzahlEingeschriebeneKinder.errors?.isNotPositiveInteger"
                                translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
+                    <mat-error *ngIf="form.controls.anzahlEingeschriebeneKinder.errors?.isNotPositiveInteger"
+                               translate>ERROR_POSITIVE_NUMBER
+                    </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinder"
                         [korrektur]="form.value.anzahlEingeschriebeneKinder"
@@ -199,7 +202,7 @@
                 </mat-form-field>
             </dv-input-container-x>
 
-            <div class="well well-status-warten" *ngIf="allAnzahlFieldsFilledOut() && abweichungenAnzahlKinder !== 0">
+            <div class="well well-status-warten" *ngIf="!((allAnzahlFieldsFilledOut() && abweichungenAnzahlKinder === 0) || allAnzahlFieldsEmpty())">
                 <i class="fa fa-exclamation" aria-hidden="true"></i>
                 <span>
                     <span translate>LATS_ABWEICHUNGEN_ANZAHL_KINDER</span>

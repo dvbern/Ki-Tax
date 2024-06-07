@@ -35,13 +35,12 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
@@ -103,16 +102,8 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 	}
 
 	@Nonnull
-	protected Processing attemptProcessing(
-		@Nonnull EventMonitor eventMonitor,
-		@Nonnull TagesschuleBestaetigungEventDTO dto) {
-
-		Optional<Mandant> mandant = betreuungEventHelper.getMandantFromBgNummer(dto.getRefnr());
-		if (mandant.isEmpty()) {
-			return Processing.failure("Mandant konnte nicht gefunden werden.");
-		}
-
-		return betreuungService.findAnmeldungenTagesschuleByBGNummer(dto.getRefnr(), mandant.get())
+	protected Processing attemptProcessing(@Nonnull EventMonitor eventMonitor, @Nonnull TagesschuleBestaetigungEventDTO dto) {
+		return betreuungService.findAnmeldungenTagesschuleByReferenzNummer(dto.getRefnr())
 			.map(anmeldung -> processEventForAnmeldungBestaetigung(eventMonitor, dto, anmeldung))
 			.orElseGet(() -> Processing.failure("AnmeldungTagesschule nicht gefunden."));
 	}

@@ -45,8 +45,8 @@ import {
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
+import {isSchulamt} from '../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
@@ -68,13 +68,13 @@ import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
 import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
-import {TSEWKResultat} from '../../models/TSEWKResultat';
 import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
 import {TSFall} from '../../models/TSFall';
 import {TSFamiliensituation} from '../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
+import {TSFreigabe} from '../../models/TSFreigabe';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdatenLite} from '../../models/TSGemeindeStammdatenLite';
@@ -128,8 +128,6 @@ export class GesuchModelManager {
     public numberInternePendenzen: number;
     public hasAbgelaufenePendenz: boolean;
     public isFKJVTexte: boolean;
-
-    public ewkResultat: TSEWKResultat;
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
@@ -234,7 +232,6 @@ export class GesuchModelManager {
             }
         }
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
-        this.ewkResultat = undefined;
         this.activInstitutionenForGemeindeList = undefined;
 
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
@@ -1617,22 +1614,15 @@ export class GesuchModelManager {
         return undefined;
     }
 
-    /**
-     * Antrag freigeben
-     */
-    public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
-        return this.gesuchRS.antragFreigeben(antragId, usernameJA, usernameSCH).then(response => {
+    public antragFreigeben(antragId: string, freigabe: TSFreigabe): IPromise<TSGesuch> {
+        return this.gesuchRS.antragFreigeben(antragId, freigabe).then(response => {
             this.setGesuch(response);
 
             return response;
         });
     }
 
-    /**
-     * Antrag zurueckziehen
-     */
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
-        // eslint-disable-next-line
         return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
             this.setGesuch(response);
 

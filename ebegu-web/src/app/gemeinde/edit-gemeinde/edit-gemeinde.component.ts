@@ -69,6 +69,7 @@ export class EditGemeindeComponent implements OnInit {
     public editMode: boolean = false;
     public tageschuleEnabledForMandant: boolean;
     public tfoEnabledForMandant: boolean;
+    public gemeindeVereinfachteKonfigAktiv: boolean;
     public currentTab: number;
     public altBGAdresse: boolean;
     public altTSAdresse: boolean;
@@ -114,6 +115,7 @@ export class EditGemeindeComponent implements OnInit {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tageschuleEnabledForMandant = res.angebotTSActivated;
             this.tfoEnabledForMandant = res.angebotTFOActivated;
+            this.gemeindeVereinfachteKonfigAktiv = res.gemeindeVereinfachteKonfigAktiv;
         });
 
         this.loadGemeindenList();
@@ -192,6 +194,13 @@ export class EditGemeindeComponent implements OnInit {
             : !stammdaten.beschwerdeAdresse;
         if (this.hasEditBGPermission() && EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
+        }
+
+        if (EbeguUtil.isNullOrUndefined(stammdaten.bgAdresse)) {
+            this.altBGAdresse = false;
+            stammdaten.bgAdresse = new TSAdresse();
+        } else {
+            this.altBGAdresse = true;
         }
 
         if (EbeguUtil.isNullOrUndefined(stammdaten.tsAdresse)) {

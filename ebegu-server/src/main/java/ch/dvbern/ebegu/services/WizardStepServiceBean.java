@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -1196,6 +1197,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		case APPENZELL:
+		case APPENZELL_FOLGEMONAT:
 			return WizardStepName.FINANZIELLE_SITUATION_APPENZELL;
 		case SCHWYZ:
 			return WizardStepName.FINANZIELLE_SITUATION_SCHWYZ;
@@ -1218,6 +1220,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
 		case APPENZELL:
+		case APPENZELL_FOLGEMONAT:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
 		case SCHWYZ:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ;

@@ -418,11 +418,10 @@
                                         <label translate for="email_bg_id">ALTERNATIVE_EMAIL
                                             <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
                                         </label>
-                                        <input id="email_bg_id" type="text" name="email_bg_id"
+                                        <input id="email_bg_id" type="email" name="email_bg_id"
                                                #nameEmailBG="ngModel"
                                                [(ngModel)]="stammdaten.bgEmail"
-                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
-                                               class="form-control">
+                                               class="form-control" email>
                                         <dv-error-messages [errorObject]="nameEmailBG.errors"
                                                            inputId="email_bg_id"></dv-error-messages>
                                     </div>
@@ -628,7 +627,7 @@
                                                  class="col-sm-6">
                                                 <!-- BG bis Schulstufe -->
                                                 <div class="form-group"
-                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigBeguBisUndMitSchulstufe)">
+                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigBeguBisUndMitSchulstufe) && !gemeindeVereinfachteKonfigAktiv">
                                                     <label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>
                                                     <mat-select
                                                         [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
@@ -643,7 +642,7 @@
                                                 </div>
                                                 <!-- Kontingentierung -->
                                                 <div class="form-group"
-                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung)">
+                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung) && !gemeindeVereinfachteKonfigAktiv">
                                                     <mat-checkbox id="kontingentierung_id_{{i}}"
                                                                   name="kontingentierung_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
@@ -663,7 +662,7 @@
 
                                                 <!-- Custom Erwerbspensum Zuschlag -->
                                                 <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum())
-                                                && !konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum()">
+                                                && !konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum() && !gemeindeVereinfachteKonfigAktiv">
                                                     <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
                                                                   name="ewp_zuschlag_override_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
@@ -1509,10 +1508,10 @@
                                         <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                             <div class="form-group">
                                                 <!-- BG bis Schulstufe -->
-                                                <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(
+                                                <label *ngIf="!gemeindeVereinfachteKonfigAktiv">{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(
                                                     konfigurationsListe[i])}}</strong></label>
                                                 <!-- Kontingentierung -->
-                                                <div *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung)">
+                                                <div *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung) && !gemeindeVereinfachteKonfigAktiv">
                                                     <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                        class="line-through">{{getKonfigKontingentierungString()}}</p>
                                                     <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
@@ -1527,7 +1526,7 @@
 
                                                 <!-- Erwerbspensum Zuschlag -->
                                                 <p *ngIf="!isUndefined(konfigurationsListe[i].erwerbspensumZuschlag)
-                                                && konfigurationsListe[i].erwerbspensumZuschlagOverriden">
+                                                && konfigurationsListe[i].erwerbspensumZuschlagOverriden && !gemeindeVereinfachteKonfigAktiv">
                                                     <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
                                                           translate
                                                           [translateParams]="{valueMandant:

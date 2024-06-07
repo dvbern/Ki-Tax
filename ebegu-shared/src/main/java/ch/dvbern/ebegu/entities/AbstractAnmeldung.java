@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import org.hibernate.envers.Audited;
 

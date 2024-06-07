@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 

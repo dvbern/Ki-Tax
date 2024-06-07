@@ -53,7 +53,8 @@ function createEinstellungen(
     anspruchUnabhaengigBeschaeftigungspensum = TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING,
     zemisDisabled = 'true',
     fachstellenTyp = TSFachstellenTyp.BERN,
-    ausserordentlicherAnspruchTyp = TSAusserordentlicherAnspruchTyp.FKJV
+    ausserordentlicherAnspruchTyp = TSAusserordentlicherAnspruchTyp.FKJV,
+    hoehereBeitraegeBeeintraechtigung = 'false'
 ): TSEinstellung[] {
     return [
         new TSEinstellung(null, TSEinstellungKey.ZEMIS_DISABLED, zemisDisabled),
@@ -68,7 +69,8 @@ function createEinstellungen(
         new TSEinstellung(null, TSEinstellungKey.FACHSTELLEN_TYP, fachstellenTyp),
         new TSEinstellung(null, TSEinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, sozialeIntegrationBis),
         new TSEinstellung(null, TSEinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, sprachlicheIntegrationBis),
-        new TSEinstellung(null, TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE, ausserordentlicherAnspruchTyp)
+        new TSEinstellung(null, TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE, ausserordentlicherAnspruchTyp),
+        new TSEinstellung(null, TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, hoehereBeitraegeBeeintraechtigung)
     ];
 }
 

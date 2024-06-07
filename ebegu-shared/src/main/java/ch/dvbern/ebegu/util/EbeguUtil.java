@@ -54,8 +54,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
@@ -402,6 +402,7 @@ public final class EbeguUtil {
 			return requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
 				== EnumFamilienstatus.VERHEIRATET;
 		case APPENZELL:
+		case APPENZELL_FOLGEMONAT:
 		case SCHWYZ:
 			return Boolean.TRUE.equals(requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA())
 				.getGemeinsameSteuererklaerung());
@@ -426,7 +427,7 @@ public final class EbeguUtil {
 					&& finanzielleSituation.getUnterhaltsBeitraege() != null
 					&& finanzielleSituation.getAbzuegeKinderAusbildung() != null
 					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
-		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL)) {
+		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL) || finSitTyp.equals(FinanzielleSituationTyp.APPENZELL_FOLGEMONAT)) {
 			valid = isFinSitAppenzellVollstaendig(finanzielleSituation);
 		} else if (finSitTyp == FinanzielleSituationTyp.SCHWYZ) {
 			valid = isFinSitSchwyzVollstaendig(finanzielleSituation);
@@ -554,6 +555,10 @@ public final class EbeguUtil {
 	}
 
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
+		// Nicht beim Schwyz
+		if(gesuch.getDossier().getFall().getMandant().getMandantIdentifier() == MandantIdentifier.SCHWYZ) {
+			return false;
+		}
 		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
 		if (!gesuch.getStatus().isAnyStatusOfVerfuegt()) {
 			return true;

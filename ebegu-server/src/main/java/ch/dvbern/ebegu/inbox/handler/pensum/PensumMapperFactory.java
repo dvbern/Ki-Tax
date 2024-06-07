@@ -35,10 +35,6 @@ import lombok.NoArgsConstructor;
 public class PensumMapperFactory {
 
 	@Inject
-	private BetreuungInFerienzeitMapperFactory betreuungInFerienzeitMapperFactory;
-	@Inject
-	private MahlzeitVerguenstigungMapperFactory mahlzeitVerguenstigungMapperFactory;
-	@Inject
 	private PensumValueMapperFactory pensumValueMapperFactory;
 	@Inject
 	private EingewoehnungMapperFactory eingewoehnungMapperFactory;
@@ -68,12 +64,12 @@ public class PensumMapperFactory {
 		return PensumMapper.combine(
 			PensumMapper.GUELTIGKEIT_MAPPER,
 			PensumMapper.KOSTEN_MAPPER,
-			PensumMapper.BETREUTE_TAGE_MAPPER,
+			BetreuteTageMapperFactory.createForBetreuteTage(ctx),
 			pensumValueMapperFactory.createForPensum(ctx),
 			// the following mappers are (currently) not possible for Mittagstisch
 			eingewoehnungMapperFactory.createForEingewoehnung(ctx),
-			mahlzeitVerguenstigungMapperFactory.createForMahlzeitenVerguenstigung(ctx),
-			betreuungInFerienzeitMapperFactory.createForBetreuungInFerienzeit(ctx)
+			MahlzeitVerguenstigungMapperFactory.createForMahlzeitenVerguenstigung(ctx),
+			BetreuungInFerienzeitMapperFactory.createForBetreuungInFerienzeit(ctx)
 		);
 	}
 }

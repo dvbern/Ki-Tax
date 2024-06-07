@@ -123,4 +123,12 @@ public final class DateUtil {
 		LocalDate bis = DateUtil.getMin(range.getGueltigBis(), gesuchsperiode.getGueltigBis());
 		return new DateRange(von, bis);
 	}
+
+	public static boolean isSameDateOrBefore(LocalDate date, LocalDate compareTo) {
+		return !date.isAfter(compareTo);
+	}
+
+	public static boolean isSameDateOrAfter(LocalDate date, LocalDate compareTo) {
+		return !date.isBefore(compareTo);
+	}
 }

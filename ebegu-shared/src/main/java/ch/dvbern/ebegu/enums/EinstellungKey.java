@@ -287,8 +287,8 @@ public enum EinstellungKey {
 	// Welche ausserordentliche Anspruch Rule soll verwendet werden
 	AUSSERORDENTLICHER_ANSPRUCH_RULE(MandantIdentifier.getAll()),
 
-	// Luzern: definiert, ob ein Geschwisternbonus ausbezahlt wird für Kind 2 oder 3
-	GESCHWISTERNBONUS_AKTIVIERT(MandantIdentifier.getAll()),
+	// definiert, welche Art von Geschwisternbonus ausbezahlt wird. Mögliche Werte sind LUZERN, SCHWYZ. NONE deaktiviert den Geschwisternbonus
+	GESCHWISTERNBONUS_TYP(MandantIdentifier.getAll()),
 
 	// Wie lange soll der Babytarif angewendet werden
 	DAUER_BABYTARIF(MandantIdentifier.getAll()),
@@ -362,7 +362,12 @@ public enum EinstellungKey {
 	ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT(MandantIdentifier.getAll()),
 
 	//Die Antragsteller müssen eine Sozialversicherungsnummer angeben  (KIBON-3339)
-	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ);
+	SOZIALVERSICHERUNGSNUMMER_PERIODE(MandantIdentifier.SCHWYZ),
+
+	// Aktiviert die Frage und Berechung "Höhere Beiträge für Kind mit Beeinträchtigung"
+	HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT(MandantIdentifier.getAll()),
+
+	GESUCHFREIGABE_ONLINE(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

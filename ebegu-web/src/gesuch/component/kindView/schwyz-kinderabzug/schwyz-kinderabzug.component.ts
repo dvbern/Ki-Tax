@@ -58,7 +58,7 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     public ngAfterViewInit(): void {
-        this.exchangeService.form = this.form;
+        this.exchangeService.addForm(this.form);
     }
 
     public ngOnDestroy(): void {

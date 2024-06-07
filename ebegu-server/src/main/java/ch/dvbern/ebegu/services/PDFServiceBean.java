@@ -45,7 +45,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
@@ -219,7 +220,9 @@ public class PDFServiceBean implements PDFService {
 
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
-		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
+		BegleitschreibenPdfGeneratorVisitor begleitschreibenPdfGeneratorVisitor = new BegleitschreibenPdfGeneratorVisitor(gesuch, stammdaten);
+
+		BegleitschreibenPdfGenerator pdfGenerator = begleitschreibenPdfGeneratorVisitor.visit(stammdaten.getGemeinde().getMandant());
 		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 

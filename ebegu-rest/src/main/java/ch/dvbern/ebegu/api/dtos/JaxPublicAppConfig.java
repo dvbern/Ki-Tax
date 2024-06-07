@@ -54,8 +54,8 @@ public class JaxPublicAppConfig {
 	private boolean angebotFIActivated;
 	private boolean angebotTFOActivated;
 	private boolean auszahlungAnEltern;
-
 	private boolean abweichungenEnabled;
+	private boolean gemeindeVereinfachteKonfigAktiv;
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -99,7 +99,8 @@ public class JaxPublicAppConfig {
 		boolean angebotMittagstischEnabled,
 		boolean angebotTFOActivated,
 		boolean auszahlungAnEltern,
-		boolean abweichungenEnabled
+		boolean abweichungenEnabled,
+		boolean gemeindeVereinfachteKonfigAktiv
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -143,6 +144,7 @@ public class JaxPublicAppConfig {
 		this.angebotTFOActivated = angebotTFOActivated;
 		this.auszahlungAnEltern = auszahlungAnEltern;
 		this.abweichungenEnabled = abweichungenEnabled;
+		this.gemeindeVereinfachteKonfigAktiv = gemeindeVereinfachteKonfigAktiv;
 	}
 
 	public String getCurrentNode() {
@@ -463,5 +465,13 @@ public class JaxPublicAppConfig {
 
 	public void setAbweichungenEnabled(boolean abweichungenEnabled) {
 		this.abweichungenEnabled = abweichungenEnabled;
+	}
+
+	public boolean isGemeindeVereinfachteKonfigAktiv() {
+		return gemeindeVereinfachteKonfigAktiv;
+	}
+
+	public void setGemeindeVereinfachteKonfigAktiv(boolean gemeindeVereinfachteKonfigAktiv) {
+		this.gemeindeVereinfachteKonfigAktiv = gemeindeVereinfachteKonfigAktiv;
 	}
 }

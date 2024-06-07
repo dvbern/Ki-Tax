@@ -17,7 +17,7 @@ import {IHttpBackendService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';

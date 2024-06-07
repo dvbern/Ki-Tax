@@ -32,8 +32,8 @@ import {
     TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';

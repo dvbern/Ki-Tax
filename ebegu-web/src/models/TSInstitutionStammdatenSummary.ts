@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSAdresse} from './TSAdresse';

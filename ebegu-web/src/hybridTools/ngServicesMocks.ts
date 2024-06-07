@@ -23,6 +23,7 @@ import {TSDemoFeature} from '../app/core/directive/dv-hide-feature/TSDemoFeature
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {DemoFeatureRS} from '../app/core/service/demoFeatureRS.rest';
+import {EwkRS} from '../app/core/service/ewkRS.rest';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
@@ -46,6 +47,7 @@ import {TSExceptionReport} from '../models/TSExceptionReport';
 import {TSFall} from '../models/TSFall';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSInstitution} from '../models/TSInstitution';
+import {EbeguRestUtil} from '../utils/EbeguRestUtil';
 
 ngServicesMock.$inject = ['$provide'];
 
@@ -60,7 +62,7 @@ class GesuchGeneratorMock extends GesuchGenerator {
         _creationAction: TSCreationAction,
         _gesuchsperiodeId: string,
         _currentFall: TSFall,
-        _currentDossier: TSDossier
+        _currentDossier: TSDossier,
     ): angular.IPromise<TSGesuch> {
 
         const gesuch = new TSGesuch();
@@ -146,6 +148,8 @@ class InstitutionRSMock extends InstitutionRS {
 class SearchRSMock extends SearchRS {
 }
 
+class BenutzerRSMock extends BenutzerRSX {}
+
 class KinderabzugExchangeServiceMock extends KinderabzugExchangeService {
 }
 
@@ -166,10 +170,12 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.service('InternePendenzenRS', InternePendenzenRS);
-    $provide.service('BenutzerRS', BenutzerRSX);
+    $provide.service('BenutzerRS', BenutzerRSMock);
     $provide.service('VersionService', VersionService);
     $provide.service('MandantService', MandantServiceMock);
     $provide.service('EinstellungRS', EinstellungRSMock);
+    $provide.service(EbeguRestUtil.name, EbeguRestUtil);
+    $provide.factory(EwkRS.name, () => jasmine.createSpyObj(EwkRS.name, ['sucheInEwk']));
     $provide.service('InstitutionRS', InstitutionRSMock);
     $provide.service('windowRef', WindowRef);
     $provide.service('cookieService', CookieServiceMock);
@@ -179,6 +185,8 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('DemoFeatureRS', DemoFeatureRSMock);
     $provide.service('KinderabzugExchangeService', KinderabzugExchangeServiceMock);
     $provide.service('HybridFormBridgeService', HybridFormBridgeServiceMock);
+    $provide.factory('FreigabeService',
+        () => jasmine.createSpyObj('FreigabeService', ['canBeFreigegeben', 'getTextForFreigebenNotAllowed']));
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

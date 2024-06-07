@@ -23,6 +23,7 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
+import {UnknownMittagstischIdVisitor} from '../../../app/core/constants/UnknownMittagstischIdVisitor';
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -39,8 +40,8 @@ import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
     TSBetreuungsangebotTyp,
-} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -382,7 +383,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
             response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
                 .forEach(value => {
-                   this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
+                    this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
                 });
         }, error => LOG.error(error));
 
@@ -595,6 +596,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.errorService.clearAll();
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        if (this.getBetreuungModel().institutionStammdaten.betreuungsangebotTyp !== this.betreuungsangebot.key) {
+            this.errorService.addMesageAsError(this.$translate.instant('ERROR_FALSCHE_ANGEBOT'));
+            return;
+        }
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             if (!this.model.isAngebotSchulamt()) {
@@ -1256,11 +1261,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
-       const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-           || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
-           || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
-               && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
-       return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
+        const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
+            || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
+                && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
+        return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
     }
 
     public showKitaPlusZuschlag(): boolean {
@@ -1671,12 +1676,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private setUnbekannteInstitutionAccordingToAngebot(): void {
         /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
-        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
-        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
-        } else {
-            this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+        switch (this.betreuungsangebot?.key) {
+            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.TAGESSCHULE:
+                this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.KITA:
+                this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+                break;
+            default:
+                throw new Error('Unbekannte Institution nicht implementiert für Angebottyp ' + this.betreuungsangebot.key);
         }
     }
 
@@ -1869,9 +1883,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showBetreuungsKostenInput(): boolean {
-        if (this.isBetreuungsangebotMittagstisch()) {
-            return false;
-        }
         return this.showBetreuungsPensumInput();
     }
 
@@ -1887,7 +1898,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 
-    private isBetreuungsangebotMittagstisch(): boolean {
+    public isBetreuungsangebotMittagstisch(): boolean {
         return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.MITTAGSTISCH;
     }
 
@@ -1952,4 +1963,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showAnwesenheitstageProMonatInput(): boolean {
         return this.isBetreuungsangebotTagesfamilie() && this.isAnwesenheitstageProMonatAktiviert;
     }
+
+    public getMonatlicheBetreuungkostenKey(): string {
+        if (this.model.isAngebotTagesfamilien()) {
+            return 'MONATLICHE_BETREUUNGSKOSTEN_TFO';
+        }
+        return 'MONATLICHE_BETREUUNGSKOSTEN';
+    }
+
+    public getMonatlicheBetreuungkostenHelpKey(): string {
+        if (this.model.isAngebotTagesfamilien()) {
+            return 'MONATLICHE_BETREUUNGSKOSTEN_TFO_HELP';
+        }
+        return 'MONATLICHE_BETREUUNGSKOSTEN_HELP';
+    }
+
 }

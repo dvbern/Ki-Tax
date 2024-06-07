@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -667,6 +668,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setAnwesenheitsTageProMonat(BigDecimal anwesenheitsTageProMonat) {
 		this.getBgCalculationInputAsiv().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
 		this.getBgCalculationInputGemeinde().setAnwesenheitsTageProMonat(anwesenheitsTageProMonat);
+	}
+
+	public void setAnzahlGeschwister(int anzahlGeschwister) {
+		this.getBgCalculationInputAsiv().setAnzahlGeschwister(anzahlGeschwister);
+		this.getBgCalculationInputGemeinde().setAnzahlGeschwister(anzahlGeschwister);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */

@@ -1,6 +1,5 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
@@ -11,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -92,8 +90,7 @@ public abstract class InfomaStammdaten {
 
 	@Nonnull
 	private String getExterneNummer(@Nonnull Zahlung zahlung, Locale locale) {
-		final String bgNummer =
-			zahlung
+		final String referenzNummer = zahlung
 			.getZahlungspositionen()
 			.stream()
 			.findFirst()
@@ -101,21 +98,21 @@ public abstract class InfomaStammdaten {
 			.getVerfuegungZeitabschnitt()
 			.getVerfuegung()
 			.getPlatz()
-			.getBGNummer();
+			.getReferenzNummer();
 
 		final String month = zahlung.getZahlungsauftrag().getDatumGeneriert()
 			.format(DateTimeFormatter.ofPattern("_MM_dd", locale));
-		return formatBgNummer(bgNummer) +  month;
+		return formatReferenzNummer(referenzNummer) + month;
 	}
 
 	/**
-	 * Die BG-Nummer soll folendermaasen formatiert werden:
+	 * Die ReferenzNummer soll folendermaasen formatiert werden:
 	 * 22.000461.391.1.1 -> 22000461.39111
 	 */
 	@Nonnull
-	private String formatBgNummer(@Nonnull String bgNummer) {
-		String[] splitedBgNummer = bgNummer.split("\\.", 3);
-		return splitedBgNummer[0] + splitedBgNummer[1] + "." + splitedBgNummer[2].replace(".", "");
+	private String formatReferenzNummer(@Nonnull String referenzNummer) {
+		String[] splittedReferenzNummer = referenzNummer.split("\\.", 3);
+		return splittedReferenzNummer[0] + splittedReferenzNummer[1] + "." + splittedReferenzNummer[2].replace(".", "");
 	}
 
 	@Nonnull

@@ -36,6 +36,8 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -47,12 +49,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
+import ch.dvbern.ebegu.dto.suchfilter.lucene.ReferenzNummerBridge;
 import ch.dvbern.ebegu.entities.containers.BetreuungAbweichung;
 import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
@@ -101,7 +104,7 @@ import org.hibernate.search.annotations.Indexed;
 )
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
-@ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
+@ClassBridge(name = "bGNummer", impl = ReferenzNummerBridge.class, analyze = Analyze.NO)
 public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContainer {
 
 	private static final long serialVersionUID = -6776987863150835840L;
@@ -174,6 +177,11 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 	@Nullable
 	@Column(nullable = true)
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String begruendungAuszahlungAnInstitution;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	@Nullable
+	private Bedarfsstufe bedarfsstufe;
 
 	public Betreuung() {
 	}
@@ -501,7 +509,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 
 	@Override
 	public String getMessageForAccessException() {
-		return "bgNummer: " + this.getBGNummer()
+		return "referenzNummer: " + getReferenzNummer()
 			+ ", gesuchInfo: " + this.extractGesuch().getMessageForAccessException();
 	}
 
@@ -648,5 +656,14 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 
 	public void setBegruendungAuszahlungAnInstitution(@Nullable String begruendungAuszahlungAnInstitution) {
 		this.begruendungAuszahlungAnInstitution = begruendungAuszahlungAnInstitution;
+	}
+
+	@Nullable
+	public Bedarfsstufe getBedarfsstufe() {
+		return bedarfsstufe;
+	}
+
+	public void setBedarfsstufe(@Nullable Bedarfsstufe bedarfsstufe) {
+		this.bedarfsstufe = bedarfsstufe;
 	}
 }

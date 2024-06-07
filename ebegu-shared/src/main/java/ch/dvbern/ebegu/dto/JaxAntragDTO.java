@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.dto;
 
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 

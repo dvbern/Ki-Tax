@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Eingewoehnung;
@@ -148,15 +149,12 @@ class EingewoehnungMapperFactoryTest extends EasyMockSupport {
 	}
 
 	@Nonnull
-	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
-		return convert(z, initProcessingContext(z));
-	}
-
-	@Nonnull
 	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z, ProcessingContext ctx) {
 		replayAll();
 
-		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnung(ctx);
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+		ProcessingContext ctx = initProcessingContext(z, einstellungen);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnungPauschale(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);

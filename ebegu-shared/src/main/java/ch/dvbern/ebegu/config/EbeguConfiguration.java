@@ -365,4 +365,10 @@ public interface EbeguConfiguration {
 	Boolean getEbeguKibonAnfrageTestGuiEnabled();
 
 	Boolean isNeueVeranlagungAPIEnabled();
+
+	String getGeresSchwyzEndpointUrl();
+
+	String getGeresSchwyzUsername();
+
+	String getGeresSchwyzPassword();
 }

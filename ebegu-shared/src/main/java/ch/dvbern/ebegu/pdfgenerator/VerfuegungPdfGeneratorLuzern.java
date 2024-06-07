@@ -20,7 +20,7 @@ package ch.dvbern.ebegu.pdfgenerator;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
@@ -40,8 +40,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
 
 	private boolean isBetreuungTagesfamilie = false;
-
-	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 
 	public VerfuegungPdfGeneratorLuzern(
 		@Nonnull Betreuung betreuung,

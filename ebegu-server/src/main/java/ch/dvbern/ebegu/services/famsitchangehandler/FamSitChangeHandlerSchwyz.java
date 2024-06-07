@@ -16,6 +16,7 @@
  */
 
 package ch.dvbern.ebegu.services.famsitchangehandler;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -51,6 +52,10 @@ public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler 
 
 		adaptSchwyzFinSitDataOnFamSitChange(gesuch, loadedFamiliensituation, newFamiliensituation);
 
+		final LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (!newFamiliensituation.hasSecondGesuchsteller(gueltigBis)) {
+			newFamiliensituation.setGemeinsameSteuererklaerung(null);
+		}
 
 		super.adaptFinSitDataOnFamSitChange(gesuch, familiensituationContainer, loadedFamiliensituation);
 	}
@@ -67,6 +72,8 @@ public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler 
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA(), gesuch.getGesuchsteller1());
 
+			gesuch.setEinkommensverschlechterungInfoContainer(null);
+
 			if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
 				finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
@@ -79,5 +86,23 @@ public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler 
 		return loadedFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ZU_ZWEIT
 			&& newFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE
 			&& Boolean.TRUE.equals(loadedFamiliensituation.getGemeinsameSteuererklaerung());
+	}
+
+	@Override
+	protected boolean isNeededToRemoveGesuchsteller2(
+		Gesuch gesuch,
+		Familiensituation newFamiliensituation,
+		@Nullable Familiensituation familiensituationErstgesuch
+	) {
+		if (familiensituationErstgesuch == null) {
+			return false;
+		}
+		final LocalDate gpEnd = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (gesuch.isMutation()) {
+			return newFamiliensituation.getAenderungPer() != null &&
+				gpEnd.isAfter(newFamiliensituation.getAenderungPer()) ||
+				gpEnd.isEqual(newFamiliensituation.getAenderungPer());
+		}
+		return familiensituationErstgesuch.hasSecondGesuchsteller(gpEnd) && !newFamiliensituation.hasSecondGesuchsteller(gpEnd);
 	}
 }

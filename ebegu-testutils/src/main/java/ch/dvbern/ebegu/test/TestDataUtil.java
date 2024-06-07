@@ -121,8 +121,8 @@ import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
@@ -242,8 +242,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2;
+import static ch.dvbern.ebegu.enums.EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
@@ -2051,7 +2052,7 @@ public final class TestDataUtil {
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode, persistence);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode, persistence);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode, persistence);
-		saveEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode, persistence);
+		saveEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode, persistence);
 		saveEinstellung(DAUER_BABYTARIF, "12", gesuchsperiode, persistence);
 		saveEinstellung(FKJV_TEXTE, "false", gesuchsperiode, persistence);
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode, persistence);
@@ -2077,6 +2078,7 @@ public final class TestDataUtil {
 		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode, persistence);
 		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode, persistence);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

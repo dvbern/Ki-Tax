@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.*;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
@@ -516,7 +517,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode);
-		saveEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
+		saveEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode);
 		saveEinstellung(DAUER_BABYTARIF, "12", gesuchsperiode);
 		saveEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode);
@@ -542,6 +543,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
 		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

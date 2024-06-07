@@ -18,12 +18,50 @@ package ch.dvbern.ebegu.services;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AdresseTyp;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Erwerbspensum;
+import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -33,10 +71,40 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
-import ch.dvbern.ebegu.testfaelle.*;
+import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
+import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderVisitor;
+import ch.dvbern.ebegu.testfaelle.MandantSozialdienstVisitor;
+import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
+import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
+import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
+import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
+import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import ch.dvbern.ebegu.testfaelle.Testfall07_MeierMeret;
+import ch.dvbern.ebegu.testfaelle.Testfall08_UmzugAusInAusBern;
+import ch.dvbern.ebegu.testfaelle.Testfall09_Abwesenheit;
+import ch.dvbern.ebegu.testfaelle.Testfall10_UmzugVorGesuchsperiode;
+import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_04;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_05;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
+import ch.dvbern.ebegu.testfaelle.Testfall_Sozialdienst;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_FB;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz1;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz2;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz3;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz4;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz5;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -58,7 +126,12 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
@@ -225,20 +298,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 						institutionStammdatenBuilder), verfuegen, besitzer);
 				responseString.append("Fall Schulamt Only Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV1.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_01(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 1 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz1(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 1 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV2.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_02(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 2 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz2(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 2 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV3.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_03(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 3 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz3(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 3 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV4.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_04(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 4 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz4(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 4 Fallnummer:").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV5.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_05(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 5 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz5(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 5 Fallnummer:").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV6.equals(fallid)) {
 				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_06(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
 				responseString.append("Fall ASIV 6 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
@@ -547,16 +620,14 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		boolean verfuegen,
 		@Nullable Benutzer besitzer
 	) {
-		final List<Gesuch> gesuche = gesuchService.findGesuchByGSName(fromTestfall.getNachname(), fromTestfall.getVorname());
-		if (!gesuche.isEmpty()) {
-			fromTestfall.setFall(gesuche.iterator().next().getFall());
-		}
+		fallService.findAnyFallByGSName(fromTestfall.getNachname(), fromTestfall.getVorname())
+			.ifPresent(fromTestfall::setFall);
 
 		final Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 		Optional<Fall> fallByBesitzer = fallService.findFallByBesitzer(besitzer); //fall kann schon existieren
 		Fall fall;
 		Dossier dossier = null;
-		if (!fallByBesitzer.isPresent()) {
+		if (fallByBesitzer.isEmpty()) {
 			boolean nichtFreigegebenesOnlineGesuch = besitzer != null && !verfuegen;
 			if (!nichtFreigegebenesOnlineGesuch && currentBenutzer.isPresent()) {
 				// Wir setzen den aktuellen Benutzer als Verantwortliche Person, aber nur,

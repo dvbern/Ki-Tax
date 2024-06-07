@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -35,13 +36,12 @@ import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
@@ -77,17 +77,12 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	@Mock
 	private Validator validator;
 
-	@Mock
-	private MitteilungService mitteilungService;
-
 	private PensumMapperFactory factory;
 
 	@BeforeEach
 	void setUp() {
 		// EinstellungMock is initialized too late when trying to do field initializers instead.
 		factory = new PensumMapperFactory(
-			new BetreuungInFerienzeitMapperFactory(mitteilungService),
-			new MahlzeitVerguenstigungMapperFactory(einstellungService),
 			new PensumValueMapperFactory(einstellungService),
 			new EingewoehnungMapperFactory(einstellungService, validator)
 		);
@@ -105,7 +100,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 		z.setTarifProHauptmahlzeiten(BigDecimal.valueOf(12.25));
 		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
 
-		ProcessingContext ctx = initProcessingContext(z);
+		ProcessingContext ctx = initProcessingContext(z, BetreuungEinstellungen.builder().build());
 
 		BigDecimal monatlicheHauptmahlzeiten = BigDecimal.valueOf(5);
 		BigDecimal tarifProHauptmahlzeit = BigDecimal.valueOf(10.5);
@@ -139,7 +134,8 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		permissiveMocks();
 		replayAll();
-		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = factory.createPensumMapper(initProcessingContext(z));
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper =
+			factory.createPensumMapper(initProcessingContext(z, betreuungEinstellungen()));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
 
 		assertThat(actual, matches(z));
@@ -151,7 +147,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		permissiveMocks();
 		replayAll();
-		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z));
+		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z, betreuungEinstellungen()));
 		Betreuungspensum actual = convert(forPlatzbestaetigung, z, Betreuungspensum::new);
 
 		assertThat(actual, matches(z));
@@ -163,10 +159,19 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		permissiveMocks();
 		replayAll();
-		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z));
+		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z, betreuungEinstellungen()));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
 
 		assertThat(actual, matches(z));
+	}
+
+	@Nonnull
+	private BetreuungEinstellungen betreuungEinstellungen() {
+		return BetreuungEinstellungen.builder()
+			.betreuteTageEnabled(true)
+			.schulergaenzendeBetreuungEnabled(true)
+			.mahlzeitenVerguenstigungEnabled(true)
+			.build();
 	}
 
 	private <T extends AbstractBetreuungsPensum> T convert(
@@ -216,14 +221,6 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	}
 
 	private void permissiveMocks() {
-		expect(mitteilungService.showSchulergaenzendeBetreuung(anyObject()))
-			.andReturn(true)
-			.anyTimes();
-
-		expect(einstellungService.isEnabled(eq(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED), anyObject()))
-			.andReturn(true)
-			.anyTimes();
-
 		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSTAGE_KITA), anyObject()))
 			.andReturn(BigDecimal.valueOf(240))
 			.anyTimes();

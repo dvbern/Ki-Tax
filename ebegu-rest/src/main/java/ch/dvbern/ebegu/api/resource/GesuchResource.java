@@ -26,14 +26,35 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.JaxFreigabeDTO;
 import ch.dvbern.ebegu.dto.neskovanp.KibonAnfrageDTO;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragStatusDTO;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.gesuch.freigabe.FreigabeService;
+import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.KibonAnfrageService;
+import ch.dvbern.ebegu.services.MassenversandService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
+import ch.dvbern.ebegu.services.SimulationService;
+import ch.dvbern.ebegu.services.personensuche.PersonenSucheService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -121,6 +142,9 @@ public class GesuchResource {
 
 	@Inject
 	private SimulationService simulationService;
+
+	@Inject
+	private FreigabeService freigabeService;
 
 	@Resource
 	private EJBContext context;    //fuer rollback
@@ -473,17 +497,14 @@ public class GesuchResource {
 		response = JaxGesuch.class)
 	@Nullable
 	@POST
-	@Path("/freigeben/{antragId}/JA/{usernameJA}/SCH/{usernameSCH}")
+	@Path("/freigeben/{antragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
 		SACHBEARBEITER_TS, GESUCHSTELLER, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response antragFreigeben(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@Nullable @PathParam("usernameJA") String usernameJA,
-		@Nullable @PathParam("usernameSCH") String usernameSCH,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+		@NotNull JaxFreigabeDTO jaxFreigabe) {
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
 		resourceHelper.assertGesuchStatusForFreigabe(antragJaxId.getId());
@@ -492,7 +513,7 @@ public class GesuchResource {
 
 		final String antragId = converter.toEntityId(antragJaxId);
 
-		Gesuch gesuch = gesuchService.antragFreigeben(antragId, usernameJA, usernameSCH);
+		Gesuch gesuch = freigabeService.antragFreigeben(antragId, jaxFreigabe);
 
 		return Response.ok(converter.gesuchToJAX(gesuch)).build();
 	}
@@ -1176,7 +1197,7 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
-	) throws EbeguException {
+	) {
 		Objects.requireNonNull(gesuchstellerId.getId());
 
 		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerId.getId()).orElseThrow();

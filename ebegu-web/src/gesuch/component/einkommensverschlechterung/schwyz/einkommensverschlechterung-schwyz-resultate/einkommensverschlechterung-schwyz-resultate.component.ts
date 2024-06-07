@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -8,7 +7,10 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
-import {FinanzielleSituationSchwyzService} from '../../../finanzielleSituation/schwyz/finanzielle-situation-schwyz.service';
+import {
+    FinanzielleSituationSchwyzService,
+    MassgebendesEinkommenResultate,
+} from '../../../finanzielleSituation/schwyz/finanzielle-situation-schwyz.service';
 
 const LOG = LogFactory.createLog('EinkommensverschlechterungSchwyzResultateComponent');
 
@@ -18,7 +20,7 @@ const LOG = LogFactory.createLog('EinkommensverschlechterungSchwyzResultateCompo
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EinkommensverschlechterungSchwyzResultateComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
-    public resultate?: TSFinanzielleSituationResultateDTO;
+    public resultate?: MassgebendesEinkommenResultate;
 
     private readonly BASISJAHR = 1;
 
@@ -39,6 +41,7 @@ export class EinkommensverschlechterungSchwyzResultateComponent extends Abstract
         );
         this.initModel();
         this.finanzielleSituationSchwyzService.calculateEinkommensverschlechterung(this.model, this.BASISJAHR);
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
     }
 
     private initModel() {
@@ -61,5 +64,9 @@ export class EinkommensverschlechterungSchwyzResultateComponent extends Abstract
     public hasMultipleFinSits(): boolean {
         return this.gesuchmodelManager.isGesuchsteller2Required()
             && EbeguUtil.isNotNullAndFalse(this.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung);
+    }
+
+    public veraenderungTotalToPercentageString(): string {
+        return this.resultate?.veraenderung?.total ? `${this.resultate.veraenderung.total  }%` : '';
     }
 }

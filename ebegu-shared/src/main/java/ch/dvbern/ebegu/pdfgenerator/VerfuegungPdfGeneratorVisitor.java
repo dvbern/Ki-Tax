@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
@@ -81,6 +81,6 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSchwyz() {
-		return this.visitSolothurn();
+		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
 	}
 }

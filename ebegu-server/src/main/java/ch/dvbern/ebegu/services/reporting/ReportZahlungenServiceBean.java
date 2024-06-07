@@ -17,8 +17,35 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlung_;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
@@ -27,7 +54,11 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportZahlungenService;
 import ch.dvbern.ebegu.reporting.zahlungen.ReportZahlungenExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungen.ZahlungenDataRow;
-import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -39,22 +70,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import static java.util.Objects.requireNonNull;
 
 @Stateless
 @Local(ReportZahlungenService.class)
@@ -226,18 +242,17 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
         row.setTimestampZahlungslauf(zahlungsauftrag.getTimestampErstellt());
         row.setKindVorname(zahlungsposition.getKind().getVorname());
         row.setKindNachname(zahlungsposition.getKind().getNachname());
-        row.setReferenznummer(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer());
-        row.setZeitabschnittVon(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
-        row.setZeitabschnittBis(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis());
-        var pensum = MathUtil.EXACT.divide(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum(), BigDecimal.valueOf(100));
+		VerfuegungZeitabschnitt zeitabschnitt = zahlungsposition.getVerfuegungZeitabschnitt();
+		row.setReferenzNummer(requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung()).getReferenzNummer());
+		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
+		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
+		var pensum = MathUtil.EXACT.divide(zeitabschnitt.getBgPensum(), BigDecimal.valueOf(100));
         row.setBgPensum(pensum);
         row.setBetrag(zahlungsposition.getBetrag());
         row.setKorrektur(ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
         row.setIgnorieren(zahlungsposition.isIgnoriert());
 
-
-        var famSitContainer = zahlungsposition
-            .getVerfuegungZeitabschnitt()
+		var famSitContainer = zeitabschnitt
             .getVerfuegung()
             .getBetreuung()
             .getKind()

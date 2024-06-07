@@ -15,19 +15,6 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -65,11 +52,11 @@ import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.testfaelle.dataprovider.AbstractTestfallDataProvider;
 import ch.dvbern.ebegu.testfaelle.dataprovider.TestfallDataProviderVisitor;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
@@ -79,6 +66,19 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
 
 /**
  * Superklasse für Testfaelle des JA
@@ -115,7 +115,7 @@ public abstract class AbstractTestfall {
 	protected final boolean betreuungenBestaetigt;
 	protected final InstitutionStammdatenBuilder institutionStammdatenBuilder;
 
-	private final AbstractTestfallDataProvider testfallDataProvider;
+	protected final AbstractTestfallDataProvider testfallDataProvider;
 
 	protected AbstractTestfall(
 		Gesuchsperiode gesuchsperiode,
@@ -305,7 +305,6 @@ public abstract class AbstractTestfall {
 		LocalDate geburtsdatum,
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
-
 		Kind kind = testfallDataProvider.createKind(geschlecht, name, vorname, geburtsdatum, is18GeburtstagBeforeGPEnds(geburtsdatum), kinderabzug, betreuung);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);

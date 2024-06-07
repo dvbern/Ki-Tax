@@ -19,8 +19,8 @@ import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
-import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from '../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {TSBetreuungsstatus} from '../models/enums/betreuung/TSBetreuungsstatus';
 import {TSFachstelleName} from '../models/enums/TSFachstelleName';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
@@ -68,12 +68,6 @@ describe('EbeguRestUtil', () => {
     const pensum50 = 50;
     const monatlicheBetreuungskosten200 = 200.2;
     const monatlicheBetreuungskosten500 = 500.5;
-
-    beforeEach(angular.mock.module('pascalprecht.translate'));
-
-    beforeEach(angular.mock.module(($provide: IProvideService) => {
-        $provide.value('CONSTANTS', CONSTANTS);
-    }));
 
     beforeEach(angular.mock.inject(() => {
         ebeguRestUtil = new EbeguRestUtil();

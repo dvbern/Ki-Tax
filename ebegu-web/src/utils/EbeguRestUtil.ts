@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {
@@ -30,7 +31,7 @@ import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
-import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSBetreuungspensumAbweichungStatus} from '../models/enums/betreuung/TSBetreuungspensumAbweichungStatus';
 import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
@@ -181,6 +182,7 @@ import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
+import {TSVersendeteMail} from '../models/TSVersendeteMail';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
@@ -196,6 +198,9 @@ import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class EbeguRestUtil {
 
     /**
@@ -975,7 +980,6 @@ export class EbeguRestUtil {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
-            restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
             restGemeinde.betreuungsgutscheineStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
@@ -2459,6 +2463,8 @@ export class EbeguRestUtil {
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
         restKind.unterhaltspflichtig = kind.unterhaltspflichtig;
+        restKind.hoehereBeitraegeWegenBeeintraechtigungBeantragen = kind.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+        restKind.hoehereBeitraegeUnterlagenDigital = kind.hoehereBeitraegeUnterlagenDigital;
         if (kind.pensumFachstellen) {
             restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
@@ -2535,6 +2541,9 @@ export class EbeguRestUtil {
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
             kindTS.unterhaltspflichtig = kindFromServer.unterhaltspflichtig;
+            kindTS.hoehereBeitraegeWegenBeeintraechtigungBeantragen =
+                kindFromServer.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+            kindTS.hoehereBeitraegeUnterlagenDigital = kindFromServer.hoehereBeitraegeUnterlagenDigital;
             if (kindFromServer.pensumFachstellen) {
                 kindTS.pensumFachstellen =
                     this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
@@ -2671,6 +2680,7 @@ export class EbeguRestUtil {
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
         restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
         restBetreuung.begruendungAuszahlungAnInstitution = betreuung.begruendungAuszahlungAnInstitution;
+        restBetreuung.bedarfsstufe = betreuung.bedarfsstufe;
         return restBetreuung;
     }
 
@@ -2817,7 +2827,7 @@ export class EbeguRestUtil {
                 this.parseBelegungFerieninsel(new TSBelegungFerieninsel(), betreuungFromServer.belegungFerieninsel);
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
-            betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.referenzNummer = betreuungFromServer.referenzNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             betreuungTS.anmeldungTagesschuleZeitabschnitts =
@@ -2827,6 +2837,7 @@ export class EbeguRestUtil {
             betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
             betreuungTS.finSitRueckwirkendKorrigiertInThisMutation =
                 betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
+            betreuungTS.bedarfsstufe = betreuungFromServer.bedarfsstufe;
             return betreuungTS;
         }
         return undefined;
@@ -4063,7 +4074,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseEWKResultat(ewkResultatTS: TSEWKResultat, ewkResultatFromServer: any): any {
+    public parseEWKResultat(ewkResultatTS: TSEWKResultat, ewkResultatFromServer: any): TSEWKResultat | undefined {
         if (ewkResultatFromServer) {
             ewkResultatTS.personen = this.parseEWKPersonList(ewkResultatFromServer.personen);
             return ewkResultatTS;
@@ -4080,7 +4091,7 @@ export class EbeguRestUtil {
             : [];
     }
 
-    private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson {
+    private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson | undefined {
         if (ewkPersonFromServer) {
             tsEWKPerson.personID = ewkPersonFromServer.personID;
             tsEWKPerson.nachname = ewkPersonFromServer.nachname;
@@ -4609,6 +4620,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
+        publicAppConfigTS.gemeindeVereinfachteKonfigAktiv = data.gemeindeVereinfachteKonfigAktiv;
         return publicAppConfigTS;
     }
 
@@ -6326,5 +6338,26 @@ export class EbeguRestUtil {
             sozialdienst: filter.sozialdienst,
             status: filter.status,
         };
+    }
+
+    public parseTSUebersichtVersendeteMailsList(data: any): TSVersendeteMail[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+        ? data.map(item => this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), item))
+        : [this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), data)];
+    }
+    private parseTSUebersichtVersendeteMails(
+        uebersichtVersendeteMails: TSVersendeteMail,
+        uebersichtVersendeteMailsFromServer: any
+    ): TSVersendeteMail {
+        this.parseAbstractEntity(uebersichtVersendeteMails, uebersichtVersendeteMailsFromServer);
+        uebersichtVersendeteMails.zeitpunktVersand = DateUtil.localDateTimeToMoment(
+            uebersichtVersendeteMailsFromServer.zeitpunktVersand
+        );
+        uebersichtVersendeteMails.empfaengerAdresse = uebersichtVersendeteMailsFromServer.empfaengerAdresse;
+        uebersichtVersendeteMails.betreff = uebersichtVersendeteMailsFromServer.betreff;
+        return uebersichtVersendeteMails;
     }
 }

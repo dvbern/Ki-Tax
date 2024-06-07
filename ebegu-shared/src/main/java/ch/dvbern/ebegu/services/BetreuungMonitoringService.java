@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.BetreuungMonitoring;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 public interface BetreuungMonitoringService {
 
@@ -33,5 +34,6 @@ public interface BetreuungMonitoringService {
 		@Nullable String benutzer);
 
 	@Nonnull
+	@CanIgnoreReturnValue
 	BetreuungMonitoring saveBetreuungMonitoring(@Valid @Nonnull BetreuungMonitoring betreuungMonitoring);
 }

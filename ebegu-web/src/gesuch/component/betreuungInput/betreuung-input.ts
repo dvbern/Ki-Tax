@@ -17,7 +17,7 @@
 
 import {IComponentOptions, IController} from 'angular';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
@@ -58,6 +58,7 @@ export class BetreuungInput implements IController {
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
+    public betreuungspensumHelpKey: string = 'BETREUUNGSPENSUM_HELP';
     private multiplier: number = 1;
     private readonly multiplierKita: number;
     private readonly multiplierTfo: number;
@@ -119,6 +120,7 @@ export class BetreuungInput implements IController {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
             this.multiplier = this.multiplierTfo;
+            this.betreuungspensumHelpKey = 'BETREUUNGSPENSUM_TFO_HELP';
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
             this.multiplier = this.multiplierKita;

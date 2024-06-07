@@ -21,19 +21,18 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.*;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
@@ -133,7 +132,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return List.of(KITA, TAGESFAMILIEN);
 	}
 
 	static class EingewohenungAbschnittHelper {

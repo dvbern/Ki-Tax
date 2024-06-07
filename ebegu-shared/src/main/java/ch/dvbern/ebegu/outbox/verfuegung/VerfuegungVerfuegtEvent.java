@@ -27,11 +27,11 @@ import org.apache.avro.Schema;
 public class VerfuegungVerfuegtEvent implements ExportedEvent {
 
 	/**
-	 * Die BG Nummer bleibt immer dieselbe, auch wenn es eine neue Version der Verfügung (z.B. nach Mutationsmeldung)
-	 * gibt. Es wird deshalb die BG Nummer statt der entity ID als aggregateId verwendet.
+	 * Die ReferenzNummer bleibt immer dieselbe, auch wenn es eine neue Version der Verfügung (z.B. nach Mutationsmeldung)
+	 * gibt. Es wird deshalb die ReferenzNummer statt der entity ID als aggregateId verwendet.
 	 */
 	@Nonnull
-	private final String bgNummer;
+	private final String referenzNummer;
 
 	@Nonnull
 	private final byte[] verfuegung;
@@ -39,8 +39,8 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 	@Nonnull
 	private final Schema schema;
 
-	public VerfuegungVerfuegtEvent(@Nonnull String bgNummer, @Nonnull byte[] verfuegung, @Nonnull Schema schema) {
-		this.bgNummer = bgNummer;
+	public VerfuegungVerfuegtEvent(@Nonnull String referenzNummer, @Nonnull byte[] verfuegung, @Nonnull Schema schema) {
+		this.referenzNummer = referenzNummer;
 		this.verfuegung = Arrays.copyOf(verfuegung, verfuegung.length);
 		this.schema = schema;
 	}
@@ -54,7 +54,7 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 	@Nonnull
 	@Override
 	public String getAggregateId() {
-		return bgNummer;
+		return referenzNummer;
 	}
 
 	@Nonnull

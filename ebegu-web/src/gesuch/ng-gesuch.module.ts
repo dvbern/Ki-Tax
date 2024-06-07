@@ -18,6 +18,8 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {EwkAdresseComponent} from '../app/ewk-adresse/ewk-adresse.component';
+import {PersonensucheComponent} from '../app/personensuche/personensuche.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {
     SelbstdeklarationComponent
@@ -47,17 +49,9 @@ import {
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {
-    FamiliensituationAppenzellViewXComponent
-} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {
-    FamiliensituationSchwyzComponent
-} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
-import {
-    FamiliensituationViewXComponent
-} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
-import {
     FinSitFelderAppenzellComponent
 } from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
+import {FamiliensituationModule} from './component/familiensituation/familiensituation.module';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -110,8 +104,12 @@ import {
 } from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {
+    HoehereBetraegeBeeintraechtigungComponent
+} from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
+import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
@@ -127,7 +125,8 @@ import {
         UpgradeModule,
         SharedModule,
         FallToolbarModule,
-        FinanzielleSituationSchwyzModule
+        FinanzielleSituationSchwyzModule,
+        FamiliensituationModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
@@ -161,6 +160,7 @@ import {
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
         FkjvKinderabzugComponent,
+        HoehereBetraegeBeeintraechtigungComponent,
         SchwyzKinderabzugComponent,
         MassgebendesEinkommenComponent,
         FinanzielleSituationAufteilungComponent,
@@ -168,11 +168,11 @@ import {
         SteuerabfrageResponseHintsComponent,
         DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
-        FamiliensituationViewXComponent,
-        FamiliensituationAppenzellViewXComponent,
-        FamiliensituationSchwyzComponent,
         ZahlungsstatusIconComponent,
-        KindFachstelleComponent
+        KindFachstelleComponent,
+        OnlineFreigabeComponent,
+        PersonensucheComponent,
+        EwkAdresseComponent,
     ],
     exports: [
         DvSwitchComponent,

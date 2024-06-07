@@ -372,7 +372,6 @@ public class AbstractConverter {
 		convertMandantFieldsToEntity(gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
-		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
 		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
 		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());

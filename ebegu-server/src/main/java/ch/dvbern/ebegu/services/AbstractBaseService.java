@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;

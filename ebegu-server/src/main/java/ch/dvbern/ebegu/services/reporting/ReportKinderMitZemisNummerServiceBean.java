@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Row;
@@ -185,9 +186,10 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 	}
 
 	private void sendMail(@Nonnull String subject, @Nonnull String message) throws MailException {
+		final MandantIdentifier mandantIdentifier = principalBean.getMandant().getMandantIdentifier();
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"sendMail", "No User is logged in"));
-		mailService.sendMessage(subject, message, benutzer.getEmail());
+		mailService.sendMessage(subject, message, benutzer.getEmail(), mandantIdentifier);
 	}
 
 	private @Nonnull List<KindMitZemisNummerDataRow> getReportKinderMitZemisNummer(@Nonnull Integer lastenausgleichJahr) {

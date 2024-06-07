@@ -15,13 +15,11 @@
 
 package ch.dvbern.ebegu.api.util;
 
-import java.util.regex.Pattern;
+import net.bull.javamelody.MonitoringFilter;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-
-import ch.dvbern.ebegu.util.Constants;
-import net.bull.javamelody.MonitoringFilter;
+import java.util.regex.Pattern;
 
 /**
  * Created by imanol on 02.03.16.
@@ -38,7 +36,7 @@ public class EbeguMonitoringFilter extends MonitoringFilter {
 
 	private static final Pattern ID_PATTERN = Pattern.compile("/\\d+");
 	private static final Pattern UUID_PATTERN = Pattern.compile("/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", Pattern.CASE_INSENSITIVE);
-	private static final Pattern EMAIL_PATTERN = Pattern.compile("/" +Constants.REGEX_EMAIL);
+	private static final Pattern EMAIL_PATTERN = Pattern.compile("/[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}");
 	private static final Pattern QUICKSEARCH_PATTERN = Pattern.compile("search/quicksearch/" + SEARCH_PATTERN);
 	private static final Pattern USERNAME_SEARCH_PATTERN = Pattern.compile("username/" + SEARCH_PATTERN);
 	private static final Pattern EINSTELLUNG_PATTERN = Pattern.compile("key/[A-Z_]+");

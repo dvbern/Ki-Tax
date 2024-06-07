@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.rules.mutationsmerger;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;

@@ -16,14 +16,18 @@
  */
 package ch.dvbern.ebegu.enums.reporting;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
-import javax.annotation.Nonnull;
-
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.*;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldZahlungen implements MergeFieldProvider {
 
@@ -41,7 +45,7 @@ public enum MergeFieldZahlungen implements MergeFieldProvider {
     timestampZahlungslauf(new SimpleMergeField<>("timestampZahlungslauf", DATETIME_CONVERTER)),
     kindVorname(new SimpleMergeField<>("kindVorname", STRING_CONVERTER)),
     kindNachname(new SimpleMergeField<>("kindNachname", STRING_CONVERTER)),
-    referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
+    referenzNummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
     zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
     zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
     bgPensum(new SimpleMergeField<>("bgPensum", BIGDECIMAL_CONVERTER)),

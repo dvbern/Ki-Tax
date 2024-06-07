@@ -64,14 +64,12 @@ import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -355,89 +353,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
-	public void testAntragEinreichenAndFreigeben() {
-		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller1();
-		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
-			gesuchService, gesuchsperiode);
-
-		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
-
-		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
-		Assert.assertNotNull(eingereichtesGesuch.getFreigabeDatum());
-		Assert.assertFalse(now.isAfter(eingereichtesGesuch.getFreigabeDatum())); // beste Art um Datum zu testen die direkt in der Methode erzeugt werden
-
-		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.FREIGABE);
-
-		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
-
-		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
-		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), sachbearbeiterJA.getUsername(), null);
-		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());
-	}
-
-	@Test
-	public void testExceptionOnInvalidFreigabe() {
-		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller1();
-		final Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence,
-			gesuchService, gesuchsperiode);
-		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
-
-		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
-		Assert.assertNotNull(eingereichtesGesuch.getFreigabeDatum());
-		Assert.assertFalse(now.isAfter(eingereichtesGesuch.getFreigabeDatum())); // beste Art um Datum zu testen die direkt in der Methode erzeugt werden
-
-		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.FREIGABE);
-
-		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
-		gesuch.getFall().setBesitzer(null);
-		persistence.merge(gesuch.getFall());
-
-		Benutzer gesuchsteller = loginAsGesuchsteller1();
-		try {
-			gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
-			Assert.fail("No Besitzer is present. must fail for Role Gesuchsteller");
-		} catch (EJBAccessException e) {
-			//noop
-		}
-		Fall fall = persistence.find(Fall.class, gesuch.getFall().getId());
-		fall.setBesitzer(gesuchsteller);
-		persistence.merge(fall);
-		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
-		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());
-		try {
-			gesuchService.antragFreigeben(eingereichtesGesuch.getId(), null, null);
-			Assert.fail("Gesuch is already freigegeben. Wrong state should be detected");
-		} catch (EbeguRuntimeException e) {
-			Assert.assertEquals("Das Gesuch wurde bereits freigegeben", e.getCustomMessage());
-		}
-	}
-
-	@Test
-	public void testAntragEinreichenAndFreigebenNurSchulamt() {
-		LocalDate now = LocalDate.now();
-		loginAsGesuchsteller1();
-
-		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
-
-		Assert.assertEquals(2, schulamtGesuch.getKindContainers().size());
-		Assert.assertTrue(schulamtGesuch.hasOnlyBetreuungenOfSchulamt());
-		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(schulamtGesuch, AntragStatus.FREIGABEQUITTUNG);
-
-		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
-		Assert.assertNotNull(eingereichtesGesuch.getFreigabeDatum());
-		Assert.assertFalse(now.isAfter(eingereichtesGesuch.getFreigabeDatum()));
-		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(schulamtGesuch.getId(), WizardStepName.FREIGABE);
-		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
-
-		Benutzer schulamt = loginAsSchulamt();
-		Gesuch eingelesenesGesuch = gesuchService.antragFreigeben(eingereichtesGesuch.getId(), schulamt.getUsername(), null);
-		Assert.assertEquals(AntragStatus.FREIGEGEBEN, eingelesenesGesuch.getStatus());
-
-	}
-
-	@Test
 	public void testStatusuebergangToInBearbeitungSTV_VERFUEGT() {
 		//wenn das Gesuch nicht im Status PRUEFUNG_STV ist, wird nichts gemacht
 		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
@@ -480,24 +395,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_STV, foundGesuch.get().getStatus());
 	}
 
-	@Test
-	public void testStatusuebergangToInBearbeitungJAIFFreigegeben() {
-		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
-		loginAsGesuchsteller1();
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
-		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gesuch gesuch = TestDataUtil.persistNewCompleteGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence,
-			gesuchService, gesuchsperiode);
-		gesuch = persistence.find(Gesuch.class, gesuch.getId());
-		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());
-		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
-		gesuchService.antragFreigeben(gesuch.getId(), "saja", null);
-		loginAsSachbearbeiterJA();
-		//durch findGesuch setzt der {@link UpdateStatusInterceptor} den Status um
-		Optional<Gesuch> foundGesuch = gesuchService.findGesuch(gesuch.getId());
-		Assert.assertTrue(foundGesuch.isPresent());
-		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, foundGesuch.get().getStatus());
-	}
+
 
 	@Test
 	public void testNoStatusuebergangToInBearbeitungJAIFNurSchulamt() {
@@ -934,54 +832,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertTrue(gesuche.isEmpty());
 	}
 
-	/**
-	 * tests an Onlinegesuch that has already been freigegeben
-	 * The Gesuch should be returned by the function
-	 */
-	@Test
-	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegeben() {
-		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
-		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
-		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
-		final WizardStep wizardStepObject = TestDataUtil
-			.createWizardStepObject(mergedOnlineGesuch, WizardStepName.FREIGABE, WizardStepStatus.UNBESUCHT);
-		persistence.persist(wizardStepObject);
 
-		final Gesuch freigegebenesGesuch = gesuchService.antragFreigeben(mergedOnlineGesuch.getId(), null, null);
-
-		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
-			Constants.START_OF_TIME,
-			Constants.END_OF_TIME,
-			freigegebenesGesuch.getGesuchsperiode()
-		);
-
-		Assert.assertEquals(1, gesuche.size());
-		Assert.assertEquals(freigegebenesGesuch, gesuche.get(0));
-	}
-
-	/**
-	 * tests an Onlinegesuch that has already been freigegeben but outside the given dates
-	 * The Gesuch shouldn't be returned by the function
-	 */
-	@Test
-	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegebenOutOfDates() {
-		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
-		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
-		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
-		final WizardStep wizardStepObject = TestDataUtil
-			.createWizardStepObject(mergedOnlineGesuch, WizardStepName.FREIGABE, WizardStepStatus.UNBESUCHT);
-		persistence.persist(wizardStepObject);
-
-		final Gesuch freigegebenesGesuch = gesuchService.antragFreigeben(mergedOnlineGesuch.getId(), null, null);
-
-		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
-			Constants.END_OF_TIME.minusMonths(2),
-			Constants.END_OF_TIME,
-			freigegebenesGesuch.getGesuchsperiode()
-		);
-
-		Assert.assertTrue(gesuche.isEmpty());
-	}
 
 	@Test
 	public void testGetAllGesuchForAmtAfterGPEmpty() {

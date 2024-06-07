@@ -30,7 +30,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.MandantService;
-import ch.dvbern.ebegu.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -43,8 +42,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -156,7 +155,7 @@ public class GesuchstellerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGesuchstellerContainer initZPVNr(
-			@Nonnull @QueryParam("email") @Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}") String email,
+			@Nonnull @QueryParam("email") @Email String email,
 			@Nonnull @QueryParam("language") String korrespondenzSprache,
 			@Nonnull @QueryParam("relayPath") String relayPath,
 			@Nonnull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId,

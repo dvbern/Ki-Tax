@@ -328,15 +328,13 @@
     width: 133.33333%;
 }
 
-.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper
-.mat-form-field-label {
+.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper .mat-form-field-label {
     -ms-transform: translateY(-1.28124em) scale(0.75);
     transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.00101px);
     width: 133.33334%;
 }
 
-.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
-.mat-form-field-label {
+.mat-form-field-can-float .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper .mat-form-field-label {
     -ms-transform: translateY(-1.28123em) scale(0.75);
     transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.00102px);
     width: 133.33335%;
@@ -1945,7 +1943,7 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     color: #f44336;
 }
 
-.mat-mdc-select-panel[aria-multiselectable="false"] .mat-pseudo-checkbox {
+.mat-mdc-select-panel[aria-multiselectable='false'] .mat-pseudo-checkbox {
     display: none;
 }
 
@@ -2011,9 +2009,11 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
         --mat-mdc-radio-ripple-color: #000;
         --mat-mdc-radio-checked-ripple-color: #424242;
     }
+
     .mdc-form-field .mdc-radio {
         padding: 3px;
         width: 20px;
+
         & + label {
             color: #000;
             cursor: pointer;
@@ -2032,7 +2032,7 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
 
 .mdc-data-table__header-cell {
     color: rgba(0, 0, 0, 0.54);
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
     font-size: 12px;
     line-height: 17px;
 }
@@ -2063,6 +2063,10 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
 
 .mat-mdc-select {
     padding: 1rem 0;
+    --mat-select-trigger-text-font: Open Sans, Arial, Helvetica, sans-serif;
+    --mat-select-trigger-text-weight: 700;
+    --mat-select-trigger-text-size: 1.6rem;
+
     .mat-mdc-select-value-text {
         padding-left: 1rem
     }
@@ -2100,6 +2104,10 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
 
 .mat-mdc-table .mat-mdc-row label {
     color: black;
+}
+
+.mat-mdc-radio-button, .mat-mdc-button {
+    --mdc-form-field-label-text-font: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 
 /* stylelint-enable */

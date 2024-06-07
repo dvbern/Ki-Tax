@@ -17,9 +17,29 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -31,24 +51,20 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
@@ -58,6 +74,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -82,7 +99,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
 	private static final String KEIN_ANSPRUCH_CONTENT_3 = "PdfGeneration_KeinAnspruch_Content_3";
 	private static final String KEIN_ANSPRUCH_CONTENT_4 = "PdfGeneration_KeinAnspruch_Content_4";
-	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
+	protected static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
@@ -93,7 +110,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
-	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
+	protected static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
 	protected static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN_FKJV = "PdfGeneration_NichtEintreten_Fusszeile2_FKJV";
@@ -229,7 +246,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
 			kind.getFullName(),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
-			betreuung.getBGNummer())));
+			betreuung.getReferenzNummer())));
 		document.add(PdfUtil.createParagraph(translate(
 			KEIN_ANSPRUCH_CONTENT_2,
 			Constants.DATE_FORMATTER.format(eingangsdatum))));
@@ -294,7 +311,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected Element createAntragNichtEintreten() {
-		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		LocalDate eingangsdatum = getEingangsdatum();
 		return PdfUtil.createBoldParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_8,
 			Constants.DATE_FORMATTER.format(eingangsdatum)), 2);
@@ -374,7 +391,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		final String gemeinde = getGemeindeStammdaten().getGemeinde().getName();
 
 		List<TableRowLabelValue> intro = new ArrayList<>();
-		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
+		intro.add(new TableRowLabelValue(REFERENZ_NUMMER, betreuung.getReferenzNummer()));
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
 		if (betreuung.getVorgaengerVerfuegung() != null) {
 			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
@@ -749,12 +766,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	@Nonnull
 	public PdfPTable createRechtsmittelBelehrung() {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten();
-		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
-		if (beschwerdeAdresse == null) {
-			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
-		}
-
-		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
+		String rechtsmittelbelehrung = getRechtsmittelbelehrungContent(stammdaten);
 		if (!stammdaten.getStandardRechtsmittelbelehrung()
 			&& stammdaten.getRechtsmittelbelehrung() != null) {
 			String belehrungInSprache = stammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
@@ -775,6 +787,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return table;
 	}
 
+	protected String getRechtsmittelbelehrungContent(@Nonnull GemeindeStammdaten stammdaten) {
+		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
+		if (beschwerdeAdresse == null) {
+			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
+		}
+		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
+	}
+
 	protected Element createNichtEingetretenParagraph1() {
 		Kind kind = betreuung.getKind().getKindJA();
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
@@ -785,7 +805,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
 			kind.getFullName(),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
-			betreuung.getBGNummer()));
+			betreuung.getReferenzNummer()));
 	}
 
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
@@ -802,7 +822,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return translate(FUSSZEILE_2_NICHT_EINTRETEN);
 	}
 
-	private void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+	protected void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(getFusszeile2NichtEintreten())
