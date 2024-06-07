@@ -51,7 +51,7 @@ import java.util.*;
 @Local(KindService.class)
 public class KindServiceBean extends AbstractBaseService implements KindService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KindServiceBean.class);
 	@Inject
 	private Persistence persistence;
 	@Inject
