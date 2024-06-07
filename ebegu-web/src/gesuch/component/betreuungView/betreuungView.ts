@@ -212,7 +212,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -230,7 +230,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .then(() => {
                 const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
                 return this.einstellungRS.getAllEinstellungenBySystemCached(
-                    gesuchsperiodeId,
+                    gesuchsperiodeId
                 ).toPromise().then((response: TSEinstellung[]) => {
                     response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
                         .forEach(einstellung => {
@@ -437,7 +437,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         if (this.erneutePlatzbestaetigungErforderlich) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT',
+                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT'
             }).then(() => {
                 this.platzAnfordern();
             });
@@ -511,7 +511,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.copyBGNumberLToClipboard();
             this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
+                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : ''
             }).then(() => {
                 let betreuungsstatus: TSBetreuungsstatus;
 
@@ -646,7 +646,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             betreuungsangebotTyp,
             instStammdaten: this.instStamm,
             isTFOKostenBerechnungStuendlich: this.isTFOKostenBerechnungStuendlich,
-            mahlzeitenverguenstigungActive: this.isMahlzeitenverguenstigungActive(),
+            mahlzeitenverguenstigungActive: this.isMahlzeitenverguenstigungActive()
         });
 
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
@@ -684,7 +684,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
             deleteText: '',
             cancelText: 'LABEL_NEIN',
-            confirmText: 'LABEL_JA',
+            confirmText: 'LABEL_JA'
         }).then(() => {
             this.platzAnfordern();
         });
@@ -700,7 +700,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 })
                     .then(() => {   // User confirmed removal
                         this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
@@ -727,7 +727,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
             deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
             cancelText: 'LABEL_ABBRECHEN',
-            confirmText: 'LABEL_SPEICHERN',
+            confirmText: 'LABEL_SPEICHERN'
         })
             .then(() => {   // User confirmed removal
                 this.save(
@@ -749,7 +749,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
                     deleteText: 'WOLLEN_SIE_FORTFAHREN',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 });
             } catch {
                 return;
@@ -761,7 +761,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT',
                     deleteText: 'WOLLEN_SIE_FORTFAHREN',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 });
             } catch {
                 return;
@@ -779,7 +779,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
                 deleteText: 'WOLLEN_SIE_FORTFAHREN',
                 cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
+                confirmText: 'LABEL_SPEICHERN'
             })
                 .then(() => {
                     this.savePlatzBestaetigung();
@@ -1042,7 +1042,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
                 deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
                 parentController: undefined,
-                elementID: undefined,
+                elementID: undefined
             }).then(() => {   // User confirmed removal
                 this.mutationsmeldungSenden();
             });
@@ -1051,7 +1051,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'MUTATIONSMELDUNG_CONFIRMATION',
                 deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
                 parentController: undefined,
-                elementID: undefined,
+                elementID: undefined
             }).then(() => {
                 this.mutationsmeldungSenden();
             });
@@ -1115,7 +1115,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
-            mitteilungId: this.existingMutationsMeldung.id,
+            mitteilungId: this.existingMutationsMeldung.id
         });
     }
 
@@ -1314,27 +1314,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             (this.getBetreuungModel() && this.getBetreuungModel().keineDetailinformationen);
     }
 
-    private setUnbekannteInstitutionAccordingToAngebot(): void {
-        /* eslint-disable */
-        this.instStamm = new TSInstitutionStammdatenSummary();
-        switch (this.betreuungsangebot?.key) {
-            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
-                break;
-            case TSBetreuungsangebotTyp.TAGESSCHULE:
-                this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
-                break;
-            case TSBetreuungsangebotTyp.MITTAGSTISCH:
-                this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
-                break;
-            case TSBetreuungsangebotTyp.KITA:
-                this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
-                break;
-            default:
-                throw new Error('Unbekannte Institution nicht implementiert für Angebottyp ' + this.betreuungsangebot.key);
-        }
-    }
-
     public onChangeVertrag(): void {
         // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
@@ -1399,7 +1378,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
@@ -1449,7 +1428,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
                 deleteText: '',
                 cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
+                confirmText: 'LABEL_SPEICHERN'
             }).then(() => {
                 this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
             });
@@ -1571,6 +1550,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isBedarfsstufeEmpty() {
         return !this.bedarfsstufe;
+    }
+
+    private setUnbekannteInstitutionAccordingToAngebot(): void {
+        /* eslint-disable */
+        this.instStamm = new TSInstitutionStammdatenSummary();
+        switch (this.betreuungsangebot?.key) {
+            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.TAGESSCHULE:
+                this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                this.instStamm.id = new UnknownMittagstischIdVisitor().process(this.mandant);
+                break;
+            case TSBetreuungsangebotTyp.KITA:
+                this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+                break;
+            default:
+                throw new Error('Unbekannte Institution nicht implementiert für Angebottyp ' + this.betreuungsangebot.key);
+        }
     }
 
     // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
@@ -1862,7 +1862,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private savePlatzBestaetigung(): void {
         this.getBetreuungModel().datumBestaetigung = DateUtil.today();
-        this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+        this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG);
         this.isBestaetigenClicked = false;
     }
 
