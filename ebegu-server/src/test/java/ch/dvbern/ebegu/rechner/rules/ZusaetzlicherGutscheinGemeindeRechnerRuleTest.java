@@ -42,9 +42,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 import static ch.dvbern.ebegu.enums.EinschulungTyp.KLASSE1;
 import static ch.dvbern.ebegu.enums.EinschulungTyp.VORSCHULALTER;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {

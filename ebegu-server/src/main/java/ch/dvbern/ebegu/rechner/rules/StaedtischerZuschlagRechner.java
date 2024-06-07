@@ -21,7 +21,8 @@ package ch.dvbern.ebegu.rechner.rules;
 import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
 abstract class StaedtischerZuschlagRechner {
