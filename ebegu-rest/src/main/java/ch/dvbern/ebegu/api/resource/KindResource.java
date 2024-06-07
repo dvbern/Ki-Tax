@@ -93,8 +93,6 @@ public class KindResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Optional<KindContainer> optional = null;
-
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveKind", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId()));
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -104,7 +102,7 @@ public class KindResource {
 		KindContainer copyOldKind = null;
 
 		if (kindContainerJAXP.getId() != null) {
-			optional = kindService.findKind(kindContainerJAXP.getId());
+			Optional<KindContainer> optional = kindService.findKind(kindContainerJAXP.getId());
 			kindToMerge = optional.orElse(new KindContainer());
 			copyOldKind = kindToMerge.copyKindContainer(new KindContainer(), AntragCopyType.MUTATION, gesuch, gesuch.getGesuchsperiode(), gesuch.getRegelStartDatum());
 		}
