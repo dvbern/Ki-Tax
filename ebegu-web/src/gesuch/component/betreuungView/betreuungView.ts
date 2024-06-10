@@ -508,7 +508,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public anmeldungSchulamtUebernehmen(isScolaris: { isScolaris: boolean }): void {
         this.gesuchModelManager.reloadGesuch().then(() => {
-            this.copyBGNumberLToClipboard();
             this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'CONFIRM_UEBERNAHME_SCHULAMT',
                 deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : ''
@@ -1806,16 +1805,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
             this.gesuchModelManager.getGesuch().status === TSAntragStatus.KEIN_KONTINGENT ||
             isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
-    }
-
-    private copyBGNumberLToClipboard(): void {
-        const bgNumber = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
-            this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
-        const $temp = $('<input>');
-        $('body').append($temp);
-        $temp.val(bgNumber).select();
-        document.execCommand('copy');
-        $temp.remove();
     }
 
     private setBetreuungsangebotTypValues(): void {
