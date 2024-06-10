@@ -15,7 +15,6 @@
 
 import * as angular from 'angular';
 
-import * as Raven from 'raven-js';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
@@ -36,6 +35,7 @@ import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import ITimeoutService = angular.ITimeoutService;
+import * as Sentry from '@sentry/browser';
 
 const LOG = LogFactory.createLog('AuthServiceRS');
 
@@ -202,7 +202,7 @@ export class AuthServiceRS {
         return this.loadPrincipal().then(user => {
             this.principal = user;
             this.principalSubject$.next(user);
-            this.setPrincipalInRavenUserContext();
+            this.setPrincipalInSentryUserContext();
 
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
@@ -216,8 +216,8 @@ export class AuthServiceRS {
             .then(restBenutzer => this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer));
     }
 
-    private setPrincipalInRavenUserContext(): void {
-        Raven.setUserContext({
+    private setPrincipalInSentryUserContext(): void {
+        Sentry.setUser({
             id: this.principal.username,
             email: this.principal.email,
             role: this.principal.getCurrentRole(),
@@ -235,7 +235,7 @@ export class AuthServiceRS {
     public logoutRequest(): any {
         return this.$http.post(`${CONSTANTS.REST_API  }auth/logout`, null).then((res: any) => {
             this.clearPrincipal();
-            Raven.setUserContext({});
+            Sentry.setUser(null);
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });

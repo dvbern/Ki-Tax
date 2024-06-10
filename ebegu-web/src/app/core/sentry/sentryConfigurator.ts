@@ -16,31 +16,25 @@
  */
 
 import {ErrorHandler} from '@angular/core';
-import * as Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import {environment} from '../../../environments/environment';
-import {BUILDTSTAMP, VERSION} from '../../../environments/version';
+import {VERSION} from '../../../environments/version';
+import {Angular as AngularIntegration} from '@sentry/integrations';
 
-const ravenPlugin = require('raven-js/plugins/angular');
-
-export function configureRaven(): void {
-    const sentryDSN = environment.sentryDSN;
-    if (!sentryDSN) {
-        console.log('Sentry is disabled because there is no sentryDSN');
-        return;
-    }
-    Raven
-        .config(sentryDSN)
-        .addPlugin(ravenPlugin, angular)
-        .setRelease(VERSION)
-        .setExtraContext({buildtimestamp: BUILDTSTAMP})
-        .install();
+export function configureSentry(): void {
+  const sentryDSN = environment.sentryDSN;
+  if (!sentryDSN) {
+    console.log('Sentry is disabled because there is no sentryDSN');
+    return;
+  }
+  Sentry.init({release: VERSION, dsn: sentryDSN, integrations: [new AngularIntegration()]});
 }
 
-export class RavenErrorHandler extends ErrorHandler {
-    public handleError(err: any): void {
-        if (environment.sentryDSN) {
-            Raven.captureException(err);
-        }
-        super.handleError(err);
+export class SentryErrorHandler extends ErrorHandler {
+  public handleError(err: any): void {
+    if (environment.sentryDSN) {
+      Sentry.captureException(err);
     }
+    super.handleError(err);
+  }
 }
