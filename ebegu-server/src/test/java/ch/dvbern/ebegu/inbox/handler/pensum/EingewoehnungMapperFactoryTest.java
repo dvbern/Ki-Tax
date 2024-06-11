@@ -106,12 +106,12 @@ class EingewoehnungMapperFactoryTest extends EasyMockSupport {
 			@SuppressWarnings("DataFlowIssue") EingewoehnungDTO eingewoehnung =
 				new EingewoehnungDTO(null, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 31));
 			z.setEingewoehnung(eingewoehnung);
-			ProcessingContext ctx = initProcessingContext(z);
 
 			expectEingewoehnungTyp(EingewoehnungTyp.PAUSCHALE);
 			ConstraintViolation<Eingewoehnung> violation = mock(ConstraintViolation.class);
 			expect(validator.validate(anyObject(Eingewoehnung.class))).andReturn(Set.of(violation));
-
+			BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+			ProcessingContext ctx = initProcessingContext(z, einstellungen);
 			BetreuungsmitteilungPensum actual = convert(z, ctx);
 
 			assertThat(actual.getEingewoehnung(), is(nullValue()));
@@ -148,13 +148,15 @@ class EingewoehnungMapperFactoryTest extends EasyMockSupport {
 		assertThat(actual.getEingewoehnung(), is(nullValue()));
 	}
 
+	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+		return convert(z, initProcessingContext(z, einstellungen));
+	}
+
 	@Nonnull
 	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z, ProcessingContext ctx) {
 		replayAll();
-
-		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
-		ProcessingContext ctx = initProcessingContext(z, einstellungen);
-		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnungPauschale(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnung(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
