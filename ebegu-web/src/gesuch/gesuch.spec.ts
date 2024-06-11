@@ -42,14 +42,11 @@ describe('gesuch', () => {
             gesuchModelManager,
             $injector.get('WizardStepManager'),
             $injector.get('EbeguUtil'),
-            $injector.get('ErrorService'),
             $injector.get(
                 'AntragStatusHistoryRS'),
             $injector.get('$translate'),
             $injector.get('AuthServiceRS'),
             $injector.get('$mdSidenav'),
-            undefined,
-            undefined,
             $injector.get('EinstellungRS')
         );
         gesuch = new TSGesuch();

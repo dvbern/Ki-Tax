@@ -17,13 +17,15 @@
 
 package ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class InstitutionStammdatenBuilder {
 
@@ -34,6 +36,9 @@ public abstract class InstitutionStammdatenBuilder {
 	private final String idInstitutionStammdatenTagesfamilie;
 	private final String idInstitutionStammdatenTagesschule;
 	private final String idInstitutionStammdatenFerieninsel;
+
+	@Setter @Getter
+	private String idInstitutionStammdatenMittagstisch;
 
 	protected InstitutionStammdatenBuilder(
 			InstitutionStammdatenService institutionStammdatenService,
@@ -113,6 +118,14 @@ public abstract class InstitutionStammdatenBuilder {
 					idInstitutionStammdatenFerieninsel));
 	}
 
+	protected InstitutionStammdaten findInstitutionMittagstisch() {
+		assert idInstitutionStammdatenMittagstisch != null;
+		return institutionStammdatenService.findInstitutionStammdaten(idInstitutionStammdatenMittagstisch)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findInstitutionMittagstisch",
+				idInstitutionStammdatenMittagstisch));
+	}
+
 	public InstitutionStammdatenService getInstitutionStammdatenService() {
 		return institutionStammdatenService;
 	}
@@ -137,4 +150,5 @@ public abstract class InstitutionStammdatenBuilder {
 	public String getIdInstitutionStammdatenFerieninsel() {
 		return idInstitutionStammdatenFerieninsel;
 	}
+
 }

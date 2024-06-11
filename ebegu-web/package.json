@@ -123,6 +123,8 @@
     "@angular/upgrade": "^17.3.7",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "@sentry/browser": "^6.19.7",
+    "@sentry/integrations": "^6.19.7",
     "@uirouter/angular": "^13.0.0",
     "@uirouter/angular-hybrid": "^17.1.0",
     "@uirouter/angularjs": "^1.1.0",
@@ -158,7 +160,6 @@
     "ngx-guided-tour": "^2.0.1",
     "ngx-iban": "^17.4.0",
     "randomcolor": "^0.5.4",
-    "raven-js": "^3.27.2",
     "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.5"

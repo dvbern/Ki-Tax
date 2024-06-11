@@ -15,26 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
@@ -68,7 +48,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -82,6 +61,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -120,6 +100,11 @@ import ch.dvbern.ebegu.testfaelle.Testfall_Sozialdienst;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_FB;
 import ch.dvbern.ebegu.testfaelle.testantraege.Testantrag_LATS;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz1;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz2;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz3;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz4;
+import ch.dvbern.ebegu.testfaelle.testfealleschwyz.TestfallSchwyz5;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -129,6 +114,25 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
 import static java.util.Objects.requireNonNull;
@@ -294,20 +298,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 						institutionStammdatenBuilder), verfuegen, besitzer);
 				responseString.append("Fall Schulamt Only Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV1.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_01(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 1 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz1(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 1 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV2.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_02(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 2 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz2(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 2 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV3.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_03(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 3 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz3(gesuchsperiode, betreuungenBestaetigt, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 3 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV4.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_04(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 4 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz4(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 4 Fallnummer:").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV5.equals(fallid)) {
-				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_05(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
-				responseString.append("Fall ASIV 5 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
+				final Gesuch gesuch = createAndSaveGesuch(new TestfallSchwyz5(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
+				responseString.append("Fall Schwyz Schulung 5 Fallnummer:").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (ASIV6.equals(fallid)) {
 				final Gesuch gesuch = createAndSaveAsivGesuch(new Testfall_ASIV_06(gesuchsperiode, true, gemeinde, institutionStammdatenBuilder), verfuegen, besitzer);
 				responseString.append("Fall ASIV 6 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());

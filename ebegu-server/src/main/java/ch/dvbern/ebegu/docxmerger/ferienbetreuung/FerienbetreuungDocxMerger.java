@@ -39,7 +39,7 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new StringMergeField("userName", dto.getUserName()));
 		this.mergeFields.add(new StringMergeField("userEmail", dto.getUserEmail()));
 		this.mergeFields.add(new StringMergeField("gemeindeNamen", dto.getGemeindeNamen()));
-		this.mergeFields.add(new StringMergeField("gemeindeAnschrift", dto.getGemeindeNamen()));
+		this.mergeFields.add(new StringMergeField("gemeindeAnschrift", dto.getGemeindeAnschrift()));
 		this.mergeFields.add(new StringMergeField("gemeindeStrasse", dto.getGemeindeStrasse()));
 		this.mergeFields.add(new StringMergeField("gemeindeNr", dto.getGemeindeNr()));
 		this.mergeFields.add(new StringMergeField("gemeindePLZ", dto.getGemeindePLZ()));

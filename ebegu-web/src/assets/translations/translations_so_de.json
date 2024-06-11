@@ -1,7 +1,7 @@
 {
     "FAELLE_LIST": "Alle Fälle",
-    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}} oder {{basisjahrMinus}} erhalten?" ,
-    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}}, {{basisjahrMinus}} oder {{basisjahrMinus2}} erhalten?" ,
+    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}} oder {{basisjahrMinus}} erhalten?",
+    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}}, {{basisjahrMinus}} oder {{basisjahrMinus2}} erhalten?",
     "MOMENTAN_SELBSTSTAENDIG": "Sind Sie selbstständig erwerbend?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} abweichen?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
@@ -83,6 +83,8 @@
     "KINDER_FACHSTELLENBESTAETIGUNG": "Fachstellenbestätigung",
     "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
     "BETREUUNGSPENSUM_FACHSTELLE": "Von Fachstelle festgelegte Betreuung",
-    "FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT": "Tragen Sie hier den Betrag aus Ziffer 499, oder, wenn dieses höher ist gemäss Ziffer 400 der Staatssteuerveranlagung ein.",
+    "FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT": "Tragen Sie hier den Betrag aus Ziffer 499, oder, wenn dieses höher ist gemäss Ziffer 400 der Staatssteuerveranlagung ein. Die genaue Definition des massgebenden Einkommens ist in der Verordnung zu den Betreuungsgutscheinen der jeweiligen Wohnsitzgemeinde geregelt.",
+    "VOLLKOSTEN_HELP": "Bezeichnet die Betreuungskosten in CHF der Institution für das vergünstigte Pensum.",
+    "MIN_ELTERNBEITRAG_HELP": "Die Eltern müssen einen minimalen Elternbeitrag leisten. Falls dies noch nicht der Fall ist, weil die Kosten vollständig oder fast vollständig durch den Betreuungsgutschein gedeckt werden, muss die Kita oder Tagesfamilienorganisation den Eltern den (fehlenden) minimalen Elternbeitrag in Rechnung stellen. Der minimale Elternbeitrag wird in der Verordnung zu den Betreuungsgutscheinen der jeweiligen Wohnsitzgemeinde geregelt.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

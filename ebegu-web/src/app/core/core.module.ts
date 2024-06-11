@@ -41,14 +41,14 @@ import {MandantService} from '../shared/services/mandant.service';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
-import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
+import {configureSentry, SentryErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-// sentry
-configureRaven();
+
+configureSentry();
 
 registerLocaleData(deCH);
 
@@ -113,7 +113,7 @@ export class CoreModule {
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
                 {provide: MAT_DATE_LOCALE, useValue: DEFAULT_LOCALE},
-                {provide: ErrorHandler, useClass: RavenErrorHandler},
+                {provide: ErrorHandler, useClass: SentryErrorHandler},
                 // {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
                 {
                     provide: MatPaginatorIntl,
