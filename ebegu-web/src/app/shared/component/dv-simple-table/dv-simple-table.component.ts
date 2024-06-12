@@ -49,7 +49,6 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        // eslint-disable-next-line
         if (changes.data) {
             if (!this.columns) {
                 console.error(

@@ -369,7 +369,6 @@ export class TSFinanzModel {
             : this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
     }
 
-    // eslint-disable-next-line
     private getEkvOfBsj_JA(
         einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
     ): TSEinkommensverschlechterung {
@@ -378,14 +377,12 @@ export class TSFinanzModel {
             : einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
     }
 
-    // eslint-disable-next-line
     public getEkvToWorkWith_GS(): TSEinkommensverschlechterung {
         return this.gesuchstellerNumber === 2
             ? this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2)
             : this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
     }
 
-    // eslint-disable-next-line
     private getEkvOfBsj_GS(
         einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
     ): TSEinkommensverschlechterung {
@@ -446,7 +443,6 @@ export class TSFinanzModel {
         this._zahlungsinformationenGS = value;
     }
 
-    // eslint-disable-next-line
     public initEinkommensverschlechterungContainer(
         basisjahrPlus: number,
         gesuchstellerNumber: number

@@ -73,7 +73,7 @@ class LogFunctions {
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-console
         super(console.error, console.warn, console.info, console.debug);
     }
 }

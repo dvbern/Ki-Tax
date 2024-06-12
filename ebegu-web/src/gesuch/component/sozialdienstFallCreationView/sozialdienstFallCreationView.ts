@@ -158,7 +158,6 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
     }
 
-    // eslint-disable-next-line
     private saveData(): void {
         this.errorService.clearAll();
         this.gesuchModelManager

@@ -117,7 +117,6 @@ export class FreigabeComponent implements OnInit {
                         container.isAtLeastInBearbeitungKanton()
                     );
                 }
-                // eslint-disable-next-line
                 if (container.isGeprueft()) {
                     this.canSeeFreigabeButton.next(false);
                     this.canSeeGeprueftButton.next(false);
@@ -163,7 +162,6 @@ export class FreigabeComponent implements OnInit {
                     this.$state.go('gemeindeantraege.view');
                 },
                 (errors: TSExceptionReport[]) => {
-                    // eslint-disable-next-line
                     errors.forEach(error => {
                         if (
                             error.customMessage.includes('angabenDeklaration')
@@ -236,7 +234,6 @@ export class FreigabeComponent implements OnInit {
             )
             .subscribe(
                 container => {
-                    // eslint-disable-next-line
                     if (container.isInZweitPruefung()) {
                         const dialogConfigInfo = new MatDialogConfig();
                         dialogConfigInfo.data = {

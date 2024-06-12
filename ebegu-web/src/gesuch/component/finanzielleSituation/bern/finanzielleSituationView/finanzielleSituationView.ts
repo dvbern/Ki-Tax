@@ -527,7 +527,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
                         TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN
                 );
                 if (showErsatzeinkommen === undefined) {
-                    // eslint-disable-next-line max-len
                     LOG.error(
                         `Missing Einstellung "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN" in gesuchsperiode ${this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString}`
                     );

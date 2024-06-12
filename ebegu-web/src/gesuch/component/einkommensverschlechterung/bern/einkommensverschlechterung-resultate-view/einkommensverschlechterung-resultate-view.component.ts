@@ -120,7 +120,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
                         );
                 });
         }
-        // eslint-disable-next-line
         return this.gesuchModelManager
             .saveEinkommensverschlechterungContainer()
             .then(() => this.updateStatus(true).then(onResult(true)));
@@ -134,7 +133,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2
             ? this.getEinkommensverschlechterungContainerGS1()
@@ -143,7 +141,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
                   .ekvGSBasisJahrPlus1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2
             ? this.getEinkommensverschlechterungContainerGS1()
@@ -156,7 +153,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS2;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2
             ? this.getEinkommensverschlechterungContainerGS2()
@@ -165,7 +161,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
                   .ekvGSBasisJahrPlus1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2
             ? this.getEinkommensverschlechterungContainerGS2()

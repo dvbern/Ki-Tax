@@ -124,7 +124,7 @@ export class FreigabeController {
                 this.gesuch.verantwortlicherUsernameTS,
                 this.userTSList
             );
-        // eslint-disable-next-line
+
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentTS)) {
             this.selectedUserTS = userVorjahrOrCurrentTS;
         } else {

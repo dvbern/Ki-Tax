@@ -125,7 +125,7 @@ export class FinanzielleSituationStartSolothurnComponent
                 this.resetBruttoLohnGS2();
             }
         }
-        // eslint-disable-next-line
+
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
             if (this.isGemeinsam()) {

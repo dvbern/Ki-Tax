@@ -330,7 +330,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                 () => {
                     this.loadAntragList();
                     this.cd.markForCheck();
-                    // eslint-disable-next-line
                 },
                 err => {
                     const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
@@ -369,7 +368,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                     );
                     this.loadAntragList();
                     this.cd.markForCheck();
-                    // eslint-disable-next-line
                 },
                 err => {
                     const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
@@ -504,7 +502,6 @@ export class GemeindeAntraegeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        // eslint-disable-next-line
         this.gemeindeAntragService
             .createAntrag(this.formGroup.getRawValue())
             .subscribe(

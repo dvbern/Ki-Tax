@@ -208,7 +208,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
-        // eslint-disable-next-line
+
         if (
             EbeguUtil.isNotNullOrUndefined(
                 this.gesuchModelManager.getGesuchsperiode()

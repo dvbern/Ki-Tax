@@ -381,7 +381,6 @@ export class EditInstitutionComponent implements OnInit {
         this.updateInstitution(updateModel);
     }
 
-    // eslint-disable-next-line
     private async updateInstitution(
         updateModel: TSInstitutionUpdate
     ): Promise<void> {

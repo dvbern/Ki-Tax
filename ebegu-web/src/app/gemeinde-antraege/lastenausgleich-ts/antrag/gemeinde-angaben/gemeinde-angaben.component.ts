@@ -466,7 +466,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             numberValidator(ValidationType.POSITIVE_INTEGER)
         ]);
 
-        // eslint-disable-next-line
         this.angabenForm.controls.tagesschuleTeilweiseGeschlossen.valueChanges.subscribe(
             value => {
                 if (value === true) {
@@ -503,7 +502,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         this.angabenForm.controls.ueberschussErzielt.setValidators([
             Validators.required
         ]);
-        // eslint-disable-next-line
         this.angabenForm.controls.ueberschussErzielt.valueChanges.subscribe(
             value => {
                 if (value === true) {
@@ -612,14 +610,12 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private numberValidator(): ValidatorFn {
-        // eslint-disable-next-line
-        return (control: AbstractControl): {} | null => {
-            return isNaN(control.value)
+        return (control: AbstractControl): {} | null =>
+            isNaN(control.value)
                 ? {
                       noNumberError: control.value
                   }
                 : null;
-        };
     }
 
     private plausibilisierungAddition(): ValidatorFn {
@@ -687,7 +683,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         this.setupSchlusszahlungenCalculations(gemeindeAngabenFromServer);
     }
 
-    // eslint-disable-next-line max-len
     private setupLastenausgleichberechtigteBetreuungsstundenCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -728,7 +723,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         );
     }
 
-    // eslint-disable-next-line max-len
     private setupStundenNormlohnMehr50ProzentCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -774,7 +768,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         }
     }
 
-    // eslint-disable-next-line max-len
     private setupStundenWeniger50ProzentCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -807,7 +800,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         );
     }
 
-    // eslint-disable-next-line max-len
     private setupLastenausgleichsberechtigterBetragCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -843,7 +835,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         );
     }
 
-    // eslint-disable-next-line max-len
     private setupKostenGemeindeCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -935,7 +926,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         );
     }
 
-    // eslint-disable-next-line max-len
     private setupSchlusszahlungenCalculations(
         gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde
     ): void {
@@ -946,7 +936,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             this.angabenForm.controls.ersteRateAusbezahlt.valueChanges.pipe(
                 startWith(gemeindeAngabenFromServer?.ersteRateAusbezahlt || 0)
             )
-            // eslint-disable-next-line
         ]).subscribe(
             values => {
                 this.angabenForm.controls.schlusszahlung.setValue(
@@ -994,7 +983,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             );
             return;
         }
-        // eslint-disable-next-line max-len
+
         if (
             this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()
         ) {
@@ -1036,7 +1025,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             return;
         }
 
-        // eslint-disable-next-line max-len
         if (
             this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()
         ) {
@@ -1266,7 +1254,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             numberValidator(ValidationType.POSITIVE_INTEGER)
         ]);
 
-        // eslint-disable-next-line
         this.angabenForm.controls.tagesschuleTeilweiseGeschlossen.valueChanges.subscribe(
             value => {
                 if (value === true) {
@@ -1330,7 +1317,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                   };
     }
 
-    // eslint-disable-next-line
     private setupPermissions(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         principal: TSBenutzer

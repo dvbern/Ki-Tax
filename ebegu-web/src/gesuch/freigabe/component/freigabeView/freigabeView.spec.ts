@@ -140,7 +140,7 @@ describe('freigabeView', () => {
 
             const returned = controller.gesuchEinreichen();
             $scope.$apply();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -213,7 +213,6 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(
                 downloadRS.getFreigabequittungAccessTokenGeneratedDokument
             ).toHaveBeenCalledWith(gesuch.id, false);

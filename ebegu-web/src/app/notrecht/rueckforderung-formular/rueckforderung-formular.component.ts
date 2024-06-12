@@ -1163,7 +1163,6 @@ export class RueckforderungFormularComponent
     }
 
     // ist nicht identisch => return von anderem string
-    // eslint-disable-next-line
     public getDokumenteEinsatzplaeneTitle(
         rueckforderungFormular: TSRueckforderungFormular
     ): string {
@@ -1177,7 +1176,6 @@ export class RueckforderungFormularComponent
     }
 
     // ist nicht identisch => return von anderem string
-    // eslint-disable-next-line
     public getDokumenteAngabenTitle(
         rueckforderungFormular: TSRueckforderungFormular
     ): string {

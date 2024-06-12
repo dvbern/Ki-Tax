@@ -252,11 +252,11 @@ describe('betreuungView', () => {
                 spyOn($state, 'go');
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     gesuchModelManager.removeBetreuungFromKind
                 ).not.toHaveBeenCalled();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {
                     gesuchId: ''
                 });
@@ -269,11 +269,11 @@ describe('betreuungView', () => {
                 betreuungView.model.timestampErstellt = undefined;
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     gesuchModelManager.removeBetreuungFromKind
                 ).toHaveBeenCalled();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {
                     gesuchId: ''
                 });
@@ -366,7 +366,7 @@ describe('betreuungView', () => {
                 expect(betreuungToWorkWith.datumAblehnung).toEqual(
                     DateUtil.today()
                 );
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -392,7 +392,7 @@ describe('betreuungView', () => {
                 expect(
                     gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus
                 ).toEqual(TSBetreuungsstatus.AUSSTEHEND);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -713,15 +713,13 @@ describe('betreuungView', () => {
 
         betreuungView.platzAnfordern();
         $rootScope.$apply();
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+
         expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
         if (moveToNextStep) {
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($state.go).toHaveBeenCalledWith(betreuungenState, {
                 gesuchId: ''
             });
         } else {
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($state.go).not.toHaveBeenCalled();
         }
     }

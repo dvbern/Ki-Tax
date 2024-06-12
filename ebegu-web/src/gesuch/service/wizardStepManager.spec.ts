@@ -202,7 +202,6 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith(
                 '123'
             );
@@ -219,7 +218,6 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith(
                 '123'
             );

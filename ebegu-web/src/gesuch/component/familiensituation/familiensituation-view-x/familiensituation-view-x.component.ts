@@ -228,7 +228,7 @@ export class FamiliensituationViewXComponent
             this.getFamiliensituation().startKonkubinat =
                 this.getFamiliensituation().aenderungPer;
         }
-        // eslint-disable-next-line
+
         if (!this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
             this.getFamiliensituation().unterhaltsvereinbarung = undefined;

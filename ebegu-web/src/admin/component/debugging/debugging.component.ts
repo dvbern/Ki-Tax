@@ -106,7 +106,6 @@ export class DebuggingComponent implements OnInit, OnDestroy {
 
     public doUndefined(): void {
         const test = [1, 2];
-        // eslint-disable-next-line
         test[2].toFixed(1);
     }
 

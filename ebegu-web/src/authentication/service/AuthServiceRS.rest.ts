@@ -135,7 +135,6 @@ export class AuthServiceRS {
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
-        // eslint-disable-next-line
         try {
             // we take the complete user from Server and store it in principal
             return this.reloadUser();

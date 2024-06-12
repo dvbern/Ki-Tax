@@ -108,7 +108,7 @@ export class SteuerabfrageResponseHintsComponent
             this.gesuchModelManager.getGesuchstellerNumber() === 1
                 ? this.gesuchModelManager.getGesuch().gesuchsteller1
                 : this.gesuchModelManager.getGesuch().gesuchsteller2;
-        // eslint-disable-next-line
+
         if (this.showZugriffErfolgreich(this.status)) {
             this.finSitRS
                 .geburtsdatumMatchesSteuerabfrage(

@@ -220,7 +220,6 @@ export class DossierToolbarController implements IDVFocusableController {
         this.$state.go('authentication.login', {type: 'logout'});
     }
 
-    // eslint-disable-next-line
     private addWatchers($scope: IScope): void {
         // needed because of test is not able to inject $scope!
         if (!$scope) {
@@ -322,7 +321,6 @@ export class DossierToolbarController implements IDVFocusableController {
         );
     }
 
-    // eslint-disable-next-line
     public updateAntragDTOList(): void {
         if (this.dossierId) {
             this.dossierRS

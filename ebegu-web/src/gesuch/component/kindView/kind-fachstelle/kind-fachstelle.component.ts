@@ -136,7 +136,6 @@ export class KindFachstelleComponent
                 TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION
             );
             this.resetGruendeZusatzleistung();
-            // eslint-disable-next-line max-len
         } else if (
             this.pensumFachstelle.integrationTyp ===
             TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION

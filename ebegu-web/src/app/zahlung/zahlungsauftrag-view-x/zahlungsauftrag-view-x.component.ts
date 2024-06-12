@@ -350,7 +350,6 @@ export class ZahlungsauftragViewXComponent
                     win
                 );
             })
-            // eslint-disable-next-line
             .catch(error => {
                 this.errorService.addMesageAsError(
                     error?.error?.translatedMessage ||
@@ -360,7 +359,6 @@ export class ZahlungsauftragViewXComponent
             });
     }
 
-    // eslint-disable-next-line
     public ausloesen(zahlungsauftragId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
@@ -659,7 +657,6 @@ export class ZahlungsauftragViewXComponent
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 displayFunction: (
-                    // eslint-disable-next-line
                     status: TSZahlungsauftragsstatus,
                     element: TSZahlungsauftrag
                 ) => this.getCalculatedStatus(element)

@@ -259,7 +259,6 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         );
     }
 
-    // eslint-disable-next-line
     public initGeschaeftsgewinnUndErsatzeinkommensFromFS(): void {
         if (
             !this.model.getFiSiConToWorkWith() ||

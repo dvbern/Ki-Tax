@@ -115,7 +115,6 @@ describe('betreuungRS', () => {
                         createdBetreuung = result;
                     });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(
                     wizardStepManager.findStepsFromGesuch
                 ).toHaveBeenCalledWith(gesuchId);
@@ -142,7 +141,7 @@ describe('betreuungRS', () => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     wizardStepManager.findStepsFromGesuch
                 ).toHaveBeenCalledWith(gesuchId);

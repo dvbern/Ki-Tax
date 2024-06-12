@@ -289,7 +289,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.aktuellGueltig = false;
             return;
         }
-        // eslint-disable-next-line
+
         if (
             this.getBetreuungModel().anmeldungMutationZustand ===
             TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN

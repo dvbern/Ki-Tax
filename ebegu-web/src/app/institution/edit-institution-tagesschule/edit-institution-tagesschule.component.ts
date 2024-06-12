@@ -459,17 +459,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public getWochentageAsString(group: TSModulTagesschuleGroup): string {
-        return (
-            group.module
-                .map((gem: TSModulTagesschule) => gem.wochentag)
-                .map(ordinal => getWeekdaysValues().indexOf(ordinal))
-                // eslint-disable-next-line
-                .sort()
-                .map((tag: number) =>
-                    this.translate.instant(`${getWeekdaysValues()[tag]}_SHORT`)
-                )
-                .join(', ')
-        );
+        return group.module
+            .map((gem: TSModulTagesschule) => gem.wochentag)
+            .map(ordinal => getWeekdaysValues().indexOf(ordinal))
+            .sort()
+            .map((tag: number) =>
+                this.translate.instant(`${getWeekdaysValues()[tag]}_SHORT`)
+            )
+            .join(', ');
     }
 
     public getBezeichnung(group: TSModulTagesschuleGroup): string {

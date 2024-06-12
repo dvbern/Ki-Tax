@@ -109,7 +109,6 @@ export class DVSuppressFormSubmitOnEnterController {
                 this.setFocus(element);
                 return;
             case this.$mdConstant.KEY_CODE.ENTER:
-                // eslint-disable-next-line
                 // event.stopPropagation();    //we do not want to submit the form on enter
                 // event.preventDefault();
                 this.triggerNextButton(element);

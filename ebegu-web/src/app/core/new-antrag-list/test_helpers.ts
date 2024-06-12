@@ -32,7 +32,6 @@ export function html(html: string): Element {
     return div;
 }
 
-// eslint-disable-next-line
 export function bootstrap(
     platform: PlatformRef,
     ng2Module: Type<{}>,

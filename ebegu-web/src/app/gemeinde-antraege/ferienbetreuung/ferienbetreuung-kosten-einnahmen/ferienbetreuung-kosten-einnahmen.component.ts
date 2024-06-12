@@ -212,7 +212,6 @@ export class FerienbetreuungKostenEinnahmenComponent
             Validators.required,
             numberValidator(ValidationType.INTEGER)
         ]);
-        // eslint-disable-next-line
         if (this.isDelegationsmodell) {
             this.form.controls.sockelbeitrag.setValidators([
                 Validators.required,

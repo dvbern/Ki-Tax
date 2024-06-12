@@ -72,7 +72,6 @@ export class UploadRS {
                 url: this.serviceURL,
                 method: 'POST',
                 headers: {
-                    // eslint-disable-next-line
                     'x-filename': names.join(';'),
                     'x-gesuchID': gesuchID
                 },
@@ -103,7 +102,6 @@ export class UploadRS {
         rueckforderungDokumentTyp: TSRueckforderungDokumentTyp
     ): IPromise<TSRueckforderungDokument[]> {
         const names = this.encodeFileNames(files);
-        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`;
         return this.upload
             .upload({
@@ -226,7 +224,6 @@ export class UploadRS {
     ): IPromise<any> {
         return this.upload
             .upload({
-                // eslint-disable-next-line max-len
                 url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(
                     periodeID
                 )}/${sprache}/${dokumentTyp}`,
@@ -257,7 +254,6 @@ export class UploadRS {
         const encodedFilename = this.base64.encode(vollmacht.name);
         return this.upload
             .upload({
-                // eslint-disable-next-line max-len
                 url: `${this.serviceURL}/uploadSozialdienstFallsDokument/${encodeURIComponent(fallId)}`,
                 headers: {
                     'x-filename': encodedFilename

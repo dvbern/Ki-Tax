@@ -255,7 +255,6 @@ describe('EbeguUtil', () => {
     });
     describe('ZemisNummerToStandardZemisNummer', () => {
         it('Formate sollten in Standard Format konvertiert werden können', () => {
-            // eslint-disable-next-line
             const zemis1 = '12345678.9';
             const zemis2 = '012345678.9';
             const zemis3 = '012.345.678.9';

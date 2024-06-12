@@ -367,7 +367,6 @@ export class GesuchModelManager {
             : this.getGesuchstellerNumber() === 1;
     }
 
-    // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (
             this.wizardStepManager.getCurrentStepName() ===
@@ -483,7 +482,6 @@ export class GesuchModelManager {
         }
         for (const konfigurationsListeElement of this.gemeindeStammdaten
             .konfigurationsListe) {
-            // eslint-disable-next-line
             if (
                 konfigurationsListeElement.gesuchsperiode.id ===
                 this.getGesuchsperiode().id
@@ -770,7 +768,6 @@ export class GesuchModelManager {
     }
 
     public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
-        // eslint-disable-next-line
         return this.finanzielleSituationRS
             .saveFinanzielleSituationStart(this.gesuch)
             .then(gesuchResponse => {
@@ -1478,7 +1475,6 @@ export class GesuchModelManager {
     public findKindById(kindID: string): number {
         if (this.gesuch.kindContainers) {
             for (let i = 0; i < this.gesuch.kindContainers.length; i++) {
-                // eslint-disable-next-line
                 if (this.gesuch.kindContainers[i].id === kindID) {
                     this.setKindIndex(i);
 
@@ -1526,7 +1522,6 @@ export class GesuchModelManager {
         const kindToWorkWith = this.getKindToWorkWith();
         if (kindToWorkWith) {
             for (let i = 0; i < kindToWorkWith.betreuungen.length; i++) {
-                // eslint-disable-next-line
                 if (kindToWorkWith.betreuungen[i].id === betreuungID) {
                     this.setBetreuungIndex(i);
 
@@ -1721,7 +1716,6 @@ export class GesuchModelManager {
                         kindContainer.betreuungen.length !==
                         kindContainerVerfuegt.betreuungen.length
                     ) {
-                        // eslint-disable-next-line max-len
                         const msg = `ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht mit der berechneten Anzahl Betreuungen ueberein; erwartet: ${kindContainer.betreuungen.length} erhalten: ${kindContainerVerfuegt.betreuungen.length}`;
                         this.log.error(
                             msg,

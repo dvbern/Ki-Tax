@@ -220,7 +220,6 @@ export class TSControllingCalculator {
                     ),
                     map(parseFloat)
                 )
-            // eslint-disable-next-line
         ]).subscribe(
             values => {
                 this._anteilElternbeitraegeCurrentPeriode.next(

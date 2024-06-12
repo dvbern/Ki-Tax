@@ -230,7 +230,6 @@ export class GesuchsperiodeRS {
         sprache: TSSprache,
         dokumentTyp: TSDokumentTyp
     ): IHttpPromise<TSGesuchsperiode> {
-        // eslint-disable-next-line max-len
         return this.http.delete(
             `${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`
         );
@@ -253,7 +252,6 @@ export class GesuchsperiodeRS {
         sprache: TSSprache,
         dokumentTyp: TSDokumentTyp
     ): IPromise<BlobPart> {
-        // eslint-disable-next-line max-len
         return this.http
             .get(
                 `${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,

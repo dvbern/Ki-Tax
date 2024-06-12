@@ -98,7 +98,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
 
         this.familiensituation =
             this.gesuchModelManager.getGesuch().familiensituationContainer;
-        // eslint-disable-next-line
+
         if (this.familiensituation) {
             if ($stateParams.sozialhilfeZeitraumNum) {
                 const ewpNum =

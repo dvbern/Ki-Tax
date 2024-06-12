@@ -127,7 +127,7 @@ describe('KindRS', () => {
                     updatedKindContainer = result;
                 });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     wizardStepManager.findStepsFromGesuch
                 ).toHaveBeenCalledWith(gesuchId);
@@ -148,7 +148,7 @@ describe('KindRS', () => {
                     deleteResult = result;
                 });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     wizardStepManager.findStepsFromGesuch
                 ).toHaveBeenCalledWith(gesuchId);

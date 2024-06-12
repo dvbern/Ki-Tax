@@ -158,7 +158,6 @@ export class LastenausgleichTSService {
         this.lATSAngabenGemeindeContainerStore.next(savedContainer);
     }
 
-    // eslint-disable-next-line max-len
     public latsGemeindeAntragFreigeben(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
@@ -204,7 +203,6 @@ export class LastenausgleichTSService {
             );
     }
 
-    // eslint-disable-next-line max-len
     public latsAngabenGemeindeFormularAbschliessen(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {

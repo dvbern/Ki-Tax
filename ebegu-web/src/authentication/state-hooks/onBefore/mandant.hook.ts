@@ -56,7 +56,6 @@ export function mandantCheck($transitions: TransitionService): void {
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-// eslint-disable-next-line
 
 function redirectToMandantSelection(transition: Transition): HookResult {
     const mandantService: MandantService = transition

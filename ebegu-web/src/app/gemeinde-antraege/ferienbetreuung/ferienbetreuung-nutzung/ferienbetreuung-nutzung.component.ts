@@ -205,7 +205,6 @@ export class FerienbetreuungNutzungComponent
             }
         );
         // sonderschueler 2
-        // eslint-disable-next-line
         this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.setValidators(
             control => {
                 const diff =

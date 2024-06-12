@@ -59,7 +59,6 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
             return;
         }
         // Bei STADT_BERN_ASIV_CONFIGURED eine Sicherheitsabfrage machen
-        // eslint-disable-next-line
         if (
             this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED' &&
             this.applicationProperty.value === 'true'

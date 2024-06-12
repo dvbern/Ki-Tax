@@ -106,7 +106,7 @@ describe('GesuchstellerRS', () => {
                         updatedGesuchsteller = result;
                     });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     wizardStepManager.findStepsFromGesuch
                 ).toHaveBeenCalledWith(dummyGesuchID);

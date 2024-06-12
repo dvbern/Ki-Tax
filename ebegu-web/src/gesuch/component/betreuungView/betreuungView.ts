@@ -234,7 +234,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         );
     }
 
-    // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
         this.initAngebotTypenFromEinstellungen()
@@ -604,7 +603,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private initBetreuungsangebotTyp() {
         if (this.$stateParams.betreuungsangebotTyp) {
             for (const obj of this.betreuungsangebotValues) {
-                // eslint-disable-next-line
                 if (
                     obj.key === this.$stateParams.betreuungsangebotTyp &&
                     obj.value !==
@@ -764,7 +762,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.form.$dirty && this.isMutationsmeldungStatus;
     }
 
-    // eslint-disable-next-line
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
             return;
@@ -796,7 +793,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setErsterSchultag(): void {
-        // eslint-disable-next-line
         if (
             this.minEintrittsdatum &&
             !this.getBetreuungModel().keineDetailinformationen
@@ -1476,7 +1472,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public checkErweiterteBetreuungAndSaveBestaetigung(): void {
-        // eslint-disable-next-line
         if (
             this.getErweiterteBetreuungJA() &&
             this.getErweiterteBetreuungJA().erweiterteBeduerfnisse &&

@@ -64,7 +64,6 @@ export class NotrechtComponent implements OnInit {
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
-    // eslint-disable-next-line
     public displayedColumns = [
         'institutionStammdaten.institution.name',
         'institutionStammdaten.betreuungsangebotTyp',
@@ -321,7 +320,6 @@ export class NotrechtComponent implements OnInit {
                         });
                     return;
                 }
-                // eslint-disable-next-line
                 this.notrechtRS
                     .sendMitteilung(
                         result.mitteilung,

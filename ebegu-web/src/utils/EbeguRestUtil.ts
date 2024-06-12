@@ -1438,7 +1438,6 @@ export class EbeguRestUtil {
         return restGemeinde;
     }
 
-    // eslint-disable-next-line
     public gemeindeStammdatenToRestObject(
         restStammdaten: any,
         stammdaten: TSGemeindeStammdaten

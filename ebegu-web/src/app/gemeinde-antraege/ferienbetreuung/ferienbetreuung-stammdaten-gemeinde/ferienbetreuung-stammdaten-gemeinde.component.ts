@@ -222,7 +222,6 @@ export class FerienbetreuungStammdatenGemeindeComponent
         this.triggerFormValidation();
     }
 
-    // eslint-disable-next-line
     private adressValidValidator(): ValidatorFn {
         return (
             control: FormGroup<{
@@ -272,7 +271,6 @@ export class FerienbetreuungStammdatenGemeindeComponent
         };
     }
 
-    // eslint-disable-next-line
     private auszahlungsdatenValidation(): ValidatorFn {
         return (
             control: FormGroup<{

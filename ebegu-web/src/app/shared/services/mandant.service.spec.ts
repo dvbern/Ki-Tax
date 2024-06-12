@@ -9,7 +9,6 @@ import {WindowRef} from '../../core/service/windowRef.service';
 
 import {MandantService} from './mandant.service';
 
-// eslint-disable-next-line
 describe('MandantService', () => {
     let service: MandantService;
     const applicationPropertyRSSpy =
@@ -97,7 +96,6 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('dev-kibon domains', () => {
             it('should parse dev-kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'dev.kibon.ch';
@@ -127,7 +125,6 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('uat-kibon domains', () => {
             it('should parse uat-kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'uat.kibon.ch';
@@ -164,7 +161,6 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('kibon domains', () => {
             it('should parse kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'kibon.ch';
@@ -201,7 +197,6 @@ describe('MandantService', () => {
         describe('local tests', () => {
             const dvBernLocalDomain = 'kibon.ch:4200';
             it('should strip nothing from local.kibon.ch:4200', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'local.kibon.ch:4200';
                 expect(
                     service.removeMandantEnvironmentFromCompleteHost()
@@ -220,10 +215,8 @@ describe('MandantService', () => {
                 ).toEqual(dvBernLocalDomain);
             });
         });
-        // eslint-disable-next-line
         describe('dev-kibon tests', () => {
             it('should strip dev-kibon from dev-kibon.kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'dev.kibon.ch';
                 expect(
                     service.removeMandantEnvironmentFromCompleteHost()
@@ -242,10 +235,8 @@ describe('MandantService', () => {
                 ).toEqual(dvBernDomain);
             });
         });
-        // eslint-disable-next-line
         describe('uat-kibon tests', () => {
             it('should strip uat-kibon from uat-kibon.kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'uat.kibon.ch';
                 expect(
                     service.removeMandantEnvironmentFromCompleteHost()
@@ -264,10 +255,8 @@ describe('MandantService', () => {
                 ).toEqual(dvBernDomain);
             });
         });
-        // eslint-disable-next-line
         describe('kibon tests', () => {
             it('should strip nothing from kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'kibon.ch';
                 expect(
                     service.removeMandantEnvironmentFromCompleteHost()
@@ -292,7 +281,6 @@ describe('MandantService', () => {
         describe('local tests', () => {
             const dvBernLocalDomain = 'local';
             it('should get environment local from local.kibon.ch:4200', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'local.kibon.ch:4200';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(
                     dvBernLocalDomain
@@ -311,11 +299,9 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('dev-kibon tests', () => {
             const devEnvironment = 'dev';
             it('should get environment dev from dev.kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'dev.kibon.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(
                     devEnvironment
@@ -334,11 +320,9 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('uat tests', () => {
             const uatEnvironment = 'uat';
             it('should get environment uat from uat.kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'uat.kibon.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(
                     uatEnvironment
@@ -363,10 +347,8 @@ describe('MandantService', () => {
                 );
             });
         });
-        // eslint-disable-next-line
         describe('kibon tests', () => {
             it('should get nothing from kibon.ch', () => {
-                // eslint-disable-next-line
                 mockWindow.location.host = 'kibon.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual('');
             });

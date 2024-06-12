@@ -395,7 +395,6 @@ export class FallToolbarComponent implements OnChanges {
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
 
-            // eslint-disable-next-line
             if (
                 this.kitaxEnabled &&
                 this.isOnlineGesuch() &&

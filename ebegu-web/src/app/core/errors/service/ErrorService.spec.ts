@@ -85,7 +85,7 @@ describe('errorService', () => {
 
             it('should broadcast an UPDATE event', () => {
                 errorService.addValidationError('TEST');
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()
@@ -100,7 +100,7 @@ describe('errorService', () => {
 
             it('should add a validation error on FALSE', () => {
                 expect(errorService.getErrors()[0].msgKey).toBe('TEST');
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()
@@ -110,7 +110,7 @@ describe('errorService', () => {
             it('should remove a validation error on TRUE', () => {
                 errorService.handleValidationError(false, 'TEST');
                 expect(errorService.getErrors().length === 0);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()
@@ -122,14 +122,14 @@ describe('errorService', () => {
             it('should clear all errors', () => {
                 errorService.addValidationError('foo');
                 expect(errorService.getErrors().length === 1).toBeTruthy();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).not.toHaveBeenCalledWith(
                     TSMessageEvent.CLEAR
                 );
 
                 errorService.clearAll();
                 expect(errorService.getErrors().length === 0).toBeTruthy();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.CLEAR
                 );
@@ -139,19 +139,19 @@ describe('errorService', () => {
         describe('clearError()', () => {
             it('should remove the specified error', () => {
                 errorService.addValidationError('KEEP');
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()
                 );
                 errorService.addValidationError('REMOVE');
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()
                 );
                 errorService.clearError('REMOVE');
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($rootScope.$broadcast).toHaveBeenCalledWith(
                     TSMessageEvent.ERROR_UPDATE,
                     errorService.getErrors()

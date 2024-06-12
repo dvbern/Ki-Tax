@@ -305,7 +305,7 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
 
     public calculateProvisorischerBetrag(): number {
         let result = 0;
-        // eslint-disable-next-line
+
         if (this.isStufe1() || this.isOeffentlich()) {
             result = this.calculateProvisorischerBetragStufe1OrOeffentlich();
         } else {

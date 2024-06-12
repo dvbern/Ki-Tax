@@ -127,7 +127,6 @@ export class DvQuicksearchboxController {
         this.selectedItem = undefined;
     }
 
-    // eslint-disable-next-line
     private navigateToFall(): void {
         if (!this.selectedItem) {
             return;

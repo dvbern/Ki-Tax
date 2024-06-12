@@ -124,7 +124,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.dvDialog = dvDialog;
     }
 
-    // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
 

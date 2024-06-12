@@ -314,7 +314,6 @@ export class TagesschulenAngabenComponent implements OnInit {
         }
     }
 
-    // eslint-disable-next-line
     private setupRoleBasedPropertiesForPrincipal(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         angaben: TSLastenausgleichTagesschuleAngabenInstitutionContainer,

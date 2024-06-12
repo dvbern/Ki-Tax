@@ -532,7 +532,6 @@ export class FerienbetreuungAngebotComponent
             );
     }
 
-    // eslint-disable-next-line
     private adressValidValidator(): ValidatorFn {
         return control => {
             const strasse = control.get('strasse');

@@ -105,7 +105,6 @@ describe('mitteilungenView', () => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
                 $injector.get('$httpBackend')
             );
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue(
                 $q.when({} as TSGemeindeStammdaten)
             );
@@ -211,7 +210,6 @@ describe('mitteilungenView', () => {
             expect(mitteilung.mitteilungStatus).toBe(
                 TSMitteilungStatus.ERLEDIGT
             ); // von GELESEN auf ERLEDIGT
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith(
                 '123'
             );
@@ -220,7 +218,6 @@ describe('mitteilungenView', () => {
             expect(mitteilung.mitteilungStatus).toBe(
                 TSMitteilungStatus.GELESEN
             ); // von ERLEDIGT auf GELESEN
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith(
                 '123'
             );

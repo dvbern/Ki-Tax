@@ -162,8 +162,7 @@ export class FallCreationViewXComponent
         }
     }
 
-    // eslint-disable-next-line
-    public save(navigateFunction: Function): void {
+    public save(navigateFunction: (gesuch: TSGesuch | undefined | void) => void): void {
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
             navigateFunction(undefined);
@@ -172,7 +171,7 @@ export class FallCreationViewXComponent
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            // eslint-disable-next-line
+
             Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch =>
                 navigateFunction(gesuch)
             );
@@ -181,23 +180,20 @@ export class FallCreationViewXComponent
         this.errorService.clearAll();
         this.gesuchModelManager
             .saveGesuchAndFall()
-            .then(
-                gesuch => {
-                    // if sozialdienst Fall Step muss be updated
-                    if (
-                        EbeguUtil.isNotNullOrUndefined(
-                            gesuch.dossier.fall.sozialdienstFall
-                        )
-                    ) {
-                        this.wizardStepManager.updateCurrentWizardStepStatus(
-                            TSWizardStepStatus.OK
-                        );
-                    }
-                    this.cd.markForCheck();
-                    return gesuch;
+            .then(gesuch => {
+                // if sozialdienst Fall Step muss be updated
+                if (
+                    EbeguUtil.isNotNullOrUndefined(
+                        gesuch.dossier.fall.sozialdienstFall
+                    )
+                ) {
+                    this.wizardStepManager.updateCurrentWizardStepStatus(
+                        TSWizardStepStatus.OK
+                    );
                 }
-                // eslint-disable-next-line
-            )
+                this.cd.markForCheck();
+                return gesuch;
+            })
             .catch(err => console.error(err))
             .then(gesuch => navigateFunction(gesuch));
     }

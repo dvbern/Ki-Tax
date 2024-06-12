@@ -81,7 +81,6 @@ export class LoginController implements IController {
         }
 
         this.applicationPropertyRS.isDevMode().then(isDevMode => {
-            // eslint-disable-next-line
             if (isDevMode) {
                 this.dvDialog
                     .showDialog(

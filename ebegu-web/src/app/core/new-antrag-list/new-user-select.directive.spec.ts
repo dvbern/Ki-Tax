@@ -75,7 +75,6 @@ describe('NewUserSelectDirective', () => {
 
             element = html(`<ng2></ng2>`);
 
-            // eslint-disable-next-line
             bootstrap(
                 platformBrowserDynamic(),
                 Ng2Module,

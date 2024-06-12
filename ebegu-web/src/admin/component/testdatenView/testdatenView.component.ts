@@ -344,7 +344,6 @@ export class TestdatenViewComponent implements OnInit {
             return;
         }
 
-        // eslint-disable-next-line
         if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
             if (
                 !(await this.confirmDialog(

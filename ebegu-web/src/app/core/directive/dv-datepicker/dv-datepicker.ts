@@ -94,7 +94,6 @@ export class DatepickerController implements IController {
         }
     }
 
-    // eslint-disable-next-line
     public $onInit(): void {
         if (!this.ngModelCtrl) {
             return;

@@ -135,14 +135,7 @@
                 ],
                 "import/no-internal-modules": ["off"],
                 "import/no-unassigned-import": "error",
-                "max-len": [
-                    "error",
-                    {
-                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*|\\}\\s*from.*|^\\s*`.*`(,|;)?$",
-                        "code": 130,
-                        "ignoreUrls": true
-                    }
-                ],
+                "max-len": "off",
                 "no-duplicate-case": "error",
                 "no-duplicate-imports": "error",
                 "no-invalid-this": "error",

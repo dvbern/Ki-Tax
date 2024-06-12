@@ -97,7 +97,7 @@ describe('ErwerbspensumRS', () => {
                     createdEWPContainer = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
                 gesuchId
             );
@@ -131,7 +131,7 @@ describe('ErwerbspensumRS', () => {
                     updatedErwerbspensumContainerContainer = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
                 gesuchId
             );
@@ -157,7 +157,7 @@ describe('ErwerbspensumRS', () => {
                     deleteResult = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
                 gesuchId
             );

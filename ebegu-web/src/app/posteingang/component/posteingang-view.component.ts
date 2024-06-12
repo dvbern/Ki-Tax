@@ -441,7 +441,6 @@ export class PosteingangViewComponent
     }
 
     private initSort(): void {
-        // eslint-disable-next-line
         if (this.stateStore.has(this.sortId)) {
             const stored = this.stateStore.get(this.sortId) as {
                 predicate?: string;

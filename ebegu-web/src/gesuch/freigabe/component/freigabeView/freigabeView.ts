@@ -142,7 +142,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public confirmationCallback(): void {
-        // eslint-disable-next-line
         if (this.gesuchModelManager.isGesuch()) {
             const freigabeQuittung = this.openFreigabequittungPDF(true);
             if (

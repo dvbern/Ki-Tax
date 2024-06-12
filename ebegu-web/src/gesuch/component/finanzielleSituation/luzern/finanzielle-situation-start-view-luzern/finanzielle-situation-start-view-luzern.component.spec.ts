@@ -99,7 +99,6 @@ applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () =>
     false;
 
-// eslint-disable-next-line
 describe('FinanzielleSituationStartViewLuzernComponent', () => {
     let component: FinanzielleSituationStartViewLuzernComponent;
     let fixture: ComponentFixture<FinanzielleSituationStartViewLuzernComponent>;

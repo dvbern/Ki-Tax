@@ -150,7 +150,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // eslint-disable-next-line
+
             if (
                 zeitabschnitt.zahlungsstatusInstitution !==
                     TSVerfuegungZeitabschnittZahlungsstatus.NEU &&
@@ -189,7 +189,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // eslint-disable-next-line
+
             if (
                 zeitabschnitt.zahlungsstatusAntragsteller !==
                     TSVerfuegungZeitabschnittZahlungsstatus.NEU &&

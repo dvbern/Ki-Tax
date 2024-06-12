@@ -14,7 +14,7 @@
  */
 
 import {upgradeModule} from '@uirouter/angular-hybrid';
-// eslint-disable-next-line
+
 import uiRouter from '@uirouter/angularjs';
 import * as angular from 'angular';
 import {RouterHelperProvider} from './route-helper-provider';

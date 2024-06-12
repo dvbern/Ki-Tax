@@ -151,7 +151,6 @@ export class TSGemeindeKonfiguration {
 
     public initProperties(): void {
         this.konfigurationen.forEach(property => {
-            // eslint-disable-next-line
             switch (property.key) {
                 case TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE: {
                     this.konfigBeguBisUndMitSchulstufe = (

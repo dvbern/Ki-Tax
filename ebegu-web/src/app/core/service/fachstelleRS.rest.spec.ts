@@ -86,11 +86,11 @@ describe('fachstelleRS', () => {
 
                 fachstelleRS.getAnspruchFachstellen(gesuchsperiode);
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($http.get).toHaveBeenCalledWith(
                     `${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`
                 );
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(
                     fachstellenRestArray
                 );

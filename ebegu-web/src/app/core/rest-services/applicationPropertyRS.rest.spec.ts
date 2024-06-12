@@ -25,7 +25,7 @@ import IHttpBackendService = angular.IHttpBackendService;
 describe('ApplicationPropertyRS', () => {
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
-    // eslint-disable-next-line
+
     const REST_API = CONSTANTS.REST_API;
     const testName = 'myTestName';
 

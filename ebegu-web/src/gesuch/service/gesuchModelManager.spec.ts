@@ -173,13 +173,12 @@ describe('gesuchModelManager', () => {
                         );
                         scope.$apply();
 
-                        // eslint-disable-next-line @typescript-eslint/unbound-method
                         expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(
                             gesuchModelManager.getBetreuungToWorkWith(),
                             undefined,
                             false
                         );
-                        // eslint-disable-next-line @typescript-eslint/unbound-method
+
                         expect(kindRS.findKind).toHaveBeenCalledWith(
                             '2afc9d9a-957e-4550-9a22-97624a000feb'
                         );
@@ -235,7 +234,7 @@ describe('gesuchModelManager', () => {
                         gesuchModelManager.saveGesuchAndFall();
 
                         scope.$apply();
-                        // eslint-disable-next-line @typescript-eslint/unbound-method
+
                         expect(gesuchRS.updateGesuch).toHaveBeenCalled();
                     });
             }));
@@ -657,7 +656,7 @@ describe('gesuchModelManager', () => {
                 });
 
                 scope.$apply();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(betreuungRS.saveBetreuungen).toHaveBeenCalledWith(
                     betreuungen,
                     myGesuch.id,
@@ -695,7 +694,6 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchRS.findGesuchForInstitution).toHaveBeenCalledWith(
                     gesuch.id
                 );
@@ -726,7 +724,6 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchRS.findGesuch).toHaveBeenCalledWith(gesuch.id);
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });

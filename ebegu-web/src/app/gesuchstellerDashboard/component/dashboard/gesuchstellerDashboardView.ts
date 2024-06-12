@@ -273,7 +273,6 @@ export class GesuchstellerDashboardViewController implements IController {
         if (this.gemeindeStammdaten) {
             for (const konfigurationsListeElement of this.gemeindeStammdaten
                 .konfigurationsListe) {
-                // eslint-disable-next-line
                 if (konfigurationsListeElement.gesuchsperiode.id === gp.id) {
                     konfigurationsListeElement.initProperties();
                     return konfigurationsListeElement;

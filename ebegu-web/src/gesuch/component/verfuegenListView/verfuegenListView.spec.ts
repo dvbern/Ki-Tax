@@ -152,7 +152,6 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.findKind).not.toHaveBeenCalled();
             });
             it('does not find the Kind, so it stops loading and does not move to the next page', () => {
@@ -167,14 +166,12 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(
                     gesuchModelManager.convertKindNumberToKindIndex
                 ).toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {
                     gesuchId: ''
                 });
@@ -196,17 +193,16 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(
                     gesuchModelManager.convertKindNumberToKindIndex
                 ).toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(
                     gesuchModelManager.setBetreuungIndex
                 ).not.toHaveBeenCalled();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {
                     gesuchId: ''
                 });
@@ -229,13 +225,12 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(
                     gesuchModelManager.convertKindNumberToKindIndex
                 ).toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                // eslint-disable-next-line @typescript-eslint/unbound-method
+
                 expect($state.go).toHaveBeenCalledWith(verfuegenView, {
                     betreuungNumber: 2,
                     kindNumber: 1,

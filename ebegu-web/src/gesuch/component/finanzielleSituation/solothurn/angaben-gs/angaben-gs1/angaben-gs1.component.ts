@@ -60,7 +60,7 @@ export class AngabenGs1Component
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }
-        // eslint-disable-next-line
+
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
         }

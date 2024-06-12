@@ -235,7 +235,6 @@ export class GuidedTourByRole implements GuidedTour {
             default:
         }
         // Step 3.5 Anmeldungen
-        // eslint-disable-next-line
         switch (role) {
             case TSRole.ADMIN_TS:
                 this.steps.push(
@@ -490,7 +489,6 @@ export class KiBonTourStep implements TourStep {
         this.selector = selector;
         this.orientation = orientation;
 
-        // eslint-disable-next-line
         if (state !== undefined && state !== null) {
             this.action = () => {
                 if (navigateToOpen) {

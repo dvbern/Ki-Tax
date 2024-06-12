@@ -408,7 +408,6 @@ export class DownloadRS {
         );
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const anmeldungIdEnc = encodeURIComponent(anmeldungId);
-        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/${gesuchIdEnc}/${anmeldungIdEnc}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
 
         return this.http

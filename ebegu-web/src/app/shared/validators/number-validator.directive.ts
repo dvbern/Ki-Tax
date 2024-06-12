@@ -7,7 +7,6 @@ export enum ValidationType {
     ANY_NUMBER
 }
 
-// eslint-disable-next-line
 export function numberValidator(type: ValidationType): ValidatorFn {
     return control => {
         if (!control.value) {

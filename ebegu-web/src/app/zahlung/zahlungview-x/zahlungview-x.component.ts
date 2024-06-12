@@ -111,7 +111,6 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        // eslint-disable-next-line
         if (this.stateStore.has(this.SORT_STORE_KEY)) {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;

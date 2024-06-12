@@ -57,7 +57,6 @@ describe('HttpAuthInterceptor', () => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(
                 TSAuthEvent.NOT_AUTHENTICATED,
                 authErrorResponse

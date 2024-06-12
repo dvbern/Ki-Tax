@@ -141,7 +141,6 @@ export class CreateAngebotListViewController implements IController {
         return this.fi && !!this.institution;
     }
 
-    // eslint-disable-next-line
     public selectedInstitutionStammdatenChanged(): void {
         if (!this.anmeldungDTO.betreuung) {
             this.anmeldungDTO.betreuung = new TSBetreuung();

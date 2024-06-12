@@ -73,7 +73,6 @@ export class AddSozialdienstComponent implements OnInit {
                     this.navigateBack();
                 },
                 exception => {
-                    // eslint-disable-next-line
                     if (
                         exception.error.errorCodeEnum ===
                         'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH'

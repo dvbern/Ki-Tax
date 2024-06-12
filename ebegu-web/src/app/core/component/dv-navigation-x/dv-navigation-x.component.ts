@@ -203,7 +203,6 @@ export class DvNavigationXComponent implements OnInit {
 
         this.wizardStepManager.isTransitionInProgress = true;
 
-        // eslint-disable-next-line
         if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
@@ -240,7 +239,6 @@ export class DvNavigationXComponent implements OnInit {
         }
 
         this.wizardStepManager.isTransitionInProgress = true;
-        // eslint-disable-next-line
         if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
@@ -272,7 +270,6 @@ export class DvNavigationXComponent implements OnInit {
      * Berechnet fuer den aktuellen Benutzer und Step, welcher der naechste Step ist und wechselt zu diesem.
      * Bay default wird es zum nae
      */
-    // eslint-disable-next-line
     private navigateToNextStep(): void {
         this.errorService.clearAll();
 
@@ -414,7 +411,6 @@ export class DvNavigationXComponent implements OnInit {
      * Berechnet fuer den aktuellen Benutzer und Step, welcher der previous Step ist und wechselt zu diesem.
      * wenn es kein Sonderfall ist wird der letzte else case ausgefuehrt
      */
-    // eslint-disable-next-line
     private navigateToPreviousStep(): void {
         this.errorService.clearAll();
 
@@ -817,21 +813,18 @@ export class DvNavigationXComponent implements OnInit {
         });
     }
 
-    // eslint-disable-next-line
     private navigateToLuzernGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Luzern', {
             gesuchId: this.getGesuchId()
         });
     }
 
-    // eslint-disable-next-line
     private navigateToSolothurnStart(): any {
         return this.$state.go('gesuch.finanzielleSituationStartSolothurn', {
             gesuchId: this.getGesuchId()
         });
     }
 
-    // eslint-disable-next-line
     private navigateToSolothurnGS1(): any {
         return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
             gesuchId: this.getGesuchId(),
@@ -839,7 +832,6 @@ export class DvNavigationXComponent implements OnInit {
         });
     }
 
-    // eslint-disable-next-line
     private navigateToSolothurnGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
             gesuchId: this.getGesuchId(),
@@ -847,7 +839,6 @@ export class DvNavigationXComponent implements OnInit {
         });
     }
 
-    // eslint-disable-next-line
     private navigateToAppenzellStart(): any {
         return this.$state.go('gesuch.finanzielleSituationAppenzell', {
             gesuchId: this.getGesuchId(),
@@ -855,7 +846,6 @@ export class DvNavigationXComponent implements OnInit {
         });
     }
 
-    // eslint-disable-next-line
     private navigateToAppenzellGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationAppenzellGS2', {
             gesuchId: this.getGesuchId(),
@@ -900,7 +890,6 @@ export class DvNavigationXComponent implements OnInit {
     /**
      * Checks whether the button should be disable for the current conditions. By default (auch fuer Mutaionen) enabled
      */
-    // eslint-disable-next-line
     public isNextButtonDisabled(): boolean {
         // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps
         // besucht sind
@@ -996,7 +985,6 @@ export class DvNavigationXComponent implements OnInit {
         return undefined;
     }
 
-    // eslint-disable-next-line
     private navigateNextEVSubStep3(): void {
         if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
@@ -1049,7 +1037,6 @@ export class DvNavigationXComponent implements OnInit {
         return;
     }
 
-    // eslint-disable-next-line
     private navigatePreviousEVSubStep3(): void {
         if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {

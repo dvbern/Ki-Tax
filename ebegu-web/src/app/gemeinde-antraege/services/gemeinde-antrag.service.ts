@@ -185,7 +185,6 @@ export class GemeindeAntragService {
         antragTyp: string;
         gemeinde: string;
     }): Observable<TSGemeindeAntrag[]> {
-        // eslint-disable-next-line max-len
         const url = `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`;
         return this.http
             .post<TSGemeindeAntrag[]>(url, toCreate)
