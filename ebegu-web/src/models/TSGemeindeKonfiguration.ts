@@ -80,9 +80,7 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
-    public konfigZusaetzlicherGutscheinLinearMinBetragTfo: number;
     public konfigZusaetzlicherGutscheinLinearMaxBetragTfo: number;
-    public konfigZusaetzlicherGutscheinLinearMinBetragKita: number;
     public konfigZusaetzlicherGutscheinLinearMaxBetragKita: number;
     public konfigZusaetzlicherGutscheinMaxMassgebendesEinkommen: number;
     public konfigZusaetzlicherGutscheinMinMassgebendesEinkommen: number;
@@ -183,16 +181,8 @@ export class TSGemeindeKonfiguration {
                     this.konfigZusaetzlicherGutscheinBetragTfo = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN: {
-                    this.konfigZusaetzlicherGutscheinLinearMinBetragKita = Number(property.value);
-                    break;
-                }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX: {
                     this.konfigZusaetzlicherGutscheinLinearMaxBetragKita = Number(property.value);
-                    break;
-                }
-                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN: {
-                    this.konfigZusaetzlicherGutscheinLinearMinBetragTfo = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX: {

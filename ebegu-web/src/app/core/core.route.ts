@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/browser";
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import * as moment from 'moment';
-import * as Raven from 'raven-js';
 import {take} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
@@ -77,11 +77,13 @@ export function appRun(
                 if (environment.test) {
                     return;
                 }
-                if (response.sentryEnvName) {
-                    Raven.setEnvironment(response.sentryEnvName);
-                } else {
-                    Raven.setEnvironment('unspecified');
-                }
+
+                Sentry.configureScope(scope =>{
+                    scope.addEventProcessor(event => {
+                        event.environment = response.sentryEnvName;
+                        return event;
+                    });
+                });
             });
     }, error => LOG.error(error));
 

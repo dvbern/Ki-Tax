@@ -1197,6 +1197,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		case APPENZELL:
+		case APPENZELL_FOLGEMONAT:
 			return WizardStepName.FINANZIELLE_SITUATION_APPENZELL;
 		case SCHWYZ:
 			return WizardStepName.FINANZIELLE_SITUATION_SCHWYZ;
@@ -1219,6 +1220,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
 		case APPENZELL:
+		case APPENZELL_FOLGEMONAT:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
 		case SCHWYZ:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ;

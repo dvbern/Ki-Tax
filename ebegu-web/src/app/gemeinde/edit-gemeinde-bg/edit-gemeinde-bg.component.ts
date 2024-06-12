@@ -325,24 +325,12 @@ export class EditGemeindeBGComponent implements OnInit {
     }
 
     private resetKonfigZusaetzlicherGutscheinLinear(gk: TSGemeindeKonfiguration): void {
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragKita = 0;
         gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita = 0;
-        gk.konfigZusaetzlicherGutscheinLinearMinBetragTfo = 0;
         gk.konfigZusaetzlicherGutscheinLinearMaxBetragTfo = 0;
 
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN,
-            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
-        );
-
-        this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX,
-            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
-        );
-
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN,
-            gk.konfigZusaetzlicherGutscheinLinearMinBetragKita, gk,
+            gk.konfigZusaetzlicherGutscheinLinearMaxBetragKita, gk,
         );
 
         this.changeKonfig(

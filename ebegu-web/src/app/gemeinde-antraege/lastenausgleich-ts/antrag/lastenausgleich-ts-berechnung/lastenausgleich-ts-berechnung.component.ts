@@ -42,7 +42,7 @@ const LOG = LogFactory.createLog('LastenausgleichTsBerechnungComponent');
 export class LastenausgleichTsBerechnungComponent implements OnInit {
 
     private static readonly FILENAME_DE = 'Verfügung Tagesschulen kiBon';
-    private static readonly FILENAME_FR = 'Modèle Décisions EJC kibon';
+    private static readonly FILENAME_FR = 'Décision EJC kiBon';
 
     public canViewDokumentErstellenButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public downloadingDeFile: BehaviorSubject<boolean> = new BehaviorSubject(false);

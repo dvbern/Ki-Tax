@@ -69,12 +69,6 @@ describe('EbeguRestUtil', () => {
     const monatlicheBetreuungskosten200 = 200.2;
     const monatlicheBetreuungskosten500 = 500.5;
 
-    beforeEach(angular.mock.module('pascalprecht.translate'));
-
-    beforeEach(angular.mock.module(($provide: IProvideService) => {
-        $provide.value('CONSTANTS', CONSTANTS);
-    }));
-
     beforeEach(angular.mock.inject(() => {
         ebeguRestUtil = new EbeguRestUtil();
         today = DateUtil.today();

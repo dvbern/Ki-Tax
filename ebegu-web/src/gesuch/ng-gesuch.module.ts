@@ -18,6 +18,8 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
+import {EwkAdresseComponent} from '../app/ewk-adresse/ewk-adresse.component';
+import {PersonensucheComponent} from '../app/personensuche/personensuche.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {
     SelbstdeklarationComponent
@@ -168,7 +170,9 @@ import {
         FallCreationViewXComponent,
         ZahlungsstatusIconComponent,
         KindFachstelleComponent,
-        OnlineFreigabeComponent
+        OnlineFreigabeComponent,
+        PersonensucheComponent,
+        EwkAdresseComponent,
     ],
     exports: [
         DvSwitchComponent,
