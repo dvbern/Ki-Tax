@@ -35,7 +35,6 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.services.PersonenSucheService;
 import ch.dvbern.ebegu.util.entitylisteners.PersonenSucheAuditLogListener;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

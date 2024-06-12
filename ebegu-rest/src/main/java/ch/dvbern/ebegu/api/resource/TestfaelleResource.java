@@ -19,6 +19,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeFBTestdatenDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeLATSTestdatenDTO;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -267,14 +268,14 @@ public class TestfaelleResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createTestdatenLATS(
 		@Nonnull @NotNull @Valid JaxGemeindeAntraegeLATSTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
-
+		assertTestfaelleAccessAllowed();
 		final String gemeindeId = jaxGemeindeAntraegeTestdatenDTO.getGemeinde() != null ? jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId() : null;
 		final Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> latsContainers =
 			testfaelleService.createAndSaveLATSTestdaten(
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
 				gemeindeId,
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
-		return Response.ok(latsContainers.stream().map(container -> container.getId()).collect(Collectors.joining(","))).build();
+		return Response.ok(latsContainers.stream().map(AbstractEntity::getId).collect(Collectors.joining(","))).build();
 	}
 
 	@ApiOperation(value = "Erstellt FB testdaten", response = String.class)
@@ -284,7 +285,7 @@ public class TestfaelleResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createTestdatenFerienbetreuung(
 		@Nonnull @NotNull @Valid JaxGemeindeAntraegeFBTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
-
+		assertTestfaelleAccessAllowed();
 		final FerienbetreuungAngabenContainer ferienbetreuungContainer =
 			testfaelleService.createAndSaveFerienbetreuungTestdaten(
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),

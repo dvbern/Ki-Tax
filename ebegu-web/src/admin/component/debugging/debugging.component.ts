@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit
 import {NgForm} from '@angular/forms';
 import {Category, UIRouter} from '@uirouter/core';
 import {visualizer} from '@uirouter/visualizer';
-import * as Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -102,7 +102,7 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     }
 
     public doShowDialog(): void {
-        Raven.showReportDialog();
+        Sentry.showReportDialog();
     }
 
     public findCategory(key: string): Category {

@@ -30,13 +30,19 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * DTO für Personen aus dem EWK
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
+@Getter
+@Setter
 @XmlRootElement(name = "ewkPerson")
 @XmlAccessorType(XmlAccessType.FIELD)
 @SuppressFBWarnings("EQ_COMPARETO_USE_OBJECT_EQUALS")
@@ -78,127 +84,8 @@ public class EWKPerson implements Serializable, Comparable<EWKPerson> {
 
 	private boolean nichtGefunden;
 
-	public EWKPerson() {
-	}
-
-	public String getPersonID() {
-		return personID;
-	}
-
-	public void setPersonID(String personID) {
-		this.personID = personID;
-	}
-
-	public String getNachname() {
-		return nachname;
-	}
-
-	public void setNachname(String nachname) {
-		this.nachname = nachname;
-	}
-
-	public String getVorname() {
-		return vorname;
-	}
-
-	public void setVorname(String vorname) {
-		this.vorname = vorname;
-	}
-
-	public LocalDate getGeburtsdatum() {
-		return geburtsdatum;
-	}
-
-	public void setGeburtsdatum(LocalDate geburtsdatum) {
-		this.geburtsdatum = geburtsdatum;
-	}
-
-	public LocalDate getZuzugsdatum() {
-		return zuzugsdatum;
-	}
-
-	public void setZuzugsdatum(LocalDate zuzugsdatum) {
-		this.zuzugsdatum = zuzugsdatum;
-	}
-
-	public LocalDate getWegzugsdatum() {
-		return wegzugsdatum;
-	}
-
-	public void setWegzugsdatum(LocalDate wegzugsdatum) {
-		this.wegzugsdatum = wegzugsdatum;
-	}
-
-	public String getZivilstand() {
-		return zivilstand;
-	}
-
-	public void setZivilstand(String zivilstand) {
-		this.zivilstand = zivilstand;
-	}
-
-	public LocalDate getZivilstandsdatum() {
-		return zivilstandsdatum;
-	}
-
-	public void setZivilstandsdatum(LocalDate zivilstandsdatum) {
-		this.zivilstandsdatum = zivilstandsdatum;
-	}
-
-	public Geschlecht getGeschlecht() {
-		return geschlecht;
-	}
-
-	public void setGeschlecht(Geschlecht geschlecht) {
-		this.geschlecht = geschlecht;
-	}
-
-	public EWKAdresse getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(EWKAdresse adresse) {
-		this.adresse = adresse;
-	}
-
-	public List<EWKBeziehung> getBeziehungen() {
-		return beziehungen;
-	}
-
-	public void setBeziehungen(List<EWKBeziehung> beziehungen) {
-		this.beziehungen = beziehungen;
-	}
-
-	public boolean isKind() {
-		return kind;
-	}
-
-	public void setKind(boolean kind) {
-		this.kind = kind;
-	}
-
-	public boolean isGesuchsteller() {
-		return gesuchsteller;
-	}
-
-	public void setGesuchsteller(boolean gesuchsteller) {
-		this.gesuchsteller = gesuchsteller;
-	}
-
-	public boolean isHaushalt() {
-		return haushalt;
-	}
-
-	public void setHaushalt(boolean haushalt) {
-		this.haushalt = haushalt;
-	}
-
-	public boolean isNichtGefunden() {
-		return nichtGefunden;
-	}
-
-	public void setNichtGefunden(boolean nichtGefunden) {
-		this.nichtGefunden = nichtGefunden;
+	public boolean isGefunden() {
+		return !isNichtGefunden();
 	}
 
 	public boolean isWohnsitzInPeriode(Gesuchsperiode gesuchsperiode) {
@@ -215,5 +102,18 @@ public class EWKPerson implements Serializable, Comparable<EWKPerson> {
 		builder.append(other.nachname, this.nachname);
 		builder.append(other.vorname, this.vorname);
 		return builder.toComparison();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.getPersonID()).toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
+		return new EqualsBuilder().append(getPersonID(), ((EWKPerson) obj).getPersonID()).isEquals();
 	}
 }

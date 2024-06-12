@@ -58,12 +58,10 @@ public enum EinstellungKey {
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
-	// Minimaler/Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei Kitas
-	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MIN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	//Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei Kitas
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
-	// Minimaler/Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei TFOs
-	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MIN(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	// Maximaler Wert des zusätzlichen Beitrags zum Gutschein bei linearem Beitrag bei TFOs
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	//Minimales/Maximales massgebendes Einkommen für zusätzlichen Beitrag zum Gutschein durch Gemeinden

@@ -13,37 +13,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {TSEWKPerson} from '../../../models/TSEWKPerson';
 import {TSEWKResultat} from '../../../models/TSEWKResultat';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
+import {LogFactory} from '../logging/LogFactory';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class EwkRS {
-
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
+    private readonly log = LogFactory.createLog('EwkRS');
 
     public serviceURL: string;
 
     public constructor(
-        public readonly http: IHttpService,
-        REST_API: string,
-        public readonly ebeguRestUtil: EbeguRestUtil,
-        public readonly log: ILogService
+        private readonly http: HttpClient,
+        private readonly ebeguRestUtil: EbeguRestUtil,
     ) {
-        this.serviceURL = `${REST_API}gesuche`;
+        this.serviceURL = `${CONSTANTS.REST_API}gesuche`;
     }
 
-    public sucheInEwk(gesuchId: string): IPromise<TSEWKResultat> {
-
+    public sucheInEwk(gesuchId: string): Observable<TSEWKPerson[]> {
         return this.http.get(`${this.serviceURL}/ewk/searchgesuch/${gesuchId}`)
-            .then((response: any) => this.handlePersonSucheResult(response));
+            .pipe(map(response => this.handlePersonSucheResult(response)));
     }
 
-    private handlePersonSucheResult(response: any): TSEWKResultat {
-        this.log.debug('PARSING ewkResultat REST object ', response.data);
-        return this.ebeguRestUtil.parseEWKResultat(new TSEWKResultat(), response.data);
-    }
-
-    public getServiceName(): string {
-        return 'EwkRS';
+    private handlePersonSucheResult(response: any): TSEWKPerson[] {
+        this.log.debug('PARSING ewkResultat REST object ', response);
+        return this.ebeguRestUtil.parseEWKResultat(new TSEWKResultat(), response).personen;
     }
 }

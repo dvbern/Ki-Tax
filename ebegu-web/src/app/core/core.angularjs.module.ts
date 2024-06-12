@@ -33,8 +33,6 @@ import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'angular-utf8-base64';
 import 'ng-file-upload';
-import 'raven-js';
-import 'raven-js/plugins/angular';
 import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
@@ -197,7 +195,7 @@ const dynamicDependencies = (): string[] => {
 
     // hier kommen plugins die wir fuer dev disablen wollen
     if (environment.sentryDSN) {
-        return ['ngRaven'];
+        return ['ngSentry'];
     }
     return [];
 };
@@ -214,7 +212,7 @@ export const CORE_JS_MODULE = angular
     .constant('CONSTANTS', CONSTANTS)
     .factory('LOCALE_ID', downgradeInjectable(LOCALE_ID))
     .service('ApplicationPropertyRS', ApplicationPropertyRS)
-    .service('EbeguRestUtil', EbeguRestUtil)
+    .service('EbeguRestUtil', downgradeInjectable(EbeguRestUtil))
     .service('EbeguUtil', EbeguUtil)
     .service('GesuchstellerRS', GesuchstellerRS)
     .service('AdresseRS', AdresseRS)
@@ -332,7 +330,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvPulldownUserMenu', downgradeComponent({component: PulldownUserMenuComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
-    .service('EwkRS', EwkRS)
+    .service('EwkRS', downgradeInjectable(EwkRS))
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)
     .filter('arrayToString', () => arrayToString)

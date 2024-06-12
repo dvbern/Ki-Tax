@@ -125,11 +125,6 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
-
-	public EbeguConfigurationImpl() {
-
-	}
-
 	@Override
 	public boolean getIsDevmode() {
 		return getBoolean(EBEGU_DEVELOPMENT_MODE, true);
@@ -517,5 +512,20 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		}
 		String mandantKey = String.format(configKey, mandant.getMandantIdentifier().name().toLowerCase(Locale.ROOT));
 		return getString(mandantKey, defaultValue);
+	}
+
+	@Override
+	public String getGeresSchwyzEndpointUrl() {
+		return getString("ebegu.personensuche.geres.schwyz.endpoint.url");
+	}
+
+	@Override
+	public String getGeresSchwyzUsername() {
+		return getString("ebegu.personensuche.geres.schwyz.username");
+	}
+
+	@Override
+	public String getGeresSchwyzPassword() {
+		return getString("ebegu.personensuche.geres.schwyz.password");
 	}
 }

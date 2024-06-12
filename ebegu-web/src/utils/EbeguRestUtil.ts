@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {
@@ -197,6 +198,9 @@ import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class EbeguRestUtil {
 
     /**
@@ -4077,7 +4081,7 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseEWKResultat(ewkResultatTS: TSEWKResultat, ewkResultatFromServer: any): any {
+    public parseEWKResultat(ewkResultatTS: TSEWKResultat, ewkResultatFromServer: any): TSEWKResultat | undefined {
         if (ewkResultatFromServer) {
             ewkResultatTS.personen = this.parseEWKPersonList(ewkResultatFromServer.personen);
             return ewkResultatTS;
@@ -4094,7 +4098,7 @@ export class EbeguRestUtil {
             : [];
     }
 
-    private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson {
+    private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson | undefined {
         if (ewkPersonFromServer) {
             tsEWKPerson.personID = ewkPersonFromServer.personID;
             tsEWKPerson.nachname = ewkPersonFromServer.nachname;
@@ -4624,6 +4628,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
         publicAppConfigTS.gemeindeVereinfachteKonfigAktiv = data.gemeindeVereinfachteKonfigAktiv;
+        publicAppConfigTS.testfaelleEnabled = data.testfaelleEnabled;
         return publicAppConfigTS;
     }
 

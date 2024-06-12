@@ -1,0 +1,117 @@
+<!-- Falls nicht mindestens der Gesuchsteller 1 erfasst ist, eine Info anzigen, wie man die
+EWK Suche starten kann -->
+<h2>
+    <span>{{ 'EWK_ABFRAGE_STARTEN' | translate }}</span>
+    <dv-tooltip inputId="geres_info" [text]="'EWK_ABFRAGE_HINT' | translate">
+    </dv-tooltip>
+</h2>
+<div *ngIf="isGesuchsteller1New()" class="well well-status-warten">
+    <h3>{{ "EWK_ABFRAGE_FEHLENDE_ANGABEN" | translate }}</h3>
+</div>
+<ng-container *ngIf="!isGesuchsteller1New()">
+    <dv-loading-button type="button" buttonClass="dv-btn-operation trigger-search" (buttonClick)="searchGesuchsteller()">
+        <i class="fa fa-search"></i>
+        {{ 'EWK_ABFRAGE_BUTTON' | translate }}
+    </dv-loading-button>
+
+    <ng-container *ngFor="let person of personen$ | async">
+        <details *ngIf="person.gefunden else notFound" class="person-found">
+            <summary>
+                <span class="icons">
+                    <i class="fa fa-male"
+                       *ngIf="person.gesuchsteller && person.isMaennlich()"
+                       [title]="'EWK_IST_GESUCHSTELLER' | translate"
+                    ></i>
+                    <i class="fa fa-female"
+                       *ngIf="person.gesuchsteller && person.isWeiblich()"
+                       [title]="'EWK_IST_GESUCHSTELLERIN' | translate"
+                    ></i>
+                    <i class="fa fa-child" *ngIf="person.kind"
+                       [title]="'EWK_IST_KIND' | translate"></i>
+                    <i class="fa fa-building"
+                       *ngIf="person.haushalt"
+                       [title]="'EWK_WOHNT_IM_GLEICHEN_HAUSHALT' | translate"
+                    ></i>
+
+                </span>
+
+                {{ getShortDescription(person) }}
+                <i class="fa" [class.fa-mars]="person.isMaennlich()" [class.fa-venus]="person.isWeiblich()"></i>
+            </summary>
+            <div class="person-details">
+                <div>
+                    <span class="ewk-label">{{ "EWK_NACHNAME" | translate }}</span>
+                    {{ person.nachname }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_VORNAME" | translate }}</span>
+                    {{ person.vorname }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_GEBURTSDATUM" | translate }}</span>
+                    {{ person.geburtsdatum?.toISOString() | date: 'shortDate' }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_ZUZUGSDATUM" | translate }}</span>
+                    {{ person.zuzugsdatum?.toISOString() | date: 'shortDate' }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_WEGZUGSDATUM" | translate }}</span>
+                    {{ person.wegzugsdatum?.toISOString() | date: 'shortDate' }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_ZIVILSTAND" | translate }}</span>
+                    {{ person.zivilstand | translate }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_ZIVILSTAND_DATUM" | translate }}</span>
+                    {{ person.zivilstandsdatum?.toISOString() | date: 'shortDate' }}
+                </div>
+                <div>
+                    <span class="ewk-label">{{ "EWK_GESCHLECHT" | translate }}</span>
+                    {{ person.geschlecht | translate }}
+                </div>
+
+                <details *ngIf="person.adresse" class="adresse">
+                    <summary>
+                        {{ 'EWK_ADRESSE_TYP' | translate }}
+                    </summary>
+                    <dv-ewk-adresse [adresse]="person.adresse"></dv-ewk-adresse>
+                </details>
+
+                <details *ngFor="let beziehung of person.beziehungen" class="beziehung">
+                    <summary>
+                        {{ beziehung.beziehungstyp | translate }}
+                    </summary>
+
+                    <div class="beziehung-details">
+                        <div>
+                            <span class="ewk-label">{{ "EWK_NACHNAME" | translate }}</span>
+                            {{ beziehung.nachname }}
+                        </div>
+                        <div>
+                            <span class="ewk-label">{{ "EWK_VORNAME" | translate }}</span>
+                            {{ beziehung.vorname }}
+                        </div>
+                        <div>
+                            <span class="ewk-label">{{ "EWK_GEBURTSDATUM" | translate }}</span>
+                            {{ beziehung.geburtsdatum?.toISOString() | date: 'shortDate' }}
+                        </div>
+                        <details *ngIf="beziehung.adresse" class="adresse">
+                            <summary>
+                                {{ 'EWK_ADRESSE_TYP' | translate }}
+                            </summary>
+                            <dv-ewk-adresse [adresse]="beziehung.adresse"></dv-ewk-adresse>
+                        </details>
+                    </div>
+                </details>
+            </div>
+        </details>
+        <ng-template #notFound>
+            <div class="person-not-found">
+                <i class="fa fa-exclamation-triangle" [title]="'EWK_NICHT_GEFUNDEN' | translate"></i>
+                {{ getShortDescription(person) }}
+            </div>
+        </ng-template>
+    </ng-container>
+</ng-container>

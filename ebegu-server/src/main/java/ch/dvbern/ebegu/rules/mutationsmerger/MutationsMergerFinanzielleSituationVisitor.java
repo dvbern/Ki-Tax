@@ -62,6 +62,12 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 	}
 
 	@Override
+	public AbstractMutationsMergerFinanzielleSituation visitFinSitAppenzellFolgemonat() {
+		// Appenzell will die Schwyz FinSit Frist verwenden
+		return new MutationsMergerFinanzielleSituationSchwyz(locale);
+	}
+
+	@Override
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitSchwyz() {
 		return new MutationsMergerFinanzielleSituationSchwyz(locale);
 	}

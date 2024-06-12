@@ -171,12 +171,12 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 			new EbeguEntityNotFoundException("toFerienbetreuungDocxDTO", container.getGemeinde().getId())
 		);
 
-		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
+		dto.setGemeindeAnschrift(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getStammdatenAdresse().getOrganisation());
 		dto.setGemeindeNamen(stammdaten.getGemeinde().getName());
-		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
-		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
-		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
-		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		dto.setGemeindeStrasse(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getStammdatenAdresse().getStrasse());
+		dto.setGemeindeNr(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getStammdatenAdresse().getHausnummer());
+		dto.setGemeindePLZ(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getStammdatenAdresse().getPlz());
+		dto.setGemeindeOrt(angabenKorrektur.getFerienbetreuungAngabenStammdaten().getStammdatenAdresse().getOrt());
 		dto.setFallNummer(buildFallNummer(container, stammdaten));
 		dto.setPeriode(container.getGesuchsperiode().getGesuchsperiodeString());
 		dto.setAngebot(angabenKorrektur.getFerienbetreuungAngabenAngebot().getAngebot());

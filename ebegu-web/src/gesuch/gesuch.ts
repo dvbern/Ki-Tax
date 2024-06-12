@@ -13,14 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IRootScopeService} from 'angular';
+import {IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../admin/service/einstellungRS.rest';
-import {ErrorService} from '../app/core/errors/service/ErrorService';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import {AntragStatusHistoryRS} from '../app/core/service/antragStatusHistoryRS.rest';
-import {EwkRS} from '../app/core/service/ewkRS.rest';
 import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
@@ -30,7 +28,6 @@ import {TSRole} from '../models/enums/TSRole';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
 import {TSDossier} from '../models/TSDossier';
-import {TSEWKResultat} from '../models/TSEWKResultat';
 import {TSFall} from '../models/TSFall';
 import {TSGesuch} from '../models/TSGesuch';
 import {DateUtil} from '../utils/DateUtil';
@@ -49,13 +46,10 @@ export class GesuchRouteController implements IController {
         'GesuchModelManager',
         'WizardStepManager',
         'EbeguUtil',
-        'ErrorService',
         'AntragStatusHistoryRS',
         '$translate',
         'AuthServiceRS',
         '$mdSidenav',
-        'EwkRS',
-        '$rootScope',
         'EinstellungRS'
     ];
 
@@ -71,13 +65,10 @@ export class GesuchRouteController implements IController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly wizardStepManager: WizardStepManager,
         private readonly ebeguUtil: EbeguUtil,
-        private readonly errorService: ErrorService,
         private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
         private readonly $translate: ITranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $mdSidenav: ISidenavService,
-        private readonly ewkRS: EwkRS,
-        private readonly $rootScope: IRootScopeService,
         private readonly einstellungRS: EinstellungRS
     ) {
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
@@ -322,19 +313,6 @@ export class GesuchRouteController implements IController {
             return this.gesuchModelManager.getGesuch().gesuchsteller1.isNew();
         }
         return true;
-    }
-
-    public getEWKResultat(): TSEWKResultat {
-        return this.gesuchModelManager.ewkResultat;
-    }
-
-    public searchGesuchsteller(): void {
-        this.errorService.clearAll();
-        this.ewkRS.sucheInEwk(this.getGesuchId()).then(response => {
-            this.gesuchModelManager.ewkResultat = response;
-        }).catch(exception => {
-            LOG.error('there was an error searching the person in EWK ', exception);
-        });
     }
 
     public isGesuchGesperrt(): boolean {

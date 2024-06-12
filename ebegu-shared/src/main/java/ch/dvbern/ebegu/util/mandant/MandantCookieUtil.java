@@ -17,9 +17,21 @@
 
 package ch.dvbern.ebegu.util.mandant;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import javax.annotation.Nonnull;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 public final class MandantCookieUtil {
+
+	public static final String COOKIE_VALUE_STADT_LUZERN = "Stadt Luzern";
+	public static final String COOKIE_VALUE_APPENZELL_AUSSERRHODEN = "Appenzell Ausserrhoden";
+	public static final String COOKIE_VALUE_KANTON_SOLOTHURN = "Kanton Solothurn";
+	public static final String COOKIE_VALUE_KANTON_BERN = "Kanton Bern";
+	public static final String COOKIE_VALUE_KANTON_SCHWYZ = "Kanton Schwyz";
+	public static final String MANDANT_COOKIE_NAME = "mandant";
 
 	private MandantCookieUtil() {
 	}
@@ -29,19 +41,19 @@ public final class MandantCookieUtil {
 		MandantIdentifier mandantIdentifier = null;
 
 		switch (mandantNameDecoded) {
-		case "Stadt Luzern":
+		case COOKIE_VALUE_STADT_LUZERN:
 			mandantIdentifier = MandantIdentifier.LUZERN;
 			break;
-		case "Appenzell Ausserrhoden":
+		case COOKIE_VALUE_APPENZELL_AUSSERRHODEN:
 			mandantIdentifier = MandantIdentifier.APPENZELL_AUSSERRHODEN;
 			break;
-		case "Kanton Solothurn":
+		case COOKIE_VALUE_KANTON_SOLOTHURN:
 			mandantIdentifier = MandantIdentifier.SOLOTHURN;
 			break;
-		case "Kanton Bern":
+		case COOKIE_VALUE_KANTON_BERN:
 			mandantIdentifier = MandantIdentifier.BERN;
 			break;
-		case "Kanton Schwyz":
+		case COOKIE_VALUE_KANTON_SCHWYZ:
 			mandantIdentifier = MandantIdentifier.SCHWYZ;
 			break;
 		default:
@@ -49,4 +61,18 @@ public final class MandantCookieUtil {
 		}
 		return mandantIdentifier;
 	}
+
+	@Nonnull
+	public static MandantIdentifier getMandantFromCookie(HttpServletRequest request) {
+		if (request.getCookies() != null) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(MANDANT_COOKIE_NAME)) {
+					var mandantNameDecoded = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+					return convertCookieNameToMandantIdentifier(mandantNameDecoded);
+				}
+			}
+		}
+		throw new IllegalStateException("mandant cookie is missing");
+	}
+
 }

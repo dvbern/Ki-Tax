@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -228,13 +229,13 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 		table.addRow(
 				translate(LATS_BETRAG, mandant, getSchuljahrAsString()),
-				angabenGemeinde.getLastenausgleichsberechtigerBetrag());
+				angabenGemeinde.getLastenausgleichsberechtigerBetrag().setScale(0, RoundingMode.UP).intValue());
 		table.addRow(
 				translate(ERSTE_RATE, mandant, getSchuljahrBasisjahrAsString()),
-				angabenGemeinde.getErsteRateAusbezahlt());
+				angabenGemeinde.getErsteRateAusbezahlt().setScale(0, RoundingMode.UP).intValue());
 		table.addRow(
 				translate(SCHLUSSZAHLUNG, mandant, getSchuljahrBasisjahrPlus1AsString()),
-				angabenGemeinde.getSchlusszahlung());
+				angabenGemeinde.getSchlusszahlung().setScale(0, RoundingMode.UP).intValue());
 
 		PdfPTable pdfPTable = table.createTable();
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
