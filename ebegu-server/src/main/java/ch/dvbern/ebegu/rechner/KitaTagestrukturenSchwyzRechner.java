@@ -27,6 +27,8 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 
 	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULZEIT = new BigDecimal(65);
 	static final BigDecimal KITA_NORMKOSTEN_PRIMARSTUFE_SCHULFREIEN_ZEIT = new BigDecimal(100);
+	static final BigDecimal BEDARFSSTUFE_2_BETRAG_PRO_TAG = new BigDecimal(66);
+	static final BigDecimal BEDARFSSTUFE_3_BETRAG_PRO_TAG = new BigDecimal(132);
 
 	@Override
 	protected BigDecimal toZeiteinheitProZeitabschnitt(
@@ -44,6 +46,16 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractSchwyzRechner {
 	@Override
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.DAYS;
+	}
+
+	@Override
+	protected BigDecimal getBedarfsstufeZweiBetragForAngebot() {
+		return BEDARFSSTUFE_2_BETRAG_PRO_TAG;
+	}
+
+	@Override
+	protected BigDecimal getBedarfsstufeDreiBetragForAngebot() {
+		return BEDARFSSTUFE_3_BETRAG_PRO_TAG;
 	}
 
 	@Override

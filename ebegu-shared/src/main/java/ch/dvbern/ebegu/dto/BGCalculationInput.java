@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.dto;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -212,6 +213,10 @@ public class BGCalculationInput {
 	@Setter
 	private BigDecimal anwesenheitsTageProMonat = BigDecimal.ZERO;
 
+	@Getter
+	@Setter
+	private Bedarfsstufe bedarfsstufe;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -287,6 +292,7 @@ public class BGCalculationInput {
 		this.betreuungInFerienzeit = toCopy.betreuungInFerienzeit;
 		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 		this.anwesenheitsTageProMonat = toCopy.anwesenheitsTageProMonat;
+		this.bedarfsstufe = toCopy.bedarfsstufe;
 	}
 
 	@Nonnull
@@ -920,6 +926,12 @@ public class BGCalculationInput {
 
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 		this.anwesenheitsTageProMonat = add(this.anwesenheitsTageProMonat, other.anwesenheitsTageProMonat);
+		if (other.bedarfsstufe != null) {
+			if (this.bedarfsstufe != null && this.bedarfsstufe == other.bedarfsstufe) {
+				throw new IllegalArgumentException("Bedarfsstufe können nicht gemerged werden");
+			}
+			this.bedarfsstufe = other.bedarfsstufe;
+		}
 	}
 
 	/**
@@ -1130,7 +1142,8 @@ public class BGCalculationInput {
 			this.finsitAccepted == other.finsitAccepted &&
 			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale) &&
 			this.betreuungInFerienzeit == other.betreuungInFerienzeit &&
-			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat;
+			this.anwesenheitsTageProMonat == other.anwesenheitsTageProMonat &&
+			Objects.equals(this.bedarfsstufe, other.bedarfsstufe);
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1165,7 +1178,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
 			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale) &&
 			MathUtil.isSame(anwesenheitsTageProMonat, that.anwesenheitsTageProMonat) &&
-			betreuungInFerienzeit == that.betreuungInFerienzeit;
+			betreuungInFerienzeit == that.betreuungInFerienzeit &&
+			Objects.equals(this.bedarfsstufe, that.bedarfsstufe);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

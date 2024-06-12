@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
@@ -32,6 +33,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Function;
@@ -45,27 +47,32 @@ public class BGCalculationResult extends AbstractEntity {
 
 	private static final long serialVersionUID = 6727717920099112569L;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal vollkosten = BigDecimal.ZERO; // Punkt IV auf der Verfuegung
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO; // Punkt V auf der Verfuegung
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag = BigDecimal.ZERO; // Punkt VI auf der Verfuegung
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal elternbeitrag = BigDecimal.ZERO;
@@ -74,7 +81,8 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal minimalerElternbeitragGekuerzt; // Punkt VII auf der Verfuegung
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal verguenstigung = BigDecimal.ZERO; // Punkt VIII auf der Verfuegung (Achtung: darf negativ sein)
 
@@ -82,21 +90,25 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal verguenstigungProZeiteinheit; // Punkt Gutschein Pro Stunde auf der Verfuegung bei TFOs Luzern
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_SHORT_LENGTH)
 	private PensumUnits zeiteinheit = PensumUnits.DAYS;
 
 	@Min(0)
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 
-	@Max(100) @Min(0)
+	@Max(100)
+	@Min(0)
 	@Column(nullable = false)
 	private int anspruchspensumProzent;
 
@@ -104,31 +116,37 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal anspruchspensumRest;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal anspruchspensumZeiteinheit = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal bgPensumZeiteinheit = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Min(0)
 	@Column(nullable = false)
 	private BigDecimal famGroesse = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
@@ -163,7 +181,8 @@ public class BGCalculationResult extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_BGCalculationResult_tsCalculationResultOhneBetreuung"), nullable = true)
 	private TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
-	@Max(100) @Min(0)
+	@Max(100)
+	@Min(0)
 	@Column(nullable = true)
 	private Integer beitragshoeheProzent;
 
@@ -181,6 +200,15 @@ public class BGCalculationResult extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal gutscheinEingewoehnung;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal hoehererBeitrag;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	@Nullable
+	private Bedarfsstufe bedarfsstufe;
 
 	@Transient
 	@Nonnull
@@ -220,10 +248,12 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungProZeiteinheit = toCopy.verguenstigungProZeiteinheit;
 
 		if (toCopy.tsCalculationResultMitPaedagogischerBetreuung != null) {
-			this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
+			this.tsCalculationResultMitPaedagogischerBetreuung =
+				new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
 		}
 		if (toCopy.tsCalculationResultOhnePaedagogischerBetreuung != null) {
-			this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
+			this.tsCalculationResultOhnePaedagogischerBetreuung =
+				new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
 		}
 
 		this.auszahlungAnEltern = toCopy.auszahlungAnEltern;
@@ -232,23 +262,33 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
 		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
+		this.hoehererBeitrag = toCopy.hoehererBeitrag;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
 		BigDecimal rapenError = BigDecimal.valueOf(0.20);
 		// Folgende Attribute sollen bei einer "kleinen" Änderung nicht zu einer Neuberechnung führen:
 		return MathUtil.isSame(vollkosten, that.vollkosten)
-			&& MathUtil.isClose(verguenstigungOhneBeruecksichtigungVollkosten, that.getVerguenstigungOhneBeruecksichtigungVollkosten(), rapenError)
-			&& MathUtil.isClose(verguenstigungOhneBeruecksichtigungMinimalbeitrag, that.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(), rapenError)
+			&& MathUtil.isClose(
+			verguenstigungOhneBeruecksichtigungVollkosten,
+			that.getVerguenstigungOhneBeruecksichtigungVollkosten(),
+			rapenError)
+			&& MathUtil.isClose(
+			verguenstigungOhneBeruecksichtigungMinimalbeitrag,
+			that.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(),
+			rapenError)
 			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError)
 			&& MathUtil.isClose(elternbeitrag, that.getElternbeitrag(), rapenError)
-			&& MathUtil.isClose(this.getMinimalerElternbeitragGekuerztNullSafe(), that.getMinimalerElternbeitragGekuerztNullSafe(), rapenError)
+			&& MathUtil.isClose(
+			this.getMinimalerElternbeitragGekuerztNullSafe(),
+			that.getMinimalerElternbeitragGekuerztNullSafe(),
+			rapenError)
 			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError)
 			&& MathUtil.isClose(this.getBgPensumProzent(), that.getBgPensumProzent(), rapenError);
 	}
 
 	public void copyCalculationResult(@Nullable BGCalculationResult that) {
-		if (that == null){
+		if (that == null) {
 			return;
 		}
 		verguenstigungOhneBeruecksichtigungVollkosten = that.verguenstigungOhneBeruecksichtigungVollkosten;
@@ -261,6 +301,7 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
 		sozialhilfeAkzeptiert = that.sozialhilfeAkzeptiert;
 		gutscheinEingewoehnung = that.gutscheinEingewoehnung;
+		hoehererBeitrag = that.hoehererBeitrag;
 	}
 
 	@CanIgnoreReturnValue
@@ -268,7 +309,8 @@ public class BGCalculationResult extends AbstractEntity {
 	public BGCalculationResult roundAllValues() {
 		this.vollkosten = roundToFrankenRappen(vollkosten);
 		this.verguenstigungOhneBeruecksichtigungVollkosten = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungVollkosten);
-		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
+			roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
 		this.minimalerElternbeitrag = roundToFrankenRappen(minimalerElternbeitrag);
 		this.elternbeitrag = roundToFrankenRappen(elternbeitrag);
 		this.minimalerElternbeitragGekuerzt = roundToFrankenRappen(minimalerElternbeitragGekuerzt);
@@ -286,6 +328,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
+		this.hoehererBeitrag = roundToFrankenRappen(hoehererBeitrag);
 		return this;
 	}
 
@@ -319,6 +362,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
 			.add("eingewoehnungAnteil", gutscheinEingewoehnung)
+			.add("hoehererBeitrag", hoehererBeitrag)
 			.toString();
 	}
 
@@ -350,13 +394,17 @@ public class BGCalculationResult extends AbstractEntity {
 			babyTarif == otherResult.babyTarif &&
 			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
 			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert &&
-			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung);
+			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung) &&
+			MathUtil.isSame(hoehererBeitrag, otherResult.hoehererBeitrag) &&
+			bedarfsstufe == otherResult.bedarfsstufe;
 	}
 
-	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
+	public static boolean isSameSichtbareDaten(
+		@Nullable BGCalculationResult thisEntity,
+		@Nullable BGCalculationResult otherEntity) {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && (
-				MathUtil.isSame(thisEntity.betreuungspensumZeiteinheit, otherEntity.betreuungspensumZeiteinheit) &&
+			MathUtil.isSame(thisEntity.betreuungspensumZeiteinheit, otherEntity.betreuungspensumZeiteinheit) &&
 				MathUtil.isSame(thisEntity.vollkosten, otherEntity.vollkosten) &&
 				MathUtil.isSame(thisEntity.elternbeitrag, otherEntity.elternbeitrag) &&
 				MathUtil.isSame(thisEntity.betreuungspensumProzent, otherEntity.betreuungspensumProzent) &&
@@ -376,8 +424,9 @@ public class BGCalculationResult extends AbstractEntity {
 					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung) &&
 				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
-					thisEntity.babyTarif == otherEntity.babyTarif &&
-				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
+				thisEntity.babyTarif == otherEntity.babyTarif &&
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
@@ -388,12 +437,13 @@ public class BGCalculationResult extends AbstractEntity {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && (
 			MathUtil.isSame(thisEntity.verguenstigung, otherEntity.verguenstigung) &&
-			MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
-			MathUtil.isSame(thisEntity.getBgPensumProzent(), otherEntity.getBgPensumProzent()) &&
-			MathUtil.isSame(thisEntity.minimalerElternbeitragGekuerzt, otherEntity.minimalerElternbeitragGekuerzt) &&
-			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
-			thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
-			Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
+				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
+				MathUtil.isSame(thisEntity.getBgPensumProzent(), otherEntity.getBgPensumProzent()) &&
+				MathUtil.isSame(thisEntity.minimalerElternbeitragGekuerzt, otherEntity.minimalerElternbeitragGekuerzt) &&
+				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
@@ -402,9 +452,9 @@ public class BGCalculationResult extends AbstractEntity {
 	 */
 	public static boolean isSameMZVResult(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
 		return (thisEntity == null && otherEntity == null)
-				|| (thisEntity != null && otherEntity != null) && (
-					MathUtil.isSame(thisEntity.getVerguenstigungMahlzeitenTotal(), otherEntity.getVerguenstigungMahlzeitenTotal())
-				);
+			|| (thisEntity != null && otherEntity != null) && (
+			MathUtil.isSame(thisEntity.getVerguenstigungMahlzeitenTotal(), otherEntity.getVerguenstigungMahlzeitenTotal())
+		);
 	}
 
 	/**
@@ -412,13 +462,15 @@ public class BGCalculationResult extends AbstractEntity {
 	 */
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
 		"QuestionableName" })
-	public static boolean isSamePersistedValues(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
+	public static boolean isSamePersistedValues(
+		@Nullable BGCalculationResult thisEntity,
+		@Nullable BGCalculationResult otherEntity) {
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && (
-				MathUtil.isSame(thisEntity.betreuungspensumZeiteinheit, otherEntity.betreuungspensumZeiteinheit) &&
+			MathUtil.isSame(thisEntity.betreuungspensumZeiteinheit, otherEntity.betreuungspensumZeiteinheit) &&
 				MathUtil.isSame(thisEntity.vollkosten, otherEntity.vollkosten) &&
 				MathUtil.isSame(thisEntity.elternbeitrag, otherEntity.elternbeitrag) &&
 				MathUtil.isSame(thisEntity.betreuungspensumProzent, otherEntity.betreuungspensumProzent) &&
@@ -434,11 +486,14 @@ public class BGCalculationResult extends AbstractEntity {
 				thisEntity.babyTarif == otherEntity.babyTarif &&
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
 				thisEntity.sozialhilfeAkzeptiert == otherEntity.sozialhilfeAkzeptiert &&
-				MathUtil.isSame(thisEntity.gutscheinEingewoehnung, otherEntity.gutscheinEingewoehnung)
+				MathUtil.isSame(thisEntity.gutscheinEingewoehnung, otherEntity.gutscheinEingewoehnung) &&
+				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
 
-	private static boolean isSameZeiteinheiten(@Nonnull BGCalculationResult thisEntity, @Nonnull BGCalculationResult otherEntity) {
+	private static boolean isSameZeiteinheiten(
+		@Nonnull BGCalculationResult thisEntity,
+		@Nonnull BGCalculationResult otherEntity) {
 		return MathUtil.isSame(thisEntity.bgPensumZeiteinheit, otherEntity.bgPensumZeiteinheit) &&
 			MathUtil.isSame(thisEntity.anspruchspensumZeiteinheit, otherEntity.anspruchspensumZeiteinheit) &&
 			thisEntity.zeiteinheit == otherEntity.zeiteinheit;
@@ -487,8 +542,6 @@ public class BGCalculationResult extends AbstractEntity {
 		return MathUtil.DEFAULT.subtract(getMinimalerElternbeitrag(), vollkostenMinusVerguenstigung);
 	}
 
-
-
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
 		return minimalerElternbeitrag;
@@ -503,7 +556,8 @@ public class BGCalculationResult extends AbstractEntity {
 		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
-	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(@Nonnull BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(
+		@Nonnull BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
 		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
@@ -512,7 +566,8 @@ public class BGCalculationResult extends AbstractEntity {
 		return verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
-	public void setVerguenstigungOhneBeruecksichtigungVollkosten(@Nonnull BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+	public void setVerguenstigungOhneBeruecksichtigungVollkosten(
+		@Nonnull BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
 		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
@@ -689,7 +744,8 @@ public class BGCalculationResult extends AbstractEntity {
 		return tsCalculationResultMitPaedagogischerBetreuung;
 	}
 
-	public void setTsCalculationResultMitPaedagogischerBetreuung(@Nullable TSCalculationResult tsCalculationResultMitPaedagogischerBetreuung) {
+	public void setTsCalculationResultMitPaedagogischerBetreuung(
+		@Nullable TSCalculationResult tsCalculationResultMitPaedagogischerBetreuung) {
 		this.tsCalculationResultMitPaedagogischerBetreuung = tsCalculationResultMitPaedagogischerBetreuung;
 	}
 
@@ -698,7 +754,8 @@ public class BGCalculationResult extends AbstractEntity {
 		return tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
-	public void setTsCalculationResultOhnePaedagogischerBetreuung(@Nullable TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung) {
+	public void setTsCalculationResultOhnePaedagogischerBetreuung(
+		@Nullable TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung) {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 
@@ -769,7 +826,6 @@ public class BGCalculationResult extends AbstractEntity {
 		return sozialhilfeAkzeptiert;
 	}
 
-
 	@Nullable
 	public BigDecimal getGutscheinEingewoehnung() {
 		return gutscheinEingewoehnung;
@@ -779,17 +835,50 @@ public class BGCalculationResult extends AbstractEntity {
 		this.gutscheinEingewoehnung = gutscheinEingewoehnung;
 	}
 
+	@Nullable
+	public BigDecimal getHoehererBeitrag() {
+		return hoehererBeitrag;
+	}
+
+	public void setHoehererBeitrag(@Nullable BigDecimal hoehererBeitrag) {
+		this.hoehererBeitrag = hoehererBeitrag;
+	}
+
+	@Nullable
+	public Bedarfsstufe getBedarfsstufe() {
+		return bedarfsstufe;
+	}
+
+	public void setBedarfsstufe(@Nullable Bedarfsstufe bedarfsstufe) {
+		this.bedarfsstufe = bedarfsstufe;
+	}
+
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
 	public boolean differsIgnorableFrom(BGCalculationResult otherResult) {
-		return 	MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent) &&
-				this.anspruchspensumProzent == otherResult.anspruchspensumProzent &&
-				MathUtil.isSame(famGroesse, otherResult.famGroesse) &&
-				MathUtil.isSame(verguenstigungMahlzeitenTotal, otherResult.verguenstigungMahlzeitenTotal) &&
-				besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
-				babyTarif == otherResult.babyTarif &&
-				((tsCalculationResultMitPaedagogischerBetreuung == null && otherResult.tsCalculationResultMitPaedagogischerBetreuung == null) ||
-				tsCalculationResultMitPaedagogischerBetreuung != null && tsCalculationResultMitPaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultMitPaedagogischerBetreuung)) &&
-				((tsCalculationResultOhnePaedagogischerBetreuung == null && otherResult.tsCalculationResultOhnePaedagogischerBetreuung == null) ||
-						tsCalculationResultOhnePaedagogischerBetreuung != null && tsCalculationResultOhnePaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultOhnePaedagogischerBetreuung));
+		return MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent)
+			&&
+			this.anspruchspensumProzent == otherResult.anspruchspensumProzent
+			&&
+			MathUtil.isSame(famGroesse, otherResult.famGroesse)
+			&&
+			MathUtil.isSame(verguenstigungMahlzeitenTotal, otherResult.verguenstigungMahlzeitenTotal)
+			&&
+			besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt
+			&&
+			babyTarif == otherResult.babyTarif
+			&&
+			MathUtil.isSame(hoehererBeitrag, otherResult.hoehererBeitrag)
+			&&
+			bedarfsstufe == otherResult.bedarfsstufe
+			&&
+			((tsCalculationResultMitPaedagogischerBetreuung == null
+				&& otherResult.tsCalculationResultMitPaedagogischerBetreuung == null) ||
+				tsCalculationResultMitPaedagogischerBetreuung != null
+					&& tsCalculationResultMitPaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultMitPaedagogischerBetreuung))
+			&&
+			((tsCalculationResultOhnePaedagogischerBetreuung == null
+				&& otherResult.tsCalculationResultOhnePaedagogischerBetreuung == null) ||
+				tsCalculationResultOhnePaedagogischerBetreuung != null
+					&& tsCalculationResultOhnePaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultOhnePaedagogischerBetreuung));
 	}
 }
