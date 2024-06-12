@@ -52,7 +52,7 @@ import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -60,7 +60,6 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.checkerframework.checker.units.qual.K;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -109,9 +108,9 @@ public class KindResource {
 	@Path("/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
+	@RolesAllowed({ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
-		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
 	public JaxKindContainer saveKind(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
 		@Nonnull @NotNull @Valid JaxKindContainer kindContainerJAXP,
@@ -124,17 +123,16 @@ public class KindResource {
 		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
 
 		KindContainer kindToMerge = new KindContainer();
-		EinschulungTyp alteEinschulungTyp = null;
+		KindContainer copyOldKind = null;
+
 		if (kindContainerJAXP.getId() != null) {
 			Optional<KindContainer> optional = kindService.findKind(kindContainerJAXP.getId());
 			kindToMerge = optional.orElse(new KindContainer());
-			if(kindToMerge.getKindJA() != null) {
-				alteEinschulungTyp = kindToMerge.getKindJA().getEinschulungTyp();
-			}
+			copyOldKind = kindToMerge.copyKindContainer(new KindContainer(), AntragCopyType.MUTATION, gesuch, gesuch.getGesuchsperiode(), gesuch.getRegelStartDatum());
 		}
 		KindContainer convertedKind = converter.kindContainerToEntity(kindContainerJAXP, kindToMerge);
 		convertedKind.setGesuch(gesuch);
-		KindContainer persistedKind = this.kindService.saveKind(convertedKind, alteEinschulungTyp);
+		KindContainer persistedKind = this.kindService.saveKind(convertedKind, copyOldKind);
 
 		return converter.kindContainerToJAX(persistedKind);
 	}
@@ -160,7 +158,7 @@ public class KindResource {
 
 		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder gefilter
 		// damit nur die relevanten Kinder geschickt werden
-		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT , SACHBEARBEITER_INSTITUTION )) {
+		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION)) {
 			Collection<Institution> instForCurrBenutzer = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			RestUtil.purgeSingleKindAndBetreuungenOfInstitutionen(jaxKindContainer, instForCurrBenutzer);
 		}
@@ -174,8 +172,8 @@ public class KindResource {
 	@DELETE
 	@Path("/{kindContainerId}")
 	@Consumes(MediaType.WILDCARD)
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@RolesAllowed({ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST})
 	public Response removeKind(
 		@Nonnull @NotNull @PathParam("kindContainerId") JaxId kindJAXPId,
 		@Context HttpServletResponse response) {
@@ -198,8 +196,8 @@ public class KindResource {
 	@Path("/dubletten/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public Set<KindDubletteDTO> getKindDubletten(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId) {
 		Objects.requireNonNull(gesuchJaxId.getId());
 		String gesuchId = converter.toEntityId(gesuchJaxId);

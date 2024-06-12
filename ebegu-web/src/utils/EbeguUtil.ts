@@ -238,9 +238,9 @@ export class EbeguUtil {
         return true;
     }
 
-    public static areSameOrWithoutValue(right: any, left: any): boolean{
+    public static areSameOrWithoutValue(right: any, left: any): boolean {
         return (EbeguUtil.isNullOrUndefined(right) && EbeguUtil.isNullOrUndefined(left)) ||
-                right === left;
+            right === left;
     }
 
     public static isNotNullAndTrue(data: boolean): boolean {
@@ -275,24 +275,6 @@ export class EbeguUtil {
     public static ceilToFiveRappen(betrag: number): number {
         const fraction = 20;
         return Math.ceil(betrag * fraction) / fraction;
-    }
-
-    private static getYear(gueltigkeit: TSDateRange): string {
-        return gueltigkeit.gueltigAb.year().toString().substring(2);
-    }
-
-    private static toBetreuungsId(
-        gueltigkeit: TSDateRange,
-        fall: TSFall,
-        gemeinde: TSGemeinde,
-        kindNr: number,
-        betreuungNumber: number
-    ): string {
-        const year = EbeguUtil.getYear(gueltigkeit);
-        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
-        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
-
-        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
     }
 
     /**
@@ -362,7 +344,7 @@ export class EbeguUtil {
 
     public static formatHrefUrl(url: string): string {
         if (EbeguUtil.isNotNullOrUndefined(url) && url.startsWith('www.')) {
-            return `http://${  url}`;
+            return `http://${url}`;
         }
         return url;
     }
@@ -417,6 +399,51 @@ export class EbeguUtil {
         const ageClone = age.clone();
         const dateWith18 = ageClone.add(volljaehrigNumberYears, 'years');
         return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
+    }
+
+    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
+        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
+            .filter(fachstelle =>
+                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
+
+        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
+            sprachlicheIntegrationen.length === 0);
+    }
+
+    public static roundDefaultBetreuungspensum(toRound: number): number {
+        return Number(toRound.toFixed(2));
+    }
+
+    public static getBoolean(value: string | boolean | number) {
+        switch (value) {
+            case true:
+            case 'true':
+            case 1:
+            case '1':
+            case 'on':
+            case 'yes':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static getYear(gueltigkeit: TSDateRange): string {
+        return gueltigkeit.gueltigAb.year().toString().substring(2);
+    }
+
+    private static toBetreuungsId(
+        gueltigkeit: TSDateRange,
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        kindNr: number,
+        betreuungNumber: number
+    ): string {
+        const year = EbeguUtil.getYear(gueltigkeit);
+        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
+        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
+
+        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
     }
 
     /**
@@ -543,18 +570,5 @@ export class EbeguUtil {
             }
         }
         return text;
-    }
-
-    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
-        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
-            .filter(fachstelle =>
-                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
-
-        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
-            sprachlicheIntegrationen.length === 0);
-    }
-
-    public static roundDefaultBetreuungspensum(toRound: number): number {
-        return Number(toRound.toFixed(2));
     }
 }
