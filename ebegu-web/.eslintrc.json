@@ -1,136 +1,137 @@
 {
-  "root": true,
-  "overrides": [
-    {
+    "root": true,
+    "overrides": [
+        {
       "files": [
         "**/*.ts"
       ],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
         "project": [
           "tsconfig.eslint.json"
         ],
-        "createDefaultProgram": false
-      },
-      "extends": [
-        "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
-      ],
-      "plugins": [
-        "eslint-plugin-rxjs",
-        "eslint-plugin-jsdoc",
-        "@typescript-eslint",
-        "import"
-      ],
-      "rules": {
-        "@angular-eslint/component-selector": [
-          "error",
-          {
+                "createDefaultProgram": false
+            },
+            "extends": [
+                "plugin:@angular-eslint/recommended",
+                "plugin:@angular-eslint/template/process-inline-templates",
+                "prettier"
+            ],
+            "plugins": [
+                "eslint-plugin-rxjs",
+                "eslint-plugin-jsdoc",
+                "@typescript-eslint",
+                "import"
+            ],
+            "rules": {
+                "@angular-eslint/component-selector": [
+                    "error",
+                    {
             "prefix": [
               "dv"
             ]
-          }
-        ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "prefix": "dv",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/no-empty-lifecycle-method": "off",
-        "prefer-const": "error",
-        "no-console": [
-          "error",
-          {
-            "allow": [
-              "log",
-              "warn",
-              "dir",
-              "timeLog",
-              "assert",
-              "clear",
-              "count",
-              "countReset",
-              "group",
-              "groupEnd",
-              "table",
-              "dirxml",
-              "error",
-              "groupCollapsed",
-              "Console",
-              "profile",
-              "profileEnd",
-              "timeStamp",
-              "context"
-            ]
-          }
-        ],
+                    }
+                ],
+                "@angular-eslint/directive-selector": [
+                    "error",
+                    {
+                        "prefix": "dv",
+                        "style": "camelCase"
+                    }
+                ],
+                "@angular-eslint/no-empty-lifecycle-method": "off",
+                "prefer-const": "error",
+                "no-console": [
+                    "error",
+                    {
+                        "allow": [
+                            "log",
+                            "warn",
+                            "dir",
+                            "timeLog",
+                            "assert",
+                            "clear",
+                            "count",
+                            "countReset",
+                            "group",
+                            "groupEnd",
+                            "table",
+                            "dirxml",
+                            "error",
+                            "groupCollapsed",
+                            "Console",
+                            "profile",
+                            "profileEnd",
+                            "timeStamp",
+                            "context"
+                        ]
+                    }
+                ],
         "arrow-body-style": [
           "error",
           "as-needed"
         ],
-        "@angular-eslint/prefer-output-readonly": "warn",
-        "@typescript-eslint/no-unused-expressions": "error",
-        "@angular-eslint/no-host-metadata-property": "error",
-        "@angular-eslint/no-forward-ref": "error",
-        "@angular-eslint/no-output-on-prefix": "off",
-        "@angular-eslint/directive-class-suffix": "error",
-        "@angular-eslint/use-lifecycle-interface": "error",
-        "@angular-eslint/component-class-suffix": "error",
-        "@typescript-eslint/adjacent-overload-signatures": "error",
-        "@typescript-eslint/ban-types": [
-          "error",
-          {
-            "extendDefaults": true,
-            "types": {
-              "{}": false
-            }
-          }
-        ],
-        "@typescript-eslint/consistent-type-assertions": "off",
-        "@typescript-eslint/consistent-type-definitions": "error",
-        "@typescript-eslint/explicit-member-accessibility": [
-          "error",
-          {
-            "accessibility": "explicit",
-            "overrides": {
-              "accessors": "explicit",
-              "constructors": "explicit"
-            }
-          }
-        ],
-        "@typescript-eslint/member-ordering": "off",
-        "@typescript-eslint/naming-convention": [
-          "error",
-          {
-            "selector": "enumMember",
+                "@angular-eslint/prefer-output-readonly": "warn",
+                "@typescript-eslint/no-unused-expressions": "error",
+                "@angular-eslint/no-host-metadata-property": "error",
+                "@angular-eslint/no-forward-ref": "error",
+                "@angular-eslint/no-output-on-prefix": "off",
+                "@angular-eslint/directive-class-suffix": "error",
+                "@angular-eslint/use-lifecycle-interface": "error",
+                "@angular-eslint/component-class-suffix": "error",
+                "@typescript-eslint/adjacent-overload-signatures": "error",
+                "@typescript-eslint/ban-types": [
+                    "error",
+                    {
+                        "extendDefaults": true,
+                        "types": {
+                            "{}": false
+                        }
+                    }
+                ],
+                "@typescript-eslint/consistent-type-assertions": "off",
+                "@typescript-eslint/consistent-type-definitions": "error",
+                "@typescript-eslint/explicit-member-accessibility": [
+                    "error",
+                    {
+                        "accessibility": "explicit",
+                        "overrides": {
+                            "accessors": "explicit",
+                            "constructors": "explicit"
+                        }
+                    }
+                ],
+                "@typescript-eslint/member-ordering": "off",
+                "@typescript-eslint/naming-convention": [
+                    "error",
+                    {
+                        "selector": "enumMember",
             "format": [
               "UPPER_CASE"
             ]
-          }
-        ],
-        "@typescript-eslint/no-for-in-array": "error",
-        "@typescript-eslint/no-inferrable-types": [
-          "error",
-          {
-            "ignoreParameters": true,
-            "ignoreProperties": true
-          }
-        ],
-        "@typescript-eslint/no-this-alias": "error",
-        "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
-        "@typescript-eslint/no-unnecessary-qualifier": "error",
-        "@typescript-eslint/no-unnecessary-type-arguments": "error",
-        "@typescript-eslint/prefer-readonly": "error",
-        "@typescript-eslint/restrict-plus-operands": "error",
-        "@typescript-eslint/triple-slash-reference": "error",
-        "@typescript-eslint/unbound-method": [
-          "error",
-          {
-            "ignoreStatic": true
-          }
-        ],
+                    }
+                ],
+                "@typescript-eslint/no-for-in-array": "error",
+                "@typescript-eslint/no-inferrable-types": [
+                    "error",
+                    {
+                        "ignoreParameters": true,
+                        "ignoreProperties": true
+                    }
+                ],
+                "@typescript-eslint/no-this-alias": "error",
+                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
+                "@typescript-eslint/no-unnecessary-qualifier": "error",
+                "@typescript-eslint/no-unnecessary-type-arguments": "error",
+                "@typescript-eslint/prefer-readonly": "error",
+                "@typescript-eslint/restrict-plus-operands": "error",
+                "@typescript-eslint/triple-slash-reference": "error",
+                "@typescript-eslint/unbound-method": [
+                    "error",
+                    {
+                        "ignoreStatic": true
+                    }
+                ],
         "arrow-parens": [
           "error",
           "as-needed"
@@ -139,39 +140,39 @@
           "error",
           "1tbs"
         ],
-        "comma-dangle": "off",
-        "default-case": "error",
+                "comma-dangle": "off",
+                "default-case": "error",
         "eqeqeq": [
           "error",
           "always"
         ],
-        "id-blacklist": "off",
-        "import/no-extraneous-dependencies": [
-          "error",
-          {
-            "devDependencies": false
-          }
-        ],
+                "id-blacklist": "off",
+                "import/no-extraneous-dependencies": [
+                    "error",
+                    {
+                        "devDependencies": false
+                    }
+                ],
         "import/no-internal-modules": [
           "off"
         ],
-        "import/no-unassigned-import": "error",
-        "max-len": [
-          "error",
-          {
-            "ignorePattern": "^import .*|^require\\(.*\\)|^export.*|\\}\\s*from.*|^\\s*`.*`(,|;)?$",
-            "code": 130,
-            "ignoreUrls": true
-          }
-        ],
-        "no-duplicate-case": "error",
-        "no-duplicate-imports": "error",
-        "no-invalid-this": "error",
-        "no-irregular-whitespace": "error",
-        "no-magic-numbers": [
-          "error",
-          {
-            "ignore": [
+                "import/no-unassigned-import": "error",
+                "max-len": [
+                    "error",
+                    {
+                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*|\\}\\s*from.*|^\\s*`.*`(,|;)?$",
+                        "code": 130,
+                        "ignoreUrls": true
+                    }
+                ],
+                "no-duplicate-case": "error",
+                "no-duplicate-imports": "error",
+                "no-invalid-this": "error",
+                "no-irregular-whitespace": "error",
+                "no-magic-numbers": [
+                    "error",
+                    {
+                        "ignore": [
               -1,
               0,
               1,
@@ -192,61 +193,62 @@
               1024,
               4096,
               5000
-            ],
-            "ignoreArrayIndexes": true,
-            "ignoreDefaultValues": true,
-            "ignoreClassFieldInitialValues": true
-          }
-        ],
-        "no-multiple-empty-lines": [
-          "error",
-          {
-            "max": 1
-          }
-        ],
-        "no-param-reassign": "error",
-        "no-redeclare": "error",
-        "no-return-await": "error",
-        "no-sparse-arrays": "error",
-        "no-template-curly-in-string": "error",
-        "no-underscore-dangle": "off",
-        "no-void": "error",
-        "prefer-arrow/prefer-arrow-functions": "off",
-        "prefer-object-spread": "error",
-        "prefer-template": "error",
-        "rxjs/no-create": "error",
-        "rxjs/no-internal": "error",
-        "rxjs/no-subject-unsubscribe": "error",
-        "rxjs/no-unsafe-takeuntil": "error",
-        "space-before-function-paren": [
-          "error",
-          {
-            "anonymous": "always",
-            "named": "never"
-          }
-        ]
-      }
-    },
-    {
+                        ],
+                        "ignoreArrayIndexes": true,
+                        "ignoreDefaultValues": true,
+                        "ignoreClassFieldInitialValues": true
+                    }
+                ],
+                "no-multiple-empty-lines": [
+                    "error",
+                    {
+                        "max": 1
+                    }
+                ],
+                "no-param-reassign": "error",
+                "no-redeclare": "error",
+                "no-return-await": "error",
+                "no-sparse-arrays": "error",
+                "no-template-curly-in-string": "error",
+                "no-underscore-dangle": "off",
+                "no-void": "error",
+                "prefer-arrow/prefer-arrow-functions": "off",
+                "prefer-object-spread": "error",
+                "prefer-template": "error",
+                "rxjs/no-create": "error",
+                "rxjs/no-internal": "error",
+                "rxjs/no-subject-unsubscribe": "error",
+                "rxjs/no-unsafe-takeuntil": "error",
+                "space-before-function-paren": [
+                    "error",
+                    {
+                        "anonymous": "always",
+                        "named": "never"
+                    }
+                ]
+            }
+        },
+        {
       "files": [
         "**/*.spec.ts"
       ],
-      "rules": {
-        "@typescript-eslint/unbound-method": "off"
-      }
-    },
-    {
+            "rules": {
+                "@typescript-eslint/unbound-method": "off"
+            }
+        },
+        {
       "files": [
         "*.html"
       ],
-      "parser": "@angular-eslint/template-parser",
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
-      "rules": {
-        "@angular-eslint/template/eqeqeq": "error",
-        "@angular-eslint/template/no-negated-async": "error"
-      }
-    }
-  ]
+            "parser": "@angular-eslint/template-parser",
+            "extends": [
+                "plugin:@angular-eslint/template/recommended",
+                "prettier"
+            ],
+            "rules": {
+                "@angular-eslint/template/eqeqeq": "error",
+                "@angular-eslint/template/no-negated-async": "error"
+            }
+        }
+    ]
 }

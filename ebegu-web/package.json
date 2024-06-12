@@ -19,8 +19,8 @@
     "preserver": "check-engine && npm run set-version",
     "server": "ng serve --disable-host-check",
     "prelint": "check-engine",
-    "lint": "concurrently 'npm:lint:ng' 'npm:lint:tsc' 'npm:lint:style'",
-    "lint:ci": "concurrently 'npm:lint:ng' 'npm:lint:tsc'",
+    "lint": "concurrently 'npm:fmt:check' 'npm:lint:ng' 'npm:lint:tsc' 'npm:lint:style'",
+    "lint:ci": "concurrently 'npm:fmt:check' 'npm:lint:ng' 'npm:lint:tsc'",
     "lint:ng": "ng lint",
     "lint:ng:fix": "ng lint --fix",
     "lint:ng:quiet": "ng lint --quiet",
@@ -36,7 +36,9 @@
     "postinstall": "npm run set-version && mkdirp build",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cypress:run:parallel": "cypress-parallel -s cypress:run -t 3 -d \"cypress/e2e/**/*.cy.ts\""
+    "cypress:run:parallel": "cypress-parallel -s cypress:run -t 3 -d \"cypress/e2e/**/*.cy.ts\"",
+    "fmt": "prettier . --write",
+    "fmt:check": "prettier . --check"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^17.0.2",
@@ -72,6 +74,7 @@
     "cypress-multi-reporters": "^1.6.4",
     "cypress-parallel": "^0.13.0",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "^48.2.3",
     "eslint-plugin-prefer-arrow": "latest",
@@ -94,6 +97,7 @@
     "less": "^3.11.1",
     "mkdirp": "^0.5.5",
     "popper.js": "^1.16.1",
+    "prettier": "3.2.5",
     "rimraf": "^3.0.2",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended-scss": "^4.2.0",
