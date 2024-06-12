@@ -1682,7 +1682,7 @@
                                                     <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}
                                                         :</strong>
                                                     <p translate>
-                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp}}
+                                                        {{'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP_' + konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp | translate}}
                                                     </p>
                                                     <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita)
                                                      && konfigurationsListe[i].konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.PAUSCHAL">
@@ -1753,7 +1753,7 @@
                                                 <div
                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)
                                                     && konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
-                                                    class="mt-2">
+                                                    class="mt-2 margin-bottom-20">
                                                     <strong>{{'ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT' | translate}}
                                                         :</strong>
                                                     <p translate
@@ -1762,8 +1762,8 @@
                                                     </p>
                                                 </div>
                                                 <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
-                                                <label *ngIf="isSuperAdmin()">{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
-                                                    konfigurationsListe[i])}}</strong></label>
+                                                <span *ngIf="isSuperAdmin()">{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
+                                                    konfigurationsListe[i])}}</strong></span>
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div

@@ -3156,5 +3156,6 @@
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_LINEAR_MAX_VALUE_TFO_READONLY": "Bon supplémentaire max. en CHF par heure pour les TFO : {{value}} CHF",
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN_READONLY": "Revenu déterminant en CHF pour le bon supplémentaire (Min) : {{value}} CHF",
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY": "Revenu déterminant en CHF pour le bon supplémentaire (Max) : {{value}} CHF",
+    "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM": "Dépendance du droit au taux d'occupation (Dépendant, Indépendant, Minimum)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
