@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.api.dtos;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,7 +140,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private Integer beitragshoeheProzent;
 
-	@Nullable
+	@Setter
+	@Getter
 	private BigDecimal hoehererBeitrag = null;
 
 	public Integer getErwerbspensumGS1() {
@@ -457,7 +460,4 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.beitragshoeheProzent = beitragshoeheProzent;
 	}
 
-	public void setHoehererBeitrag(@Nullable BigDecimal hoehererBeitrag) {
-		this.hoehererBeitrag = hoehererBeitrag;
-	}
 }
