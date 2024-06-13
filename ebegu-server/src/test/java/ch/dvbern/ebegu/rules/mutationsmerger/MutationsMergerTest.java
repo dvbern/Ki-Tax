@@ -739,7 +739,7 @@ public class MutationsMergerTest {
 	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
 		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
 		mode = EnumSource.Mode.EXCLUDE)
-	public void auszahlungAnInstuitionAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+	void auszahlungAnInstuitionAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
 			.setZahlungsstatusInstitution(zahlungsstatus);
@@ -770,7 +770,7 @@ public class MutationsMergerTest {
 	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
 		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
 		mode = EnumSource.Mode.INCLUDE)
-	public void auszahlungAnInstuitionNichtAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+	void auszahlungAnInstuitionNichtAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
 			.setZahlungsstatusInstitution(zahlungsstatus);
