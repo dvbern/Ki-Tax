@@ -76,7 +76,9 @@ public class KindServiceHandler {
 	}
 
 	private boolean compareHoehereBeitraegeChange(KindContainer kind, KindContainer dbKind) {
-		return !dbKind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen().equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		return !dbKind.getKindJA()
+			.getHoehereBeitraegeWegenBeeintraechtigungBeantragen()
+			.equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
 	}
 
 	public void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
@@ -104,10 +106,10 @@ public class KindServiceHandler {
 		}
 	}
 
-	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer kindContainer) {
+	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
 		EinschulungTyp alteEinschulungTyp = null;
-		if (kindContainer != null) {
-			alteEinschulungTyp = kindContainer.getKindJA().getEinschulungTyp();
+		if (dbKind != null) {
+			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
 		}
 
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
