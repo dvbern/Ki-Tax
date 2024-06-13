@@ -414,6 +414,9 @@
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
+                                <td class="result" ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()">
+                                    &nbsp;
+                                </td>
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
                                     <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
                                 </td>
@@ -442,7 +445,7 @@
                                 <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
-                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
+                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" class="result" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
                                 <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
                             </tr>
                             </thead>

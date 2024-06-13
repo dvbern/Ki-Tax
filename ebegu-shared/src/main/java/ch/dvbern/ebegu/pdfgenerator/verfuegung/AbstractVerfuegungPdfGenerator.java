@@ -512,14 +512,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			addValueGutscheinProStunde(table, abschnitt.getVerguenstigungProZeiteinheit());
 			addValueUeberweiesenerBetragInstitution(table, abschnitt);
 			addValueUeberweiesenerBetragEltern(table, abschnitt);
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag()),
-				null,
-				fontTabelle,
-				1,
-				1));
+			addValueStaedticherZuschlagGutschein(table, abschnitt);
 		}
 		return table;
 	}
@@ -535,7 +528,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
+			table.addCell(createCell(true, Element.ALIGN_CENTER, "", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		}
 	}
 
 	protected void addTitleBerechneterGutschein(PdfPTable table) {
@@ -563,14 +558,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected void addTitleStaedticherZuschlagGutschein(PdfPTable table) {
-		table.addCell(createCell(
-			true,
-			Element.ALIGN_RIGHT,
-			translate(STAEDTISCHER_ZUSCHLAG_IN_CHF),
-			null,
-			fontTabelle,
-			2,
-			1));
+		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
+			table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(STAEDTISCHER_ZUSCHLAG_IN_CHF),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
+		}
 	}
 
 	protected void addTitleNrElternBeitrag(PdfPTable table) {
@@ -663,6 +660,19 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			getBgColorForUeberwiesenerBetragCell(),
 			1,
 			1));
+	}
+
+	private void addValueStaedticherZuschlagGutschein(PdfPTable table, VerfuegungZeitabschnitt abschnitt) {
+		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
+			table.addCell(createCell(
+				false,
+				Element.ALIGN_RIGHT,
+				PdfUtil.printBigDecimal(abschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag()),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				1,
+				1));
+		}
 	}
 
 	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {

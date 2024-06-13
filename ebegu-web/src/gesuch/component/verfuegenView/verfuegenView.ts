@@ -831,7 +831,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public isLineareZusaetzlicherGutscheinDurchGemeindeEnabled(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled
-            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinTyp === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR;
+            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinTyp
+            === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR;
     }
 
     public auszahlungAnEltern(): boolean {
