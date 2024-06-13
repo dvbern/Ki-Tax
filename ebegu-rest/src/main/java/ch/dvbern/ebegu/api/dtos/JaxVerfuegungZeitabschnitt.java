@@ -138,6 +138,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private Integer beitragshoeheProzent;
 
+	@Nullable
+	private BigDecimal hoehererBeitrag = null;
+
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
 	}
@@ -452,5 +455,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setBeitragshoeheProzent(@Nullable Integer beitragshoeheProzent) {
 		this.beitragshoeheProzent = beitragshoeheProzent;
+	}
+
+	public void setHoehererBeitrag(@Nullable BigDecimal hoehererBeitrag) {
+		this.hoehererBeitrag = hoehererBeitrag;
 	}
 }
