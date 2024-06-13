@@ -125,6 +125,12 @@ public class KindServiceHandler {
 				}
 			});
 		}
+
+		if (compareHoehereBeitraegeChange(kind, dbKind)) {
+			kind.getBetreuungen().forEach(betreuung -> {
+				betreuung.setBedarfsstufe(null);
+			});
+		}
 	}
 
 	private boolean isSchwyzEinschulungTypAktiviert(KindContainer kind) {
