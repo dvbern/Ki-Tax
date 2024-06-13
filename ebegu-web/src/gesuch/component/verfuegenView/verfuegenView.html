@@ -399,6 +399,8 @@
                                 <td ng-if="vm.showElternMinimalerBeitragColumns()" class="result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"></dv-tooltip>
                                 </td>
+                                <td ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result">
+                                </td>
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
                                     <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
                                 </td>
@@ -437,6 +439,7 @@
                                 <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
+                                <th ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result" data-translate="GUTSCHEIN_HOEHERER_BEITRAG"></th>
                                 <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
                                 <th ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
@@ -497,6 +500,9 @@
                                 <!-- Minimaler Elternbeitrag -->
                                 <td  ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
+                                <!-- Minimaler Elternbeitrag -->
+                                <td  ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result"
+                                    ng-bind="verfuegungZeitabschnitt.hoehererBeitrag | currency : '' : 2"></td>
                                 <!-- Gutschein pro Stunde -->
                                <td ng-if="vm.showGutscheinProStunde()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-

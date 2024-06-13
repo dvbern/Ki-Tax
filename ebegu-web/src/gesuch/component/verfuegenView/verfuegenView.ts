@@ -30,9 +30,10 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -123,6 +124,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
+    public isHoehereBeitraegeBeeintraechtigungAktiviert = false;
 
     private isVerfuegungExportEnabled: boolean;
     private isLuzern: boolean;
@@ -272,6 +274,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         ).subscribe(response => {
             this.isVerfuegungExportEnabled = JSON.parse(response.value);
         });
+
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).subscribe(response => {
+            this.isHoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
+        })
     }
 
     public cancel(): void {
@@ -1103,6 +1113,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public showBeitragshoheProzent(): boolean {
         return this.isAppenzell;
+    }
+
+    public areHoehereBeitraegeGewaehrt(): boolean {
+        return this.isHoehereBeitraegeBeeintraechtigungAktiviert &&
+            EbeguUtil.isNotNullOrUndefined(this.getBetreuung().bedarfsstufe) &&
+            this.getBetreuung().bedarfsstufe !== TSBedarfsstufe.KEINE;
     }
 
     private getEinstellungenElternbeitrag(): void {

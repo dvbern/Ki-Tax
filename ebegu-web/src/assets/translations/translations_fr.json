@@ -3146,5 +3146,6 @@
     "GEMEINDE_VEREINFACHTE_KONFIG_AKTIV": "Activer la configuration simplifiée pour les communes",
     "GESUCHFREIGABE_ONLINE": "Online Gesuchfreigabe",
     "ERROR_OIDC_TOKEN_INITIALISATION": "Une erreur est survenue lors de la demande des données fiscales, veuillez réessayer.",
+    "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
