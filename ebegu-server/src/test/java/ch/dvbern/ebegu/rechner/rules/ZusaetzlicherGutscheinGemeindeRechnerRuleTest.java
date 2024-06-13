@@ -123,14 +123,16 @@ class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 
 	@ParameterizedTest
 	@MethodSource("msgKeySource")
-	void getMessageKeyMustReturnCorrectKey(BetreuungsangebotTyp betreuungsangebotTyp, MsgKey rechnerClass) {
-		assertThat(rule.getZuschlagMessageKey(betreuungsangebotTyp), Matchers.is(rechnerClass));
+	void getMessageKeyMustReturnCorrectKey(BetreuungsangebotTyp betreuungsangebotTyp, GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp,MsgKey rechnerClass) {
+		assertThat(rule.getZuschlagMessageKey(betreuungsangebotTyp, zusaetzlicherGutscheinTyp), Matchers.is(rechnerClass));
 	}
 
 	public static Stream<Arguments> msgKeySource() {
 		return Stream.of(
-				Arguments.of(BetreuungsangebotTyp.KITA, MsgKey.ZUSATZGUTSCHEIN_JA_KITA),
-				Arguments.of(BetreuungsangebotTyp.TAGESFAMILIEN, MsgKey.ZUSATZGUTSCHEIN_JA_TFO)
+				Arguments.of(BetreuungsangebotTyp.KITA, GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL, MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_KITA),
+				Arguments.of(BetreuungsangebotTyp.TAGESFAMILIEN, GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL, MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_TFO),
+			Arguments.of(BetreuungsangebotTyp.KITA, GemeindeZusaetzlicherGutscheinTyp.LINEAR, MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_KITA),
+			Arguments.of(BetreuungsangebotTyp.TAGESFAMILIEN, GemeindeZusaetzlicherGutscheinTyp.LINEAR, MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_TFO)
 		);
 	}
 }

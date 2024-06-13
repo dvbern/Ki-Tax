@@ -113,7 +113,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		BigDecimal staedtischerZuschlag = zuschlagRechner.calculate(inputGemeinde, rechnerParameterDTO);
 
 		if (staedtischerZuschlag != null) {
-			var messageKey = getZuschlagMessageKey(inputGemeinde.getBetreuungsangebotTyp());
+			var messageKey = getZuschlagMessageKey(inputGemeinde.getBetreuungsangebotTyp(), zusaetzlicherGutscheinTyp);
 			addMessage(inputGemeinde, messageKey, staedtischerZuschlag);
 			return staedtischerZuschlag;
 		}
@@ -133,12 +133,15 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		throw new IllegalArgumentException(String.format("No Rechner for Gutscheintyp %s", zusaetzlicherGutscheinTyp));
 	}
 
-	MsgKey getZuschlagMessageKey(BetreuungsangebotTyp betreuungsangebotTyp) {
+	MsgKey getZuschlagMessageKey(BetreuungsangebotTyp betreuungsangebotTyp,
+		GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp) {
 		if (betreuungsangebotTyp.isKita()) {
-			return MsgKey.ZUSATZGUTSCHEIN_JA_KITA;
+			return zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL ?
+				MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_KITA : MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_KITA;
 		}
 		if (betreuungsangebotTyp.isTagesfamilien()) {
-			return MsgKey.ZUSATZGUTSCHEIN_JA_TFO;
+			return zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL ?
+				MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_TFO : MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_TFO;
 		}
 		throw new IllegalArgumentException(String.format(
 				"Ungültiges Angebot für Zusatzgutschein: %s",
