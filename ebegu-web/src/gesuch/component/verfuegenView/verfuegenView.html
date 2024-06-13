@@ -442,6 +442,7 @@
                                 <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
+                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
                                 <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
                             </tr>
                             </thead>
@@ -517,6 +518,10 @@
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
+                                <!-- Städlicher Zuschlag in CHF -->
+                                <td class="result"
+                                    ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()"
+                                    ng-bind="verfuegungZeitabschnitt.zusaetzlicherGutscheinGemeindeBetrag | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Antragsteller -->
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
                                     <dv-zahlungsstatus-icon

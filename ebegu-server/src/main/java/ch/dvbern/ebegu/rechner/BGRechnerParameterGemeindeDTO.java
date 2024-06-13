@@ -300,14 +300,6 @@ public final class BGRechnerParameterGemeindeDTO {
 		return gemeindeZusaetzlicherGutscheinMinMassgebendesEinkommen;
 	}
 
-	public void setGemeindeZusaetzlicherGutscheinLinearTfoMin(BigDecimal gemeindeZusaetzlicherGutscheinLinearTfoMin) {
-		this.gemeindeZusaetzlicherGutscheinLinearTfoMin = gemeindeZusaetzlicherGutscheinLinearTfoMin;
-	}
-
-	public void setGemeindeZusaetzlicherGutscheinLinearKitaMin(BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMin) {
-		this.gemeindeZusaetzlicherGutscheinLinearKitaMin = gemeindeZusaetzlicherGutscheinLinearKitaMin;
-	}
-
 	public void setGemeindeZusaetzlicherGutscheinLinearKitaMax(BigDecimal gemeindeZusaetzlicherGutscheinLinearKitaMax) {
 		this.gemeindeZusaetzlicherGutscheinLinearKitaMax = gemeindeZusaetzlicherGutscheinLinearKitaMax;
 	}

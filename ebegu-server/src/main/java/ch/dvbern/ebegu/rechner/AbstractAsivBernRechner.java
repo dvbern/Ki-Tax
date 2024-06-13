@@ -37,7 +37,6 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
-
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
@@ -66,7 +65,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verguenstigungProZeiteinheit = getVerguenstigungProZeiteinheit(
 			parameterDTO,
 			unter12Monate,
-				besonderebeduerfnisse,
+			besonderebeduerfnisse,
 			massgebendesEinkommen,
 			input.isBezahltKompletteVollkosten(),
 			input.getEinschulungTyp());
@@ -79,7 +78,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		// Falls die Eltern ein Teil des Monats die Vollkosten komplett tragen, wird ausgerechnet an wie vielen Tagen
 		// die Zeiteinheiten effektiv ausbezahlt werden
 		BigDecimal effektivAusbezahlteZeiteinheiten =
-			EXACT.multiply(verfuegteZeiteinheiten,input.getMonatAnteilVollkostenNichtBezahlt());
+			EXACT.multiply(verfuegteZeiteinheiten, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
@@ -135,6 +134,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 		result.setBabyTarif(unter12Monate);
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
+		handleAnteileZusaetzlicherGutscheinGemeindeBetrag(result, effektivAusbezahlteZeiteinheiten);
 
 		return result;
 	}
@@ -189,10 +189,10 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
 		BigDecimal verguenstigungProTag = KantonBernRechnerUtil.calculateKantonalerZuschlag(
-				minEinkommen,
-				maxEinkommen,
-				massgebendesEinkommen,
-				maximaleVerguenstigungProTag);
+			minEinkommen,
+			maxEinkommen,
+			massgebendesEinkommen,
+			maximaleVerguenstigungProTag);
 
 		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
 		BigDecimal zuschlagFuerBesondereBeduerfnisse =
@@ -225,5 +225,13 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	protected abstract PensumUnits getZeiteinheit();
 
 	@Nonnull
-	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
+	protected abstract void handleAnteileMahlzeitenverguenstigung(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal anteilMonat,
+		@Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
+
+	protected abstract void handleAnteileZusaetzlicherGutscheinGemeindeBetrag(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal effektivAusbezahlteZeiteinheiten);
+
 }
