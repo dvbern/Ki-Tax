@@ -47,11 +47,16 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	public VerfuegungPdfGeneratorSchwyz(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
+		@Nonnull Art art,
+		boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
 		boolean isFKJVTexte,
+		boolean isHoehereBeitraegeConfigured,
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp
+		);
 	}
 
 	@Override
@@ -128,6 +133,9 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		if (isHoehereBeitraegeConfigured) {
+			table.addCell(createCell(true, Element.ALIGN_CENTER, "", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		}
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 	}
 

@@ -93,6 +93,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG =
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungMinimalbeitrag";
 	private static final String GUTSCHEIN_AN_INSTITUTION = "PdfGeneration_Verfuegung_Gutschein_Institution";
+	private static final String HOEHERER_GUTSCHEIN = "PdfGeneration_Verfuegung_Hoeherer_Gutschein";
 	private static final String GUTSCHEIN_AN_ELTERN = "PdfGeneration_Verfuegung_Gutschein_Eltern";
 	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_MinimalerElternbeitrag";
 	private static final String KEIN_ANSPRUCH_CONTENT_1 = "PdfGeneration_KeinAnspruch_Content_1";
@@ -141,6 +142,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 	private boolean showColumnAnElternAuszahlen;
 	private boolean showColumnAnInsitutionenAuszahlen;
+	protected boolean isHoehereBeitraegeConfigured;
 	private List<VerfuegungZeitabschnitt> abschnitte;
 
 	@Nonnull
@@ -153,8 +155,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
 		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
-	) {
+		boolean isHoehereBeitraegeConfigured,
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
 		super(betreuung.extractGesuch(), stammdaten);
 
 		this.betreuung = betreuung;
@@ -162,6 +164,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
 		this.isFKJVTexte = isFKJVTexte;
+		this.isHoehereBeitraegeConfigured = isHoehereBeitraegeConfigured;
 		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
 	}
 
@@ -450,6 +453,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
+		if (isHoehereBeitraegeConfigured) {
+			addTitleNrHoehererBeitrag(table);
+		}
 		addTitleGutscheinProStunde(table);
 		addTitleNrUeberweiesenerBetragInstitution(table);
 		addTitleNrUeberweiesenerBetragEltern(table);
@@ -513,6 +519,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
+			if (isHoehereBeitraegeConfigured) {
+				addValueHoehererBeitrag(table, abschnitt.getHoehererBeitrag());
+			}
 			addValueGutscheinProStunde(table, abschnitt.getVerguenstigungProZeiteinheit());
 			addValueUeberweiesenerBetragInstitution(table, abschnitt);
 			addValueUeberweiesenerBetragEltern(table, abschnitt);
@@ -529,6 +538,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		if (isHoehereBeitraegeConfigured) {
+			table.addCell(createCell(true, Element.ALIGN_CENTER, "", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		}
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 	}
@@ -573,6 +585,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		}
 	}
 
+	protected void addTitleNrHoehererBeitrag(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(HOEHERER_GUTSCHEIN), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+	}
+
 	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
 		//no-op ausser in Appenzell
 	}
@@ -600,6 +616,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1,
 			1));
 		}
+
+	protected void addValueHoehererBeitrag(PdfPTable table, @Nullable BigDecimal hoehererBeitrag) {
+		table.addCell(createCell(
+			false,
+			Element.ALIGN_RIGHT,
+			PdfUtil.printBigDecimal(hoehererBeitrag),
+			Color.LIGHT_GRAY,
+			fontTabelle,
+			1,
+			1));
+	}
 
 	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
 		table.addCell(createCell(
@@ -663,7 +690,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			float[] columnwidthsExtended = new float[columnwidths.length + 1];
 			System.arraycopy(columnwidths, 0, columnwidthsExtended, 0, columnwidths.length);
 			columnwidthsExtended[columnwidthsExtended.length-1] = 110;
-			return columnwidthsExtended;
+			columnwidths = columnwidthsExtended;
+		}
+
+		if (isHoehereBeitraegeConfigured) {
+			final int elternbeitragIndex = 5;
+			float[] columnWidthsExtended = new float[columnwidths.length + 1];
+			System.arraycopy(columnwidths, 0, columnWidthsExtended, 0, elternbeitragIndex);
+			System.arraycopy(columnwidths, elternbeitragIndex, columnWidthsExtended, elternbeitragIndex + 1, columnwidths.length - elternbeitragIndex);
+			columnWidthsExtended[elternbeitragIndex] = 110;
+			columnwidths = columnWidthsExtended;
 		}
 
 		return columnwidths;

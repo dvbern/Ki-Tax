@@ -63,9 +63,16 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
 		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
-	) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		boolean isHoehereBeitraegeConfigured, BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		super(
+			betreuung,
+			stammdaten,
+			art,
+			kontingentierungEnabledAndEntwurf,
+			stadtBernAsivConfigured,
+			isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp);
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 		auszahlungAusserhalbKibon = betreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().isAuszahlungAusserhalbVonKibon();
 	}

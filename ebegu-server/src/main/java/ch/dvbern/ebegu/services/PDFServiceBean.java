@@ -128,6 +128,7 @@ public class PDFServiceBean implements PDFService {
 
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getEinstellungBetreuungspensumAnzeigeTyp(betreuung);
+		boolean isHoehereBeitraegeConfigured = getEinstellungHoehereBeitraege(betreuung);
 
 		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
 		// was wir mitgeben
@@ -135,7 +136,11 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			false, false, isFKJVTexte, betreuungspensumAnzeigeTyp);
+			false,
+			false,
+			isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
@@ -155,6 +160,14 @@ public class PDFServiceBean implements PDFService {
 			betreuung.extractGesuch().extractGemeinde(),
 			betreuung.extractGesuchsperiode()
 		).getValue());
+	}
+
+	private boolean getEinstellungHoehereBeitraege(@Nonnull Betreuung betreuung) {
+		return einstellungService.findEinstellung(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			betreuung.extractGesuch().extractGemeinde(),
+			betreuung.extractGesuchsperiode()
+		).getValueAsBoolean();
 	}
 
 
@@ -289,6 +302,7 @@ public class PDFServiceBean implements PDFService {
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getEinstellungBetreuungspensumAnzeigeTyp(betreuung);
+		boolean isHoehereBeitraegeConfigured = getEinstellungHoehereBeitraege(betreuung);
 
 		Art art = evaluateArt(betreuung);
 
@@ -302,6 +316,7 @@ public class PDFServiceBean implements PDFService {
 			showInfoKontingentierung,
 			stadtBernAsivConfigured,
 			isFKJVTexte,
+			isHoehereBeitraegeConfigured,
 			betreuungspensumAnzeigeTyp);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);

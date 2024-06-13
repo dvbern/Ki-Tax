@@ -47,9 +47,12 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
 		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+		boolean isHoehereBeitraegeConfigured, BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
 	) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp
+		);
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 	}
 

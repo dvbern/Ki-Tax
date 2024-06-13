@@ -35,6 +35,7 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
 	private final boolean isFKJVTexte;
+	private final boolean isHoehereBeitraegeConfigured;
 	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 
 	public VerfuegungPdfGeneratorVisitor(
@@ -44,6 +45,7 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 		boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
 		boolean isFKJVTexte,
+		boolean isHoehereBeitraegeConfigured,
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
 	) {
 		this.betreuung = betreuung;
@@ -52,6 +54,7 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
 		this.isFKJVTexte = isFKJVTexte;
+		this.isHoehereBeitraegeConfigured = isHoehereBeitraegeConfigured;
 		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
 	}
 
@@ -61,26 +64,35 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitBern() {
-		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitLuzern() {
-		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSolothurn() {
-		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitAppenzellAusserrhoden() {
-		return new VerfuegungPdfGeneratorAppenzell(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		return new VerfuegungPdfGeneratorAppenzell(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
+			isHoehereBeitraegeConfigured,
+			betreuungspensumAnzeigeTyp
+		);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSchwyz() {
-		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, isHoehereBeitraegeConfigured, betreuungspensumAnzeigeTyp);
 	}
 }

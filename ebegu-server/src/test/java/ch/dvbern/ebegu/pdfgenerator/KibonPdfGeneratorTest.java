@@ -228,6 +228,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			entwurfMitKontingentierung,
 			STADT_BERN_ASIV_CONFIGUERED,
 			false,
+			false,
 			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant), mandant, dokumentname);
 	}
@@ -280,6 +281,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			entwurfMitKontingentierung,
 			STADT_BERN_ASIV_CONFIGUERED,
 			false,
+			false,
 			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
@@ -328,6 +330,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			Art.NICHT_EINTRETTEN,
 			entwurfMitKontingentierung,
 			STADT_BERN_ASIV_CONFIGUERED,
+			false,
 			false,
 			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
