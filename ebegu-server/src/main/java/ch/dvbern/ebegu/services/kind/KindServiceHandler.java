@@ -127,9 +127,7 @@ public class KindServiceHandler {
 		}
 
 		if (compareHoehereBeitraegeChange(kind, dbKind)) {
-			kind.getBetreuungen().forEach(betreuung -> {
-				betreuung.setBedarfsstufe(null);
-			});
+			kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
 		}
 	}
 
