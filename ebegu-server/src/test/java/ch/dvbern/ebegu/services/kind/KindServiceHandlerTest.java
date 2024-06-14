@@ -256,7 +256,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void resetBedarfsstufeAfterHoehereBeitraegeBeantragenChange() {
+	void resetBedarfsstufeAfterHoehereBeitraegeBeantragenChangeFalseToTrue() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
 		kindContainer.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1));
@@ -276,12 +276,13 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void setBedarfsstufeAfterHoehereBeitraegeBeantragenChange() {
+	void resetBedarfsstufeAfterHoehereBeitraegeBeantragenChangeTrueToFalse() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
-		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
-		kindContainer.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(Bedarfsstufe.KEINE));
-		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, true);
+		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
+		kindContainer.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_2));
+		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		dbKind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
 		Einstellung kinderabzugTyp = new Einstellung();
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
@@ -291,7 +292,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, dbKind);
 		verifyAll();
 		kindContainer.getBetreuungen().forEach(
-			betreuung -> Assertions.assertNotNull(betreuung.getBedarfsstufe())
+			betreuung -> Assertions.assertNull(betreuung.getBedarfsstufe())
 		);
 	}
 
