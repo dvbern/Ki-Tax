@@ -56,7 +56,7 @@ public class KindServiceHandler {
 			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
 		}
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
+			return;
 		}
 		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp) || compareHoehereBeitraegeChange(kind, dbKind)) {
 			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
@@ -110,10 +110,17 @@ public class KindServiceHandler {
 		EinschulungTyp alteEinschulungTyp = null;
 		if (dbKind != null) {
 			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
-		}
 
+			if (compareHoehereBeitraegeChange(kind, dbKind)) {
+				kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
+			}
+			resetBetreuungInFerienzeit(kind, alteEinschulungTyp);
+		}
+	}
+
+	private void resetBetreuungInFerienzeit(KindContainer kind, EinschulungTyp alteEinschulungTyp) {
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
+			return;
 		}
 		if (wechseltKindVonSchulstufeZuVorschulalter(kind, alteEinschulungTyp)) {
 			kind.getBetreuungen().forEach(betreuung -> {
@@ -124,10 +131,6 @@ public class KindServiceHandler {
 					);
 				}
 			});
-		}
-
-		if (compareHoehereBeitraegeChange(kind, dbKind)) {
-			kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
 		}
 	}
 
