@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -252,6 +253,70 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		kindServiceHandler.resetGesuchDataOnKindSave(kindContainer);
 		verifyAll();
 		Assertions.assertEquals(0, kindContainer.getGesuch().getGesuchsteller2().getErwerbspensenContainers().size());
+	}
+
+	@Test
+	void resetBedarfsstufeAfterHoehereBeitraegeBeantragenChange() {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
+		kindContainer.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1));
+		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		Einstellung kinderabzugTyp = new Einstellung();
+		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
+		replayAll();
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, dbKind);
+		verifyAll();
+		kindContainer.getBetreuungen().forEach(
+			betreuung -> Assertions.assertNull(betreuung.getBedarfsstufe())
+		);
+	}
+
+	@Test
+	void setBedarfsstufeAfterHoehereBeitraegeBeantragenChange() {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		kindContainer.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(Bedarfsstufe.KEINE));
+		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, true);
+		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		Einstellung kinderabzugTyp = new Einstellung();
+		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
+		replayAll();
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, dbKind);
+		verifyAll();
+		kindContainer.getBetreuungen().forEach(
+			betreuung -> Assertions.assertNotNull(betreuung.getBedarfsstufe())
+		);
+	}
+
+	@Test
+	void betreuungsstatusResetOnKindSaveHoehereBeitraegeBeantragen() {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
+		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		Einstellung kinderabzugTyp = new Einstellung();
+		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
+		expect(betreuungService.saveBetreuung(
+			kindContainer.getBetreuungen().stream().findFirst().orElseThrow(),
+			false,
+			null)).andReturn(null);
+		replayAll();
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, dbKind);
+		verifyAll();
+		List<Betreuung> bestaetigteBetreuungen =
+			kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
+				betreuung.getBetreuungsstatus())).collect(Collectors.toList());
+		Assertions.assertNotEquals(bestaetigteBetreuungen.size(), kindContainer.getBetreuungen().size());
 	}
 
 	private KindContainer prepareKindContainer(EinschulungTyp einschulungTyp, boolean gemeinsam) {
