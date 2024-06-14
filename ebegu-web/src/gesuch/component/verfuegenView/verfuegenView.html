@@ -388,6 +388,9 @@
                                 <td ng-if="vm.showBeitragshoheProzent()" class="result">
                                     <dv-tooltip text="'BEITRAGSHOHE_PROZENT_HELP' | translate"></dv-tooltip>
                                 </td>
+                                <td ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()">
+                                    &nbsp;
+                                </td>
                                 <td ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()">
                                     <dv-tooltip
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
@@ -414,9 +417,6 @@
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
-                                <td class="result" ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()">
-                                    &nbsp;
-                                </td>
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
                                     <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
                                 </td>
@@ -436,6 +436,7 @@
                                 <th data-translate="VOLLKOSTEN"></th>
                                 <th ng-if="vm.showSelbstbehaltProzent()" data-translate="SELBSTBEHALT_PROZENT" class="result"></th>
                                 <th ng-if="vm.showBeitragshoheProzent()" data-translate="BEITRAGSHOHE_PROZENT" class="result"></th>
+                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
                                 <th ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
                                 <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
@@ -445,7 +446,6 @@
                                 <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
-                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" class="result" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
                                 <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
                             </tr>
                             </thead>
@@ -493,6 +493,9 @@
                                 <!-- Beitragshohe in Prozent -->
                                 <td ng-if="vm.showBeitragshoheProzent()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"></td>
+                                <!-- Städlicher Zuschlag in CHF -->
+                                <td ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()"
+                                    ng-bind="verfuegungZeitabschnitt.zusaetzlicherGutscheinGemeindeBetrag | currency : '' : 2"></td>
                                 <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
                                 <td data-test="verguenstigungOhneBeruecksichtigungVollkosten" ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
@@ -521,10 +524,6 @@
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
-                                <!-- Städlicher Zuschlag in CHF -->
-                                <td class="result"
-                                    ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()"
-                                    ng-bind="verfuegungZeitabschnitt.zusaetzlicherGutscheinGemeindeBetrag | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Antragsteller -->
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
                                     <dv-zahlungsstatus-icon
