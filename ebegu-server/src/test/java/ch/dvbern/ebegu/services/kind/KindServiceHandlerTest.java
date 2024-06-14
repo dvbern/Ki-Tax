@@ -297,11 +297,35 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	}
 
 	@Test
-	void betreuungsstatusResetOnKindSaveHoehereBeitraegeBeantragen() {
+	void betreuungsstatusResetOnKindSaveHoehereBeitraegeBeantragenAktiviert() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
 		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		Einstellung kinderabzugTyp = new Einstellung();
+		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
+		expect(betreuungService.saveBetreuung(
+			kindContainer.getBetreuungen().stream().findFirst().orElseThrow(),
+			false,
+			null)).andReturn(null);
+		replayAll();
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, dbKind);
+		verifyAll();
+		List<Betreuung> bestaetigteBetreuungen =
+			kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
+				betreuung.getBetreuungsstatus())).collect(Collectors.toList());
+		Assertions.assertNotEquals(bestaetigteBetreuungen.size(), kindContainer.getBetreuungen().size());
+	}
+
+	@Test
+	void betreuungsstatusResetOnKindSaveHoehereBeitraegeBeantragenDeaktiviert() {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindContainer.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
+		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
 		Einstellung kinderabzugTyp = new Einstellung();
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
