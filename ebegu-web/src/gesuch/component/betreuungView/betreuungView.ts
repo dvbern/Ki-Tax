@@ -35,7 +35,12 @@ import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen,
+    isAnyStatusOfVerfuegt,
+    isVerfuegtOrSTV,
+    TSAntragStatus,
+} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
@@ -1543,8 +1548,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public canRoleEditBedarfsstufe() {
-        this.canEditBedarfsstufen = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+        this.canEditBedarfsstufen = (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles()))
+            && !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.getGesuch().status);
     }
 
     public isBedarfsstufeEmpty() {
