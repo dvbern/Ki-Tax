@@ -22,11 +22,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Superklasse fuer ein Pensum
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
+@EqualsAndHashCode(callSuper = true)
 public class JaxEingewoehnung extends JaxAbstractDateRangedDTO {
 
 

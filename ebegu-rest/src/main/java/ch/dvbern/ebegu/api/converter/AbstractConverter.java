@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -246,6 +245,12 @@ public class AbstractConverter {
 		pensumEntity.setPensum(jaxPensum.getPensum());
 		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
 		pensumEntity.setBetreuteTage(jaxPensum.getBetreuteTage());
+		pensumEntity.setMonatlicheHauptmahlzeiten(jaxPensum.getMonatlicheHauptmahlzeiten());
+		jaxPensum.getTarifProHauptmahlzeit()
+			.ifPresent(pensumEntity::setTarifProHauptmahlzeit);
+		pensumEntity.setMonatlicheNebenmahlzeiten(jaxPensum.getMonatlicheNebenmahlzeiten());
+		jaxPensum.getTarifProNebenmahlzeit()
+			.ifPresent(pensumEntity::setTarifProNebenmahlzeit);
 
 		if (jaxPensum.getEingewoehnung() != null) {
 			Eingewoehnung eingewoehnung = pensumEntity.getEingewoehnung() != null ?
@@ -269,20 +274,6 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
-	}
-
-	protected void convertAbstractPensumFieldsToJAX(
-		BetreuungsmitteilungPensum pensum,
-		JaxBetreuungsmitteilungPensum jaxPensum) {
-
-		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-
-		jaxPensum.setPensum(pensum.getPensum());
-		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
-		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
-		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-		jaxPensum.setBetreuteTage(pensum.getBetreuteTage());
-		// TODO warum hier keine Eingewöhnungskosten?
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(

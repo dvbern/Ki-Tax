@@ -24,9 +24,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import lombok.EqualsAndHashCode;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
+@EqualsAndHashCode(callSuper = true)
 public abstract class JaxAbstractDateRangedDTO extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -2898194827432548948L;

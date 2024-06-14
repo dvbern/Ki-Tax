@@ -9,10 +9,12 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
+import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
+@EqualsAndHashCode(callSuper = true)
 public class Eingewoehnung extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = 5378127600682968595L;
