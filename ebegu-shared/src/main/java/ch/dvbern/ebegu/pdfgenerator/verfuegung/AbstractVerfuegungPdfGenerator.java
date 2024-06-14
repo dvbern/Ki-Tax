@@ -966,6 +966,4 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected Font getBgColorForBetreuungsgutscheinCell() {
 		return fontTabelleBold;
 	}
-
-	;
 }
