@@ -113,8 +113,15 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		BigDecimal staedtischerZuschlag = zuschlagRechner.calculate(inputGemeinde, rechnerParameterDTO);
 
 		if (staedtischerZuschlag != null) {
-			var messageKey = getZuschlagMessageKey(inputGemeinde.getBetreuungsangebotTyp(), zusaetzlicherGutscheinTyp);
-			addMessage(inputGemeinde, messageKey, staedtischerZuschlag);
+			if (zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL) {
+				var messageKey = getZuschlagMessageKeyForPauschal(inputGemeinde.getBetreuungsangebotTyp());
+				addMessage(inputGemeinde, messageKey, staedtischerZuschlag);
+			}
+			else if (zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.LINEAR) {
+				var messageKey = getZuschlagMessageKeyForLinear(staedtischerZuschlag);
+				addMessage(inputGemeinde, messageKey, staedtischerZuschlag);
+			}
+
 			return staedtischerZuschlag;
 		}
 
@@ -133,19 +140,21 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		throw new IllegalArgumentException(String.format("No Rechner for Gutscheintyp %s", zusaetzlicherGutscheinTyp));
 	}
 
-	MsgKey getZuschlagMessageKey(BetreuungsangebotTyp betreuungsangebotTyp,
-		GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp) {
+	MsgKey getZuschlagMessageKeyForPauschal(BetreuungsangebotTyp betreuungsangebotTyp) {
 		if (betreuungsangebotTyp.isKita()) {
-			return zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL ?
-				MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_KITA : MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_KITA;
+				return MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_KITA;
 		}
 		if (betreuungsangebotTyp.isTagesfamilien()) {
-			return zusaetzlicherGutscheinTyp == GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL ?
-				MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_TFO : MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA_TFO;
+			return MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_TFO;
 		}
 		throw new IllegalArgumentException(String.format(
 				"Ungültiges Angebot für Zusatzgutschein: %s",
 				betreuungsangebotTyp));
+	}
+
+	MsgKey getZuschlagMessageKeyForLinear(BigDecimal staedtischerZuschlag) {
+		return staedtischerZuschlag.compareTo(BigDecimal.ZERO) > 0 ?
+				MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA : MsgKey.ZUSATZGUTSCHEIN_LINEAR_NEIN;
 	}
 
 	@Nonnull
