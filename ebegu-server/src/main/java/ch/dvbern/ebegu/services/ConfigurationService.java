@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.enums.gemeindekonfiguration.GemeindeZusaetzlicherGutscheinTyp;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorKonfiguration;
 
 @Stateless
@@ -55,7 +54,6 @@ public class ConfigurationService {
 			.stadtBernAsivConfigured(applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant()))
 			.FKJVTexte(getEinstellungFKJVTexte(betreuung))
 			.betreuungspensumAnzeigeTyp(getEinstellungBetreuungspensumAnzeigeTyp(betreuung))
-			.linearStaedtlicheGutscheinEnabled(isLinearStaedtlicheGutscheinEnabled(betreuung))
 			.build();
 	}
 
@@ -67,7 +65,6 @@ public class ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(getEinstellungFKJVTexte(betreuung))
 			.betreuungspensumAnzeigeTyp(getEinstellungBetreuungspensumAnzeigeTyp(betreuung))
-			.linearStaedtlicheGutscheinEnabled(false)
 			.build();
 	}
 
@@ -85,19 +82,5 @@ public class ConfigurationService {
 			betreuung.extractGesuch().extractGemeinde(),
 			betreuung.extractGesuchsperiode()
 		).getValue());
-	}
-
-	private boolean isLinearStaedtlicheGutscheinEnabled(@Nonnull Betreuung betreuung) {
-		return einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED,
-			betreuung.extractGesuch().extractGemeinde(),
-			betreuung.extractGesuchsperiode()
-		).getValueAsBoolean() &&
-			GemeindeZusaetzlicherGutscheinTyp.LINEAR == GemeindeZusaetzlicherGutscheinTyp.valueOf(
-				einstellungService.findEinstellung(
-					EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_TYP,
-					betreuung.extractGesuch().extractGemeinde(),
-					betreuung.extractGesuchsperiode()
-				).getValue());
 	}
 }

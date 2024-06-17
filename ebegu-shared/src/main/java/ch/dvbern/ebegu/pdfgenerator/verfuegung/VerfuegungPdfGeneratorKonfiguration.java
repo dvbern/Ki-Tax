@@ -31,5 +31,4 @@ public class VerfuegungPdfGeneratorKonfiguration {
 	boolean stadtBernAsivConfigured;
 	boolean FKJVTexte;
 	BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
-	boolean linearStaedtlicheGutscheinEnabled;
 }

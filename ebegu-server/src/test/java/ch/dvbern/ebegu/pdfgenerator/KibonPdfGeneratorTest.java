@@ -212,7 +212,6 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		@Nonnull Sprache locale,
 		@Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		boolean linearStaedtlicheGutscheinEnabled = mandant.getMandantIdentifier().equals(MandantIdentifier.BERN) ? true : false;
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		stammdaten.getGemeinde().setMandant(mandant);
@@ -230,7 +229,6 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
-			.linearStaedtlicheGutscheinEnabled(linearStaedtlicheGutscheinEnabled)
 			.build();
 
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
@@ -287,7 +285,6 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
-			.linearStaedtlicheGutscheinEnabled(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
@@ -340,7 +337,6 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
-			.linearStaedtlicheGutscheinEnabled(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),

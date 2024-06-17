@@ -120,7 +120,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String FUSSZEILE_1_VERFUEGUNG_FKJV = "PdfGeneration_Verfuegung_Fusszeile1_FKJV";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
-	private static final String STAEDTISCHER_ZUSCHLAG_IN_CHF = "PdfGeneration_Verfuegung_Staedtischer_zuschlag_chf";
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
@@ -441,7 +440,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
-		addTitleStaedticherZuschlagGutschein(table);
 		addTitleBeitraghoheUndSelbstbehaltInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
@@ -505,7 +503,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
-			addValueStaedticherZuschlagGutschein(table, abschnitt);
 			addValueaBeitraghoheUndSelbstbehaltInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
@@ -524,9 +521,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
-		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
-			table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		}
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
@@ -555,19 +549,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			fontTabelle,
 			2,
 			1));
-	}
-
-	protected void addTitleStaedticherZuschlagGutschein(PdfPTable table) {
-		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
-			table.addCell(createCell(
-				true,
-				Element.ALIGN_RIGHT,
-				translate(STAEDTISCHER_ZUSCHLAG_IN_CHF),
-				null,
-				fontTabelle,
-				2,
-				1));
-		}
 	}
 
 	protected void addTitleNrElternBeitrag(PdfPTable table) {
@@ -678,19 +659,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1));
 	}
 
-	private void addValueStaedticherZuschlagGutschein(PdfPTable table, VerfuegungZeitabschnitt abschnitt) {
-		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag()),
-				null,
-				fontTabelle,
-				1,
-				1));
-		}
-	}
-
 	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
 		//no-op ausser in Appenzell
 	}
@@ -705,21 +673,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			float[] columnwidthsExtended = new float[columnwidths.length + 1];
 			System.arraycopy(columnwidths, 0, columnwidthsExtended, 0, columnwidths.length);
 			columnwidthsExtended[columnwidthsExtended.length - 1] = 110;
-			columnwidths = columnwidthsExtended;
-		}
-
-		if (verfuegungPdfGeneratorKonfiguration.isLinearStaedtlicheGutscheinEnabled()) {
-			int steadlticheGutscheinColumnIndex = 7;
-
-			float[] columnwidthsExtended = new float[columnwidths.length + 1];
-			System.arraycopy(columnwidths, 0, columnwidthsExtended, 0, steadlticheGutscheinColumnIndex);
-			columnwidthsExtended[steadlticheGutscheinColumnIndex] = 100;
-			System.arraycopy(
-				columnwidths,
-				steadlticheGutscheinColumnIndex,
-				columnwidthsExtended,
-				steadlticheGutscheinColumnIndex + 1,
-				columnwidths.length - steadlticheGutscheinColumnIndex);
 			columnwidths = columnwidthsExtended;
 		}
 

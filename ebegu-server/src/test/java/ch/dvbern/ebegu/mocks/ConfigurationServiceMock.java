@@ -34,7 +34,6 @@ public class ConfigurationServiceMock extends ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
-			.linearStaedtlicheGutscheinEnabled(false)
 			.build();
 	}
 
@@ -45,7 +44,6 @@ public class ConfigurationServiceMock extends ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
-			.linearStaedtlicheGutscheinEnabled(false)
 			.build();
 	}
 }
