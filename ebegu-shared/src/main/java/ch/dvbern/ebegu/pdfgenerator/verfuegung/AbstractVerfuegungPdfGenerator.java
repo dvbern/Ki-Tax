@@ -713,7 +713,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 			float[] columnwidthsExtended = new float[columnwidths.length + 1];
 			System.arraycopy(columnwidths, 0, columnwidthsExtended, 0, steadlticheGutscheinColumnIndex);
-			columnwidthsExtended[steadlticheGutscheinColumnIndex] = 110;
+			columnwidthsExtended[steadlticheGutscheinColumnIndex] = 100;
 			System.arraycopy(
 				columnwidths,
 				steadlticheGutscheinColumnIndex,
