@@ -140,6 +140,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private Integer beitragshoeheProzent;
 
+	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag;
+
 	@Setter
 	@Getter
 	private BigDecimal hoehererBeitrag = null;
@@ -460,4 +462,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.beitragshoeheProzent = beitragshoeheProzent;
 	}
 
+	public BigDecimal getZusaetzlicherGutscheinGemeindeBetrag() {
+		return zusaetzlicherGutscheinGemeindeBetrag;
+	}
+
+	public void setZusaetzlicherGutscheinGemeindeBetrag(BigDecimal zusaetzlicherGutscheinGemeindeBetrag) {
+		this.zusaetzlicherGutscheinGemeindeBetrag = zusaetzlicherGutscheinGemeindeBetrag;
+	}
 }

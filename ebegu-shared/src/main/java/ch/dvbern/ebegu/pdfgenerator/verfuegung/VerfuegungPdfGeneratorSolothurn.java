@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
 import java.math.BigDecimal;
 
@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
@@ -48,14 +49,10 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 	public VerfuegungPdfGeneratorSolothurn(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte,
-		boolean isHoehereBeitraegeConfigured, BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte,
-			isHoehereBeitraegeConfigured,
-			betreuungspensumAnzeigeTyp
-		);
+		@Nonnull Art art,
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
+		boolean isHoehereBeitraegeConfigured) {
+		super(betreuung, stammdaten, art, vefuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
 	}
 
 	@Nonnull

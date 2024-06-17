@@ -58,5 +58,6 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public verguenstigungMahlzeitTotal: number;
     public auszahlungAnEltern: boolean;
     public beitragshoeheProzent: number;
+    public zusaetzlicherGutscheinGemeindeBetrag: number;
     public hoehererBeitrag: number;
 }
