@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
@@ -52,7 +51,7 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		@Nonnull Art art,
 		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
 		boolean isHoehereBeitraegeConfigured) {
-		super(betreuung, stammdaten, art, vefuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
 	}
 
 	@Nonnull

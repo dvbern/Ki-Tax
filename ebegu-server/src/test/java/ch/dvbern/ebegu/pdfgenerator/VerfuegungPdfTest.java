@@ -43,7 +43,9 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
-import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorKonfiguration;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.mandant.MandantFactory;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
@@ -138,11 +140,13 @@ class VerfuegungPdfTest {
 				betreuung,
 				gemeindeStammdaten,
 				Art.NORMAL,
-				false,
-				false,
-				true,
-				false,
-				BetreuungspensumAnzeigeTyp.NUR_PROZENT);
+				VerfuegungPdfGeneratorKonfiguration.builder()
+					.FKJVTexte(true)
+					.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
+					.kontingentierungEnabledAndEntwurf(false)
+					.stadtBernAsivConfigured(false)
+					.build(),
+				false);
 		Mandant mandant = gesuch.extractMandant();
 
 		try {
