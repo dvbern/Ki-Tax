@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {Observable} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -59,43 +58,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.getModel().finanzielleSituationJA.veranlagt = undefined;
     }
 
-    public showSelbstdeklaration(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.quellenbesteuert)
-            || EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)
-            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)
-            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
-    }
-
-    public showVeranlagung(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt);
-    }
-
-    public showResultat(): boolean {
-        return !this.gesuchModelManager.isGesuchsteller2Required();
-    }
-
-    public gemeinsameStekVisible(): boolean {
-        return this.isGemeinsam() && EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.quellenbesteuert);
-    }
-
-    public alleinigeStekVisible(): boolean {
-        return !this.isGemeinsam() && EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.quellenbesteuert);
-    }
-
-    public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false &&
-            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
-            this.getModel().finanzielleSituationJA.veranlagt = undefined;
-        }
-    }
-
-    public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false &&
-            EbeguUtil.isNullOrFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
-            this.getModel().finanzielleSituationJA.veranlagt = undefined;
-        }
-    }
-
     public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
@@ -108,14 +70,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public abstract isGemeinsam(): boolean;
 
     public abstract getAntragstellerNummer(): number;
-
-    public hasPrevious(): boolean {
-        return true;
-    }
-
-    public hasNext(): boolean {
-        return true;
-    }
 
     public abstract getSubStepIndex(): number;
 
@@ -144,8 +98,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public getModel(): TSFinanzielleSituationContainer {
         return this.model.getFiSiConToWorkWith();
     }
-
-    public abstract notify(): void;
 
     protected save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
