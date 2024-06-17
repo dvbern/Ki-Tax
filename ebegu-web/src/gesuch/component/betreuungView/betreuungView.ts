@@ -1550,7 +1550,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public canRoleEditBedarfsstufe() {
         this.canEditBedarfsstufen = (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles()))
-            && !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.getGesuch().status);
+            && !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.getGesuch()?.status);
     }
 
     public isBedarfsstufeEmpty() {
