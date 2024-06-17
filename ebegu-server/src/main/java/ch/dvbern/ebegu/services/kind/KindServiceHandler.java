@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
-import org.jetbrains.annotations.NotNull;
 
 @Stateless
 public class KindServiceHandler {
@@ -52,11 +51,12 @@ public class KindServiceHandler {
 	private BetreuungService betreuungService;
 
 	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
-		EinschulungTyp alteEinschulungTyp = null;
-		if (dbKind != null) {
-			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
+		if (dbKind == null) {
+			return;
 		}
-		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp) || compareHoehereBeitraegeChange(kind, dbKind)) {
+		EinschulungTyp alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
+		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp)
+			|| compareHoehereBeitraegeChange(kind, dbKind)) {
 			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
 			betreuungTreeSet.addAll(kind.getBetreuungen());
 			betreuungTreeSet.forEach(betreuung -> {
@@ -150,7 +150,7 @@ public class KindServiceHandler {
 		return KinderabzugTyp.SCHWYZ.equals(KinderabzugTyp.valueOf(kinderabzugTyp.getValue()));
 	}
 
-	private boolean iSSchwyzHoehereBeitraegeAktiviert(@NotNull KindContainer kind) {
+	private boolean iSSchwyzHoehereBeitraegeAktiviert(@Nonnull KindContainer kind) {
 		final Gesuch gesuch = kind.getGesuch();
 
 		Einstellung hoehereBeitraegeAktiviert = einstellungService.getEinstellungByMandant(
