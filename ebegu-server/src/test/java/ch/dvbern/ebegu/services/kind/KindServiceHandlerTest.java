@@ -128,12 +128,7 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	void resetKindBetreuungenStatusOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_SCHULSTUFE(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(einschulungTyp, false);
 		Einstellung kinderabzugTyp = new Einstellung();
-		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
-		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
-		expect(einstellungService.getEinstellungByMandant(
-			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
