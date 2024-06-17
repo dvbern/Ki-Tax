@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -49,11 +48,11 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
-		boolean isHoehereBeitraegeConfigured) {
-		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration) {
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
+	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
 		if (art == Art.NICHT_EINTRETTEN) {
@@ -128,7 +127,7 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		if (isHoehereBeitraegeConfigured) {
+		if (verfuegungPdfGeneratorKonfiguration.isHoehereBeitraegeConfigured) {
 			table.addCell(createCell(true, Element.ALIGN_CENTER, "", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		}
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));

@@ -229,14 +229,15 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			AbstractVerfuegungPdfGenerator.Art.NORMAL,
-			verfuegungPdfGeneratorKonfiguration,
-			false);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant), mandant, dokumentname);
 	}
 
@@ -286,13 +287,14 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.KEIN_ANSPRUCH,
-			verfuegungPdfGeneratorKonfiguration,
-			false);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 
@@ -339,13 +341,14 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			verfuegungPdfGeneratorKonfiguration,
-			false);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 

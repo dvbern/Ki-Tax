@@ -145,8 +145,9 @@ class VerfuegungPdfTest {
 					.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
 					.kontingentierungEnabledAndEntwurf(false)
 					.stadtBernAsivConfigured(false)
-					.build(),
-				false);
+					.isHoehereBeitraegeConfigured(false)
+					.build()
+			);
 		Mandant mandant = gesuch.extractMandant();
 
 		try {

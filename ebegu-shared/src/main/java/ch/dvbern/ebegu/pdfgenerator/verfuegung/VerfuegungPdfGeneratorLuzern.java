@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.*;
@@ -46,10 +45,9 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
-		boolean isHoehereBeitraegeConfigured
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration
 	) {
-		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 	}
 

@@ -49,9 +49,8 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
-		boolean isHoehereBeitraegeConfigured) {
-		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration) {
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Nonnull

@@ -30,5 +30,6 @@ public class VerfuegungPdfGeneratorKonfiguration {
 	boolean kontingentierungEnabledAndEntwurf;
 	boolean stadtBernAsivConfigured;
 	boolean FKJVTexte;
+	boolean isHoehereBeitraegeConfigured;
 	BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 }

@@ -125,27 +125,17 @@ public class PDFServiceBean implements PDFService {
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 		assert mandant != null;
 
-		boolean isHoehereBeitraegeConfigured = getEinstellungHoehereBeitraege(betreuung);
-
 		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
 		// was wir mitgeben
 		VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung),
-			isHoehereBeitraegeConfigured);
+			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
-	}
-
-	private boolean getEinstellungHoehereBeitraege(@Nonnull Betreuung betreuung) {
-		return einstellungService.findEinstellung(
-			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
-			betreuung.extractGesuch().extractGemeinde(),
-			betreuung.extractGesuchsperiode()
-		).getValueAsBoolean();
 	}
 
 	@Nonnull
@@ -282,8 +272,8 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			art,
-			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected),
-		    getEinstellungHoehereBeitraege(betreuung));
+			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 

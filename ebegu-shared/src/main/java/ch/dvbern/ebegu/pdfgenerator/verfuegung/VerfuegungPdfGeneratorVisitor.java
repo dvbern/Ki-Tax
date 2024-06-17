@@ -23,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
@@ -33,20 +32,17 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 	private final GemeindeStammdaten stammdaten;
 	private final Art art;
 	private final VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration;
-	private final boolean isHoehereBeitraegeConfigured;
 
 	public VerfuegungPdfGeneratorVisitor(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration,
-		boolean isHoehereBeitraegeConfigured
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration
 	) {
 		this.betreuung = betreuung;
 		this.stammdaten = stammdaten;
 		this.art = art;
 		this.verfuegungPdfGeneratorKonfiguration = verfuegungPdfGeneratorKonfiguration;
-		this.isHoehereBeitraegeConfigured = isHoehereBeitraegeConfigured;
 	}
 
 	public AbstractVerfuegungPdfGenerator getVerfuegungPdfGeneratorForMandant(@NotNull Mandant mandant) {
@@ -55,26 +51,26 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitBern() {
-		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitLuzern() {
-		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSolothurn() {
-		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitAppenzellAusserrhoden() {
-		return new VerfuegungPdfGeneratorAppenzell(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		return new VerfuegungPdfGeneratorAppenzell(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSchwyz() {
-		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration, isHoehereBeitraegeConfigured);
+		return new VerfuegungPdfGeneratorSchwyz(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 }
