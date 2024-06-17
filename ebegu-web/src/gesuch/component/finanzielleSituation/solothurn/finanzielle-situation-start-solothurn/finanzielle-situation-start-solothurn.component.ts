@@ -60,6 +60,10 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+        if (this.form.disabled) {
+            onResult(this.getModel());
+            return undefined;
+        }
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
