@@ -738,10 +738,6 @@ input.mat-input-element {
     background: #424242;
 }
 
-.mat-primary .mat-pseudo-checkbox-checked,
-.mat-primary .mat-pseudo-checkbox-indeterminate {
-    background: #d50000;
-}
 
 .mat-warn .mat-pseudo-checkbox-checked,
 .mat-warn .mat-pseudo-checkbox-indeterminate {
@@ -1952,13 +1948,14 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     height: 16px !important;
 }
 
-.mat-mdc-checkbox {
+.mat-mdc-checkbox, .mat-pseudo-checkbox {
 
     width: 100%;
     --mdc-checkbox-state-layer-size: 20px;
 
-    &.mat-accent {
+    &.mat-accent, &.mat-mdc-option-pseudo-checkbox {
         --mdc-checkbox-selected-checkmark-color: #fff;
+        --mat-standard-button-toggle-selected-state-text-color: #fff;
         --mdc-checkbox-selected-focus-icon-color: #424242;
         --mdc-checkbox-selected-hover-icon-color: #424242;
         --mdc-checkbox-selected-pressed-icon-color: #424242;
@@ -1993,7 +1990,7 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     line-height: 19px;
 }
 
-.mat-mdc-radio-group .mat-mdc-radio-button {
+.mat-mdc-radio-group .mat-mdc-radio-button, .mat-pseudo-checkbox {
 
     &.mat-accent {
         --mdc-checkbox-selected-checkmark-color: #fff;
@@ -2108,6 +2105,10 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
 
 .mat-mdc-radio-button, .mat-mdc-button {
     --mdc-form-field-label-text-font: 'Open Sans', Arial, Helvetica, sans-serif;
+}
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after {
+    width: 11px !important;
+    height: 3px !important;
 }
 
 /* stylelint-enable */

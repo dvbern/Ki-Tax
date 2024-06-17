@@ -172,8 +172,8 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	@Nonnull
 	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean besonderebeduerfnisse,
+		boolean unter12Monate,
+		boolean besonderebeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		boolean bezahltVollkosten,
 		@Nullable EinschulungTyp einschulungTyp) {
@@ -188,13 +188,12 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
-		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
-		BigDecimal augment = EXACT.divide(product, EXACT.subtract(minEinkommen, maxEinkommen));
-		BigDecimal verguenstigungProTag = EXACT.add(augment, maximaleVerguenstigungProTag);
-		// Max und Min beachten
-		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
-		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
+		BigDecimal verguenstigungProTag = KantonBernRechnerUtil.calculateKantonalerZuschlag(
+				minEinkommen,
+				maxEinkommen,
+				massgebendesEinkommen,
+				maximaleVerguenstigungProTag);
+
 		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
 		BigDecimal zuschlagFuerBesondereBeduerfnisse =
 			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);
@@ -214,13 +213,13 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	@Nonnull
 	protected abstract BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
+		boolean unter12Monate,
 		@Nullable EinschulungTyp einschulungTyp);
 
 	@Nonnull
 	protected abstract BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean besonderebeduerfnisse);
+		boolean besonderebeduerfnisse);
 
 	@Nonnull
 	protected abstract PensumUnits getZeiteinheit();
