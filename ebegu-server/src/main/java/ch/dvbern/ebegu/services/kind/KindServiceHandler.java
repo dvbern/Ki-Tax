@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
+import org.jetbrains.annotations.NotNull;
 
 @Stateless
 public class KindServiceHandler {
@@ -54,9 +55,6 @@ public class KindServiceHandler {
 		EinschulungTyp alteEinschulungTyp = null;
 		if (dbKind != null) {
 			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
-		}
-		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return;
 		}
 		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp) || compareHoehereBeitraegeChange(kind, dbKind)) {
 			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
@@ -76,6 +74,9 @@ public class KindServiceHandler {
 	}
 
 	private boolean compareHoehereBeitraegeChange(KindContainer kind, KindContainer dbKind) {
+		if (!iSSchwyzHoehereBeitraegeAktiviert(kind)) {
+			return false;
+		}
 		return !dbKind.getKindJA()
 			.getHoehereBeitraegeWegenBeeintraechtigungBeantragen()
 			.equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
@@ -111,17 +112,18 @@ public class KindServiceHandler {
 		if (dbKind != null) {
 			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
 
-			if (compareHoehereBeitraegeChange(kind, dbKind)) {
-				kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
-			}
 			resetBetreuungInFerienzeit(kind, alteEinschulungTyp);
+			resetBedarfsstufe(kind, dbKind);
 		}
 	}
 
-	private void resetBetreuungInFerienzeit(KindContainer kind, EinschulungTyp alteEinschulungTyp) {
-		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return;
+	private void resetBedarfsstufe(KindContainer kind, KindContainer dbKind) {
+		if (compareHoehereBeitraegeChange(kind, dbKind)) {
+			kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
 		}
+	}
+
+	private void resetBetreuungInFerienzeit(KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
 		if (wechseltKindVonSchulstufeZuVorschulalter(kind, alteEinschulungTyp)) {
 			kind.getBetreuungen().forEach(betreuung -> {
 				if (betreuung.isAngebotKita() || betreuung.isAngebotTagesfamilien()) {
@@ -148,9 +150,25 @@ public class KindServiceHandler {
 		return KinderabzugTyp.SCHWYZ.equals(KinderabzugTyp.valueOf(kinderabzugTyp.getValue()));
 	}
 
+	private boolean iSSchwyzHoehereBeitraegeAktiviert(@NotNull KindContainer kind) {
+		final Gesuch gesuch = kind.getGesuch();
+
+		Einstellung hoehereBeitraegeAktiviert = einstellungService.getEinstellungByMandant(
+				EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+				gesuch.getGesuchsperiode())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveKind",
+				"Einstellung HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT is missing for gesuchsperiode {}",
+				gesuch.getGesuchsperiode().getId()));
+		return hoehereBeitraegeAktiviert.getValueAsBoolean();
+	}
+
 	private boolean wechseltKindVonVorschulalterZuSchulstufe(
 		@Nonnull KindContainer kind,
 		@Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind)  || alteEinschulungTyp == null) {
+			return false;
+		}
 		return kind.getKindJA().getEinschulungTyp() != null &&
 			kind.getKindJA().getEinschulungTyp().isEingeschult() &&
 			!alteEinschulungTyp.isEingeschult();
@@ -159,6 +177,9 @@ public class KindServiceHandler {
 	private boolean wechseltKindVonSchulstufeZuVorschulalter(
 		@Nonnull KindContainer kind,
 		@Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
+			return false;
+		}
 		return kind.getKindJA().getEinschulungTyp() != null &&
 			!kind.getKindJA().getEinschulungTyp().isEingeschult() &&
 			alteEinschulungTyp.isEingeschult();
