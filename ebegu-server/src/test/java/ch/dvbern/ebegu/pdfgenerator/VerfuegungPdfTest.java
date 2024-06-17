@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -100,7 +101,13 @@ class VerfuegungPdfTest {
 		verfuegen(gesuch);
 
 		var bruennen = gesuch.getKindContainers().stream().findFirst().get().getBetreuungen().stream().findFirst().get();
-		File pdf = generatePdf(bruennen);
+		File pdf = generatePdf(bruennen, VerfuegungPdfGeneratorKonfiguration.builder()
+			.FKJVTexte(true)
+			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
+			.kontingentierungEnabledAndEntwurf(false)
+			.stadtBernAsivConfigured(false)
+			.isHoehereBeitraegeConfigured(false)
+			.build(), "WaeltiDagmar.pdf");
 		String text = PdfUnitTestUtil.getText(pdf);
 
 		expect.scenario(identifier.name())
@@ -110,19 +117,48 @@ class VerfuegungPdfTest {
 
 	}
 
+	@Test
+	@SnapshotName("verfuegung-bruennen-hoeherer-beitrag")
+	void testHoehererBeitrag() {
+		Mandant mandant = MandantFactory.fromIdentifier(MandantIdentifier.SCHWYZ);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718(mandant);
+		Gemeinde gemeinde = TestDataUtil.createGemeindeLondon(mandant);
+
+		TestDataInstitutionStammdatenBuilder institution = new TestDataInstitutionStammdatenBuilder(gesuchsperiode);
+		var testFall = new Testfall01_WaeltiDagmar(gesuchsperiode, true, gemeinde, institution);
+		Gesuch gesuch = testFall.setupGesuch();
+		verfuegen(gesuch);
+
+		var bruennen = gesuch.getKindContainers().stream().findFirst().get().getBetreuungen().stream().findFirst().get();
+		File pdf = generatePdf(bruennen, VerfuegungPdfGeneratorKonfiguration.builder()
+			.FKJVTexte(true)
+			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
+			.kontingentierungEnabledAndEntwurf(false)
+			.stadtBernAsivConfigured(false)
+			.isHoehereBeitraegeConfigured(true)
+			.build(), "WaeltiDagmar_hoehererBeitrag.pdf");
+		String text = PdfUnitTestUtil.getText(pdf);
+
+		expect.scenario(MandantIdentifier.SCHWYZ.name())
+			.toMatchSnapshot(textForSnapshot(text));
+
+		assertThat(text, stringContainsInOrder("Höherer", "Beitrag"));
+	}
+
 	private void verfuegen(Gesuch gesuch) {
 		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
 			final Verfuegung verfuegung = new Verfuegung();
 			final VerfuegungZeitabschnitt zeitabschnitt =
 				new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
 			zeitabschnitt.getRelevantBgCalculationResult().setBetreuungspensumProzent(BigDecimal.valueOf(80));
+			zeitabschnitt.getRelevantBgCalculationResult().setHoehererBeitrag(BigDecimal.valueOf(10));
 			verfuegung.setZeitabschnitte(List.of(zeitabschnitt));
 			betreuung.setVerfuegung(verfuegung);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		}));
 	}
 
-	private File generatePdf(Betreuung betreuung) {
+	private File generatePdf(Betreuung betreuung, VerfuegungPdfGeneratorKonfiguration konfiguration, String fileName) {
 		Gesuch gesuch = betreuung.extractGesuch();
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
 
@@ -140,18 +176,12 @@ class VerfuegungPdfTest {
 				betreuung,
 				gemeindeStammdaten,
 				Art.NORMAL,
-				VerfuegungPdfGeneratorKonfiguration.builder()
-					.FKJVTexte(true)
-					.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
-					.kontingentierungEnabledAndEntwurf(false)
-					.stadtBernAsivConfigured(false)
-					.isHoehereBeitraegeConfigured(false)
-					.build()
+				konfiguration
 			);
 		Mandant mandant = gesuch.extractMandant();
 
 		try {
-			Path path = Path.of(getOutputPath(mandant.getMandantIdentifier()).toString(), "WaeltiDagmar.pdf");
+			Path path = Path.of(getOutputPath(mandant.getMandantIdentifier()).toString(), fileName);
 			generator.getVerfuegungPdfGeneratorForMandant(mandant).generate(Files.newOutputStream(path));
 
 			return path.toFile();
