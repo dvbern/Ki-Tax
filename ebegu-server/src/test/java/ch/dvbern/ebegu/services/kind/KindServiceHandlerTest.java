@@ -79,6 +79,11 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
@@ -99,11 +104,16 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		mode = Mode.INCLUDE)
 	void keinBetreuungsstatusResetOnKindSaveMitEinschulungAenderung_von_SCHULSTUFE_to_VORSCHULALTER(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
-		Einstellung kinderabzugTypEinstellung = new Einstellung();
-		kinderabzugTypEinstellung.setValue("SCHWYZ");
+		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
+		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(einschulungTyp));
 		Assertions.assertEquals(kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
@@ -118,10 +128,15 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	void resetKindBetreuungenStatusOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_SCHULSTUFE(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(einschulungTyp, false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
+		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		expect(betreuungService.saveBetreuung(kindContainer.getBetreuungen().stream().findFirst().get(), false, null)).andReturn(
 			kindContainer.getBetreuungen().stream().findFirst().get()).once();
 		replayAll();
@@ -135,10 +150,15 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	void keinBetreuungsstatusResetOnKindSaveKeineEinschulungAenderung() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
+		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		List<Betreuung> bestaetigteBetreuungen = kindContainer.getBetreuungen().stream().filter(betreuung -> Betreuungsstatus.BESTAETIGT.equals(
@@ -155,6 +175,11 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
 		Einstellung kinderabzugTypEinstellung = new Einstellung();
 		kinderabzugTypEinstellung.setValue(kinderabzugTyp.name());
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
@@ -177,10 +202,15 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	void resetKindBetreuungenpensenFragenOnKindSaveMitEinschulungAenderung_von_SCHULSTUFE_to_VORSCHULALTER() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
+		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.PRIMARSTUFE));
 		verifyAll();
@@ -200,10 +230,15 @@ class KindServiceHandlerTest extends EasyMockSupport {
 	void keinResetVonKindBetreuungenpensenFragenOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_PRIMARSTUFE() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
 		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
+		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
-			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp)).once();
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, createKindContainerEinschulungsTyp(EinschulungTyp.VORSCHULALTER));
 		verifyAll();
@@ -263,16 +298,21 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
 		replayAll();
 		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, dbKind);
-		verifyAll();
 		kindContainer.getBetreuungen().forEach(
 			betreuung -> Assertions.assertNull(betreuung.getBedarfsstufe())
 		);
+		verifyAll();
 	}
 
 	@Test
@@ -284,7 +324,12 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
 		dbKind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
@@ -303,7 +348,12 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(false);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
@@ -327,7 +377,12 @@ class KindServiceHandlerTest extends EasyMockSupport {
 		KindContainer dbKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		dbKind.getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
 		Einstellung kinderabzugTyp = new Einstellung();
+		Einstellung hoehereBeitraegeAktiviert = new Einstellung();
+		hoehereBeitraegeAktiviert.setValue(String.valueOf(true));
 		kinderabzugTyp.setValue("SCHWYZ");
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(hoehereBeitraegeAktiviert));
 		expect(einstellungService.getEinstellungByMandant(
 			EinstellungKey.KINDERABZUG_TYP,
 			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTyp));
