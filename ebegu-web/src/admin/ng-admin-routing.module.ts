@@ -18,6 +18,8 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {Transition} from '@uirouter/angularjs';
+import {HookResult} from '@uirouter/core';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
@@ -34,6 +36,12 @@ import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersende
 const applicationPropertiesResolver = [
     'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => applicationPropertyRS.getAllApplicationProperties()
 ];
+
+function assertTestfaelleEnabled(transition: Transition): HookResult {
+    const applicationPropertyRS: ApplicationPropertyRS = transition.injector().get('ApplicationPropertyRS');
+    return applicationPropertyRS.isTestfaelleEnabled();
+}
+assertTestfaelleEnabled.$inject = ['$transition$'];
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -61,7 +69,8 @@ const states: Ng2StateDeclaration[] = [
         component: TestdatenViewComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles()
-        }
+        },
+        onEnter: assertTestfaelleEnabled
     },
     {
         name: 'admin.batchjobTrigger',

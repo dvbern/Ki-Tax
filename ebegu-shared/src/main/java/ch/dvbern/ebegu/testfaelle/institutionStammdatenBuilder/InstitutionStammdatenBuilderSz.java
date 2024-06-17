@@ -17,11 +17,11 @@
 
 package ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InstitutionStammdatenBuilderSz extends InstitutionStammdatenBuilder {
 	public InstitutionStammdatenBuilderSz(InstitutionStammdatenService institutionStammdatenService) {
@@ -30,6 +30,7 @@ public class InstitutionStammdatenBuilderSz extends InstitutionStammdatenBuilder
 				"cfeeb01a-b3e8-11ee-829a-0242ac160002",
 				"d968ba59-b3e8-11ee-829a-0242ac160002",
 				"9fdc2b4d-b3e8-11ee-829a-0242ac160002");
+		setIdInstitutionStammdatenMittagstisch("28026216-dc73-11ee-8dae-0242ac160002");
 	}
 
 	@Override
@@ -38,6 +39,7 @@ public class InstitutionStammdatenBuilderSz extends InstitutionStammdatenBuilder
 		institutionStammdatenList.add(findInstitutionWeissenstein());
 		institutionStammdatenList.add(findInstitutionBruennen());
 		institutionStammdatenList.add(findInstitutionTagesfamilien());
+		institutionStammdatenList.add(findInstitutionMittagstisch());
 
 		return institutionStammdatenList;
 	}

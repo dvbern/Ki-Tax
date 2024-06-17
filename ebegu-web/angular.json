@@ -33,7 +33,6 @@
             "allowedCommonJsDependencies": [
               "lodash",
               "iban",
-              "raven-js",
               "angular",
               "randomcolor"
             ]

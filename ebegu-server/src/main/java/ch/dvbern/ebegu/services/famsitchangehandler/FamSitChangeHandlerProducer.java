@@ -17,21 +17,15 @@
 
 package ch.dvbern.ebegu.services.famsitchangehandler;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-
-import static ch.dvbern.ebegu.util.mandant.MandantCookieUtil.convertCookieNameToMandantIdentifier;
+import ch.dvbern.ebegu.util.mandant.MandantCookieUtil;
 
 @ApplicationScoped
 public class FamSitChangeHandlerProducer {
@@ -43,7 +37,7 @@ public class FamSitChangeHandlerProducer {
 		GesuchstellerService gesuchstellerService,
 		HttpServletRequest request,
 		FinanzielleSituationService finanzielleSituationService) {
-		switch (getMandantFromCookie(request)) {
+		switch (MandantCookieUtil.getMandantFromCookie(request)) {
 		case LUZERN:
 			return new FamSitChangeHandlerLU(gesuchstellerService, einstellungService);
 		case APPENZELL_AUSSERRHODEN:
@@ -55,16 +49,4 @@ public class FamSitChangeHandlerProducer {
 		}
 	}
 
-	private MandantIdentifier getMandantFromCookie(HttpServletRequest request) {
-		String cookieName = "mandant";
-		if (request.getCookies() != null) {
-			for (Cookie cookie : request.getCookies()) {
-				if (cookie.getName().equals(cookieName)) {
-					var mandantNameDecoded = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
-					return convertCookieNameToMandantIdentifier(mandantNameDecoded);
-				}
-			}
-		}
-		throw new IllegalStateException("mandant Cookie is missing");
-	}
 }

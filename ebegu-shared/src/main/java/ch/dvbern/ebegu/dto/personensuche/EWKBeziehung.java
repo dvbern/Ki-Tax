@@ -26,87 +26,29 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * DTO für Adressen aus dem EWK
- */
+@Getter
+@Setter
 @XmlRootElement(name = "ewkBeziehung")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EWKBeziehung implements Serializable {
 
 	private static final long serialVersionUID = 8602528362565753981L;
 
-	protected String beziehungstyp;
+	private String beziehungstyp;
 
-	protected String personID;
+	private String personID;
 
-	protected String nachname;
+	private String nachname;
 
-	protected String vorname;
+	private String vorname;
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	protected LocalDate geburtsdatum;
+	private LocalDate geburtsdatum;
 
-	protected EWKAdresse adresse;
+	private EWKAdresse adresse;
 
 	private Geschlecht geschlecht;
-
-	public EWKBeziehung() {
-	}
-
-	public String getBeziehungstyp() {
-		return beziehungstyp;
-	}
-
-	public void setBeziehungstyp(String beziehungstyp) {
-		this.beziehungstyp = beziehungstyp;
-	}
-
-	public String getPersonID() {
-		return personID;
-	}
-
-	public void setPersonID(String personID) {
-		this.personID = personID;
-	}
-
-	public String getNachname() {
-		return nachname;
-	}
-
-	public void setNachname(String nachname) {
-		this.nachname = nachname;
-	}
-
-	public String getVorname() {
-		return vorname;
-	}
-
-	public void setVorname(String vorname) {
-		this.vorname = vorname;
-	}
-
-	public LocalDate getGeburtsdatum() {
-		return geburtsdatum;
-	}
-
-	public void setGeburtsdatum(LocalDate geburtsdatum) {
-		this.geburtsdatum = geburtsdatum;
-	}
-
-	public EWKAdresse getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(EWKAdresse adresse) {
-		this.adresse = adresse;
-	}
-
-	public void setGeschlecht(Geschlecht geschlecht) {
-		this.geschlecht = geschlecht;
-	}
-
-	public Geschlecht getGeschlecht() {
-		return geschlecht;
-	}
 }

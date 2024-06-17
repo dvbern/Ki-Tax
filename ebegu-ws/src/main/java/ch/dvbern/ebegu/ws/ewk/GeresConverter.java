@@ -48,16 +48,6 @@ public final class GeresConverter {
 		// Util-Class, should not be initialized
 	}
 
-	/**
-	 * @param totalNumberOfResults total number of persons that were matched by the search criteria
-	 * @param numberOfDeliveredResults number of persons that were actually returned
-	 * @param baseDelivery list containing the matched persons
-	 */
-	public static EWKResultat convertFromGeresFastResult(Integer totalNumberOfResults, Integer numberOfDeliveredResults, BaseDeliveryType baseDelivery) {
-		final EWKResultat ewkResultat = convertFromGeresFullResult(baseDelivery);
-		return ewkResultat;
-	}
-
 	public static EWKResultat convertFromGeresFullResult(BaseDeliveryType baseDelivery) {
 		EWKResultat ewkResultat = new EWKResultat();
 		if (!baseDelivery.getMessages().isEmpty()) {
@@ -75,11 +65,11 @@ public final class GeresConverter {
 	private static EWKPerson convertFromGeres(EventBaseDelivery message) {
 		final BaseDeliveryPersonType baseDeliveryPerson = message.getBaseDeliveryPerson();
 		EWKPerson ewkPerson = convertFromGeres(baseDeliveryPerson);
-		ReportingMunicipalityType mainResicence = message.getHasMainResidence();
-		if (mainResicence != null) {
-			ewkPerson.setZuzugsdatum(mainResicence.getArrivalDate());
-			ewkPerson.setWegzugsdatum(mainResicence.getDepartureDate());
-			ewkPerson.setAdresse(convertFromGeres(mainResicence.getDwellingAddress()));
+		ReportingMunicipalityType mainResidence = message.getHasMainResidence();
+		if (mainResidence != null) {
+			ewkPerson.setZuzugsdatum(mainResidence.getArrivalDate());
+			ewkPerson.setWegzugsdatum(mainResidence.getDepartureDate());
+			ewkPerson.setAdresse(convertFromGeres(mainResidence.getDwellingAddress()));
 		}
 		List<EWKBeziehung> beziehungen = new ArrayList<>();
 		//Eltern der Person
