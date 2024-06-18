@@ -152,6 +152,7 @@ class VerfuegungPdfTest {
 				new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
 			zeitabschnitt.getRelevantBgCalculationResult().setBetreuungspensumProzent(BigDecimal.valueOf(80));
 			zeitabschnitt.getRelevantBgCalculationResult().setHoehererBeitrag(BigDecimal.valueOf(10));
+			zeitabschnitt.getRelevantBgCalculationResult().setBeitragshoeheProzent(10);
 			verfuegung.setZeitabschnitte(List.of(zeitabschnitt));
 			betreuung.setVerfuegung(verfuegung);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
