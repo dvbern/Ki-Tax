@@ -52,6 +52,9 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.ersteMahnung.ErsteMahnungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.zweiteMahnung.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -432,7 +435,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		stammdaten.getGemeinde().setMandant(mandant);
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final MahnungPdfGenerator generator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
+		final AbstractMahnungPdfGenerator generator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
 			.getErsteMahnungPdfGeneratorForMandant(mandant);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
@@ -456,7 +459,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		stammdaten.getGemeinde().setMandant(mandant);
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final MahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
+		final AbstractMahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 

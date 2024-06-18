@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.mahnung;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,13 +25,16 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
 
-public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
+public abstract class AbstractMahnungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final String MAHNUNG_TITLE = "PdfGeneration_Mahnung_Title";
 	private static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
@@ -40,7 +43,7 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 	protected Mahnung mahnung;
 
 
-	protected MahnungPdfGenerator(
+	protected AbstractMahnungPdfGenerator(
 		@Nonnull Mahnung mahnung,
 		@Nonnull GemeindeStammdaten stammdaten
 	) {
@@ -60,7 +63,7 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 
-			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
+			document.add(createAnrede());
 			createSeite1(document);
 			document.add(PdfUtil.createListInParagraph(getFehlendeUnterlagen(), 1));
 
@@ -95,5 +98,10 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 			fehlendeUnterlagen.addAll(Arrays.asList(splitFehlendeUnterlagen));
 		}
 		return fehlendeUnterlagen;
+	}
+
+	@Nonnull
+	protected Paragraph getAnrede(){
+		return PdfUtil.createParagraph(translate(ANREDE_FAMILIE));
 	}
 }

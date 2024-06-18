@@ -15,11 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.ersteMahnung;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractErsteMahnungPdfGenerator extends MahnungPdfGenerator {
+public abstract class AbstractErsteMahnungPdfGenerator extends AbstractMahnungPdfGenerator {
 
 
 	private static final String ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_1 = "PdfGeneration_ErsteMahnung_Seite1_Paragraph1";
@@ -40,7 +42,7 @@ public abstract class AbstractErsteMahnungPdfGenerator extends MahnungPdfGenerat
 	private static final String UND = "PdfGeneration_Und";
 
 
-	public AbstractErsteMahnungPdfGenerator(
+	protected AbstractErsteMahnungPdfGenerator(
 		@Nonnull Mahnung mahnung,
 		@Nonnull GemeindeStammdaten stammdaten
 	) {
@@ -100,7 +102,12 @@ public abstract class AbstractErsteMahnungPdfGenerator extends MahnungPdfGenerat
 		return angebot.toString();
 	}
 
-	protected abstract String getBetreuungsString(KindContainer kindContainer, List<String> betreuungenList);
+	protected String getBetreuungsString(KindContainer kindContainer, List<String> betreuungenList) {
+		String betreuungStr = kindContainer.getKindJA().getFullName() + " (";
+		betreuungStr += String.join(", ", betreuungenList);
+		betreuungStr += ")";
+		return betreuungStr;
+	}
 
 	@Nonnull
 	private String getEingangsdatum() {
