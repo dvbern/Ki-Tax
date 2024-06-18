@@ -47,23 +47,6 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 	}
 
 	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
-	}
-
-	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
 	}

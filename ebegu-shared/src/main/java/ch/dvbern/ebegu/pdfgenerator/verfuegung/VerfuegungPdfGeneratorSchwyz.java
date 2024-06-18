@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
 import java.awt.Color;
-import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -37,12 +38,9 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
-
-	private static final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
 
 	public VerfuegungPdfGeneratorSchwyz(
 		@Nonnull Betreuung betreuung,
@@ -90,47 +88,86 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 			Constants.DATE_FORMATTER.format(gp.getGueltigBis())));
 	}
 
+	@Nonnull
 	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		//defualt no-op: wird nur in Luzern angezeigt
+	protected PdfPTable createVerfuegungTable() {
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
+		VerfuegungTable verfuegungTable = new VerfuegungTable(
+			zeitabschnitte,
+			getPageConfiguration()
+		);
+
+		verfuegungTable
+			.add(createVonColumn())
+			.add(createBisColumn())
+			.add(createPensumGroup())
+			.add(createVollkostenColumn())
+			.add(createGutscheinOhneMinimalbeitragColumn())
+			.add(createElternbeitragColumn());
+
+		addEinstellungDependingColumns(verfuegungTable, zeitabschnitte);
+
+		return verfuegungTable.build();
 	}
 
 	@Override
-	protected void addTitleBerechneterGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createVollkostenColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(VOLLKOSTEN))
+			.romanNumber("IV")
+			.width(100)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVollkosten()))
+			.build();
 	}
 
 	@Override
-	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
-		//no-op die Spalte soll in Schwyz nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinOhneMinimalbeitragColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG))
+			.romanNumber("V")
+			.bgColor(Color.LIGHT_GRAY)
+			.boldContent(true)
+			.width(100)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()))
+			.build();
 	}
 
 	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		//default no-op: wird nur in Luzern angezeigt
+	@Nonnull
+	protected VerfuegungTableColumn createElternbeitragColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(ELTERNBEITRAG))
+			.romanNumber("VI")
+			.bgColor(Color.LIGHT_GRAY)
+			.width(108)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()))
+			.build();
 	}
 
 	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return COLUMN_WIDTHS;
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinInstitutionColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_AN_INSTITUTION))
+			.romanNumber("VII")
+			.bgColor(Color.LIGHT_GRAY)
+			.width(110)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
+			.build();
 	}
 
 	@Override
-	protected void addReferenzNummerCells(PdfPTable table) {
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		if (verfuegungPdfGeneratorKonfiguration.isHoehereBeitraegeConfigured) {
-			table.addCell(createCell(true, Element.ALIGN_CENTER, "", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		}
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinElternColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_AN_ELTERN))
+			.romanNumber("VII")
+			.bgColor(Color.LIGHT_GRAY)
+			.width(110)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnEltern(abschnitt)))
+			.build();
 	}
 
 	@Override

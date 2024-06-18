@@ -17,12 +17,13 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
@@ -84,6 +85,26 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		return cell;
 	}
 
+	@Nonnull
+	@Override
+	protected PdfPTable createVerfuegungTable() {
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
+		VerfuegungTable verfuegungTable = new VerfuegungTable(
+			zeitabschnitte,
+			getPageConfiguration()
+		);
+
+		verfuegungTable.add(createVonColumn())
+			.add(createBisColumn())
+			.add(createPensumGroup())
+			.add(createVollkostenColumn())
+			.add(createGutscheinOhneVollkostenColumn())
+			.add(createGutscheinOhneMinimalbeitragColumn())
+			.add(createElternbeitragColumn())
+			.add(createGutscheinInstitutionColumn());
+		return super.createVerfuegungTable();
+	}
+
 	@Override
 	protected void createDokumentNichtEintretten(
 		@Nonnull Document document,
@@ -106,24 +127,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_9)));
 		document.add(createAntragNichtEintreten());
 		addZusatzTextIfAvailable(document);
-	}
-
-	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-
-	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
 	}
 
 	private Element createParagraphErwaegungenNichtEintretten() {

@@ -25,17 +25,12 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
-
-	private final float[] COLUMN_WIDTHS_DEFAULT = { 90, 100, 88, 88, 88, 100, 110 };
-	private final float[] COLUMN_WIDTHS_TFO = { 90, 100, 88, 88, 88, 100, 110, 110 };
 
 	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
 
@@ -51,6 +46,7 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 	}
 
+	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
 		if (art == Art.NICHT_EINTRETTEN) {
@@ -68,83 +64,107 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return this.isBetreuungTagesfamilie ? COLUMN_WIDTHS_TFO : COLUMN_WIDTHS_DEFAULT;
-	}
-
-	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelleBold;
 	}
 
+	@Nonnull
 	@Override
-	protected Font getBgColorForBetreuungsgutscheinCell() {
-		return fontTabelle;
-	}
+	protected PdfPTable createVerfuegungTable() {
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
+		VerfuegungTable verfuegungTable = new VerfuegungTable(
+			zeitabschnitte,
+			getPageConfiguration()
+		);
 
-	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
+		verfuegungTable
+			.add(createVonColumn())
+			.add(createBisColumn())
+			.add(createPensumGroup())
+			.add(createVollkostenColumn());
+
 		if (isBetreuungTagesfamilie) {
-			table.addCell(createCell(
-				true,
-				Element.ALIGN_RIGHT,
-				translate(GUTSCHEIN_PRO_STUNDE),
-				Color.LIGHT_GRAY,
-				fontTabelle,
-				2,
-				1));
+			verfuegungTable.add(createGutscheinProStundeColumn());
 		}
+
+
+		addEinstellungDependingColumns(verfuegungTable, zeitabschnitte);
+
+		return verfuegungTable.build();
+	}
+
+	@Nonnull
+	private VerfuegungTableColumn createGutscheinProStundeColumn() {
+		return VerfuegungTableColumn.builder()
+			.width(100)
+			.title(translate(GUTSCHEIN_PRO_STUNDE))
+			.bgColor(Color.LIGHT_GRAY)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVerguenstigungProZeiteinheit()))
+			.build();
 	}
 
 	@Override
-	protected void addReferenzNummerCells(PdfPTable table) {
-		//no-op die Zeile mit den RefernzNummern soll in Luzern nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createPensumAnspruchKonkretColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(PENSUM_BG))
+			.width(88)
+			.dataExtractor(this::printVerguenstigt)
+			.build();
 	}
 
 	@Override
-	protected void addTitleBerechneterGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createPensumAnspruchColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(PENSUM_ANSPRUCH))
+			.width(88)
+			.dataExtractor(this::printAnspruch)
+			.build();
 	}
 
 	@Override
-	protected void addTitleBetreuungsGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createVollkostenColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(VOLLKOSTEN))
+			.width(88)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVollkosten()))
+			.build();
 	}
 
 	@Override
-	protected void addTitleNrElternBeitrag(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinElternColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_AN_ELTERN))
+			.bgColor(Color.LIGHT_GRAY)
+			.width(108)
+			.boldContent(true)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnEltern(abschnitt)))
+			.build();
 	}
 
 	@Override
-	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinInstitutionColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_AN_INSTITUTION))
+			.bgColor(Color.LIGHT_GRAY)
+			.boldContent(true)
+			.width(108)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
+			.build();
 	}
 
 	@Override
-	protected void addValueBetreuungsGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
-	}
-
-	@Override
-	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		if (this.isBetreuungTagesfamilie) {
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(verguenstigungProZeiteinheit),
-				Color.LIGHT_GRAY,
-				getBgColorForUeberwiesenerBetragCell(),
-				1,
-				1));
-		}
+	@Nonnull
+	protected VerfuegungTableColumn createPensumBetreuungColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(PENSUM_BETREUUNG))
+			.width(88)
+			.dataExtractor(this::printEffektiv)
+			.build();
 	}
 
 	@Override
