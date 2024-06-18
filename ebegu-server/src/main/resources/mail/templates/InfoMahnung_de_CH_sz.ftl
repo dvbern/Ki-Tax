@@ -27,11 +27,16 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Sehr geehrte Familie
+		<#if (gesuch.gesuchsteller2)??>
+			<#if gesuch.gesuchsteller1.gesuchstellerJA.geschlecht == "WEIBLICH" >Sehr geehrte Frau ${gesuchsteller.nachname}</#if>
+			<#if gesuch.gesuchsteller1.gesuchstellerJA.geschlecht == "MAENNLICH" >Sehr geehrter Herr ${gesuchsteller.nachname}</#if>,<br>
+			<#if gesuch.gesuchsteller2.gesuchstellerJA.geschlecht == "WEIBLICH" >sehr geehrte Frau ${gesuchsteller.nachname}</#if>
+			<#if gesuch.gesuchsteller2.gesuchstellerJA.geschlecht == "MAENNLICH" >sehr geehrter Herr ${gesuchsteller.nachname}</#if>
+		<#else>
+			<#if gesuchsteller.geschlecht == "WEIBLICH">Sehr geehrte Frau ${gesuchsteller.nachname}</#if>
+			<#if gesuchsteller.geschlecht == "MAENNLICH">Sehr geehrter Herr ${gesuchsteller.nachname}</#if>
+		</#if>
 	</p>
-
-	<p><#if gesuchsteller.geschlecht.MAENNLICH == "MAENNLICH">Sehr geehrter Herr ${gesuchsteller.nachname} </#if></p>
-	<p><#if gesuchsteller.geschlecht.WEIBLICH == "WEIBLICH">Sehr geehrte Frau ${gesuchsteller.nachname} </#if></p>
 	<p>
 		Am ${gesuch.getEingangsdatumFormated()} haben Sie einen Antrag <#if isSozialdienst>für ${gesuchsteller.fullName}</#if> via kiBon eingereicht.
 		Leider sind die eingereichten Unterlagen unvollständig. Die fehlenden Dokumente
