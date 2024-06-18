@@ -1032,6 +1032,39 @@ class FinanzielleSituationSchwyzRechnerTest {
 			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
 		}
 
+		@Test
+		void testReinvermoegenGS1Quellenbesteuert(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(250_000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(115_000)));
+		}
+
+		@Test
+		void testReinvermoegenZero(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124_000)));
+		}
+
 		private Gesuch prepareGesuch() {
 			Gesuch gesuch = new Gesuch();
 			gesuch.setFamiliensituationContainer(TestDataUtil.createDefaultFamiliensituationContainer());
