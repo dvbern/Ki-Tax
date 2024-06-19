@@ -1,4 +1,4 @@
-package ch.dvbern.ebegu.pdfgenerator.mahnung.ersteMahnung;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung;
 
 import javax.annotation.Nonnull;
 

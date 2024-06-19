@@ -53,9 +53,9 @@ import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechn
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
-import ch.dvbern.ebegu.pdfgenerator.mahnung.ersteMahnung.ErsteMahnungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung.ErsteMahnungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.mahnung.zweiteMahnung.ZweiteMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorKonfiguration;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;

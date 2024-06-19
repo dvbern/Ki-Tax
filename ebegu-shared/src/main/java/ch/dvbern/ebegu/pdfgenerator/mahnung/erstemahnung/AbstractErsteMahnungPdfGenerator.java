@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator.mahnung.ersteMahnung;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;

@@ -15,15 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator.mahnung.zweiteMahnung;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
+import com.lowagie.text.Paragraph;
 
-public class ZweiteMahnungPdfGenerator extends AbstractZweiteMahnungPdfGenerator {
-	public ZweiteMahnungPdfGenerator(@Nonnull Mahnung mahnung, @Nonnull Mahnung ersteMahnung, @Nonnull GemeindeStammdaten stammdaten) {
+public class ZweiteMahnungPdfGeneratorSchwyz extends AbstractZweiteMahnungPdfGenerator {
+	public ZweiteMahnungPdfGeneratorSchwyz(@Nonnull Mahnung mahnung, @Nonnull Mahnung ersteMahnung, @Nonnull GemeindeStammdaten stammdaten) {
 		super(mahnung, ersteMahnung, stammdaten);
+	}
+
+	@Override
+	@Nonnull
+	protected Paragraph getAnrede() {
+		return super.createAnrede();
 	}
 }

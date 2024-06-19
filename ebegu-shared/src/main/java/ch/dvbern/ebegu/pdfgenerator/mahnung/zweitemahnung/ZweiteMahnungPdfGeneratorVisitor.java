@@ -1,4 +1,4 @@
-package ch.dvbern.ebegu.pdfgenerator.mahnung.zweiteMahnung;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung;
 
 import javax.validation.constraints.NotNull;
 
