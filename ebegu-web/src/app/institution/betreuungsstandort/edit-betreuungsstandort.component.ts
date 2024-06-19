@@ -15,8 +15,6 @@ export class EditBetreuungsstandortComponent {
 
     public readonly CONSTANTS: any = CONSTANTS;
 
-    public constructor() {}
-
     public addStandort(): void {
         const newStandort = new TSBetreuungsstandort();
         this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.push(

@@ -91,8 +91,6 @@ export class TSSteuerdatenResponse {
 
     private _nettovermoegen: number;
 
-    public constructor() {}
-
     public get zpvNrAntragsteller(): number {
         return this._zpvNrAntragsteller;
     }

@@ -11,6 +11,4 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class DvRadioContainerXComponent {
-    public constructor() {}
-}
+export class DvRadioContainerXComponent {}

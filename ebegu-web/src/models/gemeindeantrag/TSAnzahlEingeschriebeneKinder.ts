@@ -22,8 +22,6 @@ export class TSAnzahlEingeschriebeneKinder {
     private _primarstufe: number;
     private _sekundarstufe: number;
 
-    public constructor() {}
-
     public get overall(): number {
         return this._overall;
     }

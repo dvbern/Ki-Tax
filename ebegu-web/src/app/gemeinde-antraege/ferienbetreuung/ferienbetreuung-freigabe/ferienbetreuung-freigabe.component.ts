@@ -23,6 +23,4 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
     styleUrls: ['./ferienbetreuung-freigabe.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FerienbetreuungFreigabeComponent {
-    public constructor() {}
-}
+export class FerienbetreuungFreigabeComponent {}

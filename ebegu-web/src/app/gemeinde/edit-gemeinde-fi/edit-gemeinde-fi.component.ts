@@ -34,8 +34,6 @@ export class EditGemeindeFIComponent implements OnInit {
     @Input() public fiAnmeldungenStartDatum: Moment;
     @Input() public fiAnmeldungenStartStr: string;
 
-    public constructor() {}
-
     public ngOnInit(): void {
         if (!this.gemeindeId) {
             return;

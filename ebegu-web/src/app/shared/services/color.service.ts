@@ -22,8 +22,6 @@ import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
     providedIn: 'root'
 })
 export class ColorService {
-    public constructor() {}
-
     private static changeColor(color: string, cssVariable: string): void {
         document.documentElement.style.setProperty(cssVariable, color);
     }

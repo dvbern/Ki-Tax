@@ -11,8 +11,6 @@ export class HttpPendingService {
     );
     private maxID = 0;
 
-    public constructor() {}
-
     public pending(request: HttpRequest<unknown>): void {
         const id = this.maxID++;
         request.context.set(this.REQUEST_CONTEXT_ID, id.toString());

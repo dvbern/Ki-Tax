@@ -27,8 +27,6 @@ export class BroadcastService {
         BroadcastMessage<BroadcastMessageType>
     >();
 
-    public constructor() {}
-
     public broadcast(type: BroadcastMessageType, payload?: any): void {
         this.broadcaster.next({type, payload});
     }

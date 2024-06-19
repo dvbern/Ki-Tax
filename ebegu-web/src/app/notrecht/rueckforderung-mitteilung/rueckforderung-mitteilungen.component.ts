@@ -36,8 +36,6 @@ export class RueckforderungMitteilungenComponent implements OnChanges {
     @Input()
     public rueckforderungMitteilungen: TSRueckforderungMitteilung[];
 
-    public constructor() {}
-
     public ngOnChanges(changes: SimpleChanges): void {
         if (
             !changes.rueckforderungMitteilungen ||

@@ -8,6 +8,4 @@ import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 })
 export class WarningComponent {
     @Input() public text: string;
-
-    public constructor() {}
 }

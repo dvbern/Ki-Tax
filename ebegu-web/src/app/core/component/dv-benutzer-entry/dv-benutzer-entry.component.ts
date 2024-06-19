@@ -31,8 +31,6 @@ export class DvBenutzerEntryComponent {
     @Input() public noIcons: boolean;
     @Input() public noName: boolean;
 
-    public constructor() {}
-
     public getVerantwortungClasses(): string[][] {
         if (EbeguUtil.isNullOrUndefined(this.benutzer)) {
             return [];

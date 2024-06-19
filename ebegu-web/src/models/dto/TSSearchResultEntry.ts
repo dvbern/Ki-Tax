@@ -25,8 +25,6 @@ export class TSSearchResultEntry {
     private _dossierId: string;
     private _text: string;
 
-    public constructor() {}
-
     public get additionalInformation(): string {
         return this._additionalInformation;
     }

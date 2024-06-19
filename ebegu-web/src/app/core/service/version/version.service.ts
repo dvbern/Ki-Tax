@@ -38,8 +38,6 @@ export class VersionService implements OnDestroy {
 
     private readonly _$unsubcribe: Subject<boolean> = new Subject();
 
-    public constructor() {}
-
     private static hasVersionCompatibility(
         frontendVersion: string,
         backendVersion: string

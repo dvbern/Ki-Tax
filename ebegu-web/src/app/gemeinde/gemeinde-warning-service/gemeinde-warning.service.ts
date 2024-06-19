@@ -29,8 +29,6 @@ export class GemeindeWarningService {
         TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB
     ];
 
-    public constructor() {}
-
     public init(konfigurationen: TSGemeindeKonfiguration[]): void {
         for (const k of konfigurationen) {
             if (k.gesuchsperiode.isEntwurf()) {

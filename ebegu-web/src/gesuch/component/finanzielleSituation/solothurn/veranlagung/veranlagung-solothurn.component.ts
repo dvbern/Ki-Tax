@@ -24,8 +24,6 @@ export class VeranlagungSolothurnComponent {
     public readonly massgebendesEinkommenChange: EventEmitter<number> =
         new EventEmitter<number>();
 
-    public constructor() {}
-
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }

@@ -71,8 +71,6 @@ export class DvDatePickerXComponent {
 
     public randId = EbeguUtil.generateRandomName(10);
 
-    public constructor() {}
-
     public emit(): void {
         this.dateChange.emit(this.date);
     }

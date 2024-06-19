@@ -26,6 +26,4 @@ import {TSDemoFeature} from '../../../core/directive/dv-hide-feature/TSDemoFeatu
 export class DvDemoFeatureWrapperComponent {
     @Input() public demoFeature: TSDemoFeature;
     @Input() public hideIfDemoFeatureActive: boolean;
-
-    public constructor() {}
 }
