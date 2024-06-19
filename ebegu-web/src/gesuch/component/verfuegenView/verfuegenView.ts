@@ -30,9 +30,9 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -40,6 +40,7 @@ import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
+import {TSGemeindeZusaetzlicherGutscheinTyp} from '../../../models/gemeindekonfiguration/TSGemeindeZusaetzlicherGutscheinTyp';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -103,7 +104,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'EinstellungRS',
         'EbeguRestUtil',
         'DemoFeatureRS',
-        'GesuchRS'
+        'GesuchRS',
     ];
 
     // this is the model...
@@ -159,7 +160,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly einstellungRS: EinstellungRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly demoFeatureRS: DemoFeatureRS,
-        private readonly gesuchRS: GesuchRS
+        private readonly gesuchRS: GesuchRS,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -352,7 +353,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                     .then(() => {
                         // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
                         this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
-                            direktVerfuegenMahlzeiten
+                            direktVerfuegenMahlzeiten,
                         ).then(() => {
                             this.showVerfuegung = this.showVerfuegen();
                             this.betreuungVerfuegt = true;
@@ -828,6 +829,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
     }
 
+    public isLineareZusaetzlicherGutscheinDurchGemeindeEnabled(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled
+            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinTyp
+            === TSGemeindeZusaetzlicherGutscheinTyp.LINEAR;
+    }
+
     public auszahlungAnEltern(): boolean {
         return this.getBetreuung().auszahlungAnEltern;
     }
@@ -884,6 +891,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         return this.showAuszahlungAnInstitutionenCol();
     }
+
     public showZahlungsstatusAntragstellerCol(): boolean {
         if (!this.showZahlungsstatusCol()) {
             return false;
@@ -986,7 +994,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.hasKorrekturAuszahlungInstitution() || this.hasKorrekturAuszahlungEltern();
     }
 
-
     private hasKorrekturAuszahlungInstitution(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith()?.korrekturAusbezahltInstitution) &&
             this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution !== 0;
@@ -1010,13 +1017,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.hasKorrekturAuszahlungEltern()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
             const isZahlungIgnoriert = this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten();
-            text +=  this.getTextForKorrekturAuszahlung('ELTERN', betrag, isZahlungIgnoriert);
+            text += this.getTextForKorrekturAuszahlung('ELTERN', betrag, isZahlungIgnoriert);
         }
 
         return text.trim();
     }
 
-    private getTextForKorrekturAuszahlung(keyPostFix: string, betrag: number, isZahlungIgnored: boolean) : string {
+    private getTextForKorrekturAuszahlung(keyPostFix: string, betrag: number, isZahlungIgnored: boolean): string {
         if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT && isZahlungIgnored) {
             return this.getTextKorrekturForVerfuegteBetreuungAndIgnored(keyPostFix, betrag);
         }
@@ -1038,7 +1045,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return text.trim();
     }
 
-    private getTextKorrekturForVerfuegteBetreuungAndIgnored(keyPostFix: string, betrag: number) : string {
+    private getTextKorrekturForVerfuegteBetreuungAndIgnored(keyPostFix: string, betrag: number): string {
         if (betrag < 0) {
             return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG_' + keyPostFix,
                 {betrag: Math.abs(betrag).toFixed(2)});
@@ -1056,6 +1063,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
     }
+
     private initVorgaengerGebuehren(): void {
         if (!this.getBetreuung().isAngebotSchulamt() || !this.isMutation()) {
             return;
@@ -1107,20 +1115,19 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private getEinstellungenElternbeitrag(): void {
         this.einstellungRS.findEinstellung(
-                TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
+            TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).subscribe(e => {
             this.minVerguenstigungProTag = e.value
         });
         this.einstellungRS.findEinstellung(
-                TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
+            TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD,
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).subscribe(e => {
             this.minVerguenstigungProStunde = e.value
         });
     }
-
 
 }

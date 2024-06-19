@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -22,8 +23,8 @@ import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const MATERIAL_MODULES = [
     MatAutocompleteModule,
-     MatButtonModule,
-    // MatButtonToggleModule,
+    MatButtonModule,
+    MatButtonToggleModule,
     // MatCardModule,
     MatCheckboxModule,
     // MatChipsModule,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,14 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -40,7 +40,10 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
@@ -117,6 +120,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String FUSSZEILE_1_VERFUEGUNG_FKJV = "PdfGeneration_Verfuegung_Fusszeile1_FKJV";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
+
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractVerfuegungPdfGenerator.class);
@@ -135,12 +139,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected final Betreuung betreuung;
-	private final boolean kontingentierungEnabledAndEntwurf;
-	private final boolean stadtBernAsivConfigured;
-	private final boolean isFKJVTexte;
-	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 	private boolean showColumnAnElternAuszahlen;
 	private boolean showColumnAnInsitutionenAuszahlen;
+	private final VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration;
 	private List<VerfuegungZeitabschnitt> abschnitte;
 
 	@Nonnull
@@ -150,19 +151,12 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
-		boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration
 	) {
 		super(betreuung.extractGesuch(), stammdaten);
-
 		this.betreuung = betreuung;
 		this.art = art;
-		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
-		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
-		this.isFKJVTexte = isFKJVTexte;
-		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
+		this.verfuegungPdfGeneratorKonfiguration = verfuegungPdfGeneratorKonfiguration;
 	}
 
 	@Nonnull
@@ -215,7 +209,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		document.add(createVerfuegungTable());
 
 		// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
-		if (!stadtBernAsivConfigured && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
+		if (!verfuegungPdfGeneratorKonfiguration.isStadtBernAsivConfigured() && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(
+			gemeindeStammdaten.getGemeinde())) {
 			document.add(createErklaerungstextFEBR());
 		}
 
@@ -278,7 +273,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 	protected abstract void createDokumentNichtEintretten(@Nonnull final Document document, @Nonnull PdfGenerator generator);
 
-
 	protected void createDokumentNichtEintrettenDefault(@Nonnull final Document document, @Nonnull PdfGenerator generator) {
 		createFusszeileNichtEintreten(generator.getDirectContent());
 		document.add(createNichtEingetretenParagraph1());
@@ -333,7 +327,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	private String getContent5NichtEintreten() {
-		if (isFKJVTexte) {
+		if (verfuegungPdfGeneratorKonfiguration.isFKJVTexte()) {
 			return translate(NICHT_EINTRETEN_CONTENT_5_FKJV);
 		}
 		return translate(NICHT_EINTRETEN_CONTENT_5);
@@ -360,25 +354,25 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzTextVerfuegung())));
 		}
 	}
- 	@Override
+
+	@Override
 	public boolean isVerfuegung() {
 		return true;
 	}
 
 	@Nonnull
 	private PdfPTable createIntroAndInfoKontingentierung() {
-		float[] columnWidths = { 30,22 };
+		float[] columnWidths = { 30, 22 };
 		PdfPTable table = new PdfPTable(columnWidths);
 		PdfUtil.setTableDefaultStyles(table);
 		table.addCell(createIntro());
-		if (kontingentierungEnabledAndEntwurf) {
+		if (verfuegungPdfGeneratorKonfiguration.isKontingentierungEnabledAndEntwurf()) {
 			table.addCell(createInfoKontingentierung());
 		} else {
 			table.addCell("");
 		}
 		return table;
 	}
-
 
 	@Nonnull
 	private PdfPTable createIntro() {
@@ -395,7 +389,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
 		if (betreuung.getVorgaengerVerfuegung() != null) {
 			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
-			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
+			intro.add(new TableRowLabelValue(BEMERKUNG, translate(
+				ERSETZT_VERFUEGUNG,
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
 		addAngebotToIntro(intro);
@@ -445,7 +440,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
-
 		addTitleBeitraghoheUndSelbstbehaltInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
@@ -563,13 +557,27 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 	private void addTitleNrUeberweiesenerBetragEltern(PdfPTable table) {
 		if (showColumnAnElternAuszahlen) {
-			table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_AN_ELTERN), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+			table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(GUTSCHEIN_AN_ELTERN),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
 		}
 	}
 
 	protected void addTitleNrUeberweiesenerBetragInstitution(PdfPTable table) {
 		if (showColumnAnInsitutionenAuszahlen) {
-			table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_AN_INSTITUTION), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+			table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(GUTSCHEIN_AN_INSTITUTION),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
 		}
 	}
 
@@ -599,7 +607,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			getBgColorForBetreuungsgutscheinCell(),
 			1,
 			1));
-		}
+	}
 
 	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
 		table.addCell(createCell(
@@ -619,7 +627,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			return;
 		}
 
-		BigDecimal verguenstigungAnInstitution = zeitabschnitt.isAuszahlungAnEltern() ? BigDecimal.ZERO : zeitabschnitt.getVerguenstigung();
+		BigDecimal verguenstigungAnInstitution =
+			zeitabschnitt.isAuszahlungAnEltern() ? BigDecimal.ZERO : zeitabschnitt.getVerguenstigung();
 
 		table.addCell(createCell(
 			false,
@@ -637,7 +646,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			return;
 		}
 
-		BigDecimal verguenstigungAnEltern = zeitabschnitt.isAuszahlungAnEltern() ? zeitabschnitt.getVerguenstigung() : BigDecimal.ZERO;
+		BigDecimal verguenstigungAnEltern =
+			zeitabschnitt.isAuszahlungAnEltern() ? zeitabschnitt.getVerguenstigung() : BigDecimal.ZERO;
 
 		table.addCell(createCell(
 			false,
@@ -659,11 +669,11 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		float[] columnwidths = getVerfuegungColumnWidths();
 
 		//Wenn beide Columns angezeigt werden, muss eine zusätzliche Spalten-Breite dem Array hinzugefügt werden
-		if(showColumnAnInsitutionenAuszahlen && showColumnAnElternAuszahlen) {
+		if (showColumnAnInsitutionenAuszahlen && showColumnAnElternAuszahlen) {
 			float[] columnwidthsExtended = new float[columnwidths.length + 1];
 			System.arraycopy(columnwidths, 0, columnwidthsExtended, 0, columnwidths.length);
-			columnwidthsExtended[columnwidthsExtended.length-1] = 110;
-			return columnwidthsExtended;
+			columnwidthsExtended[columnwidthsExtended.length - 1] = 110;
+			columnwidths = columnwidthsExtended;
 		}
 
 		return columnwidths;
@@ -816,7 +826,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	private String getFusszeile2NichtEintreten() {
-		if (isFKJVTexte) {
+		if (verfuegungPdfGeneratorKonfiguration.isFKJVTexte()) {
 			return translate(FUSSZEILE_2_NICHT_EINTRETEN_FKJV);
 		}
 		return translate(FUSSZEILE_2_NICHT_EINTRETEN);
@@ -837,16 +847,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	private String getFusszeile1Verfuegung() {
-		if (isFKJVTexte) {
+		if (verfuegungPdfGeneratorKonfiguration.isFKJVTexte()) {
 			return translate(FUSSZEILE_1_VERFUEGUNG_FKJV);
 		}
 		return translate(FUSSZEILE_1_VERFUEGUNG);
 	}
 
 	private boolean isStunden() {
-		return (betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) &&
+		return (verfuegungPdfGeneratorKonfiguration.getBetreuungspensumAnzeigeTyp()
+			.equals(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) &&
 			betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN)
-			|| betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN);
+			|| verfuegungPdfGeneratorKonfiguration.getBetreuungspensumAnzeigeTyp().equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN);
 	}
 
 	private String getPensumTitle() {
@@ -907,5 +918,5 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 	protected Font getBgColorForBetreuungsgutscheinCell() {
 		return fontTabelleBold;
-	};
+	}
 }
