@@ -136,11 +136,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		return paragraph;
 	}
 
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelle;
-	}
-
 	private Paragraph createParagraphTitle(String title) {
 		return PdfUtil.createBoldParagraph(title, 1);
 	}

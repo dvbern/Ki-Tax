@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
@@ -196,11 +195,6 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 			.build();
 	}
 
-
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelleBold;
-	}
 
 	@Override
 	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {

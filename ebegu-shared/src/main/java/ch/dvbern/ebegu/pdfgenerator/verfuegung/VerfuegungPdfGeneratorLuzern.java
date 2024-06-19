@@ -63,10 +63,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		createDokumentNichtEintrettenDefault(document, generator);
 	}
 
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelleBold;
-	}
 
 	@Nonnull
 	@Override

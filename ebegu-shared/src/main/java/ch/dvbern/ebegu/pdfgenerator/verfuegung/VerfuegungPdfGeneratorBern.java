@@ -46,8 +46,4 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 		createDokumentNichtEintrettenDefault(document, generator);
 	}
 
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelle;
-	}
 }
