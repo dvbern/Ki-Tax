@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.NotImplementedException;
 
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
@@ -158,8 +159,9 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 			return calculateHoereBeitragFuerBedarfsstufeZwei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
 		case BEDARFSSTUFE_3:
 			return calculateHoereBeitragFuerBedarfsstufeDrei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
+		default:
+			throw new NotImplementedException("Bedarfsstufe " + input.getBedarfsstufe() + " is not implemented");
 		}
-		return BigDecimal.ZERO;
 	}
 
 	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeZwei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {
