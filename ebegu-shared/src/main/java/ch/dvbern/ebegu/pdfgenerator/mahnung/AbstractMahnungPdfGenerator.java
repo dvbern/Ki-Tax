@@ -63,7 +63,7 @@ public abstract class AbstractMahnungPdfGenerator extends DokumentAnFamilieGener
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 
-			document.add(createAnrede());
+			document.add(getAnrede());
 			createSeite1(document);
 			document.add(PdfUtil.createListInParagraph(getFehlendeUnterlagen(), 1));
 
