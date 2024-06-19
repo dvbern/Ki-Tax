@@ -146,4 +146,13 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat,
 			anteilMonatEffektivAusbezahlt));
 	}
+
+	@Override
+	protected void handleAnteileZusaetzlicherGutscheinGemeindeBetrag(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal effektivAusbezahlteZeiteinheiten
+	) {
+		final BigDecimal zusaetzlicherGutscheinGemeindeBetrag = rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag();
+		result.setZusaetzlicherGutscheinGemeindeBetrag(MathUtil.EXACT.multiplyNullSafe(effektivAusbezahlteZeiteinheiten, zusaetzlicherGutscheinGemeindeBetrag));
+	}
 }

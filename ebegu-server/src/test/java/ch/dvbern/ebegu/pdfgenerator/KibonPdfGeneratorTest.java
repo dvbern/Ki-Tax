@@ -50,8 +50,11 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
-import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorKonfiguration;
+import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -221,14 +224,18 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration = VerfuegungPdfGeneratorKonfiguration.builder()
+			.kontingentierungEnabledAndEntwurf(entwurfMitKontingentierung)
+			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
+			.FKJVTexte(false)
+			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.build();
+
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			AbstractVerfuegungPdfGenerator.Art.NORMAL,
-			entwurfMitKontingentierung,
-			STADT_BERN_ASIV_CONFIGUERED,
-			false,
-			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
+			verfuegungPdfGeneratorKonfiguration);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant), mandant, dokumentname);
 	}
 
@@ -273,14 +280,17 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		stammdaten.getGemeinde().setMandant(mandant);
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration = VerfuegungPdfGeneratorKonfiguration.builder()
+			.kontingentierungEnabledAndEntwurf(entwurfMitKontingentierung)
+			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
+			.FKJVTexte(false)
+			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.KEIN_ANSPRUCH,
-			entwurfMitKontingentierung,
-			STADT_BERN_ASIV_CONFIGUERED,
-			false,
-			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
+			verfuegungPdfGeneratorKonfiguration);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 
@@ -322,14 +332,17 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		stammdaten.getGemeinde().setMandant(mandant);
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration = VerfuegungPdfGeneratorKonfiguration.builder()
+			.kontingentierungEnabledAndEntwurf(entwurfMitKontingentierung)
+			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
+			.FKJVTexte(false)
+			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			entwurfMitKontingentierung,
-			STADT_BERN_ASIV_CONFIGUERED,
-			false,
-			BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
+			verfuegungPdfGeneratorKonfiguration);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 

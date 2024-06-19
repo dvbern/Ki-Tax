@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,14 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -28,6 +28,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
@@ -60,12 +62,10 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	public VerfuegungPdfGeneratorAppenzell(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+		@Nonnull Art art,
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration
 	) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 		auszahlungAusserhalbKibon = betreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().isAuszahlungAusserhalbVonKibon();
 	}

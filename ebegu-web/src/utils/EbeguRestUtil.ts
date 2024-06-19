@@ -3605,6 +3605,8 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             verfuegungZeitabschnittTS.auszahlungAnEltern = zeitabschnittFromServer.auszahlungAnEltern;
             verfuegungZeitabschnittTS.beitragshoeheProzent = zeitabschnittFromServer.beitragshoeheProzent;
+            verfuegungZeitabschnittTS.zusaetzlicherGutscheinGemeindeBetrag =
+                zeitabschnittFromServer.zusaetzlicherGutscheinGemeindeBetrag;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {

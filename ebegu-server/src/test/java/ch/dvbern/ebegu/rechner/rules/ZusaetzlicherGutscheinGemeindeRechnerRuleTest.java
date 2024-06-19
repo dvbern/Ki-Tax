@@ -98,7 +98,9 @@ class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 		Assertions.assertEquals(MathUtil.DEFAULT.from(30), result.getZusaetzlicherGutscheinGemeindeBetrag());
 	}
 
-	private BGCalculationInput prepareInput(@Nonnull EinschulungTyp einschulungTyp, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
+	private BGCalculationInput prepareInput(
+		@Nonnull EinschulungTyp einschulungTyp,
+		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		BGCalculationInput input = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
 		input.setEinschulungTyp(einschulungTyp);
 		input.setBetreuungsangebotTyp(betreuungsangebotTyp);
@@ -110,27 +112,46 @@ class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 
 	@ParameterizedTest
 	@MethodSource("zuschlagRechnerSource")
-	void getZuschlagRechnerMustCreateCorrectRechner(GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp, Class<StaedtischerZuschlagRechner> rechnerClass) {
-		assertThat(rule.getZuschlagRechner(zusaetzlicherGutscheinTyp ).getClass(), Matchers.is(rechnerClass));
+	void getZuschlagRechnerMustCreateCorrectRechner(
+		GemeindeZusaetzlicherGutscheinTyp zusaetzlicherGutscheinTyp,
+		Class<StaedtischerZuschlagRechner> rechnerClass) {
+		assertThat(rule.getZuschlagRechner(zusaetzlicherGutscheinTyp).getClass(), Matchers.is(rechnerClass));
 	}
 
 	public static Stream<Arguments> zuschlagRechnerSource() {
 		return Stream.of(
-				Arguments.of(GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL, StaedtischerZuschlagPauschalRechner.class),
-				Arguments.of(GemeindeZusaetzlicherGutscheinTyp.LINEAR, StaedtischerZuschlagLinearRechner.class)
+			Arguments.of(GemeindeZusaetzlicherGutscheinTyp.PAUSCHAL, StaedtischerZuschlagPauschalRechner.class),
+			Arguments.of(GemeindeZusaetzlicherGutscheinTyp.LINEAR, StaedtischerZuschlagLinearRechner.class)
 		);
 	}
 
 	@ParameterizedTest
-	@MethodSource("msgKeySource")
-	void getMessageKeyMustReturnCorrectKey(BetreuungsangebotTyp betreuungsangebotTyp, MsgKey rechnerClass) {
-		assertThat(rule.getZuschlagMessageKey(betreuungsangebotTyp), Matchers.is(rechnerClass));
+	@MethodSource("msgKeyPauschalSource")
+	void getMessageKeyPauschalMustReturnCorrectKey(BetreuungsangebotTyp betreuungsangebotTyp, MsgKey rechnerClass) {
+		assertThat(rule.getZuschlagMessageKeyForPauschal(betreuungsangebotTyp), Matchers.is(rechnerClass));
 	}
 
-	public static Stream<Arguments> msgKeySource() {
+	public static Stream<Arguments> msgKeyPauschalSource() {
 		return Stream.of(
-				Arguments.of(BetreuungsangebotTyp.KITA, MsgKey.ZUSATZGUTSCHEIN_JA_KITA),
-				Arguments.of(BetreuungsangebotTyp.TAGESFAMILIEN, MsgKey.ZUSATZGUTSCHEIN_JA_TFO)
+			Arguments.of(BetreuungsangebotTyp.KITA, MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_KITA),
+			Arguments.of(BetreuungsangebotTyp.TAGESFAMILIEN, MsgKey.ZUSATZGUTSCHEIN_PAUSCHAL_JA_TFO)
+			);
+	}
+
+	@ParameterizedTest
+	@MethodSource("msgKeyLinearSource")
+	void getMessageKeyLinearMustReturnCorrectKey(BigDecimal staedtischerZuschlag, MsgKey rechnerClass) {
+		assertThat(rule.getZuschlagMessageKeyForLinear(staedtischerZuschlag), Matchers.is(rechnerClass));
+	}
+
+	public static Stream<Arguments> msgKeyLinearSource() {
+		return Stream.of(
+			Arguments.of(
+				BigDecimal.ONE,
+				MsgKey.ZUSATZGUTSCHEIN_LINEAR_JA),
+			Arguments.of(
+				BigDecimal.ZERO,
+				MsgKey.ZUSATZGUTSCHEIN_LINEAR_NEIN)
 		);
 	}
 }
