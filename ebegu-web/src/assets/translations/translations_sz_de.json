@@ -249,5 +249,7 @@
     "KOSTEN_PRO_MAHLZEIT": "geschätzte Kosten pro Mittagsbetreuung",
     "KOSTEN_PRO_MAHLZEIT_HELP": "<p class=\"margin-bottom-10\">Erfassen Sie hier die ungefähren Betreuungskosten pro Mittagsbetreuungen.</p>",
     "PENSUM_MAHLZEITEN_HELP": "<p class=\"margin-bottom-10\"><b>Erfassen Sie hier die geschätzten, durchschnittlichen, monatlichen Anzahl Tage, an denen das Kind über den Mittag betreut wird. Ein Monat entspricht 4.1 durchschnittlichen Wochen.</b>  </p><p class=\"margin-bottom-10\">Beispiel: Ein Kind besucht einen Mittagstisch jeden Montag und jeden Dienstag -> 2 Mittagsbetreuungen pro Woche -> 2 Mittagsbetreuungen pro Woche * 4.1 Wochen pro Monat = 8.2 Mittagsbetreuungen pro Monat.</p>",
+    "KINDERABZUG_UNTERHALTSPFLICHTIG": "Handelt es sich bei dem Kind, für das Sie das Gesuch stellen, um Ihr leibliches, adoptiertes oder Pflegekind?",
+    "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist das Kind auch das leibliche, adoptierte oder Pflegekind Ihres Partners?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
