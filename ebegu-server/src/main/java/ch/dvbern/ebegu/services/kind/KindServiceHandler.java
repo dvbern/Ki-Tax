@@ -51,14 +51,12 @@ public class KindServiceHandler {
 	private BetreuungService betreuungService;
 
 	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
-		EinschulungTyp alteEinschulungTyp = null;
-		if (dbKind != null) {
-			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
+		if (dbKind == null) {
+			return;
 		}
-		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
-		}
-		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp) || compareHoehereBeitraegeChange(kind, dbKind)) {
+		EinschulungTyp alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
+		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp)
+			|| compareHoehereBeitraegeChange(kind, dbKind)) {
 			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
 			betreuungTreeSet.addAll(kind.getBetreuungen());
 			betreuungTreeSet.forEach(betreuung -> {
@@ -76,7 +74,12 @@ public class KindServiceHandler {
 	}
 
 	private boolean compareHoehereBeitraegeChange(KindContainer kind, KindContainer dbKind) {
-		return !dbKind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen().equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		if (!iSSchwyzHoehereBeitraegeAktiviert(kind)) {
+			return false;
+		}
+		return !dbKind.getKindJA()
+			.getHoehereBeitraegeWegenBeeintraechtigungBeantragen()
+			.equals(kind.getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
 	}
 
 	public void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
@@ -104,15 +107,23 @@ public class KindServiceHandler {
 		}
 	}
 
-	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer kindContainer) {
+	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer dbKind) {
 		EinschulungTyp alteEinschulungTyp = null;
-		if (kindContainer != null) {
-			alteEinschulungTyp = kindContainer.getKindJA().getEinschulungTyp();
-		}
+		if (dbKind != null) {
+			alteEinschulungTyp = dbKind.getKindJA().getEinschulungTyp();
 
-		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
-			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
+			resetBetreuungInFerienzeit(kind, alteEinschulungTyp);
+			resetBedarfsstufe(kind, dbKind);
 		}
+	}
+
+	private void resetBedarfsstufe(KindContainer kind, KindContainer dbKind) {
+		if (compareHoehereBeitraegeChange(kind, dbKind)) {
+			kind.getBetreuungen().forEach(betreuung -> betreuung.setBedarfsstufe(null));
+		}
+	}
+
+	private void resetBetreuungInFerienzeit(KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
 		if (wechseltKindVonSchulstufeZuVorschulalter(kind, alteEinschulungTyp)) {
 			kind.getBetreuungen().forEach(betreuung -> {
 				if (betreuung.isAngebotKita() || betreuung.isAngebotTagesfamilien()) {
@@ -139,9 +150,25 @@ public class KindServiceHandler {
 		return KinderabzugTyp.SCHWYZ.equals(KinderabzugTyp.valueOf(kinderabzugTyp.getValue()));
 	}
 
+	private boolean iSSchwyzHoehereBeitraegeAktiviert(@Nonnull KindContainer kind) {
+		final Gesuch gesuch = kind.getGesuch();
+
+		Einstellung hoehereBeitraegeAktiviert = einstellungService.getEinstellungByMandant(
+				EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+				gesuch.getGesuchsperiode())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveKind",
+				"Einstellung HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT is missing for gesuchsperiode {}",
+				gesuch.getGesuchsperiode().getId()));
+		return hoehereBeitraegeAktiviert.getValueAsBoolean();
+	}
+
 	private boolean wechseltKindVonVorschulalterZuSchulstufe(
 		@Nonnull KindContainer kind,
 		@Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind)  || alteEinschulungTyp == null) {
+			return false;
+		}
 		return kind.getKindJA().getEinschulungTyp() != null &&
 			kind.getKindJA().getEinschulungTyp().isEingeschult() &&
 			!alteEinschulungTyp.isEingeschult();
@@ -150,6 +177,9 @@ public class KindServiceHandler {
 	private boolean wechseltKindVonSchulstufeZuVorschulalter(
 		@Nonnull KindContainer kind,
 		@Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
+			return false;
+		}
 		return kind.getKindJA().getEinschulungTyp() != null &&
 			!kind.getKindJA().getEinschulungTyp().isEingeschult() &&
 			alteEinschulungTyp.isEingeschult();
