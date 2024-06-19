@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -145,6 +146,10 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Setter
 	@Getter
 	private BigDecimal hoehererBeitrag = null;
+
+	@Setter
+	@Getter
+	private Bedarfsstufe bedarfsstufe = null;
 
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;

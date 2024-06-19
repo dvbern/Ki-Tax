@@ -3607,6 +3607,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.beitragshoeheProzent = zeitabschnittFromServer.beitragshoeheProzent;
             verfuegungZeitabschnittTS.zusaetzlicherGutscheinGemeindeBetrag =
                 zeitabschnittFromServer.zusaetzlicherGutscheinGemeindeBetrag;
+            verfuegungZeitabschnittTS.bedarfsstufe = zeitabschnittFromServer.bedarfsstufe;
             verfuegungZeitabschnittTS.hoehererBeitrag = zeitabschnittFromServer.hoehererBeitrag;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {

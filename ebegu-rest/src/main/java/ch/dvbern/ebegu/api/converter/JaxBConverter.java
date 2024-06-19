@@ -3996,6 +3996,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setBeitragshoeheProzent(zeitabschnitt.getBeitraghoheProzent());
 		jaxZeitabschn.setZusaetzlicherGutscheinGemeindeBetrag(zeitabschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag());
 		jaxZeitabschn.setHoehererBeitrag(zeitabschnitt.getHoehererBeitrag());
+		jaxZeitabschn.setBedarfsstufe(zeitabschnitt.getBedarfsstufe());
 		return jaxZeitabschn;
 	}
 
