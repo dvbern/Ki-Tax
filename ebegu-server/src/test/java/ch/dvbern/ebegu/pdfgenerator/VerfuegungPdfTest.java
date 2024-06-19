@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
@@ -127,7 +128,7 @@ class VerfuegungPdfTest {
 		TestDataInstitutionStammdatenBuilder institution = new TestDataInstitutionStammdatenBuilder(gesuchsperiode);
 		var testFall = new Testfall01_WaeltiDagmar(gesuchsperiode, true, gemeinde, institution);
 		Gesuch gesuch = testFall.setupGesuch();
-		verfuegen(gesuch);
+		verfuegenWithHoehererBeitrag(gesuch);
 
 		var bruennen = gesuch.getKindContainers().stream().findFirst().get().getBetreuungen().stream().findFirst().get();
 		File pdf = generatePdf(bruennen, VerfuegungPdfGeneratorKonfiguration.builder()
@@ -148,15 +149,32 @@ class VerfuegungPdfTest {
 	private void verfuegen(Gesuch gesuch) {
 		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
 			final Verfuegung verfuegung = new Verfuegung();
-			final VerfuegungZeitabschnitt zeitabschnitt =
-				new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
-			zeitabschnitt.getRelevantBgCalculationResult().setBetreuungspensumProzent(BigDecimal.valueOf(80));
-			zeitabschnitt.getRelevantBgCalculationResult().setHoehererBeitrag(BigDecimal.valueOf(10));
-			zeitabschnitt.getRelevantBgCalculationResult().setBeitragshoeheProzent(10);
+			final VerfuegungZeitabschnitt zeitabschnitt = getVerfuegtenZeitabschnitt(gesuch);
 			verfuegung.setZeitabschnitte(List.of(zeitabschnitt));
 			betreuung.setVerfuegung(verfuegung);
 			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		}));
+	}
+
+	private void verfuegenWithHoehererBeitrag(Gesuch gesuch) {
+		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			final Verfuegung verfuegung = new Verfuegung();
+			final VerfuegungZeitabschnitt zeitabschnitt = getVerfuegtenZeitabschnitt(gesuch);
+			zeitabschnitt.getRelevantBgCalculationResult().setHoehererBeitrag(BigDecimal.valueOf(10));
+			zeitabschnitt.getRelevantBgCalculationResult().setBedarfsstufe(Bedarfsstufe.BEDARFSSTUFE_1);
+			verfuegung.setZeitabschnitte(List.of(zeitabschnitt));
+			betreuung.setVerfuegung(verfuegung);
+			betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
+		}));
+	}
+
+	@Nonnull
+	private static VerfuegungZeitabschnitt getVerfuegtenZeitabschnitt(Gesuch gesuch) {
+		final VerfuegungZeitabschnitt zeitabschnitt =
+			new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
+		zeitabschnitt.getRelevantBgCalculationResult().setBetreuungspensumProzent(BigDecimal.valueOf(80));
+		zeitabschnitt.getRelevantBgCalculationResult().setBeitragshoeheProzent(10);
+		return zeitabschnitt;
 	}
 
 	private File generatePdf(Betreuung betreuung, VerfuegungPdfGeneratorKonfiguration konfiguration, String fileName) {
