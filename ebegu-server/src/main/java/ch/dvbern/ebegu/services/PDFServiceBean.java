@@ -156,9 +156,8 @@ public class PDFServiceBean implements PDFService {
 				.getErsteMahnungPdfGeneratorForMandant(mahnung.getGesuch().extractMandant());
 			break;
 		case ZWEITE_MAHNUNG:
-			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
-			pdfGenerator = new ZweiteMahnungPdfGeneratorVisitor(mahnung, vorgaengerMahnung, stammdaten).getZweiteMahnungPdfGeneratorForMandant(mahnung.getGesuch().extractMandant());;
+			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
+			pdfGenerator = new ZweiteMahnungPdfGeneratorVisitor(mahnung, vorgaengerMahnung, stammdaten).getZweiteMahnungPdfGeneratorForMandant(mahnung.getGesuch().extractMandant());
 			break;
 		default:
 			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
