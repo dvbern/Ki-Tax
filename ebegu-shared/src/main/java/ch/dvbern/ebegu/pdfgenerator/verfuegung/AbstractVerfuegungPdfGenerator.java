@@ -30,7 +30,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -38,6 +37,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
@@ -60,10 +60,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
 
@@ -120,11 +118,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
-
 	protected final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
 	protected final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
 	private final Font fontRed = PdfUtil.createFontWithColor(getPageConfiguration().getFonts().getFont(), Color.RED);
-
 
 	public enum Art {
 		NORMAL,
@@ -429,8 +425,11 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return verfuegungTable.build();
 	}
 
-	protected void addEinstellungDependingColumns(VerfuegungTable verfuegungTable, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		if(verfuegungPdfGeneratorKonfiguration.isHoehereBeitraegeConfigured) {
+	protected void addEinstellungDependingColumns(VerfuegungTable verfuegungTable,
+		List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		var hasHoeherenBeitrag =
+			zeitabschnitte.stream().anyMatch(z -> z.getBedarfsstufe() != null && z.getBedarfsstufe() != Bedarfsstufe.KEINE);
+		if (verfuegungPdfGeneratorKonfiguration.isHoehereBeitraegeConfigured && hasHoeherenBeitrag) {
 			verfuegungTable.add(createHoehererGutscheinColumn());
 		}
 
@@ -586,37 +585,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	@Nonnull
 	protected static BigDecimal getVerguenstigungAnEltern(VerfuegungZeitabschnitt zeitabschnitt) {
 		return zeitabschnitt.isAuszahlungAnEltern() ? zeitabschnitt.getVerguenstigung() : BigDecimal.ZERO;
-	}
-
-	protected PdfPCell createCell(
-		boolean isHeaderRow,
-		int alignment,
-		String value,
-		@Nullable Color bgColor,
-		@Nullable Font font,
-		int rowspan,
-		int colspan
-	) {
-		PdfPCell cell;
-		cell = new PdfPCell(new Phrase(value, font));
-		cell.setHorizontalAlignment(alignment);
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		if (bgColor != null) {
-			cell.setBackgroundColor(bgColor);
-		}
-		cell.setRowspan(rowspan);
-		cell.setColspan(colspan);
-
-		cell.setBorderWidthBottom(0.0f);
-		cell.setBorderWidthTop(isHeaderRow ? 0.0f : 0.5f);
-		cell.setBorderWidthLeft(0.0f);
-		cell.setBorderWidthRight(0.0f);
-
-		cell.setLeading(0.0F, PdfUtil.DEFAULT_CELL_LEADING);
-		cell.setPadding(0.0f);
-		cell.setPaddingTop(2.0f);
-		cell.setPaddingBottom(2.0f);
-		return cell;
 	}
 
 	@Nonnull
@@ -822,7 +790,5 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			.stream()
 			.anyMatch(abschnitt -> !abschnitt.isAuszahlungAnEltern());
 	}
-
-	protected abstract Font getBgColorForUeberwiesenerBetragCell();
 
 }

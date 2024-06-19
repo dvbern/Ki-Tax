@@ -1124,9 +1124,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public areHoehereBeitraegeGewaehrt(): boolean {
+        const verfuegungZeitabschnitte: Array<TSVerfuegungZeitabschnitt> = this.getVerfuegungZeitabschnitte();
+        if (!verfuegungZeitabschnitte) {
+            return false;
+        }
         return this.isHoehereBeitraegeBeeintraechtigungAktiviert &&
             EbeguUtil.isNotNullOrUndefined(this.getBetreuung().bedarfsstufe) &&
-            this.getBetreuung().bedarfsstufe !== TSBedarfsstufe.KEINE;
+            verfuegungZeitabschnitte
+                .findIndex(z =>
+                    EbeguUtil.isNotNullOrUndefined(z.bedarfsstufe) && z.bedarfsstufe !== TSBedarfsstufe.KEINE) >= 0;
     }
 
     private getEinstellungenElternbeitrag(): void {
