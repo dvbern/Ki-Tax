@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -118,7 +119,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		// Punkt VII
 		result.setVerguenstigung(gutschein);
 		// Punkt VIII
-		result.setHoehererBeitrag(hoehererBeitrag);
+		handleHoehererBeitrag(result, hoehererBeitrag, verfuegungZeitabschnitt);
 		result.setBedarfsstufe(input.getBedarfsstufe());
 
 		result.setElternbeitrag(elternbeitrag);
@@ -129,6 +130,16 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private static void handleHoehererBeitrag(BGCalculationResult result, BigDecimal hoehererBeitrag,
+		VerfuegungZeitabschnitt zeitabschnitt) {
+		result.setHoehererBeitrag(hoehererBeitrag);
+		if (hoehererBeitrag != null && result.getAnspruchspensumProzent() <= 0) {
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG);
+		}
 	}
 
 	private BigDecimal calculateHoereBeitragProZeitAbschnitt(
