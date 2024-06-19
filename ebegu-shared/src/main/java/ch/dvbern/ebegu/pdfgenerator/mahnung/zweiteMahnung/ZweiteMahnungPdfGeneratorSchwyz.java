@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.pdfgenerator.mahnung.zweiteMahnung;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
