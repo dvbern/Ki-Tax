@@ -175,13 +175,13 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		BGCalculationInput inputAktuel,
 		BGCalculationResult resultVorgaenger,
 		LocalDate mutationsEingansdatum) {
-		if (isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
-		}
 		if (inputAktuel.getBedarfsstufe() != resultVorgaenger.getBedarfsstufe()) {
 			inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
 			inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
 			inputAktuel.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG, locale, inputAktuel.getBedarfsstufe());
+		}
+		if (isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum)) {
+			inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
 		}
 	}
 
