@@ -14,33 +14,58 @@
   -->
 
 <div class="betreuungFerieninselView">
-
-    <fieldset ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
-
+    <fieldset
+        ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()"
+    >
         <!-- Ferienname -->
         <div class="row">
-            <div class="col-sm-12 dv-input-container-medium form-group"
-                 ng-if="vm.betreuung.institutionStammdaten && vm.isFerieninselAnmeldungAktiv()">
-                <label class="md-no-float required" data-translate="FERIENNAME" for="ferienname"></label>
+            <div
+                class="col-sm-12 dv-input-container-medium form-group"
+                ng-if="
+                    vm.betreuung.institutionStammdaten &&
+                    vm.isFerieninselAnmeldungAktiv()
+                "
+            >
+                <label
+                    class="md-no-float required"
+                    data-translate="FERIENNAME"
+                    for="ferienname"
+                ></label>
                 <div class="dv-select-style">
-                    <select aria-describedby="ferienname-error" name="ferienname" id="ferienname"
-                            data-test="ferienname"
-                            ng-model="vm.betreuung.belegungFerieninsel.ferienname"
-                            class="form-control"
-                            ng-options="(ferienname| translate) for ferienname in vm.getFeriennamen() "
-                            ng-required="true" ng-change="vm.changedFerien()">
-                    </select>
-                    <dv-error-messages input-id="ferienname" for="vm.form.ferienname.$error"></dv-error-messages>
+                    <select
+                        aria-describedby="ferienname-error"
+                        name="ferienname"
+                        id="ferienname"
+                        data-test="ferienname"
+                        ng-model="vm.betreuung.belegungFerieninsel.ferienname"
+                        class="form-control"
+                        ng-options="(ferienname| translate) for ferienname in vm.getFeriennamen() "
+                        ng-required="true"
+                        ng-change="vm.changedFerien()"
+                    ></select>
+                    <dv-error-messages
+                        input-id="ferienname"
+                        for="vm.form.ferienname.$error"
+                    ></dv-error-messages>
                 </div>
             </div>
         </div>
 
         <!-- Hinweis, wenn Ferien einen Ausweichstandort haben -->
-        <div class="margin-top-30" ng-if="vm.hasAusweichstandort() && !vm.isAnmeldungNichtFreigegeben()">
+        <div
+            class="margin-top-30"
+            ng-if="
+                vm.hasAusweichstandort() && !vm.isAnmeldungNichtFreigegeben()
+            "
+        >
             <div class="well well-status-warten">
-                <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span data-translate="WARN_FERIEN_AUSWEICHSTANDORT"
-                      data-translate-value-standort="{{vm.getAusgewaehltFeriensequenz() | translate}}"></span>
+                <i class="fa fa-exclamation" aria-hidden="true"></i>
+                <span
+                    data-translate="WARN_FERIEN_AUSWEICHSTANDORT"
+                    data-translate-value-standort="{{
+                        vm.getAusgewaehltFeriensequenz() | translate
+                    }}"
+                ></span>
             </div>
         </div>
 
@@ -52,203 +77,403 @@
                 </div>
             </div>
             <!-- Noch nicht abgeschickt: Tage auswaehlbar -->
-            <div class="row"
-                 ng-if="!vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
+            <div
+                class="row"
+                ng-if="
+                    !vm.isAnmeldeschlussAbgelaufen() &&
+                    vm.betreuung.isEnabled() &&
+                    !vm.isFreigabequittungAusstehend()
+                "
+            >
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <div class="dv-ebegu-calendar-container">
                         <div class="dv-ebegu-calendar-container-weekdays">
-                            <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
-                                 ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
+                            <div
+                                class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{
+                                    day
+                                }}"
+                                ng-repeat="day in vm.getMomentWeekdays()"
+                            >
+                                {{ day | translate }}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar-break"
-                               ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung"
-                               ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
-                            <md-checkbox ng-model="tag.angemeldet"
-                                         ng-attr-data-test="belegungs-tag-is-angemeldet-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar-date--day"
-                                      data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar-date--year"
-                                      data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung"
+                            ng-if="tag.tag.weekday() == 0"
+                        ></break>
+                        <div
+                            class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{
+                                tag.tag.weekday() + 1
+                            }}"
+                        >
+                            <md-checkbox
+                                ng-model="tag.angemeldet"
+                                ng-attr-data-test="belegungs-tag-is-angemeldet-{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                aria-label="{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                class="dv-ebegu-calendar"
+                            >
+                                <span
+                                    class="dv-ebegu-calendar-date--day"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'DD.MM'
+                                    }}"
+                                ></span>
+                                <span
+                                    class="dv-ebegu-calendar-date--year"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'YYYY'
+                                    }}"
+                                ></span>
                             </md-checkbox>
                         </div>
-                        <break class="dv-ebegu-calendar-break" ng-repeat-end
-                               ng-if="vm.displayBreak(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung)"></break>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-end
+                            ng-if="
+                                vm.displayBreak(
+                                    tag,
+                                    $index,
+                                    vm.ferieninselStammdaten
+                                        .potenzielleFerieninselTageFuerBelegung
+                                )
+                            "
+                        ></break>
                     </div>
                 </div>
             </div>
-            <div class="row" ng-if="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
+            <div
+                class="row"
+                ng-if="
+                    !vm.betreuung.isEnabled() ||
+                    vm.isFreigabequittungAusstehend()
+                "
+            >
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <!-- Abgeschickt: Liste der gewaehlten Tage readonly -->
                     <div class="dv-ebegu-calendar-container">
                         <div class="dv-ebegu-calendar-container-weekdays">
-                            <div class="dv-ebegu-calendar-weekday"
-                                 ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
+                            <div
+                                class="dv-ebegu-calendar-weekday"
+                                ng-repeat="day in vm.getMomentWeekdays()"
+                            >
+                                {{ day | translate }}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar-break"
-                               ng-repeat-start="tag in vm.betreuung.belegungFerieninsel.tage"
-                               ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
-                            <md-checkbox ng-disabled="true" ng-model="isDisabled" aria-checked="true"
-                                         data-test="belegungs-tag-is-disabled-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar-date--day"
-                                      data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar-date--year"
-                                      data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
-
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-start="tag in vm.betreuung.belegungFerieninsel.tage"
+                            ng-if="tag.tag.weekday() == 0"
+                        ></break>
+                        <div
+                            class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{
+                                tag.tag.weekday() + 1
+                            }}"
+                        >
+                            <md-checkbox
+                                ng-disabled="true"
+                                ng-model="isDisabled"
+                                aria-checked="true"
+                                data-test="belegungs-tag-is-disabled-{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                aria-label="{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                class="dv-ebegu-calendar"
+                            >
+                                <span
+                                    class="dv-ebegu-calendar-date--day"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'DD.MM'
+                                    }}"
+                                ></span>
+                                <span
+                                    class="dv-ebegu-calendar-date--year"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'YYYY'
+                                    }}"
+                                ></span>
                             </md-checkbox>
                         </div>
-                        <div class="dv-ebegu-calendar-row--week"
-                             ng-if="vm.displayWeekRow(tag, $index,vm.betreuung.belegungFerieninsel.tage)"></div>
-                        <break class="dv-ebegu-calendar-break" ng-repeat-end
-                               ng-if="vm.displayBreak(tag, $index,vm.betreuung.belegungFerieninsel.tage)"></break>
+                        <div
+                            class="dv-ebegu-calendar-row--week"
+                            ng-if="
+                                vm.displayWeekRow(
+                                    tag,
+                                    $index,
+                                    vm.betreuung.belegungFerieninsel.tage
+                                )
+                            "
+                        ></div>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-end
+                            ng-if="
+                                vm.displayBreak(
+                                    tag,
+                                    $index,
+                                    vm.betreuung.belegungFerieninsel.tage
+                                )
+                            "
+                        ></break>
                     </div>
                 </div>
             </div>
 
-<!--            morgenmodule-->
+            <!--            morgenmodule-->
             <div class="row">
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <span data-translate="FERIENINSELTAGE_MORGENMODUL"></span>
                 </div>
             </div>
             <!-- Noch nicht abgeschickt: Tage auswaehlbar -->
-            <div class="row"
-                 ng-if="!vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
+            <div
+                class="row"
+                ng-if="
+                    !vm.isAnmeldeschlussAbgelaufen() &&
+                    vm.betreuung.isEnabled() &&
+                    !vm.isFreigabequittungAusstehend()
+                "
+            >
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <div class="dv-ebegu-calendar-container">
                         <div class="dv-ebegu-calendar-container-weekdays">
-                            <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
-                                 ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
+                            <div
+                                class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{
+                                    day
+                                }}"
+                                ng-repeat="day in vm.getMomentWeekdays()"
+                            >
+                                {{ day | translate }}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar-break"
-                               ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul"
-                               ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
-                            <md-checkbox ng-model="tag.angemeldet"
-                                         data-test="belegungs-morgenmodul-angemeldet-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar-date--day"
-                                      data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar-date--year"
-                                      data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul"
+                            ng-if="tag.tag.weekday() == 0"
+                        ></break>
+                        <div
+                            class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{
+                                tag.tag.weekday() + 1
+                            }}"
+                        >
+                            <md-checkbox
+                                ng-model="tag.angemeldet"
+                                data-test="belegungs-morgenmodul-angemeldet-{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                aria-label="{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                class="dv-ebegu-calendar"
+                            >
+                                <span
+                                    class="dv-ebegu-calendar-date--day"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'DD.MM'
+                                    }}"
+                                ></span>
+                                <span
+                                    class="dv-ebegu-calendar-date--year"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'YYYY'
+                                    }}"
+                                ></span>
                             </md-checkbox>
                         </div>
-                        <break class="dv-ebegu-calendar-break" ng-repeat-end
-                               ng-if="vm.displayBreak(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung)"></break>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-end
+                            ng-if="
+                                vm.displayBreak(
+                                    tag,
+                                    $index,
+                                    vm.ferieninselStammdaten
+                                        .potenzielleFerieninselTageFuerBelegung
+                                )
+                            "
+                        ></break>
                     </div>
                 </div>
             </div>
-            <div class="row" ng-if="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
+            <div
+                class="row"
+                ng-if="
+                    !vm.betreuung.isEnabled() ||
+                    vm.isFreigabequittungAusstehend()
+                "
+            >
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <!-- Abgeschickt: Liste der gewaehlten Tage readonly -->
                     <div class="dv-ebegu-calendar-container">
                         <div class="dv-ebegu-calendar-container-weekdays">
-                            <div class="dv-ebegu-calendar-weekday"
-                                 ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
+                            <div
+                                class="dv-ebegu-calendar-weekday"
+                                ng-repeat="day in vm.getMomentWeekdays()"
+                            >
+                                {{ day | translate }}
                             </div>
                         </div>
-                        <break class="dv-ebegu-calendar-break"
-                               ng-repeat-start="tag in vm.betreuung.belegungFerieninsel.tageMorgenmodul"
-                               ng-if="tag.tag.weekday()==0"></break>
-                        <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
-                            <md-checkbox ng-disabled="true" ng-model="isDisabled" aria-checked="true"
-                                         data-test="morgenmodul-is-disabled-tag-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
-                                         class="dv-ebegu-calendar">
-                                <span class="dv-ebegu-calendar-date--day"
-                                      data-translate="{{tag.tag | amDateFormat : 'DD.MM'}}"></span>
-                                <span class="dv-ebegu-calendar-date--year"
-                                      data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
-
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-start="tag in vm.betreuung.belegungFerieninsel.tageMorgenmodul"
+                            ng-if="tag.tag.weekday() == 0"
+                        ></break>
+                        <div
+                            class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{
+                                tag.tag.weekday() + 1
+                            }}"
+                        >
+                            <md-checkbox
+                                ng-disabled="true"
+                                ng-model="isDisabled"
+                                aria-checked="true"
+                                data-test="morgenmodul-is-disabled-tag-{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                aria-label="{{
+                                    tag.tag | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                class="dv-ebegu-calendar"
+                            >
+                                <span
+                                    class="dv-ebegu-calendar-date--day"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'DD.MM'
+                                    }}"
+                                ></span>
+                                <span
+                                    class="dv-ebegu-calendar-date--year"
+                                    data-translate="{{
+                                        tag.tag | amDateFormat: 'YYYY'
+                                    }}"
+                                ></span>
                             </md-checkbox>
                         </div>
-                        <div class="dv-ebegu-calendar-row--week"
-                             ng-if="vm.displayWeekRow(tag, $index,vm.betreuung.belegungFerieninsel.tageMorgenmodul)"></div>
-                        <break class="dv-ebegu-calendar-break" ng-repeat-end
-                               ng-if="vm.displayBreak(tag, $index,vm.betreuung.belegungFerieninsel.tageMorgenmodul)"></break>
+                        <div
+                            class="dv-ebegu-calendar-row--week"
+                            ng-if="
+                                vm.displayWeekRow(
+                                    tag,
+                                    $index,
+                                    vm.betreuung.belegungFerieninsel
+                                        .tageMorgenmodul
+                                )
+                            "
+                        ></div>
+                        <break
+                            class="dv-ebegu-calendar-break"
+                            ng-repeat-end
+                            ng-if="
+                                vm.displayBreak(
+                                    tag,
+                                    $index,
+                                    vm.betreuung.belegungFerieninsel
+                                        .tageMorgenmodul
+                                )
+                            "
+                        ></break>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Hinweis, dass Tageschulanmeldung noch nicht freigeschaltet -->
         <div class="margin-top-30" ng-if="!vm.isFerieninselAnmeldungAktiv()">
             <div class="well well-status-warten">
-                <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span>{{vm.getFerieninselAnmeldungNotYetReadyText()}}</span>
+                <i class="fa fa-exclamation" aria-hidden="true"></i>
+                <span>{{ vm.getFerieninselAnmeldungNotYetReadyText() }}</span>
             </div>
         </div>
 
         <!-- Notfallangaben -->
-        <div ng-if="vm.isAnmeldungMoeglich() || !vm.betreuung.isEnabled()" >
+        <div ng-if="vm.isAnmeldungMoeglich() || !vm.betreuung.isEnabled()">
             <div class="row marginTop30">
                 <div class="col-sm-12 dv-input-container-question form-group">
-                    <span data-translate="FERIENINSEL_NOTFALLANGABEN" for="notfallAngaben"></span>
+                    <span
+                        data-translate="FERIENINSEL_NOTFALLANGABEN"
+                        for="notfallAngaben"
+                    ></span>
                 </div>
             </div>
             <div class="row marginTop10">
                 <div class="col-md-12 dv-input-container-medium">
                     <dv-input-container class="form-group">
-                        <textarea md-no-autogrow class="form-control" aria-label="notfallAngaben" rows="6" id="notfallAngaben"
-                                  data-test="notfall-angaben"
-                                  ng-model="vm.betreuung.belegungFerieninsel.notfallAngaben"
-                                  maxlength="4000">
-                    </textarea>
+                        <textarea
+                            md-no-autogrow
+                            class="form-control"
+                            aria-label="notfallAngaben"
+                            rows="6"
+                            id="notfallAngaben"
+                            data-test="notfall-angaben"
+                            ng-model="vm.betreuung.belegungFerieninsel.notfallAngaben"
+                            maxlength="4000"
+                        >
+                        </textarea>
                     </dv-input-container>
                 </div>
             </div>
 
-        <!-- Hinweis, wenn Ferien noch nicht buchbar -->
-        <div class="margin-top-30" ng-if="vm.isAnmeldungNichtFreigegeben()">
-            <div class="well well-status-warten">
-                <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span data-translate="WARN_FERIEN_NOCH_NICHT_BUCHBAR"></span>
+            <!-- Hinweis, wenn Ferien noch nicht buchbar -->
+            <div class="margin-top-30" ng-if="vm.isAnmeldungNichtFreigegeben()">
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span
+                        data-translate="WARN_FERIEN_NOCH_NICHT_BUCHBAR"
+                    ></span>
+                </div>
+            </div>
+
+            <!-- Hinweis, wenn Anmeldeschluss schon abgelaufen -->
+            <div
+                class="margin-top-30"
+                ng-if="vm.showWarnungAnmeldeschlussAbgelaufen()"
+            >
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span
+                        data-translate="WARN_FERIEN_NICHT_MEHR_BUCHBAR"
+                        data-translate-value-ferien="{{
+                            vm.getCurrentFerienNameTranslated()
+                        }}"
+                    ></span>
+                </div>
+            </div>
+
+            <!-- Hinweis, wenn keine Tage ausgewaehlt -->
+            <div class="margin-top-30" ng-if="vm.showErrorMessage === true">
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span
+                        data-translate="WARN_FERIEN_KEINE_TAGE_GEWAEHLT"
+                    ></span>
+                </div>
+            </div>
+
+            <div
+                class="margin-top-30"
+                ng-if="vm.showNochNichtFreigegeben === true"
+            >
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span
+                        data-translate="WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN"
+                    ></span>
+                </div>
+            </div>
+
+            <div class="margin-top-30" ng-if="vm.showMutiert === true">
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span data-translate="WARN_ANGEBOT_MUTIERT"></span>
+                </div>
             </div>
         </div>
-
-        <!-- Hinweis, wenn Anmeldeschluss schon abgelaufen -->
-        <div class="margin-top-30" ng-if="vm.showWarnungAnmeldeschlussAbgelaufen()">
-            <div class="well well-status-warten">
-                <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span data-translate="WARN_FERIEN_NICHT_MEHR_BUCHBAR"
-                      data-translate-value-ferien="{{vm.getCurrentFerienNameTranslated()}}"></span>
-            </div>
-        </div>
-
-        <!-- Hinweis, wenn keine Tage ausgewaehlt -->
-        <div class="margin-top-30" ng-if="vm.showErrorMessage === true">
-            <div class="well well-status-warten">
-                <i class="fa fa-exclamation " aria-hidden="true"></i>
-                <span data-translate="WARN_FERIEN_KEINE_TAGE_GEWAEHLT"></span>
-            </div>
-        </div>
-
-        <div class="margin-top-30" ng-if="vm.showNochNichtFreigegeben === true">
-            <div class="well well-status-warten">
-                <i class="fa fa-exclamation" aria-hidden="true"></i>
-                <span data-translate="WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN"></span>
-            </div>
-        </div>
-
-        <div class="margin-top-30" ng-if="vm.showMutiert === true">
-            <div class="well well-status-warten">
-                <i class="fa fa-exclamation" aria-hidden="true"></i>
-                <span data-translate="WARN_ANGEBOT_MUTIERT"></span>
-            </div>
-        </div>
-
-        </div>
-
     </fieldset>
 
     <!--Buttons-->
@@ -257,70 +482,106 @@
     <!-- Buttons fuer JA/SCH und Gesuchsteller -->
     <!--todo verbesserung in eigene Direktive da in betreuungTagesschule dupliziert-->
     <div class="dv-navigation dv-navigation-flex">
-        <span class="dv-navigation-item"
-             dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
-             dv-show-expression="vm.betreuung.isEnabled() && vm.isAnmeldungMoeglich() && !vm.isFreigabequittungAusstehend()">
-            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
-                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+        <span
+            class="dv-navigation-item"
+            dv-show-element
+            dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
+            dv-show-expression="vm.betreuung.isEnabled() && vm.isAnmeldungMoeglich() && !vm.isFreigabequittungAusstehend()"
+        >
+            <dv-loading-button
+                button-click="vm.anmelden()"
+                type="submit"
+                button-class="save"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="{{ vm.getButtonTextSpeichern() }}"
+                ></span>
             </dv-loading-button>
         </span>
 
-        <span class="dv-navigation-flex"
-             dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
-             dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig">
+        <span
+            class="dv-navigation-flex"
+            dv-show-element
+            dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+            dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.aktuellGueltig"
+        >
             <dv-loading-button
                 ng-if="vm.isAnmeldungMoeglich()"
                 button-click="vm.anmelden()"
                 type="submit"
                 button-class="save"
-                class="dv-navigation-item">
-                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+                class="dv-navigation-item"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="{{ vm.getButtonTextSpeichern() }}"
+                ></span>
             </dv-loading-button>
             <dv-loading-button
                 ng-if="vm.isAblehnenMoeglich()"
                 class="dv-navigation-item"
                 button-click="vm.anmeldungSchulamtAblehnen()"
-                type="button"button-class="save">
-                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+                type="button"
+                button-class="save"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"
+                ></span>
             </dv-loading-button>
         </span>
 
-        <span class="dv-navigation-flex"
-             dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
-             dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.saveAnmeldungSchulamtUebernehmen()"
-                               type="button"
-                               button-class="save">
-                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_UEBERNEHMEN"></span>
+        <span
+            class="dv-navigation-flex"
+            dv-show-element
+            dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
+            dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig"
+        >
+            <dv-loading-button
+                class="dv-navigation-item"
+                button-click="vm.saveAnmeldungSchulamtUebernehmen()"
+                type="button"
+                button-class="save"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="SCHULAMT_ANMELDUNG_UEBERNEHMEN"
+                ></span>
             </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtAblehnen()"
-                               type="button"
-                               button-class="save">
-                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+            <dv-loading-button
+                class="dv-navigation-item"
+                button-click="vm.anmeldungSchulamtAblehnen()"
+                type="button"
+                button-class="save"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"
+                ></span>
             </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtFalscheInstitution()"
-                               type="button"
-                               button-class="save">
-                <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
+            <dv-loading-button
+                class="dv-navigation-item"
+                button-click="vm.anmeldungSchulamtFalscheInstitution()"
+                type="button"
+                button-class="save"
+            >
+                <span
+                    class="uppercase"
+                    data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"
+                ></span>
             </dv-loading-button>
-
         </span>
         <!-- Abbrechen: Immer vorhanden -->
         <span>
-            <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.cancel()"
-                               button-class="cancel-button"
-                               type="reset">
+            <dv-loading-button
+                class="dv-navigation-item"
+                button-click="vm.cancel()"
+                button-class="cancel-button"
+                type="reset"
+            >
                 <span class="uppercase" data-translate="ABBRECHEN"></span>
             </dv-loading-button>
         </span>
     </div>
-
 </div>
-
