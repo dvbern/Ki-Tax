@@ -26,7 +26,6 @@ import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 import {TSRueckforderungMitteilung} from './TSRueckforderungMitteilung';
 
 export class TSRueckforderungFormular extends TSAbstractEntity {
-
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _rueckforderungMitteilungen: TSRueckforderungMitteilung[];
     private _status: TSRueckforderungStatus;
@@ -262,15 +261,21 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     }
 
     public isKurzarbeitProzessBeendet(): boolean {
-        return EbeguUtil.isNullOrUndefined(this.kurzarbeitBeantragt)
-        || EbeguUtil.isNotNullAndFalse(this.kurzarbeitBeantragt)
-        || (EbeguUtil.isNotNullAndTrue(this.kurzarbeitDefinitivVerfuegt));
+        return (
+            EbeguUtil.isNullOrUndefined(this.kurzarbeitBeantragt) ||
+            EbeguUtil.isNotNullAndFalse(this.kurzarbeitBeantragt) ||
+            EbeguUtil.isNotNullAndTrue(this.kurzarbeitDefinitivVerfuegt)
+        );
     }
 
     public isCoronaErwerbsersatzProzessBeendet(): boolean {
-        return EbeguUtil.isNullOrUndefined(this.coronaErwerbsersatzBeantragt)
-            || EbeguUtil.isNotNullAndFalse(this.coronaErwerbsersatzBeantragt)
-            || (EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzDefinitivVerfuegt));
+        return (
+            EbeguUtil.isNullOrUndefined(this.coronaErwerbsersatzBeantragt) ||
+            EbeguUtil.isNotNullAndFalse(this.coronaErwerbsersatzBeantragt) ||
+            EbeguUtil.isNotNullAndTrue(
+                this.coronaErwerbsersatzDefinitivVerfuegt
+            )
+        );
     }
 
     public isStufe1(): boolean {
@@ -278,15 +283,24 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     }
 
     public isOeffentlich(): boolean {
-        return !this.isStufe1() && this.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH;
+        return (
+            !this.isStufe1() &&
+            this.institutionTyp === TSRueckforderungInstitutionTyp.OEFFENTLICH
+        );
     }
 
     public isPrivat(): boolean {
-        return !this.isStufe1() && this.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
+        return (
+            !this.isStufe1() &&
+            this.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT
+        );
     }
 
     public isKitaAngebot(): boolean {
-        return this.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
+        return (
+            this.institutionStammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.KITA
+        );
     }
 
     public calculateProvisorischerBetrag(): number {
@@ -302,15 +316,21 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     }
 
     private calculateProvisorischerBetragStufe1OrOeffentlich(): number {
-        const kostenuebernahmeBetreuung =
-            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeBetreuung())
-            ? this.getActiveKostenuebernahmeBetreuung() : 0;
-        const kostenuebernahmeAnzahlTage =
-            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeAnzahlTage())
-            ? this.getActiveKostenuebernahmeAnzahlTage() : 0;
-        const kostenuebernahmeAnzahlStunden =
-            EbeguUtil.isNotNullOrUndefined(this.getActiveKostenuebernahmeAnzahlStunden())
-            ? this.getActiveKostenuebernahmeAnzahlStunden() : 0;
+        const kostenuebernahmeBetreuung = EbeguUtil.isNotNullOrUndefined(
+            this.getActiveKostenuebernahmeBetreuung()
+        )
+            ? this.getActiveKostenuebernahmeBetreuung()
+            : 0;
+        const kostenuebernahmeAnzahlTage = EbeguUtil.isNotNullOrUndefined(
+            this.getActiveKostenuebernahmeAnzahlTage()
+        )
+            ? this.getActiveKostenuebernahmeAnzahlTage()
+            : 0;
+        const kostenuebernahmeAnzahlStunden = EbeguUtil.isNotNullOrUndefined(
+            this.getActiveKostenuebernahmeAnzahlStunden()
+        )
+            ? this.getActiveKostenuebernahmeAnzahlStunden()
+            : 0;
         if (this.isKitaAngebot()) {
             return kostenuebernahmeAnzahlTage + kostenuebernahmeBetreuung;
         }
@@ -318,46 +338,70 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     }
 
     private calculateProvisorischerBetragStufe2Privat(): number {
-        const entgangeneElternbeitraege = EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraege)
-            ? this.betragEntgangeneElternbeitraege : 0;
+        const entgangeneElternbeitraege = EbeguUtil.isNotNullOrUndefined(
+            this.betragEntgangeneElternbeitraege
+        )
+            ? this.betragEntgangeneElternbeitraege
+            : 0;
         const entgangeneElternbeitraegeNichtAngeboten =
-            EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) ?
-                this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten : 0;
-        const rueckerstattungNichtAngeboten =
-            EbeguUtil.isNotNullOrUndefined(this.anzahlNichtAngeboteneEinheiten) ? this.anzahlNichtAngeboteneEinheiten : 0;
+            EbeguUtil.isNotNullOrUndefined(
+                this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten
+            )
+                ? this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten
+                : 0;
+        const rueckerstattungNichtAngeboten = EbeguUtil.isNotNullOrUndefined(
+            this.anzahlNichtAngeboteneEinheiten
+        )
+            ? this.anzahlNichtAngeboteneEinheiten
+            : 0;
         const kurzarbeitBetrag =
-            EbeguUtil.isNotNullOrUndefined(this.kurzarbeitBetrag) && EbeguUtil.isNotNullAndTrue(this.kurzarbeitBeantragt) ?
-                this.kurzarbeitBetrag : 0;
+            EbeguUtil.isNotNullOrUndefined(this.kurzarbeitBetrag) &&
+            EbeguUtil.isNotNullAndTrue(this.kurzarbeitBeantragt)
+                ? this.kurzarbeitBetrag
+                : 0;
         const coronaErerbsersatzBetrag =
-            EbeguUtil.isNotNullOrUndefined(this.coronaErwerbsersatzBetrag)
-                && EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzBeantragt)
-            ? this.coronaErwerbsersatzBetrag : 0;
+            EbeguUtil.isNotNullOrUndefined(this.coronaErwerbsersatzBetrag) &&
+            EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzBeantragt)
+                ? this.coronaErwerbsersatzBetrag
+                : 0;
         let result = 0;
         // (2.1) Privat mit Kurzarbeit
         if (this.kurzarbeitBeantragt) {
-            result = entgangeneElternbeitraege - kurzarbeitBetrag - coronaErerbsersatzBetrag;
-        } else if (EbeguUtil.isNullOrUndefined(this.anzahlNichtAngeboteneEinheiten)) {
+            result =
+                entgangeneElternbeitraege -
+                kurzarbeitBetrag -
+                coronaErerbsersatzBetrag;
+        } else if (
+            EbeguUtil.isNullOrUndefined(this.anzahlNichtAngeboteneEinheiten)
+        ) {
             // (2.2) Privat, ohne Kurzarbeit, ohne nicht angebotene Tage
             result = entgangeneElternbeitraege - coronaErerbsersatzBetrag;
         } else {
             // (2.3) Privat, ohne Kurzarbeit, mit nicht angebotene Tage
-            result = entgangeneElternbeitraege
-                - entgangeneElternbeitraegeNichtAngeboten
-                - coronaErerbsersatzBetrag
-                + rueckerstattungNichtAngeboten;
+            result =
+                entgangeneElternbeitraege -
+                entgangeneElternbeitraegeNichtAngeboten -
+                coronaErerbsersatzBetrag +
+                rueckerstattungNichtAngeboten;
         }
         return result;
     }
 
     private getActiveKostenuebernahmeBetreuung(): number {
         if (this.isStufe1()) {
-            if (EbeguUtil.isNotNullOrUndefined(this.stufe1KantonKostenuebernahmeBetreuung)) {
+            if (
+                EbeguUtil.isNotNullOrUndefined(
+                    this.stufe1KantonKostenuebernahmeBetreuung
+                )
+            ) {
                 return this.stufe1KantonKostenuebernahmeBetreuung;
             }
             return this.stufe1InstitutionKostenuebernahmeBetreuung;
         }
-        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
-            || this.status === TSRueckforderungStatus.VERFUEGT) {
+        if (
+            this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
+            this.status === TSRueckforderungStatus.VERFUEGT
+        ) {
             return this.stufe2KantonKostenuebernahmeBetreuung;
         }
         return this.stufe2InstitutionKostenuebernahmeBetreuung;
@@ -370,8 +414,10 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
             }
             return this.stufe1InstitutionKostenuebernahmeAnzahlTage;
         }
-        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
-            || this.status === TSRueckforderungStatus.VERFUEGT) {
+        if (
+            this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
+            this.status === TSRueckforderungStatus.VERFUEGT
+        ) {
             return this.stufe2KantonKostenuebernahmeAnzahlTage;
         }
         return this.stufe2InstitutionKostenuebernahmeAnzahlTage;
@@ -384,8 +430,10 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
             }
             return this.stufe1InstitutionKostenuebernahmeAnzahlStunden;
         }
-        if (this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
-            || this.status === TSRueckforderungStatus.VERFUEGT) {
+        if (
+            this.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
+            this.status === TSRueckforderungStatus.VERFUEGT
+        ) {
             return this.stufe2KantonKostenuebernahmeAnzahlStunden;
         }
         return this.stufe2InstitutionKostenuebernahmeAnzahlStunden;

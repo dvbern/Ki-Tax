@@ -36,7 +36,10 @@
         }
     }
 
-    #kommentarIntern, #kommentarVerfuegung, #kommentarPruefungSTV, #bemerkungen {
+    #kommentarIntern,
+    #kommentarVerfuegung,
+    #kommentarPruefungSTV,
+    #bemerkungen {
         .ebeguP();
         background-color: @contrast-lightest;
         border: 1px @secondary solid;
@@ -53,8 +56,9 @@
 
     /* stylelint-disable selector-class-pattern*/
 
-    .kommentar-feld md-input-container label:not(.md-no-float):not(._md-container-ignore) {
-
+    .kommentar-feld
+        md-input-container
+        label:not(.md-no-float):not(._md-container-ignore) {
         /* stylelint-enable */
         color: @secondary;
         padding-left: 1rem;
@@ -89,7 +93,6 @@
         position: absolute;
         right: 0;
     }
-
 }
 
 .pendenz-count {

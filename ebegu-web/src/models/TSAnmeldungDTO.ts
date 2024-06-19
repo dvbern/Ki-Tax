@@ -17,7 +17,6 @@ import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSBetreuung} from './TSBetreuung';
 
 export class TSAnmeldungDTO {
-
     private _kindContainerId: string;
     private _betreuung: TSBetreuung;
     private _additionalKindQuestions: boolean;

@@ -35,7 +35,6 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class ZahlungsinformationenFieldsComponent implements OnInit {
-
     @Input() public readonly: boolean;
     @Input() public model: TSFinanzModel;
 
@@ -46,8 +45,7 @@ export class ZahlungsinformationenFieldsComponent implements OnInit {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly listResourceRS: ListResourceRS,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
@@ -60,13 +58,19 @@ export class ZahlungsinformationenFieldsComponent implements OnInit {
             this.model.zahlungsinformationen.zahlungsadresse = null;
             return;
         }
-        if (EbeguUtil.isNullOrUndefined(this.model.zahlungsinformationen.zahlungsadresse)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.model.zahlungsinformationen.zahlungsadresse
+            )
+        ) {
             this.model.zahlungsinformationen.zahlungsadresse = new TSAdresse();
         }
     }
 
     public isKorrekturModusOrFreigegeben(): boolean {
-        return this.gesuchModelManager.getGesuch().isKorrekturModusOrFreigegeben();
+        return this.gesuchModelManager
+            .getGesuch()
+            .isKorrekturModusOrFreigegeben();
     }
 
     public isAtLeastFreigegeben(): boolean {
@@ -74,6 +78,8 @@ export class ZahlungsinformationenFieldsComponent implements OnInit {
     }
 
     public isGemeindeOrMandant(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles()));
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles())
+        );
     }
 }

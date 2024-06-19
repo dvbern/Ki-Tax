@@ -23,7 +23,10 @@ import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    isAtLeastFreigegeben,
+    TSAntragStatus
+} from '../../../../models/enums/TSAntragStatus';
 import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
@@ -54,7 +57,6 @@ export class FreigabeViewComponentConfig implements IComponentOptions {
 }
 
 export class FreigabeViewController extends AbstractGesuchViewController<any> {
-
     public static $inject = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -90,22 +92,37 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly einstellungService: EinstellungRS,
         private readonly freigabeService: FreigabeService
     ) {
-
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
-        this.isVolksschule = this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
-        this.einstellungService.findEinstellung(TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(einstellung => {
-                this.isFreigabequittungEinlesenRequired = einstellung.value === 'true';
-            }, error => LOG.error(error));
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.FREIGABE,
+            $timeout
+        );
+        this.isVolksschule =
+            this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
+        this.einstellungService
+            .findEinstellung(
+                TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                einstellung => {
+                    this.isFreigabequittungEinlesenRequired =
+                        einstellung.value === 'true';
+                },
+                error => LOG.error(error)
+            );
         this.initViewModel();
     }
 
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FREIGABE,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.initDevModeParameter();
     }
 
@@ -113,9 +130,13 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         this.isFreigebenClicked = true;
         if (this.isGesuchValid()) {
             this.form.$setPristine();
-            return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
-                parentController: this
-            });
+            return this.dvDialog.showDialog(
+                dialogTemplate,
+                FreigabeDialogController,
+                {
+                    parentController: this
+                }
+            );
         }
         return undefined;
     }
@@ -124,7 +145,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         // eslint-disable-next-line
         if (this.gesuchModelManager.isGesuch()) {
             const freigabeQuittung = this.openFreigabequittungPDF(true);
-            if (EbeguUtil.isNotNullAndFalse(this.isFreigabequittungEinlesenRequired)) {
+            if (
+                EbeguUtil.isNotNullAndFalse(
+                    this.isFreigabequittungEinlesenRequired
+                )
+            ) {
                 freigabeQuittung.then(() => this.gesuchFreigeben());
             }
         } else {
@@ -134,7 +159,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchFreigeben(): void {
         const gesuchID = this.gesuchModelManager.getGesuch().id;
-        this.gesuchModelManager.antragFreigeben(gesuchID, new TSFreigabe(null, null));
+        this.gesuchModelManager.antragFreigeben(
+            gesuchID,
+            new TSFreigabe(null, null)
+        );
     }
 
     public freigabeZurueckziehen(): void {
@@ -145,24 +173,42 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initDevModeParameter(): void {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Simulation nur fuer SuperAdmin freischalten
-            const isSuperadmin = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+            const isSuperadmin = this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getSuperAdminRoles()
+            );
             // Die Simulation ist nur im Dev-Mode moeglich und nur, wenn das Gesuch im Status FREIGABEQUITTUNG ist
             this.showGesuchFreigebenSimulationButton =
-                (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
+                response &&
+                this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) &&
+                isSuperadmin;
         });
     }
 
     public isGesuchFreigegeben(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
-            return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-                || (this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG);
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().status
+        ) {
+            return (
+                isAtLeastFreigegeben(
+                    this.gesuchModelManager.getGesuch().status
+                ) ||
+                this.gesuchModelManager.getGesuch().status ===
+                    TSAntragStatus.FREIGABEQUITTUNG
+            );
         }
         return false;
     }
 
     public isFreigabequittungAusstehend(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
-            return this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().status
+        ) {
+            return (
+                this.gesuchModelManager.getGesuch().status ===
+                TSAntragStatus.FREIGABEQUITTUNG
+            );
         }
         return false;
     }
@@ -170,12 +216,22 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
         const win = this.downloadRS.prepareDownloadWindow();
         const gesuchId = this.gesuchModelManager.getGesuch().id;
-        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(gesuchId, forceCreation)
+        return this.downloadRS
+            .getFreigabequittungAccessTokenGeneratedDokument(
+                gesuchId,
+                forceCreation
+            )
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht
-                this.gesuchModelManager.openGesuch(gesuchId)
+                this.gesuchModelManager
+                    .openGesuch(gesuchId)
                     .then(() => {
-                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                        this.downloadRS.startDownload(
+                            downloadFile.accessToken,
+                            downloadFile.filename,
+                            false,
+                            win
+                        );
                     })
                     .catch(ex => EbeguUtil.handleDownloadError(win, ex));
             });
@@ -186,15 +242,21 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public getFreigabeDatum(): string {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().freigabeDatum) {
-            return DateUtil.momentToLocalDateFormat(this.gesuchModelManager.getGesuch().freigabeDatum, 'DD.MM.YYYY');
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().freigabeDatum
+        ) {
+            return DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.getGesuch().freigabeDatum,
+                'DD.MM.YYYY'
+            );
         }
         return '';
     }
 
     public hasBerechenbareBetreuungen(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        return (gesuch && gesuch.hasBerechenbareBetreuungen());
+        return gesuch && gesuch.hasBerechenbareBetreuungen();
     }
 
     public getTextForFreigebenNotAllowed(): string {
@@ -206,8 +268,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public isNotFreigegeben(): boolean {
-        return this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+        return (
+            this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS) ||
+            this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
+        );
     }
 
     public isThereAnyAbgewieseneBetreuung(): boolean {
@@ -236,7 +300,9 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     // nicht alle mandanten wollen hier eine Warnung. Wir zeigen diese nur, falls die Übersetzung nicht leer ist.
     public showFreigabeWarning(): boolean {
-        return this.isFreigabequittungAusstehend()
-        && this.$translate.instant('FREIGABEQUITTUNG_WARNUNG').length > 0;
+        return (
+            this.isFreigabequittungAusstehend() &&
+            this.$translate.instant('FREIGABEQUITTUNG_WARNUNG').length > 0
+        );
     }
 }

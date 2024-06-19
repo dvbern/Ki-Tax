@@ -20,7 +20,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSDokument} from './TSDokument';
 
 export class TSDokumentGrund extends TSAbstractMutableEntity {
-
     private _dokumentGrundTyp: TSDokumentGrundTyp;
 
     private _fullName: string;

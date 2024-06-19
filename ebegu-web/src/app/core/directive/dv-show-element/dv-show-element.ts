@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IScope} from 'angular';
+import {
+    IAttributes,
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IScope
+} from 'angular';
 import {DVRoleElementController} from '../../controller/DVRoleElementController';
 
 /**
@@ -29,7 +35,6 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  * ACHTUNG! Diese Direktive darf nicht mit ng-if zusammen benutzt werden
  */
 export class DVShowElement implements IDirective {
-
     public static $inject: string[] = ['ngIfDirective'];
     public restrict = 'A';
     public controller = DVRoleElementController;
@@ -47,7 +52,8 @@ export class DVShowElement implements IDirective {
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = (ngIfDirective: any) => new DVShowElement(ngIfDirective);
+        const directive = (ngIfDirective: any) =>
+            new DVShowElement(ngIfDirective);
         directive.$inject = ['ngIfDirective'];
         return directive;
     }
@@ -61,27 +67,45 @@ export class DVShowElement implements IDirective {
     ) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in
         // ES3 and ES5. Consider using a standard function expression.
-        const arguments2 = [scope, element, attributes, controller, $transclude];
+        const arguments2 = [
+            scope,
+            element,
+            attributes,
+            controller,
+            $transclude
+        ];
         this.callNgIfThrough(attributes, controller, arguments2);
 
         // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen
         // der Variable, den wir danach evaluieren muessen. Da dieser String sich nie aendert (sondern eher seine
         // evaluation), wird das observe nie aufgerufen. Mit scope.$watch funktioniert es weil die Variable immer
         // transcluded wird und somit der Wert aendert sich.
-        scope.$watch(attributes.dvShowAllowedRoles, (newValue: any, _oldValue: any, _scope: any) => {
-            controller.dvAllowedRoles = newValue;
-        }, true);
-        scope.$watch(attributes.dvShowExpression, (newValue: any, _oldValue: any) => {
-            controller.dvExpression = newValue;
-        }, true);
+        scope.$watch(
+            attributes.dvShowAllowedRoles,
+            (newValue: any, _oldValue: any, _scope: any) => {
+                controller.dvAllowedRoles = newValue;
+            },
+            true
+        );
+        scope.$watch(
+            attributes.dvShowExpression,
+            (newValue: any, _oldValue: any) => {
+                controller.dvExpression = newValue;
+            },
+            true
+        );
     };
 
     /**
      * Diese Methode darf nur einmal aufgerufen werden.
      * VORSICHT. Sollte diese Methode X-Mal aufgerufen werden, wird das Element dann X-Mall angezeigt
      */
-    private callNgIfThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>): void {
-        attributes.ngIf = () => (controller.checkValidity());
+    private callNgIfThrough(
+        attributes: any,
+        controller: DVRoleElementController,
+        arguments2: Array<any>
+    ): void {
+        attributes.ngIf = () => controller.checkValidity();
         this.ngIf.link.apply(this.ngIf, arguments2);
     }
 }

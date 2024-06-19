@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
@@ -24,37 +31,48 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
-  selector: 'dv-steuerveranlagung-gemeinsam',
-  templateUrl: './steuerveranlagung-gemeinsam.component.html',
-  changeDetection: ChangeDetectionStrategy.Default,
-  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    selector: 'dv-steuerveranlagung-gemeinsam',
+    templateUrl: './steuerveranlagung-gemeinsam.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class SteuerveranlagungGemeinsamComponent implements OnInit {
+    @Input() public model: TSFinanzModel;
 
-  @Input() public model: TSFinanzModel;
+    @Output() public readonly gemeinsamChanged =
+        new EventEmitter<MatRadioChange>();
 
-  @Output() public readonly gemeinsamChanged = new EventEmitter<MatRadioChange>();
+    public constructor(
+        public gesuchModelManager: GesuchModelManager,
+        private readonly $translate: TranslateService
+    ) {}
 
-  public constructor(
-      public gesuchModelManager: GesuchModelManager,
-      private readonly $translate: TranslateService
-  ) { }
+    public ngOnInit(): void {}
 
-  public ngOnInit(): void {
-  }
-
-  public change($event: MatRadioChange): void {
-      this.gemeinsamChanged.emit($event);
-  }
-
-  public getLabel(): string {
-    if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch()?.gesuchsteller2)) {
-      return this.$translate.instant('FINANZIELLE_SITUATION_STEK_GEMEINSAM_NO_GS2_NAME', {
-        basisjahr: this.gesuchModelManager.getBasisjahr()});
+    public change($event: MatRadioChange): void {
+        this.gemeinsamChanged.emit($event);
     }
 
-    return this.$translate.instant('FINANZIELLE_SITUATION_STEK_GEMEINSAM', {
-      basisjahr: this.gesuchModelManager.getBasisjahr(),
-      namegs2: this.gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''});
-  }
+    public getLabel(): string {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.gesuchModelManager.getGesuch()?.gesuchsteller2
+            )
+        ) {
+            return this.$translate.instant(
+                'FINANZIELLE_SITUATION_STEK_GEMEINSAM_NO_GS2_NAME',
+                {
+                    basisjahr: this.gesuchModelManager.getBasisjahr()
+                }
+            );
+        }
+
+        return this.$translate.instant('FINANZIELLE_SITUATION_STEK_GEMEINSAM', {
+            basisjahr: this.gesuchModelManager.getBasisjahr(),
+            namegs2:
+                this.gesuchModelManager
+                    .getGesuch()
+                    ?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''
+        });
+    }
 }

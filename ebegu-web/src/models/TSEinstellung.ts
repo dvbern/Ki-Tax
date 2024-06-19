@@ -20,7 +20,6 @@ import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSEinstellung extends TSAbstractDateRangedEntity {
-
     private _key: TSEinstellungKey;
     private _value: string;
     private _gemeindeId: string = null;

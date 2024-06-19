@@ -14,23 +14,32 @@
   -->
 
 <div class="dv-view">
-    <div class="col-md-12"
-         st-table="displayedCollection"
-         st-set-filter="pendenzBetreuungenFilter"
-         st-safe-src="vm.getPendenzenList()"
-         st-delay="20">
-
+    <div
+        class="col-md-12"
+        st-table="displayedCollection"
+        st-set-filter="pendenzBetreuungenFilter"
+        st-safe-src="vm.getPendenzenList()"
+        st-delay="20"
+    >
         <!-- Warnung, falls noch Institutionen im Status EINGELADEN -->
-        <div class="well well-status-abgewiesen" ng-if="vm.hasInstitutionenInStatusAngemeldet">
-            <span data-translate="WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG"></span>
+        <div
+            class="well well-status-abgewiesen"
+            ng-if="vm.hasInstitutionenInStatusAngemeldet"
+        >
+            <span
+                data-translate="WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG"
+            ></span>
             <p>
-	            <a ui-sref="institution.list" data-translate="ZUR_LISTE"></a>
+                <a ui-sref="institution.list" data-translate="ZUR_LISTE"></a>
             </p>
         </div>
-        <div class="well well-status-abgewiesen" ng-if="vm.isStammdatenCheckRequired">
+        <div
+            class="well well-status-abgewiesen"
+            ng-if="vm.isStammdatenCheckRequired"
+        >
             <span data-translate="WARNUNG_INSTITUTIONEN_100_TAGE"></span>
             <p>
-	            <a ui-sref="institution.list" data-translate="ZUR_LISTE"></a>
+                <a ui-sref="institution.list" data-translate="ZUR_LISTE"></a>
             </p>
         </div>
 
@@ -49,112 +58,217 @@
         </div>
         <div class="row">
             <div class="col-md-12 table-responsive">
-
                 <table class="table table-striped fixedtable">
                     <thead>
-                    <!-- Sortierspalten -->
-                    <tr>
-                        <th st-sort="betreuungsNummer" class="sortable uppercase" data-translate="ID"></th>
-                        <th st-sort="gemeinde" class="sortable uppercase" data-translate="GEMEINDE"></th>
-                        <th st-sort="name" class="sortable uppercase" data-translate="NAME"></th>
-                        <th st-sort="vorname" class="sortable uppercase" data-translate="VORNAME"></th>
-                        <th st-sort="geburtsdatum" class="sortable uppercase" data-translate="GEBURTSDATUM"></th>
-                        <th st-sort="typ" class="sortable uppercase" data-translate="TYP"></th>
-                        <th st-sort="gesuchsperiodeString" class="sortable uppercase" data-translate="PERIODE"></th>
-                        <th st-sort="eingangsdatum"
-                            st-sort-default="reverse"
-                            class="sortable uppercase"
-                            data-translate="EINGANG"></th>
-                        <th st-sort="betreuungsangebotTyp" class="sortable uppercase" data-translate="ANGEBOT"></th>
-                        <th st-sort="institution" class="sortable uppercase" data-translate="INSTITUTION"></th>
-                    </tr>
-                    <!-- Filterspalten -->
-                    <tr>
-                        <th><input st-search="betreuungsNummer" class="form-control" type="text"/></th>
-                        <th>
-                            <div class="dv-select-style">
-                                <select st-input-event="change" name="gemeinde" id="gemeinde"
-                                        st-search="gemeinde" class="form-control"
+                        <!-- Sortierspalten -->
+                        <tr>
+                            <th
+                                st-sort="betreuungsNummer"
+                                class="sortable uppercase"
+                                data-translate="ID"
+                            ></th>
+                            <th
+                                st-sort="gemeinde"
+                                class="sortable uppercase"
+                                data-translate="GEMEINDE"
+                            ></th>
+                            <th
+                                st-sort="name"
+                                class="sortable uppercase"
+                                data-translate="NAME"
+                            ></th>
+                            <th
+                                st-sort="vorname"
+                                class="sortable uppercase"
+                                data-translate="VORNAME"
+                            ></th>
+                            <th
+                                st-sort="geburtsdatum"
+                                class="sortable uppercase"
+                                data-translate="GEBURTSDATUM"
+                            ></th>
+                            <th
+                                st-sort="typ"
+                                class="sortable uppercase"
+                                data-translate="TYP"
+                            ></th>
+                            <th
+                                st-sort="gesuchsperiodeString"
+                                class="sortable uppercase"
+                                data-translate="PERIODE"
+                            ></th>
+                            <th
+                                st-sort="eingangsdatum"
+                                st-sort-default="reverse"
+                                class="sortable uppercase"
+                                data-translate="EINGANG"
+                            ></th>
+                            <th
+                                st-sort="betreuungsangebotTyp"
+                                class="sortable uppercase"
+                                data-translate="ANGEBOT"
+                            ></th>
+                            <th
+                                st-sort="institution"
+                                class="sortable uppercase"
+                                data-translate="INSTITUTION"
+                            ></th>
+                        </tr>
+                        <!-- Filterspalten -->
+                        <tr>
+                            <th>
+                                <input
+                                    st-search="betreuungsNummer"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <div class="dv-select-style">
+                                    <select
+                                        st-input-event="change"
+                                        name="gemeinde"
+                                        id="gemeinde"
+                                        st-search="gemeinde"
+                                        class="form-control"
                                         ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name"
-                                        ng-model="vm.selectedGemeinde">
-                                    <option value="">{{"ALLE" | translate}}</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th><input st-search="name" class="form-control" type="text"/></th>
-                        <th><input st-search="vorname" class="form-control" type="text"/></th>
-                        <th><input st-search="geburtsdatum" class="form-control" type="text"/></th>
-                        <th><input st-search="typ" class="form-control" type="text"/></th>
-                        <th>
-                            <div class="dv-select-style">
-                                <select st-input-event="change"
+                                        ng-model="vm.selectedGemeinde"
+                                    >
+                                        <option value="">
+                                            {{ 'ALLE' | translate }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <input
+                                    st-search="name"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <input
+                                    st-search="vorname"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <input
+                                    st-search="geburtsdatum"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <input
+                                    st-search="typ"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <div class="dv-select-style">
+                                    <select
+                                        st-input-event="change"
                                         name="gesuchsperiodeString"
                                         id="gesuchsperiodeString"
                                         st-search="gesuchsperiode.gesuchsperiodeString"
                                         class="form-control"
                                         ng-options="periode for periode in vm.activeGesuchsperiodenList track by periode"
-                                        ng-model="vm.selectedGesuchsperiode">
-                                    <option value="">{{"ALLE" | translate}}</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th><input st-search="eingangsdatum" class="form-control" type="text"/></th>
-                        <th>
-                            <div class="dv-select-style">
-                                <select st-input-event="change"
+                                        ng-model="vm.selectedGesuchsperiode"
+                                    >
+                                        <option value="">
+                                            {{ 'ALLE' | translate }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <input
+                                    st-search="eingangsdatum"
+                                    class="form-control"
+                                    type="text"
+                                />
+                            </th>
+                            <th>
+                                <div class="dv-select-style">
+                                    <select
+                                        st-input-event="change"
                                         name="betreuungsangebotTyp"
                                         id="betreuungsangebotTyp"
                                         st-search="betreuungsangebotTyp"
                                         class="form-control"
                                         ng-options="typ | translate for typ in vm.betreuungsangebotTypList track by typ"
-                                        ng-model="vm.selectedBetreuungsangebotTyp">
-                                    <option value="">{{"ALLE" | translate}}</option>
-                                </select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="dv-select-style">
-                                <select st-input-event="change"
+                                        ng-model="vm.selectedBetreuungsangebotTyp"
+                                    >
+                                        <option value="">
+                                            {{ 'ALLE' | translate }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="dv-select-style">
+                                    <select
+                                        st-input-event="change"
                                         name="institution"
                                         id="institution"
                                         st-search="institution"
                                         class="form-control"
                                         ng-options="institution.name for institution in vm.institutionenList | orderBy: 'name' track by institution.name"
-                                        ng-model="vm.selectedInstitution">
-                                    <option value="">{{"ALLE" | translate}}</option>
-                                </select>
-                            </div>
-                        </th>
-                    </tr>
+                                        ng-model="vm.selectedInstitution"
+                                    >
+                                        <option value="">
+                                            {{ 'ALLE' | translate }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </th>
+                        </tr>
                     </thead>
                     <!-- Daten -->
                     <tbody>
-                    <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
-                        ng-click="vm.editPendenzBetreuungen(row, $event)">
-
-                        <td ng-bind="row.betreuungsNummer"></td>
-                        <td ng-bind="row.gemeinde"></td>
-                        <td ng-bind="row.name"></td>
-                        <td ng-bind="row.vorname"></td>
-                        <td ng-bind="row.geburtsdatum | amDateFormat : 'DD.MM.YYYY'"></td>
-                        <td ng-bind="row.typ | translate"></td>
-                        <td ng-bind="row.gesuchsperiode.gesuchsperiodeString"></td>
-                        <td ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"></td>
-                        <td ng-bind="row.betreuungsangebotTyp | translate"></td>
-                        <td ng-bind="row.institution.name"></td>
-                    </tr>
+                        <tr
+                            ng-repeat="row in displayedCollection"
+                            st-select-row="row"
+                            st-select-mode="single"
+                            ng-click="vm.editPendenzBetreuungen(row, $event)"
+                        >
+                            <td ng-bind="row.betreuungsNummer"></td>
+                            <td ng-bind="row.gemeinde"></td>
+                            <td ng-bind="row.name"></td>
+                            <td ng-bind="row.vorname"></td>
+                            <td
+                                ng-bind="row.geburtsdatum | amDateFormat : 'DD.MM.YYYY'"
+                            ></td>
+                            <td ng-bind="row.typ | translate"></td>
+                            <td
+                                ng-bind="row.gesuchsperiode.gesuchsperiodeString"
+                            ></td>
+                            <td
+                                ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"
+                            ></td>
+                            <td
+                                ng-bind="row.betreuungsangebotTyp | translate"
+                            ></td>
+                            <td ng-bind="row.institution.name"></td>
+                        </tr>
                     </tbody>
                     <tfoot>
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                <div
+                                    st-pagination=""
+                                    st-items-by-page="vm.itemsByPage"
+                                    st-displayed-pages="5"
+                                ></div>
+                            </td>
+                        </tr>
                     </tfoot>
                 </table>
-
             </div>
-
         </div>
     </div>
 </div>

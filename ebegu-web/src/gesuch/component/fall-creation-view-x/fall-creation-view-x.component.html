@@ -16,156 +16,264 @@
   -->
 
 <div class="gesuch-modul static-position">
-	<h1 class="access-for-all-title" translate="'AFA_GESUCHSFORMULAR'"></h1>
-	<div class="row view-title">
-		<div class="col-md-12">
-			<h2>
-				<span data-test="page-title">{{getTitle()}}</span>
-			</h2>
-			<hr class="header"/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">
-			<form role="form" name="form" class="novalidate unsaved-warning-form">
-				<fieldset [disabled]="isGesuchReadonly()">
+    <h1 class="access-for-all-title" translate="'AFA_GESUCHSFORMULAR'"></h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span data-test="page-title">{{ getTitle() }}</span>
+            </h2>
+            <hr class="header" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form
+                role="form"
+                name="form"
+                class="novalidate unsaved-warning-form"
+            >
+                <fieldset [disabled]="isGesuchReadonly()">
+                    <!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
+                    <div
+                        *ngIf="isSelectedGesuchsperiodeInaktiv()"
+                        class="well well-status-warten"
+                    >
+                        <p class="ebegu-h3" translate>
+                            GESUCHSPERIODE_INAKTIV_HINT
+                        </p>
+                    </div>
+                    <!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
+                    <div
+                        *dvNgShowElement="
+                            getGesuchModel().isFolgegesuch();
+                            roles: getGesuchstellerOnlyRoles()
+                        "
+                        class="well well-status-warten"
+                    >
+                        <p class="ebegu-h3" translate>FOLGEGESUCH_HINT</p>
+                    </div>
 
-					<!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
-					<div *ngIf="isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
-						<p class="ebegu-h3" translate>GESUCHSPERIODE_INAKTIV_HINT</p>
-					</div>
-					<!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
-					<div *dvNgShowElement="getGesuchModel().isFolgegesuch(); roles: getGesuchstellerOnlyRoles()"
-						 class="well well-status-warten">
-						<p class="ebegu-h3" translate>FOLGEGESUCH_HINT</p>
-					</div>
-
-					<!--Willkommnstext bei Erstgesuch-->
-					<div *ngIf="gesuchModelManager.isGesuch()">
-						<p *ngIf="isTagesschuleEnabledForMandant">
-							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
-						</p>
+                    <!--Willkommnstext bei Erstgesuch-->
+                    <div *ngIf="gesuchModelManager.isGesuch()">
+                        <p *ngIf="isTagesschuleEnabledForMandant">
+                            {{
+                                'ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS'
+                                    | translate
+                            }}
+                            {{ 'ERSTGESUCH_WILLKOMMEN_TEXT_3' | translate }}
+                        </p>
                         <p *ngIf="!isTagesschuleEnabledForMandant">
-							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
-						</p>
-					</div>
+                            {{
+                                'ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS'
+                                    | translate
+                            }}
+                            {{ 'ERSTGESUCH_WILLKOMMEN_TEXT_3' | translate }}
+                        </p>
+                    </div>
 
-					<!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
-					<div *ngIf="!gesuchModelManager.isGesuch()" class="margin-bottom-20">
+                    <!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
+                    <div
+                        *ngIf="!gesuchModelManager.isGesuch()"
+                        class="margin-bottom-20"
+                    >
+                        <h3 class="ebegu-h2" translate>
+                            MUTATION_AUSWAHL_TEXT_1
+                        </h3>
+                        <br />
+                        <p>
+                            <span
+                                [innerHTML]="
+                                    'MUTATION_AUSWAHL_TEXT_2' | translate
+                                "
+                            ></span>
+                            <span
+                                [innerHTML]="
+                                    'MUTATION_AUSWAHL_TEXT_3' | translate
+                                "
+                            ></span>
+                        </p>
+                    </div>
 
-						<h3 class="ebegu-h2" translate>MUTATION_AUSWAHL_TEXT_1</h3>
-						<br>
-						<p>
-							<span [innerHTML]="'MUTATION_AUSWAHL_TEXT_2' | translate"></span>
-							<span [innerHTML]="'MUTATION_AUSWAHL_TEXT_3' | translate"></span>
-						</p>
-
-					</div>
-
-					<!--Eingangsdatum-->
-					<div class="row margin-top-30" *dvNgShowElement="true; roles: getAllRolesButGesuchstellerSozialdienst()">
-						<div class="col-sm-12 dv-input-container-medium">
-							<dv-input-container class="form-group">
-								<label for="eingangsdatum"
-									   class="required">
-                                    {{'EINGANGSDATUM' | translate:{typ: getGesuchModel().typ | translate} }}
-                                    <dv-tooltip inputId="eingangsdatum" [text]="'EINGANGSDATUM_HINT' | translate"></dv-tooltip>
+                    <!--Eingangsdatum-->
+                    <div
+                        class="row margin-top-30"
+                        *dvNgShowElement="
+                            true;
+                            roles: getAllRolesButGesuchstellerSozialdienst()
+                        "
+                    >
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label for="eingangsdatum" class="required">
+                                    {{
+                                        'EINGANGSDATUM'
+                                            | translate
+                                                : {
+                                                      typ:
+                                                          getGesuchModel().typ
+                                                          | translate
+                                                  }
+                                    }}
+                                    <dv-tooltip
+                                        inputId="eingangsdatum"
+                                        [text]="
+                                            'EINGANGSDATUM_HINT' | translate
+                                        "
+                                    ></dv-tooltip>
                                 </label>
-								<div class="dv-input-container-medium-label">
-									<dv-date-picker-x [required]="true"
-													  [inputId]="'eingangsdatum'"
-													  id="eingangsdatum"
-                                                      data-test="fall-creation-eingangsdatum"
-													  [datePickerEnabled]="false"
-													  [(date)]="getGesuchModel().eingangsdatum"></dv-date-picker-x>
-								</div>
-							</dv-input-container>
-						</div>
-					</div>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-date-picker-x
+                                        [required]="true"
+                                        [inputId]="'eingangsdatum'"
+                                        id="eingangsdatum"
+                                        data-test="fall-creation-eingangsdatum"
+                                        [datePickerEnabled]="false"
+                                        [(date)]="
+                                            getGesuchModel().eingangsdatum
+                                        "
+                                    ></dv-date-picker-x>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
 
-					<!-- Regeln gueltig ab (Datum) -->
-					<div class="row" *dvNgShowElement="true; roles: getAllRolesButGesuchstellerSozialdienst()">
-						<div class="col-sm-12 dv-input-container-medium">
-							<dv-input-container class="form-group">
-								<label class="md-no-float" for="alternativDatum">
-									<span [translate]="'REGELN_GUELTIG_AB'"></span>
-									<dv-tooltip [inputId]="'regelnGueltigAb_ID'"
-												[text]="'REGELN_GUELTIG_AB_HELP' | translate"></dv-tooltip>
-								</label>
-								<div class="dv-input-container-medium-label">
-									<dv-date-picker-x [(date)]="getGesuchModel().regelnGueltigAb"
-													  [required]="false"
-													  [inputId]="'alternativDatum'"
-                                                      data-test="fall-creation-alternativDatum"
-													  id="alternativDatum"
-													  [datePickerEnabled]="false"
-													  class="input-element">
-									</dv-date-picker-x>
-								</div>
-							</dv-input-container>
-						</div>
-					</div>
+                    <!-- Regeln gueltig ab (Datum) -->
+                    <div
+                        class="row"
+                        *dvNgShowElement="
+                            true;
+                            roles: getAllRolesButGesuchstellerSozialdienst()
+                        "
+                    >
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <label
+                                    class="md-no-float"
+                                    for="alternativDatum"
+                                >
+                                    <span
+                                        [translate]="'REGELN_GUELTIG_AB'"
+                                    ></span>
+                                    <dv-tooltip
+                                        [inputId]="'regelnGueltigAb_ID'"
+                                        [text]="
+                                            'REGELN_GUELTIG_AB_HELP' | translate
+                                        "
+                                    ></dv-tooltip>
+                                </label>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-date-picker-x
+                                        [(date)]="
+                                            getGesuchModel().regelnGueltigAb
+                                        "
+                                        [required]="false"
+                                        [inputId]="'alternativDatum'"
+                                        data-test="fall-creation-alternativDatum"
+                                        id="alternativDatum"
+                                        [datePickerEnabled]="false"
+                                        class="input-element"
+                                    >
+                                    </dv-date-picker-x>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
 
                     <!-- Mutationsbegruendung -->
-                    <div class="row margin-bottom-20" *ngIf="isShowInputBegruendungMutation()">
+                    <div
+                        class="row margin-bottom-20"
+                        *ngIf="isShowInputBegruendungMutation()"
+                    >
                         <dv-input-container class="form-group">
                             <div class="col-sm-12">
-                            <label class="md-no-float required" for="begruendungMutation">
-                                <span [translate]="'BEGRUENDUNG_MUTATION'"></span>
-                            </label>
+                                <label
+                                    class="md-no-float required"
+                                    for="begruendungMutation"
+                                >
+                                    <span
+                                        [translate]="'BEGRUENDUNG_MUTATION'"
+                                    ></span>
+                                </label>
                             </div>
                             <div class="col-sm-6">
-                              <textarea
-                                  class="form-control"
-                                  rows="10"
-                                  id="begruendungMutation"
-                                  maxlength="4000"
-                                  required="true"
-                                  name="begruendungMutation"
-                                  #begruendungMutation="ngModel"
-                                  [(ngModel)]="getGesuchModel().begruendungMutation"
-                              ></textarea>
+                                <textarea
+                                    class="form-control"
+                                    rows="10"
+                                    id="begruendungMutation"
+                                    maxlength="4000"
+                                    required="true"
+                                    name="begruendungMutation"
+                                    #begruendungMutation="ngModel"
+                                    [(ngModel)]="
+                                        getGesuchModel().begruendungMutation
+                                    "
+                                ></textarea>
                             </div>
                         </dv-input-container>
                     </div>
 
-					<!-- Gesuchsperiode: Auswahl -->
-					<div *dvNgShowElement="canChangeGesuchsperiode(); roles: getAllRolesButGesuchstellerSozialdienst()">
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<div class="dv-radio-container">
-										<dv-radio-container-x>
-											<mat-radio-group
-													aria-labelledby=""
-													name="gesuchsperioden"
-													#gesuchsperioden="ngModel"
-													[(ngModel)]="gesuchsperiodeId"
-													(change)="setSelectedGesuchsperiode()"
-													[required]="true">
-												<mat-radio-button *ngFor="let gp of getAllActiveGesuchsperioden()"
-																  [value]="gp.id"
-                                                                  [attr.data-test]="'gesuchsperioden.' + gp.gesuchsperiodeString"
-																  [aria-label]="gp.gesuchsperiodeString">{{gp.gesuchsperiodeString}}
-												</mat-radio-button>
-												<dv-error-messages *ngIf="gesuchsperioden.touched" [errorObject]="gesuchsperioden.errors"></dv-error-messages>
-											</mat-radio-group>
+                    <!-- Gesuchsperiode: Auswahl -->
+                    <div
+                        *dvNgShowElement="
+                            canChangeGesuchsperiode();
+                            roles: getAllRolesButGesuchstellerSozialdienst()
+                        "
+                    >
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="dv-radio-container">
+                                        <dv-radio-container-x>
+                                            <mat-radio-group
+                                                aria-labelledby=""
+                                                name="gesuchsperioden"
+                                                #gesuchsperioden="ngModel"
+                                                [(ngModel)]="gesuchsperiodeId"
+                                                (change)="
+                                                    setSelectedGesuchsperiode()
+                                                "
+                                                [required]="true"
+                                            >
+                                                <mat-radio-button
+                                                    *ngFor="
+                                                        let gp of getAllActiveGesuchsperioden()
+                                                    "
+                                                    [value]="gp.id"
+                                                    [attr.data-test]="
+                                                        'gesuchsperioden.' +
+                                                        gp.gesuchsperiodeString
+                                                    "
+                                                    [aria-label]="
+                                                        gp.gesuchsperiodeString
+                                                    "
+                                                    >{{
+                                                        gp.gesuchsperiodeString
+                                                    }}
+                                                </mat-radio-button>
+                                                <dv-error-messages
+                                                    *ngIf="
+                                                        gesuchsperioden.touched
+                                                    "
+                                                    [errorObject]="
+                                                        gesuchsperioden.errors
+                                                    "
+                                                ></dv-error-messages>
+                                            </mat-radio-group>
+                                        </dv-radio-container-x>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
 
-										</dv-radio-container-x>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-				</fieldset>
-
-				<!--Buttons-->
-				<dv-navigation-x [dvNext]="true"
-								 [dvTranslateNext]="getNextButtonText()"
-								 (dvSave)="save($event.onResult)"></dv-navigation-x>
-
-			</form>
-		</div>
-	</div>
+                <!--Buttons-->
+                <dv-navigation-x
+                    [dvNext]="true"
+                    [dvTranslateNext]="getNextButtonText()"
+                    (dvSave)="save($event.onResult)"
+                ></dv-navigation-x>
+            </form>
+        </div>
+    </div>
 </div>

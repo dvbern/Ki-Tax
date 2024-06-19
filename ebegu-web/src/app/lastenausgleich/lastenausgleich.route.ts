@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {LastenausgleichViewXComponent} from './component/lastenausgleich-view-x/lastenausgleich-view-x.component';
 
@@ -38,12 +41,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class LastenausgleichRoutingModule {
-}
+export class LastenausgleichRoutingModule {}

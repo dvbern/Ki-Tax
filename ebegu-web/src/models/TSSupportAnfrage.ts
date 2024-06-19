@@ -16,7 +16,6 @@
  */
 
 export class TSSupportAnfrage {
-
     private _id: string;
 
     private _beschreibung: string;

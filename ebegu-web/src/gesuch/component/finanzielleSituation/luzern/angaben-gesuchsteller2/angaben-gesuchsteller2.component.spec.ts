@@ -41,7 +41,8 @@ import {WizardStepManager} from '../../../../service/wizardStepManager';
 
 import {AngabenGesuchsteller2Component} from './angaben-gesuchsteller2.component';
 
-const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name,
     [
         'areThereOnlyFerieninsel',
         'getBasisjahr',
@@ -52,27 +53,47 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchMod
         'getGesuchsperiode',
         'getGemeinde',
         'setGesuchstellerNumber'
-    ]);
+    ]
+);
 gesuchModelManagerSpy.getGemeinde.and.returnValue(new TSGemeinde());
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name,
-    ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName']);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
-const applicationPropertyRSSpy =
-    jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
-applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
+    [
+        'getCurrentStep',
+        'setCurrentStep',
+        'isNextStepBesucht',
+        'isNextStepEnabled',
+        'getCurrentStepName'
+    ]
+);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(
+    FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'clearError'
+]);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles'
+]);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+    ApplicationPropertyRS.name,
+    ['getPublicPropertiesCached']
+);
+applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+    Promise.resolve(new TSPublicAppConfig())
+);
 
-const berechnungsManagerSpy =
-    jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+    BerechnungsManager.name,
+    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
 
 describe('AngabenGesuchsteller2Component', () => {
     let component: AngabenGesuchsteller2Component;
@@ -84,18 +105,20 @@ describe('AngabenGesuchsteller2Component', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
-            imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                SharedModule
-            ]
+            imports: [FormsModule, ReactiveFormsModule, SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -120,12 +143,17 @@ describe('AngabenGesuchsteller2Component', () => {
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
-        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
         return gesuch;
     }
 });

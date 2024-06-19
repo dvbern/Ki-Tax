@@ -7,13 +7,9 @@ import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WarningComponent implements OnInit {
-
     @Input() public text: string;
 
-    public constructor() {
-    }
+    public constructor() {}
 
-    public ngOnInit(): void {
-    }
-
+    public ngOnInit(): void {}
 }

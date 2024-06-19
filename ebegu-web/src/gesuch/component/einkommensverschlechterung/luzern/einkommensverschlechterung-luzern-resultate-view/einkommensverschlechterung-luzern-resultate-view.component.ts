@@ -15,26 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component
+} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {
-    FinanzielleSituationLuzernService
-} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
+import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
-    templateUrl: './einkommensverschlechterung-luzern-resultate-view.component.html',
+    templateUrl:
+        './einkommensverschlechterung-luzern-resultate-view.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
-
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
@@ -44,13 +46,15 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             wizardStepManager,
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
             einstellungRS,
-            $transition$);
+            $transition$
+        );
     }
 
     public save(onResult: (arg: any) => any): IPromise<any> {

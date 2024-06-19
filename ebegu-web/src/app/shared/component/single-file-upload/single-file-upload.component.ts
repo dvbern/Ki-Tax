@@ -38,22 +38,24 @@ export interface HTMLInputEvent extends Event {
     styleUrls: ['./single-file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SingleFileUploadComponent<T extends TSFile> implements OnChanges, OnInit {
-
+export class SingleFileUploadComponent<T extends TSFile>
+    implements OnChanges, OnInit
+{
     @Input() public title: string;
     @Input() public readOnly: boolean;
     @Input() public tooltipText: string;
-    @Output() public readonly download: EventEmitter<[T, boolean]> = new EventEmitter();
+    @Output() public readonly download: EventEmitter<[T, boolean]> =
+        new EventEmitter();
     @Output() public readonly delete: EventEmitter<T> = new EventEmitter();
-    @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
+    @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> =
+        new EventEmitter();
 
     public uploadInputValue: string = '';
     @Input() public file: TSFile;
     @Input() public hasFile: boolean;
     @Input() public allowedMimetypes: string = '';
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public onDownload(file: T, attachment: boolean): void {
         this.download.emit([file, attachment]);

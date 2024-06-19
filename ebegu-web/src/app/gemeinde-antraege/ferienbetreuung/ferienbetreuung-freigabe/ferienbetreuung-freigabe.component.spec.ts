@@ -22,24 +22,24 @@ import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungFreigabeComponent} from './ferienbetreuung-freigabe.component';
 
 describe('FerienbetreuungFreigabeComponent', () => {
-  let component: FerienbetreuungFreigabeComponent;
-  let fixture: ComponentFixture<FerienbetreuungFreigabeComponent>;
+    let component: FerienbetreuungFreigabeComponent;
+    let fixture: ComponentFixture<FerienbetreuungFreigabeComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FerienbetreuungFreigabeComponent ]
-    })
-        .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
-        .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FerienbetreuungFreigabeComponent]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungFreigabeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FerienbetreuungFreigabeComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

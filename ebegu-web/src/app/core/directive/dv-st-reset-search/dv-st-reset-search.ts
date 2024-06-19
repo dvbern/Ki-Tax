@@ -20,29 +20,36 @@ import {IAugmentedJQuery, IDirectiveFactory} from 'angular';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 
 export class DVSTResetSearch implements IDirective {
-
     public restrict = 'A';
     public require = '^stTable';
     public link: IDirectiveLinkFn;
 
     public constructor(dVsTPersistService: DVsTPersistService) {
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs, ctrl: any) => {
+        this.link = (
+            scope: IScope,
+            element: IAugmentedJQuery,
+            attrs,
+            ctrl: any
+        ) => {
             const nameSpace: string = attrs.dvStPersistAntraege;
 
-            return element.on('click', () => scope.$evalAsync(() => {
-                const tableState = ctrl.tableState();
-                tableState.search.predicateObject = {};
-                tableState.sort = {};
-                tableState.pagination.start = 0;
-                dVsTPersistService.deleteData(nameSpace);
+            return element.on('click', () =>
+                scope.$evalAsync(() => {
+                    const tableState = ctrl.tableState();
+                    tableState.search.predicateObject = {};
+                    tableState.sort = {};
+                    tableState.pagination.start = 0;
+                    dVsTPersistService.deleteData(nameSpace);
 
-                return ctrl.pipe();
-            }));
+                    return ctrl.pipe();
+                })
+            );
         };
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = (dVsTPersistService: any) => new DVSTResetSearch(dVsTPersistService);
+        const directive = (dVsTPersistService: any) =>
+            new DVSTResetSearch(dVsTPersistService);
         directive.$inject = ['DVsTPersistService'];
         return directive;
     }

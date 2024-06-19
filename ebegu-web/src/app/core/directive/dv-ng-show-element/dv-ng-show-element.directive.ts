@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Directive, Input, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
+import {
+    Directive,
+    Input,
+    OnInit,
+    TemplateRef,
+    ViewContainerRef
+} from '@angular/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 
@@ -43,7 +49,6 @@ import {TSRole} from '../../../../models/enums/TSRole';
  */
 @Directive({selector: '[dvNgShowElement]'})
 export class DvNgShowElementDirective implements OnInit {
-
     private hasView = false;
     private _roles: ReadonlyArray<TSRole>;
     private _condition: boolean;
@@ -52,8 +57,7 @@ export class DvNgShowElementDirective implements OnInit {
         private readonly templateRef: TemplateRef<any>,
         private readonly viewContainer: ViewContainerRef,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.handleElement();
@@ -83,7 +87,6 @@ export class DvNgShowElementDirective implements OnInit {
         if (result && !this.hasView) {
             this.viewContainer.createEmbeddedView(this.templateRef);
             this.hasView = true;
-
         } else if (!result && this.hasView) {
             this.viewContainer.clear();
             this.hasView = false;
@@ -96,6 +99,10 @@ export class DvNgShowElementDirective implements OnInit {
      * The current user must have one of the passed roles.
      */
     private evaluateCondition(): boolean {
-        return this._condition && this._roles && this.authServiceRS.isOneOfRoles(this._roles);
+        return (
+            this._condition &&
+            this._roles &&
+            this.authServiceRS.isOneOfRoles(this._roles)
+        );
     }
 }

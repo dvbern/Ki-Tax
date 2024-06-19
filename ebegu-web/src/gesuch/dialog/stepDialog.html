@@ -15,42 +15,67 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<md-dialog ng-class="vm.css"
-           id="stepDialog"
-           class="md-default-theme md-transition-in"
-           role="dialog"
-           tabindex="-1">
-
-    <md-dialog-content class="md-dialog-content step" ng-if="vm.isStepDisplayed(0)">
+<md-dialog
+    ng-class="vm.css"
+    id="stepDialog"
+    class="md-default-theme md-transition-in"
+    role="dialog"
+    tabindex="-1"
+>
+    <md-dialog-content
+        class="md-dialog-content step"
+        ng-if="vm.isStepDisplayed(0)"
+    >
         <h2 class="md-title ng-binding" ng-bind="vm.title"></h2>
-        <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind="vm.questionText"></p></div>
+        <div class="md-dialog-content-body ng-scope">
+            <p class="ng-binding" ng-bind="vm.questionText"></p>
+        </div>
 
         <md-radio-group ng-model="vm.selected">
-            <md-radio-button ng-value="1" ng-disabled="vm.zahlungDirektIgnorieren">{{vm.radioYes}}</md-radio-button>
+            <md-radio-button
+                ng-value="1"
+                ng-disabled="vm.zahlungDirektIgnorieren"
+                >{{ vm.radioYes }}</md-radio-button
+            >
             <div class="md-dialog-content-body">
-                <div class="step-hint" ng-class="{'hint-transition': vm.selected == 1, 'disabled': vm.zahlungDirektIgnorieren}">
-                    <p>{{vm.radioYesCasesInfo}}<br><br></p>
+                <div
+                    class="step-hint"
+                    ng-class="{
+                        'hint-transition': vm.selected == 1,
+                        disabled: vm.zahlungDirektIgnorieren
+                    }"
+                >
+                    <p>{{ vm.radioYesCasesInfo }}<br /><br /></p>
                     <ul>
-                        <li ng-repeat="case in vm.radioYesCases"><p>{{case}}</p></li>
+                        <li ng-repeat="case in vm.radioYesCases">
+                            <p>{{ case }}</p>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <md-radio-button ng-value="2">{{vm.radioNo}}</md-radio-button>
+            <md-radio-button ng-value="2">{{ vm.radioNo }}</md-radio-button>
             <div class="md-dialog-content-body">
-                <div class="step-hint" ng-class="vm.selected == 2 ? 'hint-transition' : ''">
-                    <p>{{vm.radioNoCasesInfo}}<br><br></p>
+                <div
+                    class="step-hint"
+                    ng-class="vm.selected == 2 ? 'hint-transition' : ''"
+                >
+                    <p>{{ vm.radioNoCasesInfo }}<br /><br /></p>
                     <ul>
-                        <li ng-repeat="case in vm.radioNoCases"><p>{{case}}</p></li>
+                        <li ng-repeat="case in vm.radioNoCases">
+                            <p>{{ case }}</p>
+                        </li>
                     </ul>
                 </div>
-
             </div>
         </md-radio-group>
-        <br><br>
-        <p class="font-color-warning">{{vm.warningZahlungAusserhalbKibon}}</p>
+        <br /><br />
+        <p class="font-color-warning">{{ vm.warningZahlungAusserhalbKibon }}</p>
     </md-dialog-content>
 
-    <md-dialog-content class="md-dialog-content step" ng-if="vm.isStepDisplayed(1)">
+    <md-dialog-content
+        class="md-dialog-content step"
+        ng-if="vm.isStepDisplayed(1)"
+    >
         <h2 class="md-title ng-binding" ng-bind="vm.titleStep2"></h2>
 
         <div class="checkbox">
@@ -59,33 +84,59 @@
             </md-checkbox>
         </div>
 
-        <div class="md-dialog-content-body"><p><strong>{{vm.warning}}</strong></p></div>
+        <div class="md-dialog-content-body">
+            <p>
+                <strong>{{ vm.warning }}</strong>
+            </p>
+        </div>
     </md-dialog-content>
 
     <md-dialog-actions layout-align="center center">
-        <button class="ng-scope dv-btn cancel-button uppercase" type="button" ng-if="vm.isStepDisplayed(0)"
-                ng-click="vm.cancel()" aria-label="{{vm.cancelText}}" style="">
+        <button
+            class="ng-scope dv-btn cancel-button uppercase"
+            type="button"
+            ng-if="vm.isStepDisplayed(0)"
+            ng-click="vm.cancel()"
+            aria-label="{{ vm.cancelText }}"
+            style=""
+        >
             <span class="ng-binding ng-scope" ng-bind="vm.cancelText"></span>
         </button>
-        <button class="ng-scope dv-btn cancel-button uppercase" type="button" ng-if="vm.isStepDisplayed(1)"
-                ng-click="vm.back()" aria-label="{{vm.backText}}" style="">
+        <button
+            class="ng-scope dv-btn cancel-button uppercase"
+            type="button"
+            ng-if="vm.isStepDisplayed(1)"
+            ng-click="vm.back()"
+            aria-label="{{ vm.backText }}"
+            style=""
+        >
             <span class="ng-binding ng-scope" ng-bind="vm.backText"></span>
         </button>
-        <button class="dv-btn"
-                type="button"
-                ng-click="vm.next()"
-                ng-if="vm.selected > 0 && vm.isStepDisplayed(0)"
-                md-autofocus="dialog.$type==='alert'"
-                aria-label="{{vm.nextText}}">
-            <span class="ng-binding ng-scope uppercase" ng-bind="vm.nextText"></span>
+        <button
+            class="dv-btn"
+            type="button"
+            ng-click="vm.next()"
+            ng-if="vm.selected > 0 && vm.isStepDisplayed(0)"
+            md-autofocus="dialog.$type==='alert'"
+            aria-label="{{ vm.nextText }}"
+        >
+            <span
+                class="ng-binding ng-scope uppercase"
+                ng-bind="vm.nextText"
+            ></span>
         </button>
-        <button class="dv-btn"
-                type="button"
-                ng-click="vm.hide()"
-                ng-if="vm.selected == 2 && vm.confirmed && vm.isStepDisplayed(1)"
-                md-autofocus="dialog.$type==='alert'"
-                aria-label="{{vm.finishText}}">
-            <span class="ng-binding ng-scope uppercase" ng-bind="vm.finishText"></span>
+        <button
+            class="dv-btn"
+            type="button"
+            ng-click="vm.hide()"
+            ng-if="vm.selected == 2 && vm.confirmed && vm.isStepDisplayed(1)"
+            md-autofocus="dialog.$type==='alert'"
+            aria-label="{{ vm.finishText }}"
+        >
+            <span
+                class="ng-binding ng-scope uppercase"
+                ng-bind="vm.finishText"
+            ></span>
         </button>
     </md-dialog-actions>
 </md-dialog>

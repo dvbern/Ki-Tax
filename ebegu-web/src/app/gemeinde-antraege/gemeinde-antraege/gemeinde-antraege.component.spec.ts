@@ -15,9 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {HttpClientModule} from '@angular/common/http';
-import {ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, Directive, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    CUSTOM_ELEMENTS_SCHEMA,
+    Directive,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ControlContainer, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {
+    ControlContainer,
+    FormsModule,
+    ReactiveFormsModule
+} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
@@ -40,30 +51,43 @@ import {GemeindeAntragService} from '../services/gemeinde-antrag.service';
 
 import {GemeindeAntraegeComponent} from './gemeinde-antraege.component';
 
-const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-    ['findGesuchsperiode', 'getAllActiveGesuchsperioden']);
+const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+    GesuchsperiodeRS.name,
+    ['findGesuchsperiode', 'getAllActiveGesuchsperioden']
+);
 
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['reload']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'reload'
+]);
 
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
-    ['addMesageAsError']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
 
-const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContainer.name,
-    ['path']);
+const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(
+    ControlContainer.name,
+    ['path']
+);
 
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles', 'principal$', 'isRole']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles',
+    'principal$',
+    'isRole'
+]);
 
-const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name,
-        ['getFilterableTypesForRole', 'getCreatableTypesForRole']);
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(
+    GemeindeAntragService.name,
+    ['getFilterableTypesForRole', 'getCreatableTypesForRole']
+);
 
 const user = new TSBenutzer();
 user.currentBerechtigung = new TSBerechtigung();
 user.currentBerechtigung.role = TSRole.ADMIN_MANDANT;
 
-const gemeindeRSSpy =
-    jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithPreExistingLATS']);
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+    'getGemeindenForPrincipal$',
+    'getGemeindenWithPreExistingLATS'
+]);
 
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
     ApplicationPropertyRS.name,
@@ -77,15 +101,14 @@ authServiceSpy.principal$ = new BehaviorSubject(user);
     selector: '[dvLoadingButtonX]'
 })
 export class MockDvLoadingButtonXDirective {
-
     @Input() public type: any;
     @Input() public delay: any;
     @Input() public buttonClass: string;
     @Input() public forceWaitService: any;
     @Input() public ariaLabel: any;
     @Input() public buttonDisabled: any;
-    @Output() public readonly buttonClick: EventEmitter<any> = new EventEmitter<any>();
-
+    @Output() public readonly buttonClick: EventEmitter<any> =
+        new EventEmitter<any>();
 }
 
 describe('GemeindeAntraegeComponent', () => {
@@ -106,7 +129,10 @@ describe('GemeindeAntraegeComponent', () => {
                 UpgradeModule,
                 BrowserAnimationsModule
             ],
-            declarations: [GemeindeAntraegeComponent, MockDvLoadingButtonXDirective],
+            declarations: [
+                GemeindeAntraegeComponent,
+                MockDvLoadingButtonXDirective
+            ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 WindowRef,
@@ -116,18 +142,28 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: GemeindeAntragService, useValue: gemeindeAntragServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: GemeindeAntragService,
+                    useValue: gemeindeAntragServiceSpy
+                },
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ]
         })
             .overrideComponent(GemeindeAntraegeComponent, {
-                set: {  changeDetection: ChangeDetectionStrategy.Default  }
+                set: {changeDetection: ChangeDetectionStrategy.Default}
             })
             .compileComponents();
 
-        gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
+        gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(
+            Promise.resolve([])
+        );
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        gemeindeRSSpy.getGemeindenWithPreExistingLATS.and.returnValue(Promise.resolve([]));
+        gemeindeRSSpy.getGemeindenWithPreExistingLATS.and.returnValue(
+            Promise.resolve([])
+        );
         gemeindeAntragServiceSpy.getFilterableTypesForRole.and.returnValue([
             TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
             TSGemeindeAntragTyp.FERIENBETREUUNG
@@ -141,8 +177,12 @@ describe('GemeindeAntraegeComponent', () => {
         const properties = new TSPublicAppConfig();
         properties.lastenausgleichTagesschulenAktiv = true;
         properties.ferienbetreuungAktiv = true;
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
-        applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of(properties).toPromise()
+        );
+        applicationPropertyRSSpy.isDevMode.and.returnValue(
+            Promise.resolve(true)
+        );
     });
 
     beforeEach(() => {
@@ -157,14 +197,22 @@ describe('GemeindeAntraegeComponent', () => {
 
     it('should display third dropdown if ferienbetreuung is selected', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(true);
-        component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.FERIENBETREUUNG);
+        component.formGroup.controls.antragTyp.setValue(
+            TSGemeindeAntragTyp.FERIENBETREUUNG
+        );
         fixture.detectChanges();
-        expect(fixture.debugElement.query(By.css('#select-gemeinde'))).not.toBeNull();
+        expect(
+            fixture.debugElement.query(By.css('#select-gemeinde'))
+        ).not.toBeNull();
     });
 
     it('should NOT display third dropdown if tagesschule is selected', () => {
-        component.formGroup.controls.antragTyp.setValue(TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+        component.formGroup.controls.antragTyp.setValue(
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN
+        );
         fixture.detectChanges();
-        expect(fixture.debugElement.query(By.css('#select-gemeinde'))).toBeNull();
+        expect(
+            fixture.debugElement.query(By.css('#select-gemeinde'))
+        ).toBeNull();
     });
 });

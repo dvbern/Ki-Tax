@@ -26,7 +26,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {AntragStatusHistoryRS} from './antragStatusHistoryRS.rest';
 
 describe('antragStatusHistoryRS', () => {
-
     let antragStatusHistoryRS: AntragStatusHistoryRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -37,17 +36,21 @@ describe('antragStatusHistoryRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
+    beforeEach(
+        angular.mock.inject($injector => {
+            antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
 
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-    }));
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+        })
+    );
 
     describe('Public API', () => {
         it('check URI', () => {
-            expect(antragStatusHistoryRS.serviceURL).toContain('antragStatusHistory');
+            expect(antragStatusHistoryRS.serviceURL).toContain(
+                'antragStatusHistory'
+            );
         });
     });
 
@@ -55,37 +58,57 @@ describe('antragStatusHistoryRS', () => {
         it('should return the last status change for the given gesuch', () => {
             const gesuch = new TSGesuch();
             gesuch.id = '123456';
-            const antragStatusHistory = new TSAntragStatusHistory(gesuch.id,
+            const antragStatusHistory = new TSAntragStatusHistory(
+                gesuch.id,
                 undefined,
                 DateUtil.today(),
                 undefined,
-                TSAntragStatus.VERFUEGEN);
+                TSAntragStatus.VERFUEGEN
+            );
             TestDataUtil.setAbstractMutableFieldsUndefined(antragStatusHistory);
-            const restAntStatusHistory = ebeguRestUtil.antragStatusHistoryToRestObject({}, antragStatusHistory);
-            $httpBackend.expectGET(`${antragStatusHistoryRS.serviceURL}/${encodeURIComponent(gesuch.id)}`).respond(
-                restAntStatusHistory);
+            const restAntStatusHistory =
+                ebeguRestUtil.antragStatusHistoryToRestObject(
+                    {},
+                    antragStatusHistory
+                );
+            $httpBackend
+                .expectGET(
+                    `${antragStatusHistoryRS.serviceURL}/${encodeURIComponent(gesuch.id)}`
+                )
+                .respond(restAntStatusHistory);
 
             let lastStatusChange: TSAntragStatusHistory;
-            antragStatusHistoryRS.loadLastStatusChange(gesuch).then(response => {
-                lastStatusChange = response;
-            });
+            antragStatusHistoryRS
+                .loadLastStatusChange(gesuch)
+                .then(response => {
+                    lastStatusChange = response;
+                });
             $httpBackend.flush();
 
             expect(lastStatusChange).toBeDefined();
-            expect(lastStatusChange.timestampVon.isSame(antragStatusHistory.timestampVon)).toBe(true);
+            expect(
+                lastStatusChange.timestampVon.isSame(
+                    antragStatusHistory.timestampVon
+                )
+            ).toBe(true);
             lastStatusChange.timestampVon = antragStatusHistory.timestampVon;
             expect(lastStatusChange).toEqual(antragStatusHistory);
         });
         it('should return undefined if the gesuch is undefined', () => {
             antragStatusHistoryRS.loadLastStatusChange(undefined);
-            antragStatusHistoryRS.lastChange$.subscribe(value => expect(value).toBeUndefined(), fail);
+            antragStatusHistoryRS.lastChange$.subscribe(
+                value => expect(value).toBeUndefined(),
+                fail
+            );
         });
         it('should return undefined if the gesuch id is undefined', () => {
             const gesuch = new TSGesuch();
             gesuch.id = undefined;
             antragStatusHistoryRS.loadLastStatusChange(gesuch);
-            antragStatusHistoryRS.lastChange$.subscribe(value => expect(value).toBeUndefined(), fail);
+            antragStatusHistoryRS.lastChange$.subscribe(
+                value => expect(value).toBeUndefined(),
+                fail
+            );
         });
     });
-
 });

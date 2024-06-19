@@ -32,9 +32,7 @@ module.exports = function (config) {
         ],
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
-        files: [
-            {pattern: 'src/assets/**', included: false, serve: true},
-        ],
+        files: [{pattern: 'src/assets/**', included: false, serve: true}],
         client: {
             clearContext: false // leave Jasmine Spec Runner output visible in browser
         },
@@ -48,7 +46,6 @@ module.exports = function (config) {
         // tslint:disable-next-line:max-line-length
         // https://github.com/istanbuljs/istanbul-api/blob/47b7803fbf7ca2fb4e4a15f3813a8884891ba272/lib/config.js#L33-L38
         coverageIstanbulReporter: {
-
             // reports can be any that are listed here:
             // https://github.com/istanbuljs/istanbul-reports/tree/590e6b0089f67b723a1fdf57bc7ccc080ff189d7/lib
             reports: ['html', 'cobertura', 'lcovonly', 'text-summary'],
@@ -65,7 +62,6 @@ module.exports = function (config) {
 
             // Most reporters accept additional config options. You can pass these through the `report-config` option
             'report-config': {
-
                 // all options available at:
                 // tslint:disable-next-line:max-line-length
                 // https://github.com/istanbuljs/istanbul-reports/blob/590e6b0089f67b723a1fdf57bc7ccc080ff189d7/lib/html/index.js#L135-L137
@@ -73,7 +69,6 @@ module.exports = function (config) {
                     // outputs the report in ./coverage/html
                     subdir: 'html'
                 }
-
             }
 
             // to enforce thresholds see https://github.com/mattlewis92/karma-coverage-istanbul-reporter
@@ -89,12 +84,13 @@ module.exports = function (config) {
         },
 
         sonarqubeReporter: {
-            basePath: 'src',        // test files folder
+            basePath: 'src', // test files folder
             filePattern: '**/*.spec.ts', // test files glob pattern
-            encoding: 'utf-8',          // test files encoding
-            outputFolder: 'build',      // report destination
-            legacyMode: false,          // report for Sonarqube < 6.2 (disabled)
-            reportName: function (metadata) { // report name callback
+            encoding: 'utf-8', // test files encoding
+            outputFolder: 'build', // report destination
+            legacyMode: false, // report for Sonarqube < 6.2 (disabled)
+            reportName: function (metadata) {
+                // report name callback
                 /**
                  * Report metadata array:
                  * - metadata[0] = browser name
@@ -140,7 +136,7 @@ module.exports = function (config) {
         customLaunchers: {
             ChromeHeadlessWithoutSandboxing: {
                 base: 'ChromeHeadless',
-                flags: [ '--no-sandbox' ]
+                flags: ['--no-sandbox']
             }
         },
 
@@ -152,5 +148,4 @@ module.exports = function (config) {
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: false
     });
-
 };

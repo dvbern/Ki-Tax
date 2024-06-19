@@ -30,7 +30,6 @@ import {NgForm} from '@angular/forms';
     templateUrl: './dialog-init-zpv-nummer-verknpuefen.template.html'
 })
 export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
-
     private readonly gs: TSGesuchstellerContainer;
     private readonly korrespondenzSprache: TSSprache;
     public email: string;
@@ -47,16 +46,25 @@ export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
         this.korrespondenzSprache = data.korrespondenzSprache;
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public save(form: NgForm): void {
         if (!form.valid) {
             return;
         }
         const target = this.$state.target('onboarding.zpvgssuccess');
-        const relayPath = this.$state.href(target.$state(), {gesuchstellerId: this.gs.id}, {absolute: true});
-        this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs, this.korrespondenzSprache, relayPath)
+        const relayPath = this.$state.href(
+            target.$state(),
+            {gesuchstellerId: this.gs.id},
+            {absolute: true}
+        );
+        this.gesuchstellerRS
+            .initGS2ZPVNr(
+                this.email,
+                this.gs,
+                this.korrespondenzSprache,
+                relayPath
+            )
             .then(() => this.dialogRef.close());
     }
 

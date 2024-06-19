@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookResult,
+    RejectType,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 import {OnErrorPriorities} from './onErrorPriorities';
@@ -27,12 +32,19 @@ export const DISABLE_RECOVERY_ERROR_MESSAGE = 'ignore me. Already handled';
 
 errorRecoveryHookRunBlock.$inject = ['$transitions'];
 
-export function errorRecoveryHookRunBlock($transitions: TransitionService): void {
-    $transitions.onError({from: state => !state || !state.name}, onError, {priority: OnErrorPriorities.ERROR_RECOVERY});
+export function errorRecoveryHookRunBlock(
+    $transitions: TransitionService
+): void {
+    $transitions.onError({from: state => !state || !state.name}, onError, {
+        priority: OnErrorPriorities.ERROR_RECOVERY
+    });
 }
 
 function onError(transition: Transition): HookResult {
-    if (!transition.isActive() || transition.error().message === DISABLE_RECOVERY_ERROR_MESSAGE) {
+    if (
+        !transition.isActive() ||
+        transition.error().message === DISABLE_RECOVERY_ERROR_MESSAGE
+    ) {
         return;
     }
 
@@ -40,6 +52,9 @@ function onError(transition: Transition): HookResult {
 
     if (errorType === RejectType.ABORTED || errorType === RejectType.ERROR) {
         // we have been blocked by some hook, but we are on no state -> open fallback state
-        navigateToStartPageForRole(TSRole.ANONYMOUS, transition.router.stateService);
+        navigateToStartPageForRole(
+            TSRole.ANONYMOUS,
+            transition.router.stateService
+        );
     }
 }

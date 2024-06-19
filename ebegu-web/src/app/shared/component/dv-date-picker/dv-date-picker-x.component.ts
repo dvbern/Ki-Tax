@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import * as moment from 'moment';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -25,10 +32,9 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     templateUrl: './dv-date-picker-x.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
     styleUrls: ['dv-date-picker-x.component.less'],
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvDatePickerXComponent implements OnInit {
-
     @Input()
     public label: string;
 
@@ -58,18 +64,17 @@ export class DvDatePickerXComponent implements OnInit {
     public disabled: boolean = false;
 
     @Output()
-    public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();
+    public readonly dateChange: EventEmitter<moment.Moment> =
+        new EventEmitter<moment.Moment>();
 
     @Input()
     public readonly required: boolean;
 
     public randId = EbeguUtil.generateRandomName(10);
 
-    public constructor() {
-    }
+    public constructor() {}
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public emit(): void {
         this.dateChange.emit(this.date);

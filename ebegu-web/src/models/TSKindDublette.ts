@@ -14,7 +14,6 @@
  */
 
 export class TSKindDublette {
-
     private _gesuchId: string;
     private _fallNummer: number;
     private _kindNummerOriginal: number;

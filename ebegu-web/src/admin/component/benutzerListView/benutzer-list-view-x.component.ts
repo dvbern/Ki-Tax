@@ -15,7 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, HostBinding, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    HostBinding,
+    OnInit
+} from '@angular/core';
 import {StateService} from '@uirouter/angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
@@ -30,19 +35,16 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerListViewXComponent implements OnInit {
-
-     @HostBinding('class') public class = 'overflow-scroll';
-     @HostBinding('flex') public flex = 'auto';
+    @HostBinding('class') public class = 'overflow-scroll';
+    @HostBinding('flex') public flex = 'auto';
 
     public constructor(
         private readonly state: StateService,
         private readonly benutzerRS: BenutzerRSX,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
@@ -59,6 +61,8 @@ export class BenutzerListViewXComponent implements OnInit {
     }
 
     public showEinladen(): boolean {
-        return this.authServiceRS.isOneOfRoles(PERMISSIONS[Permission.BENUTZER_EINLADEN]);
+        return this.authServiceRS.isOneOfRoles(
+            PERMISSIONS[Permission.BENUTZER_EINLADEN]
+        );
     }
 }

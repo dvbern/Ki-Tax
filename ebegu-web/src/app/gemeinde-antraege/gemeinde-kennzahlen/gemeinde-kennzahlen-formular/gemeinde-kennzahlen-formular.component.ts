@@ -14,7 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
@@ -22,7 +28,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypValues,
+    TSEinschulungTyp
+} from '../../../../models/enums/TSEinschulungTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeindeKennzahlen} from '../../../../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
@@ -42,15 +51,18 @@ const LOG = LogFactory.createLog('GemeindeKennzahlenFormularComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
-
     @ViewChild(NgForm) public form: NgForm;
 
-    public canSeeSaveAndAbschliessen$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
-    public canSeeZurueckAnGemeinde$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+    public canSeeSaveAndAbschliessen$: ReplaySubject<boolean> =
+        new ReplaySubject<boolean>();
+    public canSeeZurueckAnGemeinde$: ReplaySubject<boolean> =
+        new ReplaySubject<boolean>();
 
     public abschlussValidationTriggered: boolean = false;
     private readonly unsubscribe$: Subject<any> = new Subject<any>();
-    public antragAndPrincipal$: Observable<[TSGemeindeKennzahlen, (TSBenutzer | null)]>;
+    public antragAndPrincipal$: Observable<
+        [TSGemeindeKennzahlen, TSBenutzer | null]
+    >;
 
     public readonly CONSTANTS = CONSTANTS;
 
@@ -60,8 +72,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.setupCanSeeSaveAndAbschliessen();
@@ -74,38 +85,49 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     private setupCanSeeSaveAndAbschliessen(): void {
-        combineLatest(
-            [
-                this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag()
-                    .pipe(
-                        map(antrag => antrag.isInBearbeitungGemeinde())
-                    ),
-                this.authService.principal$.pipe(
-                    map(principal => principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles()
-                        .concat(TSRole.SUPER_ADMIN)))
+        combineLatest([
+            this.gemeindeKennzahlenService
+                .getGemeindeKennzahlenAntrag()
+                .pipe(map(antrag => antrag.isInBearbeitungGemeinde())),
+            this.authService.principal$.pipe(
+                map(principal =>
+                    principal.hasOneOfRoles(
+                        TSRoleUtil.getGemeindeOrBGRoles().concat(
+                            TSRole.SUPER_ADMIN
+                        )
+                    )
                 )
-            ]
-        ).pipe(
-            map(([isInBearbeitungGemeinde, isGemeindeBgSuperAdminRole]) => isInBearbeitungGemeinde && isGemeindeBgSuperAdminRole),
-            takeUntil(this.unsubscribe$)
-        ).subscribe(this.canSeeSaveAndAbschliessen$);
+            )
+        ])
+            .pipe(
+                map(
+                    ([isInBearbeitungGemeinde, isGemeindeBgSuperAdminRole]) =>
+                        isInBearbeitungGemeinde && isGemeindeBgSuperAdminRole
+                ),
+                takeUntil(this.unsubscribe$)
+            )
+            .subscribe(this.canSeeSaveAndAbschliessen$);
     }
 
     private setupCanSeeZurueckAnGemeinde(): void {
-        combineLatest(
-            [
-                this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag()
-                    .pipe(
-                        map(antrag => antrag.isAbgeschlossen())
-                    ),
-                this.authService.principal$.pipe(
-                    map(principal => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()))
+        combineLatest([
+            this.gemeindeKennzahlenService
+                .getGemeindeKennzahlenAntrag()
+                .pipe(map(antrag => antrag.isAbgeschlossen())),
+            this.authService.principal$.pipe(
+                map(principal =>
+                    principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())
                 )
-            ]
-        ).pipe(
-            map(([isAbgeschlossen, isMandantSuperAdmin]) => isAbgeschlossen && isMandantSuperAdmin),
-            takeUntil(this.unsubscribe$)
-        ).subscribe(this.canSeeZurueckAnGemeinde$);
+            )
+        ])
+            .pipe(
+                map(
+                    ([isAbgeschlossen, isMandantSuperAdmin]) =>
+                        isAbgeschlossen && isMandantSuperAdmin
+                ),
+                takeUntil(this.unsubscribe$)
+            )
+            .subscribe(this.canSeeZurueckAnGemeinde$);
     }
 
     private setupForm(): void {
@@ -116,12 +138,13 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     }
 
     public save(antrag: TSGemeindeKennzahlen): void {
-
         if (!this.form.valid) {
             return;
         }
-        this.gemeindeKennzahlenService.saveGemeindeKennzahlen(antrag)
-            .subscribe(() => this.handleSaveSuccess(), err => LOG.error(err));
+        this.gemeindeKennzahlenService.saveGemeindeKennzahlen(antrag).subscribe(
+            () => this.handleSaveSuccess(),
+            err => LOG.error(err)
+        );
     }
 
     private handleSaveSuccess(): void {
@@ -133,7 +156,10 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         this.abschlussValidationTriggered = true;
 
         setTimeout(async () => {
-            if (!this.form.valid || !await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN')) {
+            if (
+                !this.form.valid ||
+                !(await this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN'))
+            ) {
                 return;
             }
 
@@ -143,26 +169,44 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
                 antrag.nachfrageAnzahl = null;
             }
 
-            this.gemeindeKennzahlenService.gemeindeKennzahlenAbschliessen(antrag)
-                .subscribe(() => this.handleSaveSuccess(), error => LOG.error(error));
+            this.gemeindeKennzahlenService
+                .gemeindeKennzahlenAbschliessen(antrag)
+                .subscribe(
+                    () => this.handleSaveSuccess(),
+                    error => LOG.error(error)
+                );
         }, 0);
     }
 
-    public isFormDisabledFor([antrag, principal]: [TSGemeindeKennzahlen, (TSBenutzer | null)]): boolean {
+    public isFormDisabledFor([antrag, principal]: [
+        TSGemeindeKennzahlen,
+        TSBenutzer | null
+    ]): boolean {
         if (principal === null) {
             return true;
         }
-        return antrag.isAbgeschlossen() || !principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles()
-            .concat(TSRole.SUPER_ADMIN));
+        return (
+            antrag.isAbgeschlossen() ||
+            !principal.hasOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN)
+            )
+        );
     }
 
-    public async zurueckAnGemeinde(antrag: TSGemeindeKennzahlen): Promise<void> {
-        if (!await this.confirmDialog('ZURUECK_AN_GEMEINDE_DIREKT')) {
+    public async zurueckAnGemeinde(
+        antrag: TSGemeindeKennzahlen
+    ): Promise<void> {
+        if (!(await this.confirmDialog('ZURUECK_AN_GEMEINDE_DIREKT'))) {
             return;
         }
-        this.gemeindeKennzahlenService.gemeindeKennzahlenZurueckAnGemeinde(antrag).subscribe(() => {
-            this.abschlussValidationTriggered = false;
-        }, error => LOG.error(error));
+        this.gemeindeKennzahlenService
+            .gemeindeKennzahlenZurueckAnGemeinde(antrag)
+            .subscribe(
+                () => {
+                    this.abschlussValidationTriggered = false;
+                },
+                error => LOG.error(error)
+            );
     }
 
     private confirmDialog(frageKey: string): Promise<boolean> {
@@ -170,7 +214,8 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         dialogConfig.data = {
             frage: this.translate.instant(frageKey)
         };
-        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+        return this.dialog
+            .open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .toPromise();
     }
@@ -179,7 +224,10 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         return getTSEinschulungTypValues();
     }
 
-    public onGemeindeKontingentiertChange(event: MatRadioChange, gdeKennzahlen: TSGemeindeKennzahlen): void {
+    public onGemeindeKontingentiertChange(
+        event: MatRadioChange,
+        gdeKennzahlen: TSGemeindeKennzahlen
+    ): void {
         if (event.value === true) {
             return;
         }
@@ -188,7 +236,10 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         this.resetNachfrageFields(gdeKennzahlen);
     }
 
-    public onNachfrageErfuelltChange(event: MatRadioChange, gdeKennzahlen: TSGemeindeKennzahlen): void {
+    public onNachfrageErfuelltChange(
+        event: MatRadioChange,
+        gdeKennzahlen: TSGemeindeKennzahlen
+    ): void {
         if (event.value === true) {
             return;
         }

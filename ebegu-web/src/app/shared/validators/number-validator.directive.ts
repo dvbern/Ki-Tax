@@ -57,5 +57,5 @@ function isHalf(val: any): boolean {
     if (isNaN(val)) {
         return false;
     }
-    return val * 2 % 1 === 0;
+    return (val * 2) % 1 === 0;
 }

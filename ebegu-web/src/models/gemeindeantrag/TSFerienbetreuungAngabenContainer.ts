@@ -24,7 +24,6 @@ import {TSGesuchsperiode} from '../TSGesuchsperiode';
 import {TSFerienbetreuungAngaben} from './TSFerienbetreuungAngaben';
 
 export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
-
     private _status: FerienbetreuungAngabenStatus;
     private _gemeinde: TSGemeinde;
     private _gesuchsperiode: TSGesuchsperiode;
@@ -99,8 +98,10 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     }
 
     public isAtLeastInPruefungKantonOrZurueckgegeben(): boolean {
-        return this.isAtLeastInPruefungKanton()
-        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
+        return (
+            this.isAtLeastInPruefungKanton() ||
+            this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE
+        );
     }
 
     public isInPruefungKanton(): boolean {
@@ -108,8 +109,11 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     }
 
     public isInBearbeitungGemeinde(): boolean {
-        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
-        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
+        return (
+            this.status ===
+                FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
+            this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE
+        );
     }
 
     public isGeprueft(): boolean {
@@ -127,24 +131,37 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         ].includes(this.status);
     }
 
-    public calculateBerechnungen(pauschale: number, pauschaleSonderschueler: number): void {
+    public calculateBerechnungen(
+        pauschale: number,
+        pauschaleSonderschueler: number
+    ): void {
         if (this.angabenKorrektur === null) {
-            throw new Error('Angaben Korrektur must not be null to complete the calculations');
+            throw new Error(
+                'Angaben Korrektur must not be null to complete the calculations'
+            );
         }
         const berechnungen = this.angabenKorrektur.berechnungen;
         berechnungen.pauschaleBetreuungstag = pauschale;
-        berechnungen.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+        berechnungen.pauschaleBetreuungstagSonderschueler =
+            pauschaleSonderschueler;
 
         if (!this.angabenKorrektur.kostenEinnahmen.isAbgeschlossen()) {
-            throw new Error('Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen');
+            throw new Error(
+                'Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen'
+            );
         }
         if (!this.angabenKorrektur.nutzung.isAbgeschlossen()) {
-            throw new Error('Nutzung muss abgeschlossen sein um die Berchnungen durchzuführen');
+            throw new Error(
+                'Nutzung muss abgeschlossen sein um die Berchnungen durchzuführen'
+            );
         }
         if (!this.angabenKorrektur.angebot.isAbgeschlossen()) {
-            throw new Error('Angebot muss abgeschlossen sein um die Berchnungen durchzuführen');
+            throw new Error(
+                'Angebot muss abgeschlossen sein um die Berchnungen durchzuführen'
+            );
         }
-        berechnungen.isDelegationsmodell = this.angabenKorrektur.isDelegationsmodell();
+        berechnungen.isDelegationsmodell =
+            this.angabenKorrektur.isDelegationsmodell();
 
         const kostenEinnahmen = this.angabenKorrektur.kostenEinnahmen;
         const nutzung = this.angabenKorrektur.nutzung;
@@ -154,17 +171,23 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         berechnungen.verpflegungskosten = kostenEinnahmen.verpflegungskosten;
         berechnungen.weitereKosten = kostenEinnahmen.weitereKosten;
         berechnungen.sockelbeitrag = kostenEinnahmen.sockelbeitrag;
-        berechnungen.beitraegeNachAnmeldungen = kostenEinnahmen.beitraegeNachAnmeldungen;
-        berechnungen.vorfinanzierteKantonsbeitraege = kostenEinnahmen.vorfinanzierteKantonsbeitraege;
-        berechnungen.eigenleistungenGemeinde = kostenEinnahmen.eigenleistungenGemeinde;
+        berechnungen.beitraegeNachAnmeldungen =
+            kostenEinnahmen.beitraegeNachAnmeldungen;
+        berechnungen.vorfinanzierteKantonsbeitraege =
+            kostenEinnahmen.vorfinanzierteKantonsbeitraege;
+        berechnungen.eigenleistungenGemeinde =
+            kostenEinnahmen.eigenleistungenGemeinde;
 
-        berechnungen.anzahlBetreuungstageKinderBern = nutzung.anzahlBetreuungstageKinderBern;
-        berechnungen.betreuungstageKinderDieserGemeinde = nutzung.betreuungstageKinderDieserGemeinde;
+        berechnungen.anzahlBetreuungstageKinderBern =
+            nutzung.anzahlBetreuungstageKinderBern;
+        berechnungen.betreuungstageKinderDieserGemeinde =
+            nutzung.betreuungstageKinderDieserGemeinde;
         berechnungen.betreuungstageKinderDieserGemeindeSonderschueler =
-                nutzung.betreuungstageKinderDieserGemeindeSonderschueler;
-        berechnungen.betreuungstageKinderAndererGemeinde = nutzung.davonBetreuungstageKinderAndererGemeinden;
+            nutzung.betreuungstageKinderDieserGemeindeSonderschueler;
+        berechnungen.betreuungstageKinderAndererGemeinde =
+            nutzung.davonBetreuungstageKinderAndererGemeinden;
         berechnungen.betreuungstageKinderAndererGemeindenSonderschueler =
-                nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler;
+            nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler;
 
         berechnungen.einnahmenElterngebuehren = kostenEinnahmen.elterngebuehren;
         berechnungen.weitereEinnahmen = kostenEinnahmen.weitereEinnahmen;

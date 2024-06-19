@@ -18,7 +18,6 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSTextRessource extends TSAbstractMutableEntity {
-
     public textDeutsch: string;
     public textFranzoesisch: string;
 }

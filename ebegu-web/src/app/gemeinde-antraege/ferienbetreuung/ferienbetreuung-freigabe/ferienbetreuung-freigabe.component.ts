@@ -24,11 +24,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungFreigabeComponent implements OnInit {
+    public constructor() {}
 
-    public constructor() {
-    }
-
-    public ngOnInit(): void {
-    }
-
+    public ngOnInit(): void {}
 }

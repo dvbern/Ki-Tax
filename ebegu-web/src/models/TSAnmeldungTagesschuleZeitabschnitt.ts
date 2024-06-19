@@ -19,10 +19,10 @@ import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
 export class TSAnmeldungTagesschuleZeitabschnitt extends TSAbstractDateRangedEntity {
     public massgebendesEinkommenInklAbzugFamgr: number;
-    public  verpflegungskosten: number;
-    public  betreuungsstundenProWoche: number;
-    public  betreuungsminutenProWoche: number;
-    public  gebuehrProStunde: number;
-    public  totalKostenProWoche: number;
-    public  pedagogischBetreut: boolean;
+    public verpflegungskosten: number;
+    public betreuungsstundenProWoche: number;
+    public betreuungsminutenProWoche: number;
+    public gebuehrProStunde: number;
+    public totalKostenProWoche: number;
+    public pedagogischBetreut: boolean;
 }

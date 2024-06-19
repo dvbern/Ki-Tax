@@ -31,9 +31,7 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {
-    FinanzielleSituationAppenzellService
-} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
+import {FinanzielleSituationAppenzellService} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 
 const LOG = LogFactory.createLog('FinSitZusatzfelderAppenzell');
 
@@ -44,7 +42,6 @@ const LOG = LogFactory.createLog('FinSitZusatzfelderAppenzell');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinSitFelderAppenzellComponent implements OnInit {
-
     @Input()
     public finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
 
@@ -64,7 +61,8 @@ export class FinSitFelderAppenzellComponent implements OnInit {
     public deklaration: TSFinSitZusatzangabenAppenzell;
 
     @Output()
-    private readonly valueChanges = new EventEmitter<TSFinSitZusatzangabenAppenzell>();
+    private readonly valueChanges =
+        new EventEmitter<TSFinSitZusatzangabenAppenzell>();
 
     public resultate: TSFinanzielleSituationResultateDTO;
 
@@ -72,14 +70,15 @@ export class FinSitFelderAppenzellComponent implements OnInit {
         private readonly finSitAppenzellService: FinanzielleSituationAppenzellService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly ref: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.finSitAppenzellService.massgebendesEinkommenStore.subscribe(resultate => {
+        this.finSitAppenzellService.massgebendesEinkommenStore.subscribe(
+            resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error)
+            },
+            error => LOG.error(error)
         );
     }
 
@@ -88,11 +87,15 @@ export class FinSitFelderAppenzellComponent implements OnInit {
     };
 
     public antragsteller1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller1?.extractFullName();
     }
 
     public antragsteller2Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller2?.extractFullName();
     }
 
     public getVermoegenAnrechenbar(): number {
@@ -104,13 +107,16 @@ export class FinSitFelderAppenzellComponent implements OnInit {
         } else if (this.antragstellerNumber === 2) {
             return this.resultate.vermoegenXPercentAnrechenbarGS2;
         } else {
-            throw new Error(`Falsche Antragsteller Nummer: ${this.antragstellerNumber}`);
+            throw new Error(
+                `Falsche Antragsteller Nummer: ${this.antragstellerNumber}`
+            );
         }
     }
 
     public getJahr(): number {
-        return EbeguUtil.isNullOrUndefined(this.finanzModel.getBasisJahrPlus()) ?
-            this.finanzModel.getBasisjahr() :
-            this.finanzModel.getBasisjahr() + this.finanzModel.getBasisJahrPlus();
+        return EbeguUtil.isNullOrUndefined(this.finanzModel.getBasisJahrPlus())
+            ? this.finanzModel.getBasisjahr()
+            : this.finanzModel.getBasisjahr() +
+                  this.finanzModel.getBasisJahrPlus();
     }
 }

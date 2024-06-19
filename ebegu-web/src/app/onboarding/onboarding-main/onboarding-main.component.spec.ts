@@ -31,10 +31,14 @@ describe('OnboardingMainComponent', () => {
     let component: OnboardingMainComponent;
     let fixture: ComponentFixture<OnboardingMainComponent>;
 
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const applicationRSSpy = jasmine
-        .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const applicationRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+        ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -55,7 +59,9 @@ describe('OnboardingMainComponent', () => {
 
     beforeEach(() => {
         const properties = new TSPublicAppConfig();
-        applicationRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
+        applicationRSSpy.getPublicPropertiesCached.and.returnValue(
+            of(properties).toPromise()
+        );
         fixture = TestBed.createComponent(OnboardingMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

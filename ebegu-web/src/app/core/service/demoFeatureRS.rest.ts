@@ -29,13 +29,17 @@ import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest
     providedIn: 'root'
 })
 export class DemoFeatureRS {
-
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {}
 
-    public isDemoFeatureAllowed(dvDemoFeature: TSDemoFeature): IPromise<boolean> {
-        return this.applicationPropertyRS.getActivatedDemoFeatures()
-            .then(allowedElement => allowedElement.includes(dvDemoFeature.valueOf()));
+    public isDemoFeatureAllowed(
+        dvDemoFeature: TSDemoFeature
+    ): IPromise<boolean> {
+        return this.applicationPropertyRS
+            .getActivatedDemoFeatures()
+            .then(allowedElement =>
+                allowedElement.includes(dvDemoFeature.valueOf())
+            );
     }
 }

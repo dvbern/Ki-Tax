@@ -20,7 +20,6 @@ import {TSBatchJobInformation} from './TSBatchJobInformation';
  * DTO fuer einen WorkJob
  */
 export class TSWorkJob extends TSAbstractMutableEntity {
-
     private _workJobType: string;
     private _startinguser: string;
     private _batchJobStatus: string;

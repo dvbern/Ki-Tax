@@ -14,59 +14,85 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div style="display: inline-block; max-width:100%;">
-
+<div style="display: inline-block; max-width: 100%">
     <div class="onboarding-container-info onboarding-info">
         <i class="fa fa-arrow-circle-left"></i>&nbsp;
-        <a href=""
-           uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
-        <br/>
+        <a href="" uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
+        <br />
         <h1 translate>ONBOARDING_INFO_INSTITUTION</h1>
         <p translate>ONBOARDING_INFO_INSTITUTION_INTRO</p>
         <p class="onboarding-info-action">
-            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_INSTITUTION_LINK' | translate}}">
+            <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="{{ 'ONBOARDING_INSTITUTION_LINK' | translate }}"
+            >
                 <button class="dv-btn onboarding-big-red-button">
-                    <span [innerHTML]="'ONBOARDING_ZULASSUNG_KANTON' | translate"></span>
+                    <span
+                        [innerHTML]="'ONBOARDING_ZULASSUNG_KANTON' | translate"
+                    ></span>
                 </button>
             </a>
-            <br/>
-            <br/>
+            <br />
+            <br />
         </p>
-        <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+        <form
+            (ngSubmit)="onSubmit(form)"
+            #form="ngForm"
+            [ngClass]="{'ng-submitted': form.submitted}"
+            novalidate
+        >
             <div class="testdaten-checkbox">
-                <mat-checkbox id="testZugangBeantragen_id" name="testZugangBeantragen_id"
-                              [(ngModel)]="testZugangBeantragen">
-                    {{'ONBOARDING_TESTZUGANG_KIBON'|translate}}
+                <mat-checkbox
+                    id="testZugangBeantragen_id"
+                    name="testZugangBeantragen_id"
+                    [(ngModel)]="testZugangBeantragen"
+                >
+                    {{ 'ONBOARDING_TESTZUGANG_KIBON' | translate }}
                 </mat-checkbox>
             </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="testZugangBeantragen">
+                    <div
+                        class="onboarding-nb-gemeinde-search"
+                        *ngIf="testZugangBeantragen"
+                    >
                         <div class="form-group">
                             <p translate>ONBOARDING_NAME_INSTITUION</p>
-                            <input id="institution_name_ID" type="text" name="institution_name"
-                                   [(ngModel)]="institutionName"
-                                   [maxlength]="255" class="form-control input-freetext" required>
-                            <dv-error-messages [errorObject]="form.controls.institution_name?.errors"
-                                               input-id="institution_name_ID">
+                            <input
+                                id="institution_name_ID"
+                                type="text"
+                                name="institution_name"
+                                [(ngModel)]="institutionName"
+                                [maxlength]="255"
+                                class="form-control input-freetext"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="
+                                    form.controls.institution_name?.errors
+                                "
+                                input-id="institution_name_ID"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
                 </div>
                 <div class="onboarding-nb-gemeinde-input-button">
                     <div *ngIf="testZugangBeantragen">
-                        <button [type]="'submit'"
-                                class="dv-btn onboarding-big-red-button onboarding-info-gem-padding">
+                        <button
+                            [type]="'submit'"
+                            class="dv-btn onboarding-big-red-button onboarding-info-gem-padding"
+                        >
                             <span translate>ONBOARDING_TESTZUGANG_SHORT</span>
                         </button>
                     </div>
                 </div>
             </div>
         </form>
-        <br/>
-        <a href=""
-           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
+        <br />
+        <a href="" uiSref="onboarding.infogemeinde" translate
+            >ONBOARDING_INFO_GEMEINDE_LINK</a
+        >
     </div>
 </div>
-
-

@@ -22,5 +22,6 @@ export const environment: Environment = {
     test: false,
     hmr: false,
     logLevel: LogLevel.INFO,
-    sentryDSN: 'https://4cc11d702c245cb414996f6a2c655022@sentry-relay.dvbern.ch/33'
+    sentryDSN:
+        'https://4cc11d702c245cb414996f6a2c655022@sentry-relay.dvbern.ch/33'
 };

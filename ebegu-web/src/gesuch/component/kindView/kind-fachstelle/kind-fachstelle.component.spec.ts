@@ -15,12 +15,19 @@ import {KindFachstelleComponent} from './kind-fachstelle.component';
 describe('KindFachstelleComponent', () => {
     let component: KindFachstelleComponent;
     let fixture: ComponentFixture<KindFachstelleComponent>;
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-        ['isGesuchReadonly', 'getGesuchsperiode', 'getFachstellenAnspruchList']);
-    gesuchModelManagerSpy.getGesuchsperiode.and.returnValue(new TSGesuchsperiode());
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['isGesuchReadonly', 'getGesuchsperiode', 'getFachstellenAnspruchList']
+    );
+    gesuchModelManagerSpy.getGesuchsperiode.and.returnValue(
+        new TSGesuchsperiode()
+    );
     gesuchModelManagerSpy.isGesuchReadonly.and.returnValue(false);
     gesuchModelManagerSpy.getFachstellenAnspruchList.and.returnValue(of([]));
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['principal$', 'isOneOfRoles']
+    );
     authServiceSpy.isOneOfRoles.and.returnValue(true);
 
     beforeEach(async () => {
@@ -30,13 +37,13 @@ describe('KindFachstelleComponent', () => {
             providers: [
                 {
                     provide: GesuchModelManager,
-                    useValue: gesuchModelManagerSpy,
+                    useValue: gesuchModelManagerSpy
                 },
                 {
                     provide: AuthServiceRS,
-                    useValue: authServiceSpy,
-                },
-            ],
+                    useValue: authServiceSpy
+                }
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -56,7 +63,10 @@ describe('KindFachstelleComponent', () => {
     });
 
     it('should test pensen overlaps', () => {
-        const dateRange = new TSDateRange(moment('2023-08-01'), moment('2024-07-31'));
+        const dateRange = new TSDateRange(
+            moment('2023-08-01'),
+            moment('2024-07-31')
+        );
         const dateA = moment('2023-08-15');
         const dateB = moment('2023-08-01');
         const dateC = moment('2024-07-31');

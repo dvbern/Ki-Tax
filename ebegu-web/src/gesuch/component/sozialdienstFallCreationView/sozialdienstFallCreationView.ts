@@ -51,7 +51,9 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 
 const LOG = LogFactory.createLog('SozialdienstFallCreationViewController');
 
-export class SozialdienstFallCreationViewComponentConfig implements IComponentOptions {
+export class SozialdienstFallCreationViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./sozialdienstFallCreationView.html');
     public controller = SozialdienstFallCreationViewController;
@@ -59,7 +61,6 @@ export class SozialdienstFallCreationViewComponentConfig implements IComponentOp
 }
 
 export class SozialdienstFallCreationViewController extends AbstractGesuchViewController<any> {
-
     public static $inject = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -98,12 +99,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         private readonly dvDialog: DvDialog,
         $timeout: ITimeoutService
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
-            $timeout);
+            $timeout
+        );
     }
 
     public $onInit(): void {
@@ -113,7 +116,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     private readStateParams(): void {
-        if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
+        if (
+            this.$stateParams.gesuchsperiodeId &&
+            this.$stateParams.gesuchsperiodeId !== ''
+        ) {
             this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         }
     }
@@ -122,9 +128,11 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
             return;
         }
-        this.fallRS.getAllVollmachtDokumente(this.gesuchModelManager.getFall().sozialdienstFall.id).then(
-            dokumente => this.dokumente = dokumente
-        );
+        this.fallRS
+            .getAllVollmachtDokumente(
+                this.gesuchModelManager.getFall().sozialdienstFall.id
+            )
+            .then(dokumente => (this.dokumente = dokumente));
     }
 
     private validateForm(): boolean {
@@ -133,7 +141,10 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         if (!this.isGesuchValid() || this.showAntragsteller2Error) {
             return false;
         }
-        if (!this.form.$dirty && !this.gesuchModelManager.getFall().sozialdienstFall.isNew()) {
+        if (
+            !this.form.$dirty &&
+            !this.gesuchModelManager.getFall().sozialdienstFall.isNew()
+        ) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return false;
@@ -150,26 +161,36 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     // eslint-disable-next-line
     private saveData(): void {
         this.errorService.clearAll();
-        this.gesuchModelManager.saveFall().then(
-            fall => {
-                if (fall.sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV) {
-                    this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+        this.gesuchModelManager
+            .saveFall()
+            .then(fall => {
+                if (
+                    fall.sozialdienstFall.status ===
+                    TSSozialdienstFallStatus.AKTIV
+                ) {
+                    this.wizardStepManager.updateCurrentWizardStepStatus(
+                        TSWizardStepStatus.OK
+                    );
                 }
                 this.navigateToSozialdienstFallCreation(fall);
-            }
-        ).catch(err => {
-            LOG.error('Could not save SozialdienstFall', err);
-            this.navigateToSozialdienstFallCreation(this.gesuchModelManager.getFall());
-        });
+            })
+            .catch(err => {
+                LOG.error('Could not save SozialdienstFall', err);
+                this.navigateToSozialdienstFallCreation(
+                    this.gesuchModelManager.getFall()
+                );
+            });
     }
 
     private navigateToSozialdienstFallCreation(fall: TSFall): void {
         const params: INewFallStateParams = {
             gesuchsperiodeId: this.gesuchsperiodeId,
             creationAction: null,
-            gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
-                this.gesuchModelManager.getGesuch().id :
-                null,
+            gesuchId: EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch()
+            )
+                ? this.gesuchModelManager.getGesuch().id
+                : null,
             dossierId: null,
             gemeindeId: this.gesuchModelManager.getGemeinde().id,
             eingangsart: null,
@@ -183,9 +204,11 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         const params: INewFallStateParams = {
             gesuchsperiodeId: this.gesuchsperiodeId,
             creationAction: null,
-            gesuchId: EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) ?
-                this.gesuchModelManager.getGesuch().id :
-                null,
+            gesuchId: EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch()
+            )
+                ? this.gesuchModelManager.getGesuch().id
+                : null,
             dossierId: null,
             gemeindeId: this.gesuchModelManager.getGemeinde().id,
             eingangsart: null,
@@ -206,38 +229,58 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isSozialdienstFallReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || this.isSozialdienstFallEntzogen()) {
+        if (
+            this.isSozialdienstFallAktiv() ||
+            this.isSozialdienstFallEntzogen()
+        ) {
             return true;
         }
         return false;
     }
 
     public isSozialdienstDokumentReadOnly(): boolean {
-        if (this.isSozialdienstFallAktiv() || (this.isSozialdienstFallEntzogen()
-            && !this.authServiceRS.isRole(TSRole.SUPER_ADMIN))) {
+        if (
+            this.isSozialdienstFallAktiv() ||
+            (this.isSozialdienstFallEntzogen() &&
+                !this.authServiceRS.isRole(TSRole.SUPER_ADMIN))
+        ) {
             return true;
         }
         return false;
     }
 
     public isSozialdienstFallAktiv(): boolean {
-        return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.AKTIV;
+        return (
+            this.gesuchModelManager.getFall().sozialdienstFall?.status ===
+            TSSozialdienstFallStatus.AKTIV
+        );
     }
 
     public isSozialdienstFallEntzogen(): boolean {
-        return this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.ENTZOGEN;
+        return (
+            this.gesuchModelManager.getFall().sozialdienstFall?.status ===
+            TSSozialdienstFallStatus.ENTZOGEN
+        );
     }
 
     public isAktivierungMoeglich(): boolean {
-        if (this.gesuchModelManager.getFall().sozialdienstFall?.status === TSSozialdienstFallStatus.INAKTIV
-            && this.dokumente && this.dokumente.length > 0) {
+        if (
+            this.gesuchModelManager.getFall().sozialdienstFall?.status ===
+                TSSozialdienstFallStatus.INAKTIV &&
+            this.dokumente &&
+            this.dokumente.length > 0
+        ) {
             return true;
         }
         return false;
     }
 
     public isReaktivierungMoeglich(): boolean {
-        if (this.isSozialdienstFallEntzogen() && this.dokumente && this.dokumente.length > 0) {
+        if (
+            this.isSozialdienstFallEntzogen() &&
+            this.dokumente &&
+            this.dokumente.length > 0
+        ) {
             return true;
         }
         return false;
@@ -245,25 +288,39 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
 
     public fallAktivieren(): void {
         this.form.$dirty = true;
-        if (this.validateForm() && this.dokumente && this.dokumente.length > 0) {
-            this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
+        if (
+            this.validateForm() &&
+            this.dokumente &&
+            this.dokumente.length > 0
+        ) {
+            this.gesuchModelManager.getFall().sozialdienstFall.status =
+                TSSozialdienstFallStatus.AKTIV;
             this.save();
         }
     }
 
     public fallEntziehen(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_VOLLMACHT_ENTZIEHEN',
-            deleteText: 'BESCHREIBUNG_VOLLMACHT_ENTZIEHEN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => {
-            this.fallRS.sozialdienstFallEntziehen(this.gesuchModelManager.getFall().id).then(
-                fall => {
-                    this.gesuchModelManager.getDossier().fall = fall;
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_VOLLMACHT_ENTZIEHEN',
+                    deleteText: 'BESCHREIBUNG_VOLLMACHT_ENTZIEHEN',
+                    parentController: undefined,
+                    elementID: undefined
                 }
-            );
-        });
+            )
+            .then(() => {
+                this.fallRS
+                    .sozialdienstFallEntziehen(
+                        this.gesuchModelManager.getFall().id
+                    )
+                    .then(fall => {
+                        this.gesuchModelManager.getDossier().fall = fall;
+                    });
+            });
     }
 
     public uploadVollmachtDokument(event: any): void {
@@ -273,30 +330,46 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
         const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: this.$translate.instant('FILE_ZU_GROSS')
-            });
+            this.dvDialog.showDialog(
+                okHtmlDialogTempl,
+                OkHtmlDialogController,
+                {
+                    title: this.$translate.instant('FILE_ZU_GROSS')
+                }
+            );
             return;
         }
 
-        this.uploadRS.uploadVollmachtDokument(selectedFile, this.gesuchModelManager.getFall().id)
+        this.uploadRS
+            .uploadVollmachtDokument(
+                selectedFile,
+                this.gesuchModelManager.getFall().id
+            )
             .then(dokumente => {
                 this.dokumente = this.dokumente.concat(dokumente);
             });
     }
 
     public removeVollmachtDokument(dokument: TSSozialdienstFallDokument): void {
-        this.fallRS.removeVollmachtDokument(dokument.id)
-            .then(() => {
-                this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
-            });
+        this.fallRS.removeVollmachtDokument(dokument.id).then(() => {
+            this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
+        });
     }
 
-    public downloadVollmachtDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
+    public downloadVollmachtDokument(
+        dokument: TSSozialdienstFallDokument,
+        attachment: boolean
+    ): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenSozialdienstFallDokument(dokument.id)
+        this.downloadRS
+            .getAccessTokenSozialdienstFallDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    attachment,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
@@ -304,11 +377,14 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public generateVollmachtPDF(sprache: TSSprache): void {
-        this.fallRS.getVollmachtDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getFall().id, sprache)
-            .then(
-                response => {
-                    this.openDownloadForFile(response);
-                });
+        this.fallRS
+            .getVollmachtDokumentAccessTokenGeneratedDokument(
+                this.gesuchModelManager.getFall().id,
+                sprache
+            )
+            .then(response => {
+                this.openDownloadForFile(response);
+            });
     }
 
     private openDownloadForFile(response: BlobPart): void {
@@ -320,13 +396,25 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     private validateZweiteAntragsteller(): void {
-        if ((!EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
-            || !EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
-            || EbeguUtil.isNotNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
-            &&
-            (EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().nameGs2)
-                || EbeguUtil.isEmptyStringNullOrUndefined(this.getSozialdienstFall().vornameGs2)
-                || EbeguUtil.isNullOrUndefined(this.getSozialdienstFall().geburtsdatumGs2))
+        if (
+            (!EbeguUtil.isEmptyStringNullOrUndefined(
+                this.getSozialdienstFall().nameGs2
+            ) ||
+                !EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.getSozialdienstFall().vornameGs2
+                ) ||
+                EbeguUtil.isNotNullOrUndefined(
+                    this.getSozialdienstFall().geburtsdatumGs2
+                )) &&
+            (EbeguUtil.isEmptyStringNullOrUndefined(
+                this.getSozialdienstFall().nameGs2
+            ) ||
+                EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.getSozialdienstFall().vornameGs2
+                ) ||
+                EbeguUtil.isNullOrUndefined(
+                    this.getSozialdienstFall().geburtsdatumGs2
+                ))
         ) {
             this.showAntragsteller2Error = true;
         }
@@ -341,19 +429,24 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     public isAntragBearbeitbar(): boolean {
-        return this.isSozialdienstFallAktiv() && this.gesuchModelManager.getGesuch()
-            && (this.gesuchModelManager.getGesuch().isMutation()
-                || this.gesuchModelManager.getGesuch().isFolgegesuch())
-            && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
+        return (
+            this.isSozialdienstFallAktiv() &&
+            this.gesuchModelManager.getGesuch() &&
+            (this.gesuchModelManager.getGesuch().isMutation() ||
+                this.gesuchModelManager.getGesuch().isFolgegesuch()) &&
+            this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
+        );
     }
 
     public bearbeiten(): void {
-        this.gesuchModelManager.getFall().sozialdienstFall.status = TSSozialdienstFallStatus.INAKTIV;
+        this.gesuchModelManager.getFall().sozialdienstFall.status =
+            TSSozialdienstFallStatus.INAKTIV;
         this.form.$dirty = true;
         this.save();
     }
 
     public getSozialdienstName(): string {
-        return this.gesuchModelManager.getFall().sozialdienstFall.sozialdienst.name;
+        return this.gesuchModelManager.getFall().sozialdienstFall.sozialdienst
+            .name;
     }
 }

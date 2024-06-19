@@ -18,7 +18,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {DVsTPersistService} from './dVsTPersistService';
 
 describe('stPersistService', () => {
-
     let dVsTPersistService: DVsTPersistService;
     let object1: any;
     let object2: any;
@@ -29,13 +28,15 @@ describe('stPersistService', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        dVsTPersistService = $injector.get('DVsTPersistService');
-        object1 = {name: 'Angelina', nachname: 'Jolie'};
-        object2 = {name: 'Brad', nachname: 'Pitt'};
-        namespaceOne = 'ns1';
-        namespaceTwo = 'ns2';
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            dVsTPersistService = $injector.get('DVsTPersistService');
+            object1 = {name: 'Angelina', nachname: 'Jolie'};
+            object2 = {name: 'Brad', nachname: 'Pitt'};
+            namespaceOne = 'ns1';
+            namespaceTwo = 'ns2';
+        })
+    );
 
     describe('save and load Data', () => {
         it('saves configurations in 2 different namespaces', () => {
@@ -67,5 +68,4 @@ describe('stPersistService', () => {
             expect(dVsTPersistService.loadData(namespaceOne)).toBeUndefined();
         });
     });
-
 });

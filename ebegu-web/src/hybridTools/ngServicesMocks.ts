@@ -52,9 +52,18 @@ import {EbeguRestUtil} from '../utils/EbeguRestUtil';
 ngServicesMock.$inject = ['$provide'];
 
 class GesuchGeneratorMock extends GesuchGenerator {
-
     public constructor() {
-        super(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        super(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+        );
     }
 
     public initGesuch(
@@ -62,9 +71,8 @@ class GesuchGeneratorMock extends GesuchGenerator {
         _creationAction: TSCreationAction,
         _gesuchsperiodeId: string,
         _currentFall: TSFall,
-        _currentDossier: TSDossier,
+        _currentDossier: TSDossier
     ): angular.IPromise<TSGesuch> {
-
         const gesuch = new TSGesuch();
         gesuch.dossier = new TSDossier();
         gesuch.eingangsart = eingangsart;
@@ -124,43 +132,50 @@ class MandantServiceMock extends MandantService {
 
 class EinstellungRSMock extends EinstellungRS {
     // tslint:disable-next-line:no-unused
-    public findEinstellung(key: TSEinstellungKey, gemeindeId: string, gesuchsperiodeId: string):
-        Observable<TSEinstellung> {
+    public findEinstellung(
+        key: TSEinstellungKey,
+        gemeindeId: string,
+        gesuchsperiodeId: string
+    ): Observable<TSEinstellung> {
         return of(new TSEinstellung());
     }
 
     // tslint:disable-next-line:no-unused
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(
+        gesuchsperiodeId: string
+    ): Observable<TSEinstellung[]> {
         return of([]);
     }
 }
 
 class InstitutionRSMock extends InstitutionRS {
-    public getInstitutionenEditableForCurrentBenutzer(): Observable<TSInstitution[]> {
+    public getInstitutionenEditableForCurrentBenutzer(): Observable<
+        TSInstitution[]
+    > {
         return of([]);
     }
 
-    public getInstitutionenReadableForCurrentBenutzer(): Observable<TSInstitution[]> {
+    public getInstitutionenReadableForCurrentBenutzer(): Observable<
+        TSInstitution[]
+    > {
         return of([]);
     }
 }
 
-class SearchRSMock extends SearchRS {
-}
+class SearchRSMock extends SearchRS {}
 
 class BenutzerRSMock extends BenutzerRSX {}
 
-class KinderabzugExchangeServiceMock extends KinderabzugExchangeService {
-}
+class KinderabzugExchangeServiceMock extends KinderabzugExchangeService {}
 
-class FamiliensituationRSMock extends FamiliensituationRS {
-}
+class FamiliensituationRSMock extends FamiliensituationRS {}
 
-class HybridFormBridgeServiceMock extends HybridFormBridgeService {
-}
+class HybridFormBridgeServiceMock extends HybridFormBridgeService {}
 
 class DemoFeatureRSMock extends DemoFeatureRS {
-    public isDemoFeatureAllowed(dvDemoFeature: TSDemoFeature): IPromise<boolean> {
+    public isDemoFeatureAllowed(
+        dvDemoFeature: TSDemoFeature
+    ): IPromise<boolean> {
         return Promise.resolve(false);
     }
 }
@@ -175,7 +190,9 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('MandantService', MandantServiceMock);
     $provide.service('EinstellungRS', EinstellungRSMock);
     $provide.service(EbeguRestUtil.name, EbeguRestUtil);
-    $provide.factory(EwkRS.name, () => jasmine.createSpyObj(EwkRS.name, ['sucheInEwk']));
+    $provide.factory(EwkRS.name, () =>
+        jasmine.createSpyObj(EwkRS.name, ['sucheInEwk'])
+    );
     $provide.service('InstitutionRS', InstitutionRSMock);
     $provide.service('windowRef', WindowRef);
     $provide.service('cookieService', CookieServiceMock);
@@ -183,10 +200,17 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('SearchRS', SearchRSMock);
     $provide.service('FamiliensituationRS', FamiliensituationRSMock);
     $provide.service('DemoFeatureRS', DemoFeatureRSMock);
-    $provide.service('KinderabzugExchangeService', KinderabzugExchangeServiceMock);
+    $provide.service(
+        'KinderabzugExchangeService',
+        KinderabzugExchangeServiceMock
+    );
     $provide.service('HybridFormBridgeService', HybridFormBridgeServiceMock);
-    $provide.factory('FreigabeService',
-        () => jasmine.createSpyObj('FreigabeService', ['canBeFreigegeben', 'getTextForFreigebenNotAllowed']));
+    $provide.factory('FreigabeService', () =>
+        jasmine.createSpyObj('FreigabeService', [
+            'canBeFreigegeben',
+            'getTextForFreigebenNotAllowed'
+        ])
+    );
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

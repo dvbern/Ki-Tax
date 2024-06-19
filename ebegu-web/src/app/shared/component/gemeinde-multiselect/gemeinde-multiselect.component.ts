@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import { MatOptionSelectionChange } from '@angular/material/core';
+import {MatOptionSelectionChange} from '@angular/material/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -39,7 +39,6 @@ let nextId = 0;
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class GemeindeMultiselectComponent implements OnInit {
-
     @Input() public required: boolean = false;
     @Input() public selected!: TSGemeinde[]; // Die selektierten Gemeinden
     @Input() public disabled: boolean = false;
@@ -52,20 +51,27 @@ export class GemeindeMultiselectComponent implements OnInit {
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
         public readonly form: NgForm
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.allowedMap$ = this.allowedInMap$ === undefined || this.allowedInMap$ === null
-            ? this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$())
-            : this.createMap$(this.allowedInMap$);
+        this.allowedMap$ =
+            this.allowedInMap$ === undefined || this.allowedInMap$ === null
+                ? this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$())
+                : this.createMap$(this.allowedInMap$);
     }
 
-    private createMap$(gemeindenList$: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde, boolean>> {
-        return gemeindenList$.pipe(map(gemeinden => gemeinden.reduce((currentMap, currentValue) => {
-                    const found = this.selected.find(g => g.id === currentValue.id);
+    private createMap$(
+        gemeindenList$: Observable<TSGemeinde[]>
+    ): Observable<Map<TSGemeinde, boolean>> {
+        return gemeindenList$.pipe(
+            map(gemeinden =>
+                gemeinden.reduce((currentMap, currentValue) => {
+                    const found = this.selected.find(
+                        g => g.id === currentValue.id
+                    );
                     return currentMap.set(found || currentValue, !!found);
-                }, new Map<TSGemeinde, boolean>()))
+                }, new Map<TSGemeinde, boolean>())
+            )
         );
     }
 

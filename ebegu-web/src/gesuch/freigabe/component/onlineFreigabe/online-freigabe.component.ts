@@ -35,7 +35,7 @@ const STEP_NAME = TSWizardStepName.FREIGABE;
 @Component({
     templateUrl: './online-freigabe.component.html',
     selector: 'dv-online-freigabe',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
     public alreadyFreigegeben: boolean;
@@ -43,22 +43,28 @@ export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
     public constructor(
         gesuchModelManager: GesuchModelManager,
         wizardStepManager: WizardStepManager,
-        protected readonly freigabeService: FreigabeService,
+        protected readonly freigabeService: FreigabeService
     ) {
         super(gesuchModelManager, wizardStepManager, STEP_NAME);
 
-        const unbesucht = wizardStepManager.getStepByName(STEP_NAME).wizardStepStatus === TSWizardStepStatus.UNBESUCHT;
-        this.alreadyFreigegeben = isAtLeastFreigegeben(gesuchModelManager.getGesuch().status);
+        const unbesucht =
+            wizardStepManager.getStepByName(STEP_NAME).wizardStepStatus ===
+            TSWizardStepStatus.UNBESUCHT;
+        this.alreadyFreigegeben = isAtLeastFreigegeben(
+            gesuchModelManager.getGesuch().status
+        );
         this.model = {userConfirmedCorrectness: this.alreadyFreigegeben};
 
         if (!this.alreadyFreigegeben && unbesucht) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
-                TSWizardStepStatus.IN_BEARBEITUNG);
+                TSWizardStepStatus.IN_BEARBEITUNG
+            );
         } else if (this.alreadyFreigegeben) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
-                TSWizardStepStatus.OK);
+                TSWizardStepStatus.OK
+            );
         }
     }
 
@@ -66,21 +72,34 @@ export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
         if (!this.model.userConfirmedCorrectness) {
             return null;
         }
-        const freigabeDto = new TSFreigabe(null, null, this.model.userConfirmedCorrectness);
+        const freigabeDto = new TSFreigabe(
+            null,
+            null,
+            this.model.userConfirmedCorrectness
+        );
         try {
-            await this.gesuchModelManager.antragFreigeben(this.gesuchModelManager.getGesuch().id, freigabeDto);
+            await this.gesuchModelManager.antragFreigeben(
+                this.gesuchModelManager.getGesuch().id,
+                freigabeDto
+            );
             return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
-                TSWizardStepStatus.OK);
+                TSWizardStepStatus.OK
+            );
         } catch (e) {
             return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 STEP_NAME,
-                TSWizardStepStatus.NOK);
+                TSWizardStepStatus.NOK
+            );
         }
     }
 
     public freigebenButtonDisabled() {
-        return !this.model.userConfirmedCorrectness || this.alreadyFreigegeben || this.cannotBeFreigegeben();
+        return (
+            !this.model.userConfirmedCorrectness ||
+            this.alreadyFreigegeben ||
+            this.cannotBeFreigegeben()
+        );
     }
 
     public checkboxDisabled() {
@@ -98,5 +117,4 @@ export class OnlineFreigabeComponent extends AbstractGesuchViewX<Model> {
     public cannotBeFreigegeben(): boolean {
         return !this.freigabeService.canBeFreigegeben();
     }
-
 }

@@ -12,8 +12,10 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
     templateUrl: '../angaben-gs.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenGs1Component extends AbstractFinSitsolothurnView implements OnInit {
-
+export class AngabenGs1Component
+    extends AbstractFinSitsolothurnView
+    implements OnInit
+{
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         public readonly finSitSoService: FinanzielleSituationSolothurnService,
@@ -22,8 +24,7 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView implements 
         super(gesuchModelManager, wizardStepManager, finSitSoService, 1);
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public getAntragstellerNummer(): number {
         return 1;
@@ -37,10 +38,11 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView implements 
         return TSFinanzielleSituationSubStepName.SOLOTHURN_GS1;
     }
 
-    public notify(): void {
-    }
+    public notify(): void {}
 
-    public prepareSave(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => any
+    ): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -52,7 +54,9 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView implements 
         return true;
     }
 
-    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+    public steuerveranlagungErhaltenChange(
+        steuerveranlagungErhalten: boolean
+    ): void {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }

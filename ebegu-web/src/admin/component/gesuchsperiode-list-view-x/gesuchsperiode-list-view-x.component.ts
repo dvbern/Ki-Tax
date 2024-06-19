@@ -15,7 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
@@ -32,8 +37,10 @@ import {AbstractAdminViewX} from '../../abstractAdminViewX';
     styleUrls: ['./gesuchsperiode-list-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX implements OnInit {
-
+export class GesuchsperiodeListViewXComponent
+    extends AbstractAdminViewX
+    implements OnInit
+{
     public gesuchsperioden: Array<TSGesuchsperiode> = [];
     public jahr: number;
 
@@ -51,7 +58,11 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
         {displayedName: 'GESUCHSPERIODE_STATUS', attributeName: 'status'}
     ];
     public simpleTableData: GpSimpleTableEntry[];
-    public simpleTableConfig: DvSimpleTableConfig = new DvSimpleTableConfig('gueltigAb', 'desc', true);
+    public simpleTableConfig: DvSimpleTableConfig = new DvSimpleTableConfig(
+        'gueltigAb',
+        'desc',
+        true
+    );
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -67,13 +78,19 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
     }
 
     private initGesuchsperioden(): void {
-        this.gesuchsperiodeRS.getAllGesuchsperioden().then((gesuchsperioden: Array<TSGesuchsperiode>) => {
-            this.simpleTableData = gesuchsperioden.map(periode => this.gesuchsperiodeToSimpleTableEntry(periode));
-            this.cd.markForCheck();
-        });
+        this.gesuchsperiodeRS
+            .getAllGesuchsperioden()
+            .then((gesuchsperioden: Array<TSGesuchsperiode>) => {
+                this.simpleTableData = gesuchsperioden.map(periode =>
+                    this.gesuchsperiodeToSimpleTableEntry(periode)
+                );
+                this.cd.markForCheck();
+            });
     }
 
-    private gesuchsperiodeToSimpleTableEntry(periode: TSGesuchsperiode): GpSimpleTableEntry {
+    private gesuchsperiodeToSimpleTableEntry(
+        periode: TSGesuchsperiode
+    ): GpSimpleTableEntry {
         return {
             id: periode.id,
             gueltigAb: periode.gueltigkeit.gueltigAb.toDate().getTime(),
@@ -93,7 +110,6 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
             gesuchsperiodeId: undefined
         });
     }
-
 }
 
 interface GpSimpleTableEntry {

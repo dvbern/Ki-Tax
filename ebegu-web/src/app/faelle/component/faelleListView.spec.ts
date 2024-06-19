@@ -33,7 +33,6 @@ import {FAELLE_JS_MODULE} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
 
 describe('faelleListView', () => {
-
     let authServiceRS: AuthServiceRS;
     let gesuchRS: GesuchRS;
     let faelleListViewController: FaelleListViewController;
@@ -52,27 +51,31 @@ describe('faelleListView', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        authServiceRS = $injector.get('AuthServiceRS');
-        gesuchRS = $injector.get('GesuchRS');
-        $q = $injector.get('$q');
-        $scope = $injector.get('$rootScope');
-        $httpBackend = $injector.get('$httpBackend');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        $state = $injector.get('$state');
-        $log = $injector.get('$log');
-        wizardStepManager = $injector.get('WizardStepManager');
-        mockAntrag = mockGetPendenzenList();
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            authServiceRS = $injector.get('AuthServiceRS');
+            gesuchRS = $injector.get('GesuchRS');
+            $q = $injector.get('$q');
+            $scope = $injector.get('$rootScope');
+            $httpBackend = $injector.get('$httpBackend');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            $state = $injector.get('$state');
+            $log = $injector.get('$log');
+            wizardStepManager = $injector.get('WizardStepManager');
+            mockAntrag = mockGetPendenzenList();
+        })
+    );
 
     describe('API Usage', () => {
         describe('searchFaelle', () => {
             it('should return the list with found Faellen', () => {
                 mockRestCalls();
-                faelleListViewController = new FaelleListViewController(gesuchModelManager,
+                faelleListViewController = new FaelleListViewController(
+                    gesuchModelManager,
                     $state,
                     $log,
-                    authServiceRS);
+                    authServiceRS
+                );
 
                 $scope.$apply();
             });
@@ -81,23 +84,26 @@ describe('faelleListView', () => {
             it('should call findGesuch and open the view gesuch.fallcreation with it for normal user', () => {
                 callEditFall();
 
-                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation',
-                    {gesuchId: '66345345', dossierId: '11111111'});
-
+                expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {
+                    gesuchId: '66345345',
+                    dossierId: '11111111'
+                });
             });
-            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt',
-                () => {
-                    spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                    callEditFall();
-                    expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId: '66345345'});
+            it('should call findGesuch and open the view gesuch.betreuungen with it for INS/TRAEGER user if gesuch not verfuegt', () => {
+                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+                callEditFall();
+                expect($state.go).toHaveBeenCalledWith('gesuch.betreuungen', {
+                    gesuchId: '66345345'
                 });
-            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt',
-                () => {
-                    spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                    mockAntrag.status = TSAntragStatus.VERFUEGT;
-                    callEditFall();
-                    expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {gesuchId: '66345345'});
+            });
+            it('should call findGesuch and open the view gesuch.verfuegen with it for INS/TRAEGER user if gesuch verfuegt', () => {
+                spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+                mockAntrag.status = TSAntragStatus.VERFUEGT;
+                callEditFall();
+                expect($state.go).toHaveBeenCalledWith('gesuch.verfuegen', {
+                    gesuchId: '66345345'
                 });
+            });
         });
     });
 
@@ -121,21 +127,29 @@ describe('faelleListView', () => {
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/institutionen').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/benutzer').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/active')
+            .respond({});
     }
 
     function callEditFall(): TSGesuch {
         mockRestCalls();
         spyOn($state, 'go');
-        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
-        faelleListViewController = new FaelleListViewController(gesuchModelManager,
+        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+            undefined
+        );
+        faelleListViewController = new FaelleListViewController(
+            gesuchModelManager,
             $state,
             $log,
-            authServiceRS);
+            authServiceRS
+        );
 
         const tsGesuch = new TSGesuch();
         spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
-        spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue($q.when(tsGesuch));
+        spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue(
+            $q.when(tsGesuch)
+        );
 
         faelleListViewController.editFall(mockAntrag, undefined);
         $scope.$apply();

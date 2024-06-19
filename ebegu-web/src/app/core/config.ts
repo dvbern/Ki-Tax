@@ -47,7 +47,6 @@ export function configure(
     $locationProvider: ILocationProvider,
     $qProvider: IQProvider
 ): void {
-
     // In case you have issues with double-escaped parameters, check out this issue:
     // https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
@@ -62,15 +61,18 @@ export function configure(
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
-        const unsavedWarningsConfigProvider = $injector.get<any>('unsavedWarningsConfigProvider');
+        const unsavedWarningsConfigProvider = $injector.get<any>(
+            'unsavedWarningsConfigProvider'
+        );
         unsavedWarningsConfigProvider.useTranslateService = true;
         unsavedWarningsConfigProvider.logEnabled = false;
         unsavedWarningsConfigProvider.navigateMessage = 'UNSAVED_WARNING';
         unsavedWarningsConfigProvider.reloadMessage = 'UNSAVED_WARNING_RELOAD';
     }
     // Config Angular Module Theme
-    $mdThemingProvider.theme('default')
-    // .primaryPalette('red')
+    $mdThemingProvider
+        .theme('default')
+        // .primaryPalette('red')
         .accentPalette('red');
 
     // Config hotkey provider: https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys-

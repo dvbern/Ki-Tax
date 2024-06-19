@@ -16,18 +16,19 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {IComponentController, IController, IQService, ITimeoutService} from 'angular';
+import {
+    IComponentController,
+    IController,
+    IQService,
+    ITimeoutService
+} from 'angular';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
-import {
-    FinanzielleSituationSubStepManagerAppenzell,
-} from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
+import {FinanzielleSituationSubStepManagerAppenzell} from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
 import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
 import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
 import {FinanzielleSituationSubStepManagerSchwyz} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSchwyz';
-import {
-    FinanzielleSituationSubStepManagerSolothurn,
-} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
+import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -79,7 +80,6 @@ export class DVNavigation implements IComponentController {
 const LOG = LogFactory.createLog('DVNavigation');
 
 export class NavigatorController implements IController {
-
     public static $inject: string[] = [
         'WizardStepManager',
         'FinanzielleSituationRS',
@@ -114,8 +114,7 @@ export class NavigatorController implements IController {
         private readonly errorService: ErrorService,
         private readonly $q: IQService,
         private readonly $timeout: ITimeoutService
-    ) {
-    }
+    ) {}
 
     // wird von angular aufgerufen
     public $onInit(): void {
@@ -128,39 +127,61 @@ export class NavigatorController implements IController {
     }
 
     private initSubStepManager(): void {
-        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.gesuchModelManager.getGesuchsperiode()
+            )
+        ) {
             return;
         }
-        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
-            this.gesuchModelManager.getGemeinde())
-            .subscribe(typ => {
-                switch (typ) {
-                    case TSFinanzielleSituationTyp.BERN:
-                    case TSFinanzielleSituationTyp.BERN_FKJV:
-                        this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerBernAsiv(this.gesuchModelManager);
-                        break;
-                    case TSFinanzielleSituationTyp.LUZERN:
-                        this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerLuzern(this.gesuchModelManager);
-                        break;
-                    case TSFinanzielleSituationTyp.SOLOTHURN:
-                        this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
-                        break;
-                    case TSFinanzielleSituationTyp.APPENZELL:
-                    case TSFinanzielleSituationTyp.APPENZELL_FOLGEMONAT:
-                        this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
-                        break;
-                    case TSFinanzielleSituationTyp.SCHWYZ:
-                        this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerSchwyz(this.gesuchModelManager);
-                        break;
-                    default:
-                        throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
-                }
-            }, err => LOG.error(err));
+        this.finanzielleSituationRS
+            .getFinanzielleSituationTyp(
+                this.gesuchModelManager.getGesuchsperiode(),
+                this.gesuchModelManager.getGemeinde()
+            )
+            .subscribe(
+                typ => {
+                    switch (typ) {
+                        case TSFinanzielleSituationTyp.BERN:
+                        case TSFinanzielleSituationTyp.BERN_FKJV:
+                            this.finSitWizardSubStepManager =
+                                new FinanzielleSituationSubStepManagerBernAsiv(
+                                    this.gesuchModelManager
+                                );
+                            break;
+                        case TSFinanzielleSituationTyp.LUZERN:
+                            this.finSitWizardSubStepManager =
+                                new FinanzielleSituationSubStepManagerLuzern(
+                                    this.gesuchModelManager
+                                );
+                            break;
+                        case TSFinanzielleSituationTyp.SOLOTHURN:
+                            this.finSitWizardSubStepManager =
+                                new FinanzielleSituationSubStepManagerSolothurn(
+                                    this.gesuchModelManager
+                                );
+                            break;
+                        case TSFinanzielleSituationTyp.APPENZELL:
+                        case TSFinanzielleSituationTyp.APPENZELL_FOLGEMONAT:
+                            this.finSitWizardSubStepManager =
+                                new FinanzielleSituationSubStepManagerAppenzell(
+                                    this.gesuchModelManager
+                                );
+                            break;
+                        case TSFinanzielleSituationTyp.SCHWYZ:
+                            this.finSitWizardSubStepManager =
+                                new FinanzielleSituationSubStepManagerSchwyz(
+                                    this.gesuchModelManager
+                                );
+                            break;
+                        default:
+                            throw new Error(
+                                `unexpected TSFinanzielleSituationTyp ${typ}`
+                            );
+                    }
+                },
+                err => LOG.error(err)
+            );
     }
 
     public doesCancelExist(): boolean {
@@ -168,7 +189,9 @@ export class NavigatorController implements IController {
     }
 
     public doesdvTranslateNextExist(): boolean {
-        return this.dvTranslateNext !== undefined && this.dvTranslateNext !== null;
+        return (
+            this.dvTranslateNext !== undefined && this.dvTranslateNext !== null
+        );
     }
 
     /**
@@ -218,12 +241,15 @@ export class NavigatorController implements IController {
 
         // eslint-disable-next-line
         if (this.isSavingEnabled() && this.dvSave) {
-            const returnValue = this.dvSave();  // callback ausfuehren, could return promise
+            const returnValue = this.dvSave(); // callback ausfuehren, could return promise
             if (returnValue) {
-                this.$q.when(returnValue)
-                    .then(() => this.$timeout(() => {
-                        this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
-                    }))
+                this.$q
+                    .when(returnValue)
+                    .then(() =>
+                        this.$timeout(() => {
+                            this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
+                        })
+                    )
                     .catch(() => {
                         // the promise was rejected, the navigation aborted:
                         this.wizardStepManager.isTransitionInProgress = false;
@@ -239,7 +265,9 @@ export class NavigatorController implements IController {
     }
 
     private isSavingEnabled(): boolean {
-        return this.dvSavingPossible ? true : !this.gesuchModelManager.isGesuchReadonly();
+        return this.dvSavingPossible
+            ? true
+            : !this.gesuchModelManager.isGesuchReadonly();
     }
 
     /**
@@ -257,7 +285,7 @@ export class NavigatorController implements IController {
 
         // eslint-disable-next-line
         if (this.isSavingEnabled() && this.dvSave) {
-            const returnValue = this.dvSave();  // callback ausfuehren, could return promise
+            const returnValue = this.dvSave(); // callback ausfuehren, could return promise
             if (returnValue) {
                 this.$q.when(returnValue).then(() => {
                     this.$timeout(() => {
@@ -289,27 +317,44 @@ export class NavigatorController implements IController {
      */
     // eslint-disable-next-line
     private navigateToNextStep(): TransitionPromise | undefined {
-
         this.errorService.clearAll();
 
         // Improvement?: All diese Sonderregel koennten in getNextStep() vom wizardStepManager sein, damit die gleiche
         // Funktionalität für isButtonDisable wie für die Navigation existiert.
-        if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName()
-            && this.gesuchModelManager.getGesuchstellerNumber() === 1
-            && this.gesuchModelManager.isGesuchsteller2Required()) {
+        if (
+            TSWizardStepName.GESUCHSTELLER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
+            this.gesuchModelManager.isGesuchsteller2Required()
+        ) {
             return this.navigateToStep(TSWizardStepName.GESUCHSTELLER, '2');
         }
-        if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.KINDER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.KINDER);
         }
-        if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.BETREUUNG ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             // Diese Logik ist ziemlich kompliziert. Deswegen bleibt sie noch in betreuungView.ts -> Hier wird dann
             // nichts gemacht
             return undefined;
         }
-        if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.ERWERBSPENSUM ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             if (this.dvSubStep === 1) {
-                return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+                return this.navigateToStep(
+                    this.wizardStepManager.getNextStep(
+                        this.gesuchModelManager.getGesuch()
+                    )
+                );
             }
             if (this.dvSubStep === 2) {
                 return this.navigateToStep(TSWizardStepName.ERWERBSPENSUM);
@@ -317,40 +362,83 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
-            const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
-            const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
+        if (
+            TSWizardStepName.FINANZIELLE_SITUATION ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_LUZERN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL ===
+                this.wizardStepManager.getCurrentStepName()
+        ) {
+            const nextSubStep =
+                this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(
+                    this.dvSubStepName
+                );
+            const nextMainStep = this.wizardStepManager.getNextStep(
+                this.gesuchModelManager.getGesuch()
+            );
             return this.navigateToSubStepFinanzielleSituation(
                 nextSubStep,
-                nextMainStep);
+                nextMainStep
+            );
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL ===
+                this.wizardStepManager.getCurrentStepName()
+        ) {
             if (this.dvSubStep === 1) {
-                const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
-                if (info && info.einkommensverschlechterung) { // was muss hier sein?
+                const info = this.gesuchModelManager
+                    .getGesuch()
+                    .extractEinkommensverschlechterungInfo();
+                if (info && info.einkommensverschlechterung) {
+                    // was muss hier sein?
                     if (info.ekvFuerBasisJahrPlus1) {
-                        return this.navigateToStepEinkommensverschlechterung('1', undefined);
+                        return this.navigateToStepEinkommensverschlechterung(
+                            '1',
+                            undefined
+                        );
                     }
-                    return this.navigateToStepEinkommensverschlechterung('1', '2');
+                    return this.navigateToStepEinkommensverschlechterung(
+                        '1',
+                        '2'
+                    );
                 }
-                return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
+                return this.wizardStepManager
+                    .updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
                     .then(() =>
-                        this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
+                        this.navigateToStep(
+                            this.wizardStepManager.getNextStep(
+                                this.gesuchModelManager.getGesuch()
+                            )
+                        )
+                    ) as any;
             }
             if (this.dvSubStep === 2) {
-                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) { // gehe ekv 1/2
-                    return this.navigateToStepEinkommensverschlechterung('1', '1');
+                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
+                    // gehe ekv 1/2
+                    return this.navigateToStepEinkommensverschlechterung(
+                        '1',
+                        '1'
+                    );
                 }
-                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
-                    return this.navigateToStepEinkommensverschlechterung('1', '2');
+                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
+                    // gehe ekv 1/2
+                    return this.navigateToStepEinkommensverschlechterung(
+                        '1',
+                        '2'
+                    );
                 }
                 return undefined;
             }
@@ -365,7 +453,11 @@ export class NavigatorController implements IController {
         }
 
         // by default navigieren wir zum naechsten erlaubten Step
-        return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+        return this.navigateToStep(
+            this.wizardStepManager.getNextStep(
+                this.gesuchModelManager.getGesuch()
+            )
+        );
     }
 
     /**
@@ -376,47 +468,92 @@ export class NavigatorController implements IController {
     private navigateToPreviousStep(): TransitionPromise | undefined {
         this.errorService.clearAll();
 
-        if (TSWizardStepName.GESUCH_ERSTELLEN === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.GESUCH_ERSTELLEN ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             return this.navigateToStep(TSWizardStepName.GESUCH_ERSTELLEN);
         }
 
-        if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName()
-            && this.gesuchModelManager.getGesuchstellerNumber() === 2) {
+        if (
+            TSWizardStepName.GESUCHSTELLER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.gesuchModelManager.getGesuchstellerNumber() === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.GESUCHSTELLER, '1');
         }
 
-        if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.KINDER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.KINDER);
         }
 
-        if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.BETREUUNG ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.BETREUUNG);
         }
 
-        if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.ERWERBSPENSUM ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.ERWERBSPENSUM);
         }
 
-        if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
-            const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
-            const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
+        if (
+            TSWizardStepName.FINANZIELLE_SITUATION ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_LUZERN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN ===
+                this.wizardStepManager.getCurrentStepName()
+        ) {
+            const previousSubStep =
+                this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(
+                    this.dvSubStepName
+                );
+            const previousMainStep = this.wizardStepManager.getPreviousStep(
+                this.gesuchModelManager.getGesuch()
+            );
 
-            return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
+            return this.navigateToSubStepFinanzielleSituation(
+                previousSubStep,
+                previousMainStep
+            );
         }
 
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ ===
+                this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL ===
+                this.wizardStepManager.getCurrentStepName()
+        ) {
             if (this.dvSubStep === 1) {
-                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
+                return this.navigateToStep(
+                    this.wizardStepManager.getPreviousStep(
+                        this.gesuchModelManager.getGesuch()
+                    )
+                );
             }
             if (this.dvSubStep === 2) {
-                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
+                return this.navigateToStep(
+                    this.wizardStepManager.getCurrentStepName()
+                );
             }
             if (this.dvSubStep === 3) {
                 return this.navigatePreviousEVSubStep3();
@@ -428,11 +565,19 @@ export class NavigatorController implements IController {
             return undefined; // TODO is this allowed?
         }
 
-        if (TSWizardStepName.VERFUEGEN === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
+        if (
+            TSWizardStepName.VERFUEGEN ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 2
+        ) {
             return this.navigateToStep(TSWizardStepName.VERFUEGEN);
         }
 
-        return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
+        return this.navigateToStep(
+            this.wizardStepManager.getPreviousStep(
+                this.gesuchModelManager.getGesuch()
+            )
+        );
     }
 
     private navigateToSubStepFinanzielleSituation(
@@ -443,7 +588,9 @@ export class NavigatorController implements IController {
             case TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP:
                 return this.navigateToStep(navigateToStepIfNoSubstep);
             case TSFinanzielleSituationSubStepName.BERN_START:
-                return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
+                return this.navigateToStep(
+                    TSWizardStepName.FINANZIELLE_SITUATION
+                );
             case TSFinanzielleSituationSubStepName.BERN_GS1:
                 return this.navigateToStepFinanzielleSituation('1');
             case TSFinanzielleSituationSubStepName.BERN_GS2:
@@ -458,7 +605,9 @@ export class NavigatorController implements IController {
             case TSFinanzielleSituationSubStepName.LUZERN_GS2:
                 return this.navigateToLuzernGS2();
             default:
-                throw new Error(`not implemented for Substep ${navigateToSubStep}`);
+                throw new Error(
+                    `not implemented for Substep ${navigateToSubStep}`
+                );
         }
     }
 
@@ -466,14 +615,23 @@ export class NavigatorController implements IController {
      * Diese Methode navigierte zum ersten substep jedes Steps. Fuer die navigation innerhalb eines Steps muss
      * man eine extra Methode machen
      */
-    private navigateToStep(stepName: TSWizardStepName, gsNumber?: string): TransitionPromise {
+    private navigateToStep(
+        stepName: TSWizardStepName,
+        gsNumber?: string
+    ): TransitionPromise {
         const gesuchId = this.getGesuchId();
         const gesuchIdParam = {gesuchId};
-        const gesuchstellerParams = {gesuchstellerNumber: gsNumber ? gsNumber : '1', gesuchId};
+        const gesuchstellerParams = {
+            gesuchstellerNumber: gsNumber ? gsNumber : '1',
+            gesuchId
+        };
 
         switch (stepName) {
             case TSWizardStepName.GESUCH_ERSTELLEN:
-                return this.state.go('gesuch.fallcreation', this.getFallCreationParams());
+                return this.state.go(
+                    'gesuch.fallcreation',
+                    this.getFallCreationParams()
+                );
             case TSWizardStepName.FAMILIENSITUATION:
                 return this.state.go('gesuch.familiensituation', gesuchIdParam);
             case TSWizardStepName.GESUCHSTELLER:
@@ -489,21 +647,39 @@ export class NavigatorController implements IController {
             case TSWizardStepName.ERWERBSPENSUM:
                 return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION:
-                return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.finanzielleSituationStart',
+                    gesuchIdParam
+                );
             case TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ:
-                return this.state.go('gesuch.finanzielleSituationStartSchwyz', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.finanzielleSituationStartSchwyz',
+                    gesuchIdParam
+                );
             case TSWizardStepName.FINANZIELLE_SITUATION_LUZERN:
-                return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.finanzielleSituationStartLuzern',
+                    gesuchIdParam
+                );
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
-                return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.finanzielleSituationStartSolothurn',
+                    gesuchIdParam
+                );
             case TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL:
-                return this.state.go('gesuch.finanzielleSituationAppenzell', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.finanzielleSituationAppenzell',
+                    gesuchIdParam
+                );
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL:
-                return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
+                return this.state.go(
+                    'gesuch.einkommensverschlechterungInfo',
+                    gesuchIdParam
+                );
             case TSWizardStepName.DOKUMENTE:
                 return this.state.go('gesuch.dokumente', gesuchIdParam);
             case TSWizardStepName.FREIGABE:
@@ -516,7 +692,11 @@ export class NavigatorController implements IController {
     }
 
     private getFallCreationParams(): {
-        eingangsart: TSEingangsart; gesuchId: string; gesuchsperiodeId: string; dossierId: string; gemeindeId: string;
+        eingangsart: TSEingangsart;
+        gesuchId: string;
+        gesuchsperiodeId: string;
+        dossierId: string;
+        gemeindeId: string;
     } {
         const gesuch = this.gesuchModelManager.getGesuch();
 
@@ -529,18 +709,33 @@ export class NavigatorController implements IController {
         };
     }
 
-    private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+    private navigateToStepEinkommensverschlechterung(
+        gsNumber: string,
+        basisjahrPlus: string
+    ): TransitionPromise {
         let stateName = 'gesuch.einkommensverschlechterung';
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungLuzern';
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungSolothurn';
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungSchwyz';
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungAppenzell';
         }
         return this.state.go(stateName, {
@@ -550,7 +745,10 @@ export class NavigatorController implements IController {
         });
     }
 
-    private navigateToStepEinkommensverschlechterungLuzern(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+    private navigateToStepEinkommensverschlechterungLuzern(
+        gsNumber: string,
+        basisjahrPlus: string
+    ): TransitionPromise {
         return this.state.go('gesuch.einkommensverschlechterungLuzern', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
@@ -572,15 +770,26 @@ export class NavigatorController implements IController {
         });
     }
 
-    private navigateToStepEinkommensverschlechterungResultate(basisjahrPlus: string): TransitionPromise {
+    private navigateToStepEinkommensverschlechterungResultate(
+        basisjahrPlus: string
+    ): TransitionPromise {
         let stateName = 'gesuch.einkommensverschlechterungResultate';
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
-            stateName =  'gesuch.einkommensverschlechterungLuzernResultate';
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
+            stateName = 'gesuch.einkommensverschlechterungLuzernResultate';
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungSolothurnResultate';
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+        if (
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL ===
+            this.wizardStepManager.getCurrentStepName()
+        ) {
             stateName = 'gesuch.einkommensverschlechterungAppenzellResultate';
         }
         return this.state.go(stateName, {
@@ -589,7 +798,9 @@ export class NavigatorController implements IController {
         });
     }
 
-    private navigateToStepFinanzielleSituation(gsNumber: string): TransitionPromise {
+    private navigateToStepFinanzielleSituation(
+        gsNumber: string
+    ): TransitionPromise {
         return this.state.go('gesuch.finanzielleSituation', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             gesuchId: this.getGesuchId()
@@ -623,10 +834,17 @@ export class NavigatorController implements IController {
     public isNextButtonDisabled(): boolean {
         // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps
         // besucht sind
-        const nextStepBesucht = this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
-        const nextStepEnabled = this.wizardStepManager.isNextStepEnabled(this.gesuchModelManager.getGesuch());
-        if (this.gesuchModelManager.isGesuchReadonly()
-            && TSWizardStepName.GESUCHSTELLER !== this.wizardStepManager.getCurrentStepName()) {
+        const nextStepBesucht = this.wizardStepManager.isNextStepBesucht(
+            this.gesuchModelManager.getGesuch()
+        );
+        const nextStepEnabled = this.wizardStepManager.isNextStepEnabled(
+            this.gesuchModelManager.getGesuch()
+        );
+        if (
+            this.gesuchModelManager.isGesuchReadonly() &&
+            TSWizardStepName.GESUCHSTELLER !==
+                this.wizardStepManager.getCurrentStepName()
+        ) {
             return !nextStepBesucht;
         }
 
@@ -644,18 +862,36 @@ export class NavigatorController implements IController {
             return true;
         }
 
-        if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return !this.gesuchModelManager.isGesuchsteller2Required()
-                && !nextStepBesucht;
+        if (
+            TSWizardStepName.GESUCHSTELLER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
+            return (
+                !this.gesuchModelManager.isGesuchsteller2Required() &&
+                !nextStepBesucht
+            );
         }
-        if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return (!this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
-                || this.gesuchModelManager.isThereAnyNotGeprueftesKind())
-                && !nextStepBesucht;
+        if (
+            TSWizardStepName.KINDER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
+            return (
+                (!this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf() ||
+                    this.gesuchModelManager.isThereAnyNotGeprueftesKind()) &&
+                !nextStepBesucht
+            );
         }
-        if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-                && !nextStepBesucht;
+        if (
+            TSWizardStepName.BETREUUNG ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
+            return (
+                !this.gesuchModelManager.getGesuch().isThereAnyBetreuung() &&
+                !nextStepBesucht
+            );
         }
         return false;
     }
@@ -665,13 +901,25 @@ export class NavigatorController implements IController {
             return undefined;
         }
 
-        if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
+        if (
+            TSWizardStepName.KINDER ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
             return this.$translate.instant('KINDER_TOOLTIP_REQUIRED');
         }
-        if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
+        if (
+            TSWizardStepName.BETREUUNG ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
             return this.$translate.instant('BETREUUNG_TOOLTIP_REQUIRED');
         }
-        if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
+        if (
+            TSWizardStepName.ERWERBSPENSUM ===
+                this.wizardStepManager.getCurrentStepName() &&
+            this.dvSubStep === 1
+        ) {
             return this.$translate.instant('ERWERBSPENSUM_TOOLTIP_REQUIRED');
         }
 
@@ -680,16 +928,26 @@ export class NavigatorController implements IController {
 
     // eslint-disable-next-line
     private navigateNextEVSubStep3(): TransitionPromise {
-        if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
+        if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/1
-                    return this.navigateToStepEinkommensverschlechterung('2', '1');
+                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) {
+                    // gehe ekv 2/1
+                    return this.navigateToStepEinkommensverschlechterung(
+                        '2',
+                        '1'
+                    );
                 }
-                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
-                    return this.navigateToStepEinkommensverschlechterung('1', '2');
+                if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
+                    // gehe ekv 1/2
+                    return this.navigateToStepEinkommensverschlechterung(
+                        '1',
+                        '2'
+                    );
                 }
-                return this.navigateToStepEinkommensverschlechterungResultate('1'); // gehe Resultate Bj 1
+                return this.navigateToStepEinkommensverschlechterungResultate(
+                    '1'
+                ); // gehe Resultate Bj 1
             }
             // ist Zustand 2/1
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
@@ -702,11 +960,14 @@ export class NavigatorController implements IController {
         }
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
             // ist Zustand 1/2
-            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) { // gehe ekv 2/2
+            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) {
+                // gehe ekv 2/2
                 return this.navigateToStepEinkommensverschlechterung('2', '2');
             }
             if (this.gesuchModelManager.getEkvFuerBasisJahrPlus(1)) {
-                return this.navigateToStepEinkommensverschlechterungResultate('1'); // gehe Resultate Bj 1
+                return this.navigateToStepEinkommensverschlechterungResultate(
+                    '1'
+                ); // gehe Resultate Bj 1
             }
             return this.navigateToStepEinkommensverschlechterungResultate('2'); // gehe Resultate Bj 2
         }
@@ -719,31 +980,41 @@ export class NavigatorController implements IController {
 
     // eslint-disable-next-line
     private navigatePreviousEVSubStep3(): TransitionPromise {
-        if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
+        if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
+                return this.navigateToStep(
+                    this.wizardStepManager.getCurrentStepName()
+                );
             }
             // ist Zustand 2/1
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
+            return this.navigateToStep(
+                this.wizardStepManager.getCurrentStepName()
+            );
         }
-        if (this.gesuchModelManager.getGesuchstellerNumber() === 1) { // ist Zustand 1/2
-            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/2
+        if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
+            // ist Zustand 1/2
+            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) {
+                // gehe ekv 2/2
                 return this.navigateToStepEinkommensverschlechterung('2', '1');
             }
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
+            return this.navigateToStep(
+                this.wizardStepManager.getCurrentStepName()
+            );
         }
         // ist Zustand 2/2
-        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
+        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
+            // gehe ekv 1/2
             return this.navigateToStepEinkommensverschlechterung('1', '2');
         }
-        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/2
+        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) {
+            // gehe ekv 2/2
             return this.navigateToStepEinkommensverschlechterung('2', '1');
         }
         if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
@@ -756,45 +1027,65 @@ export class NavigatorController implements IController {
         if (this.gesuchModelManager.getBasisJahrPlusNumber() === 2) {
             // baisjahrPlus2
             if (this.gesuchModelManager.getEkvFuerBasisJahrPlus(1)) {
-                return this.navigateToStepEinkommensverschlechterungResultate('1'); // gehe Resultate Bj 1
+                return this.navigateToStepEinkommensverschlechterungResultate(
+                    '1'
+                ); // gehe Resultate Bj 1
             }
-            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) { // gehe ekv 2/2
+            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) {
+                // gehe ekv 2/2
                 return this.navigateToStepEinkommensverschlechterung('2', '2');
             }
-            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
+            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
+                // gehe ekv 1/2
                 return this.navigateToStepEinkommensverschlechterung('1', '2');
             }
-            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/1
+            if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) {
+                // gehe ekv 2/1
                 return this.navigateToStepEinkommensverschlechterung('2', '1');
             }
             return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
         }
 
         // baisjahrPlus1
-        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) { // gehe ekv 2/2
+        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 2)) {
+            // gehe ekv 2/2
             return this.navigateToStepEinkommensverschlechterung('2', '2');
         }
-        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
+        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) {
+            // gehe ekv 1/2
             return this.navigateToStepEinkommensverschlechterung('1', '2');
         }
-        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/1
+        if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) {
+            // gehe ekv 2/1
             return this.navigateToStepEinkommensverschlechterung('2', '1');
         }
         return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
     }
 
     private navigateNextEVSubStep4(): TransitionPromise {
-        if (this.gesuchModelManager.getBasisJahrPlusNumber() === 1
-            && this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2) {
+        if (
+            this.gesuchModelManager.getBasisJahrPlusNumber() === 1 &&
+            this.gesuchModelManager
+                .getGesuch()
+                .extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
+        ) {
             return this.navigateToStepEinkommensverschlechterungResultate('2');
         }
 
-        return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
-            .then(() => this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
+        return this.wizardStepManager
+            .updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
+            .then(() =>
+                this.navigateToStep(
+                    this.wizardStepManager.getNextStep(
+                        this.gesuchModelManager.getGesuch()
+                    )
+                )
+            ) as any;
     }
 
-    public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {
+    public setSubstepManager(
+        manager: FinanzielleSituationSubStepManager
+    ): void {
         this.finSitWizardSubStepManager = manager;
     }
-
 }

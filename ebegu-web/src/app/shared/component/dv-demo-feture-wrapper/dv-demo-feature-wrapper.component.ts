@@ -24,7 +24,6 @@ import {TSDemoFeature} from '../../../core/directive/dv-hide-feature/TSDemoFeatu
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvDemoFeatureWrapperComponent {
-
     @Input() public demoFeature: TSDemoFeature;
     @Input() public hideIfDemoFeatureActive: boolean;
 

@@ -26,5 +26,9 @@ export function isOIDCTokenInitialisationException(response: any): boolean {
     }
     const msg = 'Failed to obtain OIDC token';
 
-    return response.status === http500 && hasError && response.data.error.includes(msg) > -1;
+    return (
+        response.status === http500 &&
+        hasError &&
+        response.data.error.includes(msg) > -1
+    );
 }

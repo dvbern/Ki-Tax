@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterModule} from '@uirouter/angular';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -28,40 +28,50 @@ import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../shared/shared.module';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 
-import { PulldownUserMenuComponent } from './pulldown-user-menu.component';
+import {PulldownUserMenuComponent} from './pulldown-user-menu.component';
 
 describe('PulldownUserMenuComponent', () => {
-  let component: PulldownUserMenuComponent;
-  let fixture: ComponentFixture<PulldownUserMenuComponent>;
+    let component: PulldownUserMenuComponent;
+    let fixture: ComponentFixture<PulldownUserMenuComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipalRole', 'isOneOfRoles']);
-    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipalRole', 'isOneOfRoles']
+    );
+    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+        ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['href']
+    );
     stateServiceSpy.href.and.returnValue('');
     appPropSpy.getPublicPropertiesCached.and.resolveTo({} as TSPublicAppConfig);
     authServiceSpy.principal$ = of(new TSBenutzer());
     authServiceSpy.isOneOfRoles.and.returnValue(true);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-        providers: [
-            {provide: AuthServiceRS, useValue: authServiceSpy},
-            {provide: ApplicationPropertyRS, useValue: appPropSpy},
-            {provide: StateService, useValue: stateServiceSpy}
-        ],
-        declarations: [ PulldownUserMenuComponent ],
-        imports: [SharedModule, UIRouterModule.forRoot()]
-    }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            providers: [
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: appPropSpy},
+                {provide: StateService, useValue: stateServiceSpy}
+            ],
+            declarations: [PulldownUserMenuComponent],
+            imports: [SharedModule, UIRouterModule.forRoot()]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PulldownUserMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PulldownUserMenuComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

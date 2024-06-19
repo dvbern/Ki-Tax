@@ -29,7 +29,6 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvPosteingangComponent implements OnDestroy {
-
     private readonly log: Log = LogFactory.createLog('DvPosteingangComponent');
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -40,50 +39,66 @@ export class DvPosteingangComponent implements OnDestroy {
         private readonly authServiceRS: AuthServiceRS,
         private readonly posteingangService: PosteingangService
     ) {
-
-        const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
+        const posteingangeChanged$ = this.posteingangService
+            .get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
             .pipe(switchMap(() => this.getMitteilungenCount$()));
 
-        this.mitteilungenCount$ = merge(posteingangeChanged$, this.getCountForPrincipal$())
-            .pipe(takeUntil(this.unsubscribe$));
+        this.mitteilungenCount$ = merge(
+            posteingangeChanged$,
+            this.getCountForPrincipal$()
+        ).pipe(takeUntil(this.unsubscribe$));
     }
 
     private getCountForPrincipal$(): Observable<number> {
-        return this.authServiceRS.principal$
-            .pipe(
-                switchMap(principal => {
-                    if (!principal) {
-                        return of(0);
-                    }
-
-                    // not for GS
-                    if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())
-                        || principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-                        || principal.hasOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
-                        const fiveMin = 300000;
-                        return timer(0, fiveMin)
-                            .pipe(takeUntil(this.unsubscribe$))
-                            .pipe(switchMap(() => this.getMitteilungenCount$()));
-                    }
-
-                    if (principal.hasOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                        return this.getMitteilungenCount$();
-                    }
-
+        return this.authServiceRS.principal$.pipe(
+            switchMap(principal => {
+                if (!principal) {
                     return of(0);
-                })
-            );
+                }
+
+                // not for GS
+                if (
+                    this.authServiceRS.isOneOfRoles(
+                        TSRoleUtil.getAdministratorOrAmtRole()
+                    ) ||
+                    principal.hasOneOfRoles(
+                        TSRoleUtil.getTraegerschaftInstitutionRoles()
+                    ) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getSozialdienstRolle())
+                ) {
+                    const fiveMin = 300000;
+                    return timer(0, fiveMin)
+                        .pipe(takeUntil(this.unsubscribe$))
+                        .pipe(switchMap(() => this.getMitteilungenCount$()));
+                }
+
+                if (
+                    principal.hasOneOfRoles(
+                        TSRoleUtil.getGesuchstellerOnlyRoles()
+                    )
+                ) {
+                    return this.getMitteilungenCount$();
+                }
+
+                return of(0);
+            })
+        );
     }
 
     private getMitteilungenCount$(): Observable<number> {
-        return from(this.mitteilungRS.getAmountMitteilungenForCurrentBenutzer()
-            .then(response => !response || isNaN(response) ? 0 : response)
-            .catch(() => {
-                // Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
-                // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
-                this.log.debug('received error message while reading posteingang. Ignoring ...');
-                return 0;
-            }));
+        return from(
+            this.mitteilungRS
+                .getAmountMitteilungenForCurrentBenutzer()
+                .then(response => (!response || isNaN(response) ? 0 : response))
+                .catch(() => {
+                    // Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
+                    // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
+                    this.log.debug(
+                        'received error message while reading posteingang. Ignoring ...'
+                    );
+                    return 0;
+                })
+        );
     }
 
     public ngOnDestroy(): void {

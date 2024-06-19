@@ -1,7 +1,7 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
 import {TSBetreuungsstandort} from '../../../models/TSBetreuungsstandort';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
-import { CONSTANTS } from '../../core/constants/CONSTANTS';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-edit-betreuungsstandort',
@@ -10,25 +10,25 @@ import { CONSTANTS } from '../../core/constants/CONSTANTS';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditBetreuungsstandortComponent implements OnInit {
-
     @Input()
     public stammdaten: TSInstitutionStammdaten;
 
     public readonly CONSTANTS: any = CONSTANTS;
 
-    public constructor() {
-    }
+    public constructor() {}
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public addStandort(): void {
         const newStandort = new TSBetreuungsstandort();
-        this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.push(newStandort);
+        this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.push(
+            newStandort
+        );
     }
 
     public removeAllStandorte(): void {
-        this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte = [];
+        this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte =
+            [];
     }
 
     /**
@@ -36,11 +36,13 @@ export class EditBetreuungsstandortComponent implements OnInit {
      * übernommen.
      */
     public toggleMehrereBetreuungsstandorte(): void {
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.betreuungsstandorte.length === 0) {
+        if (
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .betreuungsstandorte.length === 0
+        ) {
             this.addStandort();
             return;
         }
         this.removeAllStandorte();
     }
-
 }

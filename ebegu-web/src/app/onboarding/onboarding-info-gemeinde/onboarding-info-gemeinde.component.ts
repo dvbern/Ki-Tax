@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
@@ -29,7 +34,10 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
 @Component({
     selector: 'dv-onboarding-info-gem',
     templateUrl: './onboarding-info-gemeinde.component.html',
-    styleUrls: ['./onboarding-info-gemeinde.component.less', '../onboarding.less'],
+    styleUrls: [
+        './onboarding-info-gemeinde.component.less',
+        '../onboarding.less'
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnboardingInfoGemeindeComponent implements OnInit {
@@ -46,28 +54,40 @@ export class OnboardingInfoGemeindeComponent implements OnInit {
     public gemeinde?: TSBfsGemeinde;
     public isTSEnabled: boolean;
 
-    public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
-                       private readonly translate: TranslateService,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS,
-                       private readonly cd: ChangeDetectorRef
+    public constructor(
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly translate: TranslateService,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cd: ChangeDetectorRef
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAllBfsGemeinden())
-            .pipe(map(bfsGemeinden => {
-            bfsGemeinden.sort(EbeguUtil.compareByName);
-            return bfsGemeinden;
-        }));
-        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
-            this.isTSEnabled = properties.angebotTSActivated;
-            this.cd.markForCheck();
-        });
+        this.gemeinden$ = from(this.gemeindeRS.getAllBfsGemeinden()).pipe(
+            map(bfsGemeinden => {
+                bfsGemeinden.sort(EbeguUtil.compareByName);
+                return bfsGemeinden;
+            })
+        );
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(properties => {
+                this.isTSEnabled = properties.angebotTSActivated;
+                this.cd.markForCheck();
+            });
     }
 
     public ngOnInit(): void {
-        this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
-        this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
-        this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
-        this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
+        this.onboardingPlaceholderService.setDescription1(
+            this.translate.instant(this.description1)
+        );
+        this.onboardingPlaceholderService.setDescription2(
+            this.translate.instant(this.description2)
+        );
+        this.onboardingPlaceholderService.setDescription3(
+            this.translate.instant(this.description3)
+        );
+        this.onboardingPlaceholderService.setDescription4(
+            this.translate.instant(this.description4)
+        );
     }
 
     public onSubmit(form: NgForm): void {
@@ -78,9 +98,12 @@ export class OnboardingInfoGemeindeComponent implements OnInit {
         const mailto = `mailto:${supportMail}?subject=`;
         const emailBody = '&body=';
         const zeilenUmbruch = '%0D%0A%0D%0A';
-        const body: string = this.translate.instant(this.emailBody, {gemeinde: this.gemeinde.name});
+        const body: string = this.translate.instant(this.emailBody, {
+            gemeinde: this.gemeinde.name
+        });
         const subject: string = this.translate.instant(this.subjectText);
         const endBody: string = this.translate.instant(this.emailEnd);
-        window.location.href = mailto + subject + emailBody + body + zeilenUmbruch + endBody;
+        window.location.href =
+            mailto + subject + emailBody + body + zeilenUmbruch + endBody;
     }
 }

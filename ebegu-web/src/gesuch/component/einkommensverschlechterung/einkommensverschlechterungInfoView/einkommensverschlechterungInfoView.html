@@ -22,22 +22,32 @@
             <h2 data-test="page-title">
                 <span data-translate="EINKOMMENSVERSCHLECHTERUNG"></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
     <div class="row" ng-if="vm.warningEinkommenTooHighVisible()">
         <div class="col-xs-12">
             <div class="well well-status-warten minus-margin">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                <span data-translate="EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH"
-                      data-translate-values="{{ vm.getMaxEinkommenTranslateValues() }}">
+                <span
+                    data-translate="EINKOMMENSVERSCHLECHTERUNG_EINKOMMEN_TOO_HIGH"
+                    data-translate-values="{{
+                        vm.getMaxEinkommenTranslateValues()
+                    }}"
+                >
                 </span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                unsaved-warning-form=""
+                novalidate
+            >
                 <div class="row" ng-if="!vm.isFinanzielleSituationRequired()">
                     <div class="col-md-12">
                         <p>
@@ -53,55 +63,88 @@
                         <div class="row">
                             <div class="col-xs-12 dv-input-container-question">
                                 <div class="form-group">
-                                <span class="ebegu-h1 required">
-                                    <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
-                                          data-translate-values="{{vm.getBasisJahrUndPeriode()}}"></span>
-                                    <dv-tooltip input-id="eingeschrieben-tooltip"
-                                               text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT' | translate"></dv-tooltip>
-
-                                </span>
-                                    <dv-radio-container name="einkommensverschlechterung"
-                                                        ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
-                                                        ng-change="vm.onEinkommensverschlechterungChange()"
-                                                        ng-required="true" class="radio input-element"
-                                                        dv-enable-element
-                                                        dv-enable-allowed-roles="vm.allowedRoles"
-                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                        aria-label="{{ 'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN' |translate}}"
-                                                        aria-described-by="einkommensverschlechterung-radio-error">
+                                    <span class="ebegu-h1 required">
+                                        <span
+                                            data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
+                                            data-translate-values="{{
+                                                vm.getBasisJahrUndPeriode()
+                                            }}"
+                                        ></span>
+                                        <dv-tooltip
+                                            input-id="eingeschrieben-tooltip"
+                                            text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT' | translate"
+                                        ></dv-tooltip>
+                                    </span>
+                                    <dv-radio-container
+                                        name="einkommensverschlechterung"
+                                        ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
+                                        ng-change="vm.onEinkommensverschlechterungChange()"
+                                        ng-required="true"
+                                        class="radio input-element"
+                                        dv-enable-element
+                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                        aria-label="{{
+                                            'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN'
+                                                | translate
+                                        }}"
+                                        aria-described-by="einkommensverschlechterung-radio-error"
+                                    >
                                     </dv-radio-container>
-                                    <dv-error-messages input-id="einkommensverschlechterung-radio"
-                                                       for="vm.form.einkommensverschlechterung.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="einkommensverschlechterung-radio"
+                                        for="vm.form.einkommensverschlechterung.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Auswahl Basisjahr Plus 1 -->
                         <div class="row">
-                            <div class="form-group no-margin col-xs-12 dv-input-container-question" ng-if="vm.showEkvi()">
-
-                                <p class="inline-hint margin-bottom-30"
-                                   data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT"
-                                   data-translate-values="{{vm.getBasisJahrUndPeriode()}}"
+                            <div
+                                class="form-group no-margin col-xs-12 dv-input-container-question"
+                                ng-if="vm.showEkvi()"
+                            >
+                                <p
+                                    class="inline-hint margin-bottom-30"
+                                    data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT"
+                                    data-translate-values="{{
+                                        vm.getBasisJahrUndPeriode()
+                                    }}"
                                 ></p>
 
                                 <div class="checkbox">
-                                    <md-checkbox name="ekvFuerBasisJahrPlus1"
-                                                 data-test="ekv-fuer-basis-jahr-plus#1"
-                                                 ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
-                                                 aria-label="{{vm.getBasisjahrPlus1()}}"
-                                                 ng-required="vm.isRequired(1)" class="input-element"
-                                                 ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()">
-                                   <span data-translate="EKVI_FUER_JAHR"
-                                         data-translate-value-basisjahr="{{vm.getBasisjahrPlus1()}}"></span>
+                                    <md-checkbox
+                                        name="ekvFuerBasisJahrPlus1"
+                                        data-test="ekv-fuer-basis-jahr-plus#1"
+                                        ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
+                                        aria-label="{{
+                                            vm.getBasisjahrPlus1()
+                                        }}"
+                                        ng-required="vm.isRequired(1)"
+                                        class="input-element"
+                                        ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()"
+                                    >
+                                        <span
+                                            data-translate="EKVI_FUER_JAHR"
+                                            data-translate-value-basisjahr="{{
+                                                vm.getBasisjahrPlus1()
+                                            }}"
+                                        ></span>
                                     </md-checkbox>
                                     <div class="dv-error-messages">
-                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
-                                             role="alert"
-                                             class="error">
-                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM" class="inline-block"
-                                                 for="vm.form.ekvFuerBasisJahrPlus1.$error"></div>
+                                        <div
+                                            ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
+                                            role="alert"
+                                            class="error"
+                                        >
+                                            <div
+                                                ng-message="required"
+                                                data-translate="ERROR_REQUIRED_ONE_OF_THEM"
+                                                class="inline-block"
+                                                for="vm.form.ekvFuerBasisJahrPlus1.$error"
+                                            ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -109,42 +152,68 @@
                         </div>
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 1 -->
-                        <div class="row"
-                             ng-if="vm.showAblehnungBasisJahrPlus1()">
-                            <div class="form-group col-sm-12 dv-input-container-medium">
+                        <div
+                            class="row"
+                            ng-if="vm.showAblehnungBasisJahrPlus1()"
+                        >
+                            <div
+                                class="form-group col-sm-12 dv-input-container-medium"
+                            >
                                 <div class="checkbox">
-                                    <md-checkbox name="ekvBasisJahrPlus1Annulliert"
-                                                 data-test="ekv-basis-jahr-plus#1-annulliert"
-                                                 ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert"
-                                                 aria-label="{{'EKVI_ABLEHNEN' | translate}}"
-                                                 class="input-element"
-                                                 ng-disabled="vm.isGesuchReadonly()">
-                                        <span data-translate="EKVI_ABLEHNEN"></span>
+                                    <md-checkbox
+                                        name="ekvBasisJahrPlus1Annulliert"
+                                        data-test="ekv-basis-jahr-plus#1-annulliert"
+                                        ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert"
+                                        aria-label="{{
+                                            'EKVI_ABLEHNEN' | translate
+                                        }}"
+                                        class="input-element"
+                                        ng-disabled="vm.isGesuchReadonly()"
+                                    >
+                                        <span
+                                            data-translate="EKVI_ABLEHNEN"
+                                        ></span>
                                     </md-checkbox>
                                 </div>
-                                <hr class="header"/>
+                                <hr class="header" />
                             </div>
                         </div>
 
-
                         <!-- Auswahl Basisjahr Plus 2 -->
                         <div class="row">
-                            <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showJahrPlus2()">
+                            <div
+                                class="form-group no-margin col-sm-12 dv-input-container-question"
+                                ng-if="vm.showJahrPlus2()"
+                            >
                                 <div class="checkbox">
-                                    <md-checkbox name="ekvFuerBasisJahrPlus2"
-                                                 data-test="ekv-fuer-basis-jahr-plus#2"
-                                                 ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
-                                                 aria-label="{vm.getBasisjahrPlus2()}"
-                                                 ng-required="vm.isRequired(2)" class="input-element"
-                                                 ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()">
-                                    <span data-translate="EKVI_FUER_JAHR"
-                                          data-translate-value-basisjahr="{{vm.getBasisjahrPlus2()}}"></span>
+                                    <md-checkbox
+                                        name="ekvFuerBasisJahrPlus2"
+                                        data-test="ekv-fuer-basis-jahr-plus#2"
+                                        ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
+                                        aria-label="{vm.getBasisjahrPlus2()}"
+                                        ng-required="vm.isRequired(2)"
+                                        class="input-element"
+                                        ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()"
+                                    >
+                                        <span
+                                            data-translate="EKVI_FUER_JAHR"
+                                            data-translate-value-basisjahr="{{
+                                                vm.getBasisjahrPlus2()
+                                            }}"
+                                        ></span>
                                     </md-checkbox>
                                     <div class="dv-error-messages">
-                                        <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
-                                             class="error">
-                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM" class="inline-block"
-                                                 for="vm.form.ekvFuerBasisJahrPlus2.$error"></div>
+                                        <div
+                                            ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error"
+                                            role="alert"
+                                            class="error"
+                                        >
+                                            <div
+                                                ng-message="required"
+                                                data-translate="ERROR_REQUIRED_ONE_OF_THEM"
+                                                class="inline-block"
+                                                for="vm.form.ekvFuerBasisJahrPlus2.$error"
+                                            ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -152,27 +221,40 @@
                         </div>
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 2 -->
-                        <div class="row"
-                             ng-if="vm.showAblehnungBasisJahrPlus2()">
-                            <div class="form-group col-sm-12 dv-input-container-medium">
+                        <div
+                            class="row"
+                            ng-if="vm.showAblehnungBasisJahrPlus2()"
+                        >
+                            <div
+                                class="form-group col-sm-12 dv-input-container-medium"
+                            >
                                 <div class="checkbox">
-                                    <md-checkbox name="ekvBasisJahrPlus2Annulliert"
-                                                 data-test="ekv-basis-jahr-plus#2-annulliert"
-                                                 ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert"
-                                                 aria-label="{{'EKVI_ABLEHNEN' | translate}}"
-                                                 class="input-element"
-                                                 ng-disabled="vm.isGesuchReadonly()">
-                                        <span data-translate="EKVI_ABLEHNEN"></span>
+                                    <md-checkbox
+                                        name="ekvBasisJahrPlus2Annulliert"
+                                        data-test="ekv-basis-jahr-plus#2-annulliert"
+                                        ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert"
+                                        aria-label="{{
+                                            'EKVI_ABLEHNEN' | translate
+                                        }}"
+                                        class="input-element"
+                                        ng-disabled="vm.isGesuchReadonly()"
+                                    >
+                                        <span
+                                            data-translate="EKVI_ABLEHNEN"
+                                        ></span>
                                     </md-checkbox>
                                 </div>
                             </div>
                         </div>
-
                     </fieldset>
                 </div>
                 <!-- -------------------------------------------Navigation--------------------------------------------  -->
-                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.confirmAndSave()"
-                               dv-sub-step="1">
+                <dv-navigation
+                    dv-previous="true"
+                    dv-next="true"
+                    dv-save="vm.confirmAndSave()"
+                    dv-sub-step="1"
+                >
                 </dv-navigation>
             </form>
         </div>

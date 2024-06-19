@@ -38,7 +38,6 @@ import {TSGesuchstellerContainer} from './TSGesuchstellerContainer';
 import {TSKindContainer} from './TSKindContainer';
 
 export class TSGesuch extends TSAbstractAntragEntity {
-
     private _gesuchsteller1: TSGesuchstellerContainer;
     private _gesuchsteller2: TSGesuchstellerContainer;
     private _kindContainers: Array<TSKindContainer>;
@@ -103,7 +102,9 @@ export class TSGesuch extends TSAbstractAntragEntity {
         return this._einkommensverschlechterungInfoContainer;
     }
 
-    public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
+    public set einkommensverschlechterungInfoContainer(
+        value: TSEinkommensverschlechterungInfoContainer
+    ) {
         this._einkommensverschlechterungInfoContainer = value;
     }
 
@@ -259,10 +260,16 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Schaut ob der GS1 oder der GS2 mindestens eine umzugsadresse hat
      */
     public isThereAnyUmzug(): boolean {
-        if (this.gesuchsteller1 && this.gesuchsteller1.getUmzugAdressen().length > 0) {
+        if (
+            this.gesuchsteller1 &&
+            this.gesuchsteller1.getUmzugAdressen().length > 0
+        ) {
             return true;
         }
-        return this.gesuchsteller2 && this.gesuchsteller2.getUmzugAdressen().length > 0;
+        return (
+            this.gesuchsteller2 &&
+            this.gesuchsteller2.getUmzugAdressen().length > 0
+        );
     }
 
     /**
@@ -284,15 +291,22 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns true when all Betreuungen are of one of the given types.
      * ACHTUNG! Diese Methode gibt auch true zurueck wenn es keine Betreuungen gibt, was nicht immer richtig ist
      */
-    private areThereOnlyAngeboteOfType(types: ReadonlyArray<TSBetreuungsangebotTyp>): boolean {
+    private areThereOnlyAngeboteOfType(
+        types: ReadonlyArray<TSBetreuungsangebotTyp>
+    ): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
         }
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.institutionStammdaten &&
-                    !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp, types)) {
+                if (
+                    betreuung.institutionStammdaten &&
+                    !isOfAnyBetreuungsangebotTyp(
+                        betreuung.institutionStammdaten.betreuungsangebotTyp,
+                        types
+                    )
+                ) {
                     return false;
                 }
             }
@@ -316,7 +330,9 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
     public areThereOnlySchulamtAngebote(): boolean {
-        return this.areThereOnlyAngeboteOfType(getSchulamtBetreuungsangebotTypValues());
+        return this.areThereOnlyAngeboteOfType(
+            getSchulamtBetreuungsangebotTypValues()
+        );
     }
 
     /**
@@ -324,8 +340,11 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
     public areThereOnlyBgBetreuungen(): boolean {
-        return this.areThereOnlyAngeboteOfType(getBgInstitutionenBetreuungsangebote())
-            && !this.areThereNoBetreuungenAtAll();
+        return (
+            this.areThereOnlyAngeboteOfType(
+                getBgInstitutionenBetreuungsangebote()
+            ) && !this.areThereNoBetreuungenAtAll()
+        );
     }
 
     /**
@@ -333,8 +352,11 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns false also if there are no Kinder with betreuungsbedarf
      */
     public areThereOnlyFerieninsel(): boolean {
-        return this.areThereOnlyAngeboteOfType([TSBetreuungsangebotTyp.FERIENINSEL])
-            && !this.areThereNoBetreuungenAtAll();
+        return (
+            this.areThereOnlyAngeboteOfType([
+                TSBetreuungsangebotTyp.FERIENINSEL
+            ]) && !this.areThereNoBetreuungenAtAll()
+        );
     }
 
     /**
@@ -347,7 +369,10 @@ export class TSGesuch extends TSAbstractAntragEntity {
         }
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.betreuungsstatus !== TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+                if (
+                    betreuung.betreuungsstatus !==
+                    TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+                ) {
                     return false;
                 }
             }
@@ -360,17 +385,25 @@ export class TSGesuch extends TSAbstractAntragEntity {
     }
 
     public hasProvisorischeBetreuungen(): boolean {
-        return this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+        return this.checkForBetreuungsstatus(
+            TSBetreuungsstatus.UNBEKANNTE_INSTITUTION
+        );
     }
 
     public hasBerechenbareBetreuungen(): boolean {
-        return this.checkForBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
-            || this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+        return (
+            this.checkForBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT) ||
+            this.checkForBetreuungsstatus(
+                TSBetreuungsstatus.UNBEKANNTE_INSTITUTION
+            )
+        );
     }
 
     public hasNichtBerechenbareBetreuungen(): boolean {
-        return this.checkForBetreuungsstatus(TSBetreuungsstatus.ABGEWIESEN)
-            || this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN);
+        return (
+            this.checkForBetreuungsstatus(TSBetreuungsstatus.ABGEWIESEN) ||
+            this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN)
+        );
     }
 
     public get markiertFuerKontroll(): boolean {
@@ -416,7 +449,8 @@ export class TSGesuch extends TSAbstractAntragEntity {
 
     public extractEinkommensverschlechterungInfo(): TSEinkommensverschlechterungInfo {
         if (this.einkommensverschlechterungInfoContainer) {
-            return this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
+            return this.einkommensverschlechterungInfoContainer
+                .einkommensverschlechterungInfoJA;
         }
         return undefined;
     }
@@ -438,7 +472,9 @@ export class TSGesuch extends TSAbstractAntragEntity {
         return false;
     }
 
-    public extractKindFromKindNumber(kindNumber: number): TSKindContainer | undefined {
+    public extractKindFromKindNumber(
+        kindNumber: number
+    ): TSKindContainer | undefined {
         if (this.kindContainers && kindNumber > 0) {
             return this.kindContainers.find(kc => kc.kindNummer === kindNumber);
         }
@@ -450,7 +486,9 @@ export class TSGesuch extends TSAbstractAntragEntity {
      */
     public allKindHaveAusserordentlicherAnspruch(): boolean {
         if (this.kindContainers) {
-            return this.kindContainers.every(kind => !!kind.kindJA.pensumAusserordentlicherAnspruch);
+            return this.kindContainers.every(
+                kind => !!kind.kindJA.pensumAusserordentlicherAnspruch
+            );
         }
         return false;
     }
@@ -474,8 +512,10 @@ export class TSGesuch extends TSAbstractAntragEntity {
     }
 
     public isKorrekturModusOrFreigegeben(): boolean {
-        return isAtLeastFreigegeben(this.status)
-        && (TSEingangsart.ONLINE === this.eingangsart);
+        return (
+            isAtLeastFreigegeben(this.status) &&
+            TSEingangsart.ONLINE === this.eingangsart
+        );
     }
 
     public getRegelStartDatum(): moment.Moment {
@@ -483,8 +523,10 @@ export class TSGesuch extends TSAbstractAntragEntity {
             return this.regelnGueltigAb;
         }
 
-        if (EbeguUtil.isNullOrUndefined(this.eingangsdatum)
-        && this.eingangsart === TSEingangsart.ONLINE) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.eingangsdatum) &&
+            this.eingangsart === TSEingangsart.ONLINE
+        ) {
             return moment();
         }
 

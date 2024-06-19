@@ -30,25 +30,25 @@ export class DvFooterComponentConfig implements IComponentOptions {
 }
 
 export class DvFooterComponent implements IController {
+    public static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
 
-    public static $inject: ReadonlyArray<string> = [
-        '$translate',
-        'DvDialog'
-    ];
-
-    public constructor( private readonly $translate: ITranslateService,
-                        private readonly dvDialog: DvDialog) {
-    }
+    public constructor(
+        private readonly $translate: ITranslateService,
+        private readonly dvDialog: DvDialog
+    ) {}
 
     public showText(info: string): void {
-        this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
-            title: '',
-            text: this.$translate.instant(info),
-            parentController: this
-        });
+        this.dvDialog.showDialogFullscreen(
+            showTooltipTemplate,
+            ShowTooltipController,
+            {
+                title: '',
+                text: this.$translate.instant(info),
+                parentController: this
+            }
+        );
     }
 
     // we dont need a fallback here
-    public setFocusBack(_elementID: string): void {
-    }
+    public setFocusBack(_elementID: string): void {}
 }

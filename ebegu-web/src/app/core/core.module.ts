@@ -29,7 +29,11 @@ import {
 } from '@angular/core';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
-import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {
+    TranslateModule,
+    TranslatePipe,
+    TranslateService
+} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -52,11 +56,15 @@ configureSentry();
 
 registerLocaleData(deCH);
 
-export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
+export function paginatorI18nFactory(
+    translateService: TranslateService
+): PaginatorI18n {
     return new PaginatorI18n(translateService);
 }
 
-export function initMandantCookie(mandantService: MandantService): () => Promise<any> {
+export function initMandantCookie(
+    mandantService: MandantService
+): () => Promise<any> {
     return () => mandantService.initMandantCookies();
 }
 
@@ -96,10 +104,13 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
     ]
 })
 export class CoreModule {
-
-    public constructor(@Optional() @SkipSelf() private readonly parentModule: CoreModule) {
+    public constructor(
+        @Optional() @SkipSelf() private readonly parentModule: CoreModule
+    ) {
         if (parentModule) {
-            throw new Error('CoreModule has already been loaded. Import Core modules in the AppModule only.');
+            throw new Error(
+                'CoreModule has already been loaded. Import Core modules in the AppModule only.'
+            );
         }
     }
 

@@ -14,23 +14,40 @@
   -->
 
 <mat-dialog-content id="dialogContent" role="document" tabindex="-1">
-
     <ng-container [ngSwitch]="mandant$ | async">
-        <ng-container *ngSwitchCase="mandantTypes.BERN" [ngTemplateOutlet]="be"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.LUZERN" [ngTemplateOutlet]="lu"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.SOLOTHURN" [ngTemplateOutlet]="so"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN" [ngTemplateOutlet]="ar"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.SCHWYZ" [ngTemplateOutlet]="sz"></ng-container>
+        <ng-container
+            *ngSwitchCase="mandantTypes.BERN"
+            [ngTemplateOutlet]="be"
+        ></ng-container>
+        <ng-container
+            *ngSwitchCase="mandantTypes.LUZERN"
+            [ngTemplateOutlet]="lu"
+        ></ng-container>
+        <ng-container
+            *ngSwitchCase="mandantTypes.SOLOTHURN"
+            [ngTemplateOutlet]="so"
+        ></ng-container>
+        <ng-container
+            *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN"
+            [ngTemplateOutlet]="ar"
+        ></ng-container>
+        <ng-container
+            *ngSwitchCase="mandantTypes.SCHWYZ"
+            [ngTemplateOutlet]="sz"
+        ></ng-container>
         <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
     </ng-container>
 </mat-dialog-content>
 
 <mat-dialog-actions class="margin-top-40" layout-align="center center">
     <div class="dv-dialog-actions">
-        <button (click)="close()" [textContent]="'SCHLIESSEN' | translate" class="dv-btn"></button>
+        <button
+            (click)="close()"
+            [textContent]="'SCHLIESSEN' | translate"
+            class="dv-btn"
+        ></button>
     </div>
 </mat-dialog-actions>
-
 
 <ng-template #be>
     <div class="margin-top-10">
@@ -41,7 +58,15 @@
             <span translate="SUPPORTANFRAGE_STELLEN"></span>
         </a>
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
-        <p><a href="https://get.teamviewer.com/dvbv11" rel="noopener noreferrer" target="_blank" translate>TEAMVIEWER_LINK</a></p>
+        <p>
+            <a
+                href="https://get.teamviewer.com/dvbv11"
+                rel="noopener noreferrer"
+                target="_blank"
+                translate
+                >TEAMVIEWER_LINK</a
+            >
+        </p>
     </div>
 
     <div class="margin-top-40">
@@ -54,8 +79,16 @@
     <div class="margin-top-40">
         <h2 [textContent]="'FACHLICHE_HILFE_TS' | translate"></h2>
         <p [textContent]="'MANDANT_DIREKTION_TS' | translate"></p>
-        <p><a [href]="'MANDANT_MAIL_BKD_LINK' | translate">{{ 'MANDANT_MAIL_BKD' | translate }}</a></p>
-        <p><a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{ 'MANDANT_TEL_BKD' | translate }}</a></p>
+        <p>
+            <a [href]="'MANDANT_MAIL_BKD_LINK' | translate">{{
+                'MANDANT_MAIL_BKD' | translate
+            }}</a>
+        </p>
+        <p>
+            <a [href]="'MANDANT_TEL_BKD_LINK' | translate">{{
+                'MANDANT_TEL_BKD' | translate
+            }}</a>
+        </p>
     </div>
 
     <div class="margin-top-40">
@@ -74,17 +107,29 @@
     <div *ngIf="hasRoleGemeinde || hasRoleInstitution" class="margin-top-40">
         <h2>Blog</h2>
         <p *ngIf="hasRoleMandant">
-            <a href="{{'BLOG_MANDANT_LINK' | translate}}" rel="noopener noreferrer" target="_blank">
+            <a
+                href="{{ 'BLOG_MANDANT_LINK' | translate }}"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
                 <span translate="KANTON"></span>
             </a>
         </p>
         <p *ngIf="hasRoleGemeinde">
-            <a href="{{'BLOG_GEMEINDE_LINK' | translate}}" rel="noopener noreferrer" target="_blank">
+            <a
+                href="{{ 'BLOG_GEMEINDE_LINK' | translate }}"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
                 <span translate="GEMEINDE"></span>
             </a>
         </p>
         <p *ngIf="hasRoleInstitution">
-            <a href="{{'BLOG_INSTITUTION_LINK' | translate}}" rel="noopener noreferrer" target="_blank">
+            <a
+                href="{{ 'BLOG_INSTITUTION_LINK' | translate }}"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
                 <span translate="INSTITUTION"></span>
             </a>
         </p>
@@ -114,8 +159,16 @@
         <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
         <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
         <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
-        <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine&#64;stadtluzern.ch</a></p>
-        <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
+        <p>
+            <a href="mailto:betreuungsgutscheine@stadtluzern.ch"
+                >betreuungsgutscheine&#64;stadtluzern.ch</a
+            >
+        </p>
+        <p>
+            <a href="https://www.kinderbetreuung.stadtluzern.ch"
+                >www.kinderbetreuung.stadtluzern.ch</a
+            >
+        </p>
     </div>
 
     <div class="margin-top-40">
@@ -145,7 +198,6 @@
     </div>
 </ng-template>
 
-
 <ng-template #sz>
     <div class="margin-top-10">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
@@ -155,7 +207,15 @@
             <span translate="SUPPORTANFRAGE_STELLEN"></span>
         </a>
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
-        <p><a href="https://get.teamviewer.com/dvbv11" rel="noopener noreferrer" target="_blank" translate>TEAMVIEWER_LINK</a></p>
+        <p>
+            <a
+                href="https://get.teamviewer.com/dvbv11"
+                rel="noopener noreferrer"
+                target="_blank"
+                translate
+                >TEAMVIEWER_LINK</a
+            >
+        </p>
     </div>
     <div class="margin-top-40">
         <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>

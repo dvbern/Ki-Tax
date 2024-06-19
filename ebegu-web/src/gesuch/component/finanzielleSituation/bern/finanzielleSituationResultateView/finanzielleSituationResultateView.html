@@ -20,33 +20,68 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-            <span data-translate="FINANZIELLE_SITUATION_RESULTATE"
-                  translate-values="{basisjahr: vm.getBasisjahr()}"></span>
+                <span
+                    data-translate="FINANZIELLE_SITUATION_RESULTATE"
+                    translate-values="{basisjahr: vm.getBasisjahr()}"
+                ></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                unsaved-warning-form=""
+                novalidate
+            >
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
-
                     <!-- Total Einkuenfte -->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="einkommenBeiderGesuchsteller">
-                                    <span ng-if="!vm.model.isGesuchsteller2Required()">{{'FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'|translate}}</span>
-                                    <span ng-if="vm.model.isGesuchsteller2Required()">{{'FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS'|translate}}</span>
+                                <label
+                                    class="md-no-float"
+                                    for="einkommenBeiderGesuchsteller"
+                                >
+                                    <span
+                                        ng-if="
+                                            !vm.model.isGesuchsteller2Required()
+                                        "
+                                        >{{
+                                            'FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'
+                                                | translate
+                                        }}</span
+                                    >
+                                    <span
+                                        ng-if="
+                                            vm.model.isGesuchsteller2Required()
+                                        "
+                                        >{{
+                                            'FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS'
+                                                | translate
+                                        }}</span
+                                    >
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="einkommenBeiderGesuchsteller"
-                                                   data-test="einkommenBeiderGesuchsteller"
-                                                   name="einkommenBeiderGesuchsteller"
-                                                   ng-model="vm.getResultate().einkommenBeiderGesuchsteller"
-                                                   allow-negative="true"
-                                                   aria-label="{{vm.model.isGesuchsteller2Required() ? ('FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS'|translate) : ('FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS' | translate)}}"
-                                                   class="input-element" ng-disabled="true">
+                                    <dv-valueinput
+                                        input-id="einkommenBeiderGesuchsteller"
+                                        data-test="einkommenBeiderGesuchsteller"
+                                        name="einkommenBeiderGesuchsteller"
+                                        ng-model="vm.getResultate().einkommenBeiderGesuchsteller"
+                                        allow-negative="true"
+                                        aria-label="{{
+                                            vm.model.isGesuchsteller2Required()
+                                                ? ('FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS'
+                                                  | translate)
+                                                : ('FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'
+                                                  | translate)
+                                        }}"
+                                        class="input-element"
+                                        ng-disabled="true"
+                                    >
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
                                 </div>
@@ -55,67 +90,119 @@
                     </div>
                     <!-- Nettovermoegen GS1-->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="vm.hasGS1SteuerDatenErfolgreichAbgefragt()"
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="nettovermoegenGS1">
-                                    <span data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1"
-                                          translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
+                                <label
+                                    class="md-no-float required"
+                                    for="nettovermoegenGS1"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1"
+                                        translate-values="{namegs1: vm.extractFullNameGS1()}"
+                                    ></span>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="nettovermoegenGS1" name="nettovermoegenGS1"
-                                                   data-test="nettovermoegenGS1"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
-                                                   ng-disabled="true"
-                                                   allow-negative="true"
-                                                   class="input-element" required>
+                                    <dv-valueinput
+                                        input-id="nettovermoegenGS1"
+                                        name="nettovermoegenGS1"
+                                        data-test="nettovermoegenGS1"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
+                                        ng-disabled="true"
+                                        allow-negative="true"
+                                        class="input-element"
+                                        required
+                                    >
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.nettoVermoegen"
-                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().nettoVermoegen"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS1()
+                                                .finanzielleSituationJA
+                                                .nettoVermoegen
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS1()
+                                                .nettoVermoegen
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="nettovermoegenGS1" for="vm.form.nettovermoegenGS1.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="nettovermoegenGS1"
+                                        for="vm.form.nettovermoegenGS1.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
                     </div>
                     <!-- Vermoegen GS 1 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()"
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="bruttovermoegen1">
-                                    <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_1"
-                                          translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
-                                    <dv-tooltip input-id="bruttovermoegen1"
-                                                text="vm.getBruttovermoegenTooltipLabel() | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float required"
+                                    for="bruttovermoegen1"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_1"
+                                        translate-values="{namegs1: vm.extractFullNameGS1()}"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="bruttovermoegen1"
+                                        text="vm.getBruttovermoegenTooltipLabel() | translate"
+                                    ></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="bruttovermoegen1" name="bruttovermoegen1"
-                                                   data-test="bruttovermoegen1"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
-                                                   class="input-element"
-                                                   dv-on-blur="vm.calculate()" required>
+                                    <dv-valueinput
+                                        input-id="bruttovermoegen1"
+                                        name="bruttovermoegen1"
+                                        data-test="bruttovermoegen1"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
+                                        class="input-element"
+                                        dv-on-blur="vm.calculate()"
+                                        required
+                                    >
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.bruttovermoegen"
-                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"></dv-bisher>
+                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().bruttovermoegen"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS1()
+                                                .finanzielleSituationJA
+                                                .bruttovermoegen
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS1()
+                                                .bruttovermoegen
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="bruttovermoegen1" for="vm.form.bruttovermoegen1.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="bruttovermoegen1"
+                                        for="vm.form.bruttovermoegen1.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
@@ -123,34 +210,64 @@
 
                     <!-- Vermoegen GS 2 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="vm.showGS2() && !vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="
+                                vm.showGS2() &&
+                                !vm.hasGS2SteuerDatenErfolgreichAbgefragt()
+                            "
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="bruttovermoegen2">
-                                    <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
-                                          translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
-                                    <dv-tooltip input-id="bruttovermoegen2"
-                                                text="vm.getBruttovermoegenTooltipLabel() | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float required"
+                                    for="bruttovermoegen2"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
+                                        translate-values="{namegs2: vm.extractFullNameGS2()}"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="bruttovermoegen2"
+                                        text="vm.getBruttovermoegenTooltipLabel() | translate"
+                                    ></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="bruttovermoegen2" name="bruttovermoegen2"
-                                                   data-test="bruttovermoegen2"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element" required>
+                                    <dv-valueinput
+                                        input-id="bruttovermoegen2"
+                                        name="bruttovermoegen2"
+                                        data-test="bruttovermoegen2"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
+                                        dv-on-blur="vm.calculate()"
+                                        class="input-element"
+                                        required
+                                    >
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.bruttovermoegen"
-                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"></dv-bisher>
+                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().bruttovermoegen"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS2()
+                                                .finanzielleSituationJA
+                                                .bruttovermoegen
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS2()
+                                                .bruttovermoegen
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="bruttovermoegen2" for="vm.form.bruttovermoegen2.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="bruttovermoegen2"
+                                        for="vm.form.bruttovermoegen2.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
@@ -158,34 +275,60 @@
 
                     <!-- Schulden GS 1 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()"
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="schulden1">
-                                    <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_1"
-                                          translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
-                                    <dv-tooltip input-id="schulden1"
-                                                text="'FINANZIELLE_SITUATION_SCHULDEN_HELP' | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float required"
+                                    for="schulden1"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_1"
+                                        translate-values="{namegs1: vm.extractFullNameGS1()}"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="schulden1"
+                                        text="'FINANZIELLE_SITUATION_SCHULDEN_HELP' | translate"
+                                    ></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="schulden1" name="schulden1"
-                                                   data-test="schulden1"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_1'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element" required>
+                                    <dv-valueinput
+                                        input-id="schulden1"
+                                        name="schulden1"
+                                        data-test="schulden1"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_SCHULDEN_GS_1'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
+                                        dv-on-blur="vm.calculate()"
+                                        class="input-element"
+                                        required
+                                    >
                                     </dv-valueinput>
-                                    <dv-bisher gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.schulden"
-                                               ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"></dv-bisher>
+                                    <dv-bisher
+                                        gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.schulden"
+                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().schulden"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS1()
+                                                .finanzielleSituationJA.schulden
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS1()
+                                                .schulden
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="schulden1"
-                                                       for="vm.form.schulden1.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="schulden1"
+                                        for="vm.form.schulden1.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
@@ -193,67 +336,124 @@
 
                     <!-- Schulden GS 2 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="vm.showGS2() && !vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="
+                                vm.showGS2() &&
+                                !vm.hasGS2SteuerDatenErfolgreichAbgefragt()
+                            "
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="schulden2">
-                                    <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_2"
-                                          translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
-                                    <dv-tooltip input-id="schulden2"
-                                                text="'FINANZIELLE_SITUATION_SCHULDEN_HELP' | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float required"
+                                    for="schulden2"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_2"
+                                        translate-values="{namegs2: vm.extractFullNameGS2()}"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="schulden2"
+                                        text="'FINANZIELLE_SITUATION_SCHULDEN_HELP' | translate"
+                                    ></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="schulden2" name="schulden2"
-                                                   data-test="schulden2"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_2'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element" required>
+                                    <dv-valueinput
+                                        input-id="schulden2"
+                                        name="schulden2"
+                                        data-test="schulden2"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_SCHULDEN_GS_2'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
+                                        dv-on-blur="vm.calculate()"
+                                        class="input-element"
+                                        required
+                                    >
                                     </dv-valueinput>
-                                    <dv-bisher gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.schulden"
-                                               ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"></dv-bisher>
+                                    <dv-bisher
+                                        gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.schulden"
+                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().schulden"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS2()
+                                                .finanzielleSituationJA.schulden
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS2()
+                                                .schulden
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="schulden2"
-                                                       for="vm.form.schulden2.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="schulden2"
+                                        for="vm.form.schulden2.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
                     </div>
                     <!-- Nettovermoegen GS2-->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="vm.showGS2() && vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="
+                                vm.showGS2() &&
+                                vm.hasGS2SteuerDatenErfolgreichAbgefragt()
+                            "
+                        >
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="nettovermoegenGS2">
-                                    <span data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2"
-                                          translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
+                                <label
+                                    class="md-no-float required"
+                                    for="nettovermoegenGS2"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2"
+                                        translate-values="{namegs2: vm.extractFullNameGS2()}"
+                                    ></span>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="nettovermoegenGS2" name="nettovermoegenGS2"
-                                                   data-test="nettovermoegenGS2"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2'|translate}}"
-                                                   ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
-                                                   ng-disabled="true"
-                                                   allow-negative="true"
-                                                   class="input-element" required>
+                                    <dv-valueinput
+                                        input-id="nettovermoegenGS2"
+                                        name="nettovermoegenGS2"
+                                        data-test="nettovermoegenGS2"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2'
+                                                | translate
+                                        }}"
+                                        ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
+                                        ng-disabled="true"
+                                        allow-negative="true"
+                                        class="input-element"
+                                        required
+                                    >
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.nettoVermoegen"
-                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
+                                    ></dv-bisher>
                                     <dv-eingabe-hint
-                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
-                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().nettoVermoegen"
+                                        [neuer-wert]="
+                                            vm.getFinanzielleSituationGS2()
+                                                .finanzielleSituationJA
+                                                .nettoVermoegen
+                                        "
+                                        [vergleichswert]="
+                                            vm.getFinanzielleSituationVorMutationGS2()
+                                                .nettoVermoegen
+                                        "
                                         [label]="'BISHER' | translate"
                                         [show-only-if-not-identical]="true"
                                     ></dv-eingabe-hint>
-                                    <dv-error-messages input-id="nettovermoegenGS2" for="vm.form.nettovermoegenGS2.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="nettovermoegenGS2"
+                                        for="vm.form.nettovermoegenGS2.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
@@ -263,14 +463,19 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN"
-                                       for="nettovermoegenFuenfProzent"></label>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN"
+                                    for="nettovermoegenFuenfProzent"
+                                ></label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="nettovermoegenFuenfProzent"
-                                                   data-test="nettovermoegenFuenfProzent"
-                                                   name="nettovermoegenFuenfProzent"
-                                                   ng-model="vm.getResultate().nettovermoegenFuenfProzent"
-                                                   ng-disabled="true">
+                                    <dv-valueinput
+                                        input-id="nettovermoegenFuenfProzent"
+                                        data-test="nettovermoegenFuenfProzent"
+                                        name="nettovermoegenFuenfProzent"
+                                        ng-model="vm.getResultate().nettovermoegenFuenfProzent"
+                                        ng-disabled="true"
+                                    >
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
                                 </div>
@@ -282,15 +487,23 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="anrechenbaresEinkommen">
-                                    <span data-translate="FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN"></span>
+                                <label
+                                    class="md-no-float"
+                                    for="anrechenbaresEinkommen"
+                                >
+                                    <span
+                                        data-translate="FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN"
+                                    ></span>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="anrechenbaresEinkommen" name="anrechenbaresEinkommen"
-                                                   data-test="anrechenbaresEinkommen"
-                                                   ng-model="vm.getResultate().anrechenbaresEinkommen"
-                                                   allow-negative="true"
-                                                   ng-disabled="true">
+                                    <dv-valueinput
+                                        input-id="anrechenbaresEinkommen"
+                                        name="anrechenbaresEinkommen"
+                                        data-test="anrechenbaresEinkommen"
+                                        ng-model="vm.getResultate().anrechenbaresEinkommen"
+                                        allow-negative="true"
+                                        ng-disabled="true"
+                                    >
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
                                 </div>
@@ -298,24 +511,35 @@
                         </div>
                     </div>
 
-
                     <!-- Abzuege beider Gesuchsteller aufgrund Alimente-->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float"
-                                       for="abzuegeBeiderGesuchsteller">
-                                    <span ng-if="!vm.isFKJV()"
-                                          data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"></span>
-                                    <span ng-if="vm.isFKJV()" data-translate="FINANZIELLE_SITUATION_ABZUEGE"></span>
+                                <label
+                                    class="md-no-float"
+                                    for="abzuegeBeiderGesuchsteller"
+                                >
+                                    <span
+                                        ng-if="!vm.isFKJV()"
+                                        data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"
+                                    ></span>
+                                    <span
+                                        ng-if="vm.isFKJV()"
+                                        data-translate="FINANZIELLE_SITUATION_ABZUEGE"
+                                    ></span>
                                 </label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="abzuegeBeiderGesuchsteller"
-                                                   data-test="abzuegeBeiderGesuchsteller"
-                                                   name="abzuegeBeiderGesuchsteller"
-                                                   ng-model="vm.getResultate().abzuegeBeiderGesuchsteller"
-                                                   aria-label="{{'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'|translate}}"
-                                                   ng-disabled="true">
+                                    <dv-valueinput
+                                        input-id="abzuegeBeiderGesuchsteller"
+                                        data-test="abzuegeBeiderGesuchsteller"
+                                        name="abzuegeBeiderGesuchsteller"
+                                        ng-model="vm.getResultate().abzuegeBeiderGesuchsteller"
+                                        aria-label="{{
+                                            'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'
+                                                | translate
+                                        }}"
+                                        ng-disabled="true"
+                                    >
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
                                 </div>
@@ -327,15 +551,19 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float"
-                                       data-translate="FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM"
-                                       for="massgebendesEinkVorAbzFamGr"></label>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM"
+                                    for="massgebendesEinkVorAbzFamGr"
+                                ></label>
                                 <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="massgebendesEinkVorAbzFamGr"
-                                                   data-test="massgebendesEinkVorAbzFamGr"
-                                                   name="massgebendesEinkVorAbzFamGr"
-                                                   ng-model="vm.getResultate().massgebendesEinkVorAbzFamGr"
-                                                   ng-disabled="true">
+                                    <dv-valueinput
+                                        input-id="massgebendesEinkVorAbzFamGr"
+                                        data-test="massgebendesEinkVorAbzFamGr"
+                                        name="massgebendesEinkVorAbzFamGr"
+                                        ng-model="vm.getResultate().massgebendesEinkVorAbzFamGr"
+                                        ng-disabled="true"
+                                    >
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
                                 </div>
@@ -343,19 +571,38 @@
                         </div>
                     </div>
 
-                    <div class="inline-hint margin-bottom-30" ng-if="vm.showAufteilung()">
-                        {{'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE' | translate}}
+                    <div
+                        class="inline-hint margin-bottom-30"
+                        ng-if="vm.showAufteilung()"
+                    >
+                        {{
+                            'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE'
+                                | translate
+                        }}
                         <ul>
-                            <li>{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE' | translate}}</li>
+                            <li>
+                                {{
+                                    'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE'
+                                        | translate
+                                }}
+                            </li>
                         </ul>
-                        <a class="pointer-cursor" ng-click="vm.startAufteilung()">{{'AUFTEILUNG_AENDERN' | translate}}</a>
+                        <a
+                            class="pointer-cursor"
+                            ng-click="vm.startAufteilung()"
+                            >{{ 'AUFTEILUNG_AENDERN' | translate }}</a
+                        >
                     </div>
-
                 </fieldset>
 
                 <!--Buttons-->
-                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()"
-                               dv-sub-step="3" dv-sub-step-name="BERN_RESULTATE">
+                <dv-navigation
+                    dv-previous="true"
+                    dv-next="true"
+                    dv-save="vm.save()"
+                    dv-sub-step="3"
+                    dv-sub-step-name="BERN_RESULTATE"
+                >
                 </dv-navigation>
             </form>
         </div>

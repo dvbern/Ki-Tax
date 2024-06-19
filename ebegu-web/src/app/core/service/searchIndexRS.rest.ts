@@ -18,11 +18,14 @@ import {TSQuickSearchResult} from '../../../models/dto/TSQuickSearchResult';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class SearchIndexRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;
 
-    public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil
+    ) {
         this.serviceURL = `${REST_API}search/`;
     }
 
@@ -45,8 +48,10 @@ export class SearchIndexRS {
     }
 
     private search(url: string): IPromise<TSQuickSearchResult> {
-        return this.http.get(url)
+        return this.http
+            .get(url)
             .then((response: IHttpResponse<TSQuickSearchResult>) =>
-                this.ebeguRestUtil.parseQuickSearchResult(response.data));
+                this.ebeguRestUtil.parseQuickSearchResult(response.data)
+            );
     }
 }

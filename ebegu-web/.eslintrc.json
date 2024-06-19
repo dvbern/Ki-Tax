@@ -2,14 +2,10 @@
     "root": true,
     "overrides": [
         {
-      "files": [
-        "**/*.ts"
-      ],
+            "files": ["**/*.ts"],
             "parser": "@typescript-eslint/parser",
             "parserOptions": {
-        "project": [
-          "tsconfig.eslint.json"
-        ],
+                "project": ["tsconfig.eslint.json"],
                 "createDefaultProgram": false
             },
             "extends": [
@@ -27,9 +23,7 @@
                 "@angular-eslint/component-selector": [
                     "error",
                     {
-            "prefix": [
-              "dv"
-            ]
+                        "prefix": ["dv"]
                     }
                 ],
                 "@angular-eslint/directive-selector": [
@@ -67,10 +61,7 @@
                         ]
                     }
                 ],
-        "arrow-body-style": [
-          "error",
-          "as-needed"
-        ],
+                "arrow-body-style": ["error", "as-needed"],
                 "@angular-eslint/prefer-output-readonly": "warn",
                 "@typescript-eslint/no-unused-expressions": "error",
                 "@angular-eslint/no-host-metadata-property": "error",
@@ -106,9 +97,7 @@
                     "error",
                     {
                         "selector": "enumMember",
-            "format": [
-              "UPPER_CASE"
-            ]
+                        "format": ["UPPER_CASE"]
                     }
                 ],
                 "@typescript-eslint/no-for-in-array": "error",
@@ -132,20 +121,11 @@
                         "ignoreStatic": true
                     }
                 ],
-        "arrow-parens": [
-          "error",
-          "as-needed"
-        ],
-        "brace-style": [
-          "error",
-          "1tbs"
-        ],
+                "arrow-parens": ["error", "as-needed"],
+                "brace-style": ["error", "1tbs"],
                 "comma-dangle": "off",
                 "default-case": "error",
-        "eqeqeq": [
-          "error",
-          "always"
-        ],
+                "eqeqeq": ["error", "always"],
                 "id-blacklist": "off",
                 "import/no-extraneous-dependencies": [
                     "error",
@@ -153,9 +133,7 @@
                         "devDependencies": false
                     }
                 ],
-        "import/no-internal-modules": [
-          "off"
-        ],
+                "import/no-internal-modules": ["off"],
                 "import/no-unassigned-import": "error",
                 "max-len": [
                     "error",
@@ -173,26 +151,8 @@
                     "error",
                     {
                         "ignore": [
-              -1,
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              31,
-              100,
-              1000,
-              1024,
-              4096,
-              5000
+                            -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 31,
+                            100, 1000, 1024, 4096, 5000
                         ],
                         "ignoreArrayIndexes": true,
                         "ignoreDefaultValues": true,
@@ -229,17 +189,13 @@
             }
         },
         {
-      "files": [
-        "**/*.spec.ts"
-      ],
+            "files": ["**/*.spec.ts"],
             "rules": {
                 "@typescript-eslint/unbound-method": "off"
             }
         },
         {
-      "files": [
-        "*.html"
-      ],
+            "files": ["*.html"],
             "parser": "@angular-eslint/template-parser",
             "extends": [
                 "plugin:@angular-eslint/template/recommended",

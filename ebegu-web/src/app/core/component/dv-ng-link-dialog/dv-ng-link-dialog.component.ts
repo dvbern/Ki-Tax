@@ -14,7 +14,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * This component shows a Dialog with a title and a link. Nothing is returned
@@ -24,7 +24,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './dv-ng-link-dialog.template.html'
 })
 export class DvNgLinkDialogComponent {
-
     public title: string = '';
     public link: string = '';
 
@@ -32,7 +31,6 @@ export class DvNgLinkDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
-
         if (data) {
             this.title = data.title;
             this.link = data.link;

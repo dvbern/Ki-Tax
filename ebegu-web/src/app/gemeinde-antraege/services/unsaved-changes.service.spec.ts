@@ -4,17 +4,17 @@ import {TransitionService} from '@uirouter/core';
 
 import {UnsavedChangesService} from './unsaved-changes.service';
 
-const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-    ['onStart']);
+const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(
+    TransitionService.name,
+    ['onStart']
+);
 
 describe('UnsavedChangesService', () => {
     let service: UnsavedChangesService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                MatDialogModule
-            ],
+            imports: [MatDialogModule],
             providers: [
                 {provide: TransitionService, useValue: transitionServiceSpy}
             ]

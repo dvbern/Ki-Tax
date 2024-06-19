@@ -31,12 +31,18 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 import {ZahlungsinformationenFieldsComponent} from './zahlungsinformationen-fields.component';
 
-const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-    ['getGesuch', 'getFamiliensituation']);
-const listResourceRSSpy = jasmine.createSpyObj<ListResourceRS>(ListResourceRS.name,
-    ['getLaenderList']);
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name,
+    ['getGesuch', 'getFamiliensituation']
+);
+const listResourceRSSpy = jasmine.createSpyObj<ListResourceRS>(
+    ListResourceRS.name,
+    ['getLaenderList']
+);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+    AuthServiceRS.name,
+    ['isOneOfRoles']
+);
 
 describe('ZahlungsinformationenFieldsComponent', () => {
     let component: ZahlungsinformationenFieldsComponent;
@@ -44,13 +50,8 @@ describe('ZahlungsinformationenFieldsComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                FormsModule,
-                SharedModule
-            ],
-            declarations: [
-                ZahlungsinformationenFieldsComponent
-            ],
+            imports: [FormsModule, SharedModule],
+            declarations: [ZahlungsinformationenFieldsComponent],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ListResourceRS, useValue: listResourceRSSpy},

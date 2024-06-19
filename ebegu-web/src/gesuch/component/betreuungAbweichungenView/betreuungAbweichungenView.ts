@@ -55,7 +55,9 @@ const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 
 const LOG = LogFactory.createLog('BetreuungAbweichungenViewController');
 
-export class BetreuungAbweichungenViewComponentConfig implements IComponentOptions {
+export class BetreuungAbweichungenViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./betreuungAbweichungenView.html');
     public controller = BetreuungAbweichungenViewController;
@@ -63,7 +65,6 @@ export class BetreuungAbweichungenViewComponentConfig implements IComponentOptio
 }
 
 export class BetreuungAbweichungenViewController extends AbstractGesuchViewController<TSBetreuung> {
-
     public static $inject = [
         '$state',
         'GesuchModelManager',
@@ -111,7 +112,14 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         private readonly mandantService: MandantService,
         private readonly ebeguRestUtil: EbeguRestUtil
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.BETREUUNG,
+            $timeout
+        );
         this.$translate = $translate;
         this.dvDialog = dvDialog;
     }
@@ -120,48 +128,81 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public $onInit(): void {
         super.$onInit();
 
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        });
+        this.mandantService.mandant$
+            .pipe(map(mandant => mandant === MANDANTS.LUZERN))
+            .subscribe(isLuzern => {
+                this.isLuzern = isLuzern;
+            });
 
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
-        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+        const kindIndex =
+            this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
-            if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
-                const betreuungNumber = parseInt(this.$stateParams.betreuungNumber, 10);
-                const betreuungIndex = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(betreuungNumber);
-                this.model = angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[betreuungIndex]);
-                this.institution = this.model.institutionStammdaten.institution.name;
+            if (
+                this.$stateParams.betreuungNumber &&
+                this.$stateParams.betreuungNumber.length > 0
+            ) {
+                const betreuungNumber = parseInt(
+                    this.$stateParams.betreuungNumber,
+                    10
+                );
+                const betreuungIndex =
+                    this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(
+                        betreuungNumber
+                    );
+                this.model = angular.copy(
+                    this.gesuchModelManager.getKindToWorkWith().betreuungen[
+                        betreuungIndex
+                    ]
+                );
+                this.institution =
+                    this.model.institutionStammdaten.institution.name;
                 this.gesuchModelManager.setBetreuungIndex(betreuungIndex);
             }
 
             // just to read!
             this.kindModel = this.gesuchModelManager.getKindToWorkWith();
         } else {
-            this.$log.error(`There is no kind available with kind-number:${  this.$stateParams.kindNumber}`);
+            this.$log.error(
+                `There is no kind available with kind-number:${this.$stateParams.kindNumber}`
+            );
         }
-        this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
+        this.model = angular.copy(
+            this.gesuchModelManager.getBetreuungToWorkWith()
+        );
         this.loadAbweichungen();
 
-        this.mitteilungRS.getNewestBetreuungsmitteilung(this.model.id)
+        this.mitteilungRS
+            .getNewestBetreuungsmitteilung(this.model.id)
             .then((response: TSBetreuungsmitteilung) => {
                 this.existingMutationsmeldung = response;
             });
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(einstellungen => {
-                this.loadEinstellungPensumAnzeigeTyp(einstellungen);
-            }, error => LOG.error(error));
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                einstellungen => {
+                    this.loadEinstellungPensumAnzeigeTyp(einstellungen);
+                },
+                error => LOG.error(error)
+            );
     }
 
-    private loadEinstellungPensumAnzeigeTyp(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP);
-        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
-            .parsePensumAnzeigeTyp(einstellung);
+    private loadEinstellungPensumAnzeigeTyp(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP
+        );
+        const einstellungPensumAnzeigeTyp =
+            this.ebeguRestUtil.parsePensumAnzeigeTyp(einstellung);
 
-        this.betreuungspensumAnzeigeTypEinstellung = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
-            einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+        this.betreuungspensumAnzeigeTypEinstellung =
+            EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp)
+                ? einstellungPensumAnzeigeTyp
+                : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     public getKindModel(): TSKindContainer {
@@ -181,17 +222,25 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public updateStatus(abweichung: TSBetreuungspensumAbweichung): void {
         abweichung.status = TSBetreuungspensumAbweichungStatus.NONE;
 
-        if (abweichung.pensum !== null && abweichung.pensum >= 0
-            && abweichung.monatlicheBetreuungskosten !== null
-            && abweichung.monatlicheBetreuungskosten >= 0) {
-            abweichung.status = TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN;
+        if (
+            abweichung.pensum !== null &&
+            abweichung.pensum >= 0 &&
+            abweichung.monatlicheBetreuungskosten !== null &&
+            abweichung.monatlicheBetreuungskosten >= 0
+        ) {
+            abweichung.status =
+                TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN;
         }
     }
 
-    public updateStatusMittagstisch(abweichung: TSBetreuungspensumAbweichung): void {
-        abweichung.status = Number(abweichung.monatlicheHauptmahlzeiten) > 0 && Number(abweichung.tarifProHauptmahlzeit) > 0
-            ? TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN
-            : TSBetreuungspensumAbweichungStatus.NONE;
+    public updateStatusMittagstisch(
+        abweichung: TSBetreuungspensumAbweichung
+    ): void {
+        abweichung.status =
+            Number(abweichung.monatlicheHauptmahlzeiten) > 0 &&
+            Number(abweichung.tarifProHauptmahlzeit) > 0
+                ? TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN
+                : TSBetreuungspensumAbweichungStatus.NONE;
     }
 
     public getIcon(abweichung: TSBetreuungspensumAbweichung): string {
@@ -210,14 +259,17 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public getIconTooltip(abweichung: TSBetreuungspensumAbweichung): string {
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
-                return this.$translate.instant(`TSBetreuungspensumAbweichungStatus_${
-                     TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN}`);
+                return this.$translate.instant(
+                    `TSBetreuungspensumAbweichungStatus_${TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN}`
+                );
             case TSBetreuungspensumAbweichungStatus.VERRECHNET:
-                return this.$translate.instant(`TSBetreuungspensumAbweichungStatus_${
-                     TSBetreuungspensumAbweichungStatus.VERRECHNET}`);
+                return this.$translate.instant(
+                    `TSBetreuungspensumAbweichungStatus_${TSBetreuungspensumAbweichungStatus.VERRECHNET}`
+                );
             case TSBetreuungspensumAbweichungStatus.UEBERNOMMEN:
-                return this.$translate.instant(`TSBetreuungspensumAbweichungStatus_${
-                     TSBetreuungspensumAbweichungStatus.UEBERNOMMEN}`);
+                return this.$translate.instant(
+                    `TSBetreuungspensumAbweichungStatus_${TSBetreuungspensumAbweichungStatus.UEBERNOMMEN}`
+                );
             default:
                 return '';
         }
@@ -230,7 +282,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
         // die gemeinde die vergünstigung deaktiviert hat
-        if (!this.isMahlzeitenverguenstigungEnabled() && this.getBetreuungsangebotTyp() !== TSBetreuungsangebotTyp.MITTAGSTISCH) {
+        if (
+            !this.isMahlzeitenverguenstigungEnabled() &&
+            this.getBetreuungsangebotTyp() !==
+                TSBetreuungsangebotTyp.MITTAGSTISCH
+        ) {
             this.model.betreuungspensumAbweichungen.forEach(a => {
                 a.monatlicheNebenmahlzeiten ??= 0;
                 a.tarifProNebenmahlzeit ??= 0;
@@ -241,9 +297,13 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         this.betreuungRS.saveAbweichungen(this.model).then(result => {
             this.model.betreuungspensumAbweichungen = result;
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: 'SPEICHERN_ERFOLGREICH'
-            });
+            this.dvDialog.showDialog(
+                okHtmlDialogTempl,
+                OkHtmlDialogController,
+                {
+                    title: 'SPEICHERN_ERFOLGREICH'
+                }
+            );
         });
     }
 
@@ -254,9 +314,14 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
      * Ausserdem muss die Meldung nicht applied sein und nicht den Status ERLEDIGT haben
      */
     public hasNotAppliedMutationsmeldung(): boolean {
-        return this.existingMutationsmeldung !== undefined && this.existingMutationsmeldung !== null
-            && this.existingMutationsmeldung.sentDatum !== undefined && this.existingMutationsmeldung.sentDatum !== null
-            && !this.existingMutationsmeldung.applied && !this.existingMutationsmeldung.isErledigt();
+        return (
+            this.existingMutationsmeldung !== undefined &&
+            this.existingMutationsmeldung !== null &&
+            this.existingMutationsmeldung.sentDatum !== undefined &&
+            this.existingMutationsmeldung.sentDatum !== null &&
+            !this.existingMutationsmeldung.applied &&
+            !this.existingMutationsmeldung.isErledigt()
+        );
     }
 
     public preFreigeben(): void {
@@ -269,39 +334,63 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             return;
         }
 
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
-            deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => {   // User confirmed removal
-            this.freigeben();
-        });
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                    deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() => {
+                // User confirmed removal
+                this.freigeben();
+            });
     }
 
     public freigeben(): void {
-        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
+        this.mitteilungRS
+            .abweichungenFreigeben(
+                this.model,
+                this.gesuchModelManager.getDossier()
+            )
             .then(result => {
                 this.model.betreuungspensumAbweichungen = result;
             });
     }
 
     public isDisabled(abweichung: TSBetreuungspensumAbweichung): boolean {
-        return abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-            || EbeguUtil.isNullOrUndefined(abweichung.vertraglicheKosten);
+        return (
+            abweichung.status ===
+                TSBetreuungspensumAbweichungStatus.VERRECHNET ||
+            EbeguUtil.isNullOrUndefined(abweichung.vertraglicheKosten)
+        );
     }
 
     public isAbweichungAllowed(): boolean {
-        return super.isMutationsmeldungAllowed(this.model, this.gesuchModelManager.isNeuestesGesuch());
+        return super.isMutationsmeldungAllowed(
+            this.model,
+            this.gesuchModelManager.isNeuestesGesuch()
+        );
     }
 
     public isFreigabeAllowed(): boolean {
-        return this.isAbweichungAllowed()
-            && this.hasAbweichungInStatus(TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN)
-            && !this.isDirty();
+        return (
+            this.isAbweichungAllowed() &&
+            this.hasAbweichungInStatus(
+                TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN
+            ) &&
+            !this.isDirty()
+        );
     }
 
-    public hasAbweichungInStatus(status: TSBetreuungspensumAbweichungStatus): boolean {
+    public hasAbweichungInStatus(
+        status: TSBetreuungspensumAbweichungStatus
+    ): boolean {
         for (const a of this.model.betreuungspensumAbweichungen) {
             if (a.status === status) {
                 return true;
@@ -312,7 +401,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public isDirty(): boolean {
         for (const a of this.model.betreuungspensumAbweichungen) {
-            if (a.isNew() && a.status === TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
+            if (
+                a.isNew() &&
+                a.status ===
+                    TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN
+            ) {
                 return true;
             }
         }
@@ -320,12 +413,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getHelpText(): string {
-        return this.$translate.instant('ABWEICHUNGEN_HELP',
-            {
-                vorname: this.kindModel.kindJA.vorname,
-                name: this.kindModel.kindJA.nachname,
-                institution: this.institution
-            });
+        return this.$translate.instant('ABWEICHUNGEN_HELP', {
+            vorname: this.kindModel.kindJA.vorname,
+            name: this.kindModel.kindJA.nachname,
+            institution: this.institution
+        });
     }
 
     public getBetreuungsangebotTyp(): TSBetreuungsangebotTyp {
@@ -333,10 +425,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getInputFormatTitle(): string {
-        return this.getBetreuungsangebotTyp() === TSBetreuungsangebotTyp.KITA
-        && this.betreuungspensumAnzeigeTypEinstellung !== TSPensumAnzeigeTyp.NUR_STUNDEN ?
-            this.$translate.instant('DAYS') :
-            this.$translate.instant('HOURS');
+        return this.getBetreuungsangebotTyp() === TSBetreuungsangebotTyp.KITA &&
+            this.betreuungspensumAnzeigeTypEinstellung !==
+                TSPensumAnzeigeTyp.NUR_STUNDEN
+            ? this.$translate.instant('DAYS')
+            : this.$translate.instant('HOURS');
     }
 
     public cancel(): void {
@@ -345,29 +438,52 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+        return this.gesuchModelManager.gemeindeKonfiguration
+            .konfigMahlzeitenverguenstigungEnabled;
     }
 
     public isRowRequired(abweichung: TSBetreuungspensumAbweichung): boolean {
         if (this.isMahlzeitenverguenstigungEnabled()) {
-            return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
-                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
-                || EbeguUtil.isNotNullAndPositive(abweichung.pensum)
-                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
+            return (
+                EbeguUtil.isNotNullAndPositive(
+                    abweichung.monatlicheHauptmahlzeiten
+                ) ||
+                EbeguUtil.isNotNullAndPositive(
+                    abweichung.monatlicheNebenmahlzeiten
+                ) ||
+                EbeguUtil.isNotNullAndPositive(abweichung.pensum) ||
+                EbeguUtil.isNotNullAndPositive(
+                    abweichung.monatlicheBetreuungskosten
+                )
+            );
         }
-        return EbeguUtil.isNotNullAndPositive(abweichung.pensum)
-            || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
+        return (
+            EbeguUtil.isNotNullAndPositive(abweichung.pensum) ||
+            EbeguUtil.isNotNullAndPositive(
+                abweichung.monatlicheBetreuungskosten
+            )
+        );
     }
 
-    public getMonthlyMahlzeitenKosten(abweichung: TSBetreuungspensumAbweichung): number {
-        const hauptmahlzeiten = EbeguUtil.isNullOrUndefined(abweichung.monatlicheHauptmahlzeiten)
-            ? abweichung.vertraglicheHauptmahlzeiten : abweichung.monatlicheHauptmahlzeiten;
+    public getMonthlyMahlzeitenKosten(
+        abweichung: TSBetreuungspensumAbweichung
+    ): number {
+        const hauptmahlzeiten = EbeguUtil.isNullOrUndefined(
+            abweichung.monatlicheHauptmahlzeiten
+        )
+            ? abweichung.vertraglicheHauptmahlzeiten
+            : abweichung.monatlicheHauptmahlzeiten;
 
-        const nebenmahlzeiten = EbeguUtil.isNullOrUndefined(abweichung.monatlicheNebenmahlzeiten)
-            ? abweichung.vertraglicheNebenmahlzeiten : abweichung.monatlicheNebenmahlzeiten;
+        const nebenmahlzeiten = EbeguUtil.isNullOrUndefined(
+            abweichung.monatlicheNebenmahlzeiten
+        )
+            ? abweichung.vertraglicheNebenmahlzeiten
+            : abweichung.monatlicheNebenmahlzeiten;
 
-        return (hauptmahlzeiten * abweichung.vertraglicherTarifHaupt) + (nebenmahlzeiten * abweichung.vertraglicherTarifNeben);
-
+        return (
+            hauptmahlzeiten * abweichung.vertraglicherTarifHaupt +
+            nebenmahlzeiten * abweichung.vertraglicherTarifNeben
+        );
     }
 
     public getStepSize(): string {

@@ -22,7 +22,6 @@ import {DVRoleElementController} from './DVRoleElementController';
 
 /* eslint-disable */
 describe('DVElementController', () => {
-
     let authServiceRS: AuthServiceRS;
     let cvElementController: DVRoleElementController;
 
@@ -31,12 +30,15 @@ describe('DVElementController', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        authServiceRS = $injector.get('AuthServiceRS');
-        spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.GESUCHSTELLER);
-        cvElementController = new DVRoleElementController(authServiceRS);
-
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            authServiceRS = $injector.get('AuthServiceRS');
+            spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(
+                TSRole.GESUCHSTELLER
+            );
+            cvElementController = new DVRoleElementController(authServiceRS);
+        })
+    );
 
     describe('checkRoles', () => {
         it('should return true for the same role as the user and no expression', () => {
@@ -55,17 +57,26 @@ describe('DVElementController', () => {
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and no expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
+            cvElementController.dvAllowedRoles = [
+                TSRole.SACHBEARBEITER_INSTITUTION,
+                TSRole.ADMIN_BG
+            ];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and true expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
+            cvElementController.dvAllowedRoles = [
+                TSRole.SACHBEARBEITER_INSTITUTION,
+                TSRole.ADMIN_BG
+            ];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });
         it('should return false for a different role as the user and false expression', () => {
-            cvElementController.dvAllowedRoles = [TSRole.SACHBEARBEITER_INSTITUTION, TSRole.ADMIN_BG];
+            cvElementController.dvAllowedRoles = [
+                TSRole.SACHBEARBEITER_INSTITUTION,
+                TSRole.ADMIN_BG
+            ];
             cvElementController.dvExpression = undefined;
             expect(cvElementController.checkValidity()).toBe(false);
         });

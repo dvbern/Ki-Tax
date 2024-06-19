@@ -18,7 +18,6 @@ import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSZahlung extends TSAbstractMutableEntity {
-
     public empfaengerName: string;
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
     public status: TSZahlungsstatus;

@@ -19,16 +19,19 @@ import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {HttpErrorInterceptor} from './HttpErrorInterceptor';
 
 describe('httpErrorInterceptor', () => {
-
-    let httpErrorInterceptor: HttpErrorInterceptor; let $rootScope: angular.IRootScopeService; let $q: angular.IQService;
+    let httpErrorInterceptor: HttpErrorInterceptor;
+    let $rootScope: angular.IRootScopeService;
+    let $q: angular.IQService;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
-    beforeEach(angular.mock.inject($injector => {
-        httpErrorInterceptor = $injector.get('HttpErrorInterceptor');
-        $rootScope = $injector.get('$rootScope');
-        $q = $injector.get('$q');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            httpErrorInterceptor = $injector.get('HttpErrorInterceptor');
+            $rootScope = $injector.get('$rootScope');
+            $q = $injector.get('$q');
+        })
+    );
 
     describe('Public API', () => {
         it('should include a responseError() function', () => {
@@ -37,7 +40,9 @@ describe('httpErrorInterceptor', () => {
     });
 
     describe('API usage', () => {
-        let deferred: IDeferred<any>; let successHandler: any; let errorHandler: any;
+        let deferred: IDeferred<any>;
+        let successHandler: any;
+        let errorHandler: any;
         beforeEach(() => {
             deferred = $q.defer();
             successHandler = jasmine.createSpy('successHandler');
@@ -47,29 +52,40 @@ describe('httpErrorInterceptor', () => {
 
         it('should reject the response with a validation report', () => {
             const validationResponse = TestDataUtil.createValidationReport();
-            httpErrorInterceptor.responseError(validationResponse)
+            httpErrorInterceptor
+                .responseError(validationResponse)
                 .then(() => deferred.resolve())
                 .catch(err => deferred.reject(err));
 
             const errors = [
-                (TSExceptionReport.createFromViolation('PARAMETER',
+                TSExceptionReport.createFromViolation(
+                    'PARAMETER',
                     'Die Länge des Feldes muss zwischen 36 und 36 sein',
                     'markAsRead.arg1',
-                    '8a146418-ab12-456f-9b17-aad6990f51'))
+                    '8a146418-ab12-456f-9b17-aad6990f51'
+                )
             ];
             $rootScope.$digest();
             expect(errorHandler).toHaveBeenCalledWith(errors);
         });
 
         it('should reject the response containing an exceptionReport', () => {
-            const exceptionReportResponse = TestDataUtil.createExceptionReport();
-            httpErrorInterceptor.responseError(exceptionReportResponse).then(() => {
-                deferred.resolve();
-            }, error => {
-                deferred.reject(error);
-            });
+            const exceptionReportResponse =
+                TestDataUtil.createExceptionReport();
+            httpErrorInterceptor.responseError(exceptionReportResponse).then(
+                () => {
+                    deferred.resolve();
+                },
+                error => {
+                    deferred.reject(error);
+                }
+            );
 
-            const errors = [(TSExceptionReport.createFromExceptionReport(exceptionReportResponse.data))];
+            const errors = [
+                TSExceptionReport.createFromExceptionReport(
+                    exceptionReportResponse.data
+                )
+            ];
             $rootScope.$digest();
             expect(errorHandler).toHaveBeenCalledWith(errors);
         });

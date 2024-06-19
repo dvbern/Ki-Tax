@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+    HttpErrorResponse,
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -29,18 +35,21 @@ const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 
 @Injectable()
 export class HttpErrorInterceptorX implements HttpInterceptor {
-
-    public constructor(
-        private readonly errorService: ErrorServiceX,
-    ) {
-    }
+    public constructor(private readonly errorService: ErrorServiceX) {}
 
     public static isIgnorableHttpError<T>(request: HttpRequest<T>): boolean {
-        return request?.url?.includes('notokenrefresh') ||
-            request?.url?.includes('emaillogin/gui/registration/createmaillogin');
+        return (
+            request?.url?.includes('notokenrefresh') ||
+            request?.url?.includes(
+                'emaillogin/gui/registration/createmaillogin'
+            )
+        );
     }
 
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError(async (err: HttpErrorResponse) => {
                 if (!(err instanceof HttpErrorResponse)) {
@@ -64,8 +73,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                 }
 
                 throw err;
-
-            }),
+            })
         );
     }
 
@@ -78,13 +86,15 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
      */
     private async handleErrorResponse(
         request: HttpRequest<any>,
-        response: HttpErrorResponse,
+        response: HttpErrorResponse
     ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
-        if (response.status === HTTP_CODES.NOT_FOUND && (
-            url.includes('ebegu.dvbern.ch')
-            || url.includes('ebegu-test.bern.ch')
-            || url.includes('ebegu.bern.ch'))) {
+        if (
+            response.status === HTTP_CODES.NOT_FOUND &&
+            (url.includes('ebegu.dvbern.ch') ||
+                url.includes('ebegu-test.bern.ch') ||
+                url.includes('ebegu.bern.ch'))
+        ) {
             return [];
         }
         let errors: Array<TSExceptionReport>;
@@ -93,65 +103,87 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         try {
             if (this.isDataViolationResponse(response.error)) {
                 errors = this.convertViolationReport(response.error);
-
             } else if (this.isDataEbeguExceptionReport(response.error)) {
                 errors = this.convertEbeguExceptionReport(response.error);
-
             } else if (isOIDCTokenInitialisationException(response)) {
                 errors = [];
-                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                    TSErrorLevel.SEVERE,
-                    'ERROR_OIDC_TOKEN_INITIALISATION',
-                    response.error));
+                errors.push(
+                    new TSExceptionReport(
+                        TSErrorType.INTERNAL,
+                        TSErrorLevel.SEVERE,
+                        'ERROR_OIDC_TOKEN_INITIALISATION',
+                        response.error
+                    )
+                );
             } else if (this.isBlob(response.error)) {
                 errors = [];
                 const errorObject = JSON.parse(await response.error.text());
-                errors.push(TSExceptionReport.createFromExceptionReport(errorObject));
+                errors.push(
+                    TSExceptionReport.createFromExceptionReport(errorObject)
+                );
             } else if (this.isFileUploadException(response.error)) {
                 errors = [];
-                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                    TSErrorLevel.SEVERE,
-                    'ERROR_FILE_TOO_LARGE',
-                    response.message));
+                errors.push(
+                    new TSExceptionReport(
+                        TSErrorType.INTERNAL,
+                        TSErrorLevel.SEVERE,
+                        'ERROR_FILE_TOO_LARGE',
+                        response.message
+                    )
+                );
             } else if (this.isOptimisticLockException(response)) {
                 errors = [];
-                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                    TSErrorLevel.SEVERE,
-                    'ERROR_DATA_CHANGED',
-                    response.message));
+                errors.push(
+                    new TSExceptionReport(
+                        TSErrorType.INTERNAL,
+                        TSErrorLevel.SEVERE,
+                        'ERROR_DATA_CHANGED',
+                        response.message
+                    )
+                );
             } else {
-                LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+                LOG.error(
+                    `ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`
+                );
                 LOG.error(`ResponseData:${JSON.stringify(response.message)}`);
                 // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
                 errors = [];
-                errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                    TSErrorLevel.SEVERE,
-                    'ERROR_UNEXPECTED',
-                    response.message));
+                errors.push(
+                    new TSExceptionReport(
+                        TSErrorType.INTERNAL,
+                        TSErrorLevel.SEVERE,
+                        'ERROR_UNEXPECTED',
+                        response.message
+                    )
+                );
             }
             return errors;
         } catch (e) {
             LOG.error('Could not handle error');
             LOG.error(response);
             return [
-                new TSExceptionReport(TSErrorType.INTERNAL,
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
                     TSErrorLevel.SEVERE,
                     'ERROR_UNEXPECTED',
-                    response.message),
+                    response.message
+                )
             ];
         }
     }
 
     private convertViolationReport(data: any): Array<TSExceptionReport> {
-        return [].concat(this.convertToExceptionReport(data.parameterViolations))
+        return []
+            .concat(this.convertToExceptionReport(data.parameterViolations))
             .concat(this.convertToExceptionReport(data.classViolations))
             .concat(this.convertToExceptionReport(data.fieldViolations))
             .concat(this.convertToExceptionReport(data.propertyViolations))
             .concat(this.convertToExceptionReport(data.returnValueViolations));
-
     }
 
-    private convertToExceptionReport(violations: any): Array<TSExceptionReport> {
+    private convertToExceptionReport(
+        violations: any
+    ): Array<TSExceptionReport> {
         const exceptionReports: Array<TSExceptionReport> = [];
         if (violations) {
             for (const violationEntry of violations) {
@@ -159,20 +191,24 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                 const message: string = violationEntry.message;
                 const path: string = violationEntry.path;
                 const value: string = violationEntry.value;
-                const report = TSExceptionReport.createFromViolation(constraintType, message, path, value);
+                const report = TSExceptionReport.createFromViolation(
+                    constraintType,
+                    message,
+                    path,
+                    value
+                );
                 exceptionReports.push(report);
             }
         }
         return exceptionReports;
-
     }
 
     private convertEbeguExceptionReport(data: any): Array<TSExceptionReport> {
-        const exceptionReport = TSExceptionReport.createFromExceptionReport(data);
+        const exceptionReport =
+            TSExceptionReport.createFromExceptionReport(data);
         const exceptionReports: Array<TSExceptionReport> = [];
         exceptionReports.push(exceptionReport);
         return exceptionReports;
-
     }
 
     /**
@@ -186,31 +222,54 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         // hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport()
         // bekommen
         if (data !== null && data !== undefined) {
-            const hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
-            const hasClassViol: boolean = data.hasOwnProperty('classViolations');
-            const hasfieldViol: boolean = data.hasOwnProperty('fieldViolations');
-            const hasPropViol: boolean = data.hasOwnProperty('propertyViolations');
-            const hasRetViol: boolean = data.hasOwnProperty('returnValueViolations');
-            return hasParamViol && hasClassViol && hasfieldViol && hasPropViol && hasRetViol;
+            const hasParamViol: boolean = data.hasOwnProperty(
+                'parameterViolations'
+            );
+            const hasClassViol: boolean =
+                data.hasOwnProperty('classViolations');
+            const hasfieldViol: boolean =
+                data.hasOwnProperty('fieldViolations');
+            const hasPropViol: boolean =
+                data.hasOwnProperty('propertyViolations');
+            const hasRetViol: boolean = data.hasOwnProperty(
+                'returnValueViolations'
+            );
+            return (
+                hasParamViol &&
+                hasClassViol &&
+                hasfieldViol &&
+                hasPropViol &&
+                hasRetViol
+            );
         }
         return false;
-
     }
 
     private isDataEbeguExceptionReport(data: any): boolean {
         if (data !== null && data !== undefined) {
-            const hassErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
-            const hasExceptionName: boolean = data.hasOwnProperty('exceptionName');
+            const hassErrorCodeEnum: boolean =
+                data.hasOwnProperty('errorCodeEnum');
+            const hasExceptionName: boolean =
+                data.hasOwnProperty('exceptionName');
             const hasMethodName: boolean = data.hasOwnProperty('methodName');
             const hasStackTrace: boolean = data.hasOwnProperty('stackTrace');
-            const hasTranslatedMessage: boolean = data.hasOwnProperty('translatedMessage');
-            const hasCustomMessage: boolean = data.hasOwnProperty('customMessage');
-            const hasArgumentList: boolean = data.hasOwnProperty('argumentList');
-            return hassErrorCodeEnum && hasExceptionName && hasMethodName && hasStackTrace
-                && hasTranslatedMessage && hasCustomMessage && hasArgumentList;
+            const hasTranslatedMessage: boolean =
+                data.hasOwnProperty('translatedMessage');
+            const hasCustomMessage: boolean =
+                data.hasOwnProperty('customMessage');
+            const hasArgumentList: boolean =
+                data.hasOwnProperty('argumentList');
+            return (
+                hassErrorCodeEnum &&
+                hasExceptionName &&
+                hasMethodName &&
+                hasStackTrace &&
+                hasTranslatedMessage &&
+                hasCustomMessage &&
+                hasArgumentList
+            );
         }
         return false;
-
     }
 
     private isFileUploadException(response: string | Blob): boolean {
@@ -222,7 +281,8 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
             return true;
         }
 
-        const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
+        const msg =
+            'java.io.IOException: UT000020: Connection terminated as request was larger than ';
 
         return response.indexOf(msg) > -1;
     }

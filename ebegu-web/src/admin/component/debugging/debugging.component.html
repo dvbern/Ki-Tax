@@ -17,17 +17,27 @@
 
 <dv-full-height-container>
     <div class="dv-content">
-
         <div class="view-title margin-top-10">
             <h2 translate>DEBUGGING_SENTRY</h2>
         </div>
 
-        <div  class="row sentrytest margin-top-10">
+        <div class="row sentrytest margin-top-10">
             <div class="col-md-12">
-                <button onclick="throw 'Deliberate Error! inlined throw';" class="dv-btn">inline js error</button>
-                <button (click)="doUndefined()" class="dv-btn">undefined access</button>
-                <button (click)="doThrowError()" class="dv-btn">controll-ererror</button>
-                <button (click)="doShowDialog()" class="dv-btn">show Sentry Dialog</button>
+                <button
+                    onclick="throw 'Deliberate Error! inlined throw';"
+                    class="dv-btn"
+                >
+                    inline js error
+                </button>
+                <button (click)="doUndefined()" class="dv-btn">
+                    undefined access
+                </button>
+                <button (click)="doThrowError()" class="dv-btn">
+                    controll-ererror
+                </button>
+                <button (click)="doShowDialog()" class="dv-btn">
+                    show Sentry Dialog
+                </button>
             </div>
         </div>
 
@@ -36,29 +46,43 @@
         </div>
 
         <form #traceForm="ngForm">
-
             <div class="row">
                 <div class="col-md-3">
                     <label for="routerTraceCategories">
-                        {{'DEBUGGING_TRACE_TRANSITIONS' | translate}}
+                        {{ 'DEBUGGING_TRACE_TRANSITIONS' | translate }}
                     </label>
-                    <select [(ngModel)]="routerTraceCategories"
-                            multiple
-                            [size]="TRACE_CATEGORY_KEYS.length"
-                            name="routerTraceCategories"
-                            class="form-control"
-                            id="routerTraceCategories">
-                        <option *ngFor="let key of TRACE_CATEGORY_KEYS"
-                                [ngValue]="TRACE_CATEGORY[key]">
-                            {{key}}
-                            <ng-container *ngIf="routerTraceCategories.includes(findCategory(key))">{{"&#xf00c;"}}
+                    <select
+                        [(ngModel)]="routerTraceCategories"
+                        multiple
+                        [size]="TRACE_CATEGORY_KEYS.length"
+                        name="routerTraceCategories"
+                        class="form-control"
+                        id="routerTraceCategories"
+                    >
+                        <option
+                            *ngFor="let key of TRACE_CATEGORY_KEYS"
+                            [ngValue]="TRACE_CATEGORY[key]"
+                        >
+                            {{ key }}
+                            <ng-container
+                                *ngIf="
+                                    routerTraceCategories.includes(
+                                        findCategory(key)
+                                    )
+                                "
+                                >{{ '&#xf00c;' }}
                             </ng-container>
                         </option>
                     </select>
                 </div>
 
                 <div class="col-md-3 dv-input-container-question">
-                    <button (click)="onActivateVisualizer()" class="dv-btn" translate [disabled]="hasVisualizer">
+                    <button
+                        (click)="onActivateVisualizer()"
+                        class="dv-btn"
+                        translate
+                        [disabled]="hasVisualizer"
+                    >
                         DEBUGGING_UI_ROUTER_VISUALIZER
                     </button>
                 </div>
@@ -70,19 +94,26 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <p>Hier kann für bereits Gesuche eine Neuberechnung der Betreuungsgutscheine simuliert werden.
-                    Falls es Abweichungen zwischen den Betreuungsgutscheinen des verfügten Gesuchs und der Simulation gibt, werden
-                    die unten angezeigt (falls das Resultat identisch ist, wird nichts angezeigt).
-                    <br>Mehrere GesuchIds auf unterschiedlichen Zeilen eingeben</p>
+                <p>
+                    Hier kann für bereits Gesuche eine Neuberechnung der
+                    Betreuungsgutscheine simuliert werden. Falls es Abweichungen
+                    zwischen den Betreuungsgutscheinen des verfügten Gesuchs und
+                    der Simulation gibt, werden die unten angezeigt (falls das
+                    Resultat identisch ist, wird nichts angezeigt).
+                    <br />Mehrere GesuchIds auf unterschiedlichen Zeilen
+                    eingeben
+                </p>
             </div>
         </div>
         <div>
             <div class="row margin-top-10">
                 <div class="col-md-6">
-                    <textarea [(ngModel)]="gesuchIdsStr"
-                              class="form-control"
-                              id="gesuchIds">
-                </textarea>
+                    <textarea
+                        [(ngModel)]="gesuchIdsStr"
+                        class="form-control"
+                        id="gesuchIds"
+                    >
+                    </textarea>
                 </div>
                 <div class="col-md-3">
                     <button (click)="startSimulation()" class="dv-btn">
@@ -92,14 +123,15 @@
             </div>
             <div class="row margin-top-10" *ngIf="simulationsFinished > 0">
                 <div class="col-md-12">
-                    <p>Simulation {{simulationsFinished}} von {{gesuchIds.length}} fertig</p>
+                    <p>
+                        Simulation {{ simulationsFinished }} von
+                        {{ gesuchIds.length }} fertig
+                    </p>
                 </div>
                 <div class="col-md-12" id="simulationResult">
-                    <p>{{simulationResult}}</p>
+                    <p>{{ simulationResult }}</p>
                 </div>
             </div>
         </div>
-
-
     </div>
 </dv-full-height-container>

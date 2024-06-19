@@ -15,247 +15,492 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-  <div class="verfuegen-list-view gesuch-modul static-position">
+<div class="verfuegen-list-view gesuch-modul static-position">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
     <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
-
         <div class="row view-title">
             <div class="col-md-12">
-                <h2>{{vm.getTitle()}}</h2>
-                <hr class="header"/>
+                <h2>{{ vm.getTitle() }}</h2>
+                <hr class="header" />
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12 table-responsive">
-
-                        <table st-table="displayedCollection" st-safe-src="vm.getKinderWithBetreuungList()"
-                               class="table table-hover" st-delay="20">
+                        <table
+                            st-table="displayedCollection"
+                            st-safe-src="vm.getKinderWithBetreuungList()"
+                            class="table table-hover"
+                            st-delay="20"
+                        >
                             <thead>
-                            <tr>
-                                <th data-translate="KIND" width="20%"></th>
-                                <th data-translate="INSTITUTION" width="20%"></th>
-                                <th data-translate="BETREUUNGSANGEBOT" width="20%"></th>
-                                <th data-translate="REFERENZ_NUMMER" width="20%"></th>
-                                <th data-translate="STATUS" width="15%"></th>
-                                <th data-translate="GUELTIGE_BETREUUNG" width="20%" ng-show="vm.isSuperAdmin()"></th>
-                                <th width="5%"></th>
-                            </tr>
+                                <tr>
+                                    <th data-translate="KIND" width="20%"></th>
+                                    <th
+                                        data-translate="INSTITUTION"
+                                        width="20%"
+                                    ></th>
+                                    <th
+                                        data-translate="BETREUUNGSANGEBOT"
+                                        width="20%"
+                                    ></th>
+                                    <th
+                                        data-translate="REFERENZ_NUMMER"
+                                        width="20%"
+                                    ></th>
+                                    <th
+                                        data-translate="STATUS"
+                                        width="15%"
+                                    ></th>
+                                    <th
+                                        data-translate="GUELTIGE_BETREUUNG"
+                                        width="20%"
+                                        ng-show="vm.isSuperAdmin()"
+                                    ></th>
+                                    <th width="5%"></th>
+                                </tr>
                             </thead>
-                            <tbody ng-repeat="kindContainer in displayedCollection" ng-init="kindIndex = $index">
-                            <tr ng-repeat="betreuung in kindContainer.betreuungen" ng-init="rowIndex = $index" st-select-row="betreuung"
-                                ng-attr-data-test="verfuegung#{{kindIndex}}-{{rowIndex}}"
-                                st-select-mode="single"
-                                ng-class="{'disabled-row': !vm.kannVerfuegungOeffnen(betreuung)}"
-                                ng-click="vm.openVerfuegung(kindContainer, betreuung)" role="row" tabindex="-1">
-                                <td ng-bind="kindContainer.kindJA.getFullName()"></td>
-                                <td ng-bind="betreuung.institutionStammdaten.institution.name"></td>
-                                <td ng-bind="betreuung.institutionStammdaten.betreuungsangebotTyp | translate"></td>
-                                <td ng-bind="vm.ebeguUtil.calculateBetreuungsId(vm.getGesuchsperiode(), vm.getFall(), vm.getGesuch().dossier.gemeinde,
-                                    kindContainer.kindNummer, betreuung.betreuungNummer)"></td>
-                                <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
-                                    <div ng-bind="betreuung.betreuungsstatus | translate" data-test="betreuungs-status"></div>
-                                    <span class="betreuung-bar"></span>
-                                </td>
-                                <td ng-show="vm.isSuperAdmin()">
-                                    <span>{{betreuung.gueltig ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</span>
-                                </td>
-                                <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
-                                    <dv-loading-button input-id="open{{betreuung.id}}"
-                                                       button-disabled="!vm.kannVerfuegungOeffnen(betreuung)"
-                                                       type="button"
-                                                       button-click="vm.openVerfuegung(kindContainer, betreuung);"
-                                                       button-class="dv-btn-operation dv-btn-row"
-                                                       aria-label="{{'TABLE_EDIT'|translate}}"
-                                                       data-test="verfuegung-anmeldung-anzeigen">
-                                        <i class="fa fa-lg fa-arrow-right" title="{{'TABLE_EDIT'|translate}}"
-                                           aria-label="{{'TABLE_EDIT'|translate}}">
-                                        </i>
-                                    </dv-loading-button>
-                                </td>
-                            </tr>
+                            <tbody
+                                ng-repeat="kindContainer in displayedCollection"
+                                ng-init="kindIndex = $index"
+                            >
+                                <tr
+                                    ng-repeat="betreuung in kindContainer.betreuungen"
+                                    ng-init="rowIndex = $index"
+                                    st-select-row="betreuung"
+                                    ng-attr-data-test="verfuegung#{{
+                                        kindIndex
+                                    }}-{{ rowIndex }}"
+                                    st-select-mode="single"
+                                    ng-class="{
+                                        'disabled-row':
+                                            !vm.kannVerfuegungOeffnen(betreuung)
+                                    }"
+                                    ng-click="vm.openVerfuegung(kindContainer, betreuung)"
+                                    role="row"
+                                    tabindex="-1"
+                                >
+                                    <td
+                                        ng-bind="kindContainer.kindJA.getFullName()"
+                                    ></td>
+                                    <td
+                                        ng-bind="betreuung.institutionStammdaten.institution.name"
+                                    ></td>
+                                    <td
+                                        ng-bind="betreuung.institutionStammdaten.betreuungsangebotTyp | translate"
+                                    ></td>
+                                    <td
+                                        ng-bind="vm.ebeguUtil.calculateBetreuungsId(vm.getGesuchsperiode(), vm.getFall(), vm.getGesuch().dossier.gemeinde,
+                                    kindContainer.kindNummer, betreuung.betreuungNummer)"
+                                    ></td>
+                                    <td
+                                        class="betreuung-status ng-class:betreuung.betreuungsstatus;"
+                                    >
+                                        <div
+                                            ng-bind="betreuung.betreuungsstatus | translate"
+                                            data-test="betreuungs-status"
+                                        ></div>
+                                        <span class="betreuung-bar"></span>
+                                    </td>
+                                    <td ng-show="vm.isSuperAdmin()">
+                                        <span>{{
+                                            betreuung.gueltig
+                                                ? 'LABEL_JA'
+                                                : ('LABEL_NEIN' | translate)
+                                        }}</span>
+                                    </td>
+                                    <td
+                                        role="cell"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()"
+                                        width="5%"
+                                    >
+                                        <dv-loading-button
+                                            input-id="open{{ betreuung.id }}"
+                                            button-disabled="!vm.kannVerfuegungOeffnen(betreuung)"
+                                            type="button"
+                                            button-click="vm.openVerfuegung(kindContainer, betreuung);"
+                                            button-class="dv-btn-operation dv-btn-row"
+                                            aria-label="{{
+                                                'TABLE_EDIT' | translate
+                                            }}"
+                                            data-test="verfuegung-anmeldung-anzeigen"
+                                        >
+                                            <i
+                                                class="fa fa-lg fa-arrow-right"
+                                                title="{{
+                                                    'TABLE_EDIT' | translate
+                                                }}"
+                                                aria-label="{{
+                                                    'TABLE_EDIT' | translate
+                                                }}"
+                                            >
+                                            </i>
+                                        </dv-loading-button>
+                                    </td>
+                                </tr>
                             </tbody>
-                            <tbody ng-if="vm.getKinderWithBetreuungList().length === 0">
-                            <tr>
-                                <td colspan="5" class="empty-table" data-translate="VERFUEGUNGEN_NOCH_KEINE"></td>
-                            </tr>
+                            <tbody
+                                ng-if="
+                                    vm.getKinderWithBetreuungList().length === 0
+                                "
+                            >
+                                <tr>
+                                    <td
+                                        colspan="5"
+                                        class="empty-table"
+                                        data-translate="VERFUEGUNGEN_NOCH_KEINE"
+                                    ></td>
+                                </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
 
-                <div class="row margin-top-40" ng-show="vm.hasNichtBerechenbareBetreuungen()"
-                     dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstRolle()">
+                <div
+                    class="row margin-top-40"
+                    ng-show="vm.hasNichtBerechenbareBetreuungen()"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstRolle()"
+                >
                     <div class="col-md-12">
                         <div class="well well-status-warten">
-                            <span data-translate="BETREUUNGEN_KOENNEN_NICHT_BERECHNET_WERDEN"></span>
+                            <span
+                                data-translate="BETREUUNGEN_KOENNEN_NICHT_BERECHNET_WERDEN"
+                            ></span>
                         </div>
                     </div>
                 </div>
                 <!--FinSitStatus-->
-                <div class="row margin-top-30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchstellerOrSozialdienst()">
+                <div
+                    class="row margin-top-30"
+                    ng-if="
+                        vm.mustFinanzielleSituationBeValidated() &&
+                        !vm.isGesuchstellerOrSozialdienst()
+                    "
+                >
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
-                            <dv-radio-container name="finSitStatus" class="input-element"
-                                                ng-required="vm.isFinSitStatusRequired()" items="vm.finSitStatus"
-                                                ng-model="vm.getGesuch().finSitStatus" dv-enable-element
-                                                dv-enable-expression="!vm.isGesuchReadonly() && !vm.isInstitutionRoles()"
-                                                ng-change="vm.changeFinSitStatus()">
+                            <dv-radio-container
+                                name="finSitStatus"
+                                class="input-element"
+                                ng-required="vm.isFinSitStatusRequired()"
+                                items="vm.finSitStatus"
+                                ng-model="vm.getGesuch().finSitStatus"
+                                dv-enable-element
+                                dv-enable-expression="!vm.isGesuchReadonly() && !vm.isInstitutionRoles()"
+                                ng-change="vm.changeFinSitStatus()"
+                            >
                             </dv-radio-container>
-                            <dv-error-messages input-id="finSitStatus" for="vm.form.finSitStatus.$error"
-                                               class="error"></dv-error-messages>
+                            <dv-error-messages
+                                input-id="finSitStatus"
+                                for="vm.form.finSitStatus.$error"
+                                class="error"
+                            ></dv-error-messages>
                         </div>
                     </div>
                 </div>
-                <div class="row" dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                    <dv-demo-feature-wrapper [demo-feature]="vm.demoFeatureFachstelleUebergangsloesung">
+                <div
+                    class="row"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                >
+                    <dv-demo-feature-wrapper
+                        [demo-feature]="
+                            vm.demoFeatureFachstelleUebergangsloesung
+                        "
+                    >
                         <div>
-                            <div ng-if="vm.showWarningSozialeIndikationPensumNichtErreicht()" class="well well-status-warten">
-                                <span translate>SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF</span>
+                            <div
+                                ng-if="
+                                    vm.showWarningSozialeIndikationPensumNichtErreicht()
+                                "
+                                class="well well-status-warten"
+                            >
+                                <span translate
+                                    >SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF</span
+                                >
                             </div>
                         </div>
                     </dv-demo-feature-wrapper>
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
                     <div ng-if="vm.showSimulationVeranderung()">
-                        <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                        <div
+                            ng-if="
+                                vm.hasMutationVeranderung() &&
+                                !vm.hasAnyNewOrStornierteBetreuung
+                            "
+                            class="well margin-top-20"
+                        >
                             <span translate>MUTATION_VERAENDERUNG_1</span>
                             <ul>
-                                <li ng-if="vm.veraenderungBG !== 0"><span>{{vm.getVeraenderungBgString()}}</span></li>
-                                <li ng-if="vm.veraenderungTS !== 0"><span>{{vm.getVeraenderungTsString()}}</span></li>
+                                <li ng-if="vm.veraenderungBG !== 0">
+                                    <span>{{
+                                        vm.getVeraenderungBgString()
+                                    }}</span>
+                                </li>
+                                <li ng-if="vm.veraenderungTS !== 0">
+                                    <span>{{
+                                        vm.getVeraenderungTsString()
+                                    }}</span>
+                                </li>
                             </ul>
                         </div>
-                        <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                        <div
+                            ng-if="
+                                !vm.hasMutationVeranderung() &&
+                                !vm.hasAnyNewOrStornierteBetreuung
+                            "
+                            class="well margin-top-20"
+                        >
                             <span translate>MUTATION_KEINE_VERAENDERUNG</span>
                         </div>
-                        <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                            <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
+                        <div
+                            ng-if="vm.hasAnyNewOrStornierteBetreuung"
+                            class="well margin-top-20"
+                        >
+                            <span translate
+                                >MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span
+                            >
                         </div>
                     </div>
                     <!-- Bei ignorierte Gesuchen einen Info zeigen -->
                     <div ng-if="vm.isGesuchIgnoriert()" class="well">
-                        <span>{{"GESUCH_IGNORIERT"|translate}}
-                            <a href="" ng-click="vm.gotoLetzterGueltigerAntrag()">{{"LETZTER_GUELTIGE_ANTRAG"|translate}}</a>
-                            <dv-tooltip text="'GESUCH_IGNORIERT_HELP' | translate"></dv-tooltip>
+                        <span
+                            >{{ 'GESUCH_IGNORIERT' | translate }}
+                            <a
+                                href=""
+                                ng-click="vm.gotoLetzterGueltigerAntrag()"
+                                >{{ 'LETZTER_GUELTIGE_ANTRAG' | translate }}</a
+                            >
+                            <dv-tooltip
+                                text="'GESUCH_IGNORIERT_HELP' | translate"
+                            ></dv-tooltip>
                         </span>
                     </div>
 
-                    <div class="col-xs-12 dv-input-container-question" ng-show="vm.showVerfuegungEingeschriebenSenden()">
+                    <div
+                        class="col-xs-12 dv-input-container-question"
+                        ng-show="vm.showVerfuegungEingeschriebenSenden()"
+                    >
                         <div class="checkbox">
-                            <md-checkbox ng-model="vm.getGesuch().verfuegungEingeschrieben"
-                                         name="eingeschrieben"
-                                         aria-label="{{'VERFUEGUNG_EINGESCHRIEBEN' | translate}}"
-                                         ng-change="vm.verfuegungEingeschriebenChanged()">
-                                <span data-translate="VERFUEGUNG_EINGESCHRIEBEN"></span>
+                            <md-checkbox
+                                ng-model="vm.getGesuch().verfuegungEingeschrieben"
+                                name="eingeschrieben"
+                                aria-label="{{
+                                    'VERFUEGUNG_EINGESCHRIEBEN' | translate
+                                }}"
+                                ng-change="vm.verfuegungEingeschriebenChanged()"
+                            >
+                                <span
+                                    data-translate="VERFUEGUNG_EINGESCHRIEBEN"
+                                ></span>
                             </md-checkbox>
-                            <dv-tooltip input-id="eingeschrieben-tooltip"
-                                        text="'VERFUEGUNG_EINGESCHRIEBEN_HELP' | translate"></dv-tooltip>
+                            <dv-tooltip
+                                input-id="eingeschrieben-tooltip"
+                                text="'VERFUEGUNG_EINGESCHRIEBEN_HELP' | translate"
+                            ></dv-tooltip>
                         </div>
                     </div>
                 </div>
                 <!--FinanzielleSituationPDF anzeigen-->
-                <div class="row text-left" dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                     dv-show-expression="vm.isFinanziellesituationPDFVisible()">
+                <div
+                    class="row text-left"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-show-expression="vm.isFinanziellesituationPDFVisible()"
+                >
                     <div class="col-md-12">
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.openFinanzielleSituationPDF()">
+                        <button
+                            type="button"
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openFinanzielleSituationPDF()"
+                        >
                             <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_FINSITUATION_ANZEIGEN"></span>
+                            <span
+                                data-translate="PDF_FINSITUATION_ANZEIGEN"
+                            ></span>
                         </button>
                     </div>
                 </div>
                 <!--Begleitschreiben anzeigen-->
-                <div class="row text-left" ng-show="vm.isBegleitschreibenVisible()">
+                <div
+                    class="row text-left"
+                    ng-show="vm.isBegleitschreibenVisible()"
+                >
                     <div class="col-md-12">
-
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.openBegleitschreibenPDF()">
+                        <button
+                            type="button"
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openBegleitschreibenPDF()"
+                        >
                             <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_BEGLEITSCHREIBEN_ANZEIGEN"></span>
+                            <span
+                                data-translate="PDF_BEGLEITSCHREIBEN_ANZEIGEN"
+                            ></span>
                         </button>
                     </div>
                 </div>
                 <!-- Komplette Korrespondenz anzeigen -->
-                <div class="row text-left" ng-show="vm.isKompletteKorrespondenzVisible()">
+                <div
+                    class="row text-left"
+                    ng-show="vm.isKompletteKorrespondenzVisible()"
+                >
                     <div class="col-md-12">
-
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.openKompletteKorrespondenzPDF()">
+                        <button
+                            type="button"
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openKompletteKorrespondenzPDF()"
+                        >
                             <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN"></span>
+                            <span
+                                data-translate="PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN"
+                            ></span>
                         </button>
                     </div>
                 </div>
 
-
                 <!-- Liste der bisherige Mahnungen -->
-                <div class="row text-left margin-top-20" ng-if="vm.getMahnungList().length > 0">
+                <div
+                    class="row text-left margin-top-20"
+                    ng-if="vm.getMahnungList().length > 0"
+                >
                     <div class="col-md-12">
                         <h2 data-translate="MAHNUNGEN"></h2>
-                        <hr class="header"/>
+                        <hr class="header" />
                     </div>
-                    <div class="col-md-12" ng-repeat="mahn in vm.getMahnungList()">
-                        <button type="button" class="dv-btn btn-link link-underline" ng-click="vm.openMahnungPDF(mahn)">
+                    <div
+                        class="col-md-12"
+                        ng-repeat="mahn in vm.getMahnungList()"
+                    >
+                        <button
+                            type="button"
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openMahnungPDF(mahn)"
+                        >
                             <i class="fa fa-file-text-o"></i>
-                            <span data-translate="MAHNUNG_DETAIL"
-                                  data-translate-value-mahnung-typ="{{mahn.mahnungTyp | translate}}"
-                                  data-translate-value-date="{{mahn.timestampErstellt | amDateFormat : 'DD.MM.YYYY'}}"
-                                  data-translate-value-fristablauf="{{mahn.datumFristablauf | amDateFormat : 'DD.MM.YYYY'}}"></span>
-                            <span ng-if="mahn.timestampAbgeschlossen" data-translate="MAHNUNG_ABGESCHLOSSEN"></span>
-                            <span ng-if="!mahn.timestampAbgeschlossen && !mahn.abgelaufen"
-                                  data-translate="MAHNUNG_OFFEN"></span>
-                            <span ng-if="!mahn.timestampAbgeschlossen && mahn.abgelaufen"
-                                  data-translate="MAHNUNG_NICHT_EINGETRETEN"></span>
+                            <span
+                                data-translate="MAHNUNG_DETAIL"
+                                data-translate-value-mahnung-typ="{{
+                                    mahn.mahnungTyp | translate
+                                }}"
+                                data-translate-value-date="{{
+                                    mahn.timestampErstellt
+                                        | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                                data-translate-value-fristablauf="{{
+                                    mahn.datumFristablauf
+                                        | amDateFormat: 'DD.MM.YYYY'
+                                }}"
+                            ></span>
+                            <span
+                                ng-if="mahn.timestampAbgeschlossen"
+                                data-translate="MAHNUNG_ABGESCHLOSSEN"
+                            ></span>
+                            <span
+                                ng-if="
+                                    !mahn.timestampAbgeschlossen &&
+                                    !mahn.abgelaufen
+                                "
+                                data-translate="MAHNUNG_OFFEN"
+                            ></span>
+                            <span
+                                ng-if="
+                                    !mahn.timestampAbgeschlossen &&
+                                    mahn.abgelaufen
+                                "
+                                data-translate="MAHNUNG_NICHT_EINGETRETEN"
+                            ></span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Mahnungsdetails, neue Mahnung erstellen -->
-                <div class="row text-left margin-top-20"
-                     ng-if="vm.showErsteMahnungAusloesen() || vm.showZweiteMahnungAusloesen()">
+                <div
+                    class="row text-left margin-top-20"
+                    ng-if="
+                        vm.showErsteMahnungAusloesen() ||
+                        vm.showZweiteMahnungAusloesen()
+                    "
+                >
                     <div class="col-md-12">
-                        <h3 class="ebegu-h2" data-translate="ERSTE_MAHNUNG" ng-if="vm.showErsteMahnungAusloesen()"></h3>
-                        <h3 class="ebegu-h2" data-translate="ZWEITE_MAHNUNG"
-							ng-if="vm.showZweiteMahnungAusloesen()"></h3>
-                        <hr class="header"/>
+                        <h3
+                            class="ebegu-h2"
+                            data-translate="ERSTE_MAHNUNG"
+                            ng-if="vm.showErsteMahnungAusloesen()"
+                        ></h3>
+                        <h3
+                            class="ebegu-h2"
+                            data-translate="ZWEITE_MAHNUNG"
+                            ng-if="vm.showZweiteMahnungAusloesen()"
+                        ></h3>
+                        <hr class="header" />
                         <div class="row">
-                            <dv-input-container class="col-md-12 form-group kommentar-feld">
-                                <label class="md-no-float" for="bemerkungenID"
-                                       data-translate="MAHNUNG_FEHLENDE_DOKUMENTE"></label>
-                                <textarea aria-describedby="bemerkungenID-error" name="bemerkungen" md-no-autogrow
-                                          class="form-control input-element" rows="4"
-                                          id="bemerkungenID"
-                                          ng-model="vm.mahnung.bemerkungen" ng-required="true" maxlength="4000">
-                        </textarea>
-                                <dv-error-messages input-id="bemerkungenID" for="vm.form.bemerkungen.$error"
-                                                   class="error"></dv-error-messages>
+                            <dv-input-container
+                                class="col-md-12 form-group kommentar-feld"
+                            >
+                                <label
+                                    class="md-no-float"
+                                    for="bemerkungenID"
+                                    data-translate="MAHNUNG_FEHLENDE_DOKUMENTE"
+                                ></label>
+                                <textarea
+                                    aria-describedby="bemerkungenID-error"
+                                    name="bemerkungen"
+                                    md-no-autogrow
+                                    class="form-control input-element"
+                                    rows="4"
+                                    id="bemerkungenID"
+                                    ng-model="vm.mahnung.bemerkungen"
+                                    ng-required="true"
+                                    maxlength="4000"
+                                >
+                                </textarea>
+                                <dv-error-messages
+                                    input-id="bemerkungenID"
+                                    for="vm.form.bemerkungen.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="row">
-                            <dv-input-container class="col-sm-12 form-group dv-input-container-small">
-                                <label class="md-no-float" for="datumFristablaufID"
-                                       data-translate="MAHNUNG_FRISTABLAUF"></label>
-                                <dv-datepicker input-id="datumFristablaufID" name="datumFristablauf"
-                                               class="input-element-small"
-                                               ng-model="vm.mahnung.datumFristablauf" ng-required="true"
-                                               data-test="fristablauf-mahnung">
+                            <dv-input-container
+                                class="col-sm-12 form-group dv-input-container-small"
+                            >
+                                <label
+                                    class="md-no-float"
+                                    for="datumFristablaufID"
+                                    data-translate="MAHNUNG_FRISTABLAUF"
+                                ></label>
+                                <dv-datepicker
+                                    input-id="datumFristablaufID"
+                                    name="datumFristablauf"
+                                    class="input-element-small"
+                                    ng-model="vm.mahnung.datumFristablauf"
+                                    ng-required="true"
+                                    data-test="fristablauf-mahnung"
+                                >
                                 </dv-datepicker>
-                                <dv-error-messages input-id="datumFristablaufID" for="vm.form.datumFristablauf.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-error-messages
+                                    input-id="datumFristablaufID"
+                                    for="vm.form.datumFristablauf.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="button"
-                                        class="dv-btn btn-link link-underline"
-                                        ng-click="vm.openMahnungPDF()">
+                                <button
+                                    type="button"
+                                    class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openMahnungPDF()"
+                                >
                                     <i class="fa fa-file-text-o"></i>
-                                    <span data-translate="PDF_MAHNUNG_ANZEIGEN"></span>
+                                    <span
+                                        data-translate="PDF_MAHNUNG_ANZEIGEN"
+                                    ></span>
                                 </button>
                             </div>
                         </div>
@@ -264,130 +509,262 @@
             </div>
         </div>
 
-        <div class="dv-navigation dv-navigation-flex dv-navigation--verfuegen-list">
-
-              <span class="ie11-fix" dv-show-element
-                    dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
-                    dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <button type="button" class="dv-btn cancel-button"
-                        id="button_mutationIgnorieren" ng-click="vm.setMutationIgnorieren()"
-                        aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
-                        ng-if="vm.showIgnoreMutation()">
-                    <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
+        <div
+            class="dv-navigation dv-navigation-flex dv-navigation--verfuegen-list"
+        >
+            <span
+                class="ie11-fix"
+                dv-show-element
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
+                dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()"
+            >
+                <button
+                    type="button"
+                    class="dv-btn cancel-button"
+                    id="button_mutationIgnorieren"
+                    ng-click="vm.setMutationIgnorieren()"
+                    aria-label="{{ 'MUTATION_IGNORIEREN' | translate }}"
+                    ng-if="vm.showIgnoreMutation()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="MUTATION_IGNORIEREN"
+                    ></span>
                 </button>
-              </span>
-            <span class="ie11-fix" dv-show-element
-                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button input-id="button_geprueft" type="button" button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen()"
-                                   data-test="container.geprueft">
+            </span>
+            <span
+                class="ie11-fix"
+                dv-show-element
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()"
+            >
+                <dv-loading-button
+                    input-id="button_geprueft"
+                    type="button"
+                    button-click="vm.setGesuchStatusGeprueft()"
+                    aria-label="{{ 'GEPRUEFT' | translate }}"
+                    ng-if="vm.showGeprueft()"
+                    button-disabled="!vm.isFinSitChoosen()"
+                    data-test="container.geprueft"
+                >
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="button_verfuegenStarten" button-click="vm.setGesuchStatusVerfuegen()"
-                                   aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
-                                   ng-if="vm.showVerfuegenStarten()"
-                                   data-test="container.verfuegen">
-                    <span class="uppercase" data-translate="VERFUEGUNG_STARTEN"></span>
+                <dv-loading-button
+                    input-id="button_verfuegenStarten"
+                    button-click="vm.setGesuchStatusVerfuegen()"
+                    aria-label="{{ 'VERFUEGUNG_STARTEN' | translate }}"
+                    ng-if="vm.showVerfuegenStarten()"
+                    data-test="container.verfuegen"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="VERFUEGUNG_STARTEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="button_keinKontingent" button-click="vm.setGesuchStatusKeinKontingent()"
-                                   aria-label="{{'KEIN_KONTINGENT' | translate}}"
-                                   ng-if="vm.showKeinKontingent()">
-                    <span class="uppercase" data-translate="KEIN_KONTINGENT"></span>
+                <dv-loading-button
+                    input-id="button_keinKontingent"
+                    button-click="vm.setGesuchStatusKeinKontingent()"
+                    aria-label="{{ 'KEIN_KONTINGENT' | translate }}"
+                    ng-if="vm.showKeinKontingent()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="KEIN_KONTINGENT"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="button_kontingentVorhanden" button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'KONTINGENT_VORHANDEN' | translate}}"
-                                   ng-if="vm.showKontingentVorhanden()">
-                    <span class="uppercase" data-translate="KONTINGENT_VORHANDEN"></span>
+                <dv-loading-button
+                    input-id="button_kontingentVorhanden"
+                    button-click="vm.setGesuchStatusGeprueft()"
+                    aria-label="{{ 'KONTINGENT_VORHANDEN' | translate }}"
+                    ng-if="vm.showKontingentVorhanden()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="KONTINGENT_VORHANDEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="beendenOhneAngebot" button-click="vm.closeWithoutAngebot()"
-                                   aria-label="{{'BEENDEN_OHNE_ANGEBOT' | translate}}"
-                                   ng-if="vm.showCloseWithoutAngebot()">
-                    <span class="uppercase" data-translate="BEENDEN_OHNE_ANGEBOT"></span>
+                <dv-loading-button
+                    input-id="beendenOhneAngebot"
+                    button-click="vm.closeWithoutAngebot()"
+                    aria-label="{{ 'BEENDEN_OHNE_ANGEBOT' | translate }}"
+                    ng-if="vm.showCloseWithoutAngebot()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="BEENDEN_OHNE_ANGEBOT"
+                    ></span>
                 </dv-loading-button>
             </span>
-            <span class="ie11-fix" dv-show-element
-                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
-                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button input-id="button_abschliessen" button-click="vm.setAbschliessen()"
-                                   aria-label="{{'ABSCHLIESSEN' | translate}}"
-                                   ng-if="vm.showAbschliessen() && !vm.showCloseWithoutAngebot()"
-                                   button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()"
-                                   data-test="container.abschliessen">
-                    <span class="uppercase" data-translate="ABSCHLIESSEN"></span>
+            <span
+                class="ie11-fix"
+                dv-show-element
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
+                dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()"
+            >
+                <dv-loading-button
+                    input-id="button_abschliessen"
+                    button-click="vm.setAbschliessen()"
+                    aria-label="{{ 'ABSCHLIESSEN' | translate }}"
+                    ng-if="
+                        vm.showAbschliessen() && !vm.showCloseWithoutAngebot()
+                    "
+                    button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()"
+                    data-test="container.abschliessen"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ABSCHLIESSEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="button_ersteMahnung" button-click="vm.ersteMahnungErstellen()"
-                                   button-click="vm.ersteMahnungErstellen()"
-                                   aria-label="{{'ERSTE_MAHNUNG' | translate}}"
-                                   ng-if="vm.showErsteMahnungErstellen()"
-                                   data-test="erste-mahnung">
-                    <span class="uppercase" data-translate="ERSTE_MAHNUNG"></span>
+                <dv-loading-button
+                    input-id="button_ersteMahnung"
+                    button-click="vm.ersteMahnungErstellen()"
+                    button-click="vm.ersteMahnungErstellen()"
+                    aria-label="{{ 'ERSTE_MAHNUNG' | translate }}"
+                    ng-if="vm.showErsteMahnungErstellen()"
+                    data-test="erste-mahnung"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ERSTE_MAHNUNG"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonErsteMahnungAusloesen" type="submit" button-click="vm.saveMahnung()"
-                                   aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN' | translate}}"
-                                   ng-if="vm.showErsteMahnungAusloesen()"
-                                   data-test="erste-mahnung-auslösen">
-                    <span class="uppercase" data-translate="ERSTE_MAHNUNG_AUSLOESEN"></span>
+                <dv-loading-button
+                    input-id="buttonErsteMahnungAusloesen"
+                    type="submit"
+                    button-click="vm.saveMahnung()"
+                    aria-label="{{ 'ERSTE_MAHNUNG_AUSLOESEN' | translate }}"
+                    ng-if="vm.showErsteMahnungAusloesen()"
+                    data-test="erste-mahnung-auslösen"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ERSTE_MAHNUNG_AUSLOESEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonZweiteMahnung" button-click="vm.zweiteMahnungErstellen()"
-                                   aria-label="{{'ZWEITE_MAHNUNG' | translate}}"
-                                   ng-if="vm.showZweiteMahnungErstellen()">
-                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG"></span>
+                <dv-loading-button
+                    input-id="buttonZweiteMahnung"
+                    button-click="vm.zweiteMahnungErstellen()"
+                    aria-label="{{ 'ZWEITE_MAHNUNG' | translate }}"
+                    ng-if="vm.showZweiteMahnungErstellen()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ZWEITE_MAHNUNG"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonZweiteMahnungAusloesen" type="submit" button-click="vm.saveMahnung()"
-                                   aria-label="{{'ZWEITE_MAHNUNG_AUSLOESEN' | translate}}"
-                                   ng-if="vm.showZweiteMahnungAusloesen()">
-                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG_AUSLOESEN"></span>
+                <dv-loading-button
+                    input-id="buttonZweiteMahnungAusloesen"
+                    type="submit"
+                    button-click="vm.saveMahnung()"
+                    aria-label="{{ 'ZWEITE_MAHNUNG_AUSLOESEN' | translate }}"
+                    ng-if="vm.showZweiteMahnungAusloesen()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ZWEITE_MAHNUNG_AUSLOESEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonMahnlaufBeenden" button-click="vm.mahnlaufBeenden()"
-                                   aria-label="{{'DOKUMENTE_KOMPLETT' | translate}}"
-                                   ng-if="vm.showMahnlaufBeenden()">
-                    <span class="uppercase" data-translate="MAHNLAUF_BEENDEN"></span>
+                <dv-loading-button
+                    input-id="buttonMahnlaufBeenden"
+                    button-click="vm.mahnlaufBeenden()"
+                    aria-label="{{ 'DOKUMENTE_KOMPLETT' | translate }}"
+                    ng-if="vm.showMahnlaufBeenden()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="MAHNLAUF_BEENDEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonDokumenteNichtKomplett" button-click="vm.dokumenteNichtKomplett()"
-                                   aria-label="{{'DOKUMENTE_NICHT_KOMPLETT' | translate}}"
-                                   ng-if="vm.showDokumenteNichtKomplett()">
-                    <span class="uppercase" data-translate="DOKUMENTE_NICHT_KOMPLETT"></span>
+                <dv-loading-button
+                    input-id="buttonDokumenteNichtKomplett"
+                    button-click="vm.dokumenteNichtKomplett()"
+                    aria-label="{{ 'DOKUMENTE_NICHT_KOMPLETT' | translate }}"
+                    ng-if="vm.showDokumenteNichtKomplett()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="DOKUMENTE_NICHT_KOMPLETT"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonZweiteMahnungNichtEingetreten" button-click="vm.zweiteMahnungNichtEingetreten()"
-                                   aria-label="{{'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate}}"
-                                   ng-if="vm.showZweiteMahnungNichtEingetreten()">
-                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG_NCINT_EINGETRETEN"></span>
+                <dv-loading-button
+                    input-id="buttonZweiteMahnungNichtEingetreten"
+                    button-click="vm.zweiteMahnungNichtEingetreten()"
+                    aria-label="{{
+                        'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate
+                    }}"
+                    ng-if="vm.showZweiteMahnungNichtEingetreten()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="ZWEITE_MAHNUNG_NCINT_EINGETRETEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonBeschwerde" type="button" button-click="vm.setGesuchStatusBeschwerdeHaengig()"
-                                   aria-label="{{'BESCHWERDE_HAENGIG' | translate}}"
-                                   ng-if="vm.showBeschwerdeHaengig()">
-                    <span class="uppercase" data-translate="BESCHWERDE_HAENGIG"></span>
+                <dv-loading-button
+                    input-id="buttonBeschwerde"
+                    type="button"
+                    button-click="vm.setGesuchStatusBeschwerdeHaengig()"
+                    aria-label="{{ 'BESCHWERDE_HAENGIG' | translate }}"
+                    ng-if="vm.showBeschwerdeHaengig()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="BESCHWERDE_HAENGIG"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonBeschwerdeAbschliessen" type="button" button-click="vm.setGesuchStatusBeschwerdeAbschliessen()"
-                                   aria-label="{{'BESCHWERDE_ABSCHLIESSEN' | translate}}"
-                                   ng-if="vm.showBeschwerdeAbschliessen()">
-                    <span class="uppercase" data-translate="BESCHWERDE_ABSCHLIESSEN"></span>
+                <dv-loading-button
+                    input-id="buttonBeschwerdeAbschliessen"
+                    type="button"
+                    button-click="vm.setGesuchStatusBeschwerdeAbschliessen()"
+                    aria-label="{{ 'BESCHWERDE_ABSCHLIESSEN' | translate }}"
+                    ng-if="vm.showBeschwerdeAbschliessen()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="BESCHWERDE_ABSCHLIESSEN"
+                    ></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonSteuerverwaltung" button-click="vm.sendToSteuerverwaltung()"
-                                   aria-label="{{'SEND_TO_STV' | translate}}"
-                                   ng-if="vm.showSendToSteuerverwaltung()"
-                                   data-test="container.send-to-stv">
+                <dv-loading-button
+                    input-id="buttonSteuerverwaltung"
+                    button-click="vm.sendToSteuerverwaltung()"
+                    aria-label="{{ 'SEND_TO_STV' | translate }}"
+                    ng-if="vm.showSendToSteuerverwaltung()"
+                    data-test="container.send-to-stv"
+                >
                     <span class="uppercase" data-translate="SEND_TO_STV"></span>
                 </dv-loading-button>
-                <dv-loading-button input-id="buttonSteuerverwaltungAbschliessen" button-click="vm.stvPruefungAbschliessen()"
-                                   aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN' | translate}}"
-                                   ng-if="vm.showSTVPruefungAbschliessen()">
-                    <span class="uppercase" data-translate="STV_PRUEFUNG_ABSCHLIESSEN"></span>
+                <dv-loading-button
+                    input-id="buttonSteuerverwaltungAbschliessen"
+                    button-click="vm.stvPruefungAbschliessen()"
+                    aria-label="{{ 'STV_PRUEFUNG_ABSCHLIESSEN' | translate }}"
+                    ng-if="vm.showSTVPruefungAbschliessen()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="STV_PRUEFUNG_ABSCHLIESSEN"
+                    ></span>
                 </dv-loading-button>
-                 <dv-loading-button input-id="buttonSteuerverwaltungZurueckholen"
-                                    button-click="vm.stvPruefungZurueckholen()"
-                                    aria-label="{{'STV_PRUEFUNG_ZURUECKHOLEN' | translate}}"
-                                    ng-if="vm.showSTVPruefungZurueckholen()">
-                    <span class="uppercase" data-translate="STV_PRUEFUNG_ZURUECKHOLEN"></span>
+                <dv-loading-button
+                    input-id="buttonSteuerverwaltungZurueckholen"
+                    button-click="vm.stvPruefungZurueckholen()"
+                    aria-label="{{ 'STV_PRUEFUNG_ZURUECKHOLEN' | translate }}"
+                    ng-if="vm.showSTVPruefungZurueckholen()"
+                >
+                    <span
+                        class="uppercase"
+                        data-translate="STV_PRUEFUNG_ZURUECKHOLEN"
+                    ></span>
                 </dv-loading-button>
             </span>
             <span>
-                <dv-navigation dv-previous="true" dv-next="false" dv-sub-step="1" container-class="avoid">
-            	</dv-navigation>
+                <dv-navigation
+                    dv-previous="true"
+                    dv-next="false"
+                    dv-sub-step="1"
+                    container-class="avoid"
+                >
+                </dv-navigation>
             </span>
         </div>
-
     </form>
 </div>

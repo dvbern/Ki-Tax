@@ -15,8 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AntragBetreuungPO, ConfirmDialogPO, TestFaellePO, VerfuegenPO, VerfuegungPO} from '@dv-e2e/page-objects';
-import { getUser } from '@dv-e2e/types';
+import {
+    AntragBetreuungPO,
+    ConfirmDialogPO,
+    TestFaellePO,
+    VerfuegenPO,
+    VerfuegungPO
+} from '@dv-e2e/page-objects';
+import {getUser} from '@dv-e2e/types';
 import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
@@ -32,11 +38,11 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
             testFall: 'testfall-1',
             gemeinde: 'Paris',
             periode: '2022/23',
-            betreuungsstatus: 'warten',
+            betreuungsstatus: 'warten'
         });
 
         // get AntragsId
-        cy.url().then((url) => {
+        cy.url().then(url => {
             const parts = new URL(url);
             gesuchUrl = `/${parts.hash}`;
         });
@@ -84,8 +90,11 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
 
         // Control status and tarif are definitiv
         SidenavPO.getGesuchStatus().should('have.text', 'Abgeschlossen');
-        VerfuegenPO.getBetreuungsstatus(0,0).should('have.text', 'Anmeldung übernommen');
-        VerfuegenPO.getVerfuegung(0,0).click();
+        VerfuegenPO.getBetreuungsstatus(0, 0).should(
+            'have.text',
+            'Anmeldung übernommen'
+        );
+        VerfuegenPO.getVerfuegung(0, 0).click();
         VerfuegungPO.getProvisorischerTarifTitel().should('not.exist');
     });
 });

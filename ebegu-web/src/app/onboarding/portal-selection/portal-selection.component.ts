@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {fromEvent, Observable} from 'rxjs';
 import {map, startWith, throttleTime} from 'rxjs/operators';
@@ -43,34 +48,41 @@ export class PortalSelectionComponent implements OnInit {
         private readonly mandantService: MandantService,
         private readonly routerGlobals: UIRouterGlobals,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.mandantService.getAll().subscribe(mandants => {
-            this.mandants = this.orderByTimestampErstellt(mandants);
-            this.cd.markForCheck();
-        }, error => LOG.error(error));
+        this.mandantService.getAll().subscribe(
+            mandants => {
+                this.mandants = this.orderByTimestampErstellt(mandants);
+                this.cd.markForCheck();
+            },
+            error => LOG.error(error)
+        );
 
         // Checks if screen size is less than 1024 pixels
-        const checkScreenSize = () => document.body.offsetWidth < this.MOBILE_THRESHOLD;
+        const checkScreenSize = () =>
+            document.body.offsetWidth < this.MOBILE_THRESHOLD;
 
         // Create observable from window resize event throttled so only fires every 500ms
         this.isScreenMobile$ = fromEvent(window, 'resize').pipe(
             startWith(checkScreenSize()),
             throttleTime(this.THROTTLE_TIME),
-            map(checkScreenSize));
-
+            map(checkScreenSize)
+        );
     }
 
     private orderByTimestampErstellt(mandants: TSMandant[]): TSMandant[] {
         return mandants.sort((a, b) =>
-            a.timestampErstellt.diff(b.timestampErstellt));
+            a.timestampErstellt.diff(b.timestampErstellt)
+        );
     }
 
     public selectMandant(mandant: TSMandant): void {
         const kibonMandant = this.mandantService.mandantToKibonMandant(mandant);
-        this.mandantService.selectMandant(kibonMandant, this.routerGlobals.params.path || '');
+        this.mandantService.selectMandant(
+            kibonMandant,
+            this.routerGlobals.params.path || ''
+        );
     }
 
     public getMandantLogoUrl(mandant: TSMandant): string {

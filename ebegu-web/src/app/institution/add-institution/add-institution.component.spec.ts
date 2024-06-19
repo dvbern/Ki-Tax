@@ -34,33 +34,57 @@ import {SharedModule} from '../../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution.component';
 
 describe('AddInstitutionComponent', () => {
-
     let component: AddInstitutionComponent;
     let fixture: ComponentFixture<AddInstitutionComponent>;
 
-    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenReadableForCurrentBenutzer']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
-    const transitionServiceSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
-        ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
-    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$']);
-    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
+    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['getInstitutionenReadableForCurrentBenutzer']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(
+        BenutzerRSX.name,
+        ['removeBenutzer']
+    );
+    const transitionServiceSpy = jasmine.createSpyObj<Transition>(
+        Transition.name,
+        ['params']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['getAllTraegerschaften', 'getAllActiveTraegerschaften']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipal']
+    );
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+        GemeindeRS.name,
+        ['getGemeindenForPrincipal$']
+    );
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            [
+                'getPublicPropertiesCached',
+                'getInstitutionenDurchGemeindenEinladen'
+            ]
+        );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule],
             providers: [
                 {provide: Transition, useValue: transitionServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
@@ -71,21 +95,35 @@ describe('AddInstitutionComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
-            declarations: [
-                AddInstitutionComponent
-            ]
+            declarations: [AddInstitutionComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
-        traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
-        transitionServiceSpy.params.and.returnValue({institutionId: undefined, betreuungsangebote: []});
-        authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
-        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(of(false).toPromise());
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(
+            Promise.resolve([])
+        );
+        traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(
+            Promise.resolve([])
+        );
+        transitionServiceSpy.params.and.returnValue({
+            institutionId: undefined,
+            betreuungsangebote: []
+        });
+        authServiceSpy.getPrincipal.and.returnValue(
+            TestDataUtil.createSuperadmin()
+        );
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of(new TSPublicAppConfig()).toPromise()
+        );
+        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(
+            of(false).toPromise()
+        );
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
     }));
 

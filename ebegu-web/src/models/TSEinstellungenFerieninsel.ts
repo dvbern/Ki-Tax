@@ -21,7 +21,6 @@ import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSEinstellungenFerieninsel extends TSAbstractEntity {
-
     private _gesuchsperiode: TSGesuchsperiode;
     private _ausweichstandortSommerferien: string;
     private _ausweichstandortHerbstferien: string;
@@ -71,13 +70,21 @@ export class TSEinstellungenFerieninsel extends TSAbstractEntity {
     public isAusweichstandortDefined(ferienname: TSFerienname): boolean {
         switch (ferienname) {
             case TSFerienname.FRUEHLINGSFERIEN:
-                return !EbeguUtil.isEmptyStringNullOrUndefined(this.ausweichstandortFruehlingsferien);
+                return !EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.ausweichstandortFruehlingsferien
+                );
             case TSFerienname.HERBSTFERIEN:
-                return !EbeguUtil.isEmptyStringNullOrUndefined(this.ausweichstandortHerbstferien);
+                return !EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.ausweichstandortHerbstferien
+                );
             case TSFerienname.SOMMERFERIEN:
-                return !EbeguUtil.isEmptyStringNullOrUndefined(this.ausweichstandortSommerferien);
+                return !EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.ausweichstandortSommerferien
+                );
             case TSFerienname.SPORTFERIEN:
-                return !EbeguUtil.isEmptyStringNullOrUndefined(this.ausweichstandortSportferien);
+                return !EbeguUtil.isEmptyStringNullOrUndefined(
+                    this.ausweichstandortSportferien
+                );
             default:
                 return false;
         }

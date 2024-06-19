@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+    HttpErrorResponse,
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -28,15 +34,15 @@ import {HttpErrorInterceptorX} from '../errors/service/HttpErrorInterceptorX';
     providedIn: 'root'
 })
 export class HttpAuthInterceptorX implements HttpInterceptor {
-
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService
-    ) {
-    }
+    ) {}
 
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req)
-        .pipe(
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
+        return next.handle(req).pipe(
             catchError((err: HttpErrorResponse) => {
                 switch (err.status) {
                     case HTTP_CODES.UNAUTHORIZED:
@@ -45,21 +51,25 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                             throw err;
                         }
                         // if this request was a background polling request we do not want to relogin or show errors
-                        if (
-                            HttpErrorInterceptorX.isIgnorableHttpError(req)) {
+                        if (HttpErrorInterceptorX.isIgnorableHttpError(req)) {
                             throw err;
                         }
                         const deferred$ = new Subject<HttpEvent<any>>();
-                        this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, err.message);
+                        this.authLifeCycleService.changeAuthStatus(
+                            TSAuthEvent.NOT_AUTHENTICATED,
+                            err.message
+                        );
                         return deferred$;
                     case HTTP_CODES.FORBIDDEN:
-                        this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, err.message);
+                        this.authLifeCycleService.changeAuthStatus(
+                            TSAuthEvent.NOT_AUTHORISED,
+                            err.message
+                        );
                         throw err;
                     default:
                         throw err;
                 }
             })
         );
-
     }
 }

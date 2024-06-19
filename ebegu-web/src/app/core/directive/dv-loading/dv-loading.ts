@@ -45,7 +45,6 @@ export class DVLoading implements IDirective {
     ) => {
         let promise: IPromise<any>;
         scope.$watch(controller.isLoading, v => {
-
             if (v) {
                 controller.$timeout.cancel(promise);
                 element.show();
@@ -56,7 +55,6 @@ export class DVLoading implements IDirective {
                         element.hide();
                     }
                 }, delay);
-
             }
         });
     };
@@ -66,8 +64,11 @@ export class DVLoading implements IDirective {
  * Direktive  die ein Element ein oder ausblendet jenachdem ob ein http request pending ist
  */
 export class DVLoadingController {
-
-    public static $inject: string[] = ['$http', '$timeout', 'HttpPendingService'];
+    public static $inject: string[] = [
+        '$http',
+        '$timeout',
+        'HttpPendingService'
+    ];
 
     public isLoading: () => {};
 
@@ -76,6 +77,8 @@ export class DVLoadingController {
         public $timeout: ITimeoutService,
         private readonly httpPendingService: HttpPendingService
     ) {
-        this.isLoading = (): boolean => this.$http.pendingRequests.length > 0 || this.httpPendingService.hasPendingRequests();
+        this.isLoading = (): boolean =>
+            this.$http.pendingRequests.length > 0 ||
+            this.httpPendingService.hasPendingRequests();
     }
 }

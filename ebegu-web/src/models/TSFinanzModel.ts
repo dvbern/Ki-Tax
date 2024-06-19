@@ -64,7 +64,9 @@ export class TSFinanzModel {
         return this._finanzielleSituationContainerGS1;
     }
 
-    public set finanzielleSituationContainerGS1(value: TSFinanzielleSituationContainer) {
+    public set finanzielleSituationContainerGS1(
+        value: TSFinanzielleSituationContainer
+    ) {
         this._finanzielleSituationContainerGS1 = value;
     }
 
@@ -72,7 +74,9 @@ export class TSFinanzModel {
         return this._finanzielleSituationContainerGS2;
     }
 
-    public set finanzielleSituationContainerGS2(value: TSFinanzielleSituationContainer) {
+    public set finanzielleSituationContainerGS2(
+        value: TSFinanzielleSituationContainer
+    ) {
         this._finanzielleSituationContainerGS2 = value;
     }
 
@@ -104,42 +108,65 @@ export class TSFinanzModel {
         if (!gesuch) {
             return;
         }
-        this.familienSituation = angular.copy(gesuch.extractFamiliensituation());
+        this.familienSituation = angular.copy(
+            gesuch.extractFamiliensituation()
+        );
         this.familienSituation.gemeinsameSteuererklaerung =
-            this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
+            this.getCopiedValueOrFalse(
+                gesuch.extractFamiliensituation().gemeinsameSteuererklaerung
+            );
         this.familienSituation.sozialhilfeBezueger =
-            this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
-        this.familienSituation.zustaendigeAmtsstelle = gesuch.extractFamiliensituation().zustaendigeAmtsstelle;
+            this.getCopiedValueOrUndefined(
+                gesuch.extractFamiliensituation().sozialhilfeBezueger
+            );
+        this.familienSituation.zustaendigeAmtsstelle =
+            gesuch.extractFamiliensituation().zustaendigeAmtsstelle;
 
-        this.familienSituation.nameBetreuer = gesuch.extractFamiliensituation().nameBetreuer;
+        this.familienSituation.nameBetreuer =
+            gesuch.extractFamiliensituation().nameBetreuer;
         this.familienSituation.verguenstigungGewuenscht =
-            this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
-        this.finanzielleSituationContainerGS1 = angular.copy(gesuch.gesuchsteller1.finanzielleSituationContainer);
+            this.getCopiedValueOrUndefined(
+                gesuch.extractFamiliensituation().verguenstigungGewuenscht
+            );
+        this.finanzielleSituationContainerGS1 = angular.copy(
+            gesuch.gesuchsteller1.finanzielleSituationContainer
+        );
         if (gesuch.gesuchsteller2) {
-            this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
+            this.finanzielleSituationContainerGS2 = angular.copy(
+                gesuch.gesuchsteller2.finanzielleSituationContainer
+            );
         }
 
         this.zahlungsinformationen = new TSZahlungsinformationen();
-        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
-        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
+        this.zahlungsinformationen.kontoinhaber =
+            gesuch.extractFamiliensituation().kontoinhaber;
+        this.zahlungsinformationen.iban =
+            gesuch.extractFamiliensituation().iban;
         this.zahlungsinformationen.abweichendeZahlungsadresse =
             gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
-        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
+        this.zahlungsinformationen.zahlungsadresse =
+            gesuch.extractFamiliensituation().zahlungsadresse;
         this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
             gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
-        this.zahlungsinformationen.infomaBankcode =  gesuch.extractFamiliensituation().infomaBankcode;
-        this.zahlungsinformationen.infomaKreditorennummer =  gesuch.extractFamiliensituation().infomaKreditorennummer;
+        this.zahlungsinformationen.infomaBankcode =
+            gesuch.extractFamiliensituation().infomaBankcode;
+        this.zahlungsinformationen.infomaKreditorennummer =
+            gesuch.extractFamiliensituation().infomaKreditorennummer;
 
         if (gesuch.extractFamiliensituationGS()) {
             this.zahlungsinformationenGS = new TSZahlungsinformationen();
-            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
-            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
+            this.zahlungsinformationenGS.kontoinhaber =
+                gesuch.extractFamiliensituationGS().kontoinhaber;
+            this.zahlungsinformationenGS.iban =
+                gesuch.extractFamiliensituationGS().iban;
             this.zahlungsinformationenGS.abweichendeZahlungsadresse =
                 gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
-            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
+            this.zahlungsinformationenGS.zahlungsadresse =
+                gesuch.extractFamiliensituationGS().zahlungsadresse;
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
-            this.zahlungsinformationenGS.infomaBankcode = gesuch.extractFamiliensituationGS().infomaBankcode;
+            this.zahlungsinformationenGS.infomaBankcode =
+                gesuch.extractFamiliensituationGS().infomaBankcode;
             this.zahlungsinformationenGS.infomaKreditorennummer =
                 gesuch.extractFamiliensituationGS().infomaKreditorennummer;
         }
@@ -158,66 +185,91 @@ export class TSFinanzModel {
     }
 
     public copyEkvDataFromGesuch(gesuch: TSGesuch): void {
-        this.einkommensverschlechterungInfoContainer = gesuch.einkommensverschlechterungInfoContainer ?
-            angular.copy(gesuch.einkommensverschlechterungInfoContainer) :
-            new TSEinkommensverschlechterungInfoContainer();
+        this.einkommensverschlechterungInfoContainer =
+            gesuch.einkommensverschlechterungInfoContainer
+                ? angular.copy(gesuch.einkommensverschlechterungInfoContainer)
+                : new TSEinkommensverschlechterungInfoContainer();
         if (gesuch.gesuchsteller1) {
-            this.einkommensverschlechterungContainerGS1 =
-                angular.copy(gesuch.gesuchsteller1.einkommensverschlechterungContainer);
+            this.einkommensverschlechterungContainerGS1 = angular.copy(
+                gesuch.gesuchsteller1.einkommensverschlechterungContainer
+            );
         }
         if (gesuch.gesuchsteller2) {
-            this.einkommensverschlechterungContainerGS2 =
-                angular.copy(gesuch.gesuchsteller2.einkommensverschlechterungContainer);
+            this.einkommensverschlechterungContainerGS2 = angular.copy(
+                gesuch.gesuchsteller2.einkommensverschlechterungContainer
+            );
         }
     }
 
     public initFinSit(): void {
         if (!this.finanzielleSituationContainerGS1) {
-            this.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
+            this.finanzielleSituationContainerGS1 =
+                new TSFinanzielleSituationContainer();
             this.finanzielleSituationContainerGS1.jahr = this.basisjahr;
-            this.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+            this.finanzielleSituationContainerGS1.finanzielleSituationJA =
+                new TSFinanzielleSituation();
         }
 
-        if (!this.gesuchsteller2Required || this.finanzielleSituationContainerGS2) {
+        if (
+            !this.gesuchsteller2Required ||
+            this.finanzielleSituationContainerGS2
+        ) {
             return;
         }
 
-        this.finanzielleSituationContainerGS2 = new TSFinanzielleSituationContainer();
+        this.finanzielleSituationContainerGS2 =
+            new TSFinanzielleSituationContainer();
         this.finanzielleSituationContainerGS2.jahr = this.basisjahr;
-        this.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
+        this.finanzielleSituationContainerGS2.finanzielleSituationJA =
+            new TSFinanzielleSituation();
     }
 
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
         if (EbeguUtil.isNullOrUndefined(gesuch.familiensituationContainer)) {
-            gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+            gesuch.familiensituationContainer =
+                new TSFamiliensituationContainer();
         }
-        gesuch.familiensituationContainer.familiensituationJA = this.familienSituation;
+        gesuch.familiensituationContainer.familiensituationJA =
+            this.familienSituation;
 
         let familiensituation = gesuch.extractFamiliensituation();
         if (EbeguUtil.isNullOrUndefined(familiensituation)) {
             familiensituation = new TSFamiliensituation();
-            gesuch.familiensituationContainer.familiensituationJA = familiensituation;
+            gesuch.familiensituationContainer.familiensituationJA =
+                familiensituation;
         }
 
-        gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
-            gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
+            gesuch.gesuchsteller2.finanzielleSituationContainer =
+                this.finanzielleSituationContainerGS2;
         } else if (this.finanzielleSituationContainerGS2) {
             // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
-            console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
+            console.log(
+                'illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available'
+            );
         }
-        this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
+        this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(
+            gesuch
+        );
 
-        familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
-        familiensituation.iban = this.zahlungsinformationen.iban?.toLocaleUpperCase();
+        familiensituation.kontoinhaber =
+            this.zahlungsinformationen.kontoinhaber;
+        familiensituation.iban =
+            this.zahlungsinformationen.iban?.toLocaleUpperCase();
         familiensituation.abweichendeZahlungsadresse =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
-        familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        familiensituation.zahlungsadresse =
+            this.zahlungsinformationen.zahlungsadresse;
         familiensituation.keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
-        familiensituation.infomaBankcode = this.zahlungsinformationen.infomaBankcode;
-        familiensituation.infomaKreditorennummer = this.zahlungsinformationen.infomaKreditorennummer;
-        familiensituation.auszahlungAusserhalbVonKibon = this.familienSituation.auszahlungAusserhalbVonKibon;
+        familiensituation.infomaBankcode =
+            this.zahlungsinformationen.infomaBankcode;
+        familiensituation.infomaKreditorennummer =
+            this.zahlungsinformationen.infomaKreditorennummer;
+        familiensituation.auszahlungAusserhalbVonKibon =
+            this.familienSituation.auszahlungAusserhalbVonKibon;
 
         return gesuch;
     }
@@ -239,83 +291,113 @@ export class TSFinanzModel {
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
      * the same for steuererklaerungAusgefuellt
      */
-    private resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch: TSGesuch): void {
-        if (!(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2)) {
+    private resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(
+        gesuch: TSGesuch
+    ): void {
+        if (
+            !(
+                gesuch.extractFamiliensituation().gemeinsameSteuererklaerung &&
+                gesuch.gesuchsteller1 &&
+                gesuch.gesuchsteller2
+            )
+        ) {
             return;
         }
-        const finSitGS1 = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
-        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer)) {
-            gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        const finSitGS1 =
+            gesuch.gesuchsteller1.finanzielleSituationContainer
+                .finanzielleSituationJA;
+        if (
+            EbeguUtil.isNullOrUndefined(
+                gesuch.gesuchsteller2.finanzielleSituationContainer
+            )
+        ) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer =
+                new TSFinanzielleSituationContainer();
         }
-        if (EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA)) {
-            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        if (
+            EbeguUtil.isNullOrUndefined(
+                gesuch.gesuchsteller2.finanzielleSituationContainer
+                    .finanzielleSituationJA
+            )
+        ) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA =
+                new TSFinanzielleSituation();
         }
-        if (this.finanzielleSituationTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+        if (
+            this.finanzielleSituationTyp === TSFinanzielleSituationTyp.SOLOTHURN
+        ) {
             return;
         }
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
-            = finSitGS1.steuerveranlagungErhalten;
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
-            = finSitGS1.steuererklaerungAusgefuellt;
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten =
+            finSitGS1.steuerveranlagungErhalten;
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt =
+            finSitGS1.steuererklaerungAusgefuellt;
     }
 
     public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
-        gesuch.einkommensverschlechterungInfoContainer = this.einkommensverschlechterungInfoContainer;
-        gesuch.gesuchsteller1.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS1;
+        gesuch.einkommensverschlechterungInfoContainer =
+            this.einkommensverschlechterungInfoContainer;
+        gesuch.gesuchsteller1.einkommensverschlechterungContainer =
+            this.einkommensverschlechterungContainerGS1;
         if (gesuch.gesuchsteller2) {
-            gesuch.gesuchsteller2.einkommensverschlechterungContainer = this.einkommensverschlechterungContainerGS2;
+            gesuch.gesuchsteller2.einkommensverschlechterungContainer =
+                this.einkommensverschlechterungContainerGS2;
         } else if (this.einkommensverschlechterungContainerGS2) {
             // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
-            console.log('illegal state: einkommensverschlechterungContainerGS2 exists but no gs2 is available');
+            console.log(
+                'illegal state: einkommensverschlechterungContainerGS2 exists but no gs2 is available'
+            );
         }
         return gesuch;
     }
 
     public getFiSiConToWorkWith(): TSFinanzielleSituationContainer {
-        return this.gesuchstellerNumber === 2 ?
-            this.finanzielleSituationContainerGS2 :
-            this.finanzielleSituationContainerGS1;
+        return this.gesuchstellerNumber === 2
+            ? this.finanzielleSituationContainerGS2
+            : this.finanzielleSituationContainerGS1;
     }
 
     public getEkvContToWorkWith(): TSEinkommensverschlechterungContainer {
-        return this.gesuchstellerNumber === 2 ?
-            this.einkommensverschlechterungContainerGS2 :
-            this.einkommensverschlechterungContainerGS1;
+        return this.gesuchstellerNumber === 2
+            ? this.einkommensverschlechterungContainerGS2
+            : this.einkommensverschlechterungContainerGS1;
     }
 
     public getEkvToWorkWith(): TSEinkommensverschlechterung {
-        return this.gesuchstellerNumber === 2 ?
-            this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS2) :
-            this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
+        return this.gesuchstellerNumber === 2
+            ? this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS2)
+            : this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
     }
 
     // eslint-disable-next-line
-    private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
+    private getEkvOfBsj_JA(
+        einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
     ): TSEinkommensverschlechterung {
-        return this.basisjahrPlus === 2 ?
-            einkommensverschlechterungContainer.ekvJABasisJahrPlus2 :
-            einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
+        return this.basisjahrPlus === 2
+            ? einkommensverschlechterungContainer.ekvJABasisJahrPlus2
+            : einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
     }
 
     // eslint-disable-next-line
     public getEkvToWorkWith_GS(): TSEinkommensverschlechterung {
-        return this.gesuchstellerNumber === 2 ?
-            this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2) :
-            this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
+        return this.gesuchstellerNumber === 2
+            ? this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2)
+            : this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS1);
     }
 
     // eslint-disable-next-line
-    private getEkvOfBsj_GS(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
+    private getEkvOfBsj_GS(
+        einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer
     ): TSEinkommensverschlechterung {
-        return this.basisjahrPlus === 2 ?
-            einkommensverschlechterungContainer.ekvGSBasisJahrPlus2 :
-            einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;
+        return this.basisjahrPlus === 2
+            ? einkommensverschlechterungContainer.ekvGSBasisJahrPlus2
+            : einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;
     }
 
     public getFinSitVorMutationToWorkWith(): TSFinanzielleSituation {
-        return this.gesuchstellerNumber === 2 ?
-            this._finanzielleSituationVorMutationGS2 :
-            this._finanzielleSituationVorMutationGS1;
+        return this.gesuchstellerNumber === 2
+            ? this._finanzielleSituationVorMutationGS2
+            : this._finanzielleSituationVorMutationGS1;
     }
 
     public getGesuchstellerNumber(): number {
@@ -330,7 +412,9 @@ export class TSFinanzModel {
         return this._einkommensverschlechterungContainerGS1;
     }
 
-    public set einkommensverschlechterungContainerGS1(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainerGS1(
+        value: TSEinkommensverschlechterungContainer
+    ) {
         this._einkommensverschlechterungContainerGS1 = value;
     }
 
@@ -338,7 +422,9 @@ export class TSFinanzModel {
         return this._einkommensverschlechterungContainerGS2;
     }
 
-    public set einkommensverschlechterungContainerGS2(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainerGS2(
+        value: TSEinkommensverschlechterungContainer
+    ) {
         this._einkommensverschlechterungContainerGS2 = value;
     }
 
@@ -346,7 +432,9 @@ export class TSFinanzModel {
         return this._einkommensverschlechterungInfoContainer;
     }
 
-    public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
+    public set einkommensverschlechterungInfoContainer(
+        value: TSEinkommensverschlechterungInfoContainer
+    ) {
         this._einkommensverschlechterungInfoContainer = value;
     }
 
@@ -359,34 +447,52 @@ export class TSFinanzModel {
     }
 
     // eslint-disable-next-line
-    public initEinkommensverschlechterungContainer(basisjahrPlus: number, gesuchstellerNumber: number): void {
-        if ((basisjahrPlus !== 2 && basisjahrPlus !== 1)
-            || (gesuchstellerNumber !== 2 && gesuchstellerNumber !== 1)) {
+    public initEinkommensverschlechterungContainer(
+        basisjahrPlus: number,
+        gesuchstellerNumber: number
+    ): void {
+        if (
+            (basisjahrPlus !== 2 && basisjahrPlus !== 1) ||
+            (gesuchstellerNumber !== 2 && gesuchstellerNumber !== 1)
+        ) {
             return;
         }
         if (gesuchstellerNumber === 1) {
             if (!this.einkommensverschlechterungContainerGS1) {
-                this.einkommensverschlechterungContainerGS1 = new TSEinkommensverschlechterungContainer();
+                this.einkommensverschlechterungContainerGS1 =
+                    new TSEinkommensverschlechterungContainer();
             }
 
-            if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1) {
+            if (
+                basisjahrPlus === 1 &&
+                !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1
+            ) {
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 =
                     new TSEinkommensverschlechterung();
             }
-            if (basisjahrPlus === 2 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2) {
+            if (
+                basisjahrPlus === 2 &&
+                !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2
+            ) {
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
                     new TSEinkommensverschlechterung();
             }
         } else {
-
             if (!this.einkommensverschlechterungContainerGS2) {
-                this.einkommensverschlechterungContainerGS2 = new TSEinkommensverschlechterungContainer();
+                this.einkommensverschlechterungContainerGS2 =
+                    new TSEinkommensverschlechterungContainer();
             }
-            if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
+            if (
+                basisjahrPlus === 1 &&
+                !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1
+            ) {
                 this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 =
                     new TSEinkommensverschlechterung();
             }
-            if (basisjahrPlus === 2 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
+            if (
+                basisjahrPlus === 2 &&
+                !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2
+            ) {
                 this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
                     new TSEinkommensverschlechterung();
             }

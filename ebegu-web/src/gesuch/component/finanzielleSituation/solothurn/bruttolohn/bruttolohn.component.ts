@@ -5,24 +5,20 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
-  selector: 'dv-bruttolohn',
-  templateUrl: './bruttolohn.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    selector: 'dv-bruttolohn',
+    templateUrl: './bruttolohn.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BruttolohnComponent implements OnInit {
+    @Input() public model: TSFinanzielleSituationContainer;
+    @Input() public dvValueChange: () => void;
 
-  @Input() public model: TSFinanzielleSituationContainer;
-  @Input() public dvValueChange: () => void;
+    public constructor(public gesuchModelManager: GesuchModelManager) {}
 
-  public constructor(
-      public gesuchModelManager: GesuchModelManager
-  ) { }
+    public ngOnInit(): void {}
 
-  public ngOnInit(): void {
-  }
-
-  public isNotNullOrUndefined(toCheck: any): boolean {
-    return EbeguUtil.isNotNullOrUndefined(toCheck);
-  }
+    public isNotNullOrUndefined(toCheck: any): boolean {
+        return EbeguUtil.isNotNullOrUndefined(toCheck);
+    }
 }

@@ -25,7 +25,10 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSKitaxResponse} from '../../../models/dto/TSKitaxResponse';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {
+    getTSEingangsartFromRole,
+    TSEingangsart
+} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSDossier} from '../../../models/TSDossier';
@@ -46,7 +49,6 @@ const LOG = LogFactory.createLog('FallToolbarComponent');
     styleUrls: ['./fallToolbar.less']
 })
 export class FallToolbarComponent implements OnChanges {
-
     public readonly TSRoleUtil: any = TSRoleUtil;
 
     @Input() public fallId: string;
@@ -74,11 +76,15 @@ export class FallToolbarComponent implements OnChanges {
         private readonly gesuchRS: GesuchRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     private loadObjects(): void {
-        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId && this.dossierId) {
+        if (
+            this.mobileMode &&
+            this.authServiceRS.isRole(TSRole.GESUCHSTELLER) &&
+            !this.fallId &&
+            this.dossierId
+        ) {
             this.dossierRS.findDossier(this.dossierId).then(dossier => {
                 this.fallId = dossier.fall.id ? dossier.fall.id : '';
                 this.doLoading(this.fallId);
@@ -95,7 +101,11 @@ export class FallToolbarComponent implements OnChanges {
      * In case a currentDossier exists and it is new and it is not already contained in the list then we add it
      */
     private addNewDossierToCreateToDossiersList(): void {
-        if (!this.currentDossier || !this.currentDossier.isNew() || this.dossierList.includes(this.currentDossier)) {
+        if (
+            !this.currentDossier ||
+            !this.currentDossier.isNew() ||
+            this.dossierList.includes(this.currentDossier)
+        ) {
             return;
         }
         this.removeAllExistingNewDossierToCreate();
@@ -110,19 +120,25 @@ export class FallToolbarComponent implements OnChanges {
     }
 
     private setSelectedDossier(): void {
-        this.selectedDossier = this.dossierList.find(dossier => dossier.id === this.dossierId);
+        this.selectedDossier = this.dossierList.find(
+            dossier => dossier.id === this.dossierId
+        );
         this.calculateFallNummer();
     }
 
     public isOnlineGesuch(): boolean {
-        return this.selectedDossier
-            && this.selectedDossier.fall
-            && !EbeguUtil.isNullOrUndefined(this.selectedDossier.fall.besitzer);
+        return (
+            this.selectedDossier &&
+            this.selectedDossier.fall &&
+            !EbeguUtil.isNullOrUndefined(this.selectedDossier.fall.besitzer)
+        );
     }
 
     private calculateFallNummer(): void {
         if (this.selectedDossier && this.selectedDossier.fall) {
-            this.fallNummer = EbeguUtil.addZerosToFallNummer(this.selectedDossier.fall.fallNummer);
+            this.fallNummer = EbeguUtil.addZerosToFallNummer(
+                this.selectedDossier.fall.fallNummer
+            );
         }
     }
 
@@ -142,21 +158,28 @@ export class FallToolbarComponent implements OnChanges {
         return of(this.selectedDossier);
     }
 
-    private openNewestGesuchOfDossier$(dossier: TSDossier): Observable<TSDossier> {
-        return fromPromise(this.gesuchRS.getIdOfNewestGesuchForDossier(dossier.id).then(newestGesuchID => {
-            if (newestGesuchID) {
-                this.selectedDossier = dossier;
-                NavigationUtil.navigateToStartsiteOfGesuchForRole(
-                    this.authServiceRS.getPrincipalRole(),
-                    this.$state,
-                    newestGesuchID
-                );
-            } else {
-                LOG.warn(
-                    `newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
-            }
-            return this.selectedDossier;
-        }));
+    private openNewestGesuchOfDossier$(
+        dossier: TSDossier
+    ): Observable<TSDossier> {
+        return fromPromise(
+            this.gesuchRS
+                .getIdOfNewestGesuchForDossier(dossier.id)
+                .then(newestGesuchID => {
+                    if (newestGesuchID) {
+                        this.selectedDossier = dossier;
+                        NavigationUtil.navigateToStartsiteOfGesuchForRole(
+                            this.authServiceRS.getPrincipalRole(),
+                            this.$state,
+                            newestGesuchID
+                        );
+                    } else {
+                        LOG.warn(
+                            `newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`
+                        );
+                    }
+                    return this.selectedDossier;
+                })
+        );
     }
 
     public createNewDossier(): void {
@@ -166,7 +189,9 @@ export class FallToolbarComponent implements OnChanges {
             .subscribe(
                 chosenGemeindeId => {
                     if (this.isGesuchsteller()) {
-                        this.createDossier(chosenGemeindeId.gemeindeId).then(() => this.navigateToDashboard());
+                        this.createDossier(chosenGemeindeId.gemeindeId).then(
+                            () => this.navigateToDashboard()
+                        );
 
                         return;
                     }
@@ -184,7 +209,9 @@ export class FallToolbarComponent implements OnChanges {
     private createDossier(chosenGemeindeId: string): IPromise<TSDossier> {
         const newDossier = new TSDossier();
         newDossier.fall = this.selectedDossier.fall;
-        newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
+        newDossier.gemeinde = this.availableGemeindeList.find(
+            gemeinde => gemeinde.id === chosenGemeindeId
+        );
         return this.dossierRS.createDossier(newDossier).then(response => {
             this.selectedDossier = response;
             return this.selectedDossier;
@@ -225,7 +252,10 @@ export class FallToolbarComponent implements OnChanges {
         this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
-                    if (principal && TSRoleUtil.isGemeindeRole(principal.getCurrentRole())) {
+                    if (
+                        principal &&
+                        TSRoleUtil.isGemeindeRole(principal.getCurrentRole())
+                    ) {
                         return of(principal.extractCurrentAktiveGemeinden());
                     }
 
@@ -246,33 +276,50 @@ export class FallToolbarComponent implements OnChanges {
      * Dossier.
      */
     private toGemeindenWithoutDossier(gemeinden: TSGemeinde[]): TSGemeinde[] {
-        return gemeinden.filter(g => !this.dossierList.some(d => d.gemeinde.id === g.id));
+        return gemeinden.filter(
+            g => !this.dossierList.some(d => d.gemeinde.id === g.id)
+        );
     }
 
     /**
      * A dialog will always be displayed when creating a new Dossier. So that the user
      */
-    private getGemeindeIDFromDialog$(): Observable<{ gemeindeId: string; gesuchsperiodeId?: string }> {
+    private getGemeindeIDFromDialog$(): Observable<{
+        gemeindeId: string;
+        gesuchsperiodeId?: string;
+    }> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             gemeindeList: this.availableGemeindeList
         };
 
-        return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
+        return this.dialog
+            .open(DvNgGemeindeDialogComponent, dialogConfig)
+            .afterClosed();
     }
 
     public isDossierActive(dossier: TSDossier): boolean {
-        return !EbeguUtil.isNullOrUndefined(this.selectedDossier)
-            && !EbeguUtil.isNullOrUndefined(dossier)
-            && this.selectedDossier.id === dossier.id;
+        return (
+            !EbeguUtil.isNullOrUndefined(this.selectedDossier) &&
+            !EbeguUtil.isNullOrUndefined(dossier) &&
+            this.selectedDossier.id === dossier.id
+        );
     }
 
     public showCreateNewDossier(): boolean {
-        return !this.isOnlineGesuch() === !this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-            && this.availableGemeindeList.length !== 0
-            &&  !(this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
-                && this.selectedDossier?.fall.isSozialdienstFall()
-                && this.selectedDossier?.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN);
+        return (
+            !this.isOnlineGesuch() ===
+                !this.authServiceRS.isRole(TSRole.GESUCHSTELLER) &&
+            this.availableGemeindeList.length !== 0 &&
+            !(
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getSozialdienstRolle()
+                ) &&
+                this.selectedDossier?.fall.isSozialdienstFall() &&
+                this.selectedDossier?.fall.sozialdienstFall.status ===
+                    TSSozialdienstFallStatus.ENTZOGEN
+            )
+        );
     }
 
     /**
@@ -280,8 +327,7 @@ export class FallToolbarComponent implements OnChanges {
      * existing ones that haven't been saved yet because only one new dossier can be created at a time
      */
     private removeAllExistingNewDossierToCreate(): void {
-        this.dossierList = this.dossierList
-            .filter(dossier => !dossier.isNew());
+        this.dossierList = this.dossierList.filter(dossier => !dossier.isNew());
     }
 
     private emptyDossierList(): void {
@@ -301,8 +347,12 @@ export class FallToolbarComponent implements OnChanges {
     }
 
     public isGemeindeUserOrSuperAdmin(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+        return (
+            this.authServiceRS.isRole(TSRole.SUPER_ADMIN) ||
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGOrTSRoles()
+            )
+        );
     }
 
     /**
@@ -311,7 +361,9 @@ export class FallToolbarComponent implements OnChanges {
      */
     public toggleGemeindeText(): void {
         if (this.isGesuchsteller()) {
-            this.gemeindeText = this.gemeindeText ? undefined : 'GEMEINDE_HINZUFUEGEN';
+            this.gemeindeText = this.gemeindeText
+                ? undefined
+                : 'GEMEINDE_HINZUFUEGEN';
         }
     }
 
@@ -334,30 +386,45 @@ export class FallToolbarComponent implements OnChanges {
         this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
             this.dossierList = dossiers;
             this.setSelectedDossier();
-            this.dossierListWithoutSelected = dossiers.filter(dossier =>
-                dossier && this.selectedDossier && dossier.id !== this.selectedDossier.id);
+            this.dossierListWithoutSelected = dossiers.filter(
+                dossier =>
+                    dossier &&
+                    this.selectedDossier &&
+                    dossier.id !== this.selectedDossier.id
+            );
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
 
             // eslint-disable-next-line
-            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID
-                && this.isGemeindeUserOrSuperAdmin()) {
+            if (
+                this.kitaxEnabled &&
+                this.isOnlineGesuch() &&
+                this.selectedDossier.fall.besitzer.externalUUID &&
+                this.isGemeindeUserOrSuperAdmin()
+            ) {
                 this.applicationPropertyRS.getKitaxHost().then(host => {
                     this.kitaxHost = host;
                 });
 
                 this.applicationPropertyRS.getKitaxUrl().then(url => {
-                    this.gesuchRS.lookupKitax(url, this.selectedDossier.fall.besitzer.externalUUID).then(response => {
-                        this.kitaxResponse = response;
-                    });
+                    this.gesuchRS
+                        .lookupKitax(
+                            url,
+                            this.selectedDossier.fall.besitzer.externalUUID
+                        )
+                        .then(response => {
+                            this.kitaxResponse = response;
+                        });
                 });
             }
         });
     }
 
     public isSozialdienstGesuch(): boolean {
-        return this.selectedDossier
-            && this.selectedDossier.fall
-            && this.selectedDossier.fall.isSozialdienstFall();
+        return (
+            this.selectedDossier &&
+            this.selectedDossier.fall &&
+            this.selectedDossier.fall.isSozialdienstFall()
+        );
     }
 }

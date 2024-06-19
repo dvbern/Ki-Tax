@@ -16,26 +16,30 @@
   -->
 
 <mat-dialog-content role="document" tabindex="-1" id="dialogContent">
-
     <div>
         <h2 [textContent]="'SUPPORTANFRAGE_STELLEN' | translate"></h2>
         <p [textContent]="'SUPPORTANFRAGE_ANLEITUNG' | translate"></p>
         <div class="form-group">
-            <textarea md-no-autogrow
-                      class="form-control"
-                      rows="10"
-                      maxlength="4000"
-                      id="beschreibung_id"
-                      name="beschreibung"
-                      [(ngModel)]="beschreibung">
+            <textarea
+                md-no-autogrow
+                class="form-control"
+                rows="10"
+                maxlength="4000"
+                id="beschreibung_id"
+                name="beschreibung"
+                [(ngModel)]="beschreibung"
+            >
             </textarea>
         </div>
     </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions class="margin-top-40" layout-align="center center">
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="send()" [textContent]="'MITTEILUNG_SENDEN' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="send()"
+            [textContent]="'MITTEILUNG_SENDEN' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

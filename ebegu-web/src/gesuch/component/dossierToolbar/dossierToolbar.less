@@ -57,13 +57,15 @@
         .menu-item-link();
         background: none;
         padding: 0 2rem 0;
-        &:hover, &.md-default-theme:not([disabled]).md-focused, &:not([disabled]).md-focused, &:focus {
+        &:hover,
+        &.md-default-theme:not([disabled]).md-focused,
+        &:not([disabled]).md-focused,
+        &:focus {
             background: none;
             box-shadow: none;
             outline: 0;
         }
     }
-
 }
 
 .menu-item-link.gesuchsteller {
@@ -71,7 +73,8 @@
     background: @primary;
     color: @contrast-lightest;
     button {
-        &:hover, &:focus:hover {
+        &:hover,
+        &:focus:hover {
             background: @primary-dark;
             -webkit-box-shadow: none;
             box-shadow: none;
@@ -95,17 +98,18 @@
         }
     }
     .md-button {
-
         .menu-item-link();
         background: none;
         padding: 0 2rem 0;
-        &:hover, &.md-default-theme:not([disabled]).md-focused, &:not([disabled]).md-focused, &:focus {
+        &:hover,
+        &.md-default-theme:not([disabled]).md-focused,
+        &:not([disabled]).md-focused,
+        &:focus {
             background: @primary-dark;
             box-shadow: none;
             outline: 0;
         }
     }
-
 }
 
 .menu-item-container {
@@ -122,8 +126,9 @@
 }
 
 .kontakt {
-
-    span, a span, a {
+    span,
+    a span,
+    a {
         .ebeguH1();
         .ebeguNormal();
         color: @contrast-lightest;
@@ -135,16 +140,19 @@
         margin: 0 2rem 0.5rem;
         text-decoration: none;
     }
-    a span, a span:first-child, a span:last-child {
+    a span,
+    a span:first-child,
+    a span:last-child {
         margin: 0;
     }
-    span:first-child{
+    span:first-child {
         margin-top: 2rem;
     }
-    a:last-child, span:last-child, .marginbottom {
+    a:last-child,
+    span:last-child,
+    .marginbottom {
         margin-bottom: 2rem;
     }
-
 }
 
 .dossier-toolbar {
@@ -182,7 +190,8 @@
                 padding: 0;
             }
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 background: @secondary-dark;
                 -webkit-box-shadow: none;
                 box-shadow: none;
@@ -264,7 +273,8 @@
             text-align: left;
             white-space: nowrap;
             width: auto;
-            &:hover, &:focus:hover {
+            &:hover,
+            &:focus:hover {
                 background: @primary-dark;
                 -webkit-box-shadow: none;
                 box-shadow: none;
@@ -309,7 +319,10 @@
     font-size: 1.8rem;
     height: @navbar-height;
     line-height: @navbar-height;
-    &.active, &:active, &:hover, &:focus {
+    &.active,
+    &:active,
+    &:hover,
+    &:focus {
         background-color: transparent;
         -webkit-box-shadow: none;
         box-shadow: none;
@@ -317,9 +330,7 @@
         outline: none !important;
         outline: 0;
         text-decoration: none !important;
-
     }
-
 }
 
 .dossier-toolbar-mobile {
@@ -336,7 +347,9 @@
         display: block;
         width: 100%;
     }
-    button.gesuchsperiode-button, button.antrag-typ-datum-button, .gesuchsperiode-gesuchname {
+    button.gesuchsperiode-button,
+    button.antrag-typ-datum-button,
+    .gesuchsperiode-gesuchname {
         background-color: transparent;
         border-bottom: solid @primary-dark 1px;
         color: @contrast-lightest;
@@ -352,7 +365,10 @@
             font-size: 1.6rem;
             letter-spacing: 0.15rem;
         }
-        &.active, &:active, &:hover, &:focus {
+        &.active,
+        &:active,
+        &:hover,
+        &:focus {
             background-color: transparent;
             -webkit-box-shadow: none;
             box-shadow: none;
@@ -360,7 +376,6 @@
             outline: none;
             outline: 0;
             text-decoration: none !important;
-
         }
     }
     button.gesuchsperiode-button {
@@ -375,8 +390,8 @@
         }
     }
     & > span {
-        &.antrag-typ-datum-button, &.gesuchsperiode-button {
-
+        &.antrag-typ-datum-button,
+        &.gesuchsperiode-button {
             .ebeguNormal();
             border-bottom: solid @primary-dark 1px;
             color: @contrast;
@@ -406,17 +421,20 @@
         width: 100%;
         & > a {
             span {
-                .ebeguBold()
+                .ebeguBold();
             }
         }
-        & > button, & > div > button {
+        & > button,
+        & > div > button {
             padding: 0;
         }
         & > div {
             padding: 0 2rem 0;
         }
 
-        & > span, a span, a {
+        & > span,
+        a span,
+        a {
             .ebeguNormal();
             color: @contrast-lightest;
             display: block;
@@ -428,7 +446,9 @@
         }
     }
 
-    .dossier-toolbar-mobile-close, .mobile-logout, .dossier-toolbar-top-operations-container {
+    .dossier-toolbar-mobile-close,
+    .mobile-logout,
+    .dossier-toolbar-top-operations-container {
         color: @contrast-lightest;
         height: @navbar-height;
         line-height: @navbar-height;
@@ -436,14 +456,18 @@
         width: 100%;
     }
 
-    .dossier-toolbar-mobile-close, .mobile-logout {
+    .dossier-toolbar-mobile-close,
+    .mobile-logout {
         background-color: transparent;
         padding: 0 1.5rem 0 3rem;
         span {
             font-size: 1.6rem;
             text-transform: uppercase;
         }
-        &.active, &:active, &:hover, &:focus {
+        &.active,
+        &:active,
+        &:hover,
+        &:focus {
             background-color: transparent;
             -webkit-box-shadow: none;
             box-shadow: none;
@@ -451,9 +475,7 @@
             outline: none;
             outline: 0;
             text-decoration: none !important;
-
         }
-
     }
     .dossier-toolbar-top-operations-container {
         background-color: @contrast-darkest;
@@ -471,7 +493,10 @@
             text-align: center;
             width: 5rem;
 
-            &.active, &:active, &:hover, &:focus {
+            &.active,
+            &:active,
+            &:hover,
+            &:focus {
                 background-color: transparent;
                 -webkit-box-shadow: none;
                 box-shadow: none;
@@ -479,18 +504,19 @@
                 outline: none;
                 outline: 0;
                 text-decoration: none !important;
-
             }
         }
         span {
             font-size: 1.6rem;
             text-transform: uppercase;
         }
-
     }
 }
 
-md-menu-bar.md-default-theme.md-open:not(.md-keyboard-mode) md-menu:hover > button, md-menu-bar.md-open:not(.md-keyboard-mode) md-menu:hover > button {
+md-menu-bar.md-default-theme.md-open:not(.md-keyboard-mode)
+    md-menu:hover
+    > button,
+md-menu-bar.md-open:not(.md-keyboard-mode) md-menu:hover > button {
     background: none;
 }
 
@@ -512,12 +538,13 @@ i.ellipsis-icon {
 }
 
 .toolbar-submenu-item {
-    color: #FFFFFF;
+    color: #ffffff;
     margin-bottom: 1rem;
 }
 
-.toolbar-submenu-a, .toolbar-submenu-a:hover {
-    color: #FFFFFF;
+.toolbar-submenu-a,
+.toolbar-submenu-a:hover {
+    color: #ffffff;
 }
 
 .fa-gift {
@@ -525,10 +552,9 @@ i.ellipsis-icon {
 }
 
 .toolbar-adress {
-    color: #FFFFFF;
+    color: #ffffff;
     margin-left: 1rem;
 }
-
 
 .toolbar-gesuchname {
     .ebeguBold();
@@ -546,7 +572,6 @@ i.ellipsis-icon {
 
 md-menu-bar md-menu > button {
     color: @contrast-lightest;
-
 }
 
 span.margin-bottom-20 {

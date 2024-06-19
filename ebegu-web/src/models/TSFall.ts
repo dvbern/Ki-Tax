@@ -18,13 +18,16 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBenutzer} from './TSBenutzer';
 
 export class TSFall extends TSAbstractMutableEntity {
-
     private _fallNummer: number;
     private _nextNumberKind: number;
     private _besitzer: TSBenutzer;
     private _sozialdienstFall: TSSozialdienstFall;
 
-    public constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
+    public constructor(
+        fallNummer?: number,
+        nextNumberKind?: number,
+        besitzer?: TSBenutzer
+    ) {
         super();
         this._fallNummer = fallNummer;
         this._nextNumberKind = nextNumberKind;

@@ -16,13 +16,13 @@
  */
 
 import {TestFaellePO} from '@dv-e2e/page-objects';
-import { getUser } from '@dv-e2e/types';
+import {getUser} from '@dv-e2e/types';
 
 describe('Kibon - generate Testfälle [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
 
     beforeEach(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(adminUser);
         cy.visit('/#/faelle');
     });
@@ -32,8 +32,7 @@ describe('Kibon - generate Testfälle [Superadmin]', () => {
             testFall: 'testfall-2',
             gemeinde: 'London',
             periode: '2022/23',
-            betreuungsstatus: 'warten',
+            betreuungsstatus: 'warten'
         });
     });
 });
-

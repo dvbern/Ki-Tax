@@ -34,34 +34,59 @@ import {SharedModule} from '../../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde.component';
 
 describe('AddGemeindeComponent', () => {
-
     let component: AddGemeindeComponent;
     let fixture: ComponentFixture<AddGemeindeComponent>;
 
-    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$', 'findGemeinde', 'getUnregisteredBfsGemeinden']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
-    const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
-    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['getAllGesuchsperioden']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
-        'getPrincipal'
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+        GemeindeRS.name,
+        [
+            'getGemeindenForPrincipal$',
+            'findGemeinde',
+            'getUnregisteredBfsGemeinden'
+        ]
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(
+        BenutzerRSX.name,
+        ['removeBenutzer']
+    );
+    const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(
+        EinstellungRS.name,
+        ['saveEinstellung']
+    );
+    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+        GesuchsperiodeRS.name,
+        ['getAllGesuchsperioden']
+    );
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params'
     ]);
-    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getPublicPropertiesCached']);
-    appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipal']
+    );
+    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+        ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']
+    );
+    appPropRSSpy.getPublicPropertiesCached.and.returnValue(
+        Promise.resolve(new TSPublicAppConfig())
+    );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
@@ -74,19 +99,23 @@ describe('AddGemeindeComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ApplicationPropertyRS, useValue: appPropRSSpy}
             ],
-            declarations: [
-                AddGemeindeComponent
-            ]
+            declarations: [AddGemeindeComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(
+            of([
+                TestDataUtil.createGemeindeParis(),
+                TestDataUtil.createGemeindeLondon()
+            ])
+        );
         gemeindeServiceSpy.getUnregisteredBfsGemeinden.and.resolveTo([]);
         transitionSpy.params.and.returnValue({});
         gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.resolveTo([]);
-        authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
+        authServiceSpy.getPrincipal.and.returnValue(
+            TestDataUtil.createSuperadmin()
+        );
     }));
 
     beforeEach(waitForAsync(() => {

@@ -9,7 +9,7 @@ import {EwkRS} from '../core/service/ewkRS.rest';
     selector: 'dv-personensuche',
     templateUrl: './personensuche.component.html',
     styleUrls: ['./personensuche.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PersonensucheComponent {
     public personen$: Observable<TSEWKPerson[]> = null;
@@ -17,12 +17,14 @@ export class PersonensucheComponent {
     public constructor(
         private readonly ewkRS: EwkRS,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly errorService: ErrorService,
-    ) {
-    }
+        private readonly errorService: ErrorService
+    ) {}
 
     public isGesuchsteller1New(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1) {
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().gesuchsteller1
+        ) {
             return this.gesuchModelManager.getGesuch().gesuchsteller1.isNew();
         }
         return true;
@@ -42,7 +44,9 @@ export class PersonensucheComponent {
             ewkPerson.vorname,
             ewkPerson.nachname,
             ewkPerson.geburtsdatum?.format('DD.MM.YYYY'),
-            ewkPerson.adresse?.ort,
-        ].filter(token => !!token).join(', ');
+            ewkPerson.adresse?.ort
+        ]
+            .filter(token => !!token)
+            .join(', ');
     }
 }

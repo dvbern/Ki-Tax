@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
@@ -61,7 +67,6 @@ const LOG = LogFactory.createLog('StatistikComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatistikComponent implements OnInit, OnDestroy {
-
     public readonly TSStatistikParameterType = TSStatistikParameterType;
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
@@ -75,7 +80,14 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public maxDate: moment.Moment;
     public minDate: moment.Moment;
     public userjobs: MatTableDataSource<TSWorkJob>;
-    public columndefs: string[] = ['typ', 'erstellt', 'gestartet', 'beendet', 'status', 'icon'];
+    public columndefs: string[] = [
+        'typ',
+        'erstellt',
+        'gestartet',
+        'beendet',
+        'status',
+        'icon'
+    ];
     public allJobs: Array<TSBatchJobInformation>;
     public years: number[];
     public tagesschulenStammdatenList: TSInstitutionStammdaten[];
@@ -105,11 +117,14 @@ export class StatistikComponent implements OnInit, OnDestroy {
         private readonly cd: ChangeDetectorRef,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly lastenausgleichRS: LastenausgleichRS
-    ) {
-    }
+    ) {}
 
-    private static sortInstitutions(stammdaten: TSInstitutionStammdaten[]): TSInstitutionStammdaten[] {
-        return stammdaten.sort((a, b) => a.institution.name.localeCompare(b.institution.name));
+    private static sortInstitutions(
+        stammdaten: TSInstitutionStammdaten[]
+    ): TSInstitutionStammdaten[] {
+        return stammdaten.sort((a, b) =>
+            a.institution.name.localeCompare(b.institution.name)
+        );
     }
 
     private static handleError(err: Error): void {
@@ -128,12 +143,24 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.cd.markForCheck();
         });
 
-        this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
+        this.institutionStammdatenRS
+            .getAllTagesschulenForCurrentBenutzer()
             .then((tagesschulenStammdatenList: TSInstitutionStammdaten[]) => {
                 this.tagesschulenStammdatenList = tagesschulenStammdatenList
-                    .filter(t => t.institution.status !== TSInstitutionStatus.NUR_LATS)
-                    .filter(t => t.institutionStammdatenTagesschule?.einstellungenTagesschule);
-                this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
+                    .filter(
+                        t =>
+                            t.institution.status !==
+                            TSInstitutionStatus.NUR_LATS
+                    )
+                    .filter(
+                        t =>
+                            t.institutionStammdatenTagesschule
+                                ?.einstellungenTagesschule
+                    );
+                this.tagesschulenStammdatenList =
+                    StatistikComponent.sortInstitutions(
+                        this.tagesschulenStammdatenList
+                    );
                 this.cd.markForCheck();
             });
 
@@ -145,14 +172,22 @@ export class StatistikComponent implements OnInit, OnDestroy {
         });
 
         if (this.showLastenausgleichBGStatistikAllowedForRole()) {
-            this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
-                this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr)
-                    .filter(y => y >= CONSTANTS.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT)
-                    .sort((a, b) => a - b);
-                this.cd.markForCheck();
-            }, err => {
-                LOG.error(err);
-            });
+            this.lastenausgleichRS.getAllLastenausgleiche().subscribe(
+                lastenausgleiche => {
+                    this.lastenausgleichYears = lastenausgleiche
+                        .map(l => l.jahr)
+                        .filter(
+                            y =>
+                                y >=
+                                CONSTANTS.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT
+                        )
+                        .sort((a, b) => a - b);
+                    this.cd.markForCheck();
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
         }
 
         this.updateShowMahlzeitenStatistik();
@@ -162,7 +197,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.ferienbetreuungActive = res.ferienbetreuungAktiv;
             this.lastenausgleichActive = res.lastenausgleichAktiv;
-            this.lastenausgleichTagesschulenActive = res.lastenausgleichTagesschulenAktiv;
+            this.lastenausgleichTagesschulenActive =
+                res.lastenausgleichTagesschulenAktiv;
             this.updateShowKantonStatistik();
             this.tagesschulenActive = res.angebotTSActivated;
         });
@@ -182,10 +218,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     private refreshUserJobs(): void {
-        this.batchJobRS.getBatchJobsOfUser().subscribe((response: TSWorkJob[]) => {
-            this.userjobs = new MatTableDataSource(response);
-            this.cd.markForCheck();
-        }, StatistikComponent.handleError);
+        this.batchJobRS
+            .getBatchJobsOfUser()
+            .subscribe((response: TSWorkJob[]) => {
+                this.userjobs = new MatTableDataSource(response);
+                this.cd.markForCheck();
+            }, StatistikComponent.handleError);
     }
 
     // eslint-disable-next-line
@@ -193,88 +231,134 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (!form.valid) {
             return;
         }
-        const stichtag = this.statistikParameter.stichtag ?
-            this.statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) :
-            undefined;
+        const stichtag = this.statistikParameter.stichtag
+            ? this.statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT)
+            : undefined;
         switch (type) {
             case TSStatistikParameterType.GESUCH_STICHTAG:
-                this.reportAsyncRS.getGesuchStichtagReportExcel(stichtag,
-                    this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode :
-                        null)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getGesuchStichtagReportExcel(
+                        stichtag,
+                        this.statistikParameter.gesuchsperiode
+                            ? this.statistikParameter.gesuchsperiode
+                            : null
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.GESUCH_ZEITRAUM:
-                this.reportAsyncRS.getGesuchZeitraumReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.gesuchZeitraumDatumTyp,
-                    this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode :
-                        null)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getGesuchZeitraumReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.gesuchZeitraumDatumTyp,
+                        this.statistikParameter.gesuchsperiode
+                            ? this.statistikParameter.gesuchsperiode
+                            : null
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.KINDER:
-                this.reportAsyncRS.getKinderReportExcel(
-                    this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode :
-                        null)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getKinderReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.gesuchsperiode
+                            ? this.statistikParameter.gesuchsperiode
+                            : null
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.GESUCHSTELLER:
-                this.reportAsyncRS.getGesuchstellerReportExcel(stichtag)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getGesuchstellerReportExcel(stichtag)
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.KANTON:
-                this.reportAsyncRS.getKantonReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.kantonSelbstbehalt)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getKantonReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.kantonSelbstbehalt
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.MITARBEITERINNEN:
-                this.reportAsyncRS.getMitarbeiterinnenReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getMitarbeiterinnenReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        )
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.BENUTZER:
-                this.reportAsyncRS.getBenutzerReportExcel()
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getBenutzerReportExcel()
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG:
-                this.reportAsyncRS.getGesuchstellerKinderBetreuungReportExcel(
-                    this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.gesuchsperiode ?
-                        this.statistikParameter.gesuchsperiode :
-                        null)
-                    .subscribe((res: { workjobId: string }) => {
-                        this.informReportGenerationStarted(res);
-                    }, () => {
-                        LOG.error('An error occurred downloading the document, closing download window.');
-                    });
+                this.reportAsyncRS
+                    .getGesuchstellerKinderBetreuungReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.gesuchsperiode
+                            ? this.statistikParameter.gesuchsperiode
+                            : null
+                    )
+                    .subscribe(
+                        (res: {workjobId: string}) => {
+                            this.informReportGenerationStarted(res);
+                        },
+                        () => {
+                            LOG.error(
+                                'An error occurred downloading the document, closing download window.'
+                            );
+                        }
+                    );
                 return;
             case TSStatistikParameterType.ZAHLUNGEN_PERIODE:
                 if (this.statistikParameter.gesuchsperiode) {
-                    this.reportAsyncRS.getZahlungPeriodeReportExcel(
-                        this.statistikParameter.gesuchsperiode)
-                        .subscribe((res: { workjobId: string }) => {
+                    this.reportAsyncRS
+                        .getZahlungPeriodeReportExcel(
+                            this.statistikParameter.gesuchsperiode
+                        )
+                        .subscribe((res: {workjobId: string}) => {
                             this.informReportGenerationStarted(res);
-                            const startmsg = this.translate.instant('STARTED_GENERATION');
+                            const startmsg =
+                                this.translate.instant('STARTED_GENERATION');
                             this.errorService.addMesageAsInfo(startmsg);
                         }, StatistikComponent.handleError);
                 } else {
@@ -286,80 +370,111 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     return;
                 }
                 if (this.statistikParameter.text) {
-                    this.openRemoveDialog$().subscribe(() => {
-                        this.createMassenversand();
-                    }, err => LOG.error(err));
+                    this.openRemoveDialog$().subscribe(
+                        () => {
+                            this.createMassenversand();
+                        },
+                        err => LOG.error(err)
+                    );
                 } else {
                     this.createMassenversand();
                 }
                 return;
             case TSStatistikParameterType.INSTITUTIONEN:
-                this.reportAsyncRS.getInstitutionenReportExcel()
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getInstitutionenReportExcel()
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.VERRECHNUNG_KIBON:
-                this.reportAsyncRS.getVerrechnungKibonReportExcel(
-                    this.statistikParameter.doSave, this.statistikParameter.betragProKind)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getVerrechnungKibonReportExcel(
+                        this.statistikParameter.doSave,
+                        this.statistikParameter.betragProKind
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
-                this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
-                    this.statistikParameter.tagesschuleAnmeldungen.id,
-                    this.statistikParameter.gesuchsperiode)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getTagesschuleAnmeldungenReportExcel(
+                        this.statistikParameter.tagesschuleAnmeldungen.id,
+                        this.statistikParameter.gesuchsperiode
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
-                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel(
-                    this.statistikParameter.gesuchsperiode
-                ).subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getTagesschuleRechnungsstellungReportExcel(
+                        this.statistikParameter.gesuchsperiode
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.NOTRECHT:
-                this.reportAsyncRS.getNotrechtReportExcel(
-                    this.statistikParameter.doSave)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getNotrechtReportExcel(this.statistikParameter.doSave)
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG:
-                this.reportAsyncRS.getMahlzeitenverguenstigungReportExcel(
-                    this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.gemeindeMahlzeitenverguenstigungen)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getMahlzeitenverguenstigungReportExcel(
+                        this.statistikParameter.von.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter
+                            .gemeindeMahlzeitenverguenstigungen
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.GEMEINDEN:
-                this.reportAsyncRS.getGemeindenReportExcel().subscribe((res: { workjobId: string }) => {
-                    this.informReportGenerationStarted(res);
-                }, StatistikComponent.handleError);
+                this.reportAsyncRS
+                    .getGemeindenReportExcel()
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.FERIENBETREUUNG:
-                this.reportAsyncRS.getFerienbetreuungReportExcel().subscribe((res: { workjobId: string }) => {
-                    this.informReportGenerationStarted(res);
-                }, StatistikComponent.handleError);
+                this.reportAsyncRS
+                    .getFerienbetreuungReportExcel()
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
-                this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel(this.statistikParameter.gesuchsperiode)
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getLastenausgleichTagesschulenReportExcel(
+                        this.statistikParameter.gesuchsperiode
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_BG:
-                this.reportAsyncRS.getLastenausgleichBGReportExcel(
-                    this.statistikParameter.gemeinde,
-                    this.statistikParameter.jahr,
-                    this.statistikParameter.von?.format(this.DATE_PARAM_FORMAT),
-                    this.statistikParameter.bis?.format(this.DATE_PARAM_FORMAT))
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS
+                    .getLastenausgleichBGReportExcel(
+                        this.statistikParameter.gemeinde,
+                        this.statistikParameter.jahr,
+                        this.statistikParameter.von?.format(
+                            this.DATE_PARAM_FORMAT
+                        ),
+                        this.statistikParameter.bis?.format(
+                            this.DATE_PARAM_FORMAT
+                        )
+                    )
+                    .subscribe((res: {workjobId: string}) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
@@ -367,16 +482,23 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 // falls der eingeloggte benutzer eine institution ist, wird das Dropdown mit den Institutinen
                 // nicht gezeigt. Wir setzen die BG Institution, weil es in diesem Fall immer nur eine in der Liste
                 // hat
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
-                    this.statistikParameter.institution = this.bgInstitutionen[0];
+                if (
+                    this.authServiceRS.isOneOfRoles(
+                        TSRoleUtil.getInstitutionOnlyRoles()
+                    )
+                ) {
+                    this.statistikParameter.institution =
+                        this.bgInstitutionen[0];
                 }
-                this.reportAsyncRS.getZahlungenReportExcel(
-                    this.statistikParameter.gesuchsperiode,
-                    this.statistikParameter.gemeinde,
-                    this.statistikParameter.institution
-                ).subscribe((res: { workjobId: string }) => {
-                    this.informReportGenerationStarted(res);
-                }, StatistikComponent.handleError);
+                this.reportAsyncRS
+                    .getZahlungenReportExcel(
+                        this.statistikParameter.gesuchsperiode,
+                        this.statistikParameter.gemeinde,
+                        this.statistikParameter.institution
+                    )
+                    .subscribe((res: {workjobId: string}) => {
+                        this.informReportGenerationStarted(res);
+                    }, StatistikComponent.handleError);
                 return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
@@ -386,31 +508,44 @@ export class StatistikComponent implements OnInit, OnDestroy {
     private openRemoveDialog$(): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
+            title: this.translate.instant(
+                'MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'
+            ),
             text: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO')
         };
-        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
+        return this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed();
     }
 
     private createMassenversand(): void {
         LOG.info('Erstelle Massenversand');
-        this.reportAsyncRS.getMassenversandReportExcel(
-            this.statistikParameter.von ? this.statistikParameter.von.format(this.DATE_PARAM_FORMAT) : null,
-            this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
-            this.statistikParameter.gesuchsperiode,
-            this.statistikParameter.bgGesuche,
-            this.statistikParameter.mischGesuche,
-            this.statistikParameter.tsGesuche,
-            this.statistikParameter.ohneFolgegesuche,
-            this.statistikParameter.text)
-            .subscribe((res: { workjobId: string }) => {
-                this.informReportGenerationStarted(res);
-            }, () => {
-                LOG.error('An error occurred downloading the document, closing download window.');
-            });
+        this.reportAsyncRS
+            .getMassenversandReportExcel(
+                this.statistikParameter.von
+                    ? this.statistikParameter.von.format(this.DATE_PARAM_FORMAT)
+                    : null,
+                this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
+                this.statistikParameter.gesuchsperiode,
+                this.statistikParameter.bgGesuche,
+                this.statistikParameter.mischGesuche,
+                this.statistikParameter.tsGesuche,
+                this.statistikParameter.ohneFolgegesuche,
+                this.statistikParameter.text
+            )
+            .subscribe(
+                (res: {workjobId: string}) => {
+                    this.informReportGenerationStarted(res);
+                },
+                () => {
+                    LOG.error(
+                        'An error occurred downloading the document, closing download window.'
+                    );
+                }
+            );
     }
 
-    private informReportGenerationStarted(res: { workjobId: string }): void {
+    private informReportGenerationStarted(res: {workjobId: string}): void {
         LOG.debug(`executionID: ${res.workjobId}`);
         const startmsg = this.translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
@@ -419,33 +554,50 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     private loadBGInstitutionen(): void {
         // bei trägerschaften und Institutionen laden wir nur die Institutionen, für die sie berechtigt sind.
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
+            this.institutionRS
+                .getInstitutionenEditableForCurrentBenutzer()
                 .subscribe(institutionen => {
                     this.bgInstitutionen = institutionen;
                 });
             return;
         }
         // mandanten und gemeinden sollen grundsätzlich alle Institutionen sehen.
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer()
+        this.institutionRS
+            .getInstitutionenReadableForCurrentBenutzer()
             .subscribe(institutionen => {
                 this.bgInstitutionen = institutionen;
             });
     }
 
     public downloadStatistik(row: TSWorkJob): void {
-        if (EbeguUtil.isNullOrUndefined(row) || EbeguUtil.isNullOrUndefined(row.execution)) {
+        if (
+            EbeguUtil.isNullOrUndefined(row) ||
+            EbeguUtil.isNullOrUndefined(row.execution)
+        ) {
             return;
         }
 
-        if (EbeguUtil.isNullOrUndefined(row.execution.batchStatus) || row.execution.batchStatus !== 'COMPLETED') {
+        if (
+            EbeguUtil.isNullOrUndefined(row.execution.batchStatus) ||
+            row.execution.batchStatus !== 'COMPLETED'
+        ) {
             LOG.info('batch-job is not yet finnished');
             return;
         }
 
         const win = this.downloadRS.prepareDownloadWindow();
         LOG.debug(`accessToken: ${row.resultData}`);
-        this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
+        this.downloadRS.startDownload(
+            row.resultData,
+            'report.xlsx',
+            false,
+            win
+        );
     }
 
     /**
@@ -465,28 +617,33 @@ export class StatistikComponent implements OnInit, OnDestroy {
      */
     private calculateYears(): void {
         this.years = [];
-        this.gesuchsperioden
-            .forEach(periode => {
-                if (this.years.indexOf(periode.getBasisJahrPlus1()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus1());
-                }
-                if (this.years.indexOf(periode.getBasisJahrPlus2()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus2());
-                }
-            });
+        this.gesuchsperioden.forEach(periode => {
+            if (this.years.indexOf(periode.getBasisJahrPlus1()) < 0) {
+                this.years.push(periode.getBasisJahrPlus1());
+            }
+            if (this.years.indexOf(periode.getBasisJahrPlus2()) < 0) {
+                this.years.push(periode.getBasisJahrPlus2());
+            }
+        });
 
         this.years.sort();
     }
 
-    public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
+    public getGesuchsperiodenForTagesschule(
+        stammdaten: TSInstitutionStammdaten
+    ): TSGesuchsperiode[] {
         return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
             .map(d => d.gesuchsperiode)
-            .sort((a, b) => b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString));
+            .sort((a, b) =>
+                b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString)
+            );
     }
 
     public showMahlzeitenverguenstigungStatistik(): boolean {
-        return this.gemeindenMahlzeitenverguenstigungen && this.gemeindenMahlzeitenverguenstigungen.length > 0
-            && this.authServiceRS.isOneOfRoles([
+        return (
+            this.gemeindenMahlzeitenverguenstigungen &&
+            this.gemeindenMahlzeitenverguenstigungen.length > 0 &&
+            this.authServiceRS.isOneOfRoles([
                 TSRole.SACHBEARBEITER_BG,
                 TSRole.ADMIN_BG,
                 TSRole.ADMIN_GEMEINDE,
@@ -494,60 +651,78 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 TSRole.SUPER_ADMIN,
                 TSRole.ADMIN_TS,
                 TSRole.SACHBEARBEITER_TS
-            ]);
+            ])
+        );
     }
 
     private updateShowMahlzeitenStatistik(): void {
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorOrAmtRole()
+            )
+        ) {
             return;
         }
         // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
-        this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
-            // falls es nur eine Gemeinde gibt, wird dropdown nicht angezeigt
-            if (value.length === 1) {
-                this.statistikParameter.gemeindeMahlzeitenverguenstigungen = value[0];
-            }
-            this.gemeindenMahlzeitenverguenstigungen = value;
-            this.cd.markForCheck();
-        });
+        this.gemeindeRS
+            .getGemeindenWithMahlzeitenverguenstigungForBenutzer()
+            .then(value => {
+                // falls es nur eine Gemeinde gibt, wird dropdown nicht angezeigt
+                if (value.length === 1) {
+                    this.statistikParameter.gemeindeMahlzeitenverguenstigungen =
+                        value[0];
+                }
+                this.gemeindenMahlzeitenverguenstigungen = value;
+                this.cd.markForCheck();
+            });
     }
 
     private isMassenversandValid(): boolean {
         // simulate a click in the checkboxes of Verantwortlichkeit
         this.gesuchTypeClicked();
         return !this.flagShowErrorNoGesuchSelected;
-
     }
 
     public gesuchTypeClicked(): void {
         this.flagShowErrorNoGesuchSelected =
-            !this.statistikParameter.bgGesuche
-            && !this.statistikParameter.mischGesuche
-            && !this.statistikParameter.tsGesuche;
+            !this.statistikParameter.bgGesuche &&
+            !this.statistikParameter.mischGesuche &&
+            !this.statistikParameter.tsGesuche;
     }
 
     public updateShowKantonStatistik(): void {
         this.showKantonStatistik = false;
-        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS])) {
+        if (
+            this.authServiceRS.isOneOfRoles([
+                TSRole.ADMIN_TS,
+                TSRole.SACHBEARBEITER_TS
+            ])
+        ) {
             return;
         }
         if (!this.lastenausgleichActive) {
             return;
         }
 
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             this.showKantonStatistik = true;
             return;
         }
-        this.institutionStammdatenRS.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer().then(response => {
-            response.forEach(angebottyp => {
-                if (angebottyp !== TSBetreuungsangebotTyp.TAGESSCHULE) {
-                    this.showKantonStatistik = true;
-                }
+        this.institutionStammdatenRS
+            .getBetreuungsangeboteForInstitutionenOfCurrentBenutzer()
+            .then(response => {
+                response.forEach(angebottyp => {
+                    if (angebottyp !== TSBetreuungsangebotTyp.TAGESSCHULE) {
+                        this.showKantonStatistik = true;
+                    }
+                });
+                this.cd.markForCheck();
             });
-            this.cd.markForCheck();
-        });
     }
 
     public showGesucheNachStichtag(): boolean {
@@ -586,18 +761,16 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showZahlungenNachPeriode(): boolean {
-        return this.authServiceRS.isOneOfRoles(
-            [
-                TSRole.SACHBEARBEITER_BG,
-                TSRole.ADMIN_BG,
-                TSRole.SUPER_ADMIN,
-                TSRole.REVISOR,
-                TSRole.ADMIN_MANDANT,
-                TSRole.SACHBEARBEITER_MANDANT,
-                TSRole.ADMIN_GEMEINDE,
-                TSRole.SACHBEARBEITER_GEMEINDE
-            ]
-        );
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
+        ]);
     }
 
     public showStatistikForRoles(roles: TSRole[]): boolean {
@@ -701,31 +874,37 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showTagesschuleAnmeldungenStatistik(): boolean {
-        return this.tagesschulenStammdatenList?.length && this.authServiceRS.isOneOfRoles([
-            TSRole.SUPER_ADMIN,
-            TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
-            TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
-            TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
-            TSRole.ADMIN_INSTITUTION,
-            TSRole.SACHBEARBEITER_INSTITUTION,
-            TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-        ]) && this.tagesschulenActive;
+        return (
+            this.tagesschulenStammdatenList?.length &&
+            this.authServiceRS.isOneOfRoles([
+                TSRole.SUPER_ADMIN,
+                TSRole.ADMIN_MANDANT,
+                TSRole.SACHBEARBEITER_MANDANT,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_GEMEINDE,
+                TSRole.ADMIN_TS,
+                TSRole.SACHBEARBEITER_TS,
+                TSRole.ADMIN_INSTITUTION,
+                TSRole.SACHBEARBEITER_INSTITUTION,
+                TSRole.ADMIN_TRAEGERSCHAFT,
+                TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+            ]) &&
+            this.tagesschulenActive
+        );
     }
 
     public showRechnungsstellungStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles([
-            TSRole.SUPER_ADMIN,
-            TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
-            TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
-            TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS
-        ]) && this.tagesschulenActive;
+        return (
+            this.authServiceRS.isOneOfRoles([
+                TSRole.SUPER_ADMIN,
+                TSRole.ADMIN_MANDANT,
+                TSRole.SACHBEARBEITER_MANDANT,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_GEMEINDE,
+                TSRole.ADMIN_TS,
+                TSRole.SACHBEARBEITER_TS
+            ]) && this.tagesschulenActive
+        );
     }
 
     public showNotrechtStatistik(): boolean {
@@ -737,25 +916,37 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showFerienbetreuungStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.ferienbetreuungActive;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+            this.ferienbetreuungActive
+        );
     }
 
     public showLastenausgleichTagesschulenStatistik(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+            this.lastenausgleichTagesschulenActive
+        );
     }
 
     public showLastenausgleichBGStatistikAllowedForRole() {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()));
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGemeindeOrBGRoles().concat(
+                TSRoleUtil.getMandantRoles()
+            )
+        );
     }
 
     public showZahlungenStatistik(): boolean {
         // die Statistik wird nur gezeigt, falls der User für mindestens eine BG Institution berechtigt ist.
         // ansonsten handelt es sich allenfalls um einen TS Institution User
-        return this.authServiceRS.isOneOfRoles(
-            TSRoleUtil.getGemeindeOrBGRoles()
-                .concat(TSRoleUtil.getMandantRoles())
-                .concat(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
-        ) && this.bgInstitutionen?.length > 0;
+        return (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+                    .concat(TSRoleUtil.getMandantRoles())
+                    .concat(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
+            ) && this.bgInstitutionen?.length > 0
+        );
     }
 
     public gemeindenVisibleZahlungenStatistik(): boolean {

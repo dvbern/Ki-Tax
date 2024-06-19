@@ -37,11 +37,21 @@ describe('DvBenutzerListXComponent', () => {
         'isOneOfRoles',
         'getVisibleRolesForPrincipal'
     ]);
-    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, ['getInstitutionenEditableForCurrentBenutzer']);
-    const traegerschaftRSSpy = jasmine.createSpyObj(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const sozialdienstRSSpy = jasmine.createSpyObj(SozialdienstRS.name, ['getSozialdienstList']);
-    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const benutzerRSSpy = jasmine.createSpyObj(BenutzerRSX.name, ['searchUsers']);
+    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, [
+        'getInstitutionenEditableForCurrentBenutzer'
+    ]);
+    const traegerschaftRSSpy = jasmine.createSpyObj(TraegerschaftRS.name, [
+        'getAllTraegerschaften'
+    ]);
+    const sozialdienstRSSpy = jasmine.createSpyObj(SozialdienstRS.name, [
+        'getSozialdienstList'
+    ]);
+    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, [
+        'getGemeindenForPrincipal$'
+    ]);
+    const benutzerRSSpy = jasmine.createSpyObj(BenutzerRSX.name, [
+        'searchUsers'
+    ]);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -54,10 +64,7 @@ describe('DvBenutzerListXComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: BenutzerRSX, useValue: benutzerRSSpy}
             ],
-            imports: [
-                SharedModule,
-                BrowserAnimationsModule
-            ]
+            imports: [SharedModule, BrowserAnimationsModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

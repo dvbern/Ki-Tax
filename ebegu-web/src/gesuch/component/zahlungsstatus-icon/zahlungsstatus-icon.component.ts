@@ -30,7 +30,6 @@ import {TSZahlungsstatusIconLabel} from './TSZahlungsstatusIconLabel';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZahlungsstatusIconComponent implements OnInit {
-
     @Input()
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
 
@@ -41,17 +40,20 @@ export class ZahlungsstatusIconComponent implements OnInit {
     public constructor(
         private readonly translate: TranslateService,
         private readonly authService: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate, this.zahlungsstatus, this.isBetreuungGueltig);
+        this.iconLabel = new TSZahlungsstatusIconLabel(
+            this.translate,
+            this.zahlungsstatus,
+            this.isBetreuungGueltig
+        );
     }
 
     public getTitle(): string {
         let title = this.iconLabel.tooltipLabel;
         if (this.authService.isRole(TSRole.SUPER_ADMIN)) {
-            title += ` (Superadmin: ${  this.zahlungsstatus})`;
+            title += ` (Superadmin: ${this.zahlungsstatus})`;
         }
         return title;
     }

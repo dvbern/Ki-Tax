@@ -20,15 +20,17 @@
     <div class="col-md-12">
         <h2>
             <span translate>FERIENBETREUUNG_DOKUMENT_TITLE</span>
-            <dv-tooltip [text]="'FERIENBETREUUNG_DOKUMENT_TITLE_HINT' | translate"></dv-tooltip>
+            <dv-tooltip
+                [text]="'FERIENBETREUUNG_DOKUMENT_TITLE_HINT' | translate"
+            ></dv-tooltip>
         </h2>
-        <hr class="header"/>
+        <hr class="header" />
     </div>
 </div>
 <div class="row">
     <div class="col-sm-12">
         <dv-multiple-file-upload
-            (download)="download($event[0],$event[1])"
+            (download)="download($event[0], $event[1])"
             [title]="'FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE'"
             (delete)="onDelete($event)"
             (uploadFile)="onUpload($event)"
@@ -39,7 +41,11 @@
         </dv-multiple-file-upload>
         <div class="dv-error-messages" *ngFor="let file of filesTooBig">
             <span>
-                {{'FEHLER_BEIM_HOCHLADEN_VON_DOKUMENT' | translate:{dokumentName:file.name} }} {{'ERROR_FILE_TOO_LARGE' | translate}}
+                {{
+                    'FEHLER_BEIM_HOCHLADEN_VON_DOKUMENT'
+                        | translate: {dokumentName: file.name}
+                }}
+                {{ 'ERROR_FILE_TOO_LARGE' | translate }}
             </span>
         </div>
     </div>

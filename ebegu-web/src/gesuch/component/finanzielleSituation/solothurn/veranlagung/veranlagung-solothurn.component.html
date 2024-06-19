@@ -1,69 +1,116 @@
 <fieldset [disabled]="readOnly">
-	<div class="form-group">
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<dv-input-label-field
-					[name]="'nettoEinkommen'"
-					[(model)]="model.finanzielleSituationJA.nettolohn"
-					[labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
-					[tooltipMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'"
-                    [dvOnBlur]="dvValueChange"
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <dv-input-label-field
+                        [name]="'nettoEinkommen'"
+                        [(model)]="model.finanzielleSituationJA.nettolohn"
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_NETTOEINKOMMEN'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'
+                        "
+                        [dvOnBlur]="dvValueChange"
                         [inputRequired]="true"
                         [deklaration]="model.finanzielleSituationGS?.nettolohn"
                         [korrektur]="model.finanzielleSituationJA.nettolohn"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<dv-input-label-field
-							[name]="'unterhaltsBeitraege'"
-							[(model)]="model.finanzielleSituationJA.unterhaltsBeitraege"
-							[labelMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE'"
-							[tooltipMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT'"
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <dv-input-label-field
+                        [name]="'unterhaltsBeitraege'"
+                        [(model)]="
+                            model.finanzielleSituationJA.unterhaltsBeitraege
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT'
+                        "
                         [dvOnBlur]="dvValueChange"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
-                        [korrektur]="model.finanzielleSituationJA.unterhaltsBeitraege"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.unterhaltsBeitraege
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.unterhaltsBeitraege
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<dv-input-label-field
-							[name]="'abzuegeKinderAusbildung'"
-							[(model)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
-							[labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER'"
-							[tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER_HINT'"
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <dv-input-label-field
+                        [name]="'abzuegeKinderAusbildung'"
+                        [(model)]="
+                            model.finanzielleSituationJA.abzuegeKinderAusbildung
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER_HINT'
+                        "
                         [dvOnBlur]="dvValueChange"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
-                        [korrektur]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS
+                                ?.abzuegeKinderAusbildung
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.abzuegeKinderAusbildung
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<dv-input-label-field
-							[name]="'steuerbaresVermoegen'"
-							[(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
-							[labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT'"
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <dv-input-label-field
+                        [name]="'steuerbaresVermoegen'"
+                        [(model)]="
+                            model.finanzielleSituationJA.steuerbaresVermoegen
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT'
+                        "
                         [dvOnBlur]="dvValueChange"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
-                        [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.steuerbaresVermoegen
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.steuerbaresVermoegen
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>

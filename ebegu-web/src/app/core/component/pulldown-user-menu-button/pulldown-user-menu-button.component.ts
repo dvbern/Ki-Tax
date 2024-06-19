@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges} from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ChangeDetectionStrategy,
+    Input,
+    Output,
+    EventEmitter,
+    OnChanges
+} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -27,7 +35,6 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PulldownUserMenuButtonComponent implements OnChanges {
-
     @Input()
     public allowedRoles: ReadonlyArray<TSRole>;
 
@@ -43,13 +50,9 @@ export class PulldownUserMenuButtonComponent implements OnChanges {
     public allRoles = TSRoleUtil.getAllRoles();
     public href: string;
 
-    public constructor(
-        private readonly stateService: StateService
-    ) {
-    }
+    public constructor(private readonly stateService: StateService) {}
 
     public ngOnChanges(): void {
         this.href = this.stateService.href(this.uiSRef);
     }
-
 }

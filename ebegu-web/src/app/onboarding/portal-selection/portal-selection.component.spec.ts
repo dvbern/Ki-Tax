@@ -29,11 +29,19 @@ describe('PortalSelectionComponent', () => {
     let fixture: ComponentFixture<PortalSelectionComponent>;
 
     beforeEach(async () => {
-
-        const mandantService = jasmine.createSpyObj<MandantService>(MandantService.name,
-            ['mandant$', 'getAll', 'mandantToKibonMandant', 'getMandantLogoName']);
-        const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-            ['$current']);
+        const mandantService = jasmine.createSpyObj<MandantService>(
+            MandantService.name,
+            [
+                'mandant$',
+                'getAll',
+                'mandantToKibonMandant',
+                'getMandantLogoName'
+            ]
+        );
+        const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(
+            UIRouterGlobals.name,
+            ['$current']
+        );
 
         mandantService.getAll.and.returnValue(of([new TSMandant()]));
         mandantService.mandantToKibonMandant.and.returnValue(MANDANTS.BERN);
@@ -43,8 +51,7 @@ describe('PortalSelectionComponent', () => {
                 {provide: MandantService, useValue: mandantService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals}
             ]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

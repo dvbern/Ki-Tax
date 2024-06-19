@@ -21,16 +21,17 @@ import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 import {ErrorService} from './ErrorService';
 
 describe('errorService', () => {
-
     let errorService: ErrorService;
     let $rootScope: IRootScopeService;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
-    beforeEach(angular.mock.inject($injector => {
-        $rootScope = $injector.get('$rootScope');
-        errorService = $injector.get('ErrorService');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $rootScope = $injector.get('$rootScope');
+            errorService = $injector.get('ErrorService');
+        })
+    );
 
     beforeEach(inject(() => {
         spyOn($rootScope, '$broadcast').and.callThrough();
@@ -45,7 +46,13 @@ describe('errorService', () => {
                 const errors = errorService.getErrors();
                 const length = errors.length;
 
-                errors.push(TSExceptionReport.createClientSideError(TSErrorLevel.INFO, 'custom test', null));
+                errors.push(
+                    TSExceptionReport.createClientSideError(
+                        TSErrorLevel.INFO,
+                        'custom test',
+                        null
+                    )
+                );
                 expect(errorService.getErrors().length).toEqual(length);
             });
         });
@@ -79,8 +86,10 @@ describe('errorService', () => {
             it('should broadcast an UPDATE event', () => {
                 errorService.addValidationError('TEST');
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
             });
         });
 
@@ -92,16 +101,20 @@ describe('errorService', () => {
             it('should add a validation error on FALSE', () => {
                 expect(errorService.getErrors()[0].msgKey).toBe('TEST');
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
             });
 
             it('should remove a validation error on TRUE', () => {
                 errorService.handleValidationError(false, 'TEST');
                 expect(errorService.getErrors().length === 0);
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
             });
         });
 
@@ -110,12 +123,16 @@ describe('errorService', () => {
                 errorService.addValidationError('foo');
                 expect(errorService.getErrors().length === 1).toBeTruthy();
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).not.toHaveBeenCalledWith(TSMessageEvent.CLEAR);
+                expect($rootScope.$broadcast).not.toHaveBeenCalledWith(
+                    TSMessageEvent.CLEAR
+                );
 
                 errorService.clearAll();
                 expect(errorService.getErrors().length === 0).toBeTruthy();
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.CLEAR);
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.CLEAR
+                );
             });
         });
 
@@ -123,16 +140,22 @@ describe('errorService', () => {
             it('should remove the specified error', () => {
                 errorService.addValidationError('KEEP');
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
                 errorService.addValidationError('REMOVE');
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
                 errorService.clearError('REMOVE');
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($rootScope.$broadcast).toHaveBeenCalledWith(TSMessageEvent.ERROR_UPDATE,
-                    errorService.getErrors());
+                expect($rootScope.$broadcast).toHaveBeenCalledWith(
+                    TSMessageEvent.ERROR_UPDATE,
+                    errorService.getErrors()
+                );
                 const errors = errorService.getErrors();
                 expect(errors.length === 1).toBeTruthy();
                 expect(errors[0].msgKey).toBe('KEEP');

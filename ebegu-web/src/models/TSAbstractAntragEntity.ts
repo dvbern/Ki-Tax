@@ -22,7 +22,6 @@ import {TSDossier} from './TSDossier';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSAbstractAntragEntity extends TSAbstractMutableEntity {
-
     private _dossier: TSDossier;
     private _gesuchsperiode: TSGesuchsperiode;
     private _eingangsdatum: moment.Moment;

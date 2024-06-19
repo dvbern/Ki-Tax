@@ -27,13 +27,11 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     styleUrls: ['./dv-benutzer-entry.component.less']
 })
 export class DvBenutzerEntryComponent {
-
     @Input() public benutzer: TSBenutzer;
     @Input() public noIcons: boolean;
     @Input() public noName: boolean;
 
-    public constructor() {
-    }
+    public constructor() {}
 
     public getVerantwortungClasses(): string[][] {
         if (EbeguUtil.isNullOrUndefined(this.benutzer)) {
@@ -49,7 +47,9 @@ export class DvBenutzerEntryComponent {
                 return [['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG]];
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
-                return [['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]];
+                return [
+                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]
+                ];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
                 return [

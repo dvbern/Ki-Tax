@@ -29,7 +29,6 @@ export class SearchListViewComponentConfig implements IComponentOptions {
 }
 
 export class SearchListViewController {
-
     public static $inject: string[] = ['$log', '$stateParams', 'SearchIndexRS'];
 
     private antragList: Array<TSAbstractAntragDTO>;
@@ -43,23 +42,24 @@ export class SearchListViewController {
     ) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();
-
     }
 
     private initViewModel(): void {
-        this.searchIndexRS.globalSearch(this.searchString).then((quickSearchResult: TSQuickSearchResult) => {
-            this.antragList = [];
-            for (const res of quickSearchResult.resultEntities) {
-                this.antragList.push(res.antragDTO);
-            }
-            EbeguUtil.handleSmarttablesUpdateBug(this.antragList);
-        }).catch(() => {
-            this.$log.warn('error during globalSearch');
-        });
+        this.searchIndexRS
+            .globalSearch(this.searchString)
+            .then((quickSearchResult: TSQuickSearchResult) => {
+                this.antragList = [];
+                for (const res of quickSearchResult.resultEntities) {
+                    this.antragList.push(res.antragDTO);
+                }
+                EbeguUtil.handleSmarttablesUpdateBug(this.antragList);
+            })
+            .catch(() => {
+                this.$log.warn('error during globalSearch');
+            });
     }
 
     public getSearchList(): Array<TSAbstractAntragDTO> {
         return this.antragList;
     }
-
 }

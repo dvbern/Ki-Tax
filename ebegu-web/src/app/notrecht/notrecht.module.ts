@@ -24,7 +24,7 @@ import {NotrechtComponent} from './notrecht/notrecht.component';
 import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
 import {RueckforderungMitteilungenComponent} from './rueckforderung-mitteilung/rueckforderung-mitteilungen.component';
 import {SendNotrechtMitteilungComponent} from './send-notrecht-mitteilung/send-notrecht-mitteilung.component';
-import { RueckforderungVerlaengerungDialogComponent } from './rueckforderung-formular/rueckforderung-verlaengerung-dialog/rueckforderung-verlaengerung-dialog.component';
+import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-formular/rueckforderung-verlaengerung-dialog/rueckforderung-verlaengerung-dialog.component';
 
 @NgModule({
     declarations: [
@@ -44,5 +44,4 @@ import { RueckforderungVerlaengerungDialogComponent } from './rueckforderung-for
     // used for dv-accordion
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class NotrechtModule {
-}
+export class NotrechtModule {}

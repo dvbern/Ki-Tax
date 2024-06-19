@@ -17,8 +17,10 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
     providedIn: 'root'
 })
 export class GemeindeWarningService {
-
-    private readonly dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode; json: string}[] = [];
+    private readonly dangerousKonfigurationenStr: {
+        gesuchsperiode: TSGesuchsperiode;
+        json: string;
+    }[] = [];
     private readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
     private readonly harmlessConfigs: TSEinstellungKey[] = [
         TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
@@ -27,8 +29,7 @@ export class GemeindeWarningService {
         TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB
     ];
 
-    public constructor() {
-    }
+    public constructor() {}
 
     public init(konfigurationen: TSGemeindeKonfiguration[]): void {
         for (const k of konfigurationen) {
@@ -48,7 +49,8 @@ export class GemeindeWarningService {
                 if (k.gesuchsperiode !== dangerousKonfig.gesuchsperiode) {
                     continue;
                 }
-                const identical = dangerousKonfig.json === this.prepareJsonCompareString(k);
+                const identical =
+                    dangerousKonfig.json === this.prepareJsonCompareString(k);
                 if (!identical) {
                     return true;
                 }
@@ -57,23 +59,31 @@ export class GemeindeWarningService {
         return false;
     }
 
-    private prepareJsonCompareString(konfiguration: TSGemeindeKonfiguration): string {
+    private prepareJsonCompareString(
+        konfiguration: TSGemeindeKonfiguration
+    ): string {
         // wir müessen die Konfiguration zuerst zum Rest Object konvertieren, damit die Konfigurationen verglichen werden können
-        const konfigurationRestObj = this.ebeguRestUtil.gemeindeKonfigurationToRestObject({}, konfiguration);
+        const konfigurationRestObj =
+            this.ebeguRestUtil.gemeindeKonfigurationToRestObject(
+                {},
+                konfiguration
+            );
         this.deleteHarmlessConfigs(konfigurationRestObj);
         // json Representation wird verwendet, damit die Objekte deep verglichen werden können
         return JSON.stringify(
             konfigurationRestObj.konfigurationen.map(k => ({
-                    key: k.key,
-                    value: k.value
-                }))
+                key: k.key,
+                value: k.value
+            }))
         );
     }
 
     // Es gibt einige Konfigurationen, die harmlos sind und bei aktiver Gesuchsperiode verändert werden dürfen.
     // Z.B. Erster Schultag bei der Tagesschule
     private deleteHarmlessConfigs(konfigurationRestObj: any): any {
-        konfigurationRestObj.konfigurationen = konfigurationRestObj.konfigurationen
-            .filter((k: TSEinstellung) => this.harmlessConfigs.indexOf(k.key) === -1);
+        konfigurationRestObj.konfigurationen =
+            konfigurationRestObj.konfigurationen.filter(
+                (k: TSEinstellung) => this.harmlessConfigs.indexOf(k.key) === -1
+            );
     }
 }

@@ -21,7 +21,6 @@ import {AuthLifeCycleService} from './authLifeCycle.service';
 import {HttpAuthInterceptor} from './HttpAuthInterceptor';
 
 describe('HttpAuthInterceptor', () => {
-
     let httpAuthInterceptor: HttpAuthInterceptor;
     let authLifeCycleService: AuthLifeCycleService;
 
@@ -36,13 +35,16 @@ describe('HttpAuthInterceptor', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
-        authLifeCycleService = $injector.get('AuthLifeCycleService');
-        window.onbeforeunload = () => 'Oh no!';
-        spyOn(authLifeCycleService, 'changeAuthStatus').and.callFake(() => {
-        });
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            httpAuthInterceptor = $injector.get('HttpAuthInterceptor');
+            authLifeCycleService = $injector.get('AuthLifeCycleService');
+            window.onbeforeunload = () => 'Oh no!';
+            spyOn(authLifeCycleService, 'changeAuthStatus').and.callFake(
+                () => {}
+            );
+        })
+    );
 
     describe('Public API', () => {
         it('should include a responseError() function', () => {
@@ -56,8 +58,10 @@ describe('HttpAuthInterceptor', () => {
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(authLifeCycleService.changeAuthStatus)
-                .toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
+            expect(authLifeCycleService.changeAuthStatus).toHaveBeenCalledWith(
+                TSAuthEvent.NOT_AUTHENTICATED,
+                authErrorResponse
+            );
         });
     });
 });

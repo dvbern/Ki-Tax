@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookResult,
+    StateService,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
@@ -38,26 +43,25 @@ let alreadyAlerted = false;
  * - The user is navigating to a state that requires authentication
  */
 
-export function mandantCheck(
-    $transitions: TransitionService
-): void {
+export function mandantCheck($transitions: TransitionService): void {
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore({
+    $transitions.onBefore(
+        {
             to: state => !state.name.includes('mandant')
         },
         redirectToMandantSelection,
-        {priority: OnBeforePriorities.AUTHENTICATION});
+        {priority: OnBeforePriorities.AUTHENTICATION}
+    );
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
 // eslint-disable-next-line
 
-function redirectToMandantSelection(
-    transition: Transition
-): HookResult {
-
-    const mandantService: MandantService = transition.injector().get('MandantService');
+function redirectToMandantSelection(transition: Transition): HookResult {
+    const mandantService: MandantService = transition
+        .injector()
+        .get('MandantService');
     const $state: StateService = transition.injector().get('$state');
 
     return combineLatest([
@@ -66,23 +70,35 @@ function redirectToMandantSelection(
     ])
         .pipe(
             map(([mandant, isMultimandanActive]) => {
-
-                const mandantFromHostname = mandantService.parseHostnameForMandant();
-                const mandantRedirectFromCookie = mandantService.getMandantRedirect();
+                const mandantFromHostname =
+                    mandantService.parseHostnameForMandant();
+                const mandantRedirectFromCookie =
+                    mandantService.getMandantRedirect();
                 if (!isMultimandanActive) {
-                    setDefaultCookies(mandantFromHostname, mandant, mandantService, mandantRedirectFromCookie);
+                    setDefaultCookies(
+                        mandantFromHostname,
+                        mandant,
+                        mandantService,
+                        mandantRedirectFromCookie
+                    );
                     return true;
                 }
 
                 LOG.debug('checking mandant', mandant);
-                const path = transition.router.stateService.href(transition.to(), transition.params());
+                const path = transition.router.stateService.href(
+                    transition.to(),
+                    transition.params()
+                );
 
                 if (mandantFromHostname === MANDANTS.NONE) {
                     if (mandantRedirectFromCookie === MANDANTS.NONE) {
                         console.log('redirecting to mandant selection');
                         return $state.target('onboarding.mandant', {path});
                     }
-                    mandantService.redirectToMandantSubdomain(mandantRedirectFromCookie, path);
+                    mandantService.redirectToMandantSubdomain(
+                        mandantRedirectFromCookie,
+                        path
+                    );
                     return false;
                 }
 

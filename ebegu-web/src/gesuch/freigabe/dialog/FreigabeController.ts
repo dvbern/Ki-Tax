@@ -34,7 +34,6 @@ import IDialogService = angular.material.IDialogService;
  * Controller fuer das Freigabe Popup
  */
 export class FreigabeController {
-
     public static $inject: string[] = [
         'docID',
         'errorMessage',
@@ -81,13 +80,17 @@ export class FreigabeController {
     }
 
     private updateUserList(dossier: TSDossier): void {
-        this.benutzerRS.getBenutzerBgOrGemeindeForGemeinde(dossier.gemeinde.id).then((responseBG: any) => {
-            this.userBGList = angular.copy(responseBG);
-            this.benutzerRS.getBenutzerTsOrGemeindeForGemeinde(dossier.gemeinde.id).then((responseTS: any) => {
-                this.userTSList = angular.copy(responseTS);
-                this.setVerantwortliche(dossier);
+        this.benutzerRS
+            .getBenutzerBgOrGemeindeForGemeinde(dossier.gemeinde.id)
+            .then((responseBG: any) => {
+                this.userBGList = angular.copy(responseBG);
+                this.benutzerRS
+                    .getBenutzerTsOrGemeindeForGemeinde(dossier.gemeinde.id)
+                    .then((responseTS: any) => {
+                        this.userTSList = angular.copy(responseTS);
+                        this.setVerantwortliche(dossier);
+                    });
             });
-        });
     }
 
     private setVerantwortliche(dossier: TSDossier): void {
@@ -97,35 +100,48 @@ export class FreigabeController {
         // (3) Defaults aus Properties
 
         // Jugendamt
-        const userVorjahrOrCurrentBG = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
-            this.gesuch.verantwortlicherUsernameBG, this.userBGList);
+        const userVorjahrOrCurrentBG =
+            this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
+                this.gesuch.verantwortlicherUsernameBG,
+                this.userBGList
+            );
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentBG)) {
             this.selectedUserBG = userVorjahrOrCurrentBG;
         } else {
             // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt.
             // Wir suchen nach einem anderen Kandidaten
-            this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                this.selectedUserBG = stammdaten.getDefaultBenutzerWithRoleBG().username;
-            });
+            this.gemeindeRS
+                .getGemeindeStammdaten(dossier.gemeinde.id)
+                .then(stammdaten => {
+                    this.selectedUserBG =
+                        stammdaten.getDefaultBenutzerWithRoleBG().username;
+                });
         }
 
         // Schulamt
-        const userVorjahrOrCurrentTS = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
-            this.gesuch.verantwortlicherUsernameTS, this.userTSList);
+        const userVorjahrOrCurrentTS =
+            this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
+                this.gesuch.verantwortlicherUsernameTS,
+                this.userTSList
+            );
         // eslint-disable-next-line
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentTS)) {
             this.selectedUserTS = userVorjahrOrCurrentTS;
         } else {
             // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt.
             // Wir suchen nach einem anderen Kandidaten
-            this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                this.selectedUserTS = stammdaten.getDefaultBenutzerWithRoleTS().username;
-            });
+            this.gemeindeRS
+                .getGemeindeStammdaten(dossier.gemeinde.id)
+                .then(stammdaten => {
+                    this.selectedUserTS =
+                        stammdaten.getDefaultBenutzerWithRoleTS().username;
+                });
         }
     }
 
     private getVerantwortlichenAusVorjahrOrCurrentBenutzer(
-        usernameVorjahr: string, listOfBerechtigteUser: Array<TSBenutzer>
+        usernameVorjahr: string,
+        listOfBerechtigteUser: Array<TSBenutzer>
     ): string | undefined {
         if (usernameVorjahr) {
             // Falls schon ein Verantwortlicher aus dem Vorjahr gesetzt ist: Pruefen, ob dieser noch existiert
@@ -133,8 +149,12 @@ export class FreigabeController {
             if (this.isUserInList(usernameVorjahr, listOfBerechtigteUser)) {
                 return usernameVorjahr;
             }
-
-        } else if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
+        } else if (
+            this.isUserInList(
+                this.authService.getPrincipal().username,
+                listOfBerechtigteUser
+            )
+        ) {
             // Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
             return this.authService.getPrincipal().username;
         }
@@ -163,12 +183,15 @@ export class FreigabeController {
     }
 
     public freigeben(): IPromise<void> {
-        return this.gesuchModelManager.antragFreigeben(this.docID, new TSFreigabe(this.selectedUserBG, this.selectedUserTS))
+        return this.gesuchModelManager
+            .antragFreigeben(
+                this.docID,
+                new TSFreigabe(this.selectedUserBG, this.selectedUserTS)
+            )
             .then(() => this.$mdDialog.hide());
     }
 
     public cancel(): void {
         this.$mdDialog.cancel();
     }
-
 }

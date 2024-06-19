@@ -40,29 +40,29 @@ describe('Kibon - generate Statistiken', () => {
 
         StatistikPO.getStatistikJobStatus(0).should(
             'include.text',
-            'Bereit zum Download',
+            'Bereit zum Download'
         );
 
         cy.getDownloadUrl(() => {
             StatistikPO.getStatistikJob(0).click();
         }).as('downloadUrl');
-        cy.get<string>('@downloadUrl').then((url) => {
+        cy.get<string>('@downloadUrl').then(url => {
             cy.log(`downloading ${url}`);
             cy.downloadFile(url, fileName).as('download');
         });
 
         cy.get('@download').should('not.equal', false);
         cy.get<string>('@download')
-            .then((fileName) =>
+            .then(fileName =>
                 cy.task(
                     'convertXlsxToJson',
                     {
                         dirPath: downloadsPath,
                         fileName,
-                        refs: 'A8:CL50000',
+                        refs: 'A8:CL50000'
                     },
-                    {custom: true},
-                ),
+                    {custom: true}
+                )
             )
             .then(([{data}]) => {
                 checkFirstHeaderRow(data);
@@ -124,8 +124,12 @@ function checkSecondHeaderRow(data: any): void {
     expect(data[1][47]).to.eq('Einkommensjahr');
     expect(data[1][48]).to.eq('Einkommensverschlechterung (Einkommensjahr +1)');
     expect(data[1][49]).to.eq('Einkommensverschlechterung (Einkommensjahr +2)');
-    expect(data[1][50]).to.eq('Einkommensverschlechterung annuliert (Einkommensjahr +1)');
-    expect(data[1][51]).to.eq('Einkommensverschlechterung annuliert (Einkommensjahr +2)');
+    expect(data[1][50]).to.eq(
+        'Einkommensverschlechterung annuliert (Einkommensjahr +1)'
+    );
+    expect(data[1][51]).to.eq(
+        'Einkommensverschlechterung annuliert (Einkommensjahr +2)'
+    );
     expect(data[1][52]).to.eq('Sozialhilfebeziehende');
     expect(data[1][55]).to.eq('Nachname');
     expect(data[1][56]).to.eq('Vorname');

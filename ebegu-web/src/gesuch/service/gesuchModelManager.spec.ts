@@ -58,7 +58,6 @@ import {WizardStepManager} from './wizardStepManager';
 
 /* eslint-disable */
 describe('gesuchModelManager', () => {
-
     let gesuchModelManager: GesuchModelManager;
     let betreuungRS: BetreuungRS;
     let dossierRS: DossierRS;
@@ -78,118 +77,203 @@ describe('gesuchModelManager', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        $httpBackend = $injector.get('$httpBackend');
-        betreuungRS = $injector.get('BetreuungRS');
-        dossierRS = $injector.get('DossierRS');
-        gesuchRS = $injector.get('GesuchRS');
-        kindRS = $injector.get('KindRS');
-        scope = $injector.get('$rootScope');
-        $q = $injector.get('$q');
-        authServiceRS = $injector.get('AuthServiceRS');
-        wizardStepManager = $injector.get('WizardStepManager');
-        verfuegungRS = $injector.get('VerfuegungRS');
-        antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            $httpBackend = $injector.get('$httpBackend');
+            betreuungRS = $injector.get('BetreuungRS');
+            dossierRS = $injector.get('DossierRS');
+            gesuchRS = $injector.get('GesuchRS');
+            kindRS = $injector.get('KindRS');
+            scope = $injector.get('$rootScope');
+            $q = $injector.get('$q');
+            authServiceRS = $injector.get('AuthServiceRS');
+            wizardStepManager = $injector.get('WizardStepManager');
+            verfuegungRS = $injector.get('VerfuegungRS');
+            antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
+        })
+    );
 
     describe('API Usage', () => {
         describe('removeBetreuungFromKind', () => {
             it('should remove the current Betreuung from the list of the current Kind', waitForAsync(() => {
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    createKindContainer();
-                    createBetreuung();
-                    expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
-                    expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(1);
-                    gesuchModelManager.removeBetreuungFromKind();
-                    expect(gesuchModelManager.getKindToWorkWith().betreuungen).toBeDefined();
-                    expect(gesuchModelManager.getKindToWorkWith().betreuungen.length).toBe(0);
-                });
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
+                    .then(() => {
+                        createKindContainer();
+                        createBetreuung();
+                        expect(
+                            gesuchModelManager.getKindToWorkWith().betreuungen
+                        ).toBeDefined();
+                        expect(
+                            gesuchModelManager.getKindToWorkWith().betreuungen
+                                .length
+                        ).toBe(1);
+                        gesuchModelManager.removeBetreuungFromKind();
+                        expect(
+                            gesuchModelManager.getKindToWorkWith().betreuungen
+                        ).toBeDefined();
+                        expect(
+                            gesuchModelManager.getKindToWorkWith().betreuungen
+                                .length
+                        ).toBe(0);
+                    });
             }));
         });
         describe('saveBetreuung', () => {
             it('updates a betreuung', waitForAsync(() => {
-                $httpBackend.when('GET', '/ebegu/api/v1/dossier/id/undefined').respond({});
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    createKindContainer();
-                    const betreuung = createBetreuung();
-                    gesuchModelManager.getKindToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+                $httpBackend
+                    .when('GET', '/ebegu/api/v1/dossier/id/undefined')
+                    .respond({});
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
+                    .then(() => {
+                        createKindContainer();
+                        const betreuung = createBetreuung();
+                        gesuchModelManager.getKindToWorkWith().id =
+                            '2afc9d9a-957e-4550-9a22-97624a000feb';
 
-                    TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                    const kindToWorkWith = gesuchModelManager.getKindToWorkWith();
-                    kindToWorkWith.nextNumberBetreuung = 5;
-                    spyOn(kindRS, 'findKind').and.returnValue($q.when(kindToWorkWith));
-                    spyOn(betreuungRS, 'saveBetreuung').and.returnValue($q.when(betreuung));
-                    spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
-                    const bestaetigt = $q.when(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
-                    spyOn(gesuchRS, 'getGesuchBetreuungenStatus').and.returnValue(bestaetigt);
+                        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                            $httpBackend
+                        );
+                        const kindToWorkWith =
+                            gesuchModelManager.getKindToWorkWith();
+                        kindToWorkWith.nextNumberBetreuung = 5;
+                        spyOn(kindRS, 'findKind').and.returnValue(
+                            $q.when(kindToWorkWith)
+                        );
+                        spyOn(betreuungRS, 'saveBetreuung').and.returnValue(
+                            $q.when(betreuung)
+                        );
+                        spyOn(
+                            wizardStepManager,
+                            'findStepsFromGesuch'
+                        ).and.returnValue($q.resolve());
+                        const bestaetigt = $q.when(
+                            TSGesuchBetreuungenStatus.ALLE_BESTAETIGT
+                        );
+                        spyOn(
+                            gesuchRS,
+                            'getGesuchBetreuungenStatus'
+                        ).and.returnValue(bestaetigt);
 
-                    gesuchModelManager.saveBetreuung(gesuchModelManager.getKindToWorkWith().betreuungen[0],
-                        TSBetreuungsstatus.WARTEN,
-                        false);
-                    scope.$apply();
+                        gesuchModelManager.saveBetreuung(
+                            gesuchModelManager.getKindToWorkWith()
+                                .betreuungen[0],
+                            TSBetreuungsstatus.WARTEN,
+                            false
+                        );
+                        scope.$apply();
 
-                    // eslint-disable-next-line @typescript-eslint/unbound-method
-                    expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(),
-                        undefined,
-                        false);
-                    // eslint-disable-next-line @typescript-eslint/unbound-method
-                    expect(kindRS.findKind).toHaveBeenCalledWith('2afc9d9a-957e-4550-9a22-97624a000feb');
-                    expect(gesuchModelManager.getKindToWorkWith().nextNumberBetreuung).toEqual(5);
-                    expect(gesuchModelManager.getGesuch().gesuchBetreuungenStatus)
-                        .toEqual(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
-                });
+                        // eslint-disable-next-line @typescript-eslint/unbound-method
+                        expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(
+                            gesuchModelManager.getBetreuungToWorkWith(),
+                            undefined,
+                            false
+                        );
+                        // eslint-disable-next-line @typescript-eslint/unbound-method
+                        expect(kindRS.findKind).toHaveBeenCalledWith(
+                            '2afc9d9a-957e-4550-9a22-97624a000feb'
+                        );
+                        expect(
+                            gesuchModelManager.getKindToWorkWith()
+                                .nextNumberBetreuung
+                        ).toEqual(5);
+                        expect(
+                            gesuchModelManager.getGesuch()
+                                .gesuchBetreuungenStatus
+                        ).toEqual(TSGesuchBetreuungenStatus.ALLE_BESTAETIGT);
+                    });
             }));
         });
         describe('saveGesuchAndFall', () => {
             it('creates a Fall with a linked Gesuch', waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
 
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    gesuchModelManager.saveGesuchAndFall().then(gesuch => {
-                        expect(gesuch).toBeDefined();
-                        expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
+                    .then(() => {
+                        gesuchModelManager.saveGesuchAndFall().then(gesuch => {
+                            expect(gesuch).toBeDefined();
+                            expect(gesuch.eingangsart).toBe(
+                                TSEingangsart.PAPIER
+                            );
+                        });
                     });
-                });
             }));
             it('only updates the Gesuch because it already exists', waitForAsync(() => {
-                spyOn(gesuchRS, 'updateGesuch').and.returnValue($q.resolve(new TSGesuch()));
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                spyOn(gesuchRS, 'updateGesuch').and.returnValue(
+                    $q.resolve(new TSGesuch())
+                );
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
 
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    gesuchModelManager.getGesuch().timestampErstellt = DateUtil.today();
-                    gesuchModelManager.saveGesuchAndFall();
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
+                    .then(() => {
+                        gesuchModelManager.getGesuch().timestampErstellt =
+                            DateUtil.today();
+                        gesuchModelManager.saveGesuchAndFall();
 
-                    scope.$apply();
-                    // eslint-disable-next-line @typescript-eslint/unbound-method
-                    expect(gesuchRS.updateGesuch).toHaveBeenCalled();
-                });
+                        scope.$apply();
+                        // eslint-disable-next-line @typescript-eslint/unbound-method
+                        expect(gesuchRS.updateGesuch).toHaveBeenCalled();
+                    });
             }));
         });
         describe('setUserAsFallVerantwortlicherBG', () => {
             it('puts the given user as the verantwortlicherBG for the fall', waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
-                    TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(gesuch => {
-                    gesuch.dossier = new TSDossier();
-                    gesuch.dossier.id = 'myId';
-                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                    spyOn(dossierRS, 'setVerantwortlicherBG')
-                        .and.returnValue($q.resolve(gesuch.dossier) as any);
-                    const user = new TSBenutzerNoDetails('Emilianito', 'Camacho');
-                    gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
-                    scope.$apply();
-                    expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
-                });
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
+                    .then(gesuch => {
+                        gesuch.dossier = new TSDossier();
+                        gesuch.dossier.id = 'myId';
+                        spyOn(authServiceRS, 'getPrincipal').and.returnValue(
+                            undefined
+                        );
+                        spyOn(
+                            dossierRS,
+                            'setVerantwortlicherBG'
+                        ).and.returnValue($q.resolve(gesuch.dossier) as any);
+                        const user = new TSBenutzerNoDetails(
+                            'Emilianito',
+                            'Camacho'
+                        );
+                        gesuchModelManager.setUserAsFallVerantwortlicherBG(
+                            user
+                        );
+                        scope.$apply();
+                        expect(
+                            gesuchModelManager.getGesuch().dossier
+                                .verantwortlicherBG
+                        ).toBe(user);
+                    });
             }));
         });
         describe('exist at least one Betreuung among all kinder', () => {
@@ -197,16 +281,22 @@ describe('gesuchModelManager', () => {
                 const gesuch = new TSGesuch();
                 spyOn(gesuch, 'getKinderWithBetreuungList').and.returnValue([]);
                 spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-                expect(gesuchModelManager.getGesuch().isThereAnyBetreuung()).toBe(false);
+                expect(
+                    gesuchModelManager.getGesuch().isThereAnyBetreuung()
+                ).toBe(false);
             });
             it('should return false for a list with Kinder but no Betreuung', () => {
                 const kind = new TSKindContainer();
                 kind.kindJA = new TSKind();
                 kind.kindJA.familienErgaenzendeBetreuung = false;
                 const gesuch = new TSGesuch();
-                spyOn(gesuch, 'getKinderWithBetreuungList').and.returnValue([kind]);
+                spyOn(gesuch, 'getKinderWithBetreuungList').and.returnValue([
+                    kind
+                ]);
                 spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-                expect(gesuchModelManager.getGesuch().isThereAnyBetreuung()).toBe(false);
+                expect(
+                    gesuchModelManager.getGesuch().isThereAnyBetreuung()
+                ).toBe(false);
             });
             it('should return true for a list with Kinder needing Betreuung', () => {
                 const kind = new TSKindContainer();
@@ -215,149 +305,296 @@ describe('gesuchModelManager', () => {
                 const betreuung = new TSBetreuung();
                 kind.betreuungen = [betreuung];
                 const gesuch = new TSGesuch();
-                spyOn(gesuch, 'getKinderWithBetreuungList').and.returnValue([kind]);
+                spyOn(gesuch, 'getKinderWithBetreuungList').and.returnValue([
+                    kind
+                ]);
                 spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-                expect(gesuchModelManager.getGesuch().isThereAnyBetreuung()).toBe(true);
+                expect(
+                    gesuchModelManager.getGesuch().isThereAnyBetreuung()
+                ).toBe(true);
             });
         });
 
         describe('exist kinder with betreuung needed', () => {
             it('should return false for empty list', () => {
                 spyOn(gesuchModelManager, 'getKinderList').and.returnValue([]);
-                expect(gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()).toBe(false);
+                expect(
+                    gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+                ).toBe(false);
             });
             it('should return false for a list with no Kind needing Betreuung', () => {
                 const kind = new TSKindContainer();
                 kind.kindJA = new TSKind();
                 kind.kindJA.familienErgaenzendeBetreuung = false;
-                spyOn(gesuchModelManager, 'getKinderList').and.returnValue([kind]);
-                expect(gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()).toBe(false);
+                spyOn(gesuchModelManager, 'getKinderList').and.returnValue([
+                    kind
+                ]);
+                expect(
+                    gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+                ).toBe(false);
             });
             it('should return true for a list with Kinder needing Betreuung', () => {
                 const kind = new TSKindContainer();
                 kind.kindJA = new TSKind();
                 kind.kindJA.timestampErstellt = DateUtil.today();
                 kind.kindJA.familienErgaenzendeBetreuung = true;
-                spyOn(gesuchModelManager, 'getKinderList').and.returnValue([kind]);
-                expect(gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()).toBe(true);
+                spyOn(gesuchModelManager, 'getKinderList').and.returnValue([
+                    kind
+                ]);
+                expect(
+                    gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+                ).toBe(true);
             });
         });
         describe('saveGesuchStatus', () => {
             it('should update the status of the Gesuch im Server und Client', waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined)
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
+                        TSCreationAction.CREATE_NEW_FALL,
+                        undefined
+                    )
                     .then(() => {
-                        spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue($q.resolve() as any);
-                        spyOn(antragStatusHistoryRS, 'loadLastStatusChange')
-                            .and.returnValue($q.resolve(new TSAntragStatusHistory()) as any);
+                        spyOn(gesuchRS, 'updateGesuchStatus').and.returnValue(
+                            $q.resolve() as any
+                        );
+                        spyOn(
+                            antragStatusHistoryRS,
+                            'loadLastStatusChange'
+                        ).and.returnValue(
+                            $q.resolve(new TSAntragStatusHistory()) as any
+                        );
 
-                        gesuchModelManager.saveGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG);
+                        gesuchModelManager.saveGesuchStatus(
+                            TSAntragStatus.ERSTE_MAHNUNG
+                        );
 
                         scope.$apply();
-                        expect(gesuchModelManager.getGesuch().status).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
+                        expect(gesuchModelManager.getGesuch().status).toEqual(
+                            TSAntragStatus.ERSTE_MAHNUNG
+                        );
                     });
             }));
         });
         describe('saveVerfuegung', () => {
-            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT',
-                waitForAsync(() => {
-                    TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                    gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
+            it('should save the current Verfuegung und set the status of the Betreuung to VERFUEGT', waitForAsync(() => {
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                gesuchModelManager
+                    .initGesuch(
+                        TSEingangsart.PAPIER,
                         TSCreationAction.CREATE_NEW_FALL,
-                        undefined).then(() => {
+                        undefined
+                    )
+                    .then(() => {
                         createKindContainer();
                         createBetreuung();
-                        gesuchModelManager.getBetreuungToWorkWith().id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+                        gesuchModelManager.getBetreuungToWorkWith().id =
+                            '2afc9d9a-957e-4550-9a22-97624a000feb';
                         const verfuegung = new TSVerfuegung();
-                        spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
+                        spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue(
+                            $q.when(verfuegung)
+                        );
 
-                        gesuchModelManager.saveVerfuegung(false, false, 'bemerkungen');
+                        gesuchModelManager.saveVerfuegung(
+                            false,
+                            false,
+                            'bemerkungen'
+                        );
                         scope.$apply();
 
-                        expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);
-                        expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
-                            .toEqual(TSBetreuungsstatus.VERFUEGT);
+                        expect(
+                            gesuchModelManager.getVerfuegenToWorkWith()
+                        ).toBe(verfuegung);
+                        expect(
+                            gesuchModelManager.getBetreuungToWorkWith()
+                                .betreuungsstatus
+                        ).toEqual(TSBetreuungsstatus.VERFUEGT);
                     });
-                }));
+            }));
         });
         describe('calculateNewStatus', () => {
             it('should be GEPRUEFT if there is no betreuung', () => {
-                const hasStepGivenStatus = (stepName: TSWizardStepName, status: TSWizardStepStatus) =>
-                    stepName === TSWizardStepName.BETREUUNG && status === TSWizardStepStatus.NOK;
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(hasStepGivenStatus);
+                const hasStepGivenStatus = (
+                    stepName: TSWizardStepName,
+                    status: TSWizardStepStatus
+                ) =>
+                    stepName === TSWizardStepName.BETREUUNG &&
+                    status === TSWizardStepStatus.NOK;
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(
+                    hasStepGivenStatus
+                );
                 const gesuch = new TSGesuch();
                 spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(false);
                 spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.GEPRUEFT)).toEqual(TSAntragStatus.GEPRUEFT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN)).toEqual(
-                    TSAntragStatus.GEPRUEFT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN)).toEqual(
-                    TSAntragStatus.GEPRUEFT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.GEPRUEFT
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_WARTEN
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
             });
             it('should be PLATZBESTAETIGUNG_ABGEWIESEN if there are betreuungen and status of Betreuung is NOK', () => {
-                const hasStepGivenStatus = (stepName: TSWizardStepName, status: TSWizardStepStatus) =>
-                    stepName === TSWizardStepName.BETREUUNG && status === TSWizardStepStatus.NOK;
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(hasStepGivenStatus);
+                const hasStepGivenStatus = (
+                    stepName: TSWizardStepName,
+                    status: TSWizardStepStatus
+                ) =>
+                    stepName === TSWizardStepName.BETREUUNG &&
+                    status === TSWizardStepStatus.NOK;
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(
+                    hasStepGivenStatus
+                );
                 const gesuch = new TSGesuch();
                 spyOn(gesuch, 'isThereAnyBetreuung').and.returnValue(true);
                 spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.GEPRUEFT))
-                    .toEqual(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN)).toEqual(
-                    TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN)).toEqual(
-                    TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.GEPRUEFT
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_WARTEN
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN);
             });
             it('should be PLATZBESTAETIGUNG_WARTEN if the status of Betreuung is PLATZBESTAETIGUNG', () => {
-                const hasStepGivenStatus = (stepName: TSWizardStepName, status: TSWizardStepStatus) =>
-                    stepName === TSWizardStepName.BETREUUNG && status === TSWizardStepStatus.PLATZBESTAETIGUNG;
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(hasStepGivenStatus);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.GEPRUEFT))
-                    .toEqual(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN)).toEqual(
-                    TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN)).toEqual(
-                    TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
+                const hasStepGivenStatus = (
+                    stepName: TSWizardStepName,
+                    status: TSWizardStepStatus
+                ) =>
+                    stepName === TSWizardStepName.BETREUUNG &&
+                    status === TSWizardStepStatus.PLATZBESTAETIGUNG;
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(
+                    hasStepGivenStatus
+                );
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.GEPRUEFT
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_WARTEN
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN
+                    )
+                ).toEqual(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN);
             });
             it('should be GEPRUEFT if the status of Betreuung is PLATZBESTAETIGUNG', () => {
-                const hasStepGivenStatus = (stepName: TSWizardStepName, status: TSWizardStepStatus) =>
-                    stepName === TSWizardStepName.BETREUUNG && status === TSWizardStepStatus.OK;
-                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(hasStepGivenStatus);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.GEPRUEFT)).toEqual(TSAntragStatus.GEPRUEFT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_WARTEN))
-                    .toEqual(TSAntragStatus.GEPRUEFT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN))
-                    .toEqual(TSAntragStatus.GEPRUEFT);
+                const hasStepGivenStatus = (
+                    stepName: TSWizardStepName,
+                    status: TSWizardStepStatus
+                ) =>
+                    stepName === TSWizardStepName.BETREUUNG &&
+                    status === TSWizardStepStatus.OK;
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.callFake(
+                    hasStepGivenStatus
+                );
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.GEPRUEFT
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_WARTEN
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN
+                    )
+                ).toEqual(TSAntragStatus.GEPRUEFT);
             });
             it('returns the same TSAntragStatus for all others', () => {
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ERSTE_MAHNUNG))
-                    .toEqual(TSAntragStatus.ERSTE_MAHNUNG);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN))
-                    .toEqual(TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.FREIGEGEBEN))
-                    .toEqual(TSAntragStatus.FREIGEGEBEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.IN_BEARBEITUNG_GS))
-                    .toEqual(TSAntragStatus.IN_BEARBEITUNG_GS);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.IN_BEARBEITUNG_JA))
-                    .toEqual(TSAntragStatus.IN_BEARBEITUNG_JA);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.FREIGABEQUITTUNG))
-                    .toEqual(TSAntragStatus.FREIGABEQUITTUNG);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.NUR_SCHULAMT))
-                    .toEqual(TSAntragStatus.NUR_SCHULAMT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.VERFUEGEN))
-                    .toEqual(TSAntragStatus.VERFUEGEN);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.VERFUEGT))
-                    .toEqual(TSAntragStatus.VERFUEGT);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ZWEITE_MAHNUNG))
-                    .toEqual(TSAntragStatus.ZWEITE_MAHNUNG);
-                expect(gesuchModelManager.calculateNewStatus(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN))
-                    .toEqual(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.ERSTE_MAHNUNG
+                    )
+                ).toEqual(TSAntragStatus.ERSTE_MAHNUNG);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN
+                    )
+                ).toEqual(TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.FREIGEGEBEN
+                    )
+                ).toEqual(TSAntragStatus.FREIGEGEBEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.IN_BEARBEITUNG_GS
+                    )
+                ).toEqual(TSAntragStatus.IN_BEARBEITUNG_GS);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.IN_BEARBEITUNG_JA
+                    )
+                ).toEqual(TSAntragStatus.IN_BEARBEITUNG_JA);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.FREIGABEQUITTUNG
+                    )
+                ).toEqual(TSAntragStatus.FREIGABEQUITTUNG);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.NUR_SCHULAMT
+                    )
+                ).toEqual(TSAntragStatus.NUR_SCHULAMT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.VERFUEGEN
+                    )
+                ).toEqual(TSAntragStatus.VERFUEGEN);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.VERFUEGT
+                    )
+                ).toEqual(TSAntragStatus.VERFUEGT);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.ZWEITE_MAHNUNG
+                    )
+                ).toEqual(TSAntragStatus.ZWEITE_MAHNUNG);
+                expect(
+                    gesuchModelManager.calculateNewStatus(
+                        TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN
+                    )
+                ).toEqual(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN);
             });
         });
         describe('updateBetreuungen', () => {
             it('should return empty Promise for undefined betreuung list', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                const promise = gesuchModelManager.updateBetreuungen(undefined, true);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                const promise = gesuchModelManager.updateBetreuungen(
+                    undefined,
+                    true
+                );
                 expect(promise).toBeDefined();
                 let promiseExecuted: Array<TSBetreuung> = null;
                 promise.then(response => {
@@ -367,7 +604,9 @@ describe('gesuchModelManager', () => {
                 expect(promiseExecuted).toBe(undefined);
             });
             it('should return empty Promise for empty betreuung list', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
                 const promise = gesuchModelManager.updateBetreuungen([], true);
                 expect(promise).toBeDefined();
                 let promiseExecuted = false;
@@ -380,7 +619,9 @@ describe('gesuchModelManager', () => {
             it('should return a Promise with the Betreuung that was updated', () => {
                 const gesuchPeriode = new TSGesuchsperiode();
                 gesuchPeriode.id = '123';
-                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                    gesuchPeriode
+                );
                 const myGesuch = new TSGesuch();
                 myGesuch.id = 'gesuchID';
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch);
@@ -392,13 +633,22 @@ describe('gesuchModelManager', () => {
                 kindContainer.id = 'kindID';
                 myGesuch.kindContainers = [kindContainer];
 
-                spyOn(betreuungRS, 'saveBetreuungen').and.returnValue($q.when([betreuung]));
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when(undefined));
+                spyOn(betreuungRS, 'saveBetreuungen').and.returnValue(
+                    $q.when([betreuung])
+                );
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                    $q.when(undefined)
+                );
                 gesuchModelManager.setGesuch(myGesuch);
 
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
 
-                const promise = gesuchModelManager.updateBetreuungen(betreuungen, true);
+                const promise = gesuchModelManager.updateBetreuungen(
+                    betreuungen,
+                    true
+                );
 
                 expect(promise).toBeDefined();
                 let promiseExecuted: Array<TSBetreuung>;
@@ -408,46 +658,70 @@ describe('gesuchModelManager', () => {
 
                 scope.$apply();
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(betreuungRS.saveBetreuungen).toHaveBeenCalledWith(betreuungen, myGesuch.id, true);
+                expect(betreuungRS.saveBetreuungen).toHaveBeenCalledWith(
+                    betreuungen,
+                    myGesuch.id,
+                    true
+                );
                 expect(promiseExecuted.length).toBe(1);
                 expect(promiseExecuted[0]).toEqual(betreuung);
             });
         });
         describe('openGesuch', () => {
             it('should call findGesuchForInstitution for role Institution or Traegerschaft', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                $httpBackend
+                    .when('GET', '/ebegu/api/v1/antragStatusHistory/123')
+                    .respond({});
 
                 const gesuch = new TSGesuch();
                 gesuch.id = '123';
-                spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue($q.resolve(gesuch));
+                spyOn(gesuchRS, 'findGesuchForInstitution').and.returnValue(
+                    $q.resolve(gesuch)
+                );
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                    $q.resolve()
+                );
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue();
                 const gesuchPeriode = new TSGesuchsperiode();
                 gesuchPeriode.id = '123';
-                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                    gesuchPeriode
+                );
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(gesuchRS.findGesuchForInstitution).toHaveBeenCalledWith(gesuch.id);
+                expect(gesuchRS.findGesuchForInstitution).toHaveBeenCalledWith(
+                    gesuch.id
+                );
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });
             it('should call findGesuch for other role but Institution/Traegerschaft', () => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                $httpBackend
+                    .when('GET', '/ebegu/api/v1/antragStatusHistory/123')
+                    .respond({});
 
                 const gesuch = new TSGesuch();
                 gesuch.id = '123';
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(false);
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(gesuch));
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                    $q.resolve()
+                );
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue();
                 const gesuchPeriode = new TSGesuchsperiode();
                 gesuchPeriode.id = '123';
-                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                    gesuchPeriode
+                );
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
@@ -459,23 +733,37 @@ describe('gesuchModelManager', () => {
         });
         describe('areThereOnlySchulamtAngebote', () => {
             beforeEach(waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                gesuchModelManager.initGesuch(
+                    TSEingangsart.PAPIER,
+                    TSCreationAction.CREATE_NEW_FALL,
+                    undefined
+                );
             }));
             it('should be true if only Schulamtangebote', () => {
                 createKindWithBetreuung();
-                setInstitutionToExistingBetreuung(TSBetreuungsangebotTyp.TAGESSCHULE);
+                setInstitutionToExistingBetreuung(
+                    TSBetreuungsangebotTyp.TAGESSCHULE
+                );
 
-                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(true);
+                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(
+                    true
+                );
             });
             it('should be false if not only Schulamtangebote', () => {
                 createKindWithBetreuung();
                 setInstitutionToExistingBetreuung(TSBetreuungsangebotTyp.KITA);
 
-                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(false);
+                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(
+                    false
+                );
             });
             it('should be false if there are no Betreuungen or Kinds', () => {
-                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(false);
+                expect(gesuchModelManager.areThereOnlySchulamtAngebote()).toBe(
+                    false
+                );
             });
         });
         describe('isGesuchsteller2Required', () => {
@@ -486,140 +774,229 @@ describe('gesuchModelManager', () => {
                 new TSDateRange(dateFrom, dateTo)
             );
             beforeEach(waitForAsync(() => {
-                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-                gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                    $httpBackend
+                );
+                gesuchModelManager.initGesuch(
+                    TSEingangsart.PAPIER,
+                    TSCreationAction.CREATE_NEW_FALL,
+                    undefined
+                );
             }));
             it('should be false if ALLEINERZIEHEND', () => {
                 createFamsit(false, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should be true if VERHEIRATET', () => {
                 createFamsit(false, TSFamilienstatus.VERHEIRATET);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be true if KONKUBINAT', () => {
                 createFamsit(false, TSFamilienstatus.KONKUBINAT);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be true if KONKUBINAT_KEIN_KIND', () => {
                 createFamsit(false, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 let startKonkubinat = moment('2018-01-01');
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat =
+                    startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
                 startKonkubinat = moment('2019-12-01');
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat =
+                    startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should be false if ALLEINERZIEHEND with geteilte Obhut and FKJV ALLEINE', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = true;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut =
+                    true;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet =
+                    TSGesuchstellerKardinalitaet.ALLEINE;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should be true if ALLEINERZIEHEND with geteilte Obhut and FKJV ZU_ZWEIT', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = true;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut =
+                    true;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet =
+                    TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be false if ALLEINERZIEHEND with no geteilte Obhut and unterhaltsvereinbarung', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut =
+                    false;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should be false if ALLEINERZIEHEND with no geteilte Obhut and unterhaltsvereinbarung nicht moeglich', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut =
+                    false;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung =
                     TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should be true if ALLEINERZIEHEND with no geteilte Obhut and no unterhaltsvereinbarung', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut =
+                    false;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be true if VERHEIRATET with FKJV', () => {
                 createFamsit(true, TSFamilienstatus.VERHEIRATET);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be true if KONKUBINAT with FKJV', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('should be true if KONKUBINAT_KEIN_KIND with FKJV and Konkubinat is old', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 const startKonkubinat = moment('2015-01-01');
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat =
+                    startKonkubinat;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
             });
             it('different cases should be true if KONKUBINAT_KEIN_KIND with FKJV and Konkubinat is young', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 const startKonkubinat = moment('2019-12-01');
 
-                const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+                const famSit =
+                    gesuchModelManager.getGesuch().familiensituationContainer
+                        .familiensituationJA;
                 famSit.startKonkubinat = startKonkubinat;
 
                 famSit.geteilteObhut = true;
-                famSit.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                famSit.gesuchstellerKardinalitaet =
+                    TSGesuchstellerKardinalitaet.ALLEINE;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
 
-                famSit.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                famSit.gesuchstellerKardinalitaet =
+                    TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
 
                 famSit.geteilteObhut = false;
-                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                famSit.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
 
-                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+                famSit.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    true
+                );
 
-                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+                famSit.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(
+                    false
+                );
             });
             it('should test different edge cases for konkubinat duration calculation', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+                const famSit =
+                    gesuchModelManager.getGesuch().familiensituationContainer
+                        .familiensituationJA;
 
                 famSit.startKonkubinat = moment('2021-07-31');
-                expect(famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(moment('2021-07-31'))).toBe(false);
+                expect(
+                    famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                        moment('2021-07-31')
+                    )
+                ).toBe(false);
 
                 famSit.startKonkubinat = moment('2018-08-01');
-                expect(famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(moment('2021-07-31'))).toBe(true);
+                expect(
+                    famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                        moment('2021-07-31')
+                    )
+                ).toBe(true);
 
                 const gp = new TSGesuchsperiode();
-                gp.gueltigkeit = new TSDateRange(moment('2020-08-01'), moment('2021-07-31'));
+                gp.gueltigkeit = new TSDateRange(
+                    moment('2020-08-01'),
+                    moment('2021-07-31')
+                );
 
                 famSit.startKonkubinat = moment('2018-07-31');
-                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(false);
+                expect(
+                    famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(
+                        gp
+                    )
+                ).toBe(false);
 
                 famSit.startKonkubinat = moment('2018-08-01');
-                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(true);
+                expect(
+                    famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(
+                        gp
+                    )
+                ).toBe(true);
 
                 famSit.startKonkubinat = moment('2019-07-31');
-                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(true);
+                expect(
+                    famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(
+                        gp
+                    )
+                ).toBe(true);
             });
         });
     });
 
     // HELP METHODS
-    function createFamsit(isFKJV: boolean, familienStatus: TSFamilienstatus): void {
+    function createFamsit(
+        isFKJV: boolean,
+        familienStatus: TSFamilienstatus
+    ): void {
         const famSitCont = new TSFamiliensituationContainer();
         const famSit = new TSFamiliensituation();
         famSit.minDauerKonkubinat = 2;
@@ -639,20 +1016,26 @@ describe('gesuchModelManager', () => {
         const tsKindContainer = new TSKindContainer();
         tsKindContainer.kindJA = new TSKind();
         gesuchModelManager.getGesuch().kindContainers.push(tsKindContainer);
-        gesuchModelManager.setKindIndex(gesuchModelManager.getGesuch().kindContainers.length - 1);
+        gesuchModelManager.setKindIndex(
+            gesuchModelManager.getGesuch().kindContainers.length - 1
+        );
         tsKindContainer.kindNummer = gesuchModelManager.getKindIndex() + 1;
     }
 
     function createKindWithBetreuung(): void {
         createKindContainer();
-        gesuchModelManager.getKindToWorkWith().kindJA.familienErgaenzendeBetreuung = true;
+        gesuchModelManager.getKindToWorkWith().kindJA.familienErgaenzendeBetreuung =
+            true;
         createBetreuung();
     }
 
-    function setInstitutionToExistingBetreuung(typ: TSBetreuungsangebotTyp): void {
+    function setInstitutionToExistingBetreuung(
+        typ: TSBetreuungsangebotTyp
+    ): void {
         const institution = new TSInstitutionStammdaten();
         institution.betreuungsangebotTyp = typ;
-        gesuchModelManager.getBetreuungToWorkWith().institutionStammdaten = institution;
+        gesuchModelManager.getBetreuungToWorkWith().institutionStammdaten =
+            institution;
     }
 
     function createBetreuung(): TSBetreuung {
@@ -663,8 +1046,9 @@ describe('gesuchModelManager', () => {
         tsBetreuung.id = '2afc9d9a-957e-4550-9a22-97624a000feb';
         tsBetreuung.kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchModelManager.getKindToWorkWith().betreuungen.push(tsBetreuung);
-        gesuchModelManager.setBetreuungIndex(gesuchModelManager.getKindToWorkWith().betreuungen.length - 1);
+        gesuchModelManager.setBetreuungIndex(
+            gesuchModelManager.getKindToWorkWith().betreuungen.length - 1
+        );
         return tsBetreuung;
     }
-
 });

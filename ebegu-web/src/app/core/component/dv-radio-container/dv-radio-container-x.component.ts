@@ -1,4 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 
 @Component({
     selector: 'dv-radio-container-x',
@@ -8,11 +13,7 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@an
     encapsulation: ViewEncapsulation.None
 })
 export class DvRadioContainerXComponent implements OnInit {
+    public constructor() {}
 
-    public constructor() {
-    }
-
-    public ngOnInit(): void {
-    }
-
+    public ngOnInit(): void {}
 }

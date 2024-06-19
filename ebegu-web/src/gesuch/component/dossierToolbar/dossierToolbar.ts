@@ -81,7 +81,9 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
     public controllerAs = 'vmx';
 }
 
-export class DossierToolbarGesuchstellerComponentConfig implements IComponentOptions {
+export class DossierToolbarGesuchstellerComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public bindings = {
         gesuchid: '@',
@@ -99,7 +101,6 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
 }
 
 export class DossierToolbarController implements IDVFocusableController {
-
     public static $inject = [
         'EbeguUtil',
         'GesuchRS',
@@ -133,11 +134,11 @@ export class DossierToolbarController implements IDVFocusableController {
     public kontaktdatenGemeindeAsHtml: string;
     public isLuzern: boolean;
 
-    public gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
-    public gesuchNavigationList: { [key: string]: Array<string> } = {};   // mapped z.B. '2006 / 2007' auf ein array
-                                                                          // mit den
+    public gesuchsperiodeList: {[key: string]: Array<TSAntragDTO>} = {};
+    public gesuchNavigationList: {[key: string]: Array<string>} = {}; // mapped z.B. '2006 / 2007' auf ein array
+    // mit den
     // Namen der Antraege
-    public antragTypList: { [key: string]: TSAntragDTO } = {};
+    public antragTypList: {[key: string]: TSAntragDTO} = {};
     public gemeindeId: string;
     public gemeindeInstitutionKontakteHtml: string;
     public gemeindeSozialdienstKontakteHtml: string;
@@ -147,26 +148,26 @@ export class DossierToolbarController implements IDVFocusableController {
     public amountNewMitteilungenGS: number = 0;
     private angebotTS: boolean;
 
-    public constructor(private readonly ebeguUtil: EbeguUtil,
-                       private readonly gesuchRS: GesuchRS,
-                       private readonly $state: StateService, private readonly $scope: IScope,
-                       private readonly gesuchModelManager: GesuchModelManager,
-                       private readonly authServiceRS: AuthServiceRS,
-                       private readonly $mdSidenav: ng.material.ISidenavService,
-                       private readonly $log: ILogService,
-                       private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                       private readonly dvDialog: DvDialog,
-                       private readonly unsavedWarningSharedService: any,
-                       private readonly mitteilungRS: MitteilungRS,
-                       private readonly dossierRS: DossierRS,
-                       private readonly gemeindeRS: GemeindeRS,
-                       private readonly sozialdienstRS: SozialdienstRS,
-                       private readonly $translate: ITranslateService,
-                       private readonly mandantService: MandantService,
-                       private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-
-    }
+    public constructor(
+        private readonly ebeguUtil: EbeguUtil,
+        private readonly gesuchRS: GesuchRS,
+        private readonly $state: StateService,
+        private readonly $scope: IScope,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $mdSidenav: ng.material.ISidenavService,
+        private readonly $log: ILogService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly dvDialog: DvDialog,
+        private readonly unsavedWarningSharedService: any,
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly dossierRS: DossierRS,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly sozialdienstRS: SozialdienstRS,
+        private readonly $translate: ITranslateService,
+        private readonly mandantService: MandantService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
+    ) {}
 
     public $onInit(): void {
         this.updateAntragDTOList();
@@ -178,21 +179,29 @@ export class DossierToolbarController implements IDVFocusableController {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.angebotTS = res.angebotTSActivated;
         });
-        this.gesuchsperiodeRS.getActiveGesuchsperiodenForDossier(this.dossierId)
+        this.gesuchsperiodeRS
+            .getActiveGesuchsperiodenForDossier(this.dossierId)
             .then((response: TSGesuchsperiode[]) => {
                 // Die neueste ist zuoberst
                 this.neuesteGesuchsperiode = response[0];
                 this.antragErneuernPossible();
             });
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        }, error => this.$log.error(error));
+        this.mandantService.mandant$
+            .pipe(map(mandant => mandant === MANDANTS.LUZERN))
+            .subscribe(
+                isLuzern => {
+                    this.isLuzern = isLuzern;
+                },
+                error => this.$log.error(error)
+            );
     }
 
     private updateAmountNewMitteilungenGS(): void {
-        this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossierId).then((response: number) => {
-            this.amountNewMitteilungenGS = response;
-        });
+        this.mitteilungRS
+            .getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossierId)
+            .then((response: number) => {
+                this.amountNewMitteilungenGS = response;
+            });
     }
 
     public getAmountNewMitteilungenGS(): string {
@@ -218,44 +227,17 @@ export class DossierToolbarController implements IDVFocusableController {
             return;
         }
 
-        $scope.$watch(() => this.gesuchid, (newValue, oldValue) => {
-            if (newValue === oldValue) {
-                return;
-            }
-            if (this.gesuchid) {
-                this.updateAntragDTOList();
-                return;
-            }
-            this.gemeindeId = null;
-            this.antragTypList = {};
-            this.gesuchNavigationList = {};
-            this.gesuchsperiodeList = {};
-            this.antragList = [];
-            this.antragMutierenPossible(); // neu berechnen ob mutieren moeglich ist
-            this.antragErneuernPossible();
-        });
-        if (this.gesuchModelManager && this.getGesuch()) {
-            $scope.$watch(() => {
-                if (this.getGesuch()) {
-                    return this.getGesuch().status;
+        $scope.$watch(
+            () => this.gesuchid,
+            (newValue, oldValue) => {
+                if (newValue === oldValue) {
+                    return;
                 }
-                return undefined;
-            }, (newValue, oldValue) => {
-                if ((newValue !== oldValue) && (isAnyStatusOfVerfuegt(newValue))) {
+                if (this.gesuchid) {
                     this.updateAntragDTOList();
+                    return;
                 }
-            });
-        }
-        $scope.$watch(() => this.dossierId, (newValue, oldValue) => {
-            if (newValue === oldValue) {
-                return;
-            }
-            if (this.dossierId) {
-                this.updateAntragDTOList();
-                this.updateAmountNewMitteilungenGS();
-            } else {
-                // Fall-ID hat auf undefined gewechselt -> Fall zuruecksetzen
-                this.dossierId = undefined;
+                this.gemeindeId = null;
                 this.antragTypList = {};
                 this.gesuchNavigationList = {};
                 this.gesuchsperiodeList = {};
@@ -263,122 +245,235 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.antragMutierenPossible(); // neu berechnen ob mutieren moeglich ist
                 this.antragErneuernPossible();
             }
-        });
-        $scope.$on(TSMitteilungEvent[TSMitteilungEvent.MUTATIONSMITTEILUNG_NEUE_MUTATION], () => {
-            this.updateAntragDTOList();
-        });
+        );
+        if (this.gesuchModelManager && this.getGesuch()) {
+            $scope.$watch(
+                () => {
+                    if (this.getGesuch()) {
+                        return this.getGesuch().status;
+                    }
+                    return undefined;
+                },
+                (newValue, oldValue) => {
+                    if (
+                        newValue !== oldValue &&
+                        isAnyStatusOfVerfuegt(newValue)
+                    ) {
+                        this.updateAntragDTOList();
+                    }
+                }
+            );
+        }
+        $scope.$watch(
+            () => this.dossierId,
+            (newValue, oldValue) => {
+                if (newValue === oldValue) {
+                    return;
+                }
+                if (this.dossierId) {
+                    this.updateAntragDTOList();
+                    this.updateAmountNewMitteilungenGS();
+                } else {
+                    // Fall-ID hat auf undefined gewechselt -> Fall zuruecksetzen
+                    this.dossierId = undefined;
+                    this.antragTypList = {};
+                    this.gesuchNavigationList = {};
+                    this.gesuchsperiodeList = {};
+                    this.antragList = [];
+                    this.antragMutierenPossible(); // neu berechnen ob mutieren moeglich ist
+                    this.antragErneuernPossible();
+                }
+            }
+        );
+        $scope.$on(
+            TSMitteilungEvent[
+                TSMitteilungEvent.MUTATIONSMITTEILUNG_NEUE_MUTATION
+            ],
+            () => {
+                this.updateAntragDTOList();
+            }
+        );
     }
 
     public showGesuchPeriodeNavigationMenu(): boolean {
-        return !this.isDashboardScreen && !angular.equals(this.gesuchsperiodeList, {})
-            && !this.authServiceRS.isRole(TSRole.STEUERAMT);
+        return (
+            !this.isDashboardScreen &&
+            !angular.equals(this.gesuchsperiodeList, {}) &&
+            !this.authServiceRS.isRole(TSRole.STEUERAMT)
+        );
     }
 
     /**
      * Die Liste wird nicht angezeigt wenn sie leer ist oder wenn der Benutzer sich auf dem Dashboard befindet
      */
     public showAntragTypListNavigationMenu(): boolean {
-        return !this.isDashboardScreen && !angular.equals(this.antragTypList, {})
-            && !this.authServiceRS.isRole(TSRole.STEUERAMT);
+        return (
+            !this.isDashboardScreen &&
+            !angular.equals(this.antragTypList, {}) &&
+            !this.authServiceRS.isRole(TSRole.STEUERAMT)
+        );
     }
 
     public showKontaktMenu(): boolean {
-        return this.getGesuch() && !!this.getGesuch().gesuchsteller1
-            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+        return (
+            this.getGesuch() &&
+            !!this.getGesuch().gesuchsteller1 &&
+            !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
+        );
     }
 
     // eslint-disable-next-line
     public updateAntragDTOList(): void {
         if (this.dossierId) {
-            this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
-                if (!response) {
-                    return;
-                }
-                this.dossier = response;
-                this.gemeindeId = this.dossier.gemeinde.id;
-
-                this.updateGemeindeStammdaten();
-
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
-                        this.gemeindeInstitutionKontakteHtml =
-                            this.gemeindeStammdatenToHtml(this.gesuchModelManager.gemeindeStammdaten);
-                    } else {
-                        this.gemeindeRS.getGemeindeStammdatenLite(this.gemeindeId).then((stammdaten => {
-                            this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
-                        }));
+            this.dossierRS
+                .findDossier(this.dossierId)
+                .then((response: TSDossier) => {
+                    if (!response) {
+                        return;
                     }
-                }
+                    this.dossier = response;
+                    this.gemeindeId = this.dossier.gemeinde.id;
 
-                if (this.dossier.fall.sozialdienstFall) {
-                    this.sozialdienstRS.getSozialdienstStammdaten(this.dossier.fall.sozialdienstFall.sozialdienst.id)
-                        .toPromise()
-                        .then(
-                            stammdaten => this.gemeindeSozialdienstKontakteHtml =
-                                this.sozialdienstStammdatenToHtml(stammdaten)
-                        );
-                }
+                    this.updateGemeindeStammdaten();
 
-                if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-                    this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then(antraege => {
-                        this.antragList = angular.copy(antraege);
-                        this.updateGesuchperiodeList();
-                        this.updateGesuchNavigationList();
-                        this.updateAntragTypList();
-                        this.antragMutierenPossible();
-                        this.antragErneuernPossible();
-                    });
-                } else if (this.dossier) {
-                    this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(antraege => {
-                        this.antragList = angular.copy(antraege);
-                        if (antraege && antraege.length > 0) {
-                            const newest = this.getNewest(this.antragList);
-                            this.gesuchRS.findGesuch(newest.antragId).then(gesuch => {
-                                if (!gesuch) {
-                                    this.$log.warn(`Could not find gesuch for id ${newest.antragId}`);
-                                }
-                                this.gesuchModelManager.setGesuch(angular.copy(gesuch));
+                    if (
+                        this.authServiceRS.isOneOfRoles(
+                            TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+                        )
+                    ) {
+                        if (
+                            EbeguUtil.isNotNullOrUndefined(
+                                this.gesuchModelManager.gemeindeStammdaten
+                            )
+                        ) {
+                            this.gemeindeInstitutionKontakteHtml =
+                                this.gemeindeStammdatenToHtml(
+                                    this.gesuchModelManager.gemeindeStammdaten
+                                );
+                        } else {
+                            this.gemeindeRS
+                                .getGemeindeStammdatenLite(this.gemeindeId)
+                                .then(stammdaten => {
+                                    this.gemeindeInstitutionKontakteHtml =
+                                        this.gemeindeStammdatenToHtml(
+                                            stammdaten
+                                        );
+                                });
+                        }
+                    }
+
+                    if (this.dossier.fall.sozialdienstFall) {
+                        this.sozialdienstRS
+                            .getSozialdienstStammdaten(
+                                this.dossier.fall.sozialdienstFall.sozialdienst
+                                    .id
+                            )
+                            .toPromise()
+                            .then(
+                                stammdaten =>
+                                    (this.gemeindeSozialdienstKontakteHtml =
+                                        this.sozialdienstStammdatenToHtml(
+                                            stammdaten
+                                        ))
+                            );
+                    }
+
+                    if (
+                        !this.forceLoadingFromFall &&
+                        this.getGesuch() &&
+                        this.getGesuch().id
+                    ) {
+                        this.gesuchRS
+                            .getAllAntragDTOForDossier(
+                                this.getGesuch().dossier.id
+                            )
+                            .then(antraege => {
+                                this.antragList = angular.copy(antraege);
                                 this.updateGesuchperiodeList();
                                 this.updateGesuchNavigationList();
                                 this.updateAntragTypList();
                                 this.antragMutierenPossible();
                                 this.antragErneuernPossible();
                             });
-                        } else if (!this.gesuchModelManager.getGesuch()
-                            || !this.gesuchModelManager.getGesuch().isNew()) {
-                            // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
-                            // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
-                            const gesuch = new TSGesuch();
-                            gesuch.dossier = angular.copy(this.dossier);
-                            this.gesuchModelManager.setGesuch(gesuch);
-                            this.resetNavigationParameters();
-                        }
-                    });
-                    this.updateAmountNewMitteilungenGS();
-                } else {
-                    this.resetNavigationParameters();
-                }
+                    } else if (this.dossier) {
+                        this.gesuchRS
+                            .getAllAntragDTOForDossier(this.dossier.id)
+                            .then(antraege => {
+                                this.antragList = angular.copy(antraege);
+                                if (antraege && antraege.length > 0) {
+                                    const newest = this.getNewest(
+                                        this.antragList
+                                    );
+                                    this.gesuchRS
+                                        .findGesuch(newest.antragId)
+                                        .then(gesuch => {
+                                            if (!gesuch) {
+                                                this.$log.warn(
+                                                    `Could not find gesuch for id ${newest.antragId}`
+                                                );
+                                            }
+                                            this.gesuchModelManager.setGesuch(
+                                                angular.copy(gesuch)
+                                            );
+                                            this.updateGesuchperiodeList();
+                                            this.updateGesuchNavigationList();
+                                            this.updateAntragTypList();
+                                            this.antragMutierenPossible();
+                                            this.antragErneuernPossible();
+                                        });
+                                } else if (
+                                    !this.gesuchModelManager.getGesuch() ||
+                                    !this.gesuchModelManager.getGesuch().isNew()
+                                ) {
+                                    // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
+                                    // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
+                                    const gesuch = new TSGesuch();
+                                    gesuch.dossier = angular.copy(this.dossier);
+                                    this.gesuchModelManager.setGesuch(gesuch);
+                                    this.resetNavigationParameters();
+                                }
+                            });
+                        this.updateAmountNewMitteilungenGS();
+                    } else {
+                        this.resetNavigationParameters();
+                    }
 
-                if (this.authServiceRS.isOneOfRoles(PERMISSIONS[Permission.ROLE_GEMEINDE]) && this.getGesuch()) {
-                    this.gemeindeInstitutionKontakteHtml = this.institutionenStammdatenToHtml();
-                }
-            });
+                    if (
+                        this.authServiceRS.isOneOfRoles(
+                            PERMISSIONS[Permission.ROLE_GEMEINDE]
+                        ) &&
+                        this.getGesuch()
+                    ) {
+                        this.gemeindeInstitutionKontakteHtml =
+                            this.institutionenStammdatenToHtml();
+                    }
+                });
         }
         this.forceLoadingFromFall = false; // reset it because it's not needed any more
     }
 
     private updateGemeindeStammdaten(): void {
-        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
-            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(this.gesuchModelManager.gemeindeStammdaten);
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.gemeindeStammdaten
+            )
+        ) {
+            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(
+                this.gesuchModelManager.gemeindeStammdaten
+            );
             return;
         }
-        this.gemeindeRS.getGemeindeStammdatenLite(this.gemeindeId).then((stammdaten => {
-            this.kontaktdatenGemeindeAsHtml = this.gemeindeStammdatenToHtml(stammdaten);
-        }));
-
+        this.gemeindeRS
+            .getGemeindeStammdatenLite(this.gemeindeId)
+            .then(stammdaten => {
+                this.kontaktdatenGemeindeAsHtml =
+                    this.gemeindeStammdatenToHtml(stammdaten);
+            });
     }
 
-    private getKontaktdatenHtml(gemeindeDaten: TSGemeindeStammdatenLite): string {
+    private getKontaktdatenHtml(
+        gemeindeDaten: TSGemeindeStammdatenLite
+    ): string {
         if (gemeindeDaten.hasAltGemeindeKontakt) {
             return this.sanitizeHtml(gemeindeDaten.altGemeindeKontaktText);
         }
@@ -407,7 +502,7 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private updateGesuchNavigationList(): void {
-        this.gesuchNavigationList = {};  // clear
+        this.gesuchNavigationList = {}; // clear
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const gs = this.antragList[i].gesuchsperiodeString;
@@ -416,30 +511,40 @@ export class DossierToolbarController implements IDVFocusableController {
             if (!this.gesuchNavigationList[gs]) {
                 this.gesuchNavigationList[gs] = [];
             }
-            this.gesuchNavigationList[gs].push(this.ebeguUtil
-                .getAntragTextDateAsString(antrag.antragTyp, antrag.eingangsdatum, antrag.laufnummer));
+            this.gesuchNavigationList[gs].push(
+                this.ebeguUtil.getAntragTextDateAsString(
+                    antrag.antragTyp,
+                    antrag.eingangsdatum,
+                    antrag.laufnummer
+                )
+            );
         }
     }
 
     private updateAntragTypList(): void {
-        this.antragTypList = {};  // clear
+        this.antragTypList = {}; // clear
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag = this.antragList[i];
-            if (!this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
+            if (
+                !this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.isSame(
+                    antrag.gesuchsperiodeGueltigAb
+                )
+            ) {
                 continue;
             }
 
-            const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
+            const txt = this.ebeguUtil.getAntragTextDateAsString(
+                antrag.antragTyp,
                 antrag.eingangsdatum,
-                antrag.laufnummer);
+                antrag.laufnummer
+            );
             this.antragTypList[txt] = antrag;
-
         }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    public getKeys(map: { [key: string]: Array<TSAntragDTO> }): Array<string> {
+    public getKeys(map: {[key: string]: Array<TSAntragDTO>}): Array<string> {
         const keys: Array<string> = [];
         for (const key in map) {
             if (map.hasOwnProperty(key)) {
@@ -454,20 +559,24 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public getCurrentGesuchsperiode(): string {
-        return this.getGesuch() && this.getGesuch().gesuchsperiode ?
-            this.getGesuchsperiodeAsString(this.getGesuch().gesuchsperiode) :
-            '';
+        return this.getGesuch() && this.getGesuch().gesuchsperiode
+            ? this.getGesuchsperiodeAsString(this.getGesuch().gesuchsperiode)
+            : '';
     }
 
     public getAntragTyp(): string {
-        return this.getGesuch() ?
-            this.ebeguUtil.getAntragTextDateAsString(this.getGesuch().typ,
-                this.getGesuch().eingangsdatum,
-                this.getGesuch().laufnummer) :
-            '';
+        return this.getGesuch()
+            ? this.ebeguUtil.getAntragTextDateAsString(
+                  this.getGesuch().typ,
+                  this.getGesuch().eingangsdatum,
+                  this.getGesuch().laufnummer
+              )
+            : '';
     }
 
-    public getGesuchsperiodeAsString(tsGesuchsperiode: TSGesuchsperiode): string {
+    public getGesuchsperiodeAsString(
+        tsGesuchsperiode: TSGesuchsperiode
+    ): string {
         return tsGesuchsperiode.gesuchsperiodeString;
     }
 
@@ -486,7 +595,9 @@ export class DossierToolbarController implements IDVFocusableController {
             if (!arrayTSAntragDTO[i].eingangsdatum) {
                 return arrayTSAntragDTO[i];
             }
-            if (arrayTSAntragDTO[i].eingangsdatum.isAfter(newest.eingangsdatum)) {
+            if (
+                arrayTSAntragDTO[i].eingangsdatum.isAfter(newest.eingangsdatum)
+            ) {
                 newest = arrayTSAntragDTO[i];
             }
         }
@@ -513,19 +624,28 @@ export class DossierToolbarController implements IDVFocusableController {
         this.goToOpenGesuch(selectedAntragTypGesuch.antragId);
     }
 
-    public setAntragTypDatumMobile(gesuchperiodeKey: string, antragTypDatumKey: string): void {
-        const tmpAntragList: { [key: string]: TSAntragDTO } = {};
+    public setAntragTypDatumMobile(
+        gesuchperiodeKey: string,
+        antragTypDatumKey: string
+    ): void {
+        const tmpAntragList: {[key: string]: TSAntragDTO} = {};
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag = this.antragList[i];
-            const gesuchsperiodeGueltigAb = this.gesuchsperiodeList[gesuchperiodeKey][0].gesuchsperiodeGueltigAb;
-            if (!gesuchsperiodeGueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
+            const gesuchsperiodeGueltigAb =
+                this.gesuchsperiodeList[gesuchperiodeKey][0]
+                    .gesuchsperiodeGueltigAb;
+            if (
+                !gesuchsperiodeGueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)
+            ) {
                 continue;
             }
 
-            const txt = this.ebeguUtil.getAntragTextDateAsString(antrag.antragTyp,
+            const txt = this.ebeguUtil.getAntragTextDateAsString(
+                antrag.antragTyp,
                 antrag.eingangsdatum,
-                antrag.laufnummer);
+                antrag.laufnummer
+            );
             tmpAntragList[txt] = antrag;
         }
         const selectedAntragTypGesuch = tmpAntragList[antragTypDatumKey];
@@ -541,12 +661,18 @@ export class DossierToolbarController implements IDVFocusableController {
                 return false;
             }
             // Wenn die Gesuchsperiode geschlossen ist, kann sowieso keine Mutation mehr gemacht werden
-            if (this.getGesuch().gesuchsperiode
-                && this.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.GESCHLOSSEN) {
+            if (
+                this.getGesuch().gesuchsperiode &&
+                this.getGesuch().gesuchsperiode.status ===
+                    TSGesuchsperiodeStatus.GESCHLOSSEN
+            ) {
                 return false;
             }
             // der Button soll für den Gesuchsteller ausgeblendet werden,
-            if (!this.gesuchModelManager.isNeuestesGesuch() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
+            if (
+                !this.gesuchModelManager.isNeuestesGesuch() &&
+                this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+            ) {
                 return false;
             }
         }
@@ -564,7 +690,10 @@ export class DossierToolbarController implements IDVFocusableController {
         for (let i = 0; i < this.antragList.length; i++) {
             const antragItem = this.antragList[i];
             // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
-            if (antragItem.gesuchsperiodeString !== this.getCurrentGesuchsperiode()) {
+            if (
+                antragItem.gesuchsperiodeString !==
+                this.getCurrentGesuchsperiode()
+            ) {
                 continue;
             }
 
@@ -581,9 +710,11 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public antragMutieren(): void {
         this.mutierenPossibleForCurrentAntrag = false;
-        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
-            TSEingangsart.ONLINE :
-            TSEingangsart.PAPIER;
+        const eingangsart = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerSozialdienstRolle()
+        )
+            ? TSEingangsart.ONLINE
+            : TSEingangsart.PAPIER;
         this.$state.go('gesuch.mutation', {
             creationAction: TSCreationAction.CREATE_NEW_MUTATION,
             eingangsart,
@@ -603,7 +734,10 @@ export class DossierToolbarController implements IDVFocusableController {
         for (let i = 0; i < this.antragList.length; i++) {
             const antragItem = this.antragList[i];
             // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
-            if (antragItem.gesuchsperiodeString === this.getGesuchsperiodeAsString(this.neuesteGesuchsperiode)) {
+            if (
+                antragItem.gesuchsperiodeString ===
+                this.getGesuchsperiodeAsString(this.neuesteGesuchsperiode)
+            ) {
                 // Es gibt schon (mindestens 1) Gesuch für die neueste Periode
                 erneuernGesperrt = true;
                 break;
@@ -611,10 +745,17 @@ export class DossierToolbarController implements IDVFocusableController {
             // Wenn das Erstgesuch der Periode ein Online Gesuch war, darf dieser *nur* durch den GS selber
             // erneuert werden. JA/SCH muss einen neuen Fall eröffnen, da Papier und Online Gesuche nie vermischt
             // werden duerfen!
-            if (antragItem.eingangsart !== TSEingangsart.ONLINE || antragItem.antragTyp === TSAntragTyp.MUTATION) {
+            if (
+                antragItem.eingangsart !== TSEingangsart.ONLINE ||
+                antragItem.antragTyp === TSAntragTyp.MUTATION
+            ) {
                 continue;
             }
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle())) {
+            if (
+                !this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getGesuchstellerSozialdienstRolle()
+                )
+            ) {
                 erneuernGesperrt = true;
                 break;
             }
@@ -627,9 +768,11 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public antragErneuern(): void {
         this.erneuernPossibleForCurrentAntrag = false;
-        const eingangsart = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
-            TSEingangsart.ONLINE :
-            TSEingangsart.PAPIER;
+        const eingangsart = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerSozialdienstRolle()
+        )
+            ? TSEingangsart.ONLINE
+            : TSEingangsart.PAPIER;
         this.$state.go('gesuch.erneuerung', {
             creationAction: TSCreationAction.CREATE_NEW_FOLGEGESUCH,
             eingangsart,
@@ -658,7 +801,11 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showVerlauf(): boolean {
-        return this.getGesuch() !== null && this.getGesuch() !== undefined && !this.getGesuch().isNew();
+        return (
+            this.getGesuch() !== null &&
+            this.getGesuch() !== undefined &&
+            !this.getGesuch().isNew()
+        );
     }
 
     public openVerlauf(): void {
@@ -671,71 +818,105 @@ export class DossierToolbarController implements IDVFocusableController {
         if (!this.getGesuch() || this.getGesuch().isNew()) {
             return false;
         }
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerSozialdienstRolle())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                this.TSRoleUtil.getGesuchstellerSozialdienstRolle()
+            )
+        ) {
             // GS darf nur vor der Freigabe loeschen
-            if (this.hideActionButtons
-                || this.isDashboardScreen
-                || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status)) {
+            if (
+                this.hideActionButtons ||
+                this.isDashboardScreen ||
+                isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status)
+            ) {
                 return false;
             }
-        } else if (isStatusVerfuegenVerfuegt(this.getGesuch().status)
-            || this.getGesuch().eingangsart === TSEingangsart.ONLINE) {
+        } else if (
+            isStatusVerfuegenVerfuegt(this.getGesuch().status) ||
+            this.getGesuch().eingangsart === TSEingangsart.ONLINE
+        ) {
             // JA: Darf nicht verfuegen oder verfuegt sein und muss Papier sein
             return false;
         }
-        if (this.getGesuch().dossier.fall.sozialdienstFall
-            && this.getGesuch().dossier.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN) {
+        if (
+            this.getGesuch().dossier.fall.sozialdienstFall &&
+            this.getGesuch().dossier.fall.sozialdienstFall.status ===
+                TSSozialdienstFallStatus.ENTZOGEN
+        ) {
             return false;
         }
         return true;
     }
 
     public gesuchLoeschen(): IPromise<void> {
-        const titleDialog = this.getGesuch().isMutation() ? 'CONFIRM_MUTATION_LOESCHEN' : 'CONFIRM_GESUCH_LOESCHEN';
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, undefined, RemoveDialogController, {
-            title: titleDialog,
-            deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN',
-            parentController: this,
-            elementID: 'gesuchLoeschenButton'
-        }).then(() => {
-            this.setAllFormsPristine();
-            this.gesuchRS.removeAntrag(this.getGesuch().id).then(() => {
-                if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                    this.gesuchModelManager.setGesuch(new TSGesuch());
-                    this.resetNavigationParameters();
-                    this.$state.go('gesuchsteller.dashboard');
-                } else {
-                    if (this.antragList.length <= 1) {
-                        this.$state.go('pendenzen.list-view');
-                        return;
-                    }
-                    const navObj: any = {
-                        gesuchId: this.antragList[0].antragId,
-                        dossierId: this.antragList[0].dossierId
-                    };
-                    this.$state.go('gesuch.fallcreation', navObj);
+        const titleDialog = this.getGesuch().isMutation()
+            ? 'CONFIRM_MUTATION_LOESCHEN'
+            : 'CONFIRM_GESUCH_LOESCHEN';
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                undefined,
+                RemoveDialogController,
+                {
+                    title: titleDialog,
+                    deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN',
+                    parentController: this,
+                    elementID: 'gesuchLoeschenButton'
                 }
+            )
+            .then(() => {
+                this.setAllFormsPristine();
+                this.gesuchRS.removeAntrag(this.getGesuch().id).then(() => {
+                    if (
+                        this.authServiceRS.isOneOfRoles(
+                            this.TSRoleUtil.getGesuchstellerOnlyRoles()
+                        )
+                    ) {
+                        this.gesuchModelManager.setGesuch(new TSGesuch());
+                        this.resetNavigationParameters();
+                        this.$state.go('gesuchsteller.dashboard');
+                    } else {
+                        if (this.antragList.length <= 1) {
+                            this.$state.go('pendenzen.list-view');
+                            return;
+                        }
+                        const navObj: any = {
+                            gesuchId: this.antragList[0].antragId,
+                            dossierId: this.antragList[0].dossierId
+                        };
+                        this.$state.go('gesuch.fallcreation', navObj);
+                    }
+                });
             });
-        });
     }
 
     public gesuchLoeschenForced(): IPromise<void> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, undefined, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_LOESCHEN_FORCED',
-            deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN_FORCED',
-            parentController: this,
-            elementID: 'gesuchLoeschenForcedButton'
-        }).then(() => {
-            this.setAllFormsPristine();
-            this.gesuchRS.removeAntragForced(this.getGesuch().id).then(() => {
-                this.resetNavigationParameters();
-                this.$state.go('faelle.list');
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                undefined,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_GESUCH_LOESCHEN_FORCED',
+                    deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN_FORCED',
+                    parentController: this,
+                    elementID: 'gesuchLoeschenForcedButton'
+                }
+            )
+            .then(() => {
+                this.setAllFormsPristine();
+                this.gesuchRS
+                    .removeAntragForced(this.getGesuch().id)
+                    .then(() => {
+                        this.resetNavigationParameters();
+                        this.$state.go('faelle.list');
+                    });
             });
-        });
     }
 
     private setAllFormsPristine(): void {
-        const forms: [IFormController] = this.unsavedWarningSharedService.allForms();
+        const forms: [IFormController] =
+            this.unsavedWarningSharedService.allForms();
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let index = 0; index < forms.length; index++) {
             const form = forms[index];
@@ -767,42 +948,53 @@ export class DossierToolbarController implements IDVFocusableController {
         });
     }
 
-    private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdatenLite): string {
-        const htmlIntro = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
-            `<h3 class="margin-top-20">${this.$translate.instant('BEI_FRAGEN_GEMEINDE_KONTAKTIEREN')}</h3>
-            <span>` :
-            `<span class="margin-top-20">`;
+    private gemeindeStammdatenToHtml(
+        stammdaten: TSGemeindeStammdatenLite
+    ): string {
+        const htmlIntro = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerSozialdienstRolle()
+        )
+            ? `<h3 class="margin-top-20">${this.$translate.instant('BEI_FRAGEN_GEMEINDE_KONTAKTIEREN')}</h3>
+            <span>`
+            : `<span class="margin-top-20">`;
         let html;
         if (EbeguUtil.isNotNullAndTrue(this.isLuzern)) {
             html = `${this.$translate.instant('PER_TELEFON_MAIL_KONTAKTIEREN')}
                    <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
                    <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>`;
         } else {
-            html = `${htmlIntro  }${stammdaten.adresse.organisation ?
-                stammdaten.adresse.organisation :
-                ''}
+            html = `${htmlIntro}${
+                stammdaten.adresse.organisation
+                    ? stammdaten.adresse.organisation
+                    : ''
+            }
                           ${stammdaten.gemeindeName}</span><br>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
                     <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;
-            html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
+            html += stammdaten.telefon
+                ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>`
+                : '';
         }
         return html;
     }
 
-    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdatenSummary): string {
+    private institutionStammdatenToHtml(
+        stammdaten: TSInstitutionStammdatenSummary
+    ): string {
         let html = '';
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
             html += `<span class="margin-top-20">${stammdaten.institution.name}</span><br>`;
         } else {
-            html +=
-                `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+            html += `<span class="margin-top-20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.institution.name}</span><br>`;
         }
         html += `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
                     <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;
-        html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
+        html += stammdaten.telefon
+            ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>`
+            : '';
         return html;
     }
 
@@ -811,24 +1003,38 @@ export class DossierToolbarController implements IDVFocusableController {
         const institutionIds: Array<string> = [];
         for (const kc of this.getGesuch().kindContainers) {
             for (const be of kc.betreuungen) {
-                if (!(institutionIds.includes(be.institutionStammdaten.institution.id))) {
-                    institutionIds.push(be.institutionStammdaten.institution.id);
-                    html += this.institutionStammdatenToHtml(be.institutionStammdaten);
+                if (
+                    !institutionIds.includes(
+                        be.institutionStammdaten.institution.id
+                    )
+                ) {
+                    institutionIds.push(
+                        be.institutionStammdaten.institution.id
+                    );
+                    html += this.institutionStammdatenToHtml(
+                        be.institutionStammdaten
+                    );
                 }
             }
         }
         return html;
     }
 
-    private sozialdienstStammdatenToHtml(stammdaten: TSSozialdienstStammdaten): string {
-        let html = `<span class="margin-top-20">${stammdaten.adresse.organisation ?
-            stammdaten.adresse.organisation :
-            ''}
+    private sozialdienstStammdatenToHtml(
+        stammdaten: TSSozialdienstStammdaten
+    ): string {
+        let html = `<span class="margin-top-20">${
+            stammdaten.adresse.organisation
+                ? stammdaten.adresse.organisation
+                : ''
+        }
                           ${stammdaten.sozialdienst.name}</span>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span>
                     <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a>`;
-        html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
+        html += stammdaten.telefon
+            ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>`
+            : '';
         return html;
     }
 
@@ -844,13 +1050,20 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showVerantwortlicher(): boolean {
-        return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+        return !this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getSozialdienstRolle()
+        );
     }
 
     private isSZFallGesperrtFuerSZ(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
-            && this.dossier.fall.isSozialdienstFall()
-            && this.dossier.fall.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
+        return (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getSozialdienstRolle()
+            ) &&
+            this.dossier.fall.isSozialdienstFall() &&
+            this.dossier.fall.sozialdienstFall.status ===
+                TSSozialdienstFallStatus.ENTZOGEN
+        );
     }
 
     private sanitizeHtml(altGemeindeKontaktText: string): string {

@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
@@ -22,7 +28,6 @@ const LOG = LogFactory.createLog('AdminViewXComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
-
     @ViewChild(NgForm) public form: NgForm;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
@@ -55,18 +60,26 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
         }
         // Bei STADT_BERN_ASIV_CONFIGURED eine Sicherheitsabfrage machen
         // eslint-disable-next-line
-        if (this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED'
-            && this.applicationProperty.value === 'true') {
-            this.dvDialog.open(DvNgRemoveDialogComponent, {
-                data: {
-                    title: 'CREATE_MASSENMUTATION_BERN_DIALOG_TITLE',
-                    text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT'
-                }
-            }).afterClosed().subscribe(() => {
-                this.doSave();
-            }, err => {
-                LOG.error(err);
-            });
+        if (
+            this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED' &&
+            this.applicationProperty.value === 'true'
+        ) {
+            this.dvDialog
+                .open(DvNgRemoveDialogComponent, {
+                    data: {
+                        title: 'CREATE_MASSENMUTATION_BERN_DIALOG_TITLE',
+                        text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT'
+                    }
+                })
+                .afterClosed()
+                .subscribe(
+                    () => {
+                        this.doSave();
+                    },
+                    err => {
+                        LOG.error(err);
+                    }
+                );
         } else {
             this.doSave();
         }
@@ -75,9 +88,15 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
     private doSave(): void {
         // testen ob aktuelles property schon gespeichert ist
         if (this.applicationProperty.isNew()) {
-            this.applicationPropertyRS.update(this.applicationProperty.name, this.applicationProperty.value);
+            this.applicationPropertyRS.update(
+                this.applicationProperty.name,
+                this.applicationProperty.value
+            );
         } else {
-            this.applicationPropertyRS.create(this.applicationProperty.name, this.applicationProperty.value);
+            this.applicationPropertyRS.create(
+                this.applicationProperty.name,
+                this.applicationProperty.value
+            );
         }
         this.applicationProperty = undefined;
     }
@@ -92,18 +111,23 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
 
     public resetForm(): void {
         this.applicationProperty = undefined;
-        this.applicationPropertyRS.getAllApplicationProperties().then(response => {
-            this.displayedCollection = new MatTableDataSource<TSApplicationProperty>(response);
-            this.displayedCollection.sort = this.sort;
-            this.cd.markForCheck();
-        });
+        this.applicationPropertyRS
+            .getAllApplicationProperties()
+            .then(response => {
+                this.displayedCollection =
+                    new MatTableDataSource<TSApplicationProperty>(response);
+                this.displayedCollection.sort = this.sort;
+                this.cd.markForCheck();
+            });
     }
 
     public startReindex(): void {
         // avoid sending double by keeping it disabled until reload
         this.reindexInProgress = true;
         this.reindexRS.reindex().subscribe(response => {
-            this.dvDialog.open(DvNgOkDialogComponent, {data: {title: response}});
+            this.dvDialog.open(DvNgOkDialogComponent, {
+                data: {title: response}
+            });
         });
     }
 
@@ -111,7 +135,9 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
         // avoid sending double by keeping it disabled until reload
         this.recreateAlleFaelleInProgress = true;
         this.searchRS.recreateAlleFaelleView().subscribe(response => {
-            this.dvDialog.open(DvNgOkDialogComponent, {data: {title: response}});
+            this.dvDialog.open(DvNgOkDialogComponent, {
+                data: {title: response}
+            });
         });
     }
 

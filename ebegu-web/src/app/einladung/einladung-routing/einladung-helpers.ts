@@ -27,30 +27,41 @@ export function getEntityTargetState(transition: Transition): TargetState {
         case TSEinladungTyp.GEMEINDE:
             return stateService.target('gemeinde.edit', {gemeindeId: entityId});
         case TSEinladungTyp.INSTITUTION:
-            return stateService.target('institution.edit', {institutionId: entityId});
+            return stateService.target('institution.edit', {
+                institutionId: entityId
+            });
         case TSEinladungTyp.SOZIALDIENST:
-            return stateService.target('sozialdienst.edit', {sozialdienstId: entityId});
+            return stateService.target('sozialdienst.edit', {
+                sozialdienstId: entityId
+            });
         default:
             throw new Error(`unrecognised EinladungTyp ${typ}`);
     }
 }
 
-export function handleLoggedInUser(transition: Transition): Promise<RedirectToResult> {
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+export function handleLoggedInUser(
+    transition: Transition
+): Promise<RedirectToResult> {
+    const authService: AuthServiceRS = transition
+        .injector()
+        .get('AuthServiceRS');
     const stateService = transition.router.stateService;
 
     return authService.principal$
         .pipe(
             take(1),
             map(principal => {
-                    if (!principal) {
-                        return stateService.target('einladung.logininfo', transition.params(), transition.options());
-                    }
-
-                    // we are logged: redirect to the new entity
-                    return getEntityTargetState(transition);
+                if (!principal) {
+                    return stateService.target(
+                        'einladung.logininfo',
+                        transition.params(),
+                        transition.options()
+                    );
                 }
-            )
+
+                // we are logged: redirect to the new entity
+                return getEntityTargetState(transition);
+            })
         )
         .toPromise();
 }

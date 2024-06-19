@@ -8,11 +8,9 @@ import {Injectable} from '@angular/core';
     providedIn: 'root'
 })
 export class StateStoreService {
-
     private readonly _store: Map<string, object> = new Map<string, object>();
 
-    public constructor() {
-    }
+    public constructor() {}
 
     public set(key: string, state: object): void {
         this._store.set(key, state);

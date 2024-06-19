@@ -24,10 +24,9 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     templateUrl: './ferienbetreuung-last-year-value.component.html',
     styleUrls: ['./ferienbetreuung-last-year-value.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ {provide: ControlContainer, useExisting: NgForm}]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class FerienbetreuungLastYearValueComponent {
-
     @Input()
     public gesuchsperiode: string;
 
@@ -37,5 +36,4 @@ export class FerienbetreuungLastYearValueComponent {
     public isNotNullOrUndefined(value: any) {
         return EbeguUtil.isNotNullOrUndefined(value);
     }
-
 }

@@ -20,20 +20,25 @@
             <h2>
                 <span data-translate="UMZUG_TITLE"></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
             <div ng-if="!vm.isGesuchReadonly()">
-                <p dv-show-element
-                   dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                   class="inline-hint"
-                   data-translate="UMZUG_HINT"></p>
-                <p dv-show-element
-                   dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
-                   dv-show-expression="vm.gesuchModelManager.getGesuch().isMutation()"
-                   class="inline-hint"
-                   data-translate="UMZUG_LIST_HINT"></p>
-                <p data-translate="UMZUG_IN_NEUE_GEMEINDE"
-                   class="inline-hint neue-gemeinde"
-                   dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                <p
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                    class="inline-hint"
+                    data-translate="UMZUG_HINT"
+                ></p>
+                <p
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
+                    dv-show-expression="vm.gesuchModelManager.getGesuch().isMutation()"
+                    class="inline-hint"
+                    data-translate="UMZUG_LIST_HINT"
+                ></p>
+                <p
+                    data-translate="UMZUG_IN_NEUE_GEMEINDE"
+                    class="inline-hint neue-gemeinde"
+                    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
                 ></p>
             </div>
         </div>
@@ -41,70 +46,104 @@
 
     <div class="row">
         <div class="col-md-12">
-
-            <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
-                <fieldset dv-enable-element
-                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                          dv-enable-expression="!vm.isGesuchReadonly()">
-
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
+                <fieldset
+                    dv-enable-element
+                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-enable-expression="!vm.isGesuchReadonly()"
+                >
                     <div ng-repeat="umzugAdresse in vm.getUmzugAdressenList()">
                         <!-- Umzugadresse-->
                         <div class="row">
                             <div class="col-md-12">
-                                <dv-adresse adresse="umzugAdresse" show-nicht-in-gemeinde="true"
-                                            gemeinde="vm.gesuchModelManager.getDossier().gemeinde"
-                                            prefix="umzug-{{$index}}"></dv-adresse>
+                                <dv-adresse
+                                    adresse="umzugAdresse"
+                                    show-nicht-in-gemeinde="true"
+                                    gemeinde="vm.gesuchModelManager.getDossier().gemeinde"
+                                    prefix="umzug-{{ $index }}"
+                                ></dv-adresse>
                             </div>
                         </div>
                         <!-- Umzug loeschen-->
                         <div class="row">
-                            <div class="col-md-12 margin-bottom-60 dv-input-container-medium"
-                                 dv-show-element
-                                 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                 dv-show-expression="!vm.isGesuchReadonly()">
-                                <dv-loading-button type="button" button-click="vm.removeUmzugAdresse(umzugAdresse)"
-                                                   button-class="dv-btn-operation"
-                                                   button-disabled="vm.isKorrekturModusJugendamt()">
-                                    <i class="fa fa-lg fa-trash-o" title="{{'UMZUG_ENTFERNEN' | translate}}"
-                                       aria-label="{{'UMZUG_ENTFERNEN' | translate}}"></i>
-                                    <span data-translate="UMZUG_ENTFERNEN"></span>
+                            <div
+                                class="col-md-12 margin-bottom-60 dv-input-container-medium"
+                                dv-show-element
+                                dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                dv-show-expression="!vm.isGesuchReadonly()"
+                            >
+                                <dv-loading-button
+                                    type="button"
+                                    button-click="vm.removeUmzugAdresse(umzugAdresse)"
+                                    button-class="dv-btn-operation"
+                                    button-disabled="vm.isKorrekturModusJugendamt()"
+                                >
+                                    <i
+                                        class="fa fa-lg fa-trash-o"
+                                        title="{{
+                                            'UMZUG_ENTFERNEN' | translate
+                                        }}"
+                                        aria-label="{{
+                                            'UMZUG_ENTFERNEN' | translate
+                                        }}"
+                                    ></i>
+                                    <span
+                                        data-translate="UMZUG_ENTFERNEN"
+                                    ></span>
                                 </dv-loading-button>
-                                <hr class="header"/>
+                                <hr class="header" />
                             </div>
                         </div>
-
                     </div>
 
                     <!-- Umzug hinzufuegen -->
                     <div class="row">
-                        <div class="col-md-12" style="margin-bottom: 2rem" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                             dv-show-expression="!vm.isGesuchReadonly()">
-                            <dv-loading-button type="button" button-click="vm.createUmzugAdresse()"
-                                               button-class="dv-btn-operation"
-                                               button-disabled="vm.isKorrekturModusJugendamt()"
-                                               data-test="container.hinzufuegen">
+                        <div
+                            class="col-md-12"
+                            style="margin-bottom: 2rem"
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                            dv-show-expression="!vm.isGesuchReadonly()"
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.createUmzugAdresse()"
+                                button-class="dv-btn-operation"
+                                button-disabled="vm.isKorrekturModusJugendamt()"
+                                data-test="container.hinzufuegen"
+                            >
                                 <i class="fa fa-lg fa-plus-circle"></i>
                                 <span data-translate="UMZUG_HINZUFUEGEN"></span>
                             </dv-loading-button>
-
                         </div>
                     </div>
                 </fieldset>
 
-                <dv-navigation dv-show-element
-                               dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                               dv-previous="true" dv-next="true" dv-save="vm.save()"
-                               dv-translate-next="{{vm.getNextButtonText()}}"
-                               dv-translate-previous="{{vm.getPreviousButtonText()}}">
+                <dv-navigation
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-previous="true"
+                    dv-next="true"
+                    dv-save="vm.save()"
+                    dv-translate-next="{{ vm.getNextButtonText() }}"
+                    dv-translate-previous="{{ vm.getPreviousButtonText() }}"
+                >
                 </dv-navigation>
-                <dv-navigation dv-show-element
-                               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
-                               dv-previous="true" dv-next="true"
-                               dv-translate-next="{{vm.getNextButtonText()}}"
-                               dv-translate-previous="{{vm.getPreviousButtonText()}}">
+                <dv-navigation
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
+                    dv-previous="true"
+                    dv-next="true"
+                    dv-translate-next="{{ vm.getNextButtonText() }}"
+                    dv-translate-previous="{{ vm.getPreviousButtonText() }}"
+                >
                 </dv-navigation>
-
             </form>
         </div>
     </div>

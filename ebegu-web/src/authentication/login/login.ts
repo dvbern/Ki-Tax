@@ -14,7 +14,13 @@
  */
 
 import {StateService, TargetState} from '@uirouter/core';
-import {IComponentOptions, IController, ILocationService, ITimeoutService, IWindowService} from 'angular';
+import {
+    IComponentOptions,
+    IController,
+    ILocationService,
+    ITimeoutService,
+    IWindowService
+} from 'angular';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
@@ -36,9 +42,16 @@ export const LoginConfig: IComponentOptions = {
 const dialogTemplate = require('../redirect-warning-dialog/redirectWarningDialogTemplate.html');
 
 export class LoginController implements IController {
-
-    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location',
-        'DvDialog', 'ApplicationPropertyRS'];
+    public static $inject: string[] = [
+        '$state',
+        '$stateParams',
+        '$window',
+        '$timeout',
+        'AuthServiceRS',
+        '$location',
+        'DvDialog',
+        'ApplicationPropertyRS'
+    ];
 
     public redirectionHref: string;
     public logoutHref: string;
@@ -56,12 +69,13 @@ export class LoginController implements IController {
         private readonly $location: ILocationService,
         private readonly dvDialog: DvDialog,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
-
-        if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
+        if (
+            this.$stateParams.type !== undefined &&
+            this.$stateParams.type === 'logout'
+        ) {
             this.doLogout();
             return;
         }
@@ -69,7 +83,12 @@ export class LoginController implements IController {
         this.applicationPropertyRS.isDevMode().then(isDevMode => {
             // eslint-disable-next-line
             if (isDevMode) {
-                this.dvDialog.showDialog(dialogTemplate, RedirectWarningDialogController, {})
+                this.dvDialog
+                    .showDialog(
+                        dialogTemplate,
+                        RedirectWarningDialogController,
+                        {}
+                    )
                     .then(() => {
                         this.doRelocate();
                     });
@@ -81,27 +100,32 @@ export class LoginController implements IController {
 
     private doRelocate(): void {
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
-        const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
+        const relayUrl = this.$state.href(
+            this.returnTo.$state(),
+            this.returnTo.params(),
+            {absolute: true}
+        );
         // wrap in burn timeout request, note that this will always produce an error
         // because no Access-Control-Allow-Origin is set, this should not matter however because
         // the point of the request ist to clear the timeout page
         this.authService.burnPortalTimeout().finally(() => {
+            this.authService.initSSOLogin(relayUrl).then(url => {
+                this.redirectionHref = url;
 
-            this.authService.initSSOLogin(relayUrl)
-                .then(url => {
-                    this.redirectionHref = url;
-
-                    this.redirecting = true;
-                    if (this.countdown > 0) {
-                        this.$timeout(this.doCountdown, 1000);
-                    }
-                    this.$timeout(() => this.redirect(this.redirectionHref), this.countdown * 1000);
-                });
+                this.redirecting = true;
+                if (this.countdown > 0) {
+                    this.$timeout(this.doCountdown, 1000);
+                }
+                this.$timeout(
+                    () => this.redirect(this.redirectionHref),
+                    this.countdown * 1000
+                );
+            });
         });
     }
 
     public getBaseURL(): string {
-        // eslint-disable-line 
+        // eslint-disable-line
         // this.$location.port();
         const absURL = this.$location.absUrl();
         const index = absURL.indexOf(this.$location.url());
@@ -112,7 +136,6 @@ export class LoginController implements IController {
             if (hashindex !== -1) {
                 result = absURL.substr(0, hashindex);
             }
-
         }
         return result;
     }
@@ -146,10 +169,12 @@ export class LoginController implements IController {
     private doLogout(): void {
         if (this.authService.getPrincipal()) {
             // wenn logged in
-            this.authService.initSingleLogout(this.getBaseURL()).then(responseLogut => {
-                this.logoutHref = responseLogut;
-                this.singlelogout();
-            });
+            this.authService
+                .initSingleLogout(this.getBaseURL())
+                .then(responseLogut => {
+                    this.logoutHref = responseLogut;
+                    this.singlelogout();
+                });
             return;
         }
 
@@ -162,7 +187,6 @@ export class LoginController implements IController {
             this.countdown--;
             this.$timeout(this.doCountdown, 1000);
         }
-
     };
 }
 

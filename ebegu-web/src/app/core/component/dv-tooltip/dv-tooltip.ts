@@ -34,21 +34,23 @@ export class DvTooltipComponentConfig implements IComponentOptions {
 }
 
 export class DvTooltipController implements IDVFocusableController {
-
     public static $inject: ReadonlyArray<string> = ['DvDialog'];
 
     private readonly inputId: string;
 
-    public constructor(private readonly dvDialog: DvDialog) {
-    }
+    public constructor(private readonly dvDialog: DvDialog) {}
 
     public showTooltip(info: any, $event: any): void {
         $event.preventDefault();
-        this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
-            title: '',
-            text: info,
-            parentController: this
-        });
+        this.dvDialog.showDialogFullscreen(
+            showTooltipTemplate,
+            ShowTooltipController,
+            {
+                title: '',
+                text: info,
+                parentController: this
+            }
+        );
     }
 
     public isTextEmpty(text: string): boolean {

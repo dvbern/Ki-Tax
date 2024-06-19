@@ -34,7 +34,11 @@ export function html(html: string): Element {
 
 // eslint-disable-next-line
 export function bootstrap(
-    platform: PlatformRef, ng2Module: Type<{}>, element: Element, ng1Module: angular.IModule) {
+    platform: PlatformRef,
+    ng2Module: Type<{}>,
+    element: Element,
+    ng1Module: angular.IModule
+) {
     // We bootstrap the Angular module first; then when it is ready (async) we bootstrap the AngularJS
     // module on the bootstrap element (also ensuring that AngularJS errors will fail the test).
     return platform.bootstrapModule(ng2Module).then(ref => {
@@ -42,8 +46,8 @@ export function bootstrap(
         const upgrade = ref.injector.get(UpgradeModule);
         const failHardModule: any = ($provide: any) => {
             $provide.value('$exceptionHandler', (err: any) => {
- throw err;
-});
+                throw err;
+            });
         };
 
         // The `bootstrap()` helper is used for convenience in tests, so that we don't have to inject
@@ -51,7 +55,9 @@ export function bootstrap(
         // In order to closer emulate what happens in real application, ensure AngularJS is bootstrapped
         // inside the Angular zone.
         //
-        ngZone.run(() => upgrade.bootstrap(element, [failHardModule, ng1Module.name]));
+        ngZone.run(() =>
+            upgrade.bootstrap(element, [failHardModule, ng1Module.name])
+        );
 
         return upgrade;
     });

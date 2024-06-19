@@ -18,7 +18,10 @@ import * as moment from 'moment';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../../models/enums/betreuung/TSBetreuungsstatus';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypValues,
+    TSEinschulungTyp
+} from '../../../../models/enums/TSEinschulungTyp';
 import {TSAnmeldungDTO} from '../../../../models/TSAnmeldungDTO';
 import {TSBelegungFerieninsel} from '../../../../models/TSBelegungFerieninsel';
 import {TSBelegungTagesschule} from '../../../../models/TSBelegungTagesschule';
@@ -41,7 +44,6 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 }
 
 export class CreateAngebotListViewController implements IController {
-
     public static $inject: string[] = [
         '$state',
         'GesuchModelManager',
@@ -65,8 +67,7 @@ export class CreateAngebotListViewController implements IController {
         private readonly $stateParams: IAngebotStateParams,
         private readonly betreuungRS: BetreuungRS,
         private readonly $translate: ITranslateService
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.anmeldungDTO = new TSAnmeldungDTO();
@@ -83,31 +84,42 @@ export class CreateAngebotListViewController implements IController {
 
     public getGesuchsperiodeString(): string | undefined {
         if (this.gesuchModelManager.getGesuchsperiode()) {
-            return this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString;
+            return this.gesuchModelManager.getGesuchsperiode()
+                .gesuchsperiodeString;
         }
         return undefined;
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
         const result: Array<TSInstitutionStammdaten> = [];
-        this.gesuchModelManager.getActiveInstitutionenForGemeindeList().forEach((instStamm: TSInstitutionStammdaten) => {
-            if (this.ts) {
-                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE) {
+        this.gesuchModelManager
+            .getActiveInstitutionenForGemeindeList()
+            .forEach((instStamm: TSInstitutionStammdaten) => {
+                if (this.ts) {
+                    if (
+                        instStamm.betreuungsangebotTyp ===
+                        TSBetreuungsangebotTyp.TAGESSCHULE
+                    ) {
+                        result.push(instStamm);
+                    }
+                } else if (
+                    this.fi &&
+                    instStamm.betreuungsangebotTyp ===
+                        TSBetreuungsangebotTyp.FERIENINSEL
+                ) {
                     result.push(instStamm);
                 }
-            } else if (this.fi && instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {
-                result.push(instStamm);
-            }
-        });
+            });
         return result;
     }
 
     public getTextSprichtAmtssprache(): string {
-        return this.$translate.instant('SPRICHT_AMTSSPRACHE',
-            {
-                amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
-            });
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {
+            amtssprache: EbeguUtil.getAmtsspracheAsString(
+                this.gesuchModelManager.gemeindeStammdaten,
+                this.$translate
+            )
+        });
     }
 
     public getKindContainerList(): Array<TSKindContainer> {
@@ -136,26 +148,34 @@ export class CreateAngebotListViewController implements IController {
         }
         this.anmeldungDTO.betreuung.institutionStammdaten = this.institution;
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-        this.anmeldungDTO.betreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        this.anmeldungDTO.betreuung.gesuchsperiode =
+            this.gesuchModelManager.getGesuchsperiode();
         if (this.ts) {
             // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
-            if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                && this.isTageschulenAnmeldungAktiv()) {
-                this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+            if (
+                this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
+                this.isTageschulenAnmeldungAktiv()
+            ) {
+                this.anmeldungDTO.betreuung.betreuungsstatus =
+                    TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
                 if (!this.anmeldungDTO.betreuung.belegungTagesschule) {
-                    this.anmeldungDTO.betreuung.belegungTagesschule = new TSBelegungTagesschule();
+                    this.anmeldungDTO.betreuung.belegungTagesschule =
+                        new TSBelegungTagesschule();
                     // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
                     const ersterSchultag =
-                        this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+                        this.gesuchModelManager.gemeindeKonfiguration
+                            .konfigTagesschuleErsterSchultag;
                     if (DateUtil.today().isBefore(ersterSchultag)) {
-                        this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
+                        this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum =
+                            ersterSchultag;
                     }
                 }
             }
             this.anmeldungDTO.betreuung.belegungFerieninsel = undefined;
         } else {
             if (!this.anmeldungDTO.betreuung.belegungFerieninsel) {
-                this.anmeldungDTO.betreuung.belegungFerieninsel = new TSBelegungFerieninsel();
+                this.anmeldungDTO.betreuung.belegungFerieninsel =
+                    new TSBelegungFerieninsel();
             }
             this.anmeldungDTO.betreuung.belegungTagesschule = undefined;
         }
@@ -167,7 +187,8 @@ export class CreateAngebotListViewController implements IController {
 
     public selectedKindChanged(): void {
         if (this.kindContainer) {
-            this.anmeldungDTO.additionalKindQuestions = !this.kindContainer.kindJA.familienErgaenzendeBetreuung;
+            this.anmeldungDTO.additionalKindQuestions =
+                !this.kindContainer.kindJA.familienErgaenzendeBetreuung;
             this.anmeldungDTO.kindContainerId = this.kindContainer.id;
         }
     }
@@ -177,27 +198,40 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public anmeldenSchulamt(): void {
-        this.anmeldungDTO.betreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        this.anmeldungDTO.betreuung.gesuchsperiode =
+            this.gesuchModelManager.getGesuchsperiode();
         if (this.ts) {
-            this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
+            this.anmeldungDTO.betreuung.betreuungsstatus =
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
 
             this.anmeldungDTO.betreuung.belegungTagesschule.belegungTagesschuleModule =
-                this.anmeldungDTO.betreuung.belegungTagesschule.belegungTagesschuleModule
-                    .filter(modul => modul.modulTagesschule.angemeldet);
+                this.anmeldungDTO.betreuung.belegungTagesschule.belegungTagesschuleModule.filter(
+                    modul => modul.modulTagesschule.angemeldet
+                );
 
-            this.betreuungRS.createAngebot(this.anmeldungDTO).then(() => {
-                this.backToHome('TAGESSCHULE_ANMELDUNG_GESPEICHERT');
-            }).catch(() => {
-                this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-            });
+            this.betreuungRS
+                .createAngebot(this.anmeldungDTO)
+                .then(() => {
+                    this.backToHome('TAGESSCHULE_ANMELDUNG_GESPEICHERT');
+                })
+                .catch(() => {
+                    this.anmeldungDTO.betreuung.betreuungsstatus =
+                        TSBetreuungsstatus.AUSSTEHEND;
+                });
         } else if (this.fi) {
-            this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
-            this.betreuungRS.createAngebot(this.anmeldungDTO).then(() => {
-                this.kindContainer.kindJA.familienErgaenzendeBetreuung = true;
-                this.backToHome('FERIENINSEL_ANMELDUNG_GESPEICHERT');
-            }).catch(() => {
-                this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-            });
+            this.anmeldungDTO.betreuung.betreuungsstatus =
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
+            this.betreuungRS
+                .createAngebot(this.anmeldungDTO)
+                .then(() => {
+                    this.kindContainer.kindJA.familienErgaenzendeBetreuung =
+                        true;
+                    this.backToHome('FERIENINSEL_ANMELDUNG_GESPEICHERT');
+                })
+                .catch(() => {
+                    this.anmeldungDTO.betreuung.betreuungsstatus =
+                        TSBetreuungsstatus.AUSSTEHEND;
+                });
         }
     }
 
@@ -207,5 +241,4 @@ export class CreateAngebotListViewController implements IController {
             gesuchstellerDashboardStateParams: {infoMessage}
         });
     }
-
 }

@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -11,18 +18,15 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class SteuerveranlagungErhaltenComponent implements OnInit {
-
     @Input() public model: TSFinanzielleSituationContainer;
 
-    @Output() public readonly steuerveranlagungErhaltenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output()
+    public readonly steuerveranlagungErhaltenChange: EventEmitter<boolean> =
+        new EventEmitter<boolean>();
 
-    public constructor(
-        public gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    public constructor(public gesuchModelManager: GesuchModelManager) {}
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public setSteuerveranlagungErhalten(value: any): void {
         this.model.finanzielleSituationJA.steuerveranlagungErhalten = value;
@@ -30,7 +34,9 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     }
 
     public showVeranlagungErhalten(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationJA.momentanSelbststaendig);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.model.finanzielleSituationJA.momentanSelbststaendig
+        );
     }
 
     public canEdit(): boolean {

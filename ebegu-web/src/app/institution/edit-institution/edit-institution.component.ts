@@ -62,12 +62,8 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import {
-    EditInstitutionBetreuungsgutscheineComponent
-} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
-import {
-    EditInstitutionTagesschuleComponent
-} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
 
 const LOG = LogFactory.createLog('EditInstitutionComponent');
 
@@ -77,7 +73,6 @@ const LOG = LogFactory.createLog('EditInstitutionComponent');
     styleUrls: ['./edit-institution.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class EditInstitutionComponent implements OnInit {
     public readonly CONSTANTS: any = CONSTANTS;
 
@@ -117,10 +112,11 @@ export class EditInstitutionComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly dialog: MatDialog
-    ) {
-    }
+    ) {}
 
-    private static createInstitutionStammdaten(institution: TSInstitution): TSInstitutionStammdaten {
+    private static createInstitutionStammdaten(
+        institution: TSInstitution
+    ): TSInstitutionStammdaten {
         const stammdaten = new TSInstitutionStammdaten();
         stammdaten.adresse = new TSAdresse();
         stammdaten.institution = institution;
@@ -130,11 +126,16 @@ export class EditInstitutionComponent implements OnInit {
         return stammdaten;
     }
 
-    public static hasGueltigkeitDecreased(preEditGueltigkeit: TSDateRange, gueltigkeit: TSDateRange): boolean {
-        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis)
-            && EbeguUtil.isNotNullOrUndefined(gueltigkeit.gueltigBis) ||
+    public static hasGueltigkeitDecreased(
+        preEditGueltigkeit: TSDateRange,
+        gueltigkeit: TSDateRange
+    ): boolean {
+        return (
+            (EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis) &&
+                EbeguUtil.isNotNullOrUndefined(gueltigkeit.gueltigBis)) ||
             gueltigkeit.gueltigBis?.isBefore(preEditGueltigkeit.gueltigBis) ||
-            gueltigkeit.gueltigAb?.isAfter(preEditGueltigkeit.gueltigAb);
+            gueltigkeit.gueltigAb?.isAfter(preEditGueltigkeit.gueltigAb)
+        );
     }
 
     public ngOnInit(): void {
@@ -142,31 +143,46 @@ export class EditInstitutionComponent implements OnInit {
         if (!institutionId) {
             return;
         }
-        this.isRegisteringInstitution = this.$transition$.params().isRegistering;
+        this.isRegisteringInstitution =
+            this.$transition$.params().isRegistering;
         this.editMode = this.$transition$.params().editMode;
 
-        this.traegerschaftRS.getAllActiveTraegerschaften().then(allTraegerschaften => {
-            this.traegerschaftenList = allTraegerschaften;
-        });
+        this.traegerschaftRS
+            .getAllActiveTraegerschaften()
+            .then(allTraegerschaften => {
+                this.traegerschaftenList = allTraegerschaften;
+            });
 
         this.fetchInstitutionAndStammdaten(institutionId);
         this.fetchExternalClients(institutionId);
     }
 
     private fetchExternalClients(institutionId: string): void {
-        this.institutionRS.getExternalClients(institutionId)
-            .subscribe(externalClients => this.initExternalClients(externalClients), error => LOG.error(error));
+        this.institutionRS.getExternalClients(institutionId).subscribe(
+            externalClients => this.initExternalClients(externalClients),
+            error => LOG.error(error)
+        );
     }
 
-    private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
+    private initExternalClients(
+        externalClients: TSInstitutionExternalClientAssignment
+    ): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
-        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(this.externalClients.assignedClients);
+        this.initiallyAssignedClients = EbeguUtil.copyArrayWithoutReference(
+            this.externalClients.assignedClients
+        );
         this.assignedClientGueltigkeitCache = new Map<string, TSDateRange>();
         for (const client of this.initiallyAssignedClients) {
-            this.assignedClientGueltigkeitCache.set(client.externalClient.id, client.gueltigkeit);
+            this.assignedClientGueltigkeitCache.set(
+                client.externalClient.id,
+                client.gueltigkeit
+            );
         }
-        this.allPossibleClients = [].concat(externalClients.assignedClients.map(eC => eC.externalClient))
+        this.allPossibleClients = []
+            .concat(
+                externalClients.assignedClients.map(eC => eC.externalClient)
+            )
             .concat(externalClients.availableClients)
             .sort((a: TSExternalClient, b: TSExternalClient) => {
                 if (a.clientName.toLowerCase() < b.clientName.toLowerCase()) {
@@ -181,49 +197,85 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private fetchInstitutionAndStammdaten(institutionId: string): void {
-        this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institutionId)
-            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten)
-                .subscribe(stammdaten => this.initModel(stammdaten), error => LOG.error(error)));
+        this.institutionStammdatenRS
+            .fetchInstitutionStammdatenByInstitution(institutionId)
+            .then(optionalStammdaten =>
+                this.getOrCreateStammdaten(
+                    institutionId,
+                    optionalStammdaten
+                ).subscribe(
+                    stammdaten => this.initModel(stammdaten),
+                    error => LOG.error(error)
+                )
+            );
     }
 
     private getOrCreateStammdaten(
         institutionId: string,
         optionalStammdaten?: TSInstitutionStammdaten | null
     ): Observable<TSInstitutionStammdaten> {
-
         if (optionalStammdaten) {
-            this.preEditGueltigkeit =
-                new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
+            this.preEditGueltigkeit = new TSDateRange(
+                optionalStammdaten.gueltigkeit.gueltigAb,
+                optionalStammdaten.gueltigkeit.gueltigBis
+            );
             return of(optionalStammdaten);
         }
 
-        return this.institutionRS.findInstitution(institutionId)
-            .pipe(map(institution => EditInstitutionComponent.createInstitutionStammdaten(institution)));
+        return this.institutionRS
+            .findInstitution(institutionId)
+            .pipe(
+                map(institution =>
+                    EditInstitutionComponent.createInstitutionStammdaten(
+                        institution
+                    )
+                )
+            );
     }
 
     private initModel(stammdaten: TSInstitutionStammdaten): void {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
-        this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
+        this.editMode =
+            stammdaten.institution.status === TSInstitutionStatus.EINGELADEN ||
+            this.editMode;
         this.changeDetectorRef.markForCheck();
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION].concat(
+            TSRole.SUPER_ADMIN
+        );
         return allowedRoles;
     }
 
     public isStammdatenEditable(): boolean {
-        if (getBgInstitutionenBetreuungsangebote().includes(this.stammdaten.betreuungsangebotTyp)) {
+        if (
+            getBgInstitutionenBetreuungsangebote().includes(
+                this.stammdaten.betreuungsangebotTyp
+            )
+        ) {
             return this.authServiceRS.isOneOfRoles(
-                TSRoleUtil.getMandantRoles().concat(TSRoleUtil.getTraegerschaftInstitutionRoles())
+                TSRoleUtil.getMandantRoles().concat(
+                    TSRoleUtil.getTraegerschaftInstitutionRoles()
+                )
             );
         }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTSProfilEditRoles());
+        if (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.TAGESSCHULE
+        ) {
+            return this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTSProfilEditRoles()
+            );
         }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {
-            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        if (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.FERIENINSEL
+        ) {
+            return this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getInstitutionProfilEditRoles()
+            );
         }
         throw new Error('Institution type not supported');
     }
@@ -250,7 +302,7 @@ export class EditInstitutionComponent implements OnInit {
     public getHeaderPreTitle(): string {
         let result = '';
         if (this.stammdaten.institution.traegerschaft) {
-            result += `${this.stammdaten.institution.traegerschaft.name  } - `;
+            result += `${this.stammdaten.institution.traegerschaft.name} - `;
         }
         result += this.translate.instant(this.stammdaten.betreuungsangebotTyp);
         return result;
@@ -296,13 +348,18 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        if (this.componentTagesschule
-            && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_MODULE_INVALID'));
+        if (
+            this.componentTagesschule &&
+            !this.componentTagesschule.institutionStammdatenTagesschuleValid()
+        ) {
+            this.errorService.addMesageAsError(
+                this.translate.instant('ERROR_MODULE_INVALID')
+            );
             return;
         }
 
-        if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
+        if (this.stammdaten.telefon === '') {
+            // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
         }
 
@@ -317,71 +374,126 @@ export class EditInstitutionComponent implements OnInit {
         const updateModel = new TSInstitutionUpdate();
         updateModel.name = this.stammdaten.institution.name;
         updateModel.traegerschaftId = this.getTraegerschaftsUpdate();
-        updateModel.institutionExternalClients = this.getExternalClientsUpdate();
+        updateModel.institutionExternalClients =
+            this.getExternalClientsUpdate();
         updateModel.stammdaten = this.stammdaten;
 
         this.updateInstitution(updateModel);
     }
 
     // eslint-disable-next-line
-    private async updateInstitution(updateModel: TSInstitutionUpdate): Promise<void> {
+    private async updateInstitution(
+        updateModel: TSInstitutionUpdate
+    ): Promise<void> {
         if (this.stammdaten.institutionStammdatenBetreuungsgutscheine) {
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =
                 this.stammdaten.institutionStammdatenBetreuungsgutscheine?.iban?.toLocaleUpperCase();
         }
-        if (EditInstitutionComponent.hasGueltigkeitDecreased(this.preEditGueltigkeit, this.stammdaten.gueltigkeit)) {
+        if (
+            EditInstitutionComponent.hasGueltigkeitDecreased(
+                this.preEditGueltigkeit,
+                this.stammdaten.gueltigkeit
+            )
+        ) {
             const dialogConfig = new MatDialogConfig();
             dialogConfig.data = {
-                frage: this.translate.instant('INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG')
+                frage: this.translate.instant(
+                    'INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG'
+                )
             };
-            if (await this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
-                .toPromise() !== true) {
+            if (
+                (await this.dialog
+                    .open(DvNgConfirmDialogComponent, dialogConfig)
+                    .afterClosed()
+                    .toPromise()) !== true
+            ) {
                 return;
             }
         }
-        if (!this.isSameInstitutionClient(this.externalClients.assignedClients,
-            this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
+        if (
+            !this.isSameInstitutionClient(
+                this.externalClients.assignedClients,
+                this.initiallyAssignedClients,
+                false
+            ) &&
+            this.externalClients.assignedClients.length > 0
+        ) {
             let drittanwendungen = '';
-            this.externalClients.assignedClients.filter(assignedClient =>
-                this.initiallyAssignedClients.indexOf(assignedClient) < 0
-            ).forEach(assignedClient =>
-                drittanwendungen.length > 0 ?
-                    drittanwendungen += `, ${  assignedClient.externalClient.clientName}`
-                    : drittanwendungen = assignedClient.externalClient.clientName
-            );
+            this.externalClients.assignedClients
+                .filter(
+                    assignedClient =>
+                        this.initiallyAssignedClients.indexOf(assignedClient) <
+                        0
+                )
+                .forEach(assignedClient =>
+                    drittanwendungen.length > 0
+                        ? (drittanwendungen += `, ${assignedClient.externalClient.clientName}`)
+                        : (drittanwendungen =
+                              assignedClient.externalClient.clientName)
+                );
             // show warning popup only when added client
             if (drittanwendungen.length > 0) {
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
-                    frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
-                        NAME_DRITTANWENDUNGEN: drittanwendungen
-                    })
+                    frage: this.translate.instant(
+                        'INSTITUTION_DRITTANWENDUNG_WARNUNG',
+                        {
+                            NAME_DRITTANWENDUNGEN: drittanwendungen
+                        }
+                    )
                 };
-                this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
-                    .subscribe(answer => {
+                this.dialog
+                    .open(DvNgConfirmDialogComponent, dialogConfig)
+                    .afterClosed()
+                    .subscribe(
+                        answer => {
                             if (answer !== true) {
                                 return;
                             }
-                            this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten),
-                                        error => LOG.error(error));
+                            this.institutionRS
+                                .updateInstitution(
+                                    this.stammdaten.institution.id,
+                                    updateModel
+                                )
+                                .subscribe(
+                                    stammdaten =>
+                                        this.setValuesAfterSave(stammdaten),
+                                    error => LOG.error(error)
+                                );
                         },
-                        () => {
-                        });
+                        () => {}
+                    );
             } else {
-                this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                    .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
+                this.institutionRS
+                    .updateInstitution(
+                        this.stammdaten.institution.id,
+                        updateModel
+                    )
+                    .subscribe(
+                        stammdaten => this.setValuesAfterSave(stammdaten),
+                        error => LOG.error(error)
+                    );
             }
         } else {
-            this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
+            this.institutionRS
+                .updateInstitution(this.stammdaten.institution.id, updateModel)
+                .subscribe(
+                    stammdaten => this.setValuesAfterSave(stammdaten),
+                    error => LOG.error(error)
+                );
         }
     }
 
     private getExternalClientsUpdate(): TSInstitutionExternalClient[] | null {
         const assignedClients = this.externalClients.assignedClients;
 
-        if (this.isSameInstitutionClient(assignedClients, this.initiallyAssignedClients, true)) {
+        if (
+            this.isSameInstitutionClient(
+                assignedClients,
+                this.initiallyAssignedClients,
+                true
+            )
+        ) {
             // no backed update necessary
             return null;
         }
@@ -405,26 +517,37 @@ export class EditInstitutionComponent implements OnInit {
         const aSorted = a.concat().sort();
         const bSorted = b.concat().sort();
         if (checkGueltigkeit) {
-            return aSorted.every((value, index) => this.isEquivalent(bSorted[index], value));
+            return aSorted.every((value, index) =>
+                this.isEquivalent(bSorted[index], value)
+            );
         }
-        return aSorted.every((value, index) => bSorted[index].externalClient.id === value.externalClient.id);
+        return aSorted.every(
+            (value, index) =>
+                bSorted[index].externalClient.id === value.externalClient.id
+        );
     }
 
     /**
      * In order to compare two Institution External Client, we check if the Client id's are the same and if the
      * Gueltigkeit is the same
      */
-    private isEquivalent(a: TSInstitutionExternalClient, b: TSInstitutionExternalClient): boolean {
-        return a.externalClient.id === b.externalClient.id
-            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigAb)
-                    && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigAb)
-                && a.gueltigkeit.gueltigAb.isSame(b.gueltigkeit.gueltigAb))
-                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigAb) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigAb)))
-            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) &&
-                    EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis)
-                && a.gueltigkeit.gueltigBis.isSame(b.gueltigkeit.gueltigBis))
-                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis)
-                    && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis)));
+    private isEquivalent(
+        a: TSInstitutionExternalClient,
+        b: TSInstitutionExternalClient
+    ): boolean {
+        return (
+            a.externalClient.id === b.externalClient.id &&
+            ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigAb) &&
+                EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigAb) &&
+                a.gueltigkeit.gueltigAb.isSame(b.gueltigkeit.gueltigAb)) ||
+                (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigAb) &&
+                    EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigAb))) &&
+            ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) &&
+                EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis) &&
+                a.gueltigkeit.gueltigBis.isSame(b.gueltigkeit.gueltigBis)) ||
+                (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis) &&
+                    EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis)))
+        );
     }
 
     private getTraegerschaftsUpdate(): string | null {
@@ -438,7 +561,10 @@ export class EditInstitutionComponent implements OnInit {
         if (this.navigateToWelcomesite()) {
             return;
         }
-        this.preEditGueltigkeit = new TSDateRange(stammdaten.gueltigkeit.gueltigAb, stammdaten.gueltigkeit.gueltigBis);
+        this.preEditGueltigkeit = new TSDateRange(
+            stammdaten.gueltigkeit.gueltigAb,
+            stammdaten.gueltigkeit.gueltigBis
+        );
         // if we don't navigate away we refresh all data
         this.fetchExternalClients(stammdaten.institution.id);
         this.initModel(stammdaten);
@@ -458,7 +584,10 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public getGueltigkeitTodisplay(): string {
-        const date = DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigAb, CONSTANTS.DATE_FORMAT);
+        const date = DateUtil.momentToLocalDateFormat(
+            this.stammdaten.gueltigkeit.gueltigAb,
+            CONSTANTS.DATE_FORMAT
+        );
 
         return `${this.translate.instant('AB')} ${date} ${this.getBisDateIfSet()}`;
     }
@@ -468,7 +597,10 @@ export class EditInstitutionComponent implements OnInit {
             return '';
         }
 
-        const date = DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT);
+        const date = DateUtil.momentToLocalDateFormat(
+            this.stammdaten.gueltigkeit.gueltigBis,
+            CONSTANTS.DATE_FORMAT
+        );
         if (date !== CONSTANTS.END_OF_TIME_STRING) {
             return `${this.translate.instant('BIS')} ${date}`;
         }
@@ -476,25 +608,40 @@ export class EditInstitutionComponent implements OnInit {
         return '';
     }
 
-    public compareTraegerschaft(b1: TSTraegerschaft, b2: TSTraegerschaft): boolean {
+    public compareTraegerschaft(
+        b1: TSTraegerschaft,
+        b2: TSTraegerschaft
+    ): boolean {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 
     public getPlaceholderForOeffnungszeiten(): string {
-        return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
+        return this.translate.instant(
+            'INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER'
+        );
     }
 
     public deactivateStammdatenCheckRequired(): void {
-        this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
-            .subscribe(() => this.navigateBack(), error => LOG.error(error));
+        this.institutionRS
+            .deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
+            .subscribe(
+                () => this.navigateBack(),
+                error => LOG.error(error)
+            );
     }
 
     public isCheckRequiredEnabled(): boolean {
-        return this.isCheckRequired && !this.editMode && this.stammdatenCheckVisible();
+        return (
+            this.isCheckRequired &&
+            !this.editMode &&
+            this.stammdatenCheckVisible()
+        );
     }
 
     private stammdatenCheckVisible(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getInstitutionProfilEditRoles()
+        );
     }
 
     public isBetreuungsgutschein(): boolean {
@@ -502,15 +649,24 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isTagesschule(): boolean {
-        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE;
+        return (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.TAGESSCHULE
+        );
     }
 
     public isFerieninsel(): boolean {
-        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
+        return (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.FERIENINSEL
+        );
     }
 
     public isMittagstisch(): boolean {
-        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH;
+        return (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.MITTAGSTISCH
+        );
     }
 
     public isExportableInstitution(): boolean {
@@ -532,7 +688,10 @@ export class EditInstitutionComponent implements OnInit {
         if (!date || !date.isValid()) {
             return '';
         }
-        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        const formatedDate = DateUtil.momentToLocalDateFormat(
+            date,
+            CONSTANTS.DATE_FORMAT
+        );
         return `${this.translate.instant('AB')} ${formatedDate}`;
     }
 
@@ -540,102 +699,153 @@ export class EditInstitutionComponent implements OnInit {
         if (!date || !date.isValid()) {
             return '';
         }
-        const formatedDate = DateUtil.momentToLocalDateFormat(date, CONSTANTS.DATE_FORMAT);
+        const formatedDate = DateUtil.momentToLocalDateFormat(
+            date,
+            CONSTANTS.DATE_FORMAT
+        );
         if (formatedDate !== CONSTANTS.END_OF_TIME_STRING) {
             return `${this.translate.instant('BIS')} ${formatedDate}`;
         }
         return '';
     }
 
-    public dateAbChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
-        assignedClient.gueltigkeit.gueltigAb = $event ? $event.startOf('month') : null;
+    public dateAbChange(
+        $event: moment.Moment | null,
+        assignedClient: TSInstitutionExternalClient
+    ): void {
+        assignedClient.gueltigkeit.gueltigAb = $event
+            ? $event.startOf('month')
+            : null;
         this.updateClientGueltigkeitCache(assignedClient);
     }
 
-    public dateBisChange($event: moment.Moment | null, assignedClient: TSInstitutionExternalClient): void {
-        assignedClient.gueltigkeit.gueltigBis = $event ? $event.endOf('month') : null;
+    public dateBisChange(
+        $event: moment.Moment | null,
+        assignedClient: TSInstitutionExternalClient
+    ): void {
+        assignedClient.gueltigkeit.gueltigBis = $event
+            ? $event.endOf('month')
+            : null;
         this.updateClientGueltigkeitCache(assignedClient);
     }
 
-    private updateClientGueltigkeitCache(client: TSInstitutionExternalClient): void {
+    private updateClientGueltigkeitCache(
+        client: TSInstitutionExternalClient
+    ): void {
         if (this.assignedClientGueltigkeitCache.has(client.externalClient.id)) {
-            this.assignedClientGueltigkeitCache.set(client.externalClient.id, client.gueltigkeit);
+            this.assignedClientGueltigkeitCache.set(
+                client.externalClient.id,
+                client.gueltigkeit
+            );
         }
     }
 
-    public changeAssignmentClient(changeEvent: MatCheckboxChange, client: TSExternalClient): void {
+    public changeAssignmentClient(
+        changeEvent: MatCheckboxChange,
+        client: TSExternalClient
+    ): void {
         if (changeEvent.checked) {
             if (!this.isClientAssigned(client)) {
-                const newInstitutionClient = new TSInstitutionExternalClient(client);
+                const newInstitutionClient = new TSInstitutionExternalClient(
+                    client
+                );
                 // check cache for existing gueltigkeit
                 if (this.assignedClientGueltigkeitCache.has(client.id)) {
-                    newInstitutionClient.gueltigkeit = this.assignedClientGueltigkeitCache.get(client.id);
+                    newInstitutionClient.gueltigkeit =
+                        this.assignedClientGueltigkeitCache.get(client.id);
                 } else {
-                    this.assignedClientGueltigkeitCache.set(client.id, newInstitutionClient.gueltigkeit);
+                    this.assignedClientGueltigkeitCache.set(
+                        client.id,
+                        newInstitutionClient.gueltigkeit
+                    );
                 }
                 this.externalClients.assignedClients.push(newInstitutionClient);
             }
         } else {
-            const idx = this.externalClients.assignedClients.findIndex(c => c.externalClient.id === client.id);
+            const idx = this.externalClients.assignedClients.findIndex(
+                c => c.externalClient.id === client.id
+            );
             if (idx >= 0) {
                 this.externalClients.assignedClients.splice(idx, 1);
             }
         }
         // update references to trigger change detection of children
-        this.externalClients.assignedClients = [].concat(this.externalClients.assignedClients);
+        this.externalClients.assignedClients = [].concat(
+            this.externalClients.assignedClients
+        );
     }
 
     public isClientAssigned(client: TSExternalClient): boolean {
-        return !!this.externalClients.assignedClients.find(c => c.externalClient.id === client.id);
+        return !!this.externalClients.assignedClients.find(
+            c => c.externalClient.id === client.id
+        );
     }
 
-    public getAssignedInstitutionClient(client: TSExternalClient): TSInstitutionExternalClient {
-        return this.externalClients.assignedClients
-            .find(assignedClient => assignedClient.externalClient.id === client.id);
+    public getAssignedInstitutionClient(
+        client: TSExternalClient
+    ): TSInstitutionExternalClient {
+        return this.externalClients.assignedClients.find(
+            assignedClient => assignedClient.externalClient.id === client.id
+        );
     }
 
     public getSortedAssignedClients(): TSInstitutionExternalClient[] {
-        return this.externalClients.assignedClients.sort((
-            a: TSInstitutionExternalClient,
-            b: TSInstitutionExternalClient
-        ) => {
-            if (a.externalClient.clientName < b.externalClient.clientName) {
-                return -1;
+        return this.externalClients.assignedClients.sort(
+            (
+                a: TSInstitutionExternalClient,
+                b: TSInstitutionExternalClient
+            ) => {
+                if (a.externalClient.clientName < b.externalClient.clientName) {
+                    return -1;
+                }
+                if (a.externalClient.clientName > b.externalClient.clientName) {
+                    return 1;
+                }
+                return 0;
             }
-            if (a.externalClient.clientName > b.externalClient.clientName) {
-                return 1;
-            }
-            return 0;
-        });
+        );
     }
 
     public getMinByRole(): moment.Moment {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN) ? DateUtil.startOfTime() : this.tomorrow;
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+            ? DateUtil.startOfTime()
+            : this.tomorrow;
     }
 
     public showWarningInstitutionRueckwirkendSchliessen(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN) && this.stammdaten.gueltigkeit.gueltigBis?.isBefore(this.tomorrow);
+        return (
+            this.authServiceRS.isRole(TSRole.SUPER_ADMIN) &&
+            this.stammdaten.gueltigkeit.gueltigBis?.isBefore(this.tomorrow)
+        );
     }
 
     public isNurLats(): boolean {
-        return this.stammdaten.institution?.status === TSInstitutionStatus.NUR_LATS;
+        return (
+            this.stammdaten.institution?.status === TSInstitutionStatus.NUR_LATS
+        );
     }
 
     public nurLatsInstitutionUmwandeln(): void {
-        this.dialog.open(DvNgConfirmDialogComponent, {
-            data: {
-                frage: this.translate.instant('NUR_LATS_UMWANDELN_CONFIRM')
-            }
-        }).afterClosed().subscribe(confirmation => {
-            if (!confirmation) {
-                return;
-            }
-            this.institutionRS.nurLatsInstitutionUmwandeln(this.stammdaten.institution)
-                .subscribe((updatedInsti: TSInstitution) => {
-                    this.stammdaten.institution = updatedInsti;
-                    this.errorService.addMesageAsInfo(this.translate.instant('NUR_LATS_UMWANDELN_SUCCESS'));
-                    this.changeDetectorRef.markForCheck();
-                });
-        });
+        this.dialog
+            .open(DvNgConfirmDialogComponent, {
+                data: {
+                    frage: this.translate.instant('NUR_LATS_UMWANDELN_CONFIRM')
+                }
+            })
+            .afterClosed()
+            .subscribe(confirmation => {
+                if (!confirmation) {
+                    return;
+                }
+                this.institutionRS
+                    .nurLatsInstitutionUmwandeln(this.stammdaten.institution)
+                    .subscribe((updatedInsti: TSInstitution) => {
+                        this.stammdaten.institution = updatedInsti;
+                        this.errorService.addMesageAsInfo(
+                            this.translate.instant('NUR_LATS_UMWANDELN_SUCCESS')
+                        );
+                        this.changeDetectorRef.markForCheck();
+                    });
+            });
     }
 }

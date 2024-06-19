@@ -25,7 +25,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
 describe('fachstelleRS', () => {
-
     let fachstelleRS: FachstelleRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -39,19 +38,24 @@ describe('fachstelleRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        fachstelleRS = $injector.get('FachstelleRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        $http = $injector.get('$http');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            fachstelleRS = $injector.get('FachstelleRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+            $http = $injector.get('$http');
+        })
+    );
 
     beforeEach(() => {
         mockFachstelle = new TSFachstelle();
         mockFachstelle.id = '2afc9d9a-957e-4550-9a22-9762422d8f05';
         mockFachstelle.name = TSFachstelleName.ERZIEHUNGSBERATUNG;
         mockFachstelle.fachstelleAnspruch = true;
-        mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
+        mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject(
+            {},
+            mockFachstelle
+        );
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
@@ -63,12 +67,17 @@ describe('fachstelleRS', () => {
     });
 
     describe('API Usage', () => {
-
         describe('getAnspruchFachstellen', () => {
             it('should return all Anspruch Fachstellen', () => {
-                const fachstellenRestArray = [mockFachstelleRest, mockFachstelleRest];
+                const fachstellenRestArray = [
+                    mockFachstelleRest,
+                    mockFachstelleRest
+                ];
                 const gesuchsperiodeId = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
-                $httpBackend.expectGET(`${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`)
+                $httpBackend
+                    .expectGET(
+                        `${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`
+                    )
                     .respond(fachstellenRestArray);
                 spyOn($http, 'get').and.callThrough();
                 spyOn(ebeguRestUtil, 'parseFachstellen').and.callThrough();
@@ -78,12 +87,14 @@ describe('fachstelleRS', () => {
                 fachstelleRS.getAnspruchFachstellen(gesuchsperiode);
                 $httpBackend.flush();
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect($http.get)
-                    .toHaveBeenCalledWith(`${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`);
+                expect($http.get).toHaveBeenCalledWith(
+                    `${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`
+                );
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
+                expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(
+                    fachstellenRestArray
+                );
             });
         });
-
     });
 });

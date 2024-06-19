@@ -33,24 +33,28 @@ describe('FileUploadComponent', () => {
     let fixture: ComponentFixture<MultipleFileUploadComponent<TSFile>>;
 
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getAllowedMimetypes']
+        );
 
     beforeEach(waitForAsync(() => {
-        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(of('').toPromise());
+        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(
+            of('').toPromise()
+        );
 
         TestBed.configureTestingModule({
-                imports: [
-                    SharedModule,
-                    MaterialModule
-                ],
-                schemas: [CUSTOM_ELEMENTS_SCHEMA],
-                providers: [
-                    WindowRef,
-                    {provide: NgForm, useValue: new NgForm([], [])},
-                    {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
-                ]
-            }
-        )
+            imports: [SharedModule, MaterialModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [
+                WindowRef,
+                {provide: NgForm, useValue: new NgForm([], [])},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
+            ]
+        })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));

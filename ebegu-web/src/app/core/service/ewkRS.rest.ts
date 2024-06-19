@@ -24,7 +24,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 import {LogFactory} from '../logging/LogFactory';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class EwkRS {
     private readonly log = LogFactory.createLog('EwkRS');
@@ -33,18 +33,22 @@ export class EwkRS {
 
     public constructor(
         private readonly http: HttpClient,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${CONSTANTS.REST_API}gesuche`;
     }
 
     public sucheInEwk(gesuchId: string): Observable<TSEWKPerson[]> {
-        return this.http.get(`${this.serviceURL}/ewk/searchgesuch/${gesuchId}`)
+        return this.http
+            .get(`${this.serviceURL}/ewk/searchgesuch/${gesuchId}`)
             .pipe(map(response => this.handlePersonSucheResult(response)));
     }
 
     private handlePersonSucheResult(response: any): TSEWKPerson[] {
         this.log.debug('PARSING ewkResultat REST object ', response);
-        return this.ebeguRestUtil.parseEWKResultat(new TSEWKResultat(), response).personen;
+        return this.ebeguRestUtil.parseEWKResultat(
+            new TSEWKResultat(),
+            response
+        ).personen;
     }
 }

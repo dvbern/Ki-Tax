@@ -16,42 +16,84 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p *ngIf="!besondereVolksschulen" [textContent]="'GEMEINDE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-gemeinde"></p>
-    <p *ngIf="besondereVolksschulen" [textContent]="'BESONDERE_VOLKSSCHULE_AUSWAEHLEN' | translate" class="dv-dialog-compact-text" id="dv-dialog-besondere-volksschule"></p>
-    <span *ngIf="isUserSozialdienst" [innerHTML]="'GEMEINDE_AUSWAEHLEN_INFO' | translate" id="dv-dialog-gemeinde-info"></span>
+    <p
+        *ngIf="!besondereVolksschulen"
+        [textContent]="'GEMEINDE_AUSWAEHLEN' | translate"
+        class="dv-dialog-compact-text"
+        id="dv-dialog-gemeinde"
+    ></p>
+    <p
+        *ngIf="besondereVolksschulen"
+        [textContent]="'BESONDERE_VOLKSSCHULE_AUSWAEHLEN' | translate"
+        class="dv-dialog-compact-text"
+        id="dv-dialog-besondere-volksschule"
+    ></p>
+    <span
+        *ngIf="isUserSozialdienst"
+        [innerHTML]="'GEMEINDE_AUSWAEHLEN_INFO' | translate"
+        id="dv-dialog-gemeinde-info"
+    ></span>
 
     <div class="dv-select-style dv-dialog-select margin-top-20">
-        <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gemeinde"
-                id="gemeinde"
-                [(ngModel)]="selectedGemeinde"
-                class="form-control"
-                [required]="true">
-
-            <option *ngFor="let gemeinde of gemeindeList" [ngValue]="gemeinde">{{gemeinde.name}}</option>
+        <select
+            aria-describedby="betreuungsangebot-error"
+            aria-labelledby="dv-dialog-text"
+            name="gemeinde"
+            id="gemeinde"
+            [(ngModel)]="selectedGemeinde"
+            class="form-control"
+            [required]="true"
+        >
+            <option *ngFor="let gemeinde of gemeindeList" [ngValue]="gemeinde">
+                {{ gemeinde.name }}
+            </option>
         </select>
     </div>
 
-    <span class="dv-dialog-text pointer-cursor"><a (click)="toggleBesondereVolksschulen()" [translate]="besondereVolksschulen? 'GEMEINDE_AUSWAEHLEN' : 'BESONDERE_VOLKSSCHULE_AUSWAEHLEN'"></a></span>
+    <span class="dv-dialog-text pointer-cursor"
+        ><a
+            (click)="toggleBesondereVolksschulen()"
+            [translate]="
+                besondereVolksschulen
+                    ? 'GEMEINDE_AUSWAEHLEN'
+                    : 'BESONDERE_VOLKSSCHULE_AUSWAEHLEN'
+            "
+        ></a
+    ></span>
 
     <div *ngIf="gesuchsperiodeList">
-        <p [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
+        <p
+            [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate"
+            class="dv-dialog-text"
+            id="dv-dialog-text"
+        ></p>
         <div class="dv-select-style dv-dialog-select">
-            <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gesuchsperiode"
-                    id="gesuchsperiode"
-                    [(ngModel)]="selectedGesuchsperiode"
-                    class="form-control"
-                    [required]="true">
-
-                <option *ngFor="let gesuchsperiode of gesuchsperiodeList"
-                        [ngValue]="gesuchsperiode">{{gesuchsperiode.gesuchsperiodeString}}</option>
+            <select
+                aria-describedby="betreuungsangebot-error"
+                aria-labelledby="dv-dialog-text"
+                name="gesuchsperiode"
+                id="gesuchsperiode"
+                [(ngModel)]="selectedGesuchsperiode"
+                class="form-control"
+                [required]="true"
+            >
+                <option
+                    *ngFor="let gesuchsperiode of gesuchsperiodeList"
+                    [ngValue]="gesuchsperiode"
+                >
+                    {{ gesuchsperiode.gesuchsperiodeString }}
+                </option>
             </select>
         </div>
     </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="save()" [textContent]="'AUSWAEHLEN' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="save()"
+            [textContent]="'AUSWAEHLEN' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

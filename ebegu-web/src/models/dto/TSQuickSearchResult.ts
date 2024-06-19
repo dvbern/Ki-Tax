@@ -16,11 +16,13 @@
 import {TSSearchResultEntry} from './TSSearchResultEntry';
 
 export class TSQuickSearchResult {
-
     private _resultEntities: Array<TSSearchResultEntry>;
     private _totalResultSize: number;
 
-    public constructor(antragDTOs?: Array<TSSearchResultEntry>, totalResultSize?: number) {
+    public constructor(
+        antragDTOs?: Array<TSSearchResultEntry>,
+        totalResultSize?: number
+    ) {
         this._resultEntities = antragDTOs;
         this._totalResultSize = totalResultSize;
     }

@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -37,7 +42,6 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
-
     public readOnly: boolean = false;
 
     public constructor(
@@ -47,25 +51,46 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         private readonly $transition$: Transition,
         protected ref: ChangeDetectorRef
     ) {
-        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
-        const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
-        const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
+        super(
+            gesuchModelManager,
+            wizardStepManager,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN
+        );
+        const parsedGesuchstelllerNum = parseInt(
+            this.$transition$.params().gesuchstellerNumber,
+            10
+        );
+        const parsedBasisJahrPlusNum = parseInt(
+            this.$transition$.params().basisjahrPlus,
+            10
+        );
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
+            parsedGesuchstelllerNum,
+            parsedBasisJahrPlusNum
+        );
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
+        this.model.initEinkommensverschlechterungContainer(
+            parsedBasisJahrPlusNum,
+            parsedGesuchstelllerNum
+        );
         this.readOnly = this.gesuchModelManager.isGesuchReadonly();
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.onValueChangeFunction();
     }
 
-    public save(onResult: (arg: any) => void): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(
+        onResult: (arg: any) => void
+    ): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -78,49 +103,59 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
             return Promise.resolve(this.model.getEkvContToWorkWith());
         }
         this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(ekv => {
-            onResult(ekv);
-            return ekv;
-        });
+        return this.gesuchModelManager
+            .saveEinkommensverschlechterungContainer()
+            .then(ekv => {
+                onResult(ekv);
+                return ekv;
+            });
     }
 
     public onBruttoLohnChange = (): void => {
         if (!this.form?.controls.bruttolohn.valid) {
             return;
         }
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
-            () => this.ref.markForCheck()
-        );
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(
+                this.model,
+                this.model.getBasisJahrPlus()
+            )
+            .then(() => this.ref.markForCheck());
     };
 
     public onValueChangeFunction = (): void => {
         if (!this.model.getEkvToWorkWith().nettoVermoegen) {
             return;
         }
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
-            () => this.ref.markForCheck()
-        );
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(
+                this.model,
+                this.model.getBasisJahrPlus()
+            )
+            .then(() => this.ref.markForCheck());
     };
 
     private getResultate(): TSFinanzielleSituationResultateDTO {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
-            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.berechnungsManager.einkommensverschlechterungResultateBjP2
+            : this.berechnungsManager.einkommensverschlechterungResultateBjP1;
     }
 
     public getBruttolohnJahr(): number {
-        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
-            this.getResultate()?.bruttolohnJahrGS1 :
-            this.getResultate()?.bruttolohnJahrGS2;
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1
+            ? this.getResultate()?.bruttolohnJahrGS1
+            : this.getResultate()?.bruttolohnJahrGS2;
     }
 
     public getMassgebendesEinkVorAbzFamGrGSX(): number {
-        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
-            this.getResultate()?.massgebendesEinkVorAbzFamGrGS1 :
-            this.getResultate()?.massgebendesEinkVorAbzFamGrGS2;
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1
+            ? this.getResultate()?.massgebendesEinkVorAbzFamGrGS1
+            : this.getResultate()?.massgebendesEinkVorAbzFamGrGS2;
     }
 
     public getLabelExtralohn(): string {
-       return this.model.getEkvToWorkWith_GS()?.extraLohn ? 'LABEL_13' : 'LABEL_12';
+        return this.model.getEkvToWorkWith_GS()?.extraLohn
+            ? 'LABEL_13'
+            : 'LABEL_12';
     }
 }

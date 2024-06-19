@@ -54,7 +54,6 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
 }
 
 export class GesuchstellerDashboardViewController implements IController {
-
     public static $inject: string[] = [
         '$state',
         '$stateParams',
@@ -78,7 +77,7 @@ export class GesuchstellerDashboardViewController implements IController {
     public amountNewMitteilungen: number;
     public periodYear: string;
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
-    public mapOfNewestAntraege: { [key: string]: string } = {};
+    public mapOfNewestAntraege: {[key: string]: string} = {};
     private anmeldungTSEnabled: boolean;
     private anmeldungFIEnabled: boolean;
 
@@ -95,16 +94,18 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly appplicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         if (this.$stateParams.infoMessage) {
-            this.errorService.addMesageAsInfo(this.$translate.instant(this.$stateParams.infoMessage));
+            this.errorService.addMesageAsInfo(
+                this.$translate.instant(this.$stateParams.infoMessage)
+            );
         }
 
-        this.periodYear = DateUtil
-            .calculatePeriodenStartdatumString(this.dossier.gemeinde.betreuungsgutscheineStartdatum);
+        this.periodYear = DateUtil.calculatePeriodenStartdatumString(
+            this.dossier.gemeinde.betreuungsgutscheineStartdatum
+        );
 
         this.initViewModel();
         this.loadGemeindeStammdaten();
@@ -115,12 +116,15 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
-        return this.searchRS.getAntraegeOfDossier(this.dossier.id).toPromise().then((response: any) => {
-            this.antragList = angular.copy(response);
-            this.getAmountNewMitteilungen();
-            this.updateActiveGesuchsperiodenList();
-            return this.antragList;
-        });
+        return this.searchRS
+            .getAntraegeOfDossier(this.dossier.id)
+            .toPromise()
+            .then((response: any) => {
+                this.antragList = angular.copy(response);
+                this.getAmountNewMitteilungen();
+                this.updateActiveGesuchsperiodenList();
+                return this.antragList;
+            });
     }
 
     /**
@@ -131,27 +135,34 @@ export class GesuchstellerDashboardViewController implements IController {
         if (!(this.dossier && this.dossier.gemeinde)) {
             return;
         }
-        this.gemeindeRS.getGemeindeStammdaten(this.dossier.gemeinde.id)
+        this.gemeindeRS
+            .getGemeindeStammdaten(this.dossier.gemeinde.id)
             .then(stammdaten => {
                 this.gemeindeStammdaten = stammdaten;
             });
     }
 
     private getAmountNewMitteilungen(): void {
-        this.mitteilungRS.getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossier.id)
+        this.mitteilungRS
+            .getAmountNewMitteilungenOfDossierForCurrentRolle(this.dossier.id)
             .then((response: number) => {
                 this.amountNewMitteilungen = response;
             });
     }
 
     private updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAktivePeriodenForGemeinde(this.dossier.gemeinde.id)
+        this.gesuchsperiodeRS
+            .getAktivePeriodenForGemeinde(this.dossier.gemeinde.id)
             .then((response: TSGesuchsperiode[]) => {
                 this.activeGesuchsperiodenList = response;
                 // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen.
                 // Wir merken uns das jeweils neueste Gesuch pro Periode
                 response.forEach(gp => {
-                    this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id)
+                    this.gesuchRS
+                        .getIdOfNewestGesuchForGesuchsperiode(
+                            gp.id,
+                            this.dossier.id
+                        )
                         .then(id => {
                             this.mapOfNewestAntraege[gp.id] = id;
                         });
@@ -190,8 +201,14 @@ export class GesuchstellerDashboardViewController implements IController {
         if (antrag) {
             if (TSAntragStatus.IN_BEARBEITUNG_GS === antrag.status || ansehen) {
                 // Noch nicht freigegeben
-                this.$state.go(fallcreation, {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
-            } else if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
+                this.$state.go(fallcreation, {
+                    gesuchId: antrag.antragId,
+                    dossierId: antrag.dossierId
+                });
+            } else if (
+                !isAnyStatusOfVerfuegt(antrag.status) ||
+                antrag.beschwerdeHaengig
+            ) {
                 // Alles ausser verfuegt und InBearbeitung
                 this.$state.go('gesuch.dokumente', {gesuchId: antrag.antragId});
             } else {
@@ -239,15 +256,23 @@ export class GesuchstellerDashboardViewController implements IController {
         const antrag = this.getAntragForGesuchsperiode(periode);
 
         if (antrag) {
-            this.$state.go('gesuchsteller.createAngebot', {type, gesuchId: antrag.antragId});
+            this.$state.go('gesuchsteller.createAngebot', {
+                type,
+                gesuchId: antrag.antragId
+            });
         } else {
-            console.error(`Fehler: kein Gesuch gefunden für Gesuchsperiode und Typ ${  type}`);
+            console.error(
+                `Fehler: kein Gesuch gefunden für Gesuchsperiode und Typ ${type}`
+            );
         }
     }
 
-    private loadGemeindeKonfiguration(gp: TSGesuchsperiode): TSGemeindeKonfiguration {
+    private loadGemeindeKonfiguration(
+        gp: TSGesuchsperiode
+    ): TSGemeindeKonfiguration {
         if (this.gemeindeStammdaten) {
-            for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
+            for (const konfigurationsListeElement of this.gemeindeStammdaten
+                .konfigurationsListe) {
                 // eslint-disable-next-line
                 if (konfigurationsListeElement.gesuchsperiode.id === gp.id) {
                     konfigurationsListeElement.initProperties();
@@ -260,16 +285,28 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungTagesschuleCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreateTS(periode)
-                && periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.tagesschulanmeldungenStartdatum);
+            return (
+                this.gemeindeStammdaten.gemeinde.angebotTS &&
+                this.showAnmeldungCreateTS(periode) &&
+                periode.gueltigkeit.gueltigBis.isAfter(
+                    this.gemeindeStammdaten.gemeinde
+                        .tagesschulanmeldungenStartdatum
+                )
+            );
         }
         return undefined;
     }
 
     public showAnmeldungFerieninselCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreateFI(periode) &&
-                periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.ferieninselanmeldungenStartdatum);
+            return (
+                this.gemeindeStammdaten.gemeinde.angebotFI &&
+                this.showAnmeldungCreateFI(periode) &&
+                periode.gueltigkeit.gueltigBis.isAfter(
+                    this.gemeindeStammdaten.gemeinde
+                        .ferieninselanmeldungenStartdatum
+                )
+            );
         }
         return undefined;
     }
@@ -277,26 +314,34 @@ export class GesuchstellerDashboardViewController implements IController {
     private showAnmeldungCreateTS(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.anmeldungTSEnabled;
-        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung()
-            && !this.gemeindeStammdaten.gemeinde.nurLats;
-        return tsEnabledForMandant
-            && tsEnabledForGemeinde
-            && !!antrag
-            && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
-            && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
-            && this.isNeuestAntragOfGesuchsperiode(periode, antrag);
+        const tsEnabledForGemeinde =
+            this.loadGemeindeKonfiguration(
+                periode
+            ).hasTagesschulenAnmeldung() &&
+            !this.gemeindeStammdaten.gemeinde.nurLats;
+        return (
+            tsEnabledForMandant &&
+            tsEnabledForGemeinde &&
+            !!antrag &&
+            antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
+            antrag.status !== TSAntragStatus.FREIGABEQUITTUNG &&
+            this.isNeuestAntragOfGesuchsperiode(periode, antrag)
+        );
     }
 
     private showAnmeldungCreateFI(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const fiEnabledForMandant = this.anmeldungFIEnabled;
-        const fiEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasFerieninseAnmeldung();
-        return fiEnabledForMandant
-            && fiEnabledForGemeinde
-            && !!antrag
-            && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
-            && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
-            && this.isNeuestAntragOfGesuchsperiode(periode, antrag);
+        const fiEnabledForGemeinde =
+            this.loadGemeindeKonfiguration(periode).hasFerieninseAnmeldung();
+        return (
+            fiEnabledForMandant &&
+            fiEnabledForGemeinde &&
+            !!antrag &&
+            antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
+            antrag.status !== TSAntragStatus.FREIGABEQUITTUNG &&
+            this.isNeuestAntragOfGesuchsperiode(periode, antrag)
+        );
     }
 
     public getButtonText(periode: TSGesuchsperiode): string {
@@ -306,7 +351,12 @@ export class GesuchstellerDashboardViewController implements IController {
                 // Noch nicht freigegeben -> Text BEARBEITEN
                 return this.$translate.instant('GS_BEARBEITEN');
             }
-            if (!isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(antrag.status) || antrag.beschwerdeHaengig) {
+            if (
+                !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(
+                    antrag.status
+                ) ||
+                antrag.beschwerdeHaengig
+            ) {
                 // Alles ausser verfuegt und InBearbeitung -> Text DOKUMENTE HOCHLADEN
                 return this.$translate.instant('GS_DOKUMENTE_HOCHLADEN');
             }
@@ -330,7 +380,10 @@ export class GesuchstellerDashboardViewController implements IController {
         if (isAnyStatusOfVerfuegt(antrag.status)) {
             this.$state.go('gesuch.verfuegen', {gesuchId: antrag.antragId});
         } else {
-            this.$state.go('gesuch.fallcreation', {gesuchId: antrag.antragId, dossierId: antrag.dossierId});
+            this.$state.go('gesuch.fallcreation', {
+                gesuchId: antrag.antragId,
+                dossierId: antrag.dossierId
+            });
         }
     }
 
@@ -338,7 +391,10 @@ export class GesuchstellerDashboardViewController implements IController {
         // Die Antraege sind nach Laufnummer sortiert, d.h. der erste einer Periode ist immer der aktuellste
         if (this.antragList) {
             for (const antrag of this.antragList) {
-                if (antrag.gesuchsperiodeGueltigAb.year() === periode.gueltigkeit.gueltigAb.year()) {
+                if (
+                    antrag.gesuchsperiodeGueltigAb.year() ===
+                    periode.gueltigkeit.gueltigAb.year()
+                ) {
                     return antrag;
                 }
             }
@@ -352,18 +408,32 @@ export class GesuchstellerDashboardViewController implements IController {
      */
     public translateStatus(antrag: TSAntragDTO): string {
         const status = antrag.status;
-        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        if (status === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
-            if (TSGesuchBetreuungenStatus.ABGEWIESEN === antrag.gesuchBetreuungenStatus) {
-                return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
+        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerOnlyRoles()
+        );
+        if (
+            status === TSAntragStatus.IN_BEARBEITUNG_GS &&
+            isUserGesuchsteller
+        ) {
+            if (
+                TSGesuchBetreuungenStatus.ABGEWIESEN ===
+                antrag.gesuchBetreuungenStatus
+            ) {
+                return this.ebeguUtil.translateString(
+                    TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]
+                );
             }
-            if (TSGesuchBetreuungenStatus.WARTEN === antrag.gesuchBetreuungenStatus) {
-                return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_WARTEN]);
+            if (
+                TSGesuchBetreuungenStatus.WARTEN ===
+                antrag.gesuchBetreuungenStatus
+            ) {
+                return this.ebeguUtil.translateString(
+                    TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_WARTEN]
+                );
             }
             return this.ebeguUtil.translateString(IN_BEARBEITUNG_BASE_NAME);
         }
-        if ((status === TSAntragStatus.NUR_SCHULAMT)
-            && isUserGesuchsteller) {
+        if (status === TSAntragStatus.NUR_SCHULAMT && isUserGesuchsteller) {
             return this.ebeguUtil.translateString('ABGESCHLOSSEN');
         }
         return this.ebeguUtil.translateString(TSAntragStatus[status]);
@@ -391,7 +461,9 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public gesperrtWegenMutation(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        return !!antrag && !this.isNeuestAntragOfGesuchsperiode(periode, antrag);
+        return (
+            !!antrag && !this.isNeuestAntragOfGesuchsperiode(periode, antrag)
+        );
     }
 
     public hasOnlyFerieninsel(periode: TSGesuchsperiode): boolean {
@@ -399,7 +471,10 @@ export class GesuchstellerDashboardViewController implements IController {
         return !!antrag && antrag.hasOnlyFerieninsel();
     }
 
-    private isNeuestAntragOfGesuchsperiode(periode: TSGesuchsperiode, antrag: TSAntragDTO): boolean {
+    private isNeuestAntragOfGesuchsperiode(
+        periode: TSGesuchsperiode,
+        antrag: TSAntragDTO
+    ): boolean {
         return antrag.antragId === this.mapOfNewestAntraege[periode.id];
     }
 }

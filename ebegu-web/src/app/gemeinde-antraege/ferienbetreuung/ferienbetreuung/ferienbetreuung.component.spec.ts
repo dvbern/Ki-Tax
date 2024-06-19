@@ -15,14 +15,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
-const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(FerienbetreuungService.name,
-    ['updateFerienbetreuungContainerStores', 'getFerienbetreuungContainer', 'emptyStores']);
-const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
-    ['updateSteps']);
-const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-    ['getAccessTokenDokument']);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+    AuthServiceRS.name,
+    ['isOneOfRoles']
+);
+const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
+    FerienbetreuungService.name,
+    [
+        'updateFerienbetreuungContainerStores',
+        'getFerienbetreuungContainer',
+        'emptyStores'
+    ]
+);
+const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(
+    WizardStepXRS.name,
+    ['updateSteps']
+);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+    'getAccessTokenDokument'
+]);
 
 import {HttpClientModule} from '@angular/common/http';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -48,15 +59,15 @@ describe('FerienbetreuungComponent', () => {
             declarations: [FerienbetreuungComponent],
             providers: [
                 WindowRef,
-                { provide: AuthServiceRS, useValue: authServiceRSSpy },
-                { provide: WizardStepXRS, useValue: wizardStepXRSSpy },
-                { provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy },
-                { provide: DownloadRS, useValue: downloadRSSpy }
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: WizardStepXRS, useValue: wizardStepXRSSpy},
+                {
+                    provide: FerienbetreuungService,
+                    useValue: ferienbetreuungServiceSpy
+                },
+                {provide: DownloadRS, useValue: downloadRSSpy}
             ],
-            imports: [
-                HttpClientModule,
-                SharedModule
-            ],
+            imports: [HttpClientModule, SharedModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

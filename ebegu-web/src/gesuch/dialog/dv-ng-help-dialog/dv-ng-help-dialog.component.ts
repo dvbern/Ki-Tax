@@ -32,7 +32,6 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
     templateUrl: './dv-ng-help-dialog.component.html'
 })
 export class DvNgHelpDialogComponent {
-
     public hasRoleGemeinde: boolean = false;
     public hasRoleInstitution: boolean = false;
     public hasRoleMandant: boolean = false;
@@ -59,8 +58,10 @@ export class DvNgHelpDialogComponent {
 
     public openSupportanfrage(): void {
         this.close();
-        this.dialogRef.afterClosed()
-            .subscribe(() => this.supportDialogService.openDialog(), error => console.error(error));
+        this.dialogRef.afterClosed().subscribe(
+            () => this.supportDialogService.openDialog(),
+            error => console.error(error)
+        );
     }
 
     public startTour(): void {
@@ -69,11 +70,17 @@ export class DvNgHelpDialogComponent {
     }
 
     private isGemeinde(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles()));
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles())
+        );
     }
 
     private isInstitution(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles().concat(TSRoleUtil.getMandantRoles()));
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getInstitutionRoles().concat(
+                TSRoleUtil.getMandantRoles()
+            )
+        );
     }
 
     private isMandant(): boolean {

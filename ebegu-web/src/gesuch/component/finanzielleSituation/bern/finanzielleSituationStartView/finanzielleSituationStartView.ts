@@ -46,7 +46,9 @@ import ITimeoutService = angular.ITimeoutService;
 
 const removeDialogTemplate = require('../../../../dialog/removeDialogTemplate.html');
 
-export class FinanzielleSituationStartViewComponentConfig implements IComponentOptions {
+export class FinanzielleSituationStartViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./finanzielleSituationStartView.html');
     public controller = FinanzielleSituationStartViewController;
@@ -54,7 +56,6 @@ export class FinanzielleSituationStartViewComponentConfig implements IComponentO
 }
 
 export class FinanzielleSituationStartViewController extends AbstractFinSitBernView {
-
     public static $inject: string[] = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -95,7 +96,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         applicationPropertyRS: ApplicationPropertyRS,
         demoFeatureRS: DemoFeatureRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
@@ -103,30 +105,40 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS);
+            applicationPropertyRS
+        );
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
         });
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            null);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            null
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.initialModel = angular.copy(this.model);
 
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG);
-        this.areThereOnlySchulamtangebote = this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
-                                                                                                    // just once
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
+        this.areThereOnlySchulamtangebote =
+            this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
+        // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
     }
 
     public showSteuerveranlagung(): boolean {
         // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)
+        ) {
             return false;
         }
         // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
@@ -144,8 +156,12 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
         // nicht
-        if (this.steuerSchnittstelleAktivForPeriode &&
-            EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (
+            this.steuerSchnittstelleAktivForPeriode &&
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            )
+        ) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -153,11 +169,17 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return true;
         }
         // falls Abfrage noch nicht erfolgt ist, zeigen wir die Frage nicht
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        ) {
             return false;
         }
         // falls Steuerabfrage nicht erfolgreich, zeigen wir die Frage ebenfalls
-        return !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+        return !isSteuerdatenAnfrageStatusErfolgreich(
+            this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+        );
     }
 
     public showSteuererklaerung(): boolean {
@@ -166,10 +188,14 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     private save(): IPromise<TSGesuch> {
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveFinanzielleSituationStart()
-            .then((gesuch: TSGesuch) => gesuch).catch(error => {
-                this.initialModel.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-                throw(error);
+        return this.gesuchModelManager
+            .saveFinanzielleSituationStart()
+            .then((gesuch: TSGesuch) => gesuch)
+            .catch(error => {
+                this.initialModel.copyFinSitDataToGesuch(
+                    this.gesuchModelManager.getGesuch()
+                );
+                throw error;
             });
     }
 
@@ -181,23 +207,35 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         if (!this.form.$dirty) {
             if (this.updateStepDueToSozialhilfeOhneBenoetigteZeitraeume()) {
-                return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-                    TSWizardStepStatus.OK).then(() => this.gesuchModelManager.getGesuch());
+                return this.wizardStepManager
+                    .updateWizardStepStatus(
+                        TSWizardStepName.FINANZIELLE_SITUATION,
+                        TSWizardStepStatus.OK
+                    )
+                    .then(() => this.gesuchModelManager.getGesuch());
             }
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             return this.$q.when(this.gesuchModelManager.getGesuch());
         }
         if (this.finanzielleSituationTurnedNotRequired()) {
-            const keyDeleteText = this.modelHasChangedToSozialhilfebezuegerin() ?
-                'FINSIT_WARNING_SOZIALHILFE_BESCHREIBUNG' :
-                'FINSIT_WARNING_BESCHREIBUNG';
-            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'FINSIT_WARNING',
-                deleteText: keyDeleteText
-            }).then(() =>    // User confirmed changes
-                 this.save()
-            );
+            const keyDeleteText = this.modelHasChangedToSozialhilfebezuegerin()
+                ? 'FINSIT_WARNING_SOZIALHILFE_BESCHREIBUNG'
+                : 'FINSIT_WARNING_BESCHREIBUNG';
+            return this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'FINSIT_WARNING',
+                        deleteText: keyDeleteText
+                    }
+                )
+                .then(() =>
+                    // User confirmed changes
+                    this.save()
+                );
         }
         return this.save();
     }
@@ -207,26 +245,38 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
      * in welcher die Zeiträume nicht angegeben werden müssen -> direkt auf OK setzen
      */
     private updateStepDueToSozialhilfeOhneBenoetigteZeitraeume(): boolean {
-        return this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG)
-            && this.gesuchModelManager.isSozialhilfeBezueger()
-            && !this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired();
+        return (
+            this.wizardStepManager.hasStepGivenStatus(
+                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.IN_BEARBEITUNG
+            ) &&
+            this.gesuchModelManager.isSozialhilfeBezueger() &&
+            !this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()
+        );
     }
 
     public finanzielleSituationTurnedNotRequired(): boolean {
-        return this.initialModel.isFinanzielleSituationRequired() && !this.model.isFinanzielleSituationRequired();
+        return (
+            this.initialModel.isFinanzielleSituationRequired() &&
+            !this.model.isFinanzielleSituationRequired()
+        );
     }
 
     public modelHasChangedToSozialhilfebezuegerin(): boolean {
-        return !this.initialModel.familienSituation?.sozialhilfeBezueger && this.model.familienSituation?.sozialhilfeBezueger;
+        return (
+            !this.initialModel.familienSituation?.sozialhilfeBezueger &&
+            this.model.familienSituation?.sozialhilfeBezueger
+        );
     }
 
     public getFinanzielleSituationGS1(): TSFinanzielleSituation {
-        return this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+        return this.model.finanzielleSituationContainerGS1
+            .finanzielleSituationJA;
     }
 
     public getFinanzielleSituationGS2(): TSFinanzielleSituation {
-        return this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+        return this.model.finanzielleSituationContainerGS2
+            .finanzielleSituationJA;
     }
 
     public isFinanziellesituationRequired(): boolean {
@@ -241,15 +291,18 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        if (!this.model.familienSituation.gemeinsameSteuererklaerung
-            && this.model.finanzielleSituationContainerGS1
-            && !this.model.finanzielleSituationContainerGS1.isNew()) {
+        if (
+            !this.model.familienSituation.gemeinsameSteuererklaerung &&
+            this.model.finanzielleSituationContainerGS1 &&
+            !this.model.finanzielleSituationContainerGS1.isNew()
+        ) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
             this.initSteuerFragen();
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION,
-                TSWizardStepStatus.NOK);
+                TSWizardStepStatus.NOK
+            );
         } else if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
             // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
             this.model.finanzielleSituationContainerGS1 = undefined;
@@ -259,12 +312,17 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             this.model.initFinSit();
         }
 
-        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerdatenZugriff = undefined;
-        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerdatenZugriff = undefined;
-        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
-        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerdatenZugriff =
+            undefined;
+        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerdatenZugriff =
+            undefined;
+        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.automatischePruefungErlaubt =
+            undefined;
+        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.automatischePruefungErlaubt =
+            undefined;
         this.getModel().finanzielleSituationJA.steuerdatenZugriff = undefined;
-        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt =
+            undefined;
         // first, reset local properties before sending request
         this.resetKiBonAnfrageFinSit();
     }
@@ -274,7 +332,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
      */
     private initSteuerFragen(): void {
         if (this.model.finanzielleSituationContainerGS1) {
-            const gs1 = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+            const gs1 =
+                this.model.finanzielleSituationContainerGS1
+                    .finanzielleSituationJA;
 
             gs1.steuererklaerungAusgefuellt = !!gs1.steuererklaerungAusgefuellt;
             gs1.steuerveranlagungErhalten = !!gs1.steuerveranlagungErhalten;
@@ -284,7 +344,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return;
         }
 
-        const gs2 = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+        const gs2 =
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
         gs2.steuererklaerungAusgefuellt = !!gs2.steuererklaerungAusgefuellt;
         gs2.steuerveranlagungErhalten = !!gs2.steuerveranlagungErhalten;
     }
@@ -306,28 +367,39 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public isMahlzeitenverguenstigungToggleDisabled(): boolean {
         // In einer Mutation darf der Button nicht neu auf JA (d.h. wir beantragen KEINE...) gesetzt werden
         if (this.gesuchModelManager.getGesuch().isMutation()) {
-            return !this.getGesuch().extractFamiliensituation().keineMahlzeitenverguenstigungBeantragtEditable;
+            return !this.getGesuch().extractFamiliensituation()
+                .keineMahlzeitenverguenstigungBeantragtEditable;
         }
         return false;
     }
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
-        return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
-            (this.model.familienSituation.sozialhilfeBezueger || this.model.familienSituation.verguenstigungGewuenscht)
-            && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
+        return (
+            this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
+            (this.model.familienSituation.sozialhilfeBezueger ||
+                this.model.familienSituation.verguenstigungGewuenscht) &&
+            this.getGesuch() &&
+            !this.getGesuch().areThereOnlyFerieninsel()
+        );
     }
 
     public isZahlungsangabenRequired(): boolean {
-        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt
-                && this.isMahlzeitenverguenstigungEnabled())
-            || (this.zahlungsangabenRequired && this.gesuchModelManager.getGesuch().isOnlineGesuch());
+        return (
+            (!this.model.zahlungsinformationen
+                .keineMahlzeitenverguenstigungBeantragt &&
+                this.isMahlzeitenverguenstigungEnabled()) ||
+            (this.zahlungsangabenRequired &&
+                this.gesuchModelManager.getGesuch().isOnlineGesuch())
+        );
     }
 
     public areZahlungsdatenEditable(): boolean {
-        return this.gesuchModelManager.isNeuestesGesuch()
-        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()) ?
-            true :
-            !this.isGesuchReadonly();
+        return this.gesuchModelManager.isNeuestesGesuch() &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()
+            )
+            ? true
+            : !this.isGesuchReadonly();
     }
 
     public preSave(): IPromise<TSGesuch> {
@@ -335,7 +407,10 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return undefined;
         }
         // speichern darf nicht möglich sein, wenn Steuerabfrage Button sichtbar
-        if (this.showSteuerdatenAbholenButton() && this.isFinanziellesituationRequired()) {
+        if (
+            this.showSteuerdatenAbholenButton() &&
+            this.isFinanziellesituationRequired()
+        ) {
             this.triedSavingWithoutForm = true;
             return undefined;
         }
@@ -347,30 +422,45 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                 // promise immediately
                 return this.$q.when(this.gesuchModelManager.getGesuch());
             }
-            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({},
-                this.gesuchModelManager.getGesuch());
+            const properties =
+                this.ebeguRestUtil.alwaysEditablePropertiesToRestObject(
+                    {},
+                    this.gesuchModelManager.getGesuch()
+                );
 
             properties.keineMahlzeitenverguenstigungBeantragt =
                 this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
-            properties.iban = this.model.zahlungsinformationen.iban?.toLocaleUpperCase();
-            properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
-            properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;
-            properties.zahlungsadresse =
-                this.ebeguRestUtil.adresseToRestObject({}, this.model.zahlungsinformationen.zahlungsadresse);
+            properties.iban =
+                this.model.zahlungsinformationen.iban?.toLocaleUpperCase();
+            properties.kontoinhaber =
+                this.model.zahlungsinformationen.kontoinhaber;
+            properties.abweichendeZahlungsadresse =
+                this.model.zahlungsinformationen.abweichendeZahlungsadresse;
+            properties.zahlungsadresse = this.ebeguRestUtil.adresseToRestObject(
+                {},
+                this.model.zahlungsinformationen.zahlungsadresse
+            );
 
-            return this.gesuchModelManager.updateAlwaysEditableProperties(properties);
+            return this.gesuchModelManager.updateAlwaysEditableProperties(
+                properties
+            );
         }
 
         return this.confirmAndSave();
     }
 
     public changeAbweichendeZahlungsadresse(): void {
-        this.model.zahlungsinformationen.zahlungsadresse =
-            this.model.zahlungsinformationen.abweichendeZahlungsadresse ? new TSAdresse() : null;
+        this.model.zahlungsinformationen.zahlungsadresse = this.model
+            .zahlungsinformationen.abweichendeZahlungsadresse
+            ? new TSAdresse()
+            : null;
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        return super.showZugriffAufSteuerdaten() && this.model.familienSituation.gemeinsameSteuererklaerung;
+        return (
+            super.showZugriffAufSteuerdaten() &&
+            this.model.familienSituation.gemeinsameSteuererklaerung
+        );
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {
@@ -382,9 +472,13 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+        return (
+            this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
             this.model.familienSituation.gemeinsameSteuererklaerung &&
-            (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff));
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            )
+        );
     }
 
     public steuerdatenzugriffClicked(): void {
@@ -405,16 +499,22 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     protected resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.resetKiBonAnfrageFinSit(
-            EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+        this.gesuchModelManager
+            .resetKiBonAnfrageFinSit(
+                EbeguUtil.isNotNullOrUndefined(
+                    this.model.finanzielleSituationContainerGS2
+                )
+            )
             .then(() => {
                 this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                        TSWizardStepName.FINANZIELLE_SITUATION,
-                        TSWizardStepStatus.NOK);
-                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                    this.form.$setDirty();
-                }
-            );
+                    TSWizardStepName.FINANZIELLE_SITUATION,
+                    TSWizardStepStatus.NOK
+                );
+                this.model.copyFinSitDataFromGesuch(
+                    this.gesuchModelManager.getGesuch()
+                );
+                this.form.$setDirty();
+            });
     }
 
     protected isNotFinSitStartOrGS2Required(): boolean {

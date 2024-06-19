@@ -20,11 +20,15 @@ import {StateService, TransitionService} from '@uirouter/angular';
 
 import {TagesschulenUiViewComponent} from './tagesschulen-ui-view.component';
 
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go', 'is']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go',
+    'is'
+]);
 
-const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-    ['onFinish', 'onSuccess']);
+const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(
+    TransitionService.name,
+    ['onFinish', 'onSuccess']
+);
 
 describe('TagesschulenUiViewComponent', () => {
     let component: TagesschulenUiViewComponent;
@@ -37,8 +41,7 @@ describe('TagesschulenUiViewComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: TransitionService, useValue: transitionServiceSpy}
             ]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

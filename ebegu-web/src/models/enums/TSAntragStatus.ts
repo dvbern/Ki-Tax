@@ -75,7 +75,9 @@ export function getTSAntragStatusValues(): Array<TSAntragStatus> {
 /**
  * Alle Status die eine gewisse Rolle sehen darf
  */
-export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragStatus> {
+export function getTSAntragStatusValuesByRole(
+    userrole: TSRole
+): Array<TSAntragStatus> {
     switch (userrole) {
         case TSRole.STEUERAMT:
             return [
@@ -92,15 +94,22 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
         case TSRole.JURIST:
         case TSRole.ADMIN_MANDANT:
         case TSRole.SACHBEARBEITER_MANDANT:
-            return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.IN_BEARBEITUNG_GS
-                && element !== TSAntragStatus.FREIGABEQUITTUNG
-                && element !== TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST));
+            return getTSAntragStatusValues().filter(
+                element =>
+                    element !== TSAntragStatus.IN_BEARBEITUNG_GS &&
+                    element !== TSAntragStatus.FREIGABEQUITTUNG &&
+                    element !== TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+            );
         case TSRole.ADMIN_INSTITUTION:
         case TSRole.SACHBEARBEITER_INSTITUTION:
         case TSRole.ADMIN_TRAEGERSCHAFT:
         case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-            return getTSAntragStatusValues().filter(element => (element !== TSAntragStatus.PRUEFUNG_STV
-                && element !== TSAntragStatus.IN_BEARBEITUNG_STV && element !== TSAntragStatus.GEPRUEFT_STV));
+            return getTSAntragStatusValues().filter(
+                element =>
+                    element !== TSAntragStatus.PRUEFUNG_STV &&
+                    element !== TSAntragStatus.IN_BEARBEITUNG_STV &&
+                    element !== TSAntragStatus.GEPRUEFT_STV
+            );
         default:
             return getTSAntragStatusValues();
     }
@@ -110,7 +119,9 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
  * Gibt alle Werte zurueck ausser VERFUEGT und KEIN_ANGEBOT.
  * Diese Werte sind die, die bei der Pendenzenliste notwendig sind
  */
-export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus[] {
+export function getTSAntragStatusPendenzValues(
+    userrole: TSRole
+): TSAntragStatus[] {
     const allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
     switch (userrole) {
         case TSRole.SACHBEARBEITER_BG:
@@ -121,28 +132,36 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
         case TSRole.JURIST:
         case TSRole.ADMIN_MANDANT:
         case TSRole.SACHBEARBEITER_MANDANT:
-            return allVisibleValuesByRole.filter(element => (
-                element !== TSAntragStatus.VERFUEGT
-                && element !== TSAntragStatus.KEIN_ANGEBOT
-                && element !== TSAntragStatus.NUR_SCHULAMT
-                && element !== TSAntragStatus.KEIN_KONTINGENT
-                && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV
-                && element !== TSAntragStatus.IGNORIERT));
+            return allVisibleValuesByRole.filter(
+                element =>
+                    element !== TSAntragStatus.VERFUEGT &&
+                    element !== TSAntragStatus.KEIN_ANGEBOT &&
+                    element !== TSAntragStatus.NUR_SCHULAMT &&
+                    element !== TSAntragStatus.KEIN_KONTINGENT &&
+                    element !== TSAntragStatus.IN_BEARBEITUNG_STV &&
+                    element !== TSAntragStatus.PRUEFUNG_STV &&
+                    element !== TSAntragStatus.IGNORIERT
+            );
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
-            return allVisibleValuesByRole.filter(element => (
-                element !== TSAntragStatus.VERFUEGT
-                && element !== TSAntragStatus.KEIN_ANGEBOT
-                && element !== TSAntragStatus.NUR_SCHULAMT
-                && element !== TSAntragStatus.VERFUEGEN
-                && element !== TSAntragStatus.KEIN_KONTINGENT
-                && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV
-                && element !== TSAntragStatus.IGNORIERT));
+            return allVisibleValuesByRole.filter(
+                element =>
+                    element !== TSAntragStatus.VERFUEGT &&
+                    element !== TSAntragStatus.KEIN_ANGEBOT &&
+                    element !== TSAntragStatus.NUR_SCHULAMT &&
+                    element !== TSAntragStatus.VERFUEGEN &&
+                    element !== TSAntragStatus.KEIN_KONTINGENT &&
+                    element !== TSAntragStatus.IN_BEARBEITUNG_STV &&
+                    element !== TSAntragStatus.PRUEFUNG_STV &&
+                    element !== TSAntragStatus.IGNORIERT
+            );
         default:
-            return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
-                && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT));
+            return allVisibleValuesByRole.filter(
+                element =>
+                    element !== TSAntragStatus.VERFUEGT &&
+                    element !== TSAntragStatus.KEIN_ANGEBOT &&
+                    element !== TSAntragStatus.NUR_SCHULAMT
+            );
     }
 }
 
@@ -171,56 +190,80 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
     return validStates.indexOf(status) !== -1;
 }
 
-export function isAtLeastFreigegebenOrFreigabequittung(status: TSAntragStatus): boolean {
-    return isAtLeastFreigegeben(status) || status === TSAntragStatus.FREIGABEQUITTUNG;
+export function isAtLeastFreigegebenOrFreigabequittung(
+    status: TSAntragStatus
+): boolean {
+    return (
+        isAtLeastFreigegeben(status) ||
+        status === TSAntragStatus.FREIGABEQUITTUNG
+    );
 }
 
 export function isAnyStatusOfVerfuegt(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.NUR_SCHULAMT
-        || status === TSAntragStatus.VERFUEGT
-        || status === TSAntragStatus.BESCHWERDE_HAENGIG
-        || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV
-        || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT
-        || status === TSAntragStatus.IGNORIERT;
+    return (
+        status === TSAntragStatus.NUR_SCHULAMT ||
+        status === TSAntragStatus.VERFUEGT ||
+        status === TSAntragStatus.BESCHWERDE_HAENGIG ||
+        status === TSAntragStatus.PRUEFUNG_STV ||
+        status === TSAntragStatus.IN_BEARBEITUNG_STV ||
+        status === TSAntragStatus.GEPRUEFT_STV ||
+        status === TSAntragStatus.KEIN_ANGEBOT ||
+        status === TSAntragStatus.IGNORIERT
+    );
 }
 
-export function isAnyStatusOfVerfuegtButIgnoriert(status: TSAntragStatus): boolean {
+export function isAnyStatusOfVerfuegtButIgnoriert(
+    status: TSAntragStatus
+): boolean {
     return isAnyStatusOfVerfuegt(status) && status !== TSAntragStatus.IGNORIERT;
 }
 
 // KeinKontingent darf zwar nicht zu den "verfuegt" Status hinzugefuegt werden, wird
 // aber fuer gewissen Validierungen gleich behandelt
-export function isAnyStatusOfVerfuegtOrKeinKontingent(status: TSAntragStatus): boolean {
-    return isAnyStatusOfVerfuegt(status) || status === TSAntragStatus.KEIN_KONTINGENT;
+export function isAnyStatusOfVerfuegtOrKeinKontingent(
+    status: TSAntragStatus
+): boolean {
+    return (
+        isAnyStatusOfVerfuegt(status) ||
+        status === TSAntragStatus.KEIN_KONTINGENT
+    );
 }
 
-export function isAnyStatusOfVerfuegtButSchulamt(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.VERFUEGT
-        || status === TSAntragStatus.BESCHWERDE_HAENGIG
-        || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV
-        || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT
-        || status === TSAntragStatus.IGNORIERT;
+export function isAnyStatusOfVerfuegtButSchulamt(
+    status: TSAntragStatus
+): boolean {
+    return (
+        status === TSAntragStatus.VERFUEGT ||
+        status === TSAntragStatus.BESCHWERDE_HAENGIG ||
+        status === TSAntragStatus.PRUEFUNG_STV ||
+        status === TSAntragStatus.IN_BEARBEITUNG_STV ||
+        status === TSAntragStatus.GEPRUEFT_STV ||
+        status === TSAntragStatus.KEIN_ANGEBOT ||
+        status === TSAntragStatus.IGNORIERT
+    );
 }
 
 export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.VERFUEGT
-        || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV
-        || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT
-        || status === TSAntragStatus.IGNORIERT;
+    return (
+        status === TSAntragStatus.VERFUEGT ||
+        status === TSAntragStatus.PRUEFUNG_STV ||
+        status === TSAntragStatus.IN_BEARBEITUNG_STV ||
+        status === TSAntragStatus.GEPRUEFT_STV ||
+        status === TSAntragStatus.KEIN_ANGEBOT ||
+        status === TSAntragStatus.IGNORIERT
+    );
 }
 
-export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(status: TSAntragStatus): boolean {
-    return isAnyStatusOfVerfuegtButSchulamt(status)
-        || status === TSAntragStatus.IN_BEARBEITUNG_JA
-        || status === TSAntragStatus.GEPRUEFT
-        || status === TSAntragStatus.VERFUEGEN
-        || status === TSAntragStatus.NUR_SCHULAMT;
+export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(
+    status: TSAntragStatus
+): boolean {
+    return (
+        isAnyStatusOfVerfuegtButSchulamt(status) ||
+        status === TSAntragStatus.IN_BEARBEITUNG_JA ||
+        status === TSAntragStatus.GEPRUEFT ||
+        status === TSAntragStatus.VERFUEGEN ||
+        status === TSAntragStatus.NUR_SCHULAMT
+    );
 }
 
 /**
@@ -231,15 +274,21 @@ export function isStatusVerfuegenVerfuegt(status: TSAntragStatus): boolean {
 }
 
 export function isAnyStatusOfMahnung(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.ERSTE_MAHNUNG || status === TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN
-        || status === TSAntragStatus.ZWEITE_MAHNUNG || status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN;
+    return (
+        status === TSAntragStatus.ERSTE_MAHNUNG ||
+        status === TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN ||
+        status === TSAntragStatus.ZWEITE_MAHNUNG ||
+        status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN
+    );
 }
 
 export function getStartAntragStatusFromEingangsart(
     eingangsart: TSEingangsart,
     sozialdienstFall: boolean
 ): TSAntragStatus {
-    return TSEingangsart.ONLINE === eingangsart ?
-        TSAntragStatus.IN_BEARBEITUNG_GS :
-        sozialdienstFall ? TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST : TSAntragStatus.IN_BEARBEITUNG_JA;
+    return TSEingangsart.ONLINE === eingangsart
+        ? TSAntragStatus.IN_BEARBEITUNG_GS
+        : sozialdienstFall
+          ? TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+          : TSAntragStatus.IN_BEARBEITUNG_JA;
 }

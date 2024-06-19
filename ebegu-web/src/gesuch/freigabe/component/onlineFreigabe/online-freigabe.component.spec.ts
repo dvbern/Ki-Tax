@@ -35,10 +35,22 @@ describe('OnlineFreigabeComponent', () => {
     let testee: OnlineFreigabeComponent;
 
     beforeEach(() => {
-        gesuchModelManager = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['antragFreigeben', 'getGesuch']);
-        wizardStepManager = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
-            ['setCurrentStep', 'updateCurrentWizardStepStatusSafe', 'getStepByName']);
-        freigabeService = jasmine.createSpyObj<FreigabeService>(FreigabeService.name, ['canBeFreigegeben']);
+        gesuchModelManager = jasmine.createSpyObj<GesuchModelManager>(
+            GesuchModelManager.name,
+            ['antragFreigeben', 'getGesuch']
+        );
+        wizardStepManager = jasmine.createSpyObj<WizardStepManager>(
+            WizardStepManager.name,
+            [
+                'setCurrentStep',
+                'updateCurrentWizardStepStatusSafe',
+                'getStepByName'
+            ]
+        );
+        freigabeService = jasmine.createSpyObj<FreigabeService>(
+            FreigabeService.name,
+            ['canBeFreigegeben']
+        );
     });
 
     describe('constructor', () => {
@@ -52,12 +64,20 @@ describe('OnlineFreigabeComponent', () => {
             wizardStepManager.getStepByName.and.returnValue(step);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.alreadyFreigegeben).toBeFalse();
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .toHaveBeenCalledWith(TSWizardStepName.FREIGABE, TSWizardStepStatus.IN_BEARBEITUNG);
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).toHaveBeenCalledWith(
+                TSWizardStepName.FREIGABE,
+                TSWizardStepStatus.IN_BEARBEITUNG
+            );
         });
 
         it('must update step status to OK if alreadyFreigeben is true', () => {
@@ -69,12 +89,20 @@ describe('OnlineFreigabeComponent', () => {
             wizardStepManager.getStepByName.and.returnValue(step);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.alreadyFreigegeben).toBeTrue();
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .toHaveBeenCalledWith(TSWizardStepName.FREIGABE, TSWizardStepStatus.OK);
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).toHaveBeenCalledWith(
+                TSWizardStepName.FREIGABE,
+                TSWizardStepStatus.OK
+            );
         });
     });
 
@@ -89,13 +117,16 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(false);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = true;
 
             // then
             expect(testee.freigebenButtonDisabled()).toBeTrue();
-            expect(freigabeService.canBeFreigegeben)
-                .toHaveBeenCalled();
+            expect(freigabeService.canBeFreigegeben).toHaveBeenCalled();
         });
 
         it('must return false if true has not confirmed correctness', () => {
@@ -108,7 +139,11 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(true);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = false;
 
             // then
@@ -125,13 +160,16 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(true);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = true;
 
             // then
             expect(testee.freigebenButtonDisabled()).toBeTrue();
         });
-
     });
     describe('checkboxDisabled', () => {
         it('must return true if FreigabeService says no', () => {
@@ -144,12 +182,15 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(false);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.checkboxDisabled()).toBeTrue();
-            expect(freigabeService.canBeFreigegeben)
-                .toHaveBeenCalled();
+            expect(freigabeService.canBeFreigegeben).toHaveBeenCalled();
         });
 
         it('must return true gesuch is already freigegeben', () => {
@@ -162,12 +203,15 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(true);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.checkboxDisabled()).toBeTrue();
         });
-
     });
 
     describe('showReason', () => {
@@ -181,12 +225,15 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(false);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.showReason()).toBeTrue();
-            expect(freigabeService.canBeFreigegeben)
-                .toHaveBeenCalled();
+            expect(freigabeService.canBeFreigegeben).toHaveBeenCalled();
         });
 
         it('must return false if gesuch is already freigegeben', () => {
@@ -199,14 +246,16 @@ describe('OnlineFreigabeComponent', () => {
             freigabeService.canBeFreigegeben.and.returnValue(false);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
 
             // then
             expect(testee.showReason()).toBeFalse();
-            expect(freigabeService.canBeFreigegeben)
-                .toHaveBeenCalled();
+            expect(freigabeService.canBeFreigegeben).toHaveBeenCalled();
         });
-
     });
 
     describe('freigeben', () => {
@@ -219,18 +268,28 @@ describe('OnlineFreigabeComponent', () => {
             wizardStepManager.getStepByName.and.returnValue(step);
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = false;
             await testee.freigeben();
 
             // then
             expect(gesuchModelManager.antragFreigeben).not.toHaveBeenCalled();
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .not
-                .toHaveBeenCalledWith(TSWizardStepName.FAMILIENSITUATION, TSWizardStepStatus.OK);
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .not
-                .toHaveBeenCalledWith(TSWizardStepName.FAMILIENSITUATION, TSWizardStepStatus.NOK);
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).not.toHaveBeenCalledWith(
+                TSWizardStepName.FAMILIENSITUATION,
+                TSWizardStepStatus.OK
+            );
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).not.toHaveBeenCalledWith(
+                TSWizardStepName.FAMILIENSITUATION,
+                TSWizardStepStatus.NOK
+            );
         });
 
         it('must call GesuchModelManager if user has confirmed correctness', async () => {
@@ -241,20 +300,36 @@ describe('OnlineFreigabeComponent', () => {
             gesuchModelManager.getGesuch.and.returnValue(gesuch);
             const step = new TSWizardStep();
             wizardStepManager.getStepByName.and.returnValue(step);
-            gesuchModelManager.antragFreigeben.and.returnValue(Promise.resolve(gesuch));
+            gesuchModelManager.antragFreigeben.and.returnValue(
+                Promise.resolve(gesuch)
+            );
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = true;
             await testee.freigeben();
 
             // then
-            expect(gesuchModelManager.antragFreigeben).toHaveBeenCalledWith(gesuch.id, new TSFreigabe(null, null, true));
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .toHaveBeenCalledWith(TSWizardStepName.FREIGABE, TSWizardStepStatus.OK);
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .not
-                .toHaveBeenCalledWith(TSWizardStepName.FREIGABE, TSWizardStepStatus.NOK);
+            expect(gesuchModelManager.antragFreigeben).toHaveBeenCalledWith(
+                gesuch.id,
+                new TSFreigabe(null, null, true)
+            );
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).toHaveBeenCalledWith(
+                TSWizardStepName.FREIGABE,
+                TSWizardStepStatus.OK
+            );
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).not.toHaveBeenCalledWith(
+                TSWizardStepName.FREIGABE,
+                TSWizardStepStatus.NOK
+            );
         });
 
         it('must call mark step NOK if antragFreigeben fails', async () => {
@@ -265,18 +340,30 @@ describe('OnlineFreigabeComponent', () => {
             gesuchModelManager.getGesuch.and.returnValue(gesuch);
             const step = new TSWizardStep();
             wizardStepManager.getStepByName.and.returnValue(step);
-            gesuchModelManager.antragFreigeben.and.throwError(new Error('freigabe failed'));
+            gesuchModelManager.antragFreigeben.and.throwError(
+                new Error('freigabe failed')
+            );
 
             // when
-            testee = new OnlineFreigabeComponent(gesuchModelManager, wizardStepManager, freigabeService);
+            testee = new OnlineFreigabeComponent(
+                gesuchModelManager,
+                wizardStepManager,
+                freigabeService
+            );
             testee.model.userConfirmedCorrectness = true;
             await testee.freigeben();
 
             // then
-            expect(gesuchModelManager.antragFreigeben).toHaveBeenCalledWith(gesuch.id, new TSFreigabe(null, null, true));
-            expect(wizardStepManager.updateCurrentWizardStepStatusSafe)
-                .toHaveBeenCalledWith(TSWizardStepName.FREIGABE, TSWizardStepStatus.NOK);
+            expect(gesuchModelManager.antragFreigeben).toHaveBeenCalledWith(
+                gesuch.id,
+                new TSFreigabe(null, null, true)
+            );
+            expect(
+                wizardStepManager.updateCurrentWizardStepStatusSafe
+            ).toHaveBeenCalledWith(
+                TSWizardStepName.FREIGABE,
+                TSWizardStepStatus.NOK
+            );
         });
-
     });
 });

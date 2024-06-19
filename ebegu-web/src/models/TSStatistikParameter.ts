@@ -39,11 +39,14 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _gemeindeMahlzeitenverguenstigungen: TSGemeinde;
     private _kantonSelbstbehalt: number;
     private _gemeinde: TSGemeinde;
-	private _institution: TSInstitution;
+    private _institution: TSInstitution;
     private _gesuchZeitraumDatumTyp: TSDatumTyp = TSDatumTyp.VERFUEGUNGSDATUM;
 
-    public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
-                       von?: moment.Moment, bis?: moment.Moment
+    public constructor(
+        gesuchsperiode?: string,
+        stichtag?: moment.Moment,
+        von?: moment.Moment,
+        bis?: moment.Moment
     ) {
         super();
         this._gesuchsperiode = gesuchsperiode;
@@ -180,13 +183,13 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
         this._gemeinde = value;
     }
 
-	public get institution(): TSInstitution {
-		return this._institution;
-	}
+    public get institution(): TSInstitution {
+        return this._institution;
+    }
 
-	public set institution(value: TSInstitution) {
-		this._institution = value;
-	}
+    public set institution(value: TSInstitution) {
+        this._institution = value;
+    }
 
     public get gesuchZeitraumDatumTyp(): TSDatumTyp {
         return this._gesuchZeitraumDatumTyp;

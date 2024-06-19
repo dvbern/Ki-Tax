@@ -23,14 +23,16 @@ import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 
 describe('ApplicationPropertyRS', () => {
-
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
     // eslint-disable-next-line
     const REST_API = CONSTANTS.REST_API;
     const testName = 'myTestName';
 
-    const mockApplicationProp = new TSApplicationProperty(testName, 'myTestValue');
+    const mockApplicationProp = new TSApplicationProperty(
+        testName,
+        'myTestValue'
+    );
 
     const mockApplicationPropertyRest = {
         name: testName,
@@ -43,36 +45,47 @@ describe('ApplicationPropertyRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        applicationPropertyRS = $injector.get('ApplicationPropertyRS');
-        $httpBackend = $injector.get('$httpBackend');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+            $httpBackend = $injector.get('$httpBackend');
+        })
+    );
 
     // set the mock response
     beforeEach(() => {
-        $httpBackend.when('GET', `${REST_API}application-properties/key/${testName}`).respond(
-            mockApplicationPropertyRest);
-        $httpBackend.when('GET', `${REST_API}application-properties/`).respond([mockApplicationPropertyRest]);
+        $httpBackend
+            .when('GET', `${REST_API}application-properties/key/${testName}`)
+            .respond(mockApplicationPropertyRest);
+        $httpBackend
+            .when('GET', `${REST_API}application-properties/`)
+            .respond([mockApplicationPropertyRest]);
         const httpOk = 200;
-        $httpBackend.when('DELETE', `${REST_API}application-properties/${testName}`).respond(httpOk, '');
+        $httpBackend
+            .when('DELETE', `${REST_API}application-properties/${testName}`)
+            .respond(httpOk, '');
         const httpCreated = 201;
-        $httpBackend.when('POST', `${REST_API}application-properties/${testName}`)
-            .respond(httpCreated,
-                mockApplicationPropertyRest,
-                {Location: 'http://localhost:8080/ebegu/api/v1/application-properties/key/test2'});
+        $httpBackend
+            .when('POST', `${REST_API}application-properties/${testName}`)
+            .respond(httpCreated, mockApplicationPropertyRest, {
+                Location:
+                    'http://localhost:8080/ebegu/api/v1/application-properties/key/test2'
+            });
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-
     });
 
     describe('API Usage', () => {
         describe('create', () => {
-
             it('should create property with name and value', () => {
-                $httpBackend.expectPOST(`${REST_API}application-properties/${testName}`,
-                    mockApplicationPropertyRest.value);
-                const promise = applicationPropertyRS.create(mockApplicationPropertyRest.name,
-                    mockApplicationPropertyRest.value);
+                $httpBackend.expectPOST(
+                    `${REST_API}application-properties/${testName}`,
+                    mockApplicationPropertyRest.value
+                );
+                const promise = applicationPropertyRS.create(
+                    mockApplicationPropertyRest.name,
+                    mockApplicationPropertyRest.value
+                );
                 let property: TSApplicationProperty;
 
                 promise.then(response => {
@@ -81,15 +94,14 @@ describe('ApplicationPropertyRS', () => {
                 $httpBackend.flush();
                 expect(property.name).toEqual(mockApplicationProp.name);
                 expect(property.value).toEqual(mockApplicationProp.value);
-
             });
         });
 
         describe('getAllApplicationProperties', () => {
-
             it('should fetch a list of all properties', () => {
                 $httpBackend.expectGET(`${REST_API}application-properties/`);
-                const promise = applicationPropertyRS.getAllApplicationProperties();
+                const promise =
+                    applicationPropertyRS.getAllApplicationProperties();
                 let list: TSApplicationProperty[];
 
                 promise.then(data => {
@@ -106,23 +118,21 @@ describe('ApplicationPropertyRS', () => {
         });
 
         describe('remove', () => {
-
             it('should remove a property', () => {
-                $httpBackend.expectDELETE(`${REST_API}application-properties/${testName}`);
+                $httpBackend.expectDELETE(
+                    `${REST_API}application-properties/${testName}`
+                );
                 const promise = applicationPropertyRS.remove(testName);
                 let status: number;
 
                 promise.then(response => {
                     status = response.status;
-
                 });
                 $httpBackend.flush();
                 const httpOk = 200;
                 expect(httpOk).toEqual(status);
-
             });
         });
-
     });
 
     afterEach(() => {

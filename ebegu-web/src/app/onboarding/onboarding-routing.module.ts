@@ -14,7 +14,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {HookResult, Transition} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
@@ -143,20 +146,29 @@ export const STATES: NgHybridStateDeclaration[] = [
 redirectToLandingPage.$inject = ['$transition$'];
 
 export function redirectToLandingPage(transition: Transition): HookResult {
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+    const authService: AuthServiceRS = transition
+        .injector()
+        .get('AuthServiceRS');
 
     return authService.principal$
         .pipe(
             take(1),
             map(principal => {
                 if (!principal) {
-                    return getRoleBasedTargetState(TSRole.ANONYMOUS, transition.router.stateService);
+                    return getRoleBasedTargetState(
+                        TSRole.ANONYMOUS,
+                        transition.router.stateService
+                    );
                 }
 
                 // no principal and not allowed to access the target state: redirect to default ANONYMOUS state
-                return getRoleBasedTargetState(principal.currentBerechtigung.role, transition.router.stateService);
+                return getRoleBasedTargetState(
+                    principal.currentBerechtigung.role,
+                    transition.router.stateService
+                );
             })
-        ).toPromise();
+        )
+        .toPromise();
 }
 
 disableWhenDossierExists.$inject = ['$transition$'];
@@ -164,21 +176,21 @@ disableWhenDossierExists.$inject = ['$transition$'];
 export function disableWhenDossierExists(transition: Transition): HookResult {
     const dossierService = transition.injector().get('DossierRS');
 
-    return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()
-        // when there is a dossier, redirect to gesuchsteller.dashboard
-        .then(() => transition.router.stateService.target('gesuchsteller.dashboard'))
-        // when there is no dossier, continue entering the state
-        .catch(() => true);
+    return (
+        dossierService
+            .findNewestDossierByCurrentBenutzerAsBesitzer()
+            // when there is a dossier, redirect to gesuchsteller.dashboard
+            .then(() =>
+                transition.router.stateService.target('gesuchsteller.dashboard')
+            )
+            // when there is no dossier, continue entering the state
+            .catch(() => true)
+    );
 }
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states: STATES})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ],
+    imports: [UIRouterUpgradeModule.forChild({states: STATES})],
+    exports: [UIRouterUpgradeModule],
     declarations: []
 })
-export class OnboardingRoutingModule {
-}
+export class OnboardingRoutingModule {}

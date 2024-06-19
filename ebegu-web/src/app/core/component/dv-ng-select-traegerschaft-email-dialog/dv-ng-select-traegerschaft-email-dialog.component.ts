@@ -25,7 +25,6 @@ import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
     templateUrl: './dv-ng-select-traegerschaft-email-dialog.template.html'
 })
 export class DvNgSelectTraegerschaftEmailDialogComponent {
-
     public adminMails: string[];
     public selectedMail: string;
 

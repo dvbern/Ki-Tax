@@ -18,7 +18,6 @@ import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSWizardStep extends TSAbstractMutableEntity {
-
     private _gesuchId: string;
     private _wizardStepName: TSWizardStepName;
     private _wizardStepStatus: TSWizardStepStatus;
@@ -68,5 +67,4 @@ export class TSWizardStep extends TSAbstractMutableEntity {
     public set verfuegbar(value: boolean) {
         this._verfuegbar = value;
     }
-
 }

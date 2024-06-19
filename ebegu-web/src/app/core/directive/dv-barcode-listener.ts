@@ -13,7 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IController, IDirective, IDirectiveFactory, IDocumentService, ILogService, ITimeoutService} from 'angular';
+import {
+    IController,
+    IDirective,
+    IDirectiveFactory,
+    IDocumentService,
+    ILogService,
+    ITimeoutService
+} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
@@ -50,7 +57,6 @@ export class DVBarcodeListener implements IDirective {
  * The format of an expected barcode sequence is §FREIGABE|OPEN|cd85e001-403f-407f-8eb8-102c402342b6§
  */
 export class DVBarcodeController implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         '$document',
         '$timeout',
@@ -78,26 +84,28 @@ export class DVBarcodeController implements IController {
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly gesuchRS: GesuchRS,
         private readonly $translate: ITranslateService
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         const keypressEvent = (e: any) => {
             this.barcodeOnKeyPressed(e);
         };
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
+        this.authLifeCycleService
+            .get$(TSAuthEvent.LOGIN_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.handleLoginSuccessEvent(keypressEvent),
-                err => this.$log.error(err));
+                err => this.$log.error(err)
+            );
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
+        this.authLifeCycleService
+            .get$(TSAuthEvent.LOGOUT_SUCCESS)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.handleLogoutSuccessEvent(keypressEvent),
-                err => this.$log.error(err));
-
+                err => this.$log.error(err)
+            );
     }
 
     public $onDestroy(): void {
@@ -107,7 +115,11 @@ export class DVBarcodeController implements IController {
 
     private handleLoginSuccessEvent(keypressEvent: any): void {
         this.$document.unbind('keypress', keypressEvent);
-        if (this.authService.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())) {
+        if (
+            this.authService.isOneOfRoles(
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+            )
+        ) {
             this.$document.bind('keypress', keypressEvent);
         }
     }
@@ -117,12 +129,13 @@ export class DVBarcodeController implements IController {
     }
 
     public barcodeOnKeyPressed(e: KeyboardEvent): void {
-
         if (this.barcodeReading) {
             e.preventDefault();
             if (this.isNotDelimiterKey(e)) {
                 this.barcodeBuffer.push(e.key);
-                this.$log.debug(`Current buffer: ${  this.barcodeBuffer.join('')}`);
+                this.$log.debug(
+                    `Current buffer: ${this.barcodeBuffer.join('')}`
+                );
             }
         }
 
@@ -138,7 +151,9 @@ export class DVBarcodeController implements IController {
             this.barcodeReadtimeout = this.$timeout(() => {
                 this.barcodeReading = false;
                 this.$log.debug('End Barcode read');
-                this.$log.debug(`Clearing buffer: ${  this.barcodeBuffer.join('')}`);
+                this.$log.debug(
+                    `Clearing buffer: ${this.barcodeBuffer.join('')}`
+                );
                 this.barcodeBuffer = [];
                 // eslint-disable-next-line no-magic-numbers
             }, 2000);
@@ -164,31 +179,52 @@ export class DVBarcodeController implements IController {
             this.$log.debug(`Barcode Doc Type: ${barcodeDocType}`);
             this.$log.debug(`Barcode Doc Function: ${barcodeDocFunction}`);
             this.$log.debug(`Barcode Doc ID: ${barcodeDocID}`);
-            this.$log.debug(`Barcode Doc Anzahl Zurueckgezogen: ${barcodeDocAnzahlZurueckgezogen}`);
+            this.$log.debug(
+                `Barcode Doc Anzahl Zurueckgezogen: ${barcodeDocAnzahlZurueckgezogen}`
+            );
 
             this.barcodeBuffer = [];
             this.$timeout.cancel(this.barcodeReadtimeout);
 
-            this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen)
+            this.gesuchRS
+                .findGesuchForFreigabe(
+                    barcodeDocID,
+                    barcodeDocAnzahlZurueckgezogen
+                )
                 .then((response: TSAntragDTO) => {
                     let message;
                     if (!response) {
-                        message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                        message = this.$translate.instant(
+                            'FREIGABE_GESUCH_NOT_FOUND'
+                        );
                     }
                     if (!response.canBeFreigegeben()) {
-                        message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                        message = this.$translate.instant(
+                            'FREIGABE_GESUCH_ALREADY_FREIGEGEBEN'
+                        );
                     }
-                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                        docID: barcodeDocID,
-                        errorMessage: message,
-                        gesuch: response,
-                    });
-                }).catch(error => {
-                this.errorService.addMesageAsError(this.$translate.instant('FREIGABE_GESUCH_NICHT_MOEGLICH'));
-                LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
-            });
+                    this.dVDialog.showDialogFullscreen(
+                        FREIGEBEN_DIALOG_TEMPLATE,
+                        FreigabeController,
+                        {
+                            docID: barcodeDocID,
+                            errorMessage: message,
+                            gesuch: response
+                        }
+                    );
+                })
+                .catch(error => {
+                    this.errorService.addMesageAsError(
+                        this.$translate.instant(
+                            'FREIGABE_GESUCH_NICHT_MOEGLICH'
+                        )
+                    );
+                    LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
+                });
         } else {
-            this.errorService.addMesageAsError(this.$translate.instant('BARCODE_FALSCHES_FORMAT') + barcodeRead);
+            this.errorService.addMesageAsError(
+                this.$translate.instant('BARCODE_FALSCHES_FORMAT') + barcodeRead
+            );
         }
     }
 

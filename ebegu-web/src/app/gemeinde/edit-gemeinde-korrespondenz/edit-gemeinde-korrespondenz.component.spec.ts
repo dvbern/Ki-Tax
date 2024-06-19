@@ -16,7 +16,10 @@
  */
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {
+    BrowserAnimationsModule,
+    NoopAnimationsModule
+} from '@angular/platform-browser/animations';
 import {TranslateService} from '@ngx-translate/core';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
@@ -27,34 +30,33 @@ import {GemeindeModule} from '../gemeinde.module';
 import {EditGemeindeKorrespondenzComponent} from './edit-gemeinde-korrespondenz.component';
 
 describe('EditGemeindeKorrespondenzComponent', () => {
-
     let component: EditGemeindeKorrespondenzComponent;
     let fixture: ComponentFixture<EditGemeindeKorrespondenzComponent>;
 
-    const gemeindeRSSpy = jasmine
-        .createSpyObj<GemeindeRS>(GemeindeRS.name, ['downloadMusterDokument']);
-    const downloadRSSpy = jasmine
-        .createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
-    const translateRSSpy = jasmine
-        .createSpyObj<TranslateService>(TranslateService.name, ['instant', 'setDefaultLang', 'use']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'downloadMusterDokument'
+    ]);
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'openDownload'
+    ]);
+    const translateRSSpy = jasmine.createSpyObj<TranslateService>(
+        TranslateService.name,
+        ['instant', 'setDefaultLang', 'use']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                MaterialModule,
-                GemeindeModule
-            ],
+            imports: [SharedModule, MaterialModule, GemeindeModule],
             schemas: [],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: TranslateService, useValue: translateRSSpy}
             ],
-            declarations: [
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+            declarations: []
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {

@@ -16,7 +16,6 @@
 import {TSAbstractAntragDTO} from '../TSAbstractAntragDTO';
 
 export class TSSearchResultEntry {
-
     private _additionalInformation: string;
     private _antragDTO: TSAbstractAntragDTO;
     private _entity: string;
@@ -26,8 +25,7 @@ export class TSSearchResultEntry {
     private _dossierId: string;
     private _text: string;
 
-    public constructor() {
-    }
+    public constructor() {}
 
     public get additionalInformation(): string {
         return this._additionalInformation;

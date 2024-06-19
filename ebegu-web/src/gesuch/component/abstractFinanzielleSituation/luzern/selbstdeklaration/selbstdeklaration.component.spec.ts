@@ -33,12 +33,17 @@ import {SelbstdeklarationComponent} from './selbstdeklaration.component';
 describe('SelbstdeklarationComponent', () => {
     let component: SelbstdeklarationComponent;
     let fixture: ComponentFixture<SelbstdeklarationComponent>;
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-        ['getGesuch', 'getBasisjahr']);
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch', 'getBasisjahr']
+    );
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
@@ -60,7 +65,8 @@ describe('SelbstdeklarationComponent', () => {
         component = fixture.componentInstance;
         component.model = new TSFinanzielleSituation();
         component.finanzModel = new TSFinanzModel(0, false, 1);
-        component.finanzModel.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
+        component.finanzModel.finanzielleSituationContainerGS1 =
+            new TSFinanzielleSituationContainer();
         fixture.detectChanges();
     });
 

@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import * as moment from 'moment';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -27,18 +34,18 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungMitteilungenComponent implements OnInit, OnChanges {
-
     @Input()
     public rueckforderungMitteilungen: TSRueckforderungMitteilung[];
 
-    public constructor(
-    ) {}
+    public constructor() {}
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.rueckforderungMitteilungen || !changes.rueckforderungMitteilungen.currentValue) {
+        if (
+            !changes.rueckforderungMitteilungen ||
+            !changes.rueckforderungMitteilungen.currentValue
+        ) {
             return;
         }
         this.rueckforderungMitteilungen.sort((a, b) => {

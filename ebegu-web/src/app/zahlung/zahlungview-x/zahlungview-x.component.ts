@@ -1,5 +1,12 @@
 import {CurrencyPipe} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
@@ -30,12 +37,12 @@ const LOG = LogFactory.createLog('ZahlungviewXComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZahlungviewXComponent implements OnInit, AfterViewInit {
-
     @ViewChild(MatSort) public sort: MatSort;
 
     private zahlungen: TSZahlung[] = [];
     private isMahlzeitenzahlungen: boolean = false;
-    public datasource: MatTableDataSource<TSZahlung> = new MatTableDataSource<TSZahlung>([]);
+    public datasource: MatTableDataSource<TSZahlung> =
+        new MatTableDataSource<TSZahlung>([]);
 
     public itemsByPage: number = 20;
     public tableColumns: any[];
@@ -43,20 +50,19 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
     private principal: TSBenutzer;
 
     public constructor(
-            private readonly $state: StateService,
-            private readonly downloadRS: DownloadRS,
-            private readonly reportRS: ReportRS,
-            private readonly zahlungRS: ZahlungRS,
-            private readonly authServiceRS: AuthServiceRS,
-            private readonly routerGlobals: UIRouterGlobals,
-            private readonly translate: TranslateService,
-            private readonly currency: CurrencyPipe,
-            private readonly cd: ChangeDetectorRef,
-            private readonly errorService: ErrorService,
-            private readonly transition: TransitionService,
-            private readonly stateStore: StateStoreService
-    ) {
-    }
+        private readonly $state: StateService,
+        private readonly downloadRS: DownloadRS,
+        private readonly reportRS: ReportRS,
+        private readonly zahlungRS: ZahlungRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly routerGlobals: UIRouterGlobals,
+        private readonly translate: TranslateService,
+        private readonly currency: CurrencyPipe,
+        private readonly cd: ChangeDetectorRef,
+        private readonly errorService: ErrorService,
+        private readonly transition: TransitionService,
+        private readonly stateStore: StateStoreService
+    ) {}
 
     public ngOnInit(): void {
         if (this.routerGlobals.params.isMahlzeitenzahlungen) {
@@ -64,30 +70,35 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
         }
 
         this.authServiceRS.principal$
-                .pipe(
-                        switchMap(principal => {
-                            if (principal) {
-                                this.principal = principal;
-                                const zahlungsauftragId = this.routerGlobals.params.zahlungsauftragId;
-                                if (this.routerGlobals.params.zahlungsauftragId) {
-                                    return this.zahlungRS.getZahlungsauftragForRole$(
-                                            principal.getCurrentRole(), zahlungsauftragId);
-                                }
-                            }
+            .pipe(
+                switchMap(principal => {
+                    if (principal) {
+                        this.principal = principal;
+                        const zahlungsauftragId =
+                            this.routerGlobals.params.zahlungsauftragId;
+                        if (this.routerGlobals.params.zahlungsauftragId) {
+                            return this.zahlungRS.getZahlungsauftragForRole$(
+                                principal.getCurrentRole(),
+                                zahlungsauftragId
+                            );
+                        }
+                    }
 
-                            return of(null);
-                        }),
-                        map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : [])
+                    return of(null);
+                }),
+                map(zahlungsauftrag =>
+                    zahlungsauftrag ? zahlungsauftrag.zahlungen : []
                 )
-                .subscribe(
-                        zahlungen => {
-                            this.zahlungen = zahlungen;
-                            this.datasource.data = zahlungen;
-                            this.datasource.sort = this.sort;
-                            this.cd.markForCheck();
-                        },
-                        err => LOG.error(err)
-                );
+            )
+            .subscribe(
+                zahlungen => {
+                    this.zahlungen = zahlungen;
+                    this.datasource.data = zahlungen;
+                    this.datasource.sort = this.sort;
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err)
+            );
         this.setupTableColumns();
 
         this.transition.onStart({exiting: 'zahlung.view'}, () => {
@@ -105,7 +116,9 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
             this.sort.direction = stored.direction;
-            (this.sort.sortables.get(stored.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+            (
+                this.sort.sortables.get(stored.active) as MatSortHeader
+            )?._setAnimationTransitionState({toState: 'active'});
         }
     }
 
@@ -117,33 +130,51 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
     public downloadDetails(zahlung: TSZahlung): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.reportRS.getZahlungReportExcel(zahlung.id)
-                .then((downloadFile: TSDownloadFile) => {
-                    this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-                })
-                .catch(() => {
-                    win.close();
-                });
+        this.reportRS
+            .getZahlungReportExcel(zahlung.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 
     public bestaetigen(zahlung: TSZahlung): void {
-        this.zahlungRS.zahlungBestaetigen(zahlung.id).subscribe((response: TSZahlung) => {
-                    const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungen);
-                    if (index < 0) {
-                        return;
-                    }
-                    this.zahlungen[index] = response;
-                    this.datasource.data = this.zahlungen;
-                    this.cd.markForCheck();
-                },
-                error => this.errorService.addMesageAsError(error?.translatedMessage || this.translate.instant(
-                        'ERROR_UNEXPECTED')));
+        this.zahlungRS.zahlungBestaetigen(zahlung.id).subscribe(
+            (response: TSZahlung) => {
+                const index = EbeguUtil.getIndexOfElementwithID(
+                    response,
+                    this.zahlungen
+                );
+                if (index < 0) {
+                    return;
+                }
+                this.zahlungen[index] = response;
+                this.datasource.data = this.zahlungen;
+                this.cd.markForCheck();
+            },
+            error =>
+                this.errorService.addMesageAsError(
+                    error?.translatedMessage ||
+                        this.translate.instant('ERROR_UNEXPECTED')
+                )
+        );
     }
 
     public canBestaetigen(zahlungsstatus: TSZahlungsstatus): boolean {
-        return zahlungsstatus === TSZahlungsstatus.AUSGELOEST &&
-                this.principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) &&
-                !this.isMahlzeitenzahlungen;
+        return (
+            zahlungsstatus === TSZahlungsstatus.AUSGELOEST &&
+            this.principal.hasOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionRoles()
+            ) &&
+            !this.isMahlzeitenzahlungen
+        );
     }
 
     private setupTableColumns(): void {
@@ -153,21 +184,28 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
                 attributeName: 'empfaengerName'
             },
             {
-                displayedName: this.translate.instant('ZAHLUNG_BETREUUNGSANGEBOTTYP'),
+                displayedName: this.translate.instant(
+                    'ZAHLUNG_BETREUUNGSANGEBOTTYP'
+                ),
                 attributeName: 'betreuungsangebotTyp',
-                displayFunction: (angebotTyp: TSBetreuungsangebotTyp) => this.translate.instant(angebotTyp)
+                displayFunction: (angebotTyp: TSBetreuungsangebotTyp) =>
+                    this.translate.instant(angebotTyp)
             },
             {
                 displayedName: this.translate.instant('ZAHLUNG_TOTAL'),
                 attributeName: 'betragTotalZahlung',
-                displayFunction: (betrag: number) => this.currency.transform(betrag, '', '')
+                displayFunction: (betrag: number) =>
+                    this.currency.transform(betrag, '', '')
             }
         ];
     }
 
     public getDisplayValue(element: any, column: any): string {
         if (column.displayFunction !== undefined) {
-            return column.displayFunction(element[column.attributeName], element);
+            return column.displayFunction(
+                element[column.attributeName],
+                element
+            );
         }
         return element[column.attributeName];
     }

@@ -26,8 +26,7 @@ import {TSInternePendenz} from '../../../../models/TSInternePendenz';
     styleUrls: ['./interne-pendenz-dialog.component.less']
 })
 export class InternePendenzDialogComponent implements OnInit {
-
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
 
     public internePendenz: TSInternePendenz;
     public readonlyMode = false;
@@ -40,8 +39,7 @@ export class InternePendenzDialogComponent implements OnInit {
         this.readonlyMode = !this.isNew();
     }
 
-    public ngOnInit(): void {
-    }
+    public ngOnInit(): void {}
 
     public close(): void {
         this.dialogRef.close();

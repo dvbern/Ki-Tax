@@ -30,7 +30,6 @@ const LOG = LogFactory.createLog('VersionService');
     providedIn: 'root'
 })
 export class VersionService implements OnDestroy {
-
     private readonly _$versionMismatch: Subject<string> = new Subject();
     private readonly _$backendVersionChange: Subject<string> = new Subject();
     private _backendVersion: string;
@@ -39,25 +38,24 @@ export class VersionService implements OnDestroy {
 
     private readonly _$unsubcribe: Subject<boolean> = new Subject();
 
-    public constructor() {
-    }
+    public constructor() {}
 
-    private static hasVersionCompatibility(frontendVersion: string, backendVersion: string): boolean {
+    private static hasVersionCompatibility(
+        frontendVersion: string,
+        backendVersion: string
+    ): boolean {
         // Wir erwarten, dass die Versionsnummern im Frontend und Backend immer synchronisiert werden
         return frontendVersion === backendVersion;
     }
 
     public get $versionMismatch(): Observable<string> {
-        return this._$versionMismatch.asObservable()
-                .pipe(
-                        takeUntil(this._$unsubcribe)
-                );
+        return this._$versionMismatch
+            .asObservable()
+            .pipe(takeUntil(this._$unsubcribe));
     }
 
     public get $backendVersionChange(): Observable<string> {
-        return this._$backendVersionChange.pipe(
-            takeUntil(this._$unsubcribe)
-        );
+        return this._$backendVersionChange.pipe(takeUntil(this._$unsubcribe));
     }
 
     public ngOnDestroy(): void {
@@ -69,7 +67,6 @@ export class VersionService implements OnDestroy {
     }
 
     public updateBackendVersion(newVersion: string): void {
-
         if (this.eventCaptured && newVersion === this._backendVersion) {
             // if the event hasn't been captured yet we wait until it gets captured
             return;
@@ -81,7 +78,12 @@ export class VersionService implements OnDestroy {
 
         this._backendVersion = newVersion;
 
-        if (VersionService.hasVersionCompatibility(VERSION, this._backendVersion)) {
+        if (
+            VersionService.hasVersionCompatibility(
+                VERSION,
+                this._backendVersion
+            )
+        ) {
             // could throw match event here but currently there is no action we want to perform when it matches
             return;
         }
@@ -90,11 +92,9 @@ export class VersionService implements OnDestroy {
         // After caturing the event this should be set to true
         this.eventCaptured = false;
         this.versionMismatch(this._backendVersion);
-
     }
 
     private versionMismatch(backendVersion: string): void {
         this._$versionMismatch.next(backendVersion);
     }
-
 }
