@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {WarningComponent} from '../../../app/shared/component/warning/warning.component';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {
     DvNgGsRemovalConfirmationDialogComponent,
@@ -37,6 +38,7 @@ import {FamiliensituationViewXComponent} from './familiensituation-view-x/famili
     imports: [
         CommonModule,
         SharedModule,
+        WarningComponent,
     ],
 })
 export class FamiliensituationModule {
