@@ -133,13 +133,24 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 		);
 	}
 
-	private BigDecimal calculateFreibetragReinvermoegen(@Nonnull AbstractFinanzielleSituation finanzielleSituation, @Nullable AbstractFinanzielleSituation finanzielleSituationOtherGS) {
-		BigDecimal freibetrag = MathUtil.EXACT.multiply(new BigDecimal(200_000), requireNonNullElse(finanzielleSituation.getSteuerbaresVermoegen(), BigDecimal.ZERO));
-		BigDecimal totalVermoegen = add(finanzielleSituation.getSteuerbaresVermoegen(), finanzielleSituationOtherGS != null ? finanzielleSituationOtherGS.getSteuerbaresVermoegen() : BigDecimal.ZERO);
-		return BigDecimal.ZERO.compareTo(totalVermoegen) < 0 ? freibetrag.divide(totalVermoegen) : BigDecimal.ZERO;
+	private BigDecimal calculateFreibetragReinvermoegen(
+		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationOtherGS) {
+		BigDecimal steuerbaresVermoegen = requireNonNullElse(finanzielleSituation.getSteuerbaresVermoegen(), BigDecimal.ZERO);
+		BigDecimal steuerbaresVermoegenOtherGS =
+			finanzielleSituationOtherGS != null ? finanzielleSituationOtherGS.getSteuerbaresVermoegen() : BigDecimal.ZERO;
+
+		BigDecimal freibetrag = MathUtil.EXACT.multiply(new BigDecimal(200_000), steuerbaresVermoegen);
+		BigDecimal totalVermoegen = add(steuerbaresVermoegen, steuerbaresVermoegenOtherGS);
+
+		return BigDecimal.ZERO.compareTo(totalVermoegen) < 0 ?
+			MathUtil.EXACT.divide(freibetrag, totalVermoegen) :
+			BigDecimal.ZERO;
 	}
 
-	private BigDecimal calculateForNichtQuellenBesteuerte(@Nonnull AbstractFinanzielleSituation finanzielleSituation, BigDecimal freibetragReinvermoegen) {
+	private BigDecimal calculateForNichtQuellenBesteuerte(
+		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
+		BigDecimal freibetragReinvermoegen) {
 		return calculateMassgebendesEinkommen(
 			calcEinkommen(finanzielleSituation),
 			calcEinkaeufeVorsorge(finanzielleSituation),
@@ -164,7 +175,9 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 	}
 
 	@Nonnull
-	private BigDecimal calcReinvermoegenNachAbzug(@Nonnull AbstractFinanzielleSituation finanzielleSituation, @Nonnull BigDecimal freibetragReinvermoegen) {
+	private BigDecimal calcReinvermoegenNachAbzug(
+		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
+		@Nonnull BigDecimal freibetragReinvermoegen) {
 		var reinvermoegenMitAbzug = subtract(finanzielleSituation.getSteuerbaresVermoegen(), freibetragReinvermoegen);
 
 		return BigDecimal.ZERO.compareTo(reinvermoegenMitAbzug) < 0 ?
