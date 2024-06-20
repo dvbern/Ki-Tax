@@ -266,11 +266,15 @@ export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(
     );
 }
 
-export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(status: TSAntragStatus): boolean {
-    return isAnyStatusOfVerfuegtButSchulamt(status)
-        || status === TSAntragStatus.GEPRUEFT
-        || status === TSAntragStatus.VERFUEGEN
-        || status === TSAntragStatus.NUR_SCHULAMT;
+export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(
+    status: TSAntragStatus
+): boolean {
+    return (
+        isAnyStatusOfVerfuegtButSchulamt(status) ||
+        status === TSAntragStatus.GEPRUEFT ||
+        status === TSAntragStatus.VERFUEGEN ||
+        status === TSAntragStatus.NUR_SCHULAMT
+    );
 }
 
 /**

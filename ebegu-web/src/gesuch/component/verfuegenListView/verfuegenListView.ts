@@ -461,11 +461,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     elementID: undefined
                 }
             )
-            .then(() => this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
-            this.gesuchModelManager.setGesuch(response);
-            this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-            return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch()
-        );
+            .then(() =>
+                this.gesuchRS
+                    .closeWithoutAngebot(this.gesuchModelManager.getGesuch().id)
+                    .then(response => {
+                        this.gesuchModelManager.setGesuch(response);
+                        this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
+                        return this.refreshKinderListe().then(() =>
+                            this.gesuchModelManager.getGesuch()
+                        );
                     })
             );
     }
@@ -477,31 +481,41 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 removeDialogTempl,
                 this.form,
                 RemoveDialogController,
-                {title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
-            deleteText: deleteTextValue,
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
-            .then(
-                response => {
-                    if (response.status === TSAntragStatus.NUR_SCHULAMT) {
-                        // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even
-                        // to
-                        // see this gesuch any more For this reason we have to navigate directly out of the gesuch
-                        // once it has been saved. We navigate to the default start page for the current role.
-                        // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes
-                        // for the role JA and is only available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA
-                        // doesn't need the PDFs to be created. When a Schulamt worker opens this Gesuch, she can
-                        // generate the PDFs by clicking on the corresponding links
-                        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state
-                        );return this.gesuchModelManager.getGesuch();
-                    }
-                    // for NUR_SCHULAMT this makes no sense
-                    this.gesuchModelManager.setGesuch(response);
-                    this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
-                                              // clean setzen
-                    return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch()
-                );
+                {
+                    title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
+                    deleteText: deleteTextValue,
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .verfuegenStarten(this.gesuchModelManager.getGesuch().id)
+                    .then(response => {
+                        if (response.status === TSAntragStatus.NUR_SCHULAMT) {
+                            // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even
+                            // to
+                            // see this gesuch any more For this reason we have to navigate directly out of the gesuch
+                            // once it has been saved. We navigate to the default start page for the current role.
+                            // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes
+                            // for the role JA and is only available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA
+                            // doesn't need the PDFs to be created. When a Schulamt worker opens this Gesuch, she can
+                            // generate the PDFs by clicking on the corresponding links
+                            navigateToStartPageForRole(
+                                this.authServiceRs
+                                    .getPrincipal()
+                                    .getCurrentRole(),
+                                this.$state
+                            );
+                            return this.gesuchModelManager.getGesuch();
+                        }
+                        // for NUR_SCHULAMT this makes no sense
+                        this.gesuchModelManager.setGesuch(response);
+                        this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
+                        // clean setzen
+                        return this.refreshKinderListe().then(() =>
+                            this.gesuchModelManager.getGesuch()
+                        );
                     })
             );
     }
@@ -918,13 +932,19 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isBedarfsstufeNotSelected(): boolean {
-        const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
+        const kinderWithBetreuung: TSKindContainer[] =
+            this.gesuchModelManager.getKinderWithBetreuungList();
         let isSelected = false;
 
         kinderWithBetreuung.some(kind => {
-            if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
+            if (
+                kind.kindJA
+                    ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true
+            ) {
                 kind.betreuungen?.every(betreuung => {
-                    isSelected = EbeguUtil.isNullOrUndefined(betreuung.bedarfsstufe);
+                    isSelected = EbeguUtil.isNullOrUndefined(
+                        betreuung.bedarfsstufe
+                    );
                 });
             }
         });
@@ -932,8 +952,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isRolleGemeinde(): boolean {
-        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())
-            || this.authServiceRs.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+        return (
+            this.authServiceRs.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            ) ||
+            this.authServiceRs.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())
+        );
     }
 
     public isFinSitAbglehnt(): boolean {
@@ -969,14 +993,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 removeDialogTempl,
                 this.form,
                 RemoveDialogController,
-                {title: 'BESCHWERDE_HAENGIG',
-            deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.setBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
-            this.gesuchModelManager.setGesuch(gesuch);
-            return this.gesuchModelManager.getGesuch();
-        }));
+                {
+                    title: 'BESCHWERDE_HAENGIG',
+                    deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .setBeschwerdeHaengig(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        return this.gesuchModelManager.getGesuch();
+                    })
+            );
     }
 
     public setGesuchStatusBeschwerdeAbschliessen(): IPromise<TSGesuch> {
@@ -985,14 +1016,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 removeDialogTempl,
                 this.form,
                 RemoveDialogController,
-                {title: 'BESCHWERDE_ABSCHLIESSEN',
-            deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
-            this.gesuchModelManager.setGesuch(gesuch);
-            return this.gesuchModelManager.getGesuch();
-        }));
+                {
+                    title: 'BESCHWERDE_ABSCHLIESSEN',
+                    deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .removeBeschwerdeHaengig(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        return this.gesuchModelManager.getGesuch();
+                    })
+            );
     }
 
     public setGesuchStatusKeinKontingent(): IPromise<TSGesuch> {
@@ -1072,7 +1110,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public getVeraenderungBgString(): string {
-        let roundedVeranderung = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        let roundedVeranderung = EbeguUtil.roundToFiveRappen(
+            this.veraenderungBG
+        );
         let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
 
         if (roundedVeranderung < 0) {
@@ -1080,7 +1120,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             roundedVeranderung *= -1;
         }
 
-        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung.toFixed(2)});
+        return this.$translate.instant(translationId, {
+            veraenderung: roundedVeranderung.toFixed(2)
+        });
     }
 
     public getVeraenderungTsString(): string {
@@ -1092,7 +1134,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             veranderung *= -1;
         }
 
-        return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
+        return this.$translate.instant(translationId, {
+            veraenderung: veranderung.toFixed(2)
+        });
     }
 
     public isGesuchIgnoriert(): boolean {
@@ -1123,59 +1167,101 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.VERFUEGEN,
-            TSWizardStepStatus.WARTEN);
+            TSWizardStepStatus.WARTEN
+        );
 
         // Berechnung aller finanziellen Daten
         const gesuch = this.gesuchModelManager.getGesuch();
         if (!this.berechnungsManager.finanzielleSituationResultate) {
             this.berechnungsManager.calculateFinanzielleSituation(gesuch);
         }
-        if (gesuch?.extractEinkommensverschlechterungInfo()?.ekvFuerBasisJahrPlus1
-            && !this.berechnungsManager.einkommensverschlechterungResultateBjP1) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 1);
+        if (
+            gesuch?.extractEinkommensverschlechterungInfo()
+                ?.ekvFuerBasisJahrPlus1 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP1
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                1
+            );
         }
-        if (gesuch?.extractEinkommensverschlechterungInfo()?.ekvFuerBasisJahrPlus2
-            && !this.berechnungsManager.einkommensverschlechterungResultateBjP2) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 2);
+        if (
+            gesuch?.extractEinkommensverschlechterungInfo()
+                ?.ekvFuerBasisJahrPlus2 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP2
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                2
+            );
         }
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
         // eslint-disable-next-line
-        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                this.kontingentierungEnabled = JSON.parse(response.value);
-            }, error => LOG.error(error));
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuchsperiode()
+            )
+        ) {
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.kontingentierungEnabled = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
 
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
-            }, error => LOG.error(error));
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                this.minPensumSprachlicheIndikation = Number(response.value);
-            }, error => LOG.error(error));
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.minPensumSprachlicheIndikation = Number(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
 
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                this.hoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
-            }, error => LOG.error(error));
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.hoehereBeitraegeBeeintraechtigungAktiviert =
+                            JSON.parse(response.value);
+                    },
+                    error => LOG.error(error)
+                );
         }
 
         this.isBedarfsstufeNotSelected();
@@ -1183,7 +1269,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     private refreshKinderListe(): IPromise<any> {
         return this.gesuchModelManager.calculateVerfuegungen().then(() => {
-            this.kinderWithBetreuungList = this.gesuchModelManager.getKinderWithBetreuungList();
+            this.kinderWithBetreuungList =
+                this.gesuchModelManager.getKinderWithBetreuungList();
             this.calculateVeraenderung();
         });
     }
@@ -1220,9 +1307,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                         TSBetreuungsangebotTyp.FERIENINSEL
                 )
                 .forEach(betreuung => {
-                    this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung?.ignorable;
-                    if (EbeguUtil.isNullOrUndefined(betreuung.verfuegung?.veraenderungVerguenstigungGegenueberVorgaenger
-                        )|| isBetreuungsstatusStorniert(betreuung.betreuungsstatus)) {
+                    this.allVerfuegungenIgnorable =
+                        this.allVerfuegungenIgnorable &&
+                        betreuung.verfuegung?.ignorable;
+                    if (
+                        EbeguUtil.isNullOrUndefined(
+                            betreuung.verfuegung
+                                ?.veraenderungVerguenstigungGegenueberVorgaenger
+                        ) ||
+                        isBetreuungsstatusStorniert(betreuung.betreuungsstatus)
+                    ) {
                         this.hasAnyNewOrStornierteBetreuung = true;
                         return;
                     }
@@ -1286,8 +1380,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private loadNeustesVerfuegtesGesuchFuerGesuch(): void {
-        this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
-            (response: any) => (this.letzteIgnorierteGesuchId = response.id)
+        this.gesuchRS
+            .getNeustesVerfuegtesGesuchFuerGesuch(
+                this.gesuchModelManager.getGesuch().id
+            )
+            .then(
+                (response: any) => (this.letzteIgnorierteGesuchId = response.id)
             );
     }
 

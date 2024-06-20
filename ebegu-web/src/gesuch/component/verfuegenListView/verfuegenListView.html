@@ -30,18 +30,27 @@
                 <div class="row">
                     <div class="col-md-12 table-responsive">
                         <table
-                            aria-describedby="displayedCollection" class="table table-hover"
-                               st-delay="20" st-safe-src="vm.getKinderWithBetreuungList()"
-                               st-table="displayedCollection">
+                            aria-describedby="displayedCollection"
+                            class="table table-hover"
+                            st-delay="20"
+                            st-safe-src="vm.getKinderWithBetreuungList()"
+                            st-table="displayedCollection"
+                        >
                             <thead>
-                            <tr class="dv-tr-verfuegen">
-                                <th data-translate="KIND"></th>
-                                <th data-translate="INSTITUTION"></th>
-                                <th data-translate="BETREUUNGSANGEBOT"></th>
-                                <th data-translate="REFERENZ_NUMMER"></th>
-                                <th class="dv-th-verfuegen-status" data-translate="STATUS"></th>
-                                <th data-translate="GUELTIGE_BETREUUNG" ng-show="vm.isSuperAdmin()"></th>
-                                <th></th>
+                                <tr class="dv-tr-verfuegen">
+                                    <th data-translate="KIND"></th>
+                                    <th data-translate="INSTITUTION"></th>
+                                    <th data-translate="BETREUUNGSANGEBOT"></th>
+                                    <th data-translate="REFERENZ_NUMMER"></th>
+                                    <th
+                                        class="dv-th-verfuegen-status"
+                                        data-translate="STATUS"
+                                    ></th>
+                                    <th
+                                        data-translate="GUELTIGE_BETREUUNG"
+                                        ng-show="vm.isSuperAdmin()"
+                                    ></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody
@@ -124,9 +133,16 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody ng-if="vm.getKinderWithBetreuungList().length === 0">
-                            <tr>
-                                <td class="empty-table" colspan="5" data-translate="VERFUEGUNGEN_NOCH_KEINE"
+                            <tbody
+                                ng-if="
+                                    vm.getKinderWithBetreuungList().length === 0
+                                "
+                            >
+                                <tr>
+                                    <td
+                                        class="empty-table"
+                                        colspan="5"
+                                        data-translate="VERFUEGUNGEN_NOCH_KEINE"
                                     ></td>
                                 </tr>
                             </tbody>
@@ -150,24 +166,40 @@
                 </div>
 
                 <!-- Bedarfsstufe Error Message -->
-                <div class="row margin-top-30"
-                     ng-if="vm.isBedarfsstufeNotSelected() && vm.isRolleGemeinde() && vm.isHoehereBeitraegeBeeintraechtigungAktiviert()">
-                    <div class="well well-status-abgewiesen" ng-bind-html="'BEDARFSSTUFE_MISSING_BEDARFSSTUFE' | translate">
-                    </div>
+                <div
+                    class="row margin-top-30"
+                    ng-if="
+                        vm.isBedarfsstufeNotSelected() &&
+                        vm.isRolleGemeinde() &&
+                        vm.isHoehereBeitraegeBeeintraechtigungAktiviert()
+                    "
+                >
+                    <div
+                        class="well well-status-abgewiesen"
+                        ng-bind-html="'BEDARFSSTUFE_MISSING_BEDARFSSTUFE' | translate"
+                    ></div>
                 </div>
 
                 <!--FinSitStatus-->
-                <div class="row margin-top-30"
-                     ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchstellerOrSozialdienst()">
+                <div
+                    class="row margin-top-30"
+                    ng-if="
+                        vm.mustFinanzielleSituationBeValidated() &&
+                        !vm.isGesuchstellerOrSozialdienst()
+                    "
+                >
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
-                            <dv-radio-container class="input-element"
+                            <dv-radio-container
+                                class="input-element"
                                 dv-enable-element
                                 dv-enable-expression="!vm.isGesuchReadonly() && !vm.isInstitutionRoles()"
                                 items="vm.finSitStatus"
-                                                name="finSitStatus" ng-change="vm.changeFinSitStatus()"
-                                                ng-model="vm.getGesuch().finSitStatus"
-                                                ng-required="vm.isFinSitStatusRequired()">
+                                name="finSitStatus"
+                                ng-change="vm.changeFinSitStatus()"
+                                ng-model="vm.getGesuch().finSitStatus"
+                                ng-required="vm.isFinSitStatusRequired()"
+                            >
                             </dv-radio-container>
                             <dv-error-messages
                                 class="error"
@@ -177,8 +209,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                     dv-show-element>
+                <div
+                    class="row"
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                    dv-show-element
+                >
                     <dv-demo-feature-wrapper
                         [demo-feature]="
                             vm.demoFeatureFachstelleUebergangsloesung
@@ -199,19 +234,33 @@
                     </dv-demo-feature-wrapper>
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
                     <div ng-if="vm.showSimulationVeranderung()">
-                        <div class="well margin-top-20" ng-if="
+                        <div
+                            class="well margin-top-20"
+                            ng-if="
                                 vm.hasMutationVeranderung() &&
                                 !vm.hasAnyNewOrStornierteBetreuung
                             "
                         >
                             <span translate>MUTATION_VERAENDERUNG_1</span>
                             <ul>
-                                <li ng-if="vm.veraenderungBG !== 0"><span>{{ vm.getVeraenderungBgString() }}</span></li>
-                                <li ng-if="vm.veraenderungTS !== 0"><span>{{ vm.getVeraenderungTsString() }}</span></li>
+                                <li ng-if="vm.veraenderungBG !== 0">
+                                    <span>{{
+                                        vm.getVeraenderungBgString()
+                                    }}</span>
+                                </li>
+                                <li ng-if="vm.veraenderungTS !== 0">
+                                    <span>{{
+                                        vm.getVeraenderungTsString()
+                                    }}</span>
+                                </li>
                             </ul>
                         </div>
-                        <div class="well margin-top-20"
-                             ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung"
+                        <div
+                            class="well margin-top-20"
+                            ng-if="
+                                !vm.hasMutationVeranderung() &&
+                                !vm.hasAnyNewOrStornierteBetreuung
+                            "
                         >
                             <span translate>MUTATION_KEINE_VERAENDERUNG</span>
                         </div>
@@ -226,8 +275,12 @@
                     </div>
                     <!-- Bei ignorierte Gesuchen einen Info zeigen -->
                     <div class="well" ng-if="vm.isGesuchIgnoriert()">
-                        <span>{{ 'GESUCH_IGNORIERT'|translate }}
-                            <a href="" ng-click="vm.gotoLetzterGueltigerAntrag()">{{ 'LETZTER_GUELTIGE_ANTRAG'|translate }}</a
+                        <span
+                            >{{ 'GESUCH_IGNORIERT' | translate }}
+                            <a
+                                href=""
+                                ng-click="vm.gotoLetzterGueltigerAntrag()"
+                                >{{ 'LETZTER_GUELTIGE_ANTRAG' | translate }}</a
                             >
                             <dv-tooltip
                                 text="'GESUCH_IGNORIERT_HELP' | translate"
@@ -240,10 +293,14 @@
                         ng-show="vm.showVerfuegungEingeschriebenSenden()"
                     >
                         <div class="checkbox">
-                            <md-checkbox aria-label="{{'VERFUEGUNG_EINGESCHRIEBEN' | translate}}"
-                                         name="eingeschrieben"
-                                         ng-change="vm.verfuegungEingeschriebenChanged()"
-                                         ng-model="vm.getGesuch().verfuegungEingeschrieben">
+                            <md-checkbox
+                                aria-label="{{
+                                    'VERFUEGUNG_EINGESCHRIEBEN' | translate
+                                }}"
+                                name="eingeschrieben"
+                                ng-change="vm.verfuegungEingeschriebenChanged()"
+                                ng-model="vm.getGesuch().verfuegungEingeschrieben"
+                            >
                                 <span
                                     data-translate="VERFUEGUNG_EINGESCHRIEBEN"
                                 ></span>
@@ -256,13 +313,18 @@
                     </div>
                 </div>
                 <!--FinanzielleSituationPDF anzeigen-->
-                <div class="row text-left" dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                     dv-show-element
+                <div
+                    class="row text-left"
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-show-element
                     dv-show-expression="vm.isFinanziellesituationPDFVisible()"
                 >
                     <div class="col-md-12">
-                        <button class="dv-btn btn-link link-underline" ng-click="vm.openFinanzielleSituationPDF()"
-                                type="button">
+                        <button
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openFinanzielleSituationPDF()"
+                            type="button"
+                        >
                             <i class="fa fa-file-text-o"></i>
                             <span
                                 data-translate="PDF_FINSITUATION_ANZEIGEN"
@@ -276,9 +338,11 @@
                     ng-show="vm.isBegleitschreibenVisible()"
                 >
                     <div class="col-md-12">
-
-                        <button class="dv-btn btn-link link-underline" ng-click="vm.openBegleitschreibenPDF()"
-                                type="button">
+                        <button
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openBegleitschreibenPDF()"
+                            type="button"
+                        >
                             <i class="fa fa-file-text-o"></i>
                             <span
                                 data-translate="PDF_BEGLEITSCHREIBEN_ANZEIGEN"
@@ -292,9 +356,11 @@
                     ng-show="vm.isKompletteKorrespondenzVisible()"
                 >
                     <div class="col-md-12">
-
-                        <button class="dv-btn btn-link link-underline" ng-click="vm.openKompletteKorrespondenzPDF()"
-                                type="button">
+                        <button
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openKompletteKorrespondenzPDF()"
+                            type="button"
+                        >
                             <i class="fa fa-file-text-o"></i>
                             <span
                                 data-translate="PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN"
@@ -312,8 +378,15 @@
                         <h2 data-translate="MAHNUNGEN"></h2>
                         <hr class="header" />
                     </div>
-                    <div class="col-md-12" ng-repeat="mahn in vm.getMahnungList()">
-                        <button class="dv-btn btn-link link-underline" ng-click="vm.openMahnungPDF(mahn)" type="button">
+                    <div
+                        class="col-md-12"
+                        ng-repeat="mahn in vm.getMahnungList()"
+                    >
+                        <button
+                            class="dv-btn btn-link link-underline"
+                            ng-click="vm.openMahnungPDF(mahn)"
+                            type="button"
+                        >
                             <i class="fa fa-file-text-o"></i>
                             <span
                                 data-translate="MAHNUNG_DETAIL"
@@ -372,14 +445,24 @@
                         ></h3>
                         <hr class="header" />
                         <div class="row">
-                            <dv-input-container class="col-md-12 form-group kommentar-feld">
-                                <label class="md-no-float" data-translate="MAHNUNG_FEHLENDE_DOKUMENTE"
-                                       for="bemerkungenID"></label>
-                                <textarea aria-describedby="bemerkungenID-error" class="form-control input-element"
+                            <dv-input-container
+                                class="col-md-12 form-group kommentar-feld"
+                            >
+                                <label
+                                    class="md-no-float"
+                                    data-translate="MAHNUNG_FEHLENDE_DOKUMENTE"
+                                    for="bemerkungenID"
+                                ></label>
+                                <textarea
+                                    aria-describedby="bemerkungenID-error"
+                                    class="form-control input-element"
                                     id="bemerkungenID"
-                                    maxlength="4000" md-no-autogrow
-                                          name="bemerkungen"
-                                          ng-model="vm.mahnung.bemerkungen" ng-required="true" rows="4"
+                                    maxlength="4000"
+                                    md-no-autogrow
+                                    name="bemerkungen"
+                                    ng-model="vm.mahnung.bemerkungen"
+                                    ng-required="true"
+                                    rows="4"
                                 >
                                 </textarea>
                                 <dv-error-messages
@@ -392,12 +475,19 @@
                         <div class="row">
                             <dv-input-container
                                 class="col-sm-12 form-group dv-input-container-small"
-                            >    <label class="md-no-float" data-translate="MAHNUNG_FRISTABLAUF"
-                                       for="datumFristablaufID"></label>
-                                <dv-datepicker class="input-element-small" data-test="fristablauf-mahnung"
+                            >
+                                <label
+                                    class="md-no-float"
+                                    data-translate="MAHNUNG_FRISTABLAUF"
+                                    for="datumFristablaufID"
+                                ></label>
+                                <dv-datepicker
+                                    class="input-element-small"
+                                    data-test="fristablauf-mahnung"
                                     input-id="datumFristablaufID"
-                                               name="datumFristablauf" ng-model="vm.mahnung.datumFristablauf"
-                                               ng-required="true"
+                                    name="datumFristablauf"
+                                    ng-model="vm.mahnung.datumFristablauf"
+                                    ng-required="true"
                                 >
                                 </dv-datepicker>
                                 <dv-error-messages
@@ -409,9 +499,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button class="dv-btn btn-link link-underline"
-                                        ng-click="vm.openMahnungPDF()"
-                                        type="button">
+                                <button
+                                    class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openMahnungPDF()"
+                                    type="button"
+                                >
                                     <i class="fa fa-file-text-o"></i>
                                     <span
                                         data-translate="PDF_MAHNUNG_ANZEIGEN"
@@ -446,30 +538,40 @@
                         data-translate="MUTATION_IGNORIEREN"
                     ></span>
                 </button>
-              </span>
-            <span class="ie11-fix" dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                  dv-show-element
-                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button aria-label="{{'GEPRUEFT' | translate}}" button-click="vm.setGesuchStatusGeprueft()"
+            </span>
+            <span
+                class="ie11-fix"
+                dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                dv-show-element
+                dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()"
+            >
+                <dv-loading-button
+                    aria-label="{{ 'GEPRUEFT' | translate }}"
+                    button-click="vm.setGesuchStatusGeprueft()"
                     button-disabled="(vm.isBedarfsstufeNotSelected() && vm.isHoehereBeitraegeBeeintraechtigungAktiviert()) || !vm.isFinSitChoosen()"
-                                   data-test="container.geprueft"
-                                   input-id="button_geprueft" ng-if="vm.showGeprueft()"
-                                   type="button">
+                    data-test="container.geprueft"
+                    input-id="button_geprueft"
+                    ng-if="vm.showGeprueft()"
+                    type="button"
+                >
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
-                <dv-loading-button aria-label="{{'VERFUEGUNG_STARTEN' | translate}}" button-click="vm.setGesuchStatusVerfuegen()"
-                                   data-test="container.verfuegen"
-                                   input-id="button_verfuegenStarten"
-                                   ng-if="vm.showVerfuegenStarten()">
+                <dv-loading-button
+                    aria-label="{{ 'VERFUEGUNG_STARTEN' | translate }}"
+                    button-click="vm.setGesuchStatusVerfuegen()"
+                    data-test="container.verfuegen"
+                    input-id="button_verfuegenStarten"
+                    ng-if="vm.showVerfuegenStarten()"
+                >
                     <span
                         class="uppercase"
                         data-translate="VERFUEGUNG_STARTEN"
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'KEIN_KONTINGENT' | translate}}"
-                                   button-click="vm.setGesuchStatusKeinKontingent()"
-                                   input-id="button_keinKontingent"
+                    aria-label="{{ 'KEIN_KONTINGENT' | translate }}"
+                    button-click="vm.setGesuchStatusKeinKontingent()"
+                    input-id="button_keinKontingent"
                     ng-if="vm.showKeinKontingent()"
                 >
                     <span
@@ -478,7 +580,7 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'KONTINGENT_VORHANDEN' | translate}}"
+                    aria-label="{{ 'KONTINGENT_VORHANDEN' | translate }}"
                     button-click="vm.setGesuchStatusGeprueft()"
                     input-id="button_kontingentVorhanden"
                     ng-if="vm.showKontingentVorhanden()"
@@ -489,7 +591,7 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'BEENDEN_OHNE_ANGEBOT' | translate}}"
+                    aria-label="{{ 'BEENDEN_OHNE_ANGEBOT' | translate }}"
                     button-click="vm.closeWithoutAngebot()"
                     input-id="beendenOhneAngebot"
                     ng-if="vm.showCloseWithoutAngebot()"
@@ -522,12 +624,12 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'ERSTE_MAHNUNG' | translate}}"
+                    aria-label="{{ 'ERSTE_MAHNUNG' | translate }}"
                     button-click="vm.ersteMahnungErstellen()"
                     button-click="vm.ersteMahnungErstellen()"
                     data-test="erste-mahnung"
-                                   input-id="button_ersteMahnung"
-                                   ng-if="vm.showErsteMahnungErstellen()"
+                    input-id="button_ersteMahnung"
+                    ng-if="vm.showErsteMahnungErstellen()"
                 >
                     <span
                         class="uppercase"
@@ -535,10 +637,10 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN' | translate}}"
+                    aria-label="{{ 'ERSTE_MAHNUNG_AUSLOESEN' | translate }}"
                     button-click="vm.saveMahnung()"
                     data-test="erste-mahnung-auslösen"
-                                   input-id="buttonErsteMahnungAusloesen"
+                    input-id="buttonErsteMahnungAusloesen"
                     ng-if="vm.showErsteMahnungAusloesen()"
                     type="submit"
                 >
@@ -548,7 +650,7 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'ZWEITE_MAHNUNG' | translate}}"
+                    aria-label="{{ 'ZWEITE_MAHNUNG' | translate }}"
                     button-click="vm.zweiteMahnungErstellen()"
                     input-id="buttonZweiteMahnung"
                     ng-if="vm.showZweiteMahnungErstellen()"
@@ -571,7 +673,7 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'DOKUMENTE_KOMPLETT' | translate}}"
+                    aria-label="{{ 'DOKUMENTE_KOMPLETT' | translate }}"
                     button-click="vm.mahnlaufBeenden()"
                     input-id="buttonMahnlaufBeenden"
                     ng-if="vm.showMahnlaufBeenden()"
@@ -582,9 +684,9 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'DOKUMENTE_NICHT_KOMPLETT' | translate}}"
-                                   button-click="vm.dokumenteNichtKomplett()"
-                                   input-id="buttonDokumenteNichtKomplett"
+                    aria-label="{{ 'DOKUMENTE_NICHT_KOMPLETT' | translate }}"
+                    button-click="vm.dokumenteNichtKomplett()"
+                    input-id="buttonDokumenteNichtKomplett"
                     ng-if="vm.showDokumenteNichtKomplett()"
                 >
                     <span
@@ -593,9 +695,11 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate}}"
-                                   button-click="vm.zweiteMahnungNichtEingetreten()"
-                                   input-id="buttonZweiteMahnungNichtEingetreten"
+                    aria-label="{{
+                        'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate
+                    }}"
+                    button-click="vm.zweiteMahnungNichtEingetreten()"
+                    input-id="buttonZweiteMahnungNichtEingetreten"
                     ng-if="vm.showZweiteMahnungNichtEingetreten()"
                 >
                     <span
@@ -627,16 +731,19 @@
                         data-translate="BESCHWERDE_ABSCHLIESSEN"
                     ></span>
                 </dv-loading-button>
-                <dv-loading-button aria-label="{{'SEND_TO_STV' | translate}}" button-click="vm.sendToSteuerverwaltung()"
-                                   data-test="container.send-to-stv"
-                                   input-id="buttonSteuerverwaltung"
-                                   ng-if="vm.showSendToSteuerverwaltung()">
+                <dv-loading-button
+                    aria-label="{{ 'SEND_TO_STV' | translate }}"
+                    button-click="vm.sendToSteuerverwaltung()"
+                    data-test="container.send-to-stv"
+                    input-id="buttonSteuerverwaltung"
+                    ng-if="vm.showSendToSteuerverwaltung()"
+                >
                     <span class="uppercase" data-translate="SEND_TO_STV"></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN' | translate}}"
-                                   button-click="vm.stvPruefungAbschliessen()"
-                                   input-id="buttonSteuerverwaltungAbschliessen"
+                    aria-label="{{ 'STV_PRUEFUNG_ABSCHLIESSEN' | translate }}"
+                    button-click="vm.stvPruefungAbschliessen()"
+                    input-id="buttonSteuerverwaltungAbschliessen"
                     ng-if="vm.showSTVPruefungAbschliessen()"
                 >
                     <span
@@ -645,7 +752,7 @@
                     ></span>
                 </dv-loading-button>
                 <dv-loading-button
-                    aria-label="{{'STV_PRUEFUNG_ZURUECKHOLEN' | translate}}"
+                    aria-label="{{ 'STV_PRUEFUNG_ZURUECKHOLEN' | translate }}"
                     button-click="vm.stvPruefungZurueckholen()"
                     input-id="buttonSteuerverwaltungZurueckholen"
                     ng-if="vm.showSTVPruefungZurueckholen()"
@@ -658,7 +765,10 @@
             </span>
             <span>
                 <dv-navigation
-                    container-class="avoid" dv-next="false" dv-previous="true" dv-sub-step="1"
+                    container-class="avoid"
+                    dv-next="false"
+                    dv-previous="true"
+                    dv-sub-step="1"
                 >
                 </dv-navigation>
             </span>

@@ -680,5 +680,4 @@ export class EbeguUtil {
             sprachlicheIntegrationen.length === 0
         );
     }
-
 }
