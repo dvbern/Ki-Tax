@@ -19,21 +19,34 @@ import {TSRole} from '../models/enums/TSRole';
 /**
  *  Navigiert basierend auf der Rolle zu einer anderen Startseite
  */
-export function navigateToStartPageForRoleWithParams(currentRole: TSRole, $state: StateService, params: any): TransitionPromise {
-    return $state.go(getRoleBasedTargetState(currentRole, $state).$state(), params);
+export function navigateToStartPageForRoleWithParams(
+    currentRole: TSRole,
+    $state: StateService,
+    params: any
+): TransitionPromise {
+    return $state.go(
+        getRoleBasedTargetState(currentRole, $state).$state(),
+        params
+    );
 }
 
-export function navigateToStartPageForRole(currentRole: TSRole, $state: StateService): TransitionPromise {
+export function navigateToStartPageForRole(
+    currentRole: TSRole,
+    $state: StateService
+): TransitionPromise {
     return $state.go(getRoleBasedTargetState(currentRole, $state).$state());
 }
 
-export function getRoleBasedTargetState(currentRole: TSRole, $state: StateService): TargetState {
+export function getRoleBasedTargetState(
+    currentRole: TSRole,
+    $state: StateService
+): TargetState {
     const faelle = 'faelle.list';
     const pendenzen = 'pendenzen.list-view';
     const pendenzenBetreuung = 'pendenzenBetreuungen.list-view';
     const gemeindeAntraege = 'gemeindeantrage.view';
 
-    const stateByRole: { [key in TSRole]: string } = {
+    const stateByRole: {[key in TSRole]: string} = {
         [TSRole.SUPER_ADMIN]: faelle,
         [TSRole.ADMIN_BG]: pendenzen,
         [TSRole.SACHBEARBEITER_BG]: pendenzen,
@@ -61,7 +74,10 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
     return $state.target(stateByRole[currentRole]);
 }
 
-export function returnToOriginalState($state: StateService, returnTo: TargetState): TransitionPromise {
+export function returnToOriginalState(
+    $state: StateService,
+    returnTo: TargetState
+): TransitionPromise {
     const state = returnTo.state();
     const params = returnTo.params();
     const options = {...returnTo.options(), ...{reload: true}};

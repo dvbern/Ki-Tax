@@ -16,35 +16,50 @@
   -->
 
 <form #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
-
     <div class="onboarding-subtitle-sc" translate>EINLADUNG_ABSCHLIESSEN</div>
 
-    <div class="onboarding-gs-container"  *ngIf="gemeindenAndVerbund$ | async as gemVerbundList">
-
+    <div
+        class="onboarding-gs-container"
+        *ngIf="gemeindenAndVerbund$ | async as gemVerbundList"
+    >
         <div class="onboarding-gs-gemeinde">
             <div>
                 <div class="onboarding-gs-gemeinde-title">
-                    <span class="strong" translate>ONBOARDING_GS_GEMEINDE_TITLE</span>
-                    <button type="button"
-                            (click)="changeGemeinde()"
-                            class="dv-btn onboarding-gs-gemeinde-aendern"
-                            translate>ONBOARDING_GS_GEMEINDE_AENDERN
+                    <span class="strong" translate
+                        >ONBOARDING_GS_GEMEINDE_TITLE</span
+                    >
+                    <button
+                        type="button"
+                        (click)="changeGemeinde()"
+                        class="dv-btn onboarding-gs-gemeinde-aendern"
+                        translate
+                    >
+                        ONBOARDING_GS_GEMEINDE_AENDERN
                     </button>
                 </div>
-                <div class="onboarding-gs-gemeinde-content" >
+                <div class="onboarding-gs-gemeinde-content">
                     <span
-                        *ngFor="let gemVerbund of gemVerbundList ; first as isFirst">
+                        *ngFor="
+                            let gemVerbund of gemVerbundList;
+                            first as isFirst
+                        "
+                    >
                         <b *ngIf="!isFirst">,</b>
-                        {{gemVerbund.name}}
-                        <ng-container *ngIf="gemVerbund.verbundId !== null">({{gemVerbund.verbundName}})
-                        </ng-container></span>
+                        {{ gemVerbund.name }}
+                        <ng-container *ngIf="gemVerbund.verbundId !== null"
+                            >({{ gemVerbund.verbundName }})
+                        </ng-container></span
+                    >
                 </div>
             </div>
-            <button type="submit"
-                    (click)="createDossier(form, gemVerbundList)"
-                    class="dv-btn onboarding-gs-abschliessen"
-                    data-test="registrierung-abschliessen"
-                    translate>EINLADUNG_ABSCHLIESSEN
+            <button
+                type="submit"
+                (click)="createDossier(form, gemVerbundList)"
+                class="dv-btn onboarding-gs-abschliessen"
+                data-test="registrierung-abschliessen"
+                translate
+            >
+                EINLADUNG_ABSCHLIESSEN
             </button>
         </div>
 
@@ -58,18 +73,45 @@
                         <table class="onboarding-gs-angaben-table">
                             <thead></thead>
                             <tbody>
-                            <tr>
-                                <td class="onboarding-gs-angaben-table-label" translate>VORNAME</td>
-                                <td class="onboarding-gs-angaben-table-value">{{user.vorname}}</td>
-                            </tr>
-                            <tr>
-                                <td class="onboarding-gs-angaben-table-label" translate>NAME</td>
-                                <td class="onboarding-gs-angaben-table-value">{{user.nachname}}</td>
-                            </tr>
-                            <tr>
-                                <td class="onboarding-gs-angaben-table-label" translate>EMAIL</td>
-                                <td class="onboarding-gs-angaben-table-value">{{user.email}}</td>
-                            </tr>
+                                <tr>
+                                    <td
+                                        class="onboarding-gs-angaben-table-label"
+                                        translate
+                                    >
+                                        VORNAME
+                                    </td>
+                                    <td
+                                        class="onboarding-gs-angaben-table-value"
+                                    >
+                                        {{ user.vorname }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        class="onboarding-gs-angaben-table-label"
+                                        translate
+                                    >
+                                        NAME
+                                    </td>
+                                    <td
+                                        class="onboarding-gs-angaben-table-value"
+                                    >
+                                        {{ user.nachname }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        class="onboarding-gs-angaben-table-label"
+                                        translate
+                                    >
+                                        EMAIL
+                                    </td>
+                                    <td
+                                        class="onboarding-gs-angaben-table-value"
+                                    >
+                                        {{ user.email }}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </ng-container>
@@ -77,5 +119,4 @@
             </div>
         </div>
     </div>
-
 </form>

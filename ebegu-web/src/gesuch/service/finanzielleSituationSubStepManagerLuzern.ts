@@ -21,7 +21,6 @@ import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepM
 import {GesuchModelManager} from './gesuchModelManager';
 
 export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituationSubStepManager {
-
     public constructor(gesuchModelManager: GesuchModelManager) {
         super(gesuchModelManager);
     }
@@ -30,7 +29,11 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
-            if (FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)) {
+            if (
+                FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(
+                    this.gesuchModelManager
+                )
+            ) {
                 return TSFinanzielleSituationSubStepName.LUZERN_GS2;
             }
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

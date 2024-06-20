@@ -18,15 +18,15 @@
 import {ConfirmDialogPO} from '../dialogs';
 
 const getAbweichung = (index: number) => {
-	return cy.getByData('abweichung-' + index);
+    return cy.getByData('abweichung-' + index);
 };
 
 const getAbweichungPensum = (index: number) => {
-	return getAbweichung(index).findByData('pensum');
+    return getAbweichung(index).findByData('pensum');
 };
 
 const getAbweichungKosten = (index: number) => {
-	return getAbweichung(index).findByData('kosten');
+    return getAbweichung(index).findByData('kosten');
 };
 
 const getSpeichernButton = () => {
@@ -40,7 +40,7 @@ const getFreigebenButton = () => {
 // ---------- PAGE ACTIONS ---------------
 
 const abweichungenSpeichern = () => {
-	cy.waitForRequest('PUT', '**/betreuungen/betreuung/abweichungen/**', () => {
+    cy.waitForRequest('PUT', '**/betreuungen/betreuung/abweichungen/**', () => {
         getSpeichernButton().click();
     });
     ConfirmDialogPO.getDialogOkButton().click();
@@ -53,7 +53,7 @@ const fillInAbweichung = (index: number, pensum: number, kosten: number) => {
 };
 
 const abweichungenFreigeben = () => {
-	cy.waitForRequest('PUT', '**/betreuung/abweichungenfreigeben/**', () => {
+    cy.waitForRequest('PUT', '**/betreuung/abweichungenfreigeben/**', () => {
         getFreigebenButton().click();
     });
 };
@@ -65,5 +65,5 @@ export const AbweichungenPO = {
     // PAGE ACTIONS
     abweichungenSpeichern,
     abweichungenFreigeben,
-    fillInAbweichung,
+    fillInAbweichung
 };

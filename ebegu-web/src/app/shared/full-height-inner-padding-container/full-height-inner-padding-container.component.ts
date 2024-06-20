@@ -23,6 +23,4 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
     styleUrls: ['./full-height-inner-padding-container.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FullHeightInnerPaddingContainerComponent {
-
-}
+export class FullHeightInnerPaddingContainerComponent {}

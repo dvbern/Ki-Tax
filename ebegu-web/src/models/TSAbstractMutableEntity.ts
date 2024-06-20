@@ -18,7 +18,6 @@
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSAbstractMutableEntity extends TSAbstractEntity {
-
     private _vorgaengerId: string;
 
     public get vorgaengerId(): string {
@@ -33,7 +32,9 @@ export class TSAbstractMutableEntity extends TSAbstractEntity {
         return this.vorgaengerId !== null && this.vorgaengerId !== undefined;
     }
 
-    public deepCopyTo(target: TSAbstractMutableEntity): TSAbstractMutableEntity {
+    public deepCopyTo(
+        target: TSAbstractMutableEntity
+    ): TSAbstractMutableEntity {
         super.deepCopyTo(target);
         target.vorgaengerId = this.vorgaengerId;
         return target;

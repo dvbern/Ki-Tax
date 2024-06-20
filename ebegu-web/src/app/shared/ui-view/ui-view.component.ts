@@ -22,5 +22,4 @@ import {Component} from '@angular/core';
     template: '<ui-view></ui-view>',
     styles: [':host {display: flex; flex: 1;}']
 })
-export class UiViewComponent {
-}
+export class UiViewComponent {}

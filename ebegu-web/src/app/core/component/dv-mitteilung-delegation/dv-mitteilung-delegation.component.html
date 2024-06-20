@@ -15,5 +15,8 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<button (click)="$event.stopPropagation();showDialog()" class="dv-btn" [textContent]="'MITTEILUNG_WEITERLEITEN' | translate">
-</button>
+<button
+    (click)="$event.stopPropagation(); showDialog()"
+    class="dv-btn"
+    [textContent]="'MITTEILUNG_WEITERLEITEN' | translate"
+></button>

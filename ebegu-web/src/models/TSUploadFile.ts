@@ -1,9 +1,7 @@
-
 import {TSFile} from './TSFile';
 import * as moment from 'moment';
 
 export class TSUploadFile extends TSFile {
-
     private _timestampUpload: moment.Moment;
 
     public constructor(timestampUpload?: moment.Moment) {
@@ -19,5 +17,4 @@ export class TSUploadFile extends TSFile {
     public set timestampUpload(value: moment.Moment) {
         this._timestampUpload = value;
     }
-
 }

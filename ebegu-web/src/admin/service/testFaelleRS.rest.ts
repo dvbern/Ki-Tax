@@ -29,13 +29,10 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
     providedIn: 'root'
 })
 export class TestFaelleRS {
-
     public serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        public http: HttpClient
-    ) {
+    public constructor(public http: HttpClient) {
         this.serviceURL = `${CONSTANTS.REST_API}testfaelle`;
     }
 
@@ -49,14 +46,16 @@ export class TestFaelleRS {
     ): Observable<string> {
         // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
         // parameter to the method body
-        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfallgs/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}/${encodeURIComponent(
-            username)}`;
+            username
+        )}`;
         return this.http.get(url, {responseType: 'text'});
     }
 
     public removeFaelleOfGS(username: string): Observable<string> {
-        return this.http.delete<string>(`${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`);
+        return this.http.delete<string>(
+            `${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`
+        );
     }
 
     public createTestFall(
@@ -66,7 +65,6 @@ export class TestFaelleRS {
         bestaetigt: boolean,
         verfuegen: boolean
     ): Observable<string> {
-        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
 
         return this.http.get(url, {responseType: 'text'});
@@ -78,16 +76,21 @@ export class TestFaelleRS {
         mutationsdatum: moment.Moment,
         aenderungper: moment.Moment
     ): Observable<string> {
-        return this.http.get<string>(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
-            params: {
-                mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                aenderungper: DateUtil.momentToLocalDate(aenderungper)
+        return this.http.get<string>(
+            `${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`,
+            {
+                params: {
+                    mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
+                }
             }
-        });
+        );
     }
 
     public testAllMails(mailadresse: string): Observable<void> {
-        return this.http.get<void>(`${this.serviceURL}/mailtest/${mailadresse}`);
+        return this.http.get<void>(
+            `${this.serviceURL}/mailtest/${mailadresse}`
+        );
     }
 
     public mutiereFallScheidung(
@@ -97,34 +100,42 @@ export class TestFaelleRS {
         aenderungper: moment.Moment
     ): Observable<string> {
         const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
-        return this.http.get(url,
-            {
-                params: {
-                    mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
-                },
-                responseType: 'text'
-            });
+        return this.http.get(url, {
+            params: {
+                mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
+                aenderungper: DateUtil.momentToLocalDate(aenderungper)
+            },
+            responseType: 'text'
+        });
     }
 
     public resetSchulungsdaten(): Observable<string> {
-        return this.http.get(`${this.serviceURL}/schulung/reset`, {responseType: 'text'});
+        return this.http.get(`${this.serviceURL}/schulung/reset`, {
+            responseType: 'text'
+        });
     }
 
     public createSchulungsdaten(): Observable<string> {
-        return this.http.get(`${this.serviceURL}/schulung/create`, {responseType: 'text'});
+        return this.http.get(`${this.serviceURL}/schulung/create`, {
+            responseType: 'text'
+        });
     }
 
     public deleteSchulungsdaten(): Observable<string> {
-        return this.http.delete(`${this.serviceURL}/schulung/delete`, {responseType: 'text'});
+        return this.http.delete(`${this.serviceURL}/schulung/delete`, {
+            responseType: 'text'
+        });
     }
 
     public createTutorialdaten(): Observable<string> {
-        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`, {responseType: 'text'});
+        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`, {
+            responseType: 'text'
+        });
     }
 
     public getSchulungBenutzer(): Observable<string[]> {
-        return this.http.get(`${this.serviceURL}/schulung/public/user`)
+        return this.http
+            .get(`${this.serviceURL}/schulung/public/user`)
             .pipe(map((response: any) => response));
     }
 
@@ -138,12 +149,17 @@ export class TestFaelleRS {
         gemeinde: TSGemeinde,
         status: string
     ): Observable<string> {
-        return this.http.post(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
+        return this.http.post(
+            `${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
             {
-                gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject({}, gesuchsperiode),
+                gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject(
+                    {},
+                    gesuchsperiode
+                ),
                 gemeinde: this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde),
                 status
             },
-            {responseType: 'text'});
+            {responseType: 'text'}
+        );
     }
 }

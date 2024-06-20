@@ -11,12 +11,16 @@ import {AuszahlungsdatenComponent} from './auszahlungsdaten.component';
 describe('AuszahlungsdatenComponent', () => {
     let component: AuszahlungsdatenComponent;
     let fixture: ComponentFixture<AuszahlungsdatenComponent>;
-    const gesuchModelManagerSpy =
-        jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-            ['openGesuch', 'isGesuchReadonly', 'isKorrekturModusJugendamt']);
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['openGesuch', 'isGesuchReadonly', 'isKorrekturModusJugendamt']
+    );
     gesuchModelManagerSpy.isGesuchReadonly.and.returnValue(false);
     gesuchModelManagerSpy.isKorrekturModusJugendamt.and.returnValue(false);
-    const listRSSpy = jasmine.createSpyObj<ListResourceRS>(ListResourceRS.name, ['getLaenderList']);
+    const listRSSpy = jasmine.createSpyObj<ListResourceRS>(
+        ListResourceRS.name,
+        ['getLaenderList']
+    );
     listRSSpy.getLaenderList.and.resolveTo([]);
 
     beforeEach(async () => {
@@ -28,7 +32,8 @@ describe('AuszahlungsdatenComponent', () => {
                 {provide: ListResourceRS, useValue: listRSSpy},
                 {provide: NgForm, useValue: new NgForm([], [])}
             ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

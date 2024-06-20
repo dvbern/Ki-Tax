@@ -18,7 +18,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSErwerbspensum} from './TSErwerbspensum';
 
 export class TSErwerbspensumContainer extends TSAbstractMutableEntity {
-
     private _erwerbspensumGS: TSErwerbspensum;
     private _erwerbspensumJA: TSErwerbspensum;
 

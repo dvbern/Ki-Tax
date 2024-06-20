@@ -33,11 +33,19 @@
   -->
 
 <div class="kommentar-view">
-    <form *ngIf="ferienbetreuungContainer" role="form" [formGroup]="form" class="" layout="column">
+    <form
+        *ngIf="ferienbetreuungContainer"
+        role="form"
+        [formGroup]="form"
+        class=""
+        layout="column"
+    >
         <div class="kommentar-padding">
             <div class="kommentarTop">
                 <div class="form-group kommentar-feld">
-                    <label class="md-no-float" for="kommmentar" translate>BEMERKUNGEN_INTERN</label>
+                    <label class="md-no-float" for="kommmentar" translate
+                        >BEMERKUNGEN_INTERN</label
+                    >
                     <textarea
                         class="form-control"
                         rows="10"
@@ -52,19 +60,33 @@
         </div>
         <div class="verantwortlicher-view kommentar-padding">
             <div class="form-group">
-                <mat-select [(ngModel)]="getFerienbetreuungContainer().verantwortlicher"
-                            id="verantwortlicher"
-                            class="form-control"
-                            (selectionChange)="saveVerantwortlicher()"
-                            [ngModelOptions]="{standalone: true}"
-                            placeholder=" {{'VERANTWORTLICHER' | translate:{name: getVerantwortlicherFullName()} }}">
-
-                    <mat-option [value]="undefined"> {{'NO_VERANTWORTLICHER_SELECTED' | translate }}</mat-option>
-                    <mat-option *ngFor="let benutzer of userList"
-                                [value]="benutzer"> {{'VERANTWORTLICHER' | translate:{name: benutzer.getFullName()} }}</mat-option>
+                <mat-select
+                    [(ngModel)]="getFerienbetreuungContainer().verantwortlicher"
+                    id="verantwortlicher"
+                    class="form-control"
+                    (selectionChange)="saveVerantwortlicher()"
+                    [ngModelOptions]="{standalone: true}"
+                    placeholder=" {{
+                        'VERANTWORTLICHER'
+                            | translate: {name: getVerantwortlicherFullName()}
+                    }}"
+                >
+                    <mat-option [value]="undefined">
+                        {{
+                            'NO_VERANTWORTLICHER_SELECTED' | translate
+                        }}</mat-option
+                    >
+                    <mat-option
+                        *ngFor="let benutzer of userList"
+                        [value]="benutzer"
+                    >
+                        {{
+                            'VERANTWORTLICHER'
+                                | translate: {name: benutzer.getFullName()}
+                        }}</mat-option
+                    >
                 </mat-select>
             </div>
         </div>
     </form>
 </div>
-

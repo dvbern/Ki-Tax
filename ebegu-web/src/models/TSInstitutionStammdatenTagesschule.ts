@@ -18,13 +18,13 @@ import {TSEinstellungenTagesschule} from './TSEinstellungenTagesschule';
 import {TSGemeinde} from './TSGemeinde';
 
 export class TSInstitutionStammdatenTagesschule extends TSAbstractEntity {
-
     public gemeinde: TSGemeinde;
     public einstellungenTagesschule: Array<TSEinstellungenTagesschule>;
 
-    public constructor(einstellungenTagesschule?: Array<TSEinstellungenTagesschule>) {
+    public constructor(
+        einstellungenTagesschule?: Array<TSEinstellungenTagesschule>
+    ) {
         super();
         this.einstellungenTagesschule = einstellungenTagesschule;
     }
-
 }

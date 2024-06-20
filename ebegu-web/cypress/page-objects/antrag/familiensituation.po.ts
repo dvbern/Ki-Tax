@@ -15,42 +15,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureFamSit } from '@dv-e2e/fixtures';
+import {FixtureFamSit} from '@dv-e2e/fixtures';
 
 const getPageTitle = () => {
-	return cy.getByData('page-title');
+    return cy.getByData('page-title');
 };
 const getFamiliensituationsStatus = (status: string) => {
-	return cy.getByData('familienstatus.' + status);
+    return cy.getByData('familienstatus.' + status);
 };
 
 const getKonkubinatStart = () => {
-	return cy.getByData('container.konkubinat-start').find('input');
+    return cy.getByData('container.konkubinat-start').find('input');
 };
 
 const getAenderunPer = () => {
-	return cy.getByData('container.aenderungen-per').find('input');
+    return cy.getByData('container.aenderungen-per').find('input');
 };
 
 const getGeteilteObhutOption = (answer: string) => {
-	return cy.getByData('container.geteilte-obhut', 'geteilte-obhut-' + answer).find('label');
+    return cy
+        .getByData('container.geteilte-obhut', 'geteilte-obhut-' + answer)
+        .find('label');
 };
 
-const getUnterhaltsvereinbarungOption = (answer:string) => {
-	return cy.getByData('container.unterhaltsvereinbarung', answer).find('label');
+const getUnterhaltsvereinbarungOption = (answer: string) => {
+    return cy
+        .getByData('container.unterhaltsvereinbarung', answer)
+        .find('label');
 };
 
 const getGesuchstellendeKardinalitaet = (kardinalitaet: string) => {
-	return cy.getByData('gesuchsteller-kardinalitaet.' + kardinalitaet).find('label');
+    return cy
+        .getByData('gesuchsteller-kardinalitaet.' + kardinalitaet)
+        .find('label');
 };
 
 const getUnterhaltsvereinbarungNichtMoeglichBegruendung = () => {
-	return cy.getByData('begruendung-unterhaltsvereinbarung-nicht-moeglich');
+    return cy.getByData('begruendung-unterhaltsvereinbarung-nicht-moeglich');
 };
 
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
-    FixtureFamSit[dataset](({ familiensituation }) => {
-        getFamiliensituationsStatus(familiensituation.familienstand).find('label').click();
+    FixtureFamSit[dataset](({familiensituation}) => {
+        getFamiliensituationsStatus(familiensituation.familienstand)
+            .find('label')
+            .click();
     });
 };
 
@@ -65,5 +73,5 @@ export const AntragFamSitPO = {
     getGesuchstellendeKardinalitaet,
     getUnterhaltsvereinbarungNichtMoeglichBegruendung,
     //page actions
-    fillFamiliensituationForm,
+    fillFamiliensituationForm
 };

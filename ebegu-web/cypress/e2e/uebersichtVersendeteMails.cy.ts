@@ -16,8 +16,9 @@
  */
 
 import {
-    FallToolbarPO, MainNavigationPO, TestFaellePO,
-
+    FallToolbarPO,
+    MainNavigationPO,
+    TestFaellePO
 } from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
 import {UebersichtVersendeteMailsPO} from '../page-objects/admin/uebersichtVersendeteMails.po';
@@ -25,7 +26,9 @@ import {UebersichtVersendeteMailsPO} from '../page-objects/admin/uebersichtVerse
 const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
 
 describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => {
-    const userAdminBern = getUser('[2-Admin-Kanton-Bern] Bernhard Röthlisberger');
+    const userAdminBern = getUser(
+        '[2-Admin-Kanton-Bern] Bernhard Röthlisberger'
+    );
 
     it('should access the Uebersicht View as Superadmin', () => {
         cy.login(adminUser);
@@ -39,12 +42,13 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
         cy.login(userAdminBern);
         cy.visit('/#/faelle');
         MainNavigationPO.getMenuButton().click();
-        UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().should('not.exist');
+        UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().should(
+            'not.exist'
+        );
         cy.visit('/#/uebersichtVersendeteMails');
         cy.url().should('contain', 'faelle');
     });
-
-})
+});
 
 describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin', () => {
     const validSearchText = 'kiBon Testsystem – Ihr Antrag wurde bearbeitet';
@@ -54,7 +58,7 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     beforeEach(() => {
         cy.login(adminUser);
         cy.visit('/#/uebersichtVersendeteMails');
-    })
+    });
 
     it('should display sent Mails', () => {
         TestFaellePO.createOnlineTestfall({
@@ -62,48 +66,67 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
             gemeinde: 'London',
             periode: '2023/24',
             betreuungsstatus: 'verfuegt',
-            besitzerin: '[5-GS] Jean Chambre',
-        })
+            besitzerin: '[5-GS] Jean Chambre'
+        });
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
             cy.visit('/#/uebersichtVersendeteMails');
-            UebersichtVersendeteMailsPO.getSentMailsSubject().should('contain.text', fallnummer).and('contain.text', validSearchText);
+            UebersichtVersendeteMailsPO.getSentMailsSubject()
+                .should('contain.text', fallnummer)
+                .and('contain.text', validSearchText);
         });
     });
 
     it('should sort displayed Mails', () => {
         UebersichtVersendeteMailsPO.getVersendeteMailTableContent().click();
 
-        UebersichtVersendeteMailsPO.getVersendeteMailTableContent()
-            .then($address => {
+        UebersichtVersendeteMailsPO.getVersendeteMailTableContent().then(
+            $address => {
                 var addresses: any[] = [];
                 UebersichtVersendeteMailsPO.getSortedMails().then(elements => {
-                    addresses = Array.from(elements).map(el => el.innerHTML.toLowerCase());
+                    addresses = Array.from(elements).map(el =>
+                        el.innerHTML.toLowerCase()
+                    );
                     let copy = addresses.filter(el => true);
-                    addresses.sort()
+                    addresses.sort();
                     cy.wrap(copy).should('deep.equal', addresses);
-                })
-            })
+                });
+            }
+        );
     });
 
     it('should search existing Mails', () => {
-        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(validSearchText);
-        UebersichtVersendeteMailsPO.getSentMailsSubject().should('contain.text', validSearchText);
+        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(
+            validSearchText
+        );
+        UebersichtVersendeteMailsPO.getSentMailsSubject().should(
+            'contain.text',
+            validSearchText
+        );
     });
 
     it('should search not existing Mails', () => {
-        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(invalidSearchText);
+        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(
+            invalidSearchText
+        );
         UebersichtVersendeteMailsPO.getSentMailsSubject().should('not.exist');
     });
 
     it('should select Mail amount', () => {
         UebersichtVersendeteMailsPO.getPaginatorMailUebersicht().click();
         UebersichtVersendeteMailsPO.getPaginatorAmountMailUebersicht().click();
-        UebersichtVersendeteMailsPO.getSentMailsSubject().should('have.length.within', 10, 25);
+        UebersichtVersendeteMailsPO.getSentMailsSubject().should(
+            'have.length.within',
+            10,
+            25
+        );
     });
 
     it('should change Table page', () => {
         UebersichtVersendeteMailsPO.getNextMailsInTablle().click();
-        UebersichtVersendeteMailsPO.getNextMailsInTablleCheck().should('not.contain.text', '1-10');
+        UebersichtVersendeteMailsPO.getNextMailsInTablleCheck().should(
+            'not.contain.text',
+            '1-10'
+        );
     });
-})
+});

@@ -14,9 +14,12 @@ import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz
 @Component({
     selector: 'dv-finanzielle-situation-gs-schwyz',
     templateUrl: './finanzielle-situation-gs-schwyz.component.html',
-    changeDetection: ChangeDetectionStrategy.Default,
+    changeDetection: ChangeDetectionStrategy.Default
 })
-export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
+export class FinanzielleSituationGsSchwyzComponent
+    extends AbstractGesuchViewX<TSFinanzModel>
+    implements OnInit
+{
     public massgebendesEinkommen = 0;
     public gesuchstellerNumber: number;
     public gesuchsteller: TSGesuchstellerContainer;
@@ -27,7 +30,11 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
         private readonly $stateParams: UIRouterGlobals,
         private readonly finSitSchwyzService: FinanzielleSituationSchwyzService
     ) {
-        super(gesuchmodelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
+        super(
+            gesuchmodelManager,
+            wizardStepManager,
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ
+        );
     }
 
     public ngOnInit(): void {
@@ -36,18 +43,28 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     }
 
     private initGesuchstellerNumber() {
-        this.gesuchstellerNumber = parseInt(this.$stateParams.params.gesuchstellerNumber, 10);
-        this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-        this.gesuchsteller = this.gesuchstellerNumber === 1 ?
-            this.gesuchmodelManager.getGesuch().gesuchsteller1 :
-            this.gesuchmodelManager.getGesuch().gesuchsteller2;
+        this.gesuchstellerNumber = parseInt(
+            this.$stateParams.params.gesuchstellerNumber,
+            10
+        );
+        this.gesuchModelManager.setGesuchstellerNumber(
+            this.gesuchstellerNumber
+        );
+        this.gesuchsteller =
+            this.gesuchstellerNumber === 1
+                ? this.gesuchmodelManager.getGesuch().gesuchsteller1
+                : this.gesuchmodelManager.getGesuch().gesuchsteller2;
     }
 
     private initFinanzModel(): void {
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            this.gesuchstellerNumber);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            this.gesuchstellerNumber
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         // this field is not present on schwyz but will be checked in a lot of distributed places. Therefore we set it
         this.model.familienSituation.sozialhilfeBezueger = false;
     }
@@ -69,12 +86,14 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
-        return this.model.getGesuchstellerNumber() === 1 ?
-            TSFinanzielleSituationSubStepName.SCHWYZ_GS1 :
-            TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
+        return this.model.getGesuchstellerNumber() === 1
+            ? TSFinanzielleSituationSubStepName.SCHWYZ_GS1
+            : TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
     }
 
-    public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -82,14 +101,18 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
         return this.save(onResult);
     }
 
-    private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    private save(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation()
-            .then(finSitCon => this.gesuchmodelManager.reloadGesuch().then(() => finSitCon))
+        return this.gesuchModelManager
+            .saveFinanzielleSituation()
+            .then(finSitCon =>
+                this.gesuchmodelManager.reloadGesuch().then(() => finSitCon)
+            )
             .then((finSitCon: TSFinanzielleSituationContainer) => {
                 onResult(finSitCon);
                 return finSitCon;
             }) as Promise<TSFinanzielleSituationContainer>;
     }
-
 }

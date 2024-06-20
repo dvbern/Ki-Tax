@@ -18,20 +18,14 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../../../../app/shared/shared.module';
-import {
-    EinkommensverschlechterungSchwyzGsComponent
-} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
-import {
-    EinkommensverschlechterungSchwyzResultateComponent
-} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-resultate/einkommensverschlechterung-schwyz-resultate.component';
+import {EinkommensverschlechterungSchwyzGsComponent} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
+import {EinkommensverschlechterungSchwyzResultateComponent} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-resultate/einkommensverschlechterung-schwyz-resultate.component';
 import {BruttolohnSchwyzComponent} from './bruttolohn-schwyz/bruttolohn-schwyz.component';
 import {FinanzielleSituationGsSchwyzComponent} from './finanzielle-situation-gs-schwyz/finanzielle-situation-gs-schwyz.component';
 import {FinanzielleSituationSingleGsSchwyzComponent} from './finanzielle-situation-single-gs-schwyz/finanzielle-situation-single-gs-schwyz.component';
-import {
-    FinanzielleSituationStartSchwyzComponent
-} from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
+import {FinanzielleSituationStartSchwyzComponent} from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
 import {SteuerveranlagtSchwyzComponent} from './steuerveranlagt-schwyz/steuerveranlagt-schwyz.component';
-import { FinanzielleSituationResultateSchwyzComponent } from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
+import {FinanzielleSituationResultateSchwyzComponent} from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
 
 @NgModule({
     declarations: [
@@ -42,12 +36,8 @@ import { FinanzielleSituationResultateSchwyzComponent } from './finanzielle-situ
         FinanzielleSituationSingleGsSchwyzComponent,
         EinkommensverschlechterungSchwyzGsComponent,
         EinkommensverschlechterungSchwyzResultateComponent,
-        FinanzielleSituationResultateSchwyzComponent,
+        FinanzielleSituationResultateSchwyzComponent
     ],
-    imports: [
-        SharedModule,
-        CommonModule,
-    ],
+    imports: [SharedModule, CommonModule]
 })
-export class FinanzielleSituationSchwyzModule {
-}
+export class FinanzielleSituationSchwyzModule {}

@@ -33,59 +33,75 @@ interface MassgebendesEinkommenVeraenderung {
 }
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FinanzielleSituationSchwyzService {
-
-    private readonly _massgebendesEinkommenStore: BehaviorSubject<MassgebendesEinkommenResultate> = new BehaviorSubject({
-        ekvResultate: null,
-        finSitResultate: null,
-        veraenderung: null,
-    });
+    private readonly _massgebendesEinkommenStore: BehaviorSubject<MassgebendesEinkommenResultate> =
+        new BehaviorSubject({
+            ekvResultate: null,
+            finSitResultate: null,
+            veraenderung: null
+        });
 
     public constructor(
-        private readonly berechnungsManager: BerechnungsManager,
-    ) {
-    }
+        private readonly berechnungsManager: BerechnungsManager
+    ) {}
 
     public get massgebendesEinkommenStore(): Observable<MassgebendesEinkommenResultate> {
         return this._massgebendesEinkommenStore.asObservable();
     }
 
     public calculateMassgebendesEinkommen(model: TSFinanzModel): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(model)
-            .then(async result => Promise.all([
-                result,
-                this.calcVeraenderung(result, this._massgebendesEinkommenStore.value.ekvResultate),
-            ]))
+        this.berechnungsManager
+            .calculateFinanzielleSituationTemp(model)
+            .then(async result =>
+                Promise.all([
+                    result,
+                    this.calcVeraenderung(
+                        result,
+                        this._massgebendesEinkommenStore.value.ekvResultate
+                    )
+                ])
+            )
             .then(([result, veraenderung]) => {
                 const nextValue: MassgebendesEinkommenResultate = {
                     ...this._massgebendesEinkommenStore.value,
                     finSitResultate: result,
-                    veraenderung,
+                    veraenderung
                 };
                 return this._massgebendesEinkommenStore.next(nextValue);
             });
     }
 
-    public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahrPlus: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
-            .then(result => this._massgebendesEinkommenStore.next({
-                ...this._massgebendesEinkommenStore.value,
-                ekvResultate: result,
-            }));
+    public calculateEinkommensverschlechterung(
+        model: TSFinanzModel,
+        basisJahrPlus: number
+    ): void {
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
+            .then(result =>
+                this._massgebendesEinkommenStore.next({
+                    ...this._massgebendesEinkommenStore.value,
+                    ekvResultate: result
+                })
+            );
     }
 
     private async calcVeraenderung(
         finSitResultate?: TSFinanzielleSituationResultateDTO,
-        ekvResultate?: TSFinanzielleSituationResultateDTO,
+        ekvResultate?: TSFinanzielleSituationResultateDTO
     ): Promise<MassgebendesEinkommenVeraenderung | null> {
-        if (EbeguUtil.isNullOrUndefined(ekvResultate) || EbeguUtil.isNullOrUndefined(finSitResultate)) {
+        if (
+            EbeguUtil.isNullOrUndefined(ekvResultate) ||
+            EbeguUtil.isNullOrUndefined(finSitResultate)
+        ) {
             return null;
         }
         return {
-            total: await this.berechnungsManager.calculateProzentualeDifferenz(finSitResultate.massgebendesEinkVorAbzFamGr,
-                ekvResultate.massgebendesEinkVorAbzFamGr),
+            total: await this.berechnungsManager.calculateProzentualeDifferenz(
+                finSitResultate.massgebendesEinkVorAbzFamGr,
+                ekvResultate.massgebendesEinkVorAbzFamGr
+            )
         };
     }
 }

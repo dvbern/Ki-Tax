@@ -12,22 +12,29 @@ import {CONSTANTS} from '../../../core/constants/CONSTANTS';
     providedIn: 'root'
 })
 export class FerienbetreuungDokumentService {
-
     private readonly API_BASE_URL = `${CONSTANTS.REST_API}ferienbetreuung/dokument`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        private readonly http: HttpClient
-    ) {
-    }
+    public constructor(private readonly http: HttpClient) {}
 
-    public getAllDokumente(containerId: string): Observable<TSFerienbetreuungDokument[]> {
-        return this.http.get(`${this.API_BASE_URL}/all/${encodeURIComponent(containerId)}`)
-            .pipe(map(restDokumente => this.ebeguRestUtil.parseFerienbetreuungDokumente(restDokumente)));
+    public getAllDokumente(
+        containerId: string
+    ): Observable<TSFerienbetreuungDokument[]> {
+        return this.http
+            .get(`${this.API_BASE_URL}/all/${encodeURIComponent(containerId)}`)
+            .pipe(
+                map(restDokumente =>
+                    this.ebeguRestUtil.parseFerienbetreuungDokumente(
+                        restDokumente
+                    )
+                )
+            );
     }
 
     public deleteDokument(dokumentId: string): Observable<void> {
-        return this.http.delete<void>(`${this.API_BASE_URL}/${encodeURIComponent(dokumentId)}`);
+        return this.http.delete<void>(
+            `${this.API_BASE_URL}/${encodeURIComponent(dokumentId)}`
+        );
     }
 
     public generateVerfuegung(

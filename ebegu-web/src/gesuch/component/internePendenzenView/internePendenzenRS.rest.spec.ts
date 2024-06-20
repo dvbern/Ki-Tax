@@ -7,9 +7,7 @@ describe('InternePendenzenRS', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                HttpClientModule
-            ]
+            imports: [HttpClientModule]
         });
         service = TestBed.inject(InternePendenzenRS);
     });

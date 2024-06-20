@@ -17,7 +17,6 @@ import {TSSprache} from './enums/TSSprache';
 import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
 
 export class TSGesuchsteller extends TSAbstractPersonEntity {
-
     private _mail: string;
     private _mobile: string;
     private _telefon: string;

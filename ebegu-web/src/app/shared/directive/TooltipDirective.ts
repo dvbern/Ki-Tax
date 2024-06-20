@@ -22,12 +22,10 @@ import {UpgradeComponent} from '@angular/upgrade/static';
     selector: 'dv-tooltip'
 })
 export class TooltipDirective extends UpgradeComponent {
-
     @Input() public inputId: string;
     @Input() public text: string;
 
     public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvTooltip', elementRef, injector);
     }
-
 }

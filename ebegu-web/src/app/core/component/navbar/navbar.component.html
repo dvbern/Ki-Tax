@@ -13,92 +13,200 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <kibon-guided-tour></kibon-guided-tour>
-<nav class="navbar navbar-default"
-     *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()">
+<nav
+    class="navbar navbar-default"
+    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()"
+>
     <div class="dv-ng-navbar-wrapper">
         <div id="navbar" class="navbar-header dv-navbar-header">
             <ul class="nav navbar-nav no-margin">
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()">
-                    <a id="tour_menu_pendenzen"
-                       uiSref="pendenzen.list-view"
-                       [textContent]="'MENU_PENDENZEN' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()
+                    "
+                >
+                    <a
+                        id="tour_menu_pendenzen"
+                        uiSref="pendenzen.list-view"
+                        [textContent]="'MENU_PENDENZEN' | translate"
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="isTagesschulangebotEnabled(); roles: TSRoleUtil.getSchulamtRoles()">
-                    <a uiSref="pendenzenBetreuungen.list-view"
-                       [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
+                    *dvNgShowElement="
+                        isTagesschulangebotEnabled();
+                        roles: TSRoleUtil.getSchulamtRoles()
+                    "
+                >
+                    <a
+                        uiSref="pendenzenBetreuungen.list-view"
+                        [textContent]="
+                            'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate
+                        "
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getTraegerschaftInstitutionRoles()">
-                    <a uiSref="pendenzenBetreuungen.list-view"
-                       [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getTraegerschaftInstitutionRoles()
+                    "
+                >
+                    <a
+                        uiSref="pendenzenBetreuungen.list-view"
+                        [textContent]="'MENU_PENDENZEN_INSTITUTION' | translate"
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getSteueramtRoles()">
-                    <a uiSref="pendenzenSteueramt.list-view" [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getSteueramtRoles()
+                    "
+                >
+                    <a
+                        uiSref="pendenzenSteueramt.list-view"
+                        [textContent]="'MENU_PENDENZEN_STEUERAMT' | translate"
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()">
-                    <a uiSref="faelle.list" [textContent]="'MENU_ALL_FAELLE' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()
+                    "
+                >
+                    <a
+                        uiSref="faelle.list"
+                        [textContent]="'MENU_ALL_FAELLE' | translate"
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForZahlungen()">
-                    <a uiSref="zahlungsauftrag.view" [textContent]="'MENU_ZAHLUNG' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getAllRolesForZahlungen()
+                    "
+                >
+                    <a
+                        uiSref="zahlungsauftrag.view"
+                        [textContent]="'MENU_ZAHLUNG' | translate"
+                    ></a>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForStatistik()">
-                    <a uiSref="statistik.view" [textContent]="'MENU_STATISTIK' | translate"></a>
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getAllRolesForStatistik()
+                    "
+                >
+                    <a
+                        uiSref="statistik.view"
+                        [textContent]="'MENU_STATISTIK' | translate"
+                    ></a>
                 </li>
                 <ng-container *ngIf="gemeindeAntraegeActive">
-                    <li uiSrefActive="active"
+                    <li
+                        uiSrefActive="active"
                         class="dv-ng-navbar-element uppercase"
-                        *ngIf="(gemeindeAntragVisible | async)">
-                        <a uiSref="gemeindeantrage.view" [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"></a>
+                        *ngIf="gemeindeAntragVisible | async"
+                    >
+                        <a
+                            uiSref="gemeindeantrage.view"
+                            [textContent]="'MENU_GEMEINDE_ANTRAEGE' | translate"
+                        ></a>
                     </li>
                 </ng-container>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesForPosteingang()">
+                    *dvNgShowElement="
+                        true;
+                        roles: TSRoleUtil.getAllRolesForPosteingang()
+                    "
+                >
                     <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>
-                <li uiSrefActive="active"
+                <li
+                    uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="lastenausgleichActive; roles: TSRoleUtil.getAllRolesForLastenausgleich()">
-                    <a uiSref="lastenausgleich.view" [textContent]="'MENU_LASTENAUSGLEICH' | translate"></a>
+                    *dvNgShowElement="
+                        lastenausgleichActive;
+                        roles: TSRoleUtil.getAllRolesForLastenausgleich()
+                    "
+                >
+                    <a
+                        uiSref="lastenausgleich.view"
+                        [textContent]="'MENU_LASTENAUSGLEICH' | translate"
+                    ></a>
                 </li>
             </ul>
-        </div> <!--/.nav-collapse -->
+        </div>
+        <!--/.nav-collapse -->
 
-
-        <div id="navbar_falleroeffnen" class="dv-ng-navbar-element-fall-eroeffnen" uiSrefActive="active">
-            <button (click)="startNewFall()" class="dv-btn dv-ng-navbar-button"
-                    data-test="fall-eroeffnen"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getAmtOrSozialdienstRolle()">
+        <div
+            id="navbar_falleroeffnen"
+            class="dv-ng-navbar-element-fall-eroeffnen"
+            uiSrefActive="active"
+        >
+            <button
+                (click)="startNewFall()"
+                class="dv-btn dv-ng-navbar-button"
+                data-test="fall-eroeffnen"
+                *dvNgShowElement="
+                    true;
+                    roles: TSRoleUtil.getAmtOrSozialdienstRolle()
+                "
+            >
                 <i class="fa fa-plus-square"></i>
                 <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
             </button>
 
-            <button mat-button [matMenuTriggerFor]="menu" class="dv-btn dv-ng-navbar-button" id="navbar_menufalleroeffnen"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getSuperAdminRoles()">
+            <button
+                mat-button
+                [matMenuTriggerFor]="menu"
+                class="dv-btn dv-ng-navbar-button"
+                id="navbar_menufalleroeffnen"
+                *dvNgShowElement="true; roles: TSRoleUtil.getSuperAdminRoles()"
+            >
                 <i class="fa fa-plus-square"></i>
             </button>
-            <mat-menu #menu="matMenu" class="user-menu" xPosition="before" tabindex="-1">
-                <button (click)="startNewFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
-                    <span [textContent]="'MENU_FALL_EROEFFNEN' | translate"></span>
+            <mat-menu
+                #menu="matMenu"
+                class="user-menu"
+                xPosition="before"
+                tabindex="-1"
+            >
+                <button
+                    (click)="startNewFall()"
+                    class="dv-btn dv-ng-navbar-button"
+                    mat-menu-item
+                >
+                    <span
+                        [textContent]="'MENU_FALL_EROEFFNEN' | translate"
+                    ></span>
                 </button>
-                <button (click)="createNewSozialdienstFall()" class="dv-btn dv-ng-navbar-button" mat-menu-item>
-                    <span [textContent]="'MENU_SOZIALDIENST_FALL_EROEFFNEN' | translate"></span>
+                <button
+                    (click)="createNewSozialdienstFall()"
+                    class="dv-btn dv-ng-navbar-button"
+                    mat-menu-item
+                >
+                    <span
+                        [textContent]="
+                            'MENU_SOZIALDIENST_FALL_EROEFFNEN' | translate
+                        "
+                    ></span>
                 </button>
             </mat-menu>
         </div>
     </div>
 </nav>
-

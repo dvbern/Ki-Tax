@@ -1,34 +1,53 @@
 <div class="dv-table dv-simple-table" *ngIf="datasource && data">
     <div class="mat-elevation-z0">
-        <mat-table matSort
-                   [dataSource]="datasource"
-                   (matSortChange)="sortData($event)"
-                   [matSortActive]="config?.initialSortColumn"
-                   [matSortDirection]="config?.initialSortDirection">
-
-            <ng-container *ngFor="let column of columns" [matColumnDef]="column.attributeName">
-                <mat-header-cell [mat-sort-header]="column.attributeName" *matHeaderCellDef class="ellipsis">
-                    <span>{{column.displayedName | translate}}</span>
+        <mat-table
+            matSort
+            [dataSource]="datasource"
+            (matSortChange)="sortData($event)"
+            [matSortActive]="config?.initialSortColumn"
+            [matSortDirection]="config?.initialSortDirection"
+        >
+            <ng-container
+                *ngFor="let column of columns"
+                [matColumnDef]="column.attributeName"
+            >
+                <mat-header-cell
+                    [mat-sort-header]="column.attributeName"
+                    *matHeaderCellDef
+                    class="ellipsis"
+                >
+                    <span>{{ column.displayedName | translate }}</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
+                    <span
+                        [title]="getDisplayValue(element, column) | translate"
+                        [innerHTML]="
+                            getDisplayValue(element, column) | translate
+                        "
+                    ></span>
                 </mat-cell>
             </ng-container>
 
-            <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
-            <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"
-                     (click)="onRowClicked(element, $event)"
-                     [ngClass]="{'pointer-cursor': config?.cursorPointer !== false}"></mat-row>
+            <mat-header-row
+                *matHeaderRowDef="getColumnsAttributeName()"
+            ></mat-header-row>
+            <mat-row
+                *matRowDef="let element; columns: getColumnsAttributeName()"
+                (click)="onRowClicked(element, $event)"
+                [ngClass]="{'pointer-cursor': config?.cursorPointer !== false}"
+            ></mat-row>
         </mat-table>
     </div>
     <div class="bottom-pagination" *ngIf="config?.paginate">
         <nav>
             <ul class="pagination">
-                <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
-                    <a (click)="applyPaginator(index - 1)">{{index}}</a>
+                <li
+                    *ngFor="let index of paginationItems"
+                    [ngClass]="{active: index - 1 === page}"
+                >
+                    <a (click)="applyPaginator(index - 1)">{{ index }}</a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
-

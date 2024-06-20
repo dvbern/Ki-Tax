@@ -22,7 +22,6 @@ import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
  * this interceptor boradcasts a  VERSION_MATCH or VERSION_MISMATCH event whenever a rest service responds
  */
 export class HttpVersionInterceptor implements IHttpInterceptor {
-
     public static $inject = ['$rootScope', '$log'];
 
     public backendVersion: string;
@@ -34,20 +33,23 @@ export class HttpVersionInterceptor implements IHttpInterceptor {
     public constructor(
         private readonly $rootScope: IRootScopeService,
         private readonly $log: ILogService
-    ) {
-    }
+    ) {}
 
-    private static hasVersionCompatibility(frontendVersion: string, backendVersion: string): boolean {
+    private static hasVersionCompatibility(
+        frontendVersion: string,
+        backendVersion: string
+    ): boolean {
         // Wir erwarten, dass die Versionsnummern im Frontend und Backend immer synchronisiert werden
         return frontendVersion === backendVersion;
     }
 
     // interceptor methode
     public response = (response: any) => {
-        if (response.headers
-            && response.config
-            && response.config.url.indexOf(CONSTANTS.REST_API) === 0
-            && !response.config.cache
+        if (
+            response.headers &&
+            response.config &&
+            response.config.url.indexOf(CONSTANTS.REST_API) === 0 &&
+            !response.config.cache
         ) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
         }
@@ -56,7 +58,6 @@ export class HttpVersionInterceptor implements IHttpInterceptor {
     };
 
     private updateBackendVersion(newVersion: string): void {
-
         if (this.eventCaptured && newVersion === this.backendVersion) {
             // if the event hasn't been captured yet we wait until it gets captured
             return;
@@ -64,14 +65,21 @@ export class HttpVersionInterceptor implements IHttpInterceptor {
 
         this.backendVersion = newVersion;
 
-        if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
+        if (
+            HttpVersionInterceptor.hasVersionCompatibility(
+                VERSION,
+                this.backendVersion
+            )
+        ) {
             // could throw match event here but currently there is no action we want to perform when it matches
         } else {
             this.$log.warn('Versions of Frontend and Backend do not match');
             // before we send the event we say that the event hasn't been captured.
             // After caturing the event this should be set to true
             this.eventCaptured = false;
-            this.$rootScope.$broadcast(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]);
+            this.$rootScope.$broadcast(
+                TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]
+            );
         }
     }
 }

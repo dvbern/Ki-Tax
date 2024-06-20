@@ -19,7 +19,6 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../enum
 import {TSAbstractEntity} from '../TSAbstractEntity';
 
 export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntity {
-
     public status: TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 
     // A: Allgemeine Angaben
@@ -87,6 +86,9 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     }
 
     public isAbgeschlossen(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN
+        );
     }
 }

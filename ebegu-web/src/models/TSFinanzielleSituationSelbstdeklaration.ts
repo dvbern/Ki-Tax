@@ -17,7 +17,7 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableEntity {
+export class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableEntity {
     private _einkunftErwerb: number;
     private _einkunftVersicherung: number;
     private _einkunftWertschriften: number;
@@ -207,5 +207,4 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
     public set abzugSteuerfreierBetragKinder(value: number) {
         this._abzugSteuerfreierBetragKinder = value;
     }
-
 }

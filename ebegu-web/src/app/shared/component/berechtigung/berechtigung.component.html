@@ -19,21 +19,25 @@
     <!-- Rolle -->
     <div [class]="displayClass">
         <div class="form-group">
-            <dv-benutzer-rolle [inputId]="rolleId"
-                               [name]="rolleId"
-                               [required]="true"
-                               [disabled]="disabled"
-                               [excludedRoles]="excludedRoles"
-                               [(benutzerRolle)]="berechtigung.role">
+            <dv-benutzer-rolle
+                [inputId]="rolleId"
+                [name]="rolleId"
+                [required]="true"
+                [disabled]="disabled"
+                [excludedRoles]="excludedRoles"
+                [(benutzerRolle)]="berechtigung.role"
+            >
             </dv-benutzer-rolle>
         </div>
     </div>
 
     <!-- Gemeinde(n) -->
     <div [class]="displayClass" *ngIf="berechtigung.hasGemeindeRole()">
-        <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
-                                 [disabled]="disabled"
-                                 [required]="true">
+        <dv-gemeinde-multiselect
+            [selected]="berechtigung.gemeindeList"
+            [disabled]="disabled"
+            [required]="true"
+        >
         </dv-gemeinde-multiselect>
     </div>
 
@@ -42,20 +46,27 @@
         <div class="form-group">
             <label translate [for]="institutionId">INSTITUTION</label>
             <div class="dv-select-style">
-                <select [attr.aria-describedby]="institutionId + '-error'"
-                        [name]="institutionId"
-                        [id]="institutionId"
-                        class="form-control"
-                        [disabled]="disabled"
-                        [required]="true"
-                        [(ngModel)]="berechtigung.institution"
-                        [compareWith]="compareById">
-                    <option *ngFor="let institution of institutionen$ | async" [ngValue]="institution">
-                        {{institution.name}}
+                <select
+                    [attr.aria-describedby]="institutionId + '-error'"
+                    [name]="institutionId"
+                    [id]="institutionId"
+                    class="form-control"
+                    [disabled]="disabled"
+                    [required]="true"
+                    [(ngModel)]="berechtigung.institution"
+                    [compareWith]="compareById"
+                >
+                    <option
+                        *ngFor="let institution of institutionen$ | async"
+                        [ngValue]="institution"
+                    >
+                        {{ institution.name }}
                     </option>
                 </select>
-                <dv-error-messages [inputId]="institutionId"
-                                   [errorObject]="form.controls[institutionId]?.errors">
+                <dv-error-messages
+                    [inputId]="institutionId"
+                    [errorObject]="form.controls[institutionId]?.errors"
+                >
                 </dv-error-messages>
             </div>
         </div>
@@ -66,21 +77,27 @@
         <div class="form-group">
             <label translate [for]="traegerschaftId">TRAEGERSCHAFT</label>
             <div class="dv-select-style">
-                <select [attr.aria-describedby]="traegerschaftId + '-error'"
-                        [name]="traegerschaftId"
-                        [id]="traegerschaftId"
-                        class="form-control"
-                        [disabled]="disabled"
-                        [required]="true"
-                        [(ngModel)]="berechtigung.traegerschaft"
-                        [compareWith]="compareById">
-                    <option *ngFor="let traegerschaft of traegerschaften$ | async"
-                            [ngValue]="traegerschaft">
-                        {{traegerschaft.name}}
+                <select
+                    [attr.aria-describedby]="traegerschaftId + '-error'"
+                    [name]="traegerschaftId"
+                    [id]="traegerschaftId"
+                    class="form-control"
+                    [disabled]="disabled"
+                    [required]="true"
+                    [(ngModel)]="berechtigung.traegerschaft"
+                    [compareWith]="compareById"
+                >
+                    <option
+                        *ngFor="let traegerschaft of traegerschaften$ | async"
+                        [ngValue]="traegerschaft"
+                    >
+                        {{ traegerschaft.name }}
                     </option>
                 </select>
-                <dv-error-messages [inputId]="traegerschaftId"
-                                   [errorObject]="form.controls[traegerschaftId]?.errors">
+                <dv-error-messages
+                    [inputId]="traegerschaftId"
+                    [errorObject]="form.controls[traegerschaftId]?.errors"
+                >
                 </dv-error-messages>
             </div>
         </div>
@@ -90,21 +107,27 @@
         <div class="form-group">
             <label translate [for]="sozialdienstId">SOZIALDIENST_TITLE</label>
             <div class="dv-select-style">
-                <select [attr.aria-describedby]="sozialdienstId + '-error'"
-                        [name]="sozialdienstId"
-                        [id]="sozialdienstId"
-                        class="form-control"
-                        [disabled]="disabled"
-                        [required]="true"
-                        [(ngModel)]="berechtigung.sozialdienst"
-                        [compareWith]="compareById">
-                    <option *ngFor="let sozialdienst of sozialdienste$ | async"
-                            [ngValue]="sozialdienst">
-                        {{sozialdienst.name}}
+                <select
+                    [attr.aria-describedby]="sozialdienstId + '-error'"
+                    [name]="sozialdienstId"
+                    [id]="sozialdienstId"
+                    class="form-control"
+                    [disabled]="disabled"
+                    [required]="true"
+                    [(ngModel)]="berechtigung.sozialdienst"
+                    [compareWith]="compareById"
+                >
+                    <option
+                        *ngFor="let sozialdienst of sozialdienste$ | async"
+                        [ngValue]="sozialdienst"
+                    >
+                        {{ sozialdienst.name }}
                     </option>
                 </select>
-                <dv-error-messages [inputId]="sozialdienstId"
-                                   [errorObject]="form.controls[sozialdienstId]?.errors">
+                <dv-error-messages
+                    [inputId]="sozialdienstId"
+                    [errorObject]="form.controls[sozialdienstId]?.errors"
+                >
                 </dv-error-messages>
             </div>
         </div>
@@ -115,26 +138,28 @@
         <table class="berechtigung">
             <thead></thead>
             <tbody>
-            <tr>
-                <td class="bold" translate>ROLLE</td>
-                <td translate>{{translationKeyForRole(berechtigung.role)}}</td>
-            </tr>
-            <tr *ngIf="berechtigung.hasGemeindeRole()">
-                <td class="bold" translate>GEMEINDEN</td>
-                <td>{{berechtigung.gemeindeListToString()}}</td>
-            </tr>
-            <tr *ngIf="berechtigung.hasInstitutionRole()">
-                <td class="bold" translate>INSTITUTION</td>
-                <td>{{berechtigung.institution.name}}</td>
-            </tr>
-            <tr *ngIf="berechtigung.hasTraegerschaftRole()">
-                <td class="bold" translate>TRAEGERSCHAFT</td>
-                <td>{{berechtigung.traegerschaft.name}}</td>
-            </tr>
-            <tr *ngIf="berechtigung.hasSozialdienstRole()">
-                <td class="bold" translate>SOZIALDIENST_TITLE</td>
-                <td>{{berechtigung.sozialdienst.name}}</td>
-            </tr>
+                <tr>
+                    <td class="bold" translate>ROLLE</td>
+                    <td translate>
+                        {{ translationKeyForRole(berechtigung.role) }}
+                    </td>
+                </tr>
+                <tr *ngIf="berechtigung.hasGemeindeRole()">
+                    <td class="bold" translate>GEMEINDEN</td>
+                    <td>{{ berechtigung.gemeindeListToString() }}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasInstitutionRole()">
+                    <td class="bold" translate>INSTITUTION</td>
+                    <td>{{ berechtigung.institution.name }}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasTraegerschaftRole()">
+                    <td class="bold" translate>TRAEGERSCHAFT</td>
+                    <td>{{ berechtigung.traegerschaft.name }}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasSozialdienstRole()">
+                    <td class="bold" translate>SOZIALDIENST_TITLE</td>
+                    <td>{{ berechtigung.sozialdienst.name }}</td>
+                </tr>
             </tbody>
         </table>
     </fieldset>

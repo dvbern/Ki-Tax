@@ -48,7 +48,8 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'gesuchsteller.dashboard',
-        template: '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
+        template:
+            '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
         url: '/gesuchstellerDashboard',
         params: {
             infoMessage: ''
@@ -68,7 +69,12 @@ const ng1States: Ng1StateDeclaration[] = [
     }
 ];
 
-getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
+getGesuchModelManager.$inject = [
+    'GesuchModelManager',
+    '$stateParams',
+    '$q',
+    '$log'
+];
 
 export function getGesuchModelManager(
     gesuchModelManager: GesuchModelManager,
@@ -80,7 +86,11 @@ export function getGesuchModelManager(
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             const gesuch = gesuchModelManager.getGesuch();
-            if (!gesuch || gesuch && gesuch.id !== gesuchIdParam || gesuch.emptyCopy) {
+            if (
+                !gesuch ||
+                (gesuch && gesuch.id !== gesuchIdParam) ||
+                gesuch.emptyCopy
+            ) {
                 // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId uebereinstimmt wird das gesuch neu
                 // geladen Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im
                 // Gesuchmodelmanager um eine leere Mutation handelt oder um ein leeres Erneuerungsgesuch
@@ -99,7 +109,9 @@ export function getGesuchModelManager(
 
 resetGesuchModelManager.$inject = ['GesuchModelManager'];
 
-export function resetGesuchModelManager(gesuchModelManager: GesuchModelManager): IPromise<TSGesuch> {
+export function resetGesuchModelManager(
+    gesuchModelManager: GesuchModelManager
+): IPromise<TSGesuch> {
     if (gesuchModelManager.getGesuch()) {
         gesuchModelManager.setGesuch(undefined);
     }

@@ -3,15 +3,14 @@
 @tour-zindex: 1081;
 @tour-step-color: #ffffff;
 @tour-text-color: #231f1f;
-@tour-next-button-color: #D50025;
-@tour-next-button-hover: #BF0425;
+@tour-next-button-color: #d50025;
+@tour-next-button-hover: #bf0425;
 @tour-back-button-color: @tour-next-button-color;
 @tour-next-text-color: @tour-step-color;
 @tour-next-text-hover: @tour-step-color;
 @tour-skip-link-color: #5e5e5e;
 @tour-orb-color: #625aff;
 @tour-shadow-color: #4c4c4c;
-
 
 :host {
     z-index: 90000;
@@ -33,7 +32,9 @@
 
     .guided-tour-spotlight-overlay {
         position: fixed;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, .7), 0 0 1.5rem rgba(0, 0, 0, .5);
+        box-shadow:
+            0 0 0 9999px rgba(0, 0, 0, 0.7),
+            0 0 1.5rem rgba(0, 0, 0, 0.5);
         opacity: 0;
         z-index: @tour-zindex + 1;
     }
@@ -70,15 +71,14 @@
         @keyframes pulse {
             from {
                 transform: translate(-50%, -50%) scale(0.45);
-                opacity: 1.0;
+                opacity: 1;
             }
             to {
                 transform: translate(-50%, -50%) scale(1);
-                opacity: 0.0;
+                opacity: 0;
             }
         }
     }
-
 
     .tour-step {
         position: fixed;
@@ -91,8 +91,9 @@
             transform: translate(-50%, -50%);
         }
 
-
-        &.tour-bottom, &.tour-bottom-right, &.tour-bottom-left {
+        &.tour-bottom,
+        &.tour-bottom-right,
+        &.tour-bottom-left {
             .tour-arrow::before {
                 position: absolute;
             }
@@ -103,7 +104,8 @@
                 &::before {
                     border-bottom: 22px solid #ffffff;
                     .tour-triangle(topright, @tour-step-color);
-                    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                    @media all and (-ms-high-contrast: none),
+                        (-ms-high-contrast: active) {
                         top: 0;
                         .tour-triangle(topright, black);
                     }
@@ -111,7 +113,9 @@
             }
         }
 
-        &.tour-top, &.tour-top-right, &.tour-top-left {
+        &.tour-top,
+        &.tour-top-right,
+        &.tour-top-left {
             margin-bottom: 10px;
 
             .tour-arrow::before {
@@ -124,7 +128,8 @@
 
                 &::before {
                     .tour-triangle(bottom, @tour-step-color);
-                    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                    @media all and (-ms-high-contrast: none),
+                        (-ms-high-contrast: active) {
                         top: 0;
                         .tour-triangle(bottom, black);
                     }
@@ -132,7 +137,8 @@
             }
         }
 
-        &.tour-bottom, &.tour-top {
+        &.tour-bottom,
+        &.tour-top {
             .tour-arrow::before {
                 transform: translateX(-50%);
                 left: 50%;
@@ -161,7 +167,8 @@
             }
         }
 
-        &.tour-bottom-left, &.tour-top-left {
+        &.tour-bottom-left,
+        &.tour-top-left {
             .tour-arrow::before {
                 left: 5px;
             }
@@ -216,7 +223,7 @@
                     display: block;
                 }
 
-                border: 2px solid black
+                border: 2px solid black;
             }
         }
 
@@ -340,5 +347,4 @@
         @opposite-direction: bottom;
         bottom: 100%;
     }
-
 }

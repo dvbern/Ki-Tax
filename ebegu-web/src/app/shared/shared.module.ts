@@ -19,14 +19,16 @@ import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {
+    TranslateLoader,
+    TranslateModule,
+    TranslateService
+} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
 import {AuszahlungsdatenComponent} from '../../gesuch/auszahlungsdaten/auszahlungsdaten.component';
 import {DvEingabeHintComponent} from '../../gesuch/component/dv-eingabe-hint/dv-eingabe-hint.component';
-import {
-    SteuerveranlagungGemeinsamComponent
-} from '../../gesuch/component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
+import {SteuerveranlagungGemeinsamComponent} from '../../gesuch/component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
@@ -37,50 +39,30 @@ import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu.component';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
-import {
-    DvMitteilungDelegationComponent
-} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgCancelDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-cancel-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {
-    DvNgDisplayObjectDialogComponent
-} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
-import {
-    DvNgGesuchstellerDialogComponent
-} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
+import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
-import {
-    DvNgMitteilungDelegationDialogComponent
-} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
-import {
-    DvNgMitteilungResultDialogComponent
-} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
-import {
-    DvNgMultiSelectDialogComponent
-} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
+import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {DvNgMultiSelectDialogComponent} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {
-    DvNgSelectTraegerschaftEmailDialogComponent
-} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
-import {
-    DvNgSozialdienstDialogComponent
-} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
-import {
-    DvNgThreeButtonDialogComponent
-} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
+import {DvNgSelectTraegerschaftEmailDialogComponent} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
+import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
+import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang.component';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {LanguageSelectorComponent} from '../core/component/language-selector/language-selector.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
-import {
-    PulldownUserMenuButtonComponent
-} from '../core/component/pulldown-user-menu-button/pulldown-user-menu-button.component';
+import {PulldownUserMenuButtonComponent} from '../core/component/pulldown-user-menu-button/pulldown-user-menu-button.component';
 import {PulldownUserMenuComponent} from '../core/component/pulldown-user-menu/pulldown-user-menu.component';
 import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
@@ -99,12 +81,8 @@ import {DvDatePickerXComponent} from './component/dv-date-picker/dv-date-picker-
 import {DvDemoFeatureWrapperComponent} from './component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
-import {
-    ExternalClientAssignmentComponent
-} from './component/external-client-assignment/external-client-assignment.component';
-import {
-    ExternalClientMultiselectComponent
-} from './component/external-client-multiselect/external-client-multiselect.component';
+import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
+import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {SavingInfoComponent} from './component/save-input-info/saving-info.component';
@@ -119,9 +97,7 @@ import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
-import {
-    FullHeightInnerPaddingContainerComponent
-} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
+import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
@@ -132,7 +108,10 @@ import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
 import {QrIbanValidatorDirective} from './validators/qr-iban-validator.directive';
 
-export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
+export function createTranslateLoader(
+    http: HttpClient,
+    mandantService: MandantService
+): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
 }
 
@@ -148,11 +127,11 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
-                useFactory: (createTranslateLoader),
+                useFactory: createTranslateLoader,
                 deps: [HttpClient, MandantService]
             }
         }),
-        GuidedTourModule.forRoot(),
+        GuidedTourModule.forRoot()
     ],
     declarations: [
         AccordionDirective,
@@ -320,7 +299,6 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
     ]
 })
 export class SharedModule {
-
     public constructor(
         translate: TranslateService,
         i18nServiceRS: I18nServiceRSRest
@@ -328,7 +306,10 @@ export class SharedModule {
         SharedModule.initTranslateService(translate, i18nServiceRS);
     }
 
-    private static initTranslateService(translate: TranslateService, i18nServiceRS: I18nServiceRSRest): void {
+    private static initTranslateService(
+        translate: TranslateService,
+        i18nServiceRS: I18nServiceRSRest
+    ): void {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang(TSBrowserLanguage.DE);
         // the lang to use, if the lang isn't available, it will use the current loader to get them

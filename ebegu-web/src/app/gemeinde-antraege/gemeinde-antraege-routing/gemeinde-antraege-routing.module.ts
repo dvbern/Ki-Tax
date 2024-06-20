@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GemeindeAntraegeComponent} from '../gemeinde-antraege/gemeinde-antraege.component';
 
@@ -38,12 +41,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class GemeindeAntraegeRoutingModule {
-}
+export class GemeindeAntraegeRoutingModule {}

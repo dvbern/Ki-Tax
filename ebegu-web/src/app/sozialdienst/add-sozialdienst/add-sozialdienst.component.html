@@ -16,18 +16,20 @@
   -->
 
 <dv-full-height-container>
-    <form role="form"
-          #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          (ngSubmit)="sozialdienstEinladen()"
-          novalidate>
-
+    <form
+        role="form"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        (ngSubmit)="sozialdienstEinladen()"
+        novalidate
+    >
         <div class="dv-content">
-
-            <h1 class="access-for-all-title" translate>AFA_SOZIALDIENSTVERWALTUNG</h1>
+            <h1 class="access-for-all-title" translate>
+                AFA_SOZIALDIENSTVERWALTUNG
+            </h1>
             <div class="view-title">
                 <h2 translate>NEUE_SOZIALDIENST</h2>
-                <hr class="header">
+                <hr class="header" />
             </div>
 
             <fieldset>
@@ -35,12 +37,24 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="sozialdienst_name_ID">NAME</label>
-                            <input id="sozialdienst_name_ID" type="text" name="sozialdienst_name"
-                                   [(ngModel)]="sozialdienst.name"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.sozialdienst_name?.errors"
-                                               input-id="sozialdienst_name_ID">
+                            <label translate for="sozialdienst_name_ID"
+                                >NAME</label
+                            >
+                            <input
+                                id="sozialdienst_name_ID"
+                                type="text"
+                                name="sozialdienst_name"
+                                [(ngModel)]="sozialdienst.name"
+                                [maxlength]="255"
+                                class="form-control"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="
+                                    form.controls.sozialdienst_name?.errors
+                                "
+                                input-id="sozialdienst_name_ID"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
@@ -51,13 +65,23 @@
                     <!-- Administrator Email -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="admin_mail_ID">ADMIN_MAIL</label>
-                            <input id="admin_mail_ID" type="email" name="admin_mail"
-                                   [(ngModel)]="adminEmail"
-                                   email
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
-                                               input-id="admin_mail_ID">
+                            <label translate for="admin_mail_ID"
+                                >ADMIN_MAIL</label
+                            >
+                            <input
+                                id="admin_mail_ID"
+                                type="email"
+                                name="admin_mail"
+                                [(ngModel)]="adminEmail"
+                                email
+                                [maxlength]="255"
+                                class="form-control"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="form.controls.admin_mail?.errors"
+                                input-id="admin_mail_ID"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
@@ -71,10 +95,12 @@
                 <span translate>EINLADUNG_SENDEN</span>
             </dv-loading-button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                (click)="cancel()"
+                [textContent]="'CANCEL' | translate"
+            ></button>
         </div>
     </form>
 </dv-full-height-container>

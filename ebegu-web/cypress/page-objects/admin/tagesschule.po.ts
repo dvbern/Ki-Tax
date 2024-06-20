@@ -1,39 +1,39 @@
 import {FixtureCreateTagesschule, FixtureTagesschule} from '@dv-e2e/fixtures';
 import {EbeguUtil} from '../../../src/utils/EbeguUtil';
 
-
 // !! -- PAGE OBJECTS -- !!
 
 const getCreateTagesschuleButton = () => {
-	return cy.getByData('institution.create-tagesschule');
+    return cy.getByData('institution.create-tagesschule');
 };
 
 const getGemeinde = () => {
-	return cy.getByData('institution.create-tagesschule.gemeinde-auswaehlen');
+    return cy.getByData('institution.create-tagesschule.gemeinde-auswaehlen');
 };
 
 const getName = () => {
-	return cy.getByData('institution.create-tagesschule.institutionsname');
+    return cy.getByData('institution.create-tagesschule.institutionsname');
 };
 
 const getEmail = () => {
-	return cy.getByData('institution.create-tagesschule.email-adresse');
+    return cy.getByData('institution.create-tagesschule.email-adresse');
 };
 
 const getSubmitButton = () => {
-	return cy.getByData('institution.create-tagesschule.submit');
+    return cy.getByData('institution.create-tagesschule.submit');
 };
-
 
 // !! -- PAGE ACTIONS -- !!
 const createTagesschule = (
     tagesschuleArt: 'dynamisch' | 'scolaris' | 'import',
-    dataset: keyof typeof FixtureCreateTagesschule,
+    dataset: keyof typeof FixtureCreateTagesschule
 ) => {
     FixtureCreateTagesschule[dataset](data => {
         getCreateTagesschuleButton().click();
         getGemeinde().select(data[tagesschuleArt].gemeinde);
-        getName().type(data[tagesschuleArt].name + '-' + EbeguUtil.generateRandomName(3));
+        getName().type(
+            data[tagesschuleArt].name + '-' + EbeguUtil.generateRandomName(3)
+        );
         getEmail().type(data[tagesschuleArt].email);
         cy.waitForRequest('POST', '**/institutionen*', () => {
             getSubmitButton().click();
@@ -48,9 +48,8 @@ export const CreateTagesschulePO = {
     getEmail,
     getSubmitButton,
     //page actions
-    createTagesschule,
+    createTagesschule
 };
-
 
 // !! -- PAGE OBJECTS -- !!
 const getAnschrift = () => {
@@ -82,29 +81,33 @@ const getEditSaveButton = () => {
 };
 
 const getCancelButton = () => {
-	return cy.getByData('institution.edit.cancel');
+    return cy.getByData('institution.edit.cancel');
 };
 
 const getGesuchsperiodeTab = (gesuchsperiodeIndex: number) => {
-	return cy.getByData('institution.gesuchsperiode-' + gesuchsperiodeIndex);
+    return cy.getByData('institution.gesuchsperiode-' + gesuchsperiodeIndex);
 };
 
 const getGesuchsperiodeModulTable = (gesuchsperiodeIndex: number) => {
-	return cy.getByData('institution.gesuchsperiode.module.table-' + gesuchsperiodeIndex);
+    return cy.getByData(
+        'institution.gesuchsperiode.module.table-' + gesuchsperiodeIndex
+    );
 };
 
 const getAddModuleButton = (moduleIndex: number) => {
-	return cy.getByData('institution.gesuchsperiode.add.modul-' + moduleIndex);
+    return cy.getByData('institution.gesuchsperiode.add.modul-' + moduleIndex);
 };
 
 const getAddImportModuleButton = (moduleIndex: number) => {
-	return cy.getByData('institution.gesuchsperiode.import.modul-' + moduleIndex);
+    return cy.getByData(
+        'institution.gesuchsperiode.import.modul-' + moduleIndex
+    );
 };
 
 // !! -- PAGE ACTIONS -- !!
 const editTagesschuleForm = (
-tagesschuleArt: 'dynamisch' | 'scolaris' | 'import',
-dataset: keyof typeof FixtureTagesschule,
+    tagesschuleArt: 'dynamisch' | 'scolaris' | 'import',
+    dataset: keyof typeof FixtureTagesschule
 ) => {
     FixtureTagesschule[dataset](data => {
         getAnschrift().type(data[tagesschuleArt].anschrift);
@@ -135,5 +138,5 @@ export const EditTagesschulePO = {
     getAddModuleButton,
     getAddImportModuleButton,
     // page actions
-    editTagesschuleForm,
+    editTagesschuleForm
 };

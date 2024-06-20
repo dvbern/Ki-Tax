@@ -34,7 +34,6 @@ import {ErrorService} from '../../core/errors/service/ErrorService';
 import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
 export abstract class AbstractFerienbetreuungFormular {
-
     public form: FormGroup;
     public formValidationTriggered = false;
     public formAbschliessenTriggered = false;
@@ -43,9 +42,12 @@ export abstract class AbstractFerienbetreuungFormular {
 
     private readonly WIZARD_TYPE = TSWizardStepXTyp.FERIENBETREUUNG;
 
-    public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeFalscheAngaben: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeSave: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    public readonly canSeeAbschliessen: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    public readonly canSeeFalscheAngaben: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
 
     protected constructor(
         protected readonly errorService: ErrorService,
@@ -54,12 +56,13 @@ export abstract class AbstractFerienbetreuungFormular {
         protected readonly cd: ChangeDetectorRef,
         protected readonly wizardRS: WizardStepXRS,
         protected readonly uiRouterGlobals: UIRouterGlobals
-    ) {
-    }
+    ) {}
 
     protected abstract enableFormValidation(): void;
 
-    protected abstract setupForm(angabe: TSFerienbetreuungAbstractAngaben): void;
+    protected abstract setupForm(
+        angabe: TSFerienbetreuungAbstractAngaben
+    ): void;
 
     protected abstract setBasicValidation(): void;
 
@@ -102,7 +105,6 @@ export abstract class AbstractFerienbetreuungFormular {
         );
     }
 
-    // eslint-disable-next-line
     protected showUnerwarteteErrorMessage(): void {
         this.errorService.clearAll();
         this.errorService.addMesageAsError(
@@ -115,7 +117,8 @@ export abstract class AbstractFerienbetreuungFormular {
         dialogConfig.data = {
             frage: this.translate.instant(frageKey)
         };
-        return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
+        return this.dialog
+            .open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .toPromise();
     }
@@ -126,19 +129,27 @@ export abstract class AbstractFerienbetreuungFormular {
         principal: TSBenutzer
     ): void {
         if (container.isInPruefungKanton()) {
-            if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isInBearbeitung()) {
+            if (
+                principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+                angaben.isInBearbeitung()
+            ) {
                 this.canSeeSave.next(true);
                 this.canSeeAbschliessen.next(true);
                 this.canSeeFalscheAngaben.next(false);
-            } else if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isAbgeschlossen()) {
+            } else if (
+                principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+                angaben.isAbgeschlossen()
+            ) {
                 this.canSeeSave.next(false);
                 this.canSeeAbschliessen.next(false);
                 this.canSeeFalscheAngaben.next(true);
             } else {
                 this.setCanSeeNoActions();
             }
-            // eslint-disable-next-line
-        } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
+        } else if (
+            container.isInBearbeitungGemeinde() &&
+            !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())
+        ) {
             if (angaben.isAbgeschlossen()) {
                 this.canSeeAbschliessen.next(false);
                 this.canSeeSave.next(false);
@@ -164,12 +175,14 @@ export abstract class AbstractFerienbetreuungFormular {
         container: TSFerienbetreuungAngabenContainer,
         angaben: TSFerienbetreuungAbstractAngaben
     ): void {
-        if (angaben.isAbgeschlossen() ||
+        if (
+            angaben.isAbgeschlossen() ||
             container?.isGeprueft() ||
-            container?.isInBearbeitungGemeinde() &&
-            principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
-            container?.isInPruefungKanton() &&
-            principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) {
+            (container?.isInBearbeitungGemeinde() &&
+                principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) ||
+            (container?.isInPruefungKanton() &&
+                principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles()))
+        ) {
             this.form.disable();
         } else {
             this.form.enable();
@@ -185,7 +198,11 @@ export abstract class AbstractFerienbetreuungFormular {
         this.cd.detectChanges();
 
         this.disableFormBasedOnStateAndPrincipal(principal, container, angaben);
-        this.setupRoleBasedPropertiesForPrincipal(container, angaben, principal);
+        this.setupRoleBasedPropertiesForPrincipal(
+            container,
+            angaben,
+            principal
+        );
 
         this.cd.markForCheck();
     }
@@ -194,13 +211,23 @@ export abstract class AbstractFerienbetreuungFormular {
         this.formAbschliessenTriggered = false;
         this.form.markAsPristine();
         this.errorService.clearAll();
-        this.wizardRS.updateSteps(this.WIZARD_TYPE, this.uiRouterGlobals.params.id);
+        this.wizardRS.updateSteps(
+            this.WIZARD_TYPE,
+            this.uiRouterGlobals.params.id
+        );
     }
 
     protected handleSaveErrors(errors: TSExceptionReport[]): void {
         this.errorService.clearAll();
-        if (errors.find(error => EbeguUtil.isNotNullOrUndefined(error.customMessage) && error.customMessage.includes(
-            'Not all required properties are set'))) {
+        if (
+            errors.find(
+                error =>
+                    EbeguUtil.isNotNullOrUndefined(error.customMessage) &&
+                    error.customMessage.includes(
+                        'Not all required properties are set'
+                    )
+            )
+        ) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
         } else {
@@ -217,7 +244,5 @@ export abstract class AbstractFerienbetreuungFormular {
             return false;
         }
         return this.confirmDialog('FRAGE_FORMULAR_ABSCHLIESSEN');
-
     }
-
 }

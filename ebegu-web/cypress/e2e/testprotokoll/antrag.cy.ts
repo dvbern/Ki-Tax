@@ -26,9 +26,11 @@ import {
     FinanzielleSituationStartPO,
     FinanzielleSituationResultatePO,
     NavigationPO,
-    SidenavPO, VerfuegenPO, ConfirmDialogPO,
+    SidenavPO,
+    VerfuegenPO,
+    ConfirmDialogPO
 } from '@dv-e2e/page-objects';
-import { FixtureFinSit } from '@dv-e2e/fixtures';
+import {FixtureFinSit} from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
 import {GesuchstellendePO} from '../../page-objects/antrag/gesuchstellende.po';
 import {VerfuegungPO} from '../../page-objects/antrag/verfuegung.po';
@@ -67,7 +69,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
     beforeEach(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(userSB);
         cy.visit('/#/faelle');
     });
@@ -76,7 +78,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // INIT
         {
             AntragPapierPO.createPapierGesuch('withValid');
-            AntragCreationPO.getAntragsDaten().then((el$) => el$.data('antrags-id')).as('antragsId');
+            AntragCreationPO.getAntragsDaten()
+                .then(el$ => el$.data('antrags-id'))
+                .as('antragsId');
         }
 
         // FAMILIENSITUATION
@@ -100,7 +104,10 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // BETREUUNG
         {
             createNewBetreuungWithAllSettings();
-            AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
+            AntragBetreuungPO.getPageTitle().should(
+                'include.text',
+                'Betreuung'
+            );
 
             cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
                 NavigationPO.saveAndGoNext();
@@ -109,8 +116,14 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
         // BESCHAEFTIGUNGSPENSUM
         {
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1', 'withValid');
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2', 'withValid');
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+                'GS1',
+                'withValid'
+            );
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+                'GS2',
+                'withValid'
+            );
 
             NavigationPO.saveAndGoNext();
         }
@@ -119,22 +132,29 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             // Config
             {
-                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm('withValid');
+                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm(
+                    'withValid'
+                );
                 FinanzielleSituationStartPO.saveForm();
             }
 
             // Finanzielle Situation - GS 1
             {
-
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
+                FinanzielleSituationPO.fillFinanzielleSituationForm(
+                    'withValid',
+                    'GS1'
+                );
                 FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Finanzielle Situation - GS 2
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
+                FinanzielleSituationPO.fillFinanzielleSituationForm(
+                    'withValid',
+                    'GS2'
+                );
                 FinanzielleSituationPO.saveFormAndGoNext();
             }
 
@@ -144,27 +164,53 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 FixtureFinSit.withValid(({Resultate}) => {
                     FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
                         .find('input')
-                        .should('have.value', Resultate.einkommenBeiderGesuchsteller);
-                    FinanzielleSituationResultatePO.getBruttovermoegenGS1().find('input').type(Resultate.bruttovermoegen1);
-                    FinanzielleSituationResultatePO.getBruttovermoegenGS2().find('input').type(Resultate.bruttovermoegen2);
-                    FinanzielleSituationResultatePO.getSchuldenGS1().find('input').type(Resultate.schulden1);
-                    FinanzielleSituationResultatePO.getSchuldenGS2().find('input').type(Resultate.schulden2);
+                        .should(
+                            'have.value',
+                            Resultate.einkommenBeiderGesuchsteller
+                        );
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS1()
+                        .find('input')
+                        .type(Resultate.bruttovermoegen1);
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS2()
+                        .find('input')
+                        .type(Resultate.bruttovermoegen2);
+                    FinanzielleSituationResultatePO.getSchuldenGS1()
+                        .find('input')
+                        .type(Resultate.schulden1);
+                    FinanzielleSituationResultatePO.getSchuldenGS2()
+                        .find('input')
+                        .type(Resultate.schulden2);
                     FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
                         .find('input')
-                        .should('have.value', Resultate.nettovermoegenFuenfProzent);
+                        .should(
+                            'have.value',
+                            Resultate.nettovermoegenFuenfProzent
+                        );
                     FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
                         .find('input')
                         .should('have.value', Resultate.anrechenbaresEinkommen);
-                    FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden().find('input')
-                        .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
-                    FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse().find('input')
-                        .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
+                    FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden()
+                        .find('input')
+                        .should(
+                            'have.value',
+                            Resultate.abzuegeBeiderGesuchsteller
+                        );
+                    FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse()
+                        .find('input')
+                        .should(
+                            'have.value',
+                            Resultate.massgebendesEinkVorAbzFamGr
+                        );
                 });
             }
 
-            cy.waitForRequest('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**', () => {
-                NavigationPO.saveAndGoNext();
-            });
+            cy.waitForRequest(
+                'GET',
+                '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**',
+                () => {
+                    NavigationPO.saveAndGoNext();
+                }
+            );
         }
 
         // EINKOMMENSVERSCHLECHTERUNG
@@ -186,7 +232,10 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             cy.get('input[type="file"][tabindex=0]').each(($el, index) => {
                 const upload = `fileUpload#${index}`;
                 cy.intercept('POST', '**/upload').as(upload);
-                cy.wrap($el).selectFile({ contents: '@smallPng', fileName: `small-${index}.png` }, { force: true });
+                cy.wrap($el).selectFile(
+                    {contents: '@smallPng', fileName: `small-${index}.png`},
+                    {force: true}
+                );
                 return cy.wait(`@${upload}`);
             });
 
@@ -215,13 +264,22 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.changeLogin(userKita);
 
-            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
-            cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-                SidenavPO.goTo('BETREUUNG');
-            });
+            cy.get('@antragsId').then(antragsId =>
+                cy.visit(`/#/gesuch/familiensituation/${antragsId}`)
+            );
+            cy.waitForRequest(
+                'GET',
+                '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**',
+                () => {
+                    SidenavPO.goTo('BETREUUNG');
+                }
+            );
 
             AntragBetreuungPO.getBetreuung(0, 0).click();
-            AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', gemeinde);
+            AntragBetreuungPO.fillKitaBetreuungspensumForm(
+                'withValid',
+                gemeinde
+            );
             AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
             AntragBetreuungPO.platzBestaetigen();
         }
@@ -230,7 +288,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
         // VERFUEGUNG
         {
-            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
+            cy.get('@antragsId').then(antragsId =>
+                cy.visit(`/#/gesuch/verfuegen/${antragsId}`)
+            );
 
             SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
 
@@ -242,17 +302,41 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
 
             VerfuegenPO.getVerfuegung(0, 0).click();
-            VerfuegungPO.getBetreuungspensumProzent(5).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(6).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(7).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(8).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(9).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(10).should('include.text', '25%');
-            VerfuegungPO.getBetreuungspensumProzent(11).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(5).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(6).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(7).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(8).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(9).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(10).should(
+                'include.text',
+                '25%'
+            );
+            VerfuegungPO.getBetreuungspensumProzent(11).should(
+                'include.text',
+                '25%'
+            );
 
             VerfuegungPO.nichtEintretenVerfuegen();
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
-            VerfuegenPO.getBetreuungsstatus(0, 0).should('have.text', 'Nicht eingetreten');
+            VerfuegenPO.getBetreuungsstatus(0, 0).should(
+                'have.text',
+                'Nicht eingetreten'
+            );
         }
     });
 });

@@ -1,9 +1,6 @@
 {
     "extends": "stylelint-config-recommended-scss",
-    "plugins": [
-        "stylelint-scss",
-        "stylelint-order"
-    ],
+    "plugins": ["stylelint-scss", "stylelint-order"],
     "rules": {
         "comment-empty-line-before": "always",
         "declaration-colon-newline-after": null,
@@ -18,17 +15,13 @@
         "selector-pseudo-element-no-unknown": [
             true,
             {
-                "ignorePseudoElements": [
-                    "ng-deep"
-                ]
+                "ignorePseudoElements": ["ng-deep"]
             }
         ],
         "selector-type-no-unknown": [
             true,
             {
-                "ignore": [
-                    "custom-elements"
-                ]
+                "ignore": ["custom-elements"]
             }
         ],
         "order/order": [
@@ -39,9 +32,7 @@
             "at-rules"
         ],
         "order/properties-alphabetical-order": true,
-        "scss/at-rule-no-unknown": [
-            true
-        ],
+        "scss/at-rule-no-unknown": [true],
         "property-no-unknown": [
             true,
             {

@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IScope} from 'angular';
+import {
+    IAttributes,
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IScope
+} from 'angular';
 import {DVRoleElementController} from '../../controller/DVRoleElementController';
 
 /**
@@ -34,8 +40,7 @@ export class DVEnableElement implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVEnableElement();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 
@@ -48,20 +53,31 @@ export class DVEnableElement implements IDirective {
         controller: DVRoleElementController
     ) => {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
-        scope.$watch(attributes.dvEnableAllowedRoles, (newValue: any, _oldValue: any, _scope: any) => {
-            controller.dvAllowedRoles = newValue;
-            this.enableElement(controller, attributes);
-        }, true);
-        scope.$watch(attributes.dvEnableExpression, (newValue: any, _oldValue: any) => {
-            controller.dvExpression = newValue;
-            this.enableElement(controller, attributes);
-        }, true);
+        scope.$watch(
+            attributes.dvEnableAllowedRoles,
+            (newValue: any) => {
+                controller.dvAllowedRoles = newValue;
+                this.enableElement(controller, attributes);
+            },
+            true
+        );
+        scope.$watch(
+            attributes.dvEnableExpression,
+            (newValue: any) => {
+                controller.dvExpression = newValue;
+                this.enableElement(controller, attributes);
+            },
+            true
+        );
     };
 
     /**
      * Sets the attribute disabled to true or false of the element.
      */
-    private enableElement(controller: DVRoleElementController, attributes: any): void {
+    private enableElement(
+        controller: DVRoleElementController,
+        attributes: any
+    ): void {
         if (controller.checkValidity()) {
             attributes.$set('disabled');
         } else {

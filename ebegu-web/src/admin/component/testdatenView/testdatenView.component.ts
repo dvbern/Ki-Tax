@@ -18,9 +18,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {
-    DvNgDisplayObjectDialogComponent,
-} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
+import {DvNgDisplayObjectDialogComponent} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -46,10 +44,9 @@ const LOG = LogFactory.createLog('TestdatenView');
 @Component({
     selector: 'dv-testdaten-view',
     templateUrl: './testdatenView.component.html',
-    styleUrls: ['./testdatenView.component.less'],
+    styleUrls: ['./testdatenView.component.less']
 })
 export class TestdatenViewComponent implements OnInit {
-
     public dossierid: string;
     public eingangsdatum: moment.Moment;
     public ereignisdatum: moment.Moment;
@@ -91,8 +88,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly gemeindeAntragRS: GemeindeAntragService,
         private readonly gesuchRS: GesuchRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.benutzerRS.getAllGesuchsteller().then(result => {
@@ -108,16 +104,19 @@ export class TestdatenViewComponent implements OnInit {
             this.gemeindeList = response;
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
-        this.applicationPropertyRS.isEbeguKibonAnfrageTestGuiEnabled().then(response => {
-            this.kibonAnfrageTestEnabled = response;
-        });
+        this.applicationPropertyRS
+            .isEbeguKibonAnfrageTestGuiEnabled()
+            .then(response => {
+                this.kibonAnfrageTestEnabled = response;
+            });
         this.initGemeindeAntragTypes();
     }
 
     public createTestFallType(testFall: string): void {
-        if (!this.selectedGesuchsperiode ||
-            !this.selectedGemeinde) {
-            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
+        if (!this.selectedGesuchsperiode || !this.selectedGemeinde) {
+            this.errorService.addMesageAsError(
+                'Gemeinde und Gesuchsperiode müssen ausgewählt sein'
+            );
             return;
         }
         let bestaetigt = false;
@@ -136,21 +135,27 @@ export class TestdatenViewComponent implements OnInit {
                 verfuegen = true;
                 break;
             default:
-                throw new Error(`not implemented for creationType ${this.creationType}`);
+                throw new Error(
+                    `not implemented for creationType ${this.creationType}`
+                );
         }
         if (this.selectedBesitzer) {
-            this.createTestFallGS(testFall,
+            this.createTestFallGS(
+                testFall,
                 this.selectedGesuchsperiode.id,
                 this.selectedGemeinde.id,
                 bestaetigt,
                 verfuegen,
-                this.selectedBesitzer.username);
+                this.selectedBesitzer.username
+            );
         } else {
-            this.createTestFall(testFall,
+            this.createTestFall(
+                testFall,
                 this.selectedGesuchsperiode.id,
                 this.selectedGemeinde.id,
                 bestaetigt,
-                verfuegen);
+                verfuegen
+            );
         }
     }
 
@@ -161,10 +166,20 @@ export class TestdatenViewComponent implements OnInit {
         bestaetigt: boolean,
         verfuegen: boolean
     ): void {
-        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).subscribe(
-            response => {
-                this.createLinkDialog(response);
-            }, err => LOG.error(err));
+        this.testFaelleRS
+            .createTestFall(
+                testFall,
+                gesuchsperiodeId,
+                gemeindeId,
+                bestaetigt,
+                verfuegen
+            )
+            .subscribe(
+                response => {
+                    this.createLinkDialog(response);
+                },
+                err => LOG.error(err)
+            );
     }
 
     private createTestFallGS(
@@ -175,24 +190,39 @@ export class TestdatenViewComponent implements OnInit {
         verfuegen: boolean,
         username: string
     ): void {
-        this.testFaelleRS.createTestFallGS(testFall,
-            gesuchsperiodeId,
-            gemeindeId,
-            bestaetigt,
-            verfuegen,
-            username).subscribe(response => {
-            this.createLinkDialog(response);
-        }, err => LOG.error(err));
+        this.testFaelleRS
+            .createTestFallGS(
+                testFall,
+                gesuchsperiodeId,
+                gemeindeId,
+                bestaetigt,
+                verfuegen,
+                username
+            )
+            .subscribe(
+                response => {
+                    this.createLinkDialog(response);
+                },
+                err => LOG.error(err)
+            );
     }
 
     public removeGesucheGS(): void {
-        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).subscribe(() => {
-            this.errorService.addMesageAsInfo(`Gesuche entfernt für ${this.selectedBesitzer.username}`);
-        }, err => LOG.error(err));
+        this.testFaelleRS
+            .removeFaelleOfGS(this.selectedBesitzer.username)
+            .subscribe(
+                () => {
+                    this.errorService.addMesageAsInfo(
+                        `Gesuche entfernt für ${this.selectedBesitzer.username}`
+                    );
+                },
+                err => LOG.error(err)
+            );
     }
 
     public removeGesuchsperiode(): void {
-        this.gesuchsperiodeRS.removeGesuchsperiode(this.selectedGesuchsperiode.id)
+        this.gesuchsperiodeRS
+            .removeGesuchsperiode(this.selectedGesuchsperiode.id)
             .then(() => {
                 const msg = `Gesuchsperiode entfernt ${this.selectedGesuchsperiode.gesuchsperiodeString}`;
                 this.errorService.addMesageAsInfo(msg);
@@ -200,13 +230,19 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public mutiereFallHeirat(): void {
-        this.testFaelleRS.mutiereFallHeirat(this.dossierid,
-            this.selectedGesuchsperiode.id,
-            this.eingangsdatum,
-            this.ereignisdatum)
-            .subscribe(response => {
-                this.createAndOpenOkDialog(response);
-            }, error => LOG.error(error));
+        this.testFaelleRS
+            .mutiereFallHeirat(
+                this.dossierid,
+                this.selectedGesuchsperiode.id,
+                this.eingangsdatum,
+                this.ereignisdatum
+            )
+            .subscribe(
+                response => {
+                    this.createAndOpenOkDialog(response);
+                },
+                error => LOG.error(error)
+            );
     }
 
     public testAllMails(): void {
@@ -214,31 +250,46 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public mutiereFallScheidung(): void {
-        this.testFaelleRS.mutiereFallScheidung(this.dossierid,
-            this.selectedGesuchsperiode.id,
-            this.eingangsdatum,
-            this.ereignisdatum)
-            .subscribe(response => {
-                this.createAndOpenOkDialog(response);
-            }, error => LOG.error(error));
+        this.testFaelleRS
+            .mutiereFallScheidung(
+                this.dossierid,
+                this.selectedGesuchsperiode.id,
+                this.eingangsdatum,
+                this.ereignisdatum
+            )
+            .subscribe(
+                response => {
+                    this.createAndOpenOkDialog(response);
+                },
+                error => LOG.error(error)
+            );
     }
 
     public resetSchulungsdaten(): void {
-        this.testFaelleRS.resetSchulungsdaten().subscribe(response => {
-            this.createAndOpenOkDialog(response);
-        }, error => LOG.error(error));
+        this.testFaelleRS.resetSchulungsdaten().subscribe(
+            response => {
+                this.createAndOpenOkDialog(response);
+            },
+            error => LOG.error(error)
+        );
     }
 
     public deleteSchulungsdaten(): void {
-        this.testFaelleRS.deleteSchulungsdaten().subscribe(response => {
-            this.createAndOpenOkDialog(response);
-        }, error => LOG.error(error));
+        this.testFaelleRS.deleteSchulungsdaten().subscribe(
+            response => {
+                this.createAndOpenOkDialog(response);
+            },
+            error => LOG.error(error)
+        );
     }
 
     public createTutorialdaten(): void {
-        this.testFaelleRS.createTutorialdaten().subscribe(response => {
-            this.createAndOpenOkDialog(response);
-        }, error => LOG.error(error));
+        this.testFaelleRS.createTutorialdaten().subscribe(
+            response => {
+                this.createAndOpenOkDialog(response);
+            },
+            error => LOG.error(error)
+        );
     }
 
     private createAndOpenOkDialog(title: string): void {
@@ -248,11 +299,16 @@ export class TestdatenViewComponent implements OnInit {
         this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
     }
 
-    private createAndOpenRemoveDialog$(title: string, text: string): Observable<boolean> {
+    private createAndOpenRemoveDialog$(
+        title: string,
+        text: string
+    ): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {title, text};
 
-        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
+        return this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed();
     }
 
     private createLinkDialog(response: any): void {
@@ -260,103 +316,154 @@ export class TestdatenViewComponent implements OnInit {
         const uuidLength = -36;
         const uuidPartOfString = response ? response.slice(uuidLength) : '';
         // nicht alle Parameter werden benoetigt, deswegen sind sie leer
-        this.createAndOpenLinkDialog$(response, `#/gesuch/fall////${uuidPartOfString}//`);
+        this.createAndOpenLinkDialog$(
+            response,
+            `#/gesuch/fall////${uuidPartOfString}//`
+        );
     }
 
-    private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
+    private createAndOpenLinkDialog$(
+        title: string,
+        link: string
+    ): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title,
             link
         };
-        return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
+        return this.dialog
+            .open(DvNgLinkDialogComponent, dialogConfig)
+            .afterClosed();
     }
 
     public async createGemeindeAntragTestDaten(): Promise<void> {
-
         if (this.latsSelected() && !this.gesuchsperiodeGemeindeAntrag) {
-            this.errorService.addMesageAsError('Gesuchsperiode muss ausgewählt sein');
+            this.errorService.addMesageAsError(
+                'Gesuchsperiode muss ausgewählt sein'
+            );
             return;
         }
 
-        // eslint-disable-next-line
         if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
-            if (!await this.confirmDialog(
-                'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {
+            if (
+                !(await this.confirmDialog(
+                    'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?'
+                ))
+            ) {
                 return;
             }
         }
 
-        if (!this.gesuchsperiodeGemeindeAntrag ||
-            this.ferienbetreuungSelected() && !this.gemeindeForGemeindeAntrag) {
-            this.errorService.addMesageAsError('Gemeinde und Gesuchsperiode müssen ausgewählt sein');
+        if (
+            !this.gesuchsperiodeGemeindeAntrag ||
+            (this.ferienbetreuungSelected() && !this.gemeindeForGemeindeAntrag)
+        ) {
+            this.errorService.addMesageAsError(
+                'Gemeinde und Gesuchsperiode müssen ausgewählt sein'
+            );
             return;
         }
 
-        if (this.gemeindeForGemeindeAntrag && !await this.overwriteIfGemeindeAntragExists()) {
+        if (
+            this.gemeindeForGemeindeAntrag &&
+            !(await this.overwriteIfGemeindeAntragExists())
+        ) {
             return;
         }
 
-        this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
-            this.gesuchsperiodeGemeindeAntrag,
-            this.gemeindeForGemeindeAntrag,
-            this.gemeindeAntragStatus).subscribe(response => {
-            this.errorService.clearAll();
-            if (this.ferienbetreuungSelected()) {
-                this.createAndOpenLinkDialog$(
-                  `Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
-                    `#/ferienbetreuung/${response}/stammdaten-gemeinde`);
-            } else if (this.gemeindeForGemeindeAntrag) {
-                this.createAndOpenLinkDialog$(
-                    `LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
-                    `#/lastenausgleich-ts/${response}/angaben-gemeinde`);
-            } else {
-                this.errorService.addMesageAsInfo('Anträge für Periode erstellt');
-            }
-        }, () => this.errorService.addMesageAsError('Anträge konnten nicht erstellt werden'));
+        this.testFaelleRS
+            .createGemeindeAntragTestDaten(
+                this.gemeindeAntragTyp,
+                this.gesuchsperiodeGemeindeAntrag,
+                this.gemeindeForGemeindeAntrag,
+                this.gemeindeAntragStatus
+            )
+            .subscribe(
+                response => {
+                    this.errorService.clearAll();
+                    if (this.ferienbetreuungSelected()) {
+                        this.createAndOpenLinkDialog$(
+                            `Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                            `#/ferienbetreuung/${response}/stammdaten-gemeinde`
+                        );
+                    } else if (this.gemeindeForGemeindeAntrag) {
+                        this.createAndOpenLinkDialog$(
+                            `LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                            `#/lastenausgleich-ts/${response}/angaben-gemeinde`
+                        );
+                    } else {
+                        this.errorService.addMesageAsInfo(
+                            'Anträge für Periode erstellt'
+                        );
+                    }
+                },
+                () =>
+                    this.errorService.addMesageAsError(
+                        'Anträge konnten nicht erstellt werden'
+                    )
+            );
     }
 
     public testKibonAnfrageResponse(): void {
         this.errorService.clearAll();
-        this.gesuchRS.getSteuerdaten(new TSKibonAnfrage(this.antragId,
-            this.zpvNummer,
-            this.gesuchsperiodeBeginnJahr,
-            this.geburtsdatum)).then(result => {
+        this.gesuchRS
+            .getSteuerdaten(
+                new TSKibonAnfrage(
+                    this.antragId,
+                    this.zpvNummer,
+                    this.gesuchsperiodeBeginnJahr,
+                    this.geburtsdatum
+                )
+            )
+            .then(result => {
                 console.log(result);
-                this.dialog.open(DvNgDisplayObjectDialogComponent,
-                    {data: {object: result}});
-            }
-        );
+                this.dialog.open(DvNgDisplayObjectDialogComponent, {
+                    data: {object: result}
+                });
+            });
     }
 
     private async overwriteIfGemeindeAntragExists(): Promise<boolean> {
-        const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
-                antragTyp: this.gemeindeAntragTyp,
-                gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
-                gemeinde: this.gemeindeForGemeindeAntrag.name
-            },
-            {},
-            new TSPagination()
-        ).toPromise();
-        return antraege.resultList.length === 0 || this.confirmDialog(
-            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?'
+        const antraege = await this.gemeindeAntragRS
+            .getGemeindeAntraege(
+                {
+                    antragTyp: this.gemeindeAntragTyp,
+                    gesuchsperiodeString:
+                        this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
+                    gemeinde: this.gemeindeForGemeindeAntrag.name
+                },
+                {},
+                new TSPagination()
+            )
+            .toPromise();
+        return (
+            antraege.resultList.length === 0 ||
+            this.confirmDialog(
+                'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?'
+            )
         );
     }
 
     private initGemeindeAntragTypes(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(configs => {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(
+            configs => {
                 this.gemeindeAntragTypeList = [];
                 if (configs.ferienbetreuungAktiv) {
-                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.FERIENBETREUUNG);
+                    this.gemeindeAntragTypeList.push(
+                        TSGemeindeAntragTyp.FERIENBETREUUNG
+                    );
                 }
                 if (configs.lastenausgleichTagesschulenAktiv) {
-                    this.gemeindeAntragTypeList.push(TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+                    this.gemeindeAntragTypeList.push(
+                        TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN
+                    );
                 }
                 this.gemeindeAntragTyp = this.gemeindeAntragTypeList[0];
-            }, error => {
+            },
+            error => {
                 console.error(error);
-            });
+            }
+        );
     }
 
     private ferienbetreuungSelected(): boolean {
@@ -364,15 +471,20 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     private latsSelected(): boolean {
-        return this.gemeindeAntragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+        return (
+            this.gemeindeAntragTyp ===
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN
+        );
     }
 
     private async confirmDialog(text: string): Promise<boolean> {
-        return this.dialog.open(DvNgConfirmDialogComponent, {
-            data: {
-                frage: text
-            }
-        }).afterClosed()
+        return this.dialog
+            .open(DvNgConfirmDialogComponent, {
+                data: {
+                    frage: text
+                }
+            })
+            .afterClosed()
             .toPromise();
     }
 

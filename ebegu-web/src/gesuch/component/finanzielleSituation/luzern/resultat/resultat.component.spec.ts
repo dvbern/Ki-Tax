@@ -30,11 +30,17 @@ describe('ResultatComponent', () => {
     let component: ResultatComponent;
     let fixture: ComponentFixture<ResultatComponent>;
 
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch']
+    );
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
@@ -45,18 +51,18 @@ describe('ResultatComponent', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 NgForm
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
-        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-            .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-        berechnungsManagerSpy.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
+        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+            Promise.resolve(new TSFinanzielleSituationResultateDTO())
+        );
+        berechnungsManagerSpy.finanzielleSituationResultate =
+            new TSFinanzielleSituationResultateDTO();
         fixture = TestBed.createComponent(ResultatComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

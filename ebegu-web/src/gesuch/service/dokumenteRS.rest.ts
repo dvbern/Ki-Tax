@@ -25,7 +25,6 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
 export class DokumenteRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -39,10 +38,17 @@ export class DokumenteRS {
     }
 
     public getDokumente(gesuch: TSGesuch): IPromise<TSDokumenteDTO> {
-        return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
+        return this.http
+            .get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
             .then((response: any) => {
-                this.log.debug('PARSING dokumentDTO REST object ', response.data);
-                return this.ebeguRestUtil.parseDokumenteDTO(new TSDokumenteDTO(), response.data);
+                this.log.debug(
+                    'PARSING dokumentDTO REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseDokumenteDTO(
+                    new TSDokumenteDTO(),
+                    response.data
+                );
             });
     }
 
@@ -54,18 +60,26 @@ export class DokumenteRS {
         const grund = encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]);
         const url = `${this.serviceURL}/byTyp/${encodeURIComponent(gesuch.id)}/${grund}`;
 
-        return this.http.get(url, {cache})
-            .then((response: any) => {
-                this.log.debug('PARSING cached dokumentDTO REST object ', response.data);
-                return this.ebeguRestUtil.parseDokumenteDTO(new TSDokumenteDTO(), response.data);
-            });
+        return this.http.get(url, {cache}).then((response: any) => {
+            this.log.debug(
+                'PARSING cached dokumentDTO REST object ',
+                response.data
+            );
+            return this.ebeguRestUtil.parseDokumenteDTO(
+                new TSDokumenteDTO(),
+                response.data
+            );
+        });
     }
 
     public removeDokument(dokument: TSDokument): IPromise<TSDokumentGrund> {
         const url = `${this.serviceURL}/${encodeURIComponent(dokument.id)}`;
         return this.http.delete(url).then((response: any) => {
             this.log.debug('PARSING dokumentGrund REST object ', response.data);
-            return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
+            return this.ebeguRestUtil.parseDokumentGrund(
+                new TSDokumentGrund(),
+                response.data
+            );
         });
     }
 }

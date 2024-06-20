@@ -19,23 +19,30 @@
  * ihn aber bei allen Requests
  */
 
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpXsrfTokenExtractor} from '@angular/common/http';
+import {
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest,
+    HttpXsrfTokenExtractor
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 
 @Injectable()
 export class XsrfInterceptor implements HttpInterceptor {
-
     public constructor(
         private readonly tokenExtractor: HttpXsrfTokenExtractor
-    ) {
-    }
+    ) {}
 
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
         let requestToForward = req;
         const token = this.tokenExtractor.getToken();
         if (token !== null) {
-            requestToForward = req.clone({ setHeaders: { 'X-XSRF-TOKEN': token } });
+            requestToForward = req.clone({setHeaders: {'X-XSRF-TOKEN': token}});
         }
         return next.handle(requestToForward);
     }

@@ -29,15 +29,13 @@ const LOG = LogFactory.createLog('FamiliensituationRS');
     providedIn: 'root'
 })
 export class FamiliensituationRS {
-
     private readonly serviceURL = `${CONSTANTS.REST_API}familiensituation`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         public $http: HttpClient,
         private readonly wizardStepManager: WizardStepManager
-    ) {
-    }
+    ) {}
 
     public saveFamiliensituation(
         familiensituation: TSFamiliensituationContainer,
@@ -45,18 +43,35 @@ export class FamiliensituationRS {
     ): Observable<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation =
-            this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, returnedFamiliensituation, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).pipe(mergeMap((response: any) =>
-            this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                LOG.debug('PARSING Familiensituation REST object ', response);
-                return this.ebeguRestUtil.parseFamiliensituationContainer(new TSFamiliensituationContainer(),
-                    response);
-            }))
-        );
+            this.ebeguRestUtil.familiensituationContainerToRestObject(
+                returnedFamiliensituation,
+                familiensituation
+            );
+        return this.$http
+            .put(
+                `${this.serviceURL}/${encodeURIComponent(gesuchId)}`,
+                returnedFamiliensituation,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            .pipe(
+                mergeMap((response: any) =>
+                    this.wizardStepManager
+                        .findStepsFromGesuch(gesuchId)
+                        .then(() => {
+                            LOG.debug(
+                                'PARSING Familiensituation REST object ',
+                                response
+                            );
+                            return this.ebeguRestUtil.parseFamiliensituationContainer(
+                                new TSFamiliensituationContainer(),
+                                response
+                            );
+                        })
+                )
+            );
     }
-
 }

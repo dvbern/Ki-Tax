@@ -39,11 +39,15 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
     let component: FinanzielleSituationAppenzellViewComponent;
     let fixture: ComponentFixture<FinanzielleSituationAppenzellViewComponent>;
 
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
         [
             'getGesuch',
             'getBasisjahr',
@@ -52,23 +56,41 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
             'isGesuchReadonly',
             'getGesuchsperiode',
             'isSpezialFallAR'
-        ]);
+        ]
+    );
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
     gesuchModelManagerSpy.isSpezialFallAR.and.returnValue(false);
-    const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
-        ['setCurrentStep',
+    const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(
+        WizardStepManager.name,
+        [
+            'setCurrentStep',
             'isNextStepBesucht',
             'isNextStepEnabled',
             'getCurrentStepName',
             'updateCurrentWizardStepStatusSafe',
             'getStepByName'
-        ]);
-    const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-        ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,['go']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+        ]
+    );
+    const finanzielleSituationRSSpy =
+        jasmine.createSpyObj<FinanzielleSituationRS>(
+            FinanzielleSituationRS.name,
+            ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+        );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['clearError']
+    );
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params'
+    ]);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -77,28 +99,33 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepManagerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 NgForm
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
-        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-            .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+            Promise.resolve(new TSFinanzielleSituationResultateDTO())
+        );
         transitionSpy.params.and.returnValue({});
-        berechnungsManagerSpy.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
+        berechnungsManagerSpy.finanzielleSituationResultate =
+            new TSFinanzielleSituationResultateDTO();
         wizardStepManagerSpy.getStepByName.and.returnValue(new TSWizardStep());
-        fixture = TestBed.createComponent(FinanzielleSituationAppenzellViewComponent);
+        fixture = TestBed.createComponent(
+            FinanzielleSituationAppenzellViewComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -112,7 +139,8 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
         return gesuch;
     }
 });

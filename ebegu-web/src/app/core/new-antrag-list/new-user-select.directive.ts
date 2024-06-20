@@ -14,15 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Directive, ElementRef, EventEmitter, Injector, Input, Output} from '@angular/core';
+import {
+    Directive,
+    ElementRef,
+    EventEmitter,
+    Injector,
+    Input,
+    Output
+} from '@angular/core';
 import {UpgradeComponent} from '@angular/upgrade/static';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 
 @Directive({
-  selector: '[dvNewUserSelect]'
+    selector: '[dvNewUserSelect]'
 })
 export class NewUserSelectDirective extends UpgradeComponent {
-
     @Input()
     public showSelectionAll: boolean;
 
@@ -55,10 +61,10 @@ export class NewUserSelectDirective extends UpgradeComponent {
 
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     @Output()
-    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
+    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> =
+        new EventEmitter<{user: TSBenutzerNoDetails}>();
 
     public constructor(elementRef: ElementRef, injector: Injector) {
-      super('dvUserselect', elementRef, injector);
-  }
-
+        super('dvUserselect', elementRef, injector);
+    }
 }

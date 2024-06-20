@@ -17,7 +17,11 @@ import {DvErrorMessagesPanelComponentConfig} from './directive/dvb-error-message
 import {ErrorService} from './service/ErrorService';
 import {HttpErrorInterceptor} from './service/HttpErrorInterceptor';
 
-export const ERRORS_JS_MODULE = angular.module('dvbAngular.errors', ['ui.bootstrap', 'ui.router', 'ngAnimate'])
+export const ERRORS_JS_MODULE = angular
+    .module('dvbAngular.errors', ['ui.bootstrap', 'ui.router', 'ngAnimate'])
     .service('ErrorService', ErrorService)
     .service('HttpErrorInterceptor', HttpErrorInterceptor)
-    .component('dvbErrorMessagesPanel', new DvErrorMessagesPanelComponentConfig());
+    .component(
+        'dvbErrorMessagesPanel',
+        new DvErrorMessagesPanelComponentConfig()
+    );

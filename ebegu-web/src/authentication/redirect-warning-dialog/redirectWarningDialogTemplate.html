@@ -15,20 +15,42 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" ng-class="vm.css" aria-label="{{'BESTAETIGUNG_DIALOG'|translate}}"
-           data-test="dialog.redirect-warning"
-           class="md-default-theme md-transition-in"
-           role="dialog" tabindex="-1" aria-describedby="dialogContent">
-
-    <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent">
-        <h2 class="md-title ng-binding" data-translate="TESTLOGIN_REDIRECT_WARNING_TITLE"></h2>
-        <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind-html="'TESTLOGIN_REDIRECT_WARNING_CONTENT' | translate"></p></div>
+<md-dialog
+    md-theme="default"
+    ng-class="vm.css"
+    aria-label="{{ 'BESTAETIGUNG_DIALOG' | translate }}"
+    data-test="dialog.redirect-warning"
+    class="md-default-theme md-transition-in"
+    role="dialog"
+    tabindex="-1"
+    aria-describedby="dialogContent"
+>
+    <md-dialog-content
+        class="md-dialog-content"
+        role="document"
+        tabindex="-1"
+        id="dialogContent"
+    >
+        <h2
+            class="md-title ng-binding"
+            data-translate="TESTLOGIN_REDIRECT_WARNING_TITLE"
+        ></h2>
+        <div class="md-dialog-content-body ng-scope">
+            <p
+                class="ng-binding"
+                ng-bind-html="'TESTLOGIN_REDIRECT_WARNING_CONTENT' | translate"
+            ></p>
+        </div>
     </md-dialog-content>
 
     <md-dialog-actions layout-align="center center">
-        <dv-loading-button button-click="vm.hide()" class="md-default-theme" type="button" aria-label="vm.cancelText">
+        <dv-loading-button
+            button-click="vm.hide()"
+            class="md-default-theme"
+            type="button"
+            aria-label="vm.cancelText"
+        >
             <span data-translate="LABEL_OK"></span>
         </dv-loading-button>
     </md-dialog-actions>
-
 </md-dialog>

@@ -21,19 +21,19 @@ import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepM
 import {GesuchModelManager} from './gesuchModelManager';
 
 export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituationSubStepManager {
-
-    public constructor(
-        gesuchModelManager: GesuchModelManager,
-    ) {
+    public constructor(gesuchModelManager: GesuchModelManager) {
         super(gesuchModelManager);
     }
 
     public getNextSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_START
-            && this.hasSecondGesuchsteller()
-            && !this.gesuchModelManager.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung) {
+        if (
+            currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_START &&
+            this.hasSecondGesuchsteller() &&
+            !this.gesuchModelManager.getGesuch().extractFamiliensituation()
+                .gemeinsameSteuererklaerung
+        ) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_GS1;
         }
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS1) {
@@ -46,9 +46,12 @@ export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituati
     }
 
     public getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_RESULTATE) {
+        if (
+            currentSubStep ===
+            TSFinanzielleSituationSubStepName.SCHWYZ_RESULTATE
+        ) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
         }
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS2) {
@@ -61,7 +64,10 @@ export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituati
     }
 
     private hasSecondGesuchsteller(): boolean {
-        const endOfPeriode: Moment = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return this.gesuchModelManager.getFamiliensituation().hasSecondGesuchsteller(endOfPeriode);
+        const endOfPeriode: Moment =
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+        return this.gesuchModelManager
+            .getFamiliensituation()
+            .hasSecondGesuchsteller(endOfPeriode);
     }
 }

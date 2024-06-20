@@ -31,23 +31,40 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload.component';
 
-const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(FerienbetreuungService.name,
-    ['getFerienbetreuungContainer']);
-const ferienbetreuungDokumentServiceSpy = jasmine.createSpyObj<FerienbetreuungDokumentService>(
-    FerienbetreuungDokumentService.name, ['getAllDokumente']
+const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
+    FerienbetreuungService.name,
+    ['getFerienbetreuungContainer']
 );
-const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadFerienbetreuungDokumente']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-    ['prepareDownloadWindow', 'getAccessTokenFerienbetreuungDokument', 'startDownload']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['getPrincipal', 'isOneOfRoles']);
+const ferienbetreuungDokumentServiceSpy =
+    jasmine.createSpyObj<FerienbetreuungDokumentService>(
+        FerienbetreuungDokumentService.name,
+        ['getAllDokumente']
+    );
+const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, [
+    'uploadFerienbetreuungDokumente'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+    'prepareDownloadWindow',
+    'getAccessTokenFerienbetreuungDokument',
+    'startDownload'
+]);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'getPrincipal',
+    'isOneOfRoles'
+]);
 
 authServiceSpy.principal$ = of(new TSBenutzer());
-const applicationPropertyRSSpy =
-    jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+    ApplicationPropertyRS.name,
+    ['isDevMode', 'getAllowedMimetypes']
+);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+    AuthServiceRS.name,
+    ['isOneOfRoles']
+);
 
 const container = new TSFerienbetreuungAngabenContainer();
 container.angabenDeklaration = null;
@@ -59,16 +76,23 @@ describe('FerienbetreuungUploadComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [FerienbetreuungUploadComponent],
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
-                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
-                {provide: FerienbetreuungDokumentService, useValue: ferienbetreuungDokumentServiceSpy},
+                {
+                    provide: FerienbetreuungService,
+                    useValue: ferienbetreuungServiceSpy
+                },
+                {
+                    provide: FerienbetreuungDokumentService,
+                    useValue: ferienbetreuungDokumentServiceSpy
+                },
                 {provide: UploadRS, useValue: uploadRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                },
                 {provide: AuthServiceRS, useValue: authServiceRSSpy}
             ]
         })
@@ -77,10 +101,15 @@ describe('FerienbetreuungUploadComponent', () => {
     });
 
     beforeEach(() => {
-        ferienbetreuungServiceSpy.getFerienbetreuungContainer
-            .and.returnValue(of(new TSFerienbetreuungAngabenContainer()));
-        ferienbetreuungDokumentServiceSpy.getAllDokumente.and.returnValue(of([]));
-        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(Promise.resolve(''));
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(
+            of(new TSFerienbetreuungAngabenContainer())
+        );
+        ferienbetreuungDokumentServiceSpy.getAllDokumente.and.returnValue(
+            of([])
+        );
+        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(
+            Promise.resolve('')
+        );
         fixture = TestBed.createComponent(FerienbetreuungUploadComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -31,5 +31,4 @@ export class DvErrorMessagesComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class DvErrorMessages {
-}
+export class DvErrorMessages {}

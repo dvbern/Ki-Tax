@@ -1,43 +1,32 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-      "declaration": false,
-      "downlevelIteration": true,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "importHelpers": true,
-      "lib": [
-        "dom",
-        "es2017",
-        "es2018.promise"
-      ],
-      "module": "es2020",
-      "moduleResolution": "node",
-      "newLine": "lf",
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitReturns": true,
-      "noImplicitAny": true,
-      "preserveConstEnums": true,
-      "outDir": "./dist/out-tsc",
-      "pretty": true,
-      "skipLibCheck": true,
-      "sourceMap": true,
-      "strict": false,
-      "target": "ES2022",
-      "typeRoots": [
-        "node_modules/@types"
-      ],
-      "useDefineForClassFields": false
+        "declaration": false,
+        "downlevelIteration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "lib": ["dom", "es2017", "es2018.promise"],
+        "module": "es2020",
+        "moduleResolution": "node",
+        "newLine": "lf",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "preserveConstEnums": true,
+        "outDir": "./dist/out-tsc",
+        "pretty": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": false,
+        "target": "ES2022",
+        "typeRoots": ["node_modules/@types"],
+        "useDefineForClassFields": false
     },
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
         "strictInjectionParameters": true
     },
-    "files": [
-        "src/main.ts",
-        "src/polyfills.ts"
-    ],
-    "include": [
-        "src/**/*.d.ts"
-    ]
+    "files": ["src/main.ts", "src/polyfills.ts"],
+    "include": ["src/**/*.d.ts"]
 }

@@ -15,26 +15,30 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p *ngIf="canSeeFreigegebenText | async"
-   [innerHTML]="'LATS_FREIGEGEBEN_AN_KANTON' | translate">
-</p>
-<p *ngIf="canSeeAbgeschlossenText | async"
-   [innerHTML]="'LATS_ABGESCHLOSSEN' | translate">
-</p>
+<p
+    *ngIf="canSeeFreigegebenText | async"
+    [innerHTML]="'LATS_FREIGEGEBEN_AN_KANTON' | translate"
+></p>
+<p
+    *ngIf="canSeeAbgeschlossenText | async"
+    [innerHTML]="'LATS_ABGESCHLOSSEN' | translate"
+></p>
 
 <div class="actions">
     <dv-loading-button
         *ngIf="canSeeFreigabeButton | async"
         [buttonDisabled]="(isInBearbeitungGemeinde() | async) === false"
         (buttonClick)="freigeben()"
-        type="button">
+        type="button"
+    >
         <span translate>LATS_FREIGABE_PRUEFUNG_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
         *ngIf="canSeeGeprueftButton | async"
         [buttonDisabled]="!isReadyForGeprueft()"
         type="button"
-        (buttonClick)="geprueft()">
+        (buttonClick)="geprueft()"
+    >
         <span translate>LATS_GEPRUEFT_KANTON</span>
     </dv-loading-button>
     <dv-loading-button
@@ -42,14 +46,16 @@
         [buttonDisabled]="(isInPruefungKanton() | async) === false"
         type="button"
         class="secondary"
-        (buttonClick)="zurueckAnGemeinde()">
+        (buttonClick)="zurueckAnGemeinde()"
+    >
         <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
     </dv-loading-button>
     <dv-loading-button
         *ngIf="canSeeZurueckInPruefungButton | async"
         type="button"
         class="secondary"
-        (buttonClick)="zurueckInPruefung()">
+        (buttonClick)="zurueckInPruefung()"
+    >
         <span translate>ZURUECK_IN_PRUEFUNG_TITLE</span>
     </dv-loading-button>
 </div>

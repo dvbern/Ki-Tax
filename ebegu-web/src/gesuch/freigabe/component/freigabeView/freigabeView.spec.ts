@@ -37,7 +37,6 @@ import {FreigabeService} from '../../freigabe.service';
 import {FreigabeViewController} from './freigabeView';
 
 describe('freigabeView', () => {
-
     let controller: FreigabeViewController;
     let $scope: IScope;
     let wizardStepManager: WizardStepManager;
@@ -61,54 +60,69 @@ describe('freigabeView', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        $scope = $injector.get('$rootScope');
-        wizardStepManager = $injector.get('WizardStepManager');
-        dialog = $injector.get('DvDialog');
-        downloadRS = $injector.get('DownloadRS');
-        $q = $injector.get('$q');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        $httpBackend = $injector.get('$httpBackend');
-        applicationPropertyRS = $injector.get('ApplicationPropertyRS');
-        authServiceRS = $injector.get('AuthServiceRS');
-        $timeout = $injector.get('$timeout');
-        $translate = $injector.get('$translate');
-        einstellungRS = $injector.get('EinstellungRS');
-        freigabeService = $injector.get('FreigabeService');
+    beforeEach(
+        angular.mock.inject($injector => {
+            $scope = $injector.get('$rootScope');
+            wizardStepManager = $injector.get('WizardStepManager');
+            dialog = $injector.get('DvDialog');
+            downloadRS = $injector.get('DownloadRS');
+            $q = $injector.get('$q');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            $httpBackend = $injector.get('$httpBackend');
+            applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+            authServiceRS = $injector.get('AuthServiceRS');
+            $timeout = $injector.get('$timeout');
+            $translate = $injector.get('$translate');
+            einstellungRS = $injector.get('EinstellungRS');
+            freigabeService = $injector.get('FreigabeService');
 
-        spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
-        spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-        spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.resolve());
+            spyOn(applicationPropertyRS, 'isDevMode').and.returnValue(
+                $q.when(false)
+            );
+            spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+            spyOn(
+                wizardStepManager,
+                'updateCurrentWizardStepStatus'
+            ).and.returnValue($q.resolve());
 
-        fall = TestDataUtil.createFall();
+            fall = TestDataUtil.createFall();
 
-        dossier = TestDataUtil.createDossier('', fall);
-        dossier.gemeinde = TestDataUtil.createGemeindeParis();
-        spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
-        spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
-        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(new TSGemeinde());
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
-        spyOn(einstellungRS, 'findEinstellung')
-            .and
-            .returnValue(of(new TSEinstellung(null, null, 'true')));
+            dossier = TestDataUtil.createDossier('', fall);
+            dossier.gemeinde = TestDataUtil.createGemeindeParis();
+            spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+            spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
+            spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(
+                new TSGemeinde()
+            );
+            spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                new TSGesuchsperiode()
+            );
+            spyOn(einstellungRS, 'findEinstellung').and.returnValue(
+                of(new TSEinstellung(null, null, 'true'))
+            );
 
-        controller = new FreigabeViewController(gesuchModelManager,
-            $injector.get('BerechnungsManager'),
-            wizardStepManager,
-            dialog,
-            downloadRS,
-            $scope,
-            applicationPropertyRS,
-            authServiceRS,
-            $timeout,
-            $translate,
-            einstellungRS,
-            freigabeService);
+            controller = new FreigabeViewController(
+                gesuchModelManager,
+                $injector.get('BerechnungsManager'),
+                wizardStepManager,
+                dialog,
+                downloadRS,
+                $scope,
+                applicationPropertyRS,
+                authServiceRS,
+                $timeout,
+                $translate,
+                einstellungRS,
+                freigabeService
+            );
 
-        controller.form = {} as any;
-        spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
-        controller.form = TestDataUtil.createDummyForm();
-    }));
+            controller.form = {} as any;
+            spyOn(controller, 'isGesuchValid').and.callFake(
+                () => controller.form.$valid
+            );
+            controller.form = TestDataUtil.createDummyForm();
+        })
+    );
 
     describe('gesuchFreigeben', () => {
         it('should return undefined when the form is not valid', () => {
@@ -126,7 +140,7 @@ describe('freigabeView', () => {
 
             const returned = controller.gesuchEinreichen();
             $scope.$apply();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -142,24 +156,36 @@ describe('freigabeView', () => {
             const downloadFile = new TSDownloadFile();
             downloadFile.accessToken = 'token';
             downloadFile.filename = 'name';
-            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument')
-                .and.returnValue($q.resolve(downloadFile));
+            spyOn(
+                downloadRS,
+                'getFreigabequittungAccessTokenGeneratedDokument'
+            ).and.returnValue($q.resolve(downloadFile));
             spyOn(downloadRS, 'startDownload').and.returnValue();
 
             const fakeWindow: any = undefined;
-            spyOn(downloadRS, 'prepareDownloadWindow').and.returnValue(fakeWindow);
+            spyOn(downloadRS, 'prepareDownloadWindow').and.returnValue(
+                fakeWindow
+            );
 
             const gesuch = new TSGesuch();
             gesuch.id = '123';
-            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.resolve(gesuch));
+            spyOn(gesuchModelManager, 'openGesuch').and.returnValue(
+                $q.resolve(gesuch)
+            );
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
             controller.confirmationCallback();
             $scope.$apply();
 
-            expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, true);
-            expect(downloadRS.startDownload)
-                .toHaveBeenCalledWith(downloadFile.accessToken, downloadFile.filename, false, fakeWindow);
+            expect(
+                downloadRS.getFreigabequittungAccessTokenGeneratedDokument
+            ).toHaveBeenCalledWith(gesuch.id, true);
+            expect(downloadRS.startDownload).toHaveBeenCalledWith(
+                downloadFile.accessToken,
+                downloadFile.filename,
+                false,
+                fakeWindow
+            );
         });
     });
     describe('openFreigabequittungPDF', () => {
@@ -168,11 +194,15 @@ describe('freigabeView', () => {
 
         beforeEach(() => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.resolve(gesuch));
+            spyOn(gesuchModelManager, 'openGesuch').and.returnValue(
+                $q.resolve(gesuch)
+            );
             spyOn(downloadRS, 'startDownload').and.returnValue();
             tsDownloadFile = new TSDownloadFile();
-            spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument')
-                .and.returnValue($q.resolve(tsDownloadFile));
+            spyOn(
+                downloadRS,
+                'getFreigabequittungAccessTokenGeneratedDokument'
+            ).and.returnValue($q.resolve(tsDownloadFile));
             gesuch = new TSGesuch();
             gesuch.id = '123';
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -183,8 +213,9 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, false);
+            expect(
+                downloadRS.getFreigabequittungAccessTokenGeneratedDokument
+            ).toHaveBeenCalledWith(gesuch.id, false);
         });
     });
 });

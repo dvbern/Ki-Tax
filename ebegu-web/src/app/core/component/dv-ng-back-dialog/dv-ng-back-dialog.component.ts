@@ -14,7 +14,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * This Dialog should be used for asking the user to remove an object
@@ -24,7 +24,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './dv-ng-back-dialog.template.html'
 })
 export class DvNgBackDialogComponent {
-
     public title: string = '';
     public text: string = '';
 
@@ -32,7 +31,6 @@ export class DvNgBackDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgBackDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
-
         if (data) {
             this.title = data.title;
             this.text = data.text;

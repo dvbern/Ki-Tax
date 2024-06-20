@@ -29,9 +29,17 @@ describe('GemeindeKennzahlenUiComponent', () => {
     let component: GemeindeKennzahlenUiComponent;
     let fixture: ComponentFixture<GemeindeKennzahlenUiComponent>;
 
-    const gemeindeKennzahlenServiceSpy = jasmine.createSpyObj<GemeindeKennzahlenService>(GemeindeKennzahlenService.name,
-        ['getGemeindeKennzahlenAntrag', 'updateGemeindeKennzahlenAntragStore']);
-    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(of(new TSGemeindeKennzahlen()));
+    const gemeindeKennzahlenServiceSpy =
+        jasmine.createSpyObj<GemeindeKennzahlenService>(
+            GemeindeKennzahlenService.name,
+            [
+                'getGemeindeKennzahlenAntrag',
+                'updateGemeindeKennzahlenAntragStore'
+            ]
+        );
+    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(
+        of(new TSGemeindeKennzahlen())
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -44,7 +52,8 @@ describe('GemeindeKennzahlenUiComponent', () => {
                 }
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

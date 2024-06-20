@@ -52,7 +52,6 @@ export class DvUserSelectConfig implements IComponentOptions {
  * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
  */
 export class UserselectController implements IController {
-
     public static $inject: string[] = ['BenutzerRS', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -62,7 +61,7 @@ export class UserselectController implements IController {
     public dvUsersearch: string;
     public initialAll: boolean;
     public showSelectionAll: boolean;
-    public valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
+    public valueChanged: () => void; // Methode, die beim Klick auf die Combobox aufgerufen wird
     public userChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
     public sachbearbeiterGemeinde: boolean;
@@ -71,13 +70,12 @@ export class UserselectController implements IController {
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-
-    }
+    ) {}
 
     public $onInit(): void {
         this.doUpdateUserList();
-        if (!this.initialAll) { // tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
+        if (!this.initialAll) {
+            // tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
             this.authServiceRS.principal$
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe(
@@ -89,7 +87,10 @@ export class UserselectController implements IController {
         }
         // initial nach aktuell eingeloggtem filtern
         if (this.smartTable && !this.initialAll && this.selectedUser) {
-            this.smartTable.search(this.selectedUser.getFullName(), this.dvUsersearch);
+            this.smartTable.search(
+                this.selectedUser.getFullName(),
+                this.dvUsersearch
+            );
         }
         this.valueChanged = () => {
             this.userChanged({user: this.selectedUser});

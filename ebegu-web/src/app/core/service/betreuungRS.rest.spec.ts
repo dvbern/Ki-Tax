@@ -25,7 +25,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {BetreuungRS} from './betreuungRS.rest';
 
 describe('betreuungRS', () => {
-
     let betreuungRS: BetreuungRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -41,14 +40,18 @@ describe('betreuungRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        betreuungRS = $injector.get('BetreuungRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        wizardStepManager = $injector.get('WizardStepManager');
-        $q = $injector.get('$q');
-        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            betreuungRS = $injector.get('BetreuungRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+            wizardStepManager = $injector.get('WizardStepManager');
+            $q = $injector.get('$q');
+            spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                $q.resolve()
+            );
+        })
+    );
 
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000a12';
@@ -57,9 +60,15 @@ describe('betreuungRS', () => {
         mockBetreuung.betreuungspensumContainers = [];
         mockBetreuung.betreuungspensumAbweichungen = null;
         TestDataUtil.setAbstractMutableFieldsUndefined(mockBetreuung);
-        mockBetreuungRest = ebeguRestUtil.betreuungToRestObject({}, mockBetreuung);
+        mockBetreuungRest = ebeguRestUtil.betreuungToRestObject(
+            {},
+            mockBetreuung
+        );
 
-        $httpBackend.whenGET(`${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`)
+        $httpBackend
+            .whenGET(
+                `${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`
+            )
             .respond(mockBetreuungRest);
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
@@ -74,7 +83,9 @@ describe('betreuungRS', () => {
     describe('API Usage', () => {
         describe('findBetreuung', () => {
             it('should return the Betreuung by id', () => {
-                $httpBackend.expectGET(`${betreuungRS.serviceURL}/${mockBetreuung.id}`).respond(mockBetreuungRest);
+                $httpBackend
+                    .expectGET(`${betreuungRS.serviceURL}/${mockBetreuung.id}`)
+                    .respond(mockBetreuungRest);
 
                 let foundBetreuung: TSBetreuung;
                 betreuungRS.findBetreuung(mockBetreuung.id).then(result => {
@@ -82,45 +93,61 @@ describe('betreuungRS', () => {
                 });
                 $httpBackend.flush();
                 expect(foundBetreuung).toBeDefined();
-                TestDataUtil.compareDefinedProperties(foundBetreuung, mockBetreuung);
+                TestDataUtil.compareDefinedProperties(
+                    foundBetreuung,
+                    mockBetreuung
+                );
             });
-
         });
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
                 let createdBetreuung: TSBetreuung;
-                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/false`,
-                    mockBetreuungRest).respond(mockBetreuungRest);
+                $httpBackend
+                    .expectPUT(
+                        `${betreuungRS.serviceURL}/betreuung/false`,
+                        mockBetreuungRest
+                    )
+                    .respond(mockBetreuungRest);
 
-                betreuungRS.saveBetreuung(mockBetreuung, gesuchId, false)
+                betreuungRS
+                    .saveBetreuung(mockBetreuung, gesuchId, false)
                     .then(result => {
                         createdBetreuung = result;
                     });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+                expect(
+                    wizardStepManager.findStepsFromGesuch
+                ).toHaveBeenCalledWith(gesuchId);
                 expect(createdBetreuung).toBeDefined();
-                TestDataUtil.compareDefinedProperties(createdBetreuung, mockBetreuung);
+                TestDataUtil.compareDefinedProperties(
+                    createdBetreuung,
+                    mockBetreuung
+                );
             });
         });
         describe('removeBetreuung', () => {
             it('should remove a Betreuung', () => {
                 const status = 200;
-                $httpBackend.expectDELETE(`${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`)
+                $httpBackend
+                    .expectDELETE(
+                        `${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`
+                    )
                     .respond(status);
 
                 let deleteResult: any;
-                betreuungRS.removeBetreuung(mockBetreuung.id, gesuchId)
+                betreuungRS
+                    .removeBetreuung(mockBetreuung.id, gesuchId)
                     .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+                expect(
+                    wizardStepManager.findStepsFromGesuch
+                ).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
                 expect(deleteResult.status).toEqual(status);
             });
         });
     });
-
 });

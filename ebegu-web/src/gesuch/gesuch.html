@@ -12,35 +12,74 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-<dv-fall-toolbar [fall-id]="vm.getFallId()"
-                 [kitax-enabled]="vm.gesuchModelManager.gemeindeKonfiguration.konfigSchnittstelleKitaxEnabled"
-                 [dossier-id]="vm.getDossierId()"
-                 [current-dossier]="vm.getDossier()"
-                 [name-gs]="vm.extractNachnameGS1()"
-                 hide-xs hide-sm>
+<dv-fall-toolbar
+    [fall-id]="vm.getFallId()"
+    [kitax-enabled]="
+        vm.gesuchModelManager.gemeindeKonfiguration
+            .konfigSchnittstelleKitaxEnabled
+    "
+    [dossier-id]="vm.getDossierId()"
+    [current-dossier]="vm.getDossier()"
+    [name-gs]="vm.extractNachnameGS1()"
+    hide-xs
+    hide-sm
+>
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getDossierId()}}"
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+<dossier-toolbar
+    flex="nogrow"
+    gesuchid="{{ vm.getGesuchId() }}"
+    dossier-id="{{ vm.getDossierId() }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+>
 </dossier-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" gesuchid="{{vm.getGesuchId()}}"
-                               dossier-id="{{vm.getDossierId()}}"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                               fall-id="{{vm.getFallId()}}">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    gesuchid="{{ vm.getGesuchId() }}"
+    dossier-id="{{ vm.getDossierId() }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+    fall-id="{{ vm.getFallId() }}"
+>
 </dossier-toolbar-gesuchsteller>
 <!--Gesuchnavigation (Uebersicht)  fuer den Gesuchsteller (mobile)-->
-<div class="mobile-sidenav-toggle mobile-open" flex="none" layout="row" layout-align="center center" dv-show-element
-     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()" hide-gt-sm>
-    <div class="mobile-active" flex layout="row" layout-align="start center" ng-click="vm.toggleSidenav('sidenav')" data-test="mobile-menu">
+<div
+    class="mobile-sidenav-toggle mobile-open"
+    flex="none"
+    layout="row"
+    layout-align="center center"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+    hide-gt-sm
+>
+    <div
+        class="mobile-active"
+        flex
+        layout="row"
+        layout-align="start center"
+        ng-click="vm.toggleSidenav('sidenav')"
+        data-test="mobile-menu"
+    >
         <span ng-bind="vm.getGesuchName()" class="gesuch-name"></span>
-        <span ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')" ng-bind="vm.getActiveElement() | translate"
-              ng-class="{'active-element': !vm.isElementActive('GESUCH_ERSTELLEN')}">
+        <span
+            ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
+            ng-bind="vm.getActiveElement() | translate"
+            ng-class="{
+                'active-element': !vm.isElementActive('GESUCH_ERSTELLEN')
+            }"
+        >
         </span>
-        <span ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
-              ui-sref-active="active"
-              ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}"
-              ng-bind="vm.getGesuchErstellenStepTitle()">
+        <span
+            ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
+            ui-sref-active="active"
+            ng-class="{
+                'active-element': vm.isElementActive('GESUCH_ERSTELLEN')
+            }"
+            ng-bind="vm.getGesuchErstellenStepTitle()"
+        >
         </span>
         <span class="fa fa-angle-down" aria-hidden="true"></span>
     </div>
@@ -52,360 +91,757 @@
         id="sidenavContainer"
         md-component-id="sidenav"
         md-is-locked-open="$mdMedia('gt-sm')"
-        md-whiteframe="4">
+        md-whiteframe="4"
+    >
         <div class="mobile-sidenav-toggle mobile-close" hide-gt-sm>
-            <button ng-click="vm.toggleSidenav('sidenav')" class="dv-btn mobile-sidenav-close">
+            <button
+                ng-click="vm.toggleSidenav('sidenav')"
+                class="dv-btn mobile-sidenav-close"
+            >
                 <span class="fa fa-angle-left" aria-hidden="true"></span>
             </button>
         </div>
         <div class="mobile-sidenav-scroll">
             <h1 class="access-for-all-title" data-translate="AFA_SIDENAV"></h1>
             <div class="sidenav gesuch-status" ng-cloak>
-                <h2 class="access-for-all-title" data-translate="AFA_GESUCHSTATUS"></h2>
-                <span class="status" ng-bind="vm.getGesuchStatusTranslation()" data-test="gesuch.status"></span>
-                <i class="uploaded-document fa fa-file-o" dv-show-element
-                   dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
-                   dv-show-expression="vm.isDocumentUploaded()"
-                   title="{{'DOKUMENTE_HOCHGELADEN'|translate}}" aria-label="{{'DOKUMENTE_HOCHGELADEN'|translate}}"></i>
-                <br>
+                <h2
+                    class="access-for-all-title"
+                    data-translate="AFA_GESUCHSTATUS"
+                ></h2>
+                <span
+                    class="status"
+                    ng-bind="vm.getGesuchStatusTranslation()"
+                    data-test="gesuch.status"
+                ></span>
+                <i
+                    class="uploaded-document fa fa-file-o"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                    dv-show-expression="vm.isDocumentUploaded()"
+                    title="{{ 'DOKUMENTE_HOCHGELADEN' | translate }}"
+                    aria-label="{{ 'DOKUMENTE_HOCHGELADEN' | translate }}"
+                ></i>
+                <br />
 
-                <span class="gesuch-zusatz-info"
-                      data-translate="ZULETZT_BEARBEITER"
-                      data-translate-value-username="{{vm.userFullName}}"></span>
-                <br>
+                <span
+                    class="gesuch-zusatz-info"
+                    data-translate="ZULETZT_BEARBEITER"
+                    data-translate-value-username="{{ vm.userFullName }}"
+                ></span>
+                <br />
 
-                <span ng-if="vm.gemeindeHasKontingent()"
-                      class="gesuch-zusatz-info"
-                      data-translate="BESTEHT_KONTINGENTIERUNG"></span>
-                <br  ng-if="vm.gemeindeHasKontingent()">
+                <span
+                    ng-if="vm.gemeindeHasKontingent()"
+                    class="gesuch-zusatz-info"
+                    data-translate="BESTEHT_KONTINGENTIERUNG"
+                ></span>
+                <br ng-if="vm.gemeindeHasKontingent()" />
 
-                <span ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
-                      class="gesuch-zusatz-info"
-                      data-translate="GUELTIGES_GESUCH"></span>
-                <br ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig">
+                <span
+                    ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
+                    class="gesuch-zusatz-info"
+                    data-translate="GUELTIGES_GESUCH"
+                ></span>
+                <br ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig" />
 
-                <span class="gesperrt"
-                      ng-if="vm.isGesuchGesperrt()"
-                      data-translate="GESPERRT_WEGEN_BESCHWERDE"></span>
+                <span
+                    class="gesperrt"
+                    ng-if="vm.isGesuchGesperrt()"
+                    data-translate="GESPERRT_WEGEN_BESCHWERDE"
+                ></span>
             </div>
             <ul class="sidenav gesuch-menu">
-                <h2 class="access-for-all-title" data-translate="AFA_SIDENAVMENU"></h2>
-                <li ng-if="vm.isStepVisible('SOZIALDIENSTFALL_ERSTELLEN')"
-                    ui-sref-active="active" class="row"
-                    ng-class="{'active-element': vm.isElementActive('SOZIALDIENSTFALL_ERSTELLEN')}">
-                    <button ng-if="vm.isSozialdienstFall()" type="button" class="col-xs-10  btn-link"
-                            data-test="sidenav.SOZIALDIENSTFALL_ERSTELLEN"
-                            ui-sref="gesuch.sozialdienstfallcreation({gesuchsperiodeId: vm.getGesuchsperiodeId(),
+                <h2
+                    class="access-for-all-title"
+                    data-translate="AFA_SIDENAVMENU"
+                ></h2>
+                <li
+                    ng-if="vm.isStepVisible('SOZIALDIENSTFALL_ERSTELLEN')"
+                    ui-sref-active="active"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'SOZIALDIENSTFALL_ERSTELLEN'
+                        )
+                    }"
+                >
+                    <button
+                        ng-if="vm.isSozialdienstFall()"
+                        type="button"
+                        class="col-xs-10 btn-link"
+                        data-test="sidenav.SOZIALDIENSTFALL_ERSTELLEN"
+                        ui-sref="gesuch.sozialdienstfallcreation({gesuchsperiodeId: vm.getGesuchsperiodeId(),
                             gesuchId: vm.getGesuchId(), fallId: vm.getFallId(), gemeindeId: vm.getGemeindeId()})"
-                            ng-disabled="vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_SOZIALDIENSTFALL_ERSTELLEN"></span>
+                        ng-disabled="vm.isWizardStepDisabled('SOZIALDIENSTFALL_ERSTELLEN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'SOZIALDIENSTFALL_ERSTELLEN'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_SOZIALDIENSTFALL_ERSTELLEN"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('SOZIALDIENSTFALL_ERSTELLEN')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('SOZIALDIENSTFALL_ERSTELLEN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
 
-                <li ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
-                    ui-sref-active="active" class="row"
-                    ng-class="{'active-element': vm.isElementActive('GESUCH_ERSTELLEN')}">
+                <li
+                    ng-if="vm.isStepVisible('GESUCH_ERSTELLEN')"
+                    ui-sref-active="active"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('GESUCH_ERSTELLEN')
+                    }"
+                >
                     <!--this button is added twice because it should do nothing if the gesuch is not saved yet-->
-                    <button ng-if="!vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            data-test="sidenav.GESUCH_ERSTELLEN"
-                            ui-sref="gesuch.fallcreation({gesuchId: vm.getGesuchId(), dossierId: vm.getDossierId()})"
-                            ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                    <button
+                        ng-if="!vm.getGesuch().isNew()"
+                        type="button"
+                        class="col-xs-10 btn-link"
+                        data-test="sidenav.GESUCH_ERSTELLEN"
+                        ui-sref="gesuch.fallcreation({gesuchId: vm.getGesuchId(), dossierId: vm.getDossierId()})"
+                        ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('GESUCH_ERSTELLEN')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span ng-bind="vm.getGesuchErstellenStepTitle()"></span>
                     </button>
-                    <button ng-if="vm.getGesuch().isNew()" type="button" class="col-xs-10  btn-link"
-                            ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('GESUCH_ERSTELLEN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                    <button
+                        ng-if="vm.getGesuch().isNew()"
+                        type="button"
+                        class="col-xs-10 btn-link"
+                        ng-disabled="vm.isWizardStepDisabled('GESUCH_ERSTELLEN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('GESUCH_ERSTELLEN')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span ng-bind="vm.getGesuchErstellenStepTitle()"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('GESUCH_ERSTELLEN')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('GESUCH_ERSTELLEN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FAMILIENSITUATION')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FAMILIENSITUATION')}"
-                    ui-sref-active="active" ng-disabled="vm.isWizardStepDisabled('FAMILIENSITUATION')">
-                    <button type="button" class="col-xs-10 dv-btn  btn-link"
-                            data-test="sidenav.FAMILIENSITUATION"
-                            ui-sref="gesuch.familiensituation({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FAMILIENSITUATION')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FAMILIENSITUATION')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('FAMILIENSITUATION')"
+                    class="row"
+                    ng-class="{
+                        'active-element':
+                            vm.isElementActive('FAMILIENSITUATION')
+                    }"
+                    ui-sref-active="active"
+                    ng-disabled="vm.isWizardStepDisabled('FAMILIENSITUATION')"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FAMILIENSITUATION"
+                        ui-sref="gesuch.familiensituation({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FAMILIENSITUATION')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('FAMILIENSITUATION')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_FAMSITUATION"></span>
                     </button>
-                    <span class="col-xs-2 fa ng-class:vm.getIcon('FAMILIENSITUATION')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FAMILIENSITUATION')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('GESUCHSTELLER')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('GESUCHSTELLER')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn  btn-link"
-                            ui-sref="gesuch.stammdaten({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('GESUCHSTELLER')"
-                            data-test="sidenav.GESUCHSTELLER"
-                            aria-hidden="{{vm.isWizardStepDisabled('GESUCHSTELLER')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('GESUCHSTELLER')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('GESUCHSTELLER')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        ui-sref="gesuch.stammdaten({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('GESUCHSTELLER')"
+                        data-test="sidenav.GESUCHSTELLER"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('GESUCHSTELLER')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_GESUCHSTELLER"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('GESUCHSTELLER')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('GESUCHSTELLER')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('UMZUG')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('UMZUG')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            ui-sref="gesuch.umzug({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('UMZUG')"
-                            aria-hidden="{{vm.isWizardStepDisabled('UMZUG')}}"
-                            data-test="sidenav.UMZUG"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('UMZUG')"
+                    class="row"
+                    ng-class="{'active-element': vm.isElementActive('UMZUG')}"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        ui-sref="gesuch.umzug({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('UMZUG')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('UMZUG') }}"
+                        data-test="sidenav.UMZUG"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_UMZUG"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('UMZUG')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('UMZUG')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('KINDER')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('KINDER')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.KINDER"
-                            ui-sref="gesuch.kinder({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('KINDER')"
-                            aria-hidden="{{vm.isWizardStepDisabled('KINDER')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('KINDER')"
+                    class="row"
+                    ng-class="{'active-element': vm.isElementActive('KINDER')}"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.KINDER"
+                        ui-sref="gesuch.kinder({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('KINDER')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('KINDER') }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_KINDER"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('KINDER')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('KINDER')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('BETREUUNG')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('BETREUUNG')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.BETREUUNG"
-                            ui-sref="gesuch.betreuungen({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('BETREUUNG')"
-                            aria-hidden="{{vm.isWizardStepDisabled('BETREUUNG')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('BETREUUNG')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('BETREUUNG')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.BETREUUNG"
+                        ui-sref="gesuch.betreuungen({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('BETREUUNG')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('BETREUUNG') }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_BETREUUNG"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('BETREUUNG')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('BETREUUNG')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('ABWESENHEIT') && !vm.gesuchModelManager.isGesuch()"
+                <li
+                    ng-if="
+                        vm.isStepVisible('ABWESENHEIT') &&
+                        !vm.gesuchModelManager.isGesuch()
+                    "
                     class="row"
-                    ng-class="{'active-element': vm.isElementActive('ABWESENHEIT')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.ABWESENHEIT"
-                            ui-sref="gesuch.abwesenheit({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('ABWESENHEIT')"
-                            aria-hidden="{{vm.isWizardStepDisabled('ABWESENHEIT')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                    ng-class="{
+                        'active-element': vm.isElementActive('ABWESENHEIT')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.ABWESENHEIT"
+                        ui-sref="gesuch.abwesenheit({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('ABWESENHEIT')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('ABWESENHEIT')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_ABWESENHEIT"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('ABWESENHEIT')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('ABWESENHEIT')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('ERWERBSPENSUM')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('ERWERBSPENSUM')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.ERWERBSPENSUM"
-                            ui-sref="gesuch.erwerbsPensen({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('ERWERBSPENSUM')"
-                            aria-hidden="{{vm.isWizardStepDisabled('ERWERBSPENSUM')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('ERWERBSPENSUM')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('ERWERBSPENSUM')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.ERWERBSPENSUM"
+                        ui-sref="gesuch.erwerbsPensen({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('ERWERBSPENSUM')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('ERWERBSPENSUM')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_ERWERBSPENSUM"></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('ERWERBSPENSUM')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('ERWERBSPENSUM')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FINANZIELLE_SITUATION')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FINANZIELLE_SITUATION')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FINANZIELLE_SITUATION"
-                            ui-sref="gesuch.finanzielleSituationStart({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FINANZIELLE_SITUATION')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_FINANZIELLE_SITUATION"></span>
+                <li
+                    ng-if="vm.isStepVisible('FINANZIELLE_SITUATION')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'FINANZIELLE_SITUATION'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FINANZIELLE_SITUATION"
+                        ui-sref="gesuch.finanzielleSituationStart({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled('FINANZIELLE_SITUATION')
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_FINANZIELLE_SITUATION"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('FINANZIELLE_SITUATION')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FINANZIELLE_SITUATION')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_LUZERN')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FINANZIELLE_SITUATION_LUZERN')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FINANZIELLE_SITUATION_LUZERN"
-                            ui-sref="gesuch.finanzielleSituationStartLuzern({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_LUZERN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FINANZIELLE_SITUATION_LUZERN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_FINANZIELLE_SITUATION"></span>
+                <li
+                    ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_LUZERN')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'FINANZIELLE_SITUATION_LUZERN'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FINANZIELLE_SITUATION_LUZERN"
+                        ui-sref="gesuch.finanzielleSituationStartLuzern({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_LUZERN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'FINANZIELLE_SITUATION_LUZERN'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_FINANZIELLE_SITUATION"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('FINANZIELLE_SITUATION_LUZERN')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FINANZIELLE_SITUATION_LUZERN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_SOLOTHURN')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FINANZIELLE_SITUATION_SOLOTHURN')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FINANZIELLE_SITUATION_SOLOTHURN"
-                            ui-sref="gesuch.finanzielleSituationStartSolothurn({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SOLOTHURN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SOLOTHURN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_FINANZIELLE_SITUATION"></span>
+                <li
+                    ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_SOLOTHURN')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'FINANZIELLE_SITUATION_SOLOTHURN'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FINANZIELLE_SITUATION_SOLOTHURN"
+                        ui-sref="gesuch.finanzielleSituationStartSolothurn({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SOLOTHURN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'FINANZIELLE_SITUATION_SOLOTHURN'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_FINANZIELLE_SITUATION"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('FINANZIELLE_SITUATION_SOLOTHURN')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FINANZIELLE_SITUATION_SOLOTHURN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_SCHWYZ')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FINANZIELLE_SITUATION_SCHWYZ')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FINANZIELLE_SITUATION_SCHWYZ"
-                            ui-sref="gesuch.finanzielleSituationStartSchwyz({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SCHWYZ')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SCHWYZ')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_FINANZIELLE_SITUATION"></span>
+                <li
+                    ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_SCHWYZ')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'FINANZIELLE_SITUATION_SCHWYZ'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FINANZIELLE_SITUATION_SCHWYZ"
+                        ui-sref="gesuch.finanzielleSituationStartSchwyz({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_SCHWYZ')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'FINANZIELLE_SITUATION_SCHWYZ'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_FINANZIELLE_SITUATION"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('FINANZIELLE_SITUATION_SCHWYZ')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FINANZIELLE_SITUATION_SCHWYZ')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_APPENZELL')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FINANZIELLE_SITUATION_APPENZELL')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FINANZIELLE_SITUATION_APPENZELL"
-                            ui-sref="gesuch.finanzielleSituationAppenzell({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_APPENZELL')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FINANZIELLE_SITUATION_APPENZELL')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_FINANZIELLE_SITUATION"></span>
+                <li
+                    ng-if="vm.isStepVisible('FINANZIELLE_SITUATION_APPENZELL')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'FINANZIELLE_SITUATION_APPENZELL'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FINANZIELLE_SITUATION_APPENZELL"
+                        ui-sref="gesuch.finanzielleSituationAppenzell({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FINANZIELLE_SITUATION_APPENZELL')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'FINANZIELLE_SITUATION_APPENZELL'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_FINANZIELLE_SITUATION"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('FINANZIELLE_SITUATION_APPENZELL')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FINANZIELLE_SITUATION_APPENZELL')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG"
-                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG')"
-                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG"></span>
+                <li
+                    ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'EINKOMMENSVERSCHLECHTERUNG'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG"
+                        ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'EINKOMMENSVERSCHLECHTERUNG'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG')"
-                          aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_LUZERN')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG_LUZERN')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_LUZERN"
-                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_LUZERN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_LUZERN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"></span>
+                <li
+                    ng-if="
+                        vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_LUZERN')
+                    "
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'EINKOMMENSVERSCHLECHTERUNG_LUZERN'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_LUZERN"
+                        ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_LUZERN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'EINKOMMENSVERSCHLECHTERUNG_LUZERN'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_LUZERN')"
-                          aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_LUZERN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN"
-                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"></span>
+                <li
+                    ng-if="
+                        vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')
+                    "
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN"
+                        ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
-                          aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ"
-                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')"
-                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"></span>
+                <li
+                    ng-if="
+                        vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')
+                    "
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'EINKOMMENSVERSCHLECHTERUNG_SCHWYZ'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ"
+                        ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'EINKOMMENSVERSCHLECHTERUNG_SCHWYZ'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')"
-                          aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_SCHWYZ')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')}"
-                    ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_APPENZELL"
-                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
-                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG"></span>
+                <li
+                    ng-if="
+                        vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')
+                    "
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive(
+                            'EINKOMMENSVERSCHLECHTERUNG_APPENZELL'
+                        )
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.EINKOMMENSVERSCHLECHTERUNG_APPENZELL"
+                        ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
+                        aria-hidden="{{
+                            vm.isWizardStepDisabled(
+                                'EINKOMMENSVERSCHLECHTERUNG_APPENZELL'
+                            )
+                        }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span
+                            data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG"
+                        ></span>
                     </button>
-                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
-                          aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('DOKUMENTE')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('DOKUMENTE')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.DOKUMENTE"
-                            ui-sref="gesuch.dokumente({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('DOKUMENTE')"
-                            aria-hidden="{{vm.isWizardStepDisabled('DOKUMENTE')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('DOKUMENTE')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('DOKUMENTE')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.DOKUMENTE"
+                        ui-sref="gesuch.dokumente({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('DOKUMENTE')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('DOKUMENTE') }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_DOKUMENTE"></span>
                     </button>
-                    <span class="col-xs-2 fa ng-class:vm.getIcon('DOKUMENTE')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('DOKUMENTE')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('FREIGABE')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('FREIGABE')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 dv-btn btn-link"
-                            data-test="sidenav.FREIGABE"
-                            ui-sref="gesuch.freigabe({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('FREIGABE')"
-                            aria-hidden="{{vm.isWizardStepDisabled('FREIGABE')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
+                <li
+                    ng-if="vm.isStepVisible('FREIGABE')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('FREIGABE')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 dv-btn btn-link"
+                        data-test="sidenav.FREIGABE"
+                        ui-sref="gesuch.freigabe({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('FREIGABE')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('FREIGABE') }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
                         <span data-translate="MENU_FREIGABE"></span>
                     </button>
-                    <span class="col-xs-2 fa ng-class:vm.getIcon('FREIGABE')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa ng-class:vm.getIcon('FREIGABE')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
-                <li ng-if="vm.isStepVisible('VERFUEGEN')"
-                    class="row" ng-class="{'active-element': vm.isElementActive('VERFUEGEN')}" ui-sref-active="active">
-                    <button type="button" class="col-xs-10 col-md-10 dv-btn btn-link"
-                            data-test="sidenav.VERFUEGEN"
-                            ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})"
-                            ng-disabled="vm.isWizardStepDisabled('VERFUEGEN')"
-                            aria-hidden="{{vm.isWizardStepDisabled('VERFUEGEN')}}"
-                            ng-click="vm.closeSidenav('sidenav')">
-                        <span>{{vm.getVerfuegenText()}}</span>
+                <li
+                    ng-if="vm.isStepVisible('VERFUEGEN')"
+                    class="row"
+                    ng-class="{
+                        'active-element': vm.isElementActive('VERFUEGEN')
+                    }"
+                    ui-sref-active="active"
+                >
+                    <button
+                        type="button"
+                        class="col-xs-10 col-md-10 dv-btn btn-link"
+                        data-test="sidenav.VERFUEGEN"
+                        ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})"
+                        ng-disabled="vm.isWizardStepDisabled('VERFUEGEN')"
+                        aria-hidden="{{ vm.isWizardStepDisabled('VERFUEGEN') }}"
+                        ng-click="vm.closeSidenav('sidenav')"
+                    >
+                        <span>{{ vm.getVerfuegenText() }}</span>
                     </button>
-                    <span class="col-xs-2 fa  col-md-2 ng-class:vm.getIcon('VERFUEGEN')" aria-hidden="true"></span>
+                    <span
+                        class="col-xs-2 fa col-md-2 ng-class:vm.getIcon('VERFUEGEN')"
+                        aria-hidden="true"
+                    ></span>
                 </li>
             </ul>
         </div>
     </md-sidenav>
 
-
     <md-content id="gesuchContainer" flex>
         <!--linke Seite zum ausfüllen des Formulars-->
-        <div ui-view="gesuchViewPort" autoscroll="true" data-test="antrags-daten" ng-attr-data-antrags-id="{{ vm.getGesuchId() }}">
-        </div>
-
+        <div
+            ui-view="gesuchViewPort"
+            autoscroll="true"
+            data-test="antrags-daten"
+            ng-attr-data-antrags-id="{{ vm.getGesuchId() }}"
+        ></div>
     </md-content>
-    <div id="kommentarContainer"
-         dv-show-element
-         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForKommentarSpalte()" layout="column"
-         layout-align="stretch center">
+    <div
+        id="kommentarContainer"
+        dv-show-element
+        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForKommentarSpalte()"
+        layout="column"
+        layout-align="stretch center"
+    >
         <div ui-view="kommentarViewPort" flex="100"></div>
     </div>
-    <md-sidenav dv-show-element
-                dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()" class="md-sidenav-right"
-                md-component-id="ewk" id="ewk"
-                md-disable-backdrop md-whiteframe="4" md-is-open="vm.openEwkSidenav">
-        <button ng-click="vm.closeSidenav('ewk')" class="dv-btn dv-btn-operation" style="width:2rem; margin-left:auto;">
+    <md-sidenav
+        dv-show-element
+        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()"
+        class="md-sidenav-right"
+        md-component-id="ewk"
+        id="ewk"
+        md-disable-backdrop
+        md-whiteframe="4"
+        md-is-open="vm.openEwkSidenav"
+    >
+        <button
+            ng-click="vm.closeSidenav('ewk')"
+            class="dv-btn dv-btn-operation"
+            style="width: 2rem; margin-left: auto"
+        >
             <i class="fa fa-times"></i>
         </button>
         <md-content class="ewk-content">
@@ -413,4 +849,3 @@
         </md-content>
     </md-sidenav>
 </div>
-

@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    QueryList,
+    ViewChildren
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -50,7 +57,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponent');
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./edit-gemeinde.component.less'],
+    styleUrls: ['./edit-gemeinde.component.less']
 })
 export class EditGemeindeComponent implements OnInit {
     @ViewChildren(NgForm) public forms: QueryList<NgForm>;
@@ -95,9 +102,8 @@ export class EditGemeindeComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly gemeindeWarningService: GemeindeWarningService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
-    ) {
-    }
+        private readonly applicationPropertyRS: ApplicationPropertyRS
+    ) {}
 
     public ngOnInit(): void {
         this.gemeindeId = this.$transition$.params().gemeindeId;
@@ -115,7 +121,8 @@ export class EditGemeindeComponent implements OnInit {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tageschuleEnabledForMandant = res.angebotTSActivated;
             this.tfoEnabledForMandant = res.angebotTFOActivated;
-            this.gemeindeVereinfachteKonfigAktiv = res.gemeindeVereinfachteKonfigAktiv;
+            this.gemeindeVereinfachteKonfigAktiv =
+                res.gemeindeVereinfachteKonfigAktiv;
         });
 
         this.loadGemeindenList();
@@ -127,11 +134,14 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private fetchExternalClients(gemeindeId: string): void {
-        this.gemeindeRS.getExternalClients(gemeindeId)
+        this.gemeindeRS
+            .getExternalClients(gemeindeId)
             .then(externalClients => this.initExternalClients(externalClients));
     }
 
-    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+    private initExternalClients(
+        externalClients: TSExternalClientAssignment
+    ): void {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
         this.initiallyAssignedClients = [...externalClients.assignedClients];
@@ -139,60 +149,101 @@ export class EditGemeindeComponent implements OnInit {
 
     private loadStammdaten(): void {
         this.stammdaten$ = from(
-            this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.initializeEmptyUnrequiredFields(stammdaten);
-                this.fetchExternalClients(this.gemeindeId);
-                if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
-                    stammdaten.adresse = new TSAdresse();
-                }
-                if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
-                    this.beguStartDatum = stammdaten.gemeinde.betreuungsgutscheineStartdatum;
-                    this.beguStartStr = this.beguStartDatum.format(this.startDatumFormat);
-                }
-                if (stammdaten.gemeinde && stammdaten.gemeinde.tagesschulanmeldungenStartdatum) {
-                    this.tsAnmeldungenStartDatum = stammdaten.gemeinde.tagesschulanmeldungenStartdatum;
-                    this.tsAnmeldungenStartStr = this.tsAnmeldungenStartDatum.format(this.startDatumFormat);
-                }
-                if (stammdaten.gemeinde && stammdaten.gemeinde.ferieninselanmeldungenStartdatum) {
-                    this.fiAnmeldungenStartDatum = stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
-                    this.fiAnmeldungenStartStr = this.fiAnmeldungenStartDatum.format(this.startDatumFormat);
-                }
+            this.gemeindeRS
+                .getGemeindeStammdaten(this.gemeindeId)
+                .then(stammdaten => {
+                    this.initializeEmptyUnrequiredFields(stammdaten);
+                    this.fetchExternalClients(this.gemeindeId);
+                    if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
+                        stammdaten.adresse = new TSAdresse();
+                    }
+                    if (
+                        stammdaten.gemeinde &&
+                        stammdaten.gemeinde.betreuungsgutscheineStartdatum
+                    ) {
+                        this.beguStartDatum =
+                            stammdaten.gemeinde.betreuungsgutscheineStartdatum;
+                        this.beguStartStr = this.beguStartDatum.format(
+                            this.startDatumFormat
+                        );
+                    }
+                    if (
+                        stammdaten.gemeinde &&
+                        stammdaten.gemeinde.tagesschulanmeldungenStartdatum
+                    ) {
+                        this.tsAnmeldungenStartDatum =
+                            stammdaten.gemeinde.tagesschulanmeldungenStartdatum;
+                        this.tsAnmeldungenStartStr =
+                            this.tsAnmeldungenStartDatum.format(
+                                this.startDatumFormat
+                            );
+                    }
+                    if (
+                        stammdaten.gemeinde &&
+                        stammdaten.gemeinde.ferieninselanmeldungenStartdatum
+                    ) {
+                        this.fiAnmeldungenStartDatum =
+                            stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
+                        this.fiAnmeldungenStartStr =
+                            this.fiAnmeldungenStartDatum.format(
+                                this.startDatumFormat
+                            );
+                    }
 
-                this.initialFIValue = stammdaten.gemeinde.angebotFI;
+                    this.initialFIValue = stammdaten.gemeinde.angebotFI;
 
-                if (EbeguUtil.isNotNullOrUndefined(stammdaten.usernameScolaris)) {
-                    this.usernameScolaris = stammdaten.usernameScolaris;
-                }
-                this.gemeindeWarningService.init(stammdaten.konfigurationsListe);
+                    if (
+                        EbeguUtil.isNotNullOrUndefined(
+                            stammdaten.usernameScolaris
+                        )
+                    ) {
+                        this.usernameScolaris = stammdaten.usernameScolaris;
+                    }
+                    this.gemeindeWarningService.init(
+                        stammdaten.konfigurationsListe
+                    );
 
-                return stammdaten;
-            }));
+                    return stammdaten;
+                })
+        );
 
-        this.stammdaten$.subscribe(stammdaten => {
+        this.stammdaten$.subscribe(
+            stammdaten => {
                 this.initialBGValue = stammdaten.gemeinde.angebotBG;
                 this.initialTSValue = stammdaten.gemeinde.angebotTS;
                 this.initialFIValue = stammdaten.gemeinde.angebotFI;
             },
             err => {
                 LOG.error(err);
-            });
+            }
+        );
     }
 
     private loadGemeindenList(): void {
         this.gemeindeList$ = from(
-            this.gemeindeRS.getAktiveGueltigeGemeinden()
-                .then(response => response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
-                    .sort((a, b) => a.name.localeCompare(b.name))));
-
+            this.gemeindeRS
+                .getAktiveGueltigeGemeinden()
+                .then(response =>
+                    response
+                        .filter(gemeinde => gemeinde.id !== this.gemeindeId)
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                )
+        );
     }
 
-    private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
+    private initializeEmptyUnrequiredFields(
+        stammdaten: TSGemeindeStammdaten
+    ): void {
         // wenn die Stammdaten noch nicht definiert sind, ist der checkbox fur beschwerde Adresse unselektiert
-        this.keineBeschwerdeAdresse = (EbeguUtil.isNullOrUndefined(stammdaten.adresse)
-            || EbeguUtil.isEmptyStringNullOrUndefined(stammdaten.adresse.strasse))
-            ? false
-            : !stammdaten.beschwerdeAdresse;
-        if (this.hasEditBGPermission() && EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
+        this.keineBeschwerdeAdresse =
+            EbeguUtil.isNullOrUndefined(stammdaten.adresse) ||
+            EbeguUtil.isEmptyStringNullOrUndefined(stammdaten.adresse.strasse)
+                ? false
+                : !stammdaten.beschwerdeAdresse;
+        if (
+            this.hasEditBGPermission() &&
+            EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)
+        ) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }
 
@@ -218,9 +269,9 @@ export class EditGemeindeComponent implements OnInit {
         if (!gemeinde) {
             return '';
         }
-        return gemeinde.besondereVolksschule ?
-            `${this.translate.instant('BESONDERE_VOLKSSCHULE')} ${gemeinde.name}` :
-            `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
+        return gemeinde.besondereVolksschule
+            ? `${this.translate.instant('BESONDERE_VOLKSSCHULE')} ${gemeinde.name}`
+            : `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
     }
 
     public getLogoImageUrl(gemeinde: TSGemeinde): string {
@@ -232,7 +283,9 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(
+            TSRole.SUPER_ADMIN
+        );
         return allowedRoles;
     }
 
@@ -240,7 +293,9 @@ export class EditGemeindeComponent implements OnInit {
         this.navigateBack();
     }
 
-    public async persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): Promise<void> {
+    public async persistGemeindeStammdaten(
+        stammdaten: TSGemeindeStammdaten
+    ): Promise<void> {
         const index = await this.validateData(stammdaten);
         if (index !== undefined) {
             this.currentTab = index;
@@ -248,7 +303,11 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
 
-        if (this.gemeindeWarningService.showWarning(stammdaten.konfigurationsListe)) {
+        if (
+            this.gemeindeWarningService.showWarning(
+                stammdaten.konfigurationsListe
+            )
+        ) {
             const saveDangerous = await this.showDangerousSaveDialog();
             if (!saveDangerous) {
                 return;
@@ -258,8 +317,12 @@ export class EditGemeindeComponent implements OnInit {
         this.errorService.clearAll();
         this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
         stammdaten.iban = stammdaten.iban?.toLocaleUpperCase();
-        stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
-        stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
+        stammdaten.externalClients = this.externalClients.assignedClients.map(
+            client => client.id
+        );
+        stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(
+            this.usernameScolaris
+        )
             ? undefined
             : this.usernameScolaris;
         // falls Gutschein selber ausgestellt sollen keine Gemeinde Ausgabestelle definiert werden
@@ -268,23 +331,37 @@ export class EditGemeindeComponent implements OnInit {
         }
 
         try {
-            const savedStammdaten = await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            const savedStammdaten =
+                await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
             const hasAlternativeTagesschuleFileToUpload =
-                this.altFileToUpload && stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule;
+                this.altFileToUpload &&
+                stammdaten.gemeindeStammdatenKorrespondenz
+                    .hasAlternativeLogoTagesschule;
             if (this.fileToUpload) {
-                await this.persistLogo(this.fileToUpload, !hasAlternativeTagesschuleFileToUpload);
+                await this.persistLogo(
+                    this.fileToUpload,
+                    !hasAlternativeTagesschuleFileToUpload
+                );
             }
 
             if (hasAlternativeTagesschuleFileToUpload) {
-                await this.persistAlternativeLogoTagesschule(this.altFileToUpload);
+                await this.persistAlternativeLogoTagesschule(
+                    this.altFileToUpload
+                );
             } else if (this.isRegisteringGemeinde) {
                 this.$state.go('welcome');
                 return;
             }
 
-            if (savedStammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule
-                && !stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule) {
-                await this.gemeindeRS.deleteAlternativeLogoTagesschule(this.gemeindeId);
+            if (
+                savedStammdaten.gemeindeStammdatenKorrespondenz
+                    .hasAlternativeLogoTagesschule &&
+                !stammdaten.gemeindeStammdatenKorrespondenz
+                    .hasAlternativeLogoTagesschule
+            ) {
+                await this.gemeindeRS.deleteAlternativeLogoTagesschule(
+                    this.gemeindeId
+                );
             }
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
@@ -294,7 +371,6 @@ export class EditGemeindeComponent implements OnInit {
 
             this.loadStammdaten();
             this.setViewMode();
-
         } catch (err) {
             this.setEditMode();
         } finally {
@@ -309,28 +385,45 @@ export class EditGemeindeComponent implements OnInit {
     private updateExternalClients(): void {
         // the removed assigned clients need to be added in the available clients
         this.initiallyAssignedClients.forEach(initiallyAssignedClient => {
-            if (this.externalClients.assignedClients.length === 0 || this.externalClients.assignedClients.filter(
-                assignedClient => assignedClient.id === initiallyAssignedClient.id).length === 0) {
-                this.externalClients.availableClients.push(initiallyAssignedClient);
+            if (
+                this.externalClients.assignedClients.length === 0 ||
+                this.externalClients.assignedClients.filter(
+                    assignedClient =>
+                        assignedClient.id === initiallyAssignedClient.id
+                ).length === 0
+            ) {
+                this.externalClients.availableClients.push(
+                    initiallyAssignedClient
+                );
             }
         });
         this.initiallyAssignedClients = this.externalClients.assignedClients;
         // the newly added assigned clients need to be removed from the available clients
         this.externalClients.assignedClients.forEach(assignedClient => {
-            if (this.externalClients.availableClients.filter(
-                availableClient => availableClient.id === assignedClient.id).length > 0) {
-                const clientIndex = this.externalClients.availableClients.indexOf(assignedClient);
+            if (
+                this.externalClients.availableClients.filter(
+                    availableClient => availableClient.id === assignedClient.id
+                ).length > 0
+            ) {
+                const clientIndex =
+                    this.externalClients.availableClients.indexOf(
+                        assignedClient
+                    );
                 this.externalClients.availableClients.splice(clientIndex, 1);
             }
         });
     }
 
-    private setEmptyUnrequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
-        if (this.keineBeschwerdeAdresse || !stammdaten.standardRechtsmittelbelehrung) {
+    private setEmptyUnrequiredFieldsToUndefined(
+        stammdaten: TSGemeindeStammdaten
+    ): void {
+        if (
+            this.keineBeschwerdeAdresse ||
+            !stammdaten.standardRechtsmittelbelehrung
+        ) {
             // Reset Beschwerdeadresse if not used:
             // Wenn nicht angewählt, oder wenn nicht Standard-Rechtsmittelbelehrung
             stammdaten.beschwerdeAdresse = undefined;
-
         }
         if (!this.altBGAdresse) {
             // Reset BGAdresse if not used
@@ -358,19 +451,27 @@ export class EditGemeindeComponent implements OnInit {
             },
             () => {
                 this.errorService.clearAll();
-                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
-            });
+                this.errorService.addMesageAsError(
+                    this.translate.instant('GEMEINDE_LOGO_ZU_GROSS')
+                );
+            }
+        );
     }
 
     private persistAlternativeLogoTagesschule(file: File): IPromise<void> {
-        return this.gemeindeRS.uploadAlternativeLogoTagesschule(this.gemeindeId, file).then(
-            () => {
-                this.navigateBack();
-            },
-            () => {
-                this.errorService.clearAll();
-                this.errorService.addMesageAsError(this.translate.instant('TAGESSCHUL_LOGO_ZU_GROSS'));
-            });
+        return this.gemeindeRS
+            .uploadAlternativeLogoTagesschule(this.gemeindeId, file)
+            .then(
+                () => {
+                    this.navigateBack();
+                },
+                () => {
+                    this.errorService.clearAll();
+                    this.errorService.addMesageAsError(
+                        this.translate.instant('TAGESSCHUL_LOGO_ZU_GROSS')
+                    );
+                }
+            );
     }
 
     public collectLogoChange(file: File): void {
@@ -390,7 +491,10 @@ export class EditGemeindeComponent implements OnInit {
     private validateData(stammdaten: TSGemeindeStammdaten): Promise<number> {
         let errorIndex: any;
 
-        if (!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr) {
+        if (
+            !stammdaten.korrespondenzspracheDe &&
+            !stammdaten.korrespondenzspracheFr
+        ) {
             errorIndex = 0;
         }
         const hasAngebot = stammdaten.gemeinde.isAtLeastOneAngebotSelected();
@@ -418,9 +522,10 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
 
-        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-            ? 'gemeinde.edit'
-            : this.navigationSource;
+        const redirectTo =
+            this.navigationSource.name === 'einladung.abschliessen'
+                ? 'gemeinde.edit'
+                : this.navigationSource;
 
         this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
@@ -445,11 +550,21 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private hasEditBGPermission(): boolean {
-        return this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN]);
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SUPER_ADMIN
+        ]);
     }
 
     public editModeForTSFI(): boolean {
-        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+        if (
+            this.authServiceRS.isOneOfRoles([
+                TSRole.ADMIN_TS,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SUPER_ADMIN
+            ])
+        ) {
             return this.editMode;
         }
         return false;
@@ -463,31 +578,36 @@ export class EditGemeindeComponent implements OnInit {
     private async showSaveWarningDialog(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING'),
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig)
-            .afterClosed().subscribe(
-            () => {
-                EbeguUtil.selectFirstInvalid();
-            },
-            err => {
-                LOG.error(err);
-            });
+            .afterClosed()
+            .subscribe(
+                () => {
+                    EbeguUtil.selectFirstInvalid();
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     private async showDangerousSaveDialog(): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING'),
+            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING')
         };
         return this.dialog
             .open(DvNgConfirmDialogComponent, dialogConfig)
-            .afterClosed().toPromise();
+            .afterClosed()
+            .toPromise();
     }
 
     public isGemeindeEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole());
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole()
+        );
     }
 
     public isSuperAdmin(): boolean {

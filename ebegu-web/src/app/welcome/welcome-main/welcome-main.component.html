@@ -16,55 +16,62 @@
   -->
 
 <dv-full-height-inner-padding-container>
-
-    <form role="form"
-          #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          (ngSubmit)="navigateToStartPage()"
-          novalidate>
-
+    <form
+        role="form"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        (ngSubmit)="navigateToStartPage()"
+        novalidate
+    >
         <div class="dv-content">
-
             <div class="col-sm-12 welcome-title-cotainer">
-                <span class="welcome-title"
-                      translate>
-                    WELCOME
-                </span>
+                <span class="welcome-title" translate> WELCOME </span>
             </div>
 
             <div class="row">
-                <div class="col-sm-12" style="text-align: center;">
+                <div class="col-sm-12" style="text-align: center">
                     <div class="welcome-image" [style.content]="logoUrl"></div>
                 </div>
             </div>
 
-            <div *ngIf="isNotSozialdienstRole()" class="col-sm-12 welcome-title-cotainer">
-                <p class="p-bg" style="padding: 0 12rem 0 12rem;"
-                      [innerHTML]="'TOUR_WELCOME_TEXT' | translate">
-                </p>
+            <div
+                *ngIf="isNotSozialdienstRole()"
+                class="col-sm-12 welcome-title-cotainer"
+            >
+                <p
+                    class="p-bg"
+                    style="padding: 0 12rem 0 12rem"
+                    [innerHTML]="'TOUR_WELCOME_TEXT' | translate"
+                ></p>
             </div>
 
             <ng-content></ng-content>
-
         </div>
 
-        <div class="dv-footer" style="padding-bottom: 5rem;">
-            <dv-loading-button *ngIf="isNotSozialdienstRole()" [type]="'submit'" [buttonClass]="'dv-btn-bg'">
+        <div class="dv-footer" style="padding-bottom: 5rem">
+            <dv-loading-button
+                *ngIf="isNotSozialdienstRole()"
+                [type]="'submit'"
+                [buttonClass]="'dv-btn-bg'"
+            >
                 <span translate>LETS_START</span>
             </dv-loading-button>
 
-            <button *ngIf="isNotSozialdienstRole()" type="button" class="dv-btn dv-btn-bg cancel-button"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
-            <dv-loading-button *ngIf="!isNotSozialdienstRole()"
-                               [type]="'button'"
-                               [buttonClass]="'dv-btn-bg'"
-                               (buttonClick)="cancel()">
+            <button
+                *ngIf="isNotSozialdienstRole()"
+                type="button"
+                class="dv-btn dv-btn-bg cancel-button"
+                (click)="cancel()"
+                [textContent]="'CANCEL' | translate"
+            ></button>
+            <dv-loading-button
+                *ngIf="!isNotSozialdienstRole()"
+                [type]="'button'"
+                [buttonClass]="'dv-btn-bg'"
+                (buttonClick)="cancel()"
+            >
                 <span translate>LETS_START</span>
             </dv-loading-button>
         </div>
-
     </form>
-
 </dv-full-height-inner-padding-container>

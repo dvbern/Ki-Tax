@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -40,7 +48,6 @@ const LOG = LogFactory.createLog('EditGemeindeStammdatenComponent');
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
-
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
@@ -48,10 +55,12 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
     @Input() public tfoEnabledForMandant: boolean;
     @Input() public gemeindeVereinfachteKonfigAktiv: boolean;
     @Input() public altGemeindeKontakt: boolean;
-    @Output() public readonly altGemeindeKontaktChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly altGemeindeKontaktChange: EventEmitter<boolean> =
+        new EventEmitter();
     public readonly CONSTANTS = CONSTANTS;
 
-    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> =
+        new EventEmitter();
     @Input() public altTSAdresse: boolean;
 
     public korrespondenzsprache: string;
@@ -69,8 +78,7 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         if (!this.gemeindeId) {
@@ -79,12 +87,10 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.isInfomazahlungen = res.infomaZahlungen;
         });
-        this.stammdaten$
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                stammdaten => this.initValues(stammdaten),
-                err => LOG.error(err)
-            );
+        this.stammdaten$.pipe(takeUntil(this.unsubscribe$)).subscribe(
+            stammdaten => this.initValues(stammdaten),
+            err => LOG.error(err)
+        );
     }
 
     public altTSAdresseHasChange(newVal: boolean): void {
@@ -103,19 +109,25 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
         // Duplikate müssen aber vermieden werden
         this.benutzerListe = stammdaten.benutzerListeBG;
         stammdaten.benutzerListeTS.forEach(tsBen => {
-            if (!this.benutzerListe.find(value => value.username === tsBen.username)) {
+            if (
+                !this.benutzerListe.find(
+                    value => value.username === tsBen.username
+                )
+            ) {
                 this.benutzerListe.push(tsBen);
             }
         });
-        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.nurLats
-            && !stammdaten.gemeinde.besondereVolksschule
-            && !stammdaten.gemeinde.angebotBG
-            && !stammdaten.gemeinde.angebotTS
-            && !stammdaten.gemeinde.angebotFI;
+        this.showMessageKeinAngebotSelected =
+            !stammdaten.gemeinde.nurLats &&
+            !stammdaten.gemeinde.besondereVolksschule &&
+            !stammdaten.gemeinde.angebotBG &&
+            !stammdaten.gemeinde.angebotTS &&
+            !stammdaten.gemeinde.angebotFI;
     }
 
     private initKorrespondenzsprache(stammdaten: TSGemeindeStammdaten): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then(properties => properties.frenchEnabled)
             .then(frenchEnabled => {
                 this.frenchEnabled = frenchEnabled;
@@ -135,8 +147,11 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
     }
 
     public isSuperadminOrMandant(): boolean {
-        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT]);
+        return this.authServiceRS.isOneOfRoles([
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ]);
     }
 
     public isSuperadmin(): boolean {
@@ -149,7 +164,9 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
 
     public angeboteChanged(stammdaten: TSGemeindeStammdaten): void {
         const hasAngebot =
-            stammdaten.gemeinde.angebotBG || stammdaten.gemeinde.angebotTS || stammdaten.gemeinde.angebotFI;
+            stammdaten.gemeinde.angebotBG ||
+            stammdaten.gemeinde.angebotTS ||
+            stammdaten.gemeinde.angebotFI;
         this.showMessageKeinAngebotSelected = !hasAngebot;
     }
 
@@ -163,7 +180,9 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
         }
     }
 
-    public hasZusatzTextFreigabequittungChange(stammdaten: TSGemeindeStammdaten) {
+    public hasZusatzTextFreigabequittungChange(
+        stammdaten: TSGemeindeStammdaten
+    ) {
         if (!stammdaten.hasZusatzTextFreigabequittung) {
             stammdaten.zusatzTextFreigabequittung = undefined;
         }

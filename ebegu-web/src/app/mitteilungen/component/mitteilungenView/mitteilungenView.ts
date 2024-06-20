@@ -31,8 +31,12 @@ export class MitteilungenViewComponentConfig implements IComponentOptions {
 }
 
 export class MitteilungenViewController implements IController {
-
-    public static $inject: string[] = ['$state', '$stateParams', 'AuthServiceRS', '$timeout'];
+    public static $inject: string[] = [
+        '$state',
+        '$stateParams',
+        'AuthServiceRS',
+        '$timeout'
+    ];
 
     public form: IFormController;
     public dossierId: string;
@@ -44,8 +48,7 @@ export class MitteilungenViewController implements IController {
         private readonly $stateParams: IMitteilungenStateParams,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $timeout: ITimeoutService
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         if (this.$stateParams.dossierId) {
@@ -57,7 +60,11 @@ export class MitteilungenViewController implements IController {
     }
 
     public cancel(): void {
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                this.TSRoleUtil.getGesuchstellerOnlyRoles()
+            )
+        ) {
             this.$state.go('gesuchsteller.dashboard');
         } else {
             this.$state.go('posteingang.view');

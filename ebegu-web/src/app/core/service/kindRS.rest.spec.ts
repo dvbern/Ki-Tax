@@ -25,7 +25,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {KindRS} from './kindRS.rest';
 
 describe('KindRS', () => {
-
     let kindRS: KindRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -41,14 +40,18 @@ describe('KindRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        kindRS = $injector.get('KindRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        wizardStepManager = $injector.get('WizardStepManager');
-        $q = $injector.get('$q');
-        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            kindRS = $injector.get('KindRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+            wizardStepManager = $injector.get('WizardStepManager');
+            $q = $injector.get('$q');
+            spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                $q.resolve()
+            );
+        })
+    );
 
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000feb';
@@ -78,7 +81,9 @@ describe('KindRS', () => {
     describe('API Usage', () => {
         describe('findKind', () => {
             it('should return the Kind by id', () => {
-                $httpBackend.expectGET(`${kindRS.serviceURL}/find/${mockKind.id}`).respond(mockKindRest);
+                $httpBackend
+                    .expectGET(`${kindRS.serviceURL}/find/${mockKind.id}`)
+                    .respond(mockKindRest);
 
                 let foundKind: TSKindContainer;
                 kindRS.findKind(mockKind.id).then(result => {
@@ -91,12 +96,13 @@ describe('KindRS', () => {
         describe('createKind', () => {
             it('should create a Kind', () => {
                 let createdKind: TSKindContainer;
-                $httpBackend.expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest).respond(mockKindRest);
+                $httpBackend
+                    .expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest)
+                    .respond(mockKindRest);
 
-                kindRS.saveKind(mockKind, gesuchId)
-                    .then(result => {
-                        createdKind = result;
-                    });
+                kindRS.saveKind(mockKind, gesuchId).then(result => {
+                    createdKind = result;
+                });
                 $httpBackend.flush();
                 checkFieldValues(createdKind);
             });
@@ -108,34 +114,44 @@ describe('KindRS', () => {
                 kindJA2.nachname = 'Basel';
                 TestDataUtil.setAbstractMutableFieldsUndefined(kindJA2);
                 mockKind.kindJA = kindJA2;
-                mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
+                mockKindRest = ebeguRestUtil.kindContainerToRestObject(
+                    {},
+                    mockKind
+                );
                 let updatedKindContainer: TSKindContainer;
-                $httpBackend.expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest).respond(mockKindRest);
+                $httpBackend
+                    .expectPUT(`${kindRS.serviceURL}/${gesuchId}`, mockKindRest)
+                    .respond(mockKindRest);
 
-                kindRS.saveKind(mockKind, gesuchId)
-                    .then(result => {
-                        updatedKindContainer = result;
-                    });
+                kindRS.saveKind(mockKind, gesuchId).then(result => {
+                    updatedKindContainer = result;
+                });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+                expect(
+                    wizardStepManager.findStepsFromGesuch
+                ).toHaveBeenCalledWith(gesuchId);
                 checkFieldValues(updatedKindContainer);
             });
         });
         describe('removeKind', () => {
             it('should remove a Kind', () => {
                 const httpOk = 200;
-                $httpBackend.expectDELETE(`${kindRS.serviceURL}/${encodeURIComponent(mockKind.id)}`)
+                $httpBackend
+                    .expectDELETE(
+                        `${kindRS.serviceURL}/${encodeURIComponent(mockKind.id)}`
+                    )
                     .respond(httpOk);
 
                 let deleteResult: any;
-                kindRS.removeKind(mockKind.id, gesuchId)
-                    .then(result => {
-                        deleteResult = result;
-                    });
+                kindRS.removeKind(mockKind.id, gesuchId).then(result => {
+                    deleteResult = result;
+                });
                 $httpBackend.flush();
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+                expect(
+                    wizardStepManager.findStepsFromGesuch
+                ).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
                 expect(deleteResult.status).toEqual(httpOk);
             });
@@ -145,8 +161,14 @@ describe('KindRS', () => {
     function checkFieldValues(foundKind: TSKindContainer): void {
         expect(foundKind).toBeDefined();
         expect(foundKind.kindGS).toBeDefined();
-        TestDataUtil.compareDefinedProperties(foundKind.kindGS, mockKind.kindGS);
+        TestDataUtil.compareDefinedProperties(
+            foundKind.kindGS,
+            mockKind.kindGS
+        );
         expect(foundKind.kindJA).toBeDefined();
-        TestDataUtil.compareDefinedProperties(foundKind.kindJA, mockKind.kindJA);
+        TestDataUtil.compareDefinedProperties(
+            foundKind.kindJA,
+            mockKind.kindJA
+        );
     }
 });

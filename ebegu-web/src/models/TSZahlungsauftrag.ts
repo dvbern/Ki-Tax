@@ -22,7 +22,6 @@ import {TSZahlung} from './TSZahlung';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
-
     public zahlungslaufTyp: TSZahlungslaufTyp;
     public datumGeneriert: moment.Moment;
     public datumFaellig: moment.Moment;

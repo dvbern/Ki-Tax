@@ -28,52 +28,70 @@ import type * as Tagesschule from '../fixtures/institution/tagesschule.json';
 import type * as Gemeinde from '../fixtures/admin/gemeinde.json';
 
 const fromFixture =
-    <T, FixturePart extends keyof T = keyof T>(fixture: string, fixturePart: FixturePart) =>
+    <T, FixturePart extends keyof T = keyof T>(
+        fixture: string,
+        fixturePart: FixturePart
+    ) =>
     <R>(fn: (data: T[FixturePart]) => R) =>
         cy.fixture(fixture).then((data: T) => fn(data[fixturePart]));
 
 export const FixtureKind = {
     withValidBoy: fromFixture<typeof Kind>('antrag/kind-boy.json', 'valid'),
-    withValidGirl: fromFixture<typeof Kind>('antrag/kind-girl.json', 'valid'),
+    withValidGirl: fromFixture<typeof Kind>('antrag/kind-girl.json', 'valid')
 };
 
 export const FixtureBeschaeftigungspensum = {
-    withValid: fromFixture<typeof Beschaeftigungspensum>('antrag/beschaeftigungspensum.json', 'valid'),
+    withValid: fromFixture<typeof Beschaeftigungspensum>(
+        'antrag/beschaeftigungspensum.json',
+        'valid'
+    )
 };
 
 export const FixtureBetreuung = {
     withValid: fromFixture<typeof Betreuung>('antrag/betreuung.json', 'valid'),
-    withSchwyz: fromFixture<typeof Betreuung>('antrag/betreuung.json', 'schwyz'),
+    withSchwyz: fromFixture<typeof Betreuung>('antrag/betreuung.json', 'schwyz')
 };
 
 export const FixtureFamSit = {
-    withValid: fromFixture<typeof FamSit>('antrag/famsit.json', 'valid'),
+    withValid: fromFixture<typeof FamSit>('antrag/famsit.json', 'valid')
 };
 
 export const FixtureFinSit = {
-    withValid: fromFixture<typeof FinSit>('antrag/finsit.json', 'valid'),
+    withValid: fromFixture<typeof FinSit>('antrag/finsit.json', 'valid')
 };
 
 export const FixturePapierAntrag = {
-    withValid: fromFixture<typeof Papier>('antrag/papier.json', 'valid'),
+    withValid: fromFixture<typeof Papier>('antrag/papier.json', 'valid')
 };
 
 export const FixtureEinkommensverschlechterung = {
-    withValid: fromFixture<typeof Einkommensverschlechterung>('antrag/einkommensverschlechterung.json', 'valid'),
+    withValid: fromFixture<typeof Einkommensverschlechterung>(
+        'antrag/einkommensverschlechterung.json',
+        'valid'
+    )
 };
 
 export const FixtureEinkommensverschlechterungInfo = {
-    withValid: fromFixture<typeof EinkommensverschlechterungInfo>('antrag/einkommensverschlechterung-info.json', 'valid'),
+    withValid: fromFixture<typeof EinkommensverschlechterungInfo>(
+        'antrag/einkommensverschlechterung-info.json',
+        'valid'
+    )
 };
 
 export const FixtureCreateTagesschule = {
-    withValid: fromFixture<typeof CreateTagesschule>('institution/create-tagesschule.json', 'valid'),
+    withValid: fromFixture<typeof CreateTagesschule>(
+        'institution/create-tagesschule.json',
+        'valid'
+    )
 };
 
 export const FixtureTagesschule = {
-    withValid: fromFixture<typeof Tagesschule>('institution/tagesschule.json', 'valid'),
+    withValid: fromFixture<typeof Tagesschule>(
+        'institution/tagesschule.json',
+        'valid'
+    )
 };
 
 export const GemeindeFixture = {
-    withValid: fromFixture<typeof Gemeinde>('admin/gemeinde.json', 'valid'),
+    withValid: fromFixture<typeof Gemeinde>('admin/gemeinde.json', 'valid')
 };

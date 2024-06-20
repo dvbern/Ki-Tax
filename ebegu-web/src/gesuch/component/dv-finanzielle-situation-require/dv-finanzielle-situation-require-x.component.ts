@@ -12,7 +12,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -35,7 +42,6 @@ const LOG = LogFactory.createLog('DvFinanzielleSituationRequireXComponent');
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvFinanzielleSituationRequireXComponent implements OnInit {
-
     @Input()
     public hideVerguenstigungGewunscht: boolean = false;
 
@@ -47,12 +53,14 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
     @Input()
     public verguenstigungGewuenscht: boolean;
     @Output()
-    public readonly verguenstigungGewuenschtChange = new EventEmitter<boolean>();
+    public readonly verguenstigungGewuenschtChange =
+        new EventEmitter<boolean>();
 
     @Input()
     public finanzielleSituationRequired: boolean;
     @Output()
-    public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
+    public readonly finanzielleSituationRequiredChange =
+        new EventEmitter<boolean>();
 
     @Input()
     public areThereAnyBgBetreuungen: boolean;
@@ -75,38 +83,61 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
         private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef,
         private readonly finanzielleSituationRS: FinanzielleSituationRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
-            this.gesuchModelManager.getDossier().gemeinde.id,
-            this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(response => {
-                this.maxMassgebendesEinkommen = parseInt(response.value, 10);
-            }, error => LOG.error(error));
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                response => {
+                    this.maxMassgebendesEinkommen = parseInt(
+                        response.value,
+                        10
+                    );
+                },
+                error => LOG.error(error)
+            );
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
 
-        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
-            this.gesuchModelManager.getGemeinde())
-            .subscribe(typ => {
-                this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
-            },  err => LOG.error(err));
+        this.finanzielleSituationRS
+            .getFinanzielleSituationTyp(
+                this.gesuchModelManager.getGesuchsperiode(),
+                this.gesuchModelManager.getGemeinde()
+            )
+            .subscribe(
+                typ => {
+                    this.isFinSitTypFkjv =
+                        TSFinanzielleSituationTyp.BERN_FKJV === typ;
+                },
+                err => LOG.error(err)
+            );
     }
 
     public setFinanziellesituationRequired(): void {
-        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger,
-            this.verguenstigungGewuenscht);
+        const required = EbeguUtil.isFinanzielleSituationRequired(
+            this.sozialhilfeBezueger,
+            this.verguenstigungGewuenscht
+        );
         // Wenn es sich geändert und nicht den Initialwert "undefined" hat, müssen gewisse Daten gesetzt werden
-        if (EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
+        if (
+            EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
             required !== this.finanzielleSituationRequired &&
-            this.gesuchModelManager.getGesuch()) {
-            this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
+            this.gesuchModelManager.getGesuch()
+        ) {
+            this.gesuchModelManager.getGesuch().finSitStatus = required
+                ? null
+                : TSFinSitStatus.AKZEPTIERT;
         }
         this.finanzielleSituationRequired = required;
-        this.finanzielleSituationRequiredChange.emit(this.finanzielleSituationRequired);
+        this.finanzielleSituationRequiredChange.emit(
+            this.finanzielleSituationRequired
+        );
         this.cd.markForCheck();
     }
 
@@ -119,8 +150,9 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
         if (this.hideVerguenstigungGewunscht) {
             return false;
         }
-        const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger;
+        const isNotSozialhilfeBezueger =
+            EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) &&
+            !this.sozialhilfeBezueger;
 
         if (this.isFinSitTypFkjv) {
             if (isNotSozialhilfeBezueger && !this.areThereAnyBgBetreuungen) {
@@ -152,12 +184,13 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
     }
 
     public getLabel(): string {
-        const key =
-            this.gesuchModelManager.isFKJVTexte ?
-                'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        const key = this.gesuchModelManager.isFKJVTexte
+            ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV'
+            : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
         const pipe = new EbeguNumberPipe();
-        return this.translate.instant(key,
-            {maxEinkommen: pipe.transform(this.maxMassgebendesEinkommen)});
+        return this.translate.instant(key, {
+            maxEinkommen: pipe.transform(this.maxMassgebendesEinkommen)
+        });
     }
 
     public updateVerguenstigungGewuenscht(value: any): void {

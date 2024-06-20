@@ -28,10 +28,13 @@ describe('MassgebendesEinkommenComponent', () => {
     let component: MassgebendesEinkommenComponent;
     let fixture: ComponentFixture<MassgebendesEinkommenComponent>;
 
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -40,21 +43,23 @@ describe('MassgebendesEinkommenComponent', () => {
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 NgForm
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
-        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-            .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-        berechnungsManagerSpy.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
+        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+            Promise.resolve(new TSFinanzielleSituationResultateDTO())
+        );
+        berechnungsManagerSpy.finanzielleSituationResultate =
+            new TSFinanzielleSituationResultateDTO();
         fixture = TestBed.createComponent(MassgebendesEinkommenComponent);
         component = fixture.componentInstance;
-        component.massgebendesEinkommen$ = of(new TSFinanzielleSituationResultateDTO());
+        component.massgebendesEinkommen$ = of(
+            new TSFinanzielleSituationResultateDTO()
+        );
         fixture.detectChanges();
     });
 

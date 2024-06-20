@@ -15,5 +15,4 @@
 
 import {TSFile} from './TSFile';
 
-export class TSVorlage extends TSFile {
-}
+export class TSVorlage extends TSFile {}

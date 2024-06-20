@@ -46,5 +46,4 @@ export enum TSFinanzielleSituationSubStepName {
     SCHWYZ_GS1 = 'SCHWYZ_GS1',
     SCHWYZ_GS2 = 'SCHWYZ_GS2',
     SCHWYZ_RESULTATE = 'SCHWYZ_RESULTATE'
-
 }

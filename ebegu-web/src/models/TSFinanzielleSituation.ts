@@ -18,7 +18,6 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
-
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
     private _steuerdatenZugriff: boolean;
@@ -159,14 +158,27 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     }
 
     public isSelbstaendig(): boolean {
-        return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
-            || (this.geschaeftsgewinnBasisjahrMinus1 !== null && this.geschaeftsgewinnBasisjahrMinus1 !== undefined)
-            || (this.geschaeftsgewinnBasisjahrMinus2 !== null && this.geschaeftsgewinnBasisjahrMinus2 !== undefined);
+        return (
+            (this.geschaeftsgewinnBasisjahr !== null &&
+                this.geschaeftsgewinnBasisjahr !== undefined) ||
+            (this.geschaeftsgewinnBasisjahrMinus1 !== null &&
+                this.geschaeftsgewinnBasisjahrMinus1 !== undefined) ||
+            (this.geschaeftsgewinnBasisjahrMinus2 !== null &&
+                this.geschaeftsgewinnBasisjahrMinus2 !== undefined)
+        );
     }
 
     public hasErsatzeinkommenSelbststaendigkeit(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahr)
-            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
-            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2);
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.ersatzeinkommenSelbststaendigkeitBasisjahr
+            ) ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1
+            ) ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2
+            )
+        );
     }
 }

@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
 import {StateService} from '@uirouter/core';
@@ -34,7 +40,10 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     templateUrl: './gemeinde-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GemeindeListComponent extends AbstractAdminViewX implements OnInit {
+export class GemeindeListComponent
+    extends AbstractAdminViewX
+    implements OnInit
+{
     public hiddenDVTableColumns = [
         'institutionCount',
         'type',
@@ -62,22 +71,20 @@ export class GemeindeListComponent extends AbstractAdminViewX implements OnInit 
 
     public updateGemeindenList(): void {
         this.antragList$ = this.gemeindeRS.getGemeindenForPrincipal$().pipe(
-            map(
-            gemeindeList => {
+            map(gemeindeList => {
                 const entitaetListItems: DVEntitaetListItem[] = [];
-                gemeindeList.forEach(
-                    gemeinde => {
-                        const dvListItem = {
-                            id: gemeinde.id,
-                            name: gemeinde.name,
-                            status: gemeinde.status.toString(),
-                            canEdit: this.hatBerechtigungEditieren(gemeinde)
-                        };
-                        entitaetListItems.push(dvListItem);
-                    }
-                );
+                gemeindeList.forEach(gemeinde => {
+                    const dvListItem = {
+                        id: gemeinde.id,
+                        name: gemeinde.name,
+                        status: gemeinde.status.toString(),
+                        canEdit: this.hatBerechtigungEditieren(gemeinde)
+                    };
+                    entitaetListItems.push(dvListItem);
+                });
                 return entitaetListItems;
-            }));
+            })
+        );
     }
 
     public openGemeinde(id: string): void {

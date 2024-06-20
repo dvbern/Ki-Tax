@@ -24,8 +24,13 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
 export class EinkommensverschlechterungContainerRS {
-
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        'WizardStepManager'
+    ];
     public serviceURL: string;
 
     public constructor(
@@ -47,12 +52,17 @@ export class EinkommensverschlechterungContainerRS {
         returnedEinkommensverschlechterungContainer =
             this.ebeguRestUtil.einkommensverschlechterungContainerToRestObject(
                 returnedEinkommensverschlechterungContainer,
-                einkommensverschlechterungContainer);
+                einkommensverschlechterungContainer
+            );
         const url = `${this.serviceURL}/${gesuchstellerId}/${encodeURIComponent(gesuchId)}`;
 
-        return this.$http.put(url, returnedEinkommensverschlechterungContainer)
-            .then(r => this.wizardStepManager.findStepsFromGesuch(gesuchId)
-                .then(() => this.toEinkommensverschlechterung(r)));
+        return this.$http
+            .put(url, returnedEinkommensverschlechterungContainer)
+            .then(r =>
+                this.wizardStepManager
+                    .findStepsFromGesuch(gesuchId)
+                    .then(() => this.toEinkommensverschlechterung(r))
+            );
     }
 
     public calculateEinkommensverschlechterung(
@@ -60,8 +70,12 @@ export class EinkommensverschlechterungContainerRS {
         basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
-        gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
-        return this.$http.post(`${this.serviceURL}/calculate/${basisJahrPlus}`, gesuchToSend)
+        gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(
+            gesuchToSend,
+            gesuch
+        );
+        return this.$http
+            .post(`${this.serviceURL}/calculate/${basisJahrPlus}`, gesuchToSend)
             .then(response => this.toFinanzielleSituationResult(response));
     }
 
@@ -70,43 +84,88 @@ export class EinkommensverschlechterungContainerRS {
         basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         let finanzenToSend = {};
-        finanzenToSend = this.ebeguRestUtil.finanzModelToRestObject(finanzenToSend, finanzModel);
-        return this.$http.post(`${this.serviceURL}/calculateTemp/${basisJahrPlus}`, finanzenToSend)
+        finanzenToSend = this.ebeguRestUtil.finanzModelToRestObject(
+            finanzenToSend,
+            finanzModel
+        );
+        return this.$http
+            .post(
+                `${this.serviceURL}/calculateTemp/${basisJahrPlus}`,
+                finanzenToSend
+            )
             .then(response => this.toFinanzielleSituationResult(response));
     }
 
-    public findEinkommensverschlechterungContainer(einkommensverschlechterungID: string
+    public findEinkommensverschlechterungContainer(
+        einkommensverschlechterungID: string
     ): IPromise<TSEinkommensverschlechterungContainer> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(einkommensverschlechterungID)}`)
+        return this.$http
+            .get(
+                `${this.serviceURL}/${encodeURIComponent(einkommensverschlechterungID)}`
+            )
             .then(r => this.toEinkommensverschlechterung(r));
     }
 
-    public findEKVContainerForGesuchsteller(gesuchstellerID: string): IPromise<TSEinkommensverschlechterungContainer> {
-        return this.$http.get(`${this.serviceURL}/forGesuchsteller/${encodeURIComponent(gesuchstellerID)}`)
+    public findEKVContainerForGesuchsteller(
+        gesuchstellerID: string
+    ): IPromise<TSEinkommensverschlechterungContainer> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/forGesuchsteller/${encodeURIComponent(gesuchstellerID)}`
+            )
             .then(r => this.toEinkommensverschlechterung(r));
     }
 
-    public calculateProzentualeDifferenz(betragJahr: number, betragJahrPlus1: number): IPromise<string> {
-        return this.$http.post(`${this.serviceURL}/calculateDifferenz/${betragJahr}/${betragJahrPlus1}`, null)
-            .then(httpresponse =>  httpresponse.data as string);
+    public calculateProzentualeDifferenz(
+        betragJahr: number,
+        betragJahrPlus1: number
+    ): IPromise<string> {
+        return this.$http
+            .post(
+                `${this.serviceURL}/calculateDifferenz/${betragJahr}/${betragJahrPlus1}`,
+                null
+            )
+            .then(httpresponse => httpresponse.data as string);
     }
 
-    private toEinkommensverschlechterung(response: IHttpResponse<any>): TSEinkommensverschlechterungContainer {
-        this.$log.debug('PARSING EinkommensverschlechterungContainer REST object ', response.data);
+    private toEinkommensverschlechterung(
+        response: IHttpResponse<any>
+    ): TSEinkommensverschlechterungContainer {
+        this.$log.debug(
+            'PARSING EinkommensverschlechterungContainer REST object ',
+            response.data
+        );
         const container = new TSEinkommensverschlechterungContainer();
 
-        return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(container, response.data);
+        return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(
+            container,
+            response.data
+        );
     }
 
-    private toFinanzielleSituationResult(httpresponse: IHttpResponse<any>): TSFinanzielleSituationResultateDTO {
-        this.$log.debug('PARSING Einkommensverschlechterung Result  REST object ', httpresponse.data);
+    private toFinanzielleSituationResult(
+        httpresponse: IHttpResponse<any>
+    ): TSFinanzielleSituationResultateDTO {
+        this.$log.debug(
+            'PARSING Einkommensverschlechterung Result  REST object ',
+            httpresponse.data
+        );
         const result = new TSFinanzielleSituationResultateDTO();
 
-        return this.ebeguRestUtil.parseFinanzielleSituationResultate(result, httpresponse.data);
+        return this.ebeguRestUtil.parseFinanzielleSituationResultate(
+            result,
+            httpresponse.data
+        );
     }
 
-    public getMinimalesMassgebendesEinkommenForGesuch(gesuch: TSGesuch): IPromise<number> {
-        return this.$http.get<any>(`${this.serviceURL}/minimalesMassgebendesEinkommen/${gesuch.id}`, null)
+    public getMinimalesMassgebendesEinkommenForGesuch(
+        gesuch: TSGesuch
+    ): IPromise<number> {
+        return this.$http
+            .get<any>(
+                `${this.serviceURL}/minimalesMassgebendesEinkommen/${gesuch.id}`,
+                null
+            )
             .then(httpresponse => parseFloat(httpresponse.data.minEinkommen));
     }
 }
