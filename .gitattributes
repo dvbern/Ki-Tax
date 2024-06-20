@@ -1,5 +1,5 @@
 # Let git decide which line-ending to check out with
-* text=auto
+* text eol=lf
 
 # Unix-Newlines required
 Dockerfile text eol=lf
