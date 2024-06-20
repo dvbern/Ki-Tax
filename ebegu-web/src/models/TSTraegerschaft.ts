@@ -16,7 +16,6 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSTraegerschaft extends TSAbstractMutableEntity {
-
     private _name: string;
     private _active: boolean;
     private _institutionNames: string;

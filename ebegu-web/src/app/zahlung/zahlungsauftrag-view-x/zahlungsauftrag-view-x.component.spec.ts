@@ -21,26 +21,52 @@ describe('ZahlungsauftragViewXComponent', () => {
     let component: ZahlungsauftragViewXComponent;
     let fixture: ComponentFixture<ZahlungsauftragViewXComponent>;
 
-    const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, ['getAllZahlungsauftraege']);
+    const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, [
+        'getAllZahlungsauftraege'
+    ]);
     const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
-    const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, ['getAccessTokenDokument']);
-    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getAllowedMimetypes', 'isZahlungenTestMode']);
-    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['getZahlungsauftragReportExcel']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$', 'getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
-    const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
-    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
-    const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
-    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
+    const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, [
+        'getAccessTokenDokument'
+    ]);
+    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+        ApplicationPropertyRS.name,
+        ['getAllowedMimetypes', 'isZahlungenTestMode']
+    );
+    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, [
+        'getZahlungsauftragReportExcel'
+    ]);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['principal$', 'isOneOfRoles']
+    );
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenForPrincipal$',
+        'getGemeindenWithMahlzeitenverguenstigungForBenutzer'
+    ]);
+    const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(
+        StateStoreService.name,
+        ['get', 'has']
+    );
+    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+        UIRouterGlobals.name,
+        ['params']
+    );
+    const transitionSpy = jasmine.createSpyObj<TransitionService>(
+        TransitionService.name,
+        ['onStart']
+    );
+    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, [
+        'clearAll'
+    ]);
     const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['transform']);
 
     uiRouterGlobalsSpy.params = {} as any;
     authServiceSpy.principal$ = of(new TSBenutzer());
     authServiceSpy.isOneOfRoles.and.returnValue(false);
     gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-    gemeindeRSSpy.getGemeindenWithMahlzeitenverguenstigungForBenutzer.and.resolveTo([]);
+    gemeindeRSSpy.getGemeindenWithMahlzeitenverguenstigungForBenutzer.and.resolveTo(
+        []
+    );
     appPropSpy.isZahlungenTestMode.and.resolveTo(false);
     stateStoreSpy.has.and.returnValue(false);
 
@@ -62,7 +88,8 @@ describe('ZahlungsauftragViewXComponent', () => {
                 {provide: TransitionService, useValue: transitionSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
             ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

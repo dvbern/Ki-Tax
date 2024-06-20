@@ -15,12 +15,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-content"
-     *ngIf="stammdaten$ | async as stammdaten">
+<div class="dv-content" *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-stammdaten">
             <div class="row margin-top-20">
-
                 <div class="col-sm-12">
                     <h2 translate>PDF_GENERIERUNG</h2>
                 </div>
@@ -32,25 +30,57 @@
                 <!-- senderAddressSpacingLeft -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="senderAddressSpacingLeft_id">KORRESPONDENZ_SENDER_ADDRESS_SPACING_LEFT</label>
-                        <input id="senderAddressSpacingLeft_id" type="number" name="senderAddressSpacingLeft_id"
-                               #senderAddressSpacingLeft="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.senderAddressSpacingLeft"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="senderAddressSpacingLeft.errors"
-                                           inputId="senderAddressSpacingLeft_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="senderAddressSpacingLeft_id"
+                            >KORRESPONDENZ_SENDER_ADDRESS_SPACING_LEFT</label
+                        >
+                        <input
+                            id="senderAddressSpacingLeft_id"
+                            type="number"
+                            name="senderAddressSpacingLeft_id"
+                            #senderAddressSpacingLeft="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .senderAddressSpacingLeft
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="senderAddressSpacingLeft.errors"
+                            inputId="senderAddressSpacingLeft_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
                 <!-- senderAddressSpacingTop -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="senderAddressSpacingTop_id">KORRESPONDENZ_SENDER_ADDRESS_SPACING_TOP</label>
-                        <input id="senderAddressSpacingTop_id" type="number" name="senderAddressSpacingTop_id"
-                               #senderAddressSpacingTop="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.senderAddressSpacingTop"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="senderAddressSpacingTop.errors"
-                                           inputId="senderAddressSpacingTop_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="senderAddressSpacingTop_id"
+                            >KORRESPONDENZ_SENDER_ADDRESS_SPACING_TOP</label
+                        >
+                        <input
+                            id="senderAddressSpacingTop_id"
+                            type="number"
+                            name="senderAddressSpacingTop_id"
+                            #senderAddressSpacingTop="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .senderAddressSpacingTop
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="senderAddressSpacingTop.errors"
+                            inputId="senderAddressSpacingTop_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
 
@@ -61,25 +91,57 @@
                 <!-- receiverAddressSpacingLeft -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="receiverAddressSpacingLeft_id">KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_LEFT</label>
-                        <input id="receiverAddressSpacingLeft_id" type="number" name="receiverAddressSpacingLeft_id"
-                               #receiverAddressSpacingLeft="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.receiverAddressSpacingLeft"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="receiverAddressSpacingLeft.errors"
-                                           inputId="receiverAddressSpacingLeft_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="receiverAddressSpacingLeft_id"
+                            >KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_LEFT</label
+                        >
+                        <input
+                            id="receiverAddressSpacingLeft_id"
+                            type="number"
+                            name="receiverAddressSpacingLeft_id"
+                            #receiverAddressSpacingLeft="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .receiverAddressSpacingLeft
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="receiverAddressSpacingLeft.errors"
+                            inputId="receiverAddressSpacingLeft_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
                 <!-- receiverAddressSpacingTop -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="receiverAddressSpacingTop_id">KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_TOP</label>
-                        <input id="receiverAddressSpacingTop_id" type="number" name="receiverAddressSpacingTop_id"
-                               #receiverAddressSpacingTop="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.receiverAddressSpacingTop"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="receiverAddressSpacingTop.errors"
-                                           inputId="receiverAddressSpacingTop_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="receiverAddressSpacingTop_id"
+                            >KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_TOP</label
+                        >
+                        <input
+                            id="receiverAddressSpacingTop_id"
+                            type="number"
+                            name="receiverAddressSpacingTop_id"
+                            #receiverAddressSpacingTop="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .receiverAddressSpacingTop
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="receiverAddressSpacingTop.errors"
+                            inputId="receiverAddressSpacingTop_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
 
@@ -90,42 +152,88 @@
                 <!-- logoSpacingLeft -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="logoSpacingLeft_id">KORRESPONDENZ_LOGO_SPACING_LEFT</label>
-                        <input id="logoSpacingLeft_id" type="number" name="logoSpacingLeft_id"
-                               #logoSpacingLeft="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.logoSpacingLeft"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="logoSpacingLeft.errors"
-                                           inputId="logoSpacingLeft_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="logoSpacingLeft_id"
+                            >KORRESPONDENZ_LOGO_SPACING_LEFT</label
+                        >
+                        <input
+                            id="logoSpacingLeft_id"
+                            type="number"
+                            name="logoSpacingLeft_id"
+                            #logoSpacingLeft="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoSpacingLeft
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="logoSpacingLeft.errors"
+                            inputId="logoSpacingLeft_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
                 <!-- logoSpacingTop -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="required" translate for="logoSpacingTop_id">KORRESPONDENZ_LOGO_SPACING_TOP</label>
-                        <input id="logoSpacingTop_id" type="number" name="logoSpacingTop_id"
-                               #logoSpacingTop="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.logoSpacingTop"
-                               class="form-control" required ng-required="true">
-                        <dv-error-messages [errorObject]="logoSpacingTop.errors"
-                                           inputId="logoSpacingTop_id"></dv-error-messages>
+                        <label
+                            class="required"
+                            translate
+                            for="logoSpacingTop_id"
+                            >KORRESPONDENZ_LOGO_SPACING_TOP</label
+                        >
+                        <input
+                            id="logoSpacingTop_id"
+                            type="number"
+                            name="logoSpacingTop_id"
+                            #logoSpacingTop="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoSpacingTop
+                            "
+                            class="form-control"
+                            required
+                            ng-required="true"
+                        />
+                        <dv-error-messages
+                            [errorObject]="logoSpacingTop.errors"
+                            inputId="logoSpacingTop_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
                 <!-- logoWidth -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label translate for="logoWidth_id">KORRESPONDENZ_LOGO_WIDTH
-                            <dv-tooltip id="benachrichtigungTsEmailAuto_tooltip"
-                                        [text]="'KORRESPONDENZ_LOGO_WIDTH_HELP' | translate"></dv-tooltip></label>
+                        <label translate for="logoWidth_id"
+                            >KORRESPONDENZ_LOGO_WIDTH
+                            <dv-tooltip
+                                id="benachrichtigungTsEmailAuto_tooltip"
+                                [text]="
+                                    'KORRESPONDENZ_LOGO_WIDTH_HELP' | translate
+                                "
+                            ></dv-tooltip
+                        ></label>
 
-                        <input id="logoWidth_id" type="number" name="logoWidth_id"
-                               #logoWidth="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.logoWidth"
-                               class="form-control">
+                        <input
+                            id="logoWidth_id"
+                            type="number"
+                            name="logoWidth_id"
+                            #logoWidth="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoWidth
+                            "
+                            class="form-control"
+                        />
 
-                        <dv-error-messages [errorObject]="logoWidth.errors"
-                                           inputId="logoWidth_id"></dv-error-messages>
-
+                        <dv-error-messages
+                            [errorObject]="logoWidth.errors"
+                            inputId="logoWidth_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
 
@@ -135,18 +243,32 @@
                 <!-- standardSignatur -->
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label translate for="standardSignatur_id">KORRESPONDENZ_STANDARD_SIGNATUR
-                            <dv-tooltip id="standardSignatur_tooltip"
-                                        [text]="'KORRESPONDENZ_STANDARD_SIGNATUR_HELP' | translate"></dv-tooltip></label>
+                        <label translate for="standardSignatur_id"
+                            >KORRESPONDENZ_STANDARD_SIGNATUR
+                            <dv-tooltip
+                                id="standardSignatur_tooltip"
+                                [text]="
+                                    'KORRESPONDENZ_STANDARD_SIGNATUR_HELP'
+                                        | translate
+                                "
+                            ></dv-tooltip
+                        ></label>
 
-                        <textarea id="standardSignatur_id" name="standardSignatur"
-                               #standardSignatur="ngModel"
-                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.standardSignatur"
-                                  class="form-control"></textarea>
+                        <textarea
+                            id="standardSignatur_id"
+                            name="standardSignatur"
+                            #standardSignatur="ngModel"
+                            [(ngModel)]="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .standardSignatur
+                            "
+                            class="form-control"
+                        ></textarea>
 
-                        <dv-error-messages [errorObject]="standardSignatur.errors"
-                                           inputId="standardSignatur_id"></dv-error-messages>
-
+                        <dv-error-messages
+                            [errorObject]="standardSignatur.errors"
+                            inputId="standardSignatur_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
             </div>
@@ -156,7 +278,6 @@
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
-
                 <div class="col-sm-12 margin-top-20">
                     <h2 translate>PDF_GENERIERUNG</h2>
                 </div>
@@ -165,39 +286,91 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <h3 translate>KORRESPONDENZ_SENDER_ADDRESS</h3>
-                        <p><span translate>KORRESPONDENZ_SENDER_ADDRESS_SPACING_LEFT</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.senderAddressSpacingLeft}}</p>
-                        <p><span translate>KORRESPONDENZ_SENDER_ADDRESS_SPACING_TOP</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.senderAddressSpacingTop}}</p>
+                        <p>
+                            <span translate
+                                >KORRESPONDENZ_SENDER_ADDRESS_SPACING_LEFT</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .senderAddressSpacingLeft
+                            }}
+                        </p>
+                        <p>
+                            <span translate
+                                >KORRESPONDENZ_SENDER_ADDRESS_SPACING_TOP</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .senderAddressSpacingTop
+                            }}
+                        </p>
                     </div>
                 </div>
                 <!-- Empfaenger -->
                 <div class="col-sm-12">
                     <div class="form-group">
                         <h3 translate>KORRESPONDENZ_RECEIVER_ADDRESS</h3>
-                        <p><span translate>KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_LEFT</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.receiverAddressSpacingLeft}}</p>
-                        <p><span translate>KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_TOP</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.receiverAddressSpacingTop}}</p>
+                        <p>
+                            <span translate
+                                >KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_LEFT</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .receiverAddressSpacingLeft
+                            }}
+                        </p>
+                        <p>
+                            <span translate
+                                >KORRESPONDENZ_RECEIVER_ADDRESS_SPACING_TOP</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .receiverAddressSpacingTop
+                            }}
+                        </p>
                     </div>
                 </div>
                 <!-- Logo -->
                 <div class="col-sm-12">
                     <div class="form-group">
                         <h3 translate>KORRESPONDENZ_LOGO</h3>
-                        <p><span translate>KORRESPONDENZ_LOGO_SPACING_LEFT</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.logoSpacingLeft}}</p>
-                        <p><span translate>KORRESPONDENZ_LOGO_SPACING_TOP</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.logoSpacingTop}}</p>
-                        <p><span translate>KORRESPONDENZ_LOGO_WIDTH</span>:
-                            {{stammdaten.gemeindeStammdatenKorrespondenz.logoWidth}}</p>
+                        <p>
+                            <span translate
+                                >KORRESPONDENZ_LOGO_SPACING_LEFT</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoSpacingLeft
+                            }}
+                        </p>
+                        <p>
+                            <span translate>KORRESPONDENZ_LOGO_SPACING_TOP</span
+                            >:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoSpacingTop
+                            }}
+                        </p>
+                        <p>
+                            <span translate>KORRESPONDENZ_LOGO_WIDTH</span>:
+                            {{
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .logoWidth
+                            }}
+                        </p>
                     </div>
                 </div>
 
                 <div class="col-sm-12">
-                    <a role="button"
-                       (click)="downloadMusterdokument(stammdaten.gemeinde.id);$event.stopPropagation()">
-                        {{'KORRESPONDENZ_MUSTERDOKUMENT_LINK' | translate}}</a>
+                    <a
+                        role="button"
+                        (click)="
+                            downloadMusterdokument(stammdaten.gemeinde.id);
+                            $event.stopPropagation()
+                        "
+                    >
+                        {{ 'KORRESPONDENZ_MUSTERDOKUMENT_LINK' | translate }}</a
+                    >
                 </div>
 
                 <div class="col-sm-12 margin-top-20">
@@ -206,11 +379,16 @@
 
                 <div class="col-sm-12">
                     <h3 translate>KORRESPONDENZ_STANDARD_SIGNATUR</h3>
-                    <p [innerHTML]="escapeSignatur(stammdaten.gemeindeStammdatenKorrespondenz.standardSignatur)"></p>
-
+                    <p
+                        [innerHTML]="
+                            escapeSignatur(
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .standardSignatur
+                            )
+                        "
+                    ></p>
                 </div>
             </div>
         </fieldset>
     </ng-template>
 </div>
-

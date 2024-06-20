@@ -24,7 +24,6 @@
 }
 
 dv-radio-container-x {
-
     label.ebegu-h1 {
         .ebeguH1();
         color: rgba(0, 0, 0, 0.87);
@@ -90,17 +89,26 @@ dv-radio-container-x {
                 width: 2rem;
 
                 .mdc-radio__background::before {
-                    top: calc(-1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 * 2);
-                    left: calc(-1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 * 2);
+                    top: calc(
+                        -1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 *
+                            2
+                    );
+                    left: calc(
+                        -1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 *
+                            2
+                    );
                     transform: scale(0.75) !important;
                 }
 
-
-                .mdc-radio__native-control:checked + .mdc-radio__background .mdc-radio__inner-circle {
+                .mdc-radio__native-control:checked
+                    + .mdc-radio__background
+                    .mdc-radio__inner-circle {
                     transform: scale(0.35);
                 }
 
-                .mdc-radio__outer-circle, .mdc-radio__inner-circle, .mdc-radio__background {
+                .mdc-radio__outer-circle,
+                .mdc-radio__inner-circle,
+                .mdc-radio__background {
                     height: 1.5rem;
                     width: 1.5rem;
                 }
@@ -118,7 +126,8 @@ dv-radio-container-x {
             }
         }
 
-        &[horizontal], &.horizontal {
+        &[horizontal],
+        &.horizontal {
             flex-direction: row;
             justify-content: flex-end;
             > mat-radio-button {
@@ -131,4 +140,3 @@ dv-radio-container-x {
         width: auto;
     }
 }
-

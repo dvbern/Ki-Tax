@@ -15,7 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -49,8 +54,10 @@ const LOG = LogFactory.createLog('FallCreationViewXComponent');
     styleUrls: ['./fall-creation-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
-
+export class FallCreationViewXComponent
+    extends AbstractGesuchViewX<TSGesuch>
+    implements OnInit
+{
     public gesuchsperiodeId: string;
     // @ViewChild(NgForm) protected readonly form: NgForm;
 
@@ -74,9 +81,11 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly gesuchRS: GesuchRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             wizardStepManager,
-            TSWizardStepName.GESUCH_ERSTELLEN);
+            TSWizardStepName.GESUCH_ERSTELLEN
+        );
     }
 
     public async ngOnInit(): Promise<void> {
@@ -87,9 +96,13 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     }
 
     private readStateParams(): Promise<TSGesuch> {
-        if (this.uiRouterGlobals.params.gesuchsperiodeId && this.uiRouterGlobals.params.gesuchsperiodeId !== '') {
-          this.gesuchsperiodeId = this.uiRouterGlobals.params.gesuchsperiodeId;
-         }
+        if (
+            this.uiRouterGlobals.params.gesuchsperiodeId &&
+            this.uiRouterGlobals.params.gesuchsperiodeId !== ''
+        ) {
+            this.gesuchsperiodeId =
+                this.uiRouterGlobals.params.gesuchsperiodeId;
+        }
         if (this.uiRouterGlobals.params.creationAction) {
             return this.gesuchModelManager.createNewAntrag(
                 this.uiRouterGlobals.params.gesuchId,
@@ -98,16 +111,21 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
                 this.uiRouterGlobals.params.gemeindeId,
                 this.uiRouterGlobals.params.gesuchsperiodeId,
                 this.uiRouterGlobals.params.creationAction,
-                this.uiRouterGlobals.params.sozialdienstId) as Promise<TSGesuch>;
+                this.uiRouterGlobals.params.sozialdienstId
+            ) as Promise<TSGesuch>;
         }
         return Promise.resolve(null);
     }
 
     private initViewModel(): void {
         // gesuch should already have been initialized in resolve function
-        if ((EbeguUtil.isNullOrUndefined(this.gesuchsperiodeId) || this.gesuchsperiodeId === '')
-            && this.gesuchModelManager.getGesuchsperiode()) {
-            this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
+        if (
+            (EbeguUtil.isNullOrUndefined(this.gesuchsperiodeId) ||
+                this.gesuchsperiodeId === '') &&
+            this.gesuchModelManager.getGesuchsperiode()
+        ) {
+            this.gesuchsperiodeId =
+                this.gesuchModelManager.getGesuchsperiode().id;
         }
 
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
@@ -118,7 +136,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         if (!dossier) {
             return;
         }
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
+        this.gesuchsperiodeRS
+            .getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
             .then((response: TSGesuchsperiode[]) => {
                 this.yetUnusedGesuchsperiodenListe = response;
                 this.cd.markForCheck();
@@ -126,18 +145,26 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
         const gesuchsPeriode = this.gesuchModelManager.getGesuchsperiode();
         if (EbeguUtil.isNotNullOrUndefined(gesuchsPeriode)) {
-            this.einstellungService.findEinstellung(TSEinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT,
-                this.gesuchModelManager.getGemeinde().id,
-                gesuchsPeriode.id)
-                .subscribe(einstellung => {
-                    this.isBegruendungMutationActiv = einstellung.value === 'true';
-                    this.cd.markForCheck();
-                }, error => LOG.error(error));
+            this.einstellungService
+                .findEinstellung(
+                    TSEinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT,
+                    this.gesuchModelManager.getGemeinde().id,
+                    gesuchsPeriode.id
+                )
+                .subscribe(
+                    einstellung => {
+                        this.isBegruendungMutationActiv =
+                            einstellung.value === 'true';
+                        this.cd.markForCheck();
+                    },
+                    error => LOG.error(error)
+                );
         }
     }
 
-    // eslint-disable-next-line
-    public save(navigateFunction: Function): void {
+    public save(
+        navigateFunction: (gesuch: TSGesuch | undefined | void) => void
+    ): void {
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
             navigateFunction(undefined);
@@ -146,22 +173,31 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            // eslint-disable-next-line
-            Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
+
+            Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch =>
+                navigateFunction(gesuch)
+            );
             return;
         }
         this.errorService.clearAll();
-        this.gesuchModelManager.saveGesuchAndFall().then(
-            gesuch => {
+        this.gesuchModelManager
+            .saveGesuchAndFall()
+            .then(gesuch => {
                 // if sozialdienst Fall Step muss be updated
-                if (EbeguUtil.isNotNullOrUndefined(gesuch.dossier.fall.sozialdienstFall)) {
-                    this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                if (
+                    EbeguUtil.isNotNullOrUndefined(
+                        gesuch.dossier.fall.sozialdienstFall
+                    )
+                ) {
+                    this.wizardStepManager.updateCurrentWizardStepStatus(
+                        TSWizardStepStatus.OK
+                    );
                 }
                 this.cd.markForCheck();
                 return gesuch;
-            }
-            // eslint-disable-next-line
-        ).catch(err => console.error(err)).then(gesuch => navigateFunction(gesuch));
+            })
+            .catch(err => console.error(err))
+            .then(gesuch => navigateFunction(gesuch));
     }
 
     private isSavingNecessary(): boolean {
@@ -174,7 +210,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             return false;
         }
         // if user is Gemeinde, Kanton or Superadmin => don't save
-        return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchstellerSozialdienst());
+        return !this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()
+        );
     }
 
     public getGesuchModel(): TSGesuch {
@@ -187,7 +225,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     public setSelectedGesuchsperiode(): void {
         const gesuchsperiodeList = this.getAllActiveGesuchsperioden();
-        const found = gesuchsperiodeList.find(gp => gp.id === this.gesuchsperiodeId);
+        const found = gesuchsperiodeList.find(
+            gp => gp.id === this.gesuchsperiodeId
+        );
         if (found) {
             this.getGesuchModel().gesuchsperiode = found;
         }
@@ -195,29 +235,44 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     public isGesuchsperiodeActive(): boolean {
         if (this.gesuchModelManager.getGesuchsperiode()) {
-            return TSGesuchsperiodeStatus.AKTIV === this.gesuchModelManager.getGesuchsperiode().status
-                || TSGesuchsperiodeStatus.INAKTIV === this.gesuchModelManager.getGesuchsperiode().status;
+            return (
+                TSGesuchsperiodeStatus.AKTIV ===
+                    this.gesuchModelManager.getGesuchsperiode().status ||
+                TSGesuchsperiodeStatus.INAKTIV ===
+                    this.gesuchModelManager.getGesuchsperiode().status
+            );
         }
         return true;
     }
 
     public getTitle(): string {
-        if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.isGesuch()) {
+        if (
+            !this.gesuchModelManager.getGesuch() ||
+            !this.gesuchModelManager.isGesuch()
+        ) {
             return this.$translate.instant('ART_DER_MUTATION');
         }
-        if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
-            const k = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-                'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
-                'KITAX_ERSTGESUCH_PERIODE';
+        if (
+            this.gesuchModelManager.isGesuchSaved() &&
+            this.gesuchModelManager.getGesuchsperiode()
+        ) {
+            const k =
+                this.gesuchModelManager.getGesuch().typ ===
+                TSAntragTyp.ERNEUERUNGSGESUCH
+                    ? 'KITAX_ERNEUERUNGSGESUCH_PERIODE'
+                    : 'KITAX_ERSTGESUCH_PERIODE';
             return this.$translate.instant(k, {
-                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
+                periode:
+                    this.gesuchModelManager.getGesuchsperiode()
+                        .gesuchsperiodeString
             });
         }
-        const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-            'KITAX_ERNEUERUNGSGESUCH' :
-            'KITAX_ERSTGESUCH';
+        const key =
+            this.gesuchModelManager.getGesuch().typ ===
+            TSAntragTyp.ERNEUERUNGSGESUCH
+                ? 'KITAX_ERNEUERUNGSGESUCH'
+                : 'KITAX_ERSTGESUCH';
         return this.$translate.instant(key);
-
     }
 
     public getNextButtonText(): string {
@@ -225,9 +280,13 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             if (this.gesuchModelManager.getGesuch().isNew()) {
                 return this.$translate.instant('ERSTELLEN');
             }
-            if (this.gesuchModelManager.isGesuchReadonly()
-                || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
-                || this.isSozialdienstAndOk()) {
+            if (
+                this.gesuchModelManager.isGesuchReadonly() ||
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getGesuchstellerOnlyRoles()
+                ) ||
+                this.isSozialdienstAndOk()
+            ) {
                 return this.$translate.instant('WEITER_ONLY');
             }
         }
@@ -239,22 +298,34 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
      * step is ok (e.g. document is uploaded).
      */
     private isSozialdienstAndOk(): boolean {
-        const sozialdienstRole = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
-        return sozialdienstRole
-            && this.wizardStepManager.isStepStatusOk(
-                TSWizardStepName.GESUCH_ERSTELLEN);
+        const sozialdienstRole = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getSozialdienstRolle()
+        );
+        return (
+            sozialdienstRole &&
+            this.wizardStepManager.isStepStatusOk(
+                TSWizardStepName.GESUCH_ERSTELLEN
+            )
+        );
     }
 
     public isSelectedGesuchsperiodeInaktiv(): boolean {
-        return this.getGesuchModel() && this.getGesuchModel().gesuchsperiode
-            && this.getGesuchModel().gesuchsperiode.status === TSGesuchsperiodeStatus.INAKTIV
-            && this.getGesuchModel().isNew();
+        return (
+            this.getGesuchModel() &&
+            this.getGesuchModel().gesuchsperiode &&
+            this.getGesuchModel().gesuchsperiode.status ===
+                TSGesuchsperiodeStatus.INAKTIV &&
+            this.getGesuchModel().isNew()
+        );
     }
 
     public canChangeGesuchsperiode(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && this.gesuchModelManager.isGesuch()
-            && this.isGesuchsperiodeActive() && this.gesuchModelManager.getGesuch().isNew();
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.isGesuch() &&
+            this.isGesuchsperiodeActive() &&
+            this.gesuchModelManager.getGesuch().isNew()
+        );
     }
 
     public getGemeinde(): TSGemeinde {
@@ -266,7 +337,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     public getPeriodString(): string {
         if (this.getGemeinde()) {
-            return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+            return DateUtil.calculatePeriodenStartdatumString(
+                this.getGemeinde().betreuungsgutscheineStartdatum
+            );
         }
         return undefined;
     }
@@ -297,7 +370,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     }
 
     public isShowInputBegruendungMutation(): boolean {
-        return this.isBegruendungMutationActiv &&
-            this.getGesuchModel().isMutation();
+        return (
+            this.isBegruendungMutationActiv &&
+            this.getGesuchModel().isMutation()
+        );
     }
 }

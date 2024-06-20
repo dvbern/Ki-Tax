@@ -23,11 +23,10 @@ import {CoreModule} from '../../app/core/core.module';
     providedIn: CoreModule
 })
 export class DailyBatchRS {
-
     public readonly serviceURL: string;
 
     public constructor(public $http: HttpClient) {
-        this.serviceURL = `${CONSTANTS.REST_API  }dailybatch`;
+        this.serviceURL = `${CONSTANTS.REST_API}dailybatch`;
     }
 
     public getServiceName(): string {
@@ -35,15 +34,17 @@ export class DailyBatchRS {
     }
 
     public runBatchCleanDownloadFiles(): Observable<string> {
-        return this.callServer(`${this.serviceURL  }/cleanDownloadFiles`);
+        return this.callServer(`${this.serviceURL}/cleanDownloadFiles`);
     }
 
     public runBatchMahnungFristablauf(): Observable<string> {
-        return this.callServer(`${this.serviceURL  }/mahnungFristAblauf`);
+        return this.callServer(`${this.serviceURL}/mahnungFristAblauf`);
     }
 
     public runBatchUpdateGemeindeForBGInstitutionen(): Observable<string> {
-        return this.callServer(`${this.serviceURL  }/updateGemeindeForBGInstitutionen`);
+        return this.callServer(
+            `${this.serviceURL}/updateGemeindeForBGInstitutionen`
+        );
     }
 
     private callServer(url: string): Observable<string> {

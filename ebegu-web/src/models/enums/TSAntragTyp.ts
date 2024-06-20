@@ -28,8 +28,5 @@ export function getTSAntragTypValues(): Array<TSAntragTyp> {
 }
 
 export function getNormalizedTSAntragTypValues(): Array<TSAntragTyp> {
-    return [
-        TSAntragTyp.ERSTGESUCH,
-        TSAntragTyp.MUTATION
-    ];
+    return [TSAntragTyp.ERSTGESUCH, TSAntragTyp.MUTATION];
 }

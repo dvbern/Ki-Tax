@@ -24,15 +24,13 @@ import {GesuchModelManager} from '../service/gesuchModelManager';
 import {WizardStepManager} from '../service/wizardStepManager';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FreigabeService {
-
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly wizardStepManager: WizardStepManager,
-    ) {
-    }
+        private readonly wizardStepManager: WizardStepManager
+    ) {}
 
     /**
      * Die Methodes wizardStepManager.areAllStepsOK() erlaubt dass die Betreuungen in Status PLATZBESTAETIGUNG sind
@@ -40,14 +38,23 @@ export class FreigabeService {
      * wenn es nicht in ReadOnly modus ist
      */
     public canBeFreigegeben(): boolean {
-        return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
-            this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
-            && !this.gesuchModelManager.isGesuchReadonly()
-            && (this.gesuchModelManager.isGesuchStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-                || this.gesuchModelManager.isGesuchStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST))
-            && (!this.gesuchModelManager.getFall().isSozialdienstFall()
-                || (this.gesuchModelManager.getFall().isSozialdienstFall()
-                    && this.gesuchModelManager.getFall().sozialdienstFall.status === TSSozialdienstFallStatus.AKTIV));
+        return (
+            this.wizardStepManager.areAllStepsOK(
+                this.gesuchModelManager.getGesuch()
+            ) &&
+            this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG) &&
+            !this.gesuchModelManager.isGesuchReadonly() &&
+            (this.gesuchModelManager.isGesuchStatus(
+                TSAntragStatus.IN_BEARBEITUNG_GS
+            ) ||
+                this.gesuchModelManager.isGesuchStatus(
+                    TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+                )) &&
+            (!this.gesuchModelManager.getFall().isSozialdienstFall() ||
+                (this.gesuchModelManager.getFall().isSozialdienstFall() &&
+                    this.gesuchModelManager.getFall().sozialdienstFall
+                        .status === TSSozialdienstFallStatus.AKTIV))
+        );
     }
 
     public getTextForFreigebenNotAllowed(): string {

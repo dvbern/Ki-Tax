@@ -40,8 +40,10 @@ import {FinanzielleSituationSolothurnService} from './finanzielle-situation-solo
 import SpyObj = jasmine.SpyObj;
 
 export class SolothurnFinSitTestHelpers {
-
-    public static getMockProvidersExceptGesuchModelManager(): { provide: any; useValue: any }[] {
+    public static getMockProvidersExceptGesuchModelManager(): {
+        provide: any;
+        useValue: any;
+    }[] {
         const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(
             WizardStepManager.name,
             [
@@ -51,17 +53,32 @@ export class SolothurnFinSitTestHelpers {
                 'isNextStepEnabled',
                 'getCurrentStepName',
                 'updateCurrentWizardStepStatusSafe'
-            ]);
-        const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-            ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-            ['go']);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+            ]
+        );
+        const finanzielleSituationRSSpy =
+            jasmine.createSpyObj<FinanzielleSituationRS>(
+                FinanzielleSituationRS.name,
+                ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+            );
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(
+            StateService.name,
+            ['go']
+        );
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+            ErrorService.name,
+            ['clearError']
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['isOneOfRoles']
+        );
 
         return [
             {provide: WizardStepManager, useValue: wizardStepManagerSpy},
-            {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+            {
+                provide: FinanzielleSituationRS,
+                useValue: finanzielleSituationRSSpy
+            },
             {provide: StateService, useValue: stateServiceSpy},
             {provide: ErrorService, useValue: errorServiceSpy},
             {provide: AuthServiceRS, useValue: authServiceSpy}
@@ -69,7 +86,8 @@ export class SolothurnFinSitTestHelpers {
     }
 
     public static createGesuchModelManagerMock(): SpyObj<GesuchModelManager> {
-        return jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+        return jasmine.createSpyObj<GesuchModelManager>(
+            GesuchModelManager.name,
             [
                 'areThereOnlyFerieninsel',
                 'getBasisjahr',
@@ -87,24 +105,26 @@ export class SolothurnFinSitTestHelpers {
                 'areThereOnlySchulamtAngebote',
                 'getBasisjahrMinus',
                 'getFamiliensituation'
-            ]);
+            ]
+        );
     }
 
-    public static getMockProvidersExceptFinSitSolothurnServiceMock(): { provide: any; useValue: any }[] {
+    public static getMockProvidersExceptFinSitSolothurnServiceMock(): {
+        provide: any;
+        useValue: any;
+    }[] {
         const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
             BerechnungsManager.name,
-            ['calculateFinanzielleSituationTemp']);
-        return [
-            {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
-        ];
+            ['calculateFinanzielleSituationTemp']
+        );
+        return [{provide: BerechnungsManager, useValue: berechnungsManagerSpy}];
     }
 
     public static createFinSitSolothurnServiceMock(): SpyObj<FinanzielleSituationSolothurnService> {
-        return jasmine.createSpyObj<FinanzielleSituationSolothurnService>(FinanzielleSituationSolothurnService.name,
-            [
-                'massgebendesEinkommenStore',
-                'calculateMassgebendesEinkommen'
-            ]);
+        return jasmine.createSpyObj<FinanzielleSituationSolothurnService>(
+            FinanzielleSituationSolothurnService.name,
+            ['massgebendesEinkommenStore', 'calculateMassgebendesEinkommen']
+        );
     }
 
     public static createGesuch(): TSGesuch {
@@ -114,23 +134,33 @@ export class SolothurnFinSitTestHelpers {
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
-        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
-        gesuch.gesuchsperiode =
-            new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(moment(), moment().add(1)));
-        gesuch.familiensituationContainer.familiensituationJA.familienstatus = TSFamilienstatus.VERHEIRATET;
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
+        gesuch.gesuchsperiode = new TSGesuchsperiode(
+            TSGesuchsperiodeStatus.AKTIV,
+            new TSDateRange(moment(), moment().add(1))
+        );
+        gesuch.familiensituationContainer.familiensituationJA.familienstatus =
+            TSFamilienstatus.VERHEIRATET;
         return gesuch;
     }
 
     public static createFinanzModel(): TSFinanzModel {
         // eslint-disable-next-line no-magic-numbers
         const model = new TSFinanzModel(2019, false, 1);
-        model.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
-        model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+        model.finanzielleSituationContainerGS1 =
+            new TSFinanzielleSituationContainer();
+        model.finanzielleSituationContainerGS1.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         model.familienSituation = new TSFamiliensituation();
         return model;
     }

@@ -20,8 +20,13 @@ import {TSKindDublette} from '../../../models/TSKindDublette';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class KindRS {
-
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        'WizardStepManager'
+    ];
 
     public serviceURL: string;
 
@@ -40,25 +45,52 @@ export class KindRS {
     }
 
     public findKind(kindContainerID: string): IPromise<TSKindContainer> {
-        return this.$http.get(`${this.serviceURL}/find/${encodeURIComponent(kindContainerID)}`)
+        return this.$http
+            .get(
+                `${this.serviceURL}/find/${encodeURIComponent(kindContainerID)}`
+            )
             .then((response: any) => {
-                this.$log.debug('PARSING kindContainers REST object ', response.data);
-                return this.ebeguRestUtil.parseKindContainer(new TSKindContainer(), response.data);
+                this.$log.debug(
+                    'PARSING kindContainers REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseKindContainer(
+                    new TSKindContainer(),
+                    response.data
+                );
             });
     }
 
-    public saveKind(kindContainer: TSKindContainer, gesuchId: string): IPromise<TSKindContainer> {
+    public saveKind(
+        kindContainer: TSKindContainer,
+        gesuchId: string
+    ): IPromise<TSKindContainer> {
         let restKind = {};
-        restKind = this.ebeguRestUtil.kindContainerToRestObject(restKind, kindContainer);
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind)
-            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.$log.debug('PARSING KindContainer REST object ', response.data);
-                return this.ebeguRestUtil.parseKindContainer(new TSKindContainer(), response.data);
-            }));
+        restKind = this.ebeguRestUtil.kindContainerToRestObject(
+            restKind,
+            kindContainer
+        );
+        return this.$http
+            .put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind)
+            .then((response: any) =>
+                this.wizardStepManager
+                    .findStepsFromGesuch(gesuchId)
+                    .then(() => {
+                        this.$log.debug(
+                            'PARSING KindContainer REST object ',
+                            response.data
+                        );
+                        return this.ebeguRestUtil.parseKindContainer(
+                            new TSKindContainer(),
+                            response.data
+                        );
+                    })
+            );
     }
 
     public removeKind(kindID: string, gesuchId: string): IPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(kindID)}`)
+        return this.$http
+            .delete(`${this.serviceURL}/${encodeURIComponent(kindID)}`)
             .then(response => {
                 this.wizardStepManager.findStepsFromGesuch(gesuchId);
                 return response;
@@ -66,7 +98,10 @@ export class KindRS {
     }
 
     public getKindDubletten(gesuchId: string): IPromise<TSKindDublette[]> {
-        return this.$http.get(`${this.serviceURL}/dubletten/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => this.ebeguRestUtil.parseKindDubletteList(response.data));
+        return this.$http
+            .get(`${this.serviceURL}/dubletten/${encodeURIComponent(gesuchId)}`)
+            .then((response: any) =>
+                this.ebeguRestUtil.parseKindDubletteList(response.data)
+            );
     }
 }

@@ -17,7 +17,7 @@
 
 export enum TSBelegungTagesschuleModulIntervall {
     WOECHENTLICH = 'WOECHENTLICH',
-    ALLE_ZWEI_WOCHEN = 'ALLE_ZWEI_WOCHEN',
+    ALLE_ZWEI_WOCHEN = 'ALLE_ZWEI_WOCHEN'
 }
 
 export function getTSBelegungTagesschuleModulIntervallValues(): Array<TSBelegungTagesschuleModulIntervall> {

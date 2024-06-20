@@ -30,9 +30,12 @@ import {WizardSideNavComponent} from './wizard-side-nav.component';
 describe('WizardSideNavComponent', () => {
     let component: WizardSideNavComponent;
     let fixture: ComponentFixture<WizardSideNavComponent>;
-    const wizardSTepXRS = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name, {
-        getAllSteps: of([])
-    });
+    const wizardSTepXRS = jasmine.createSpyObj<WizardStepXRS>(
+        WizardStepXRS.name,
+        {
+            getAllSteps: of([])
+        }
+    );
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             providers: [

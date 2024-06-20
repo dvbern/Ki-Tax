@@ -36,9 +36,13 @@ import {
     AntragCreationPO,
     VerfuegungPO,
     VerfuegenPO,
-    EinkommensverschlechterungInfoPO,
+    EinkommensverschlechterungInfoPO
 } from '@dv-e2e/page-objects';
-import {FixtureEinkommensverschlechterung, FixtureFamSit, FixtureFinSit} from '@dv-e2e/fixtures';
+import {
+    FixtureEinkommensverschlechterung,
+    FixtureFamSit,
+    FixtureFinSit
+} from '@dv-e2e/fixtures';
 import {getUser, TestPeriode} from '@dv-e2e/types';
 import {GesuchstellendePO} from '../../page-objects/antrag/gesuchstellende.po';
 import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
@@ -47,14 +51,22 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
-    const userTraegerschaft = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
+    const userTraegerschaft = getUser(
+        '[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause'
+    );
     const userGS = getUser('[5-GS] Emma Gerber');
-    const gesuchsPeriode: {ganze: TestPeriode, anfang: string, ende: string} = { ganze: '2023/24', anfang: '2023', ende: '2024' };
+    const gesuchsPeriode: {ganze: TestPeriode; anfang: string; ende: string} = {
+        ganze: '2023/24',
+        anfang: '2023',
+        ende: '2024'
+    };
 
     before(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(userSuperadmin);
-        cy.intercept('GET', '**/benutzer/gesuchsteller').as('loadingGesuchsteller');
+        cy.intercept('GET', '**/benutzer/gesuchsteller').as(
+            'loadingGesuchsteller'
+        );
         cy.visit('#/testdaten');
         cy.wait('@loadingGesuchsteller');
         TestFaellePO.getGesuchstellerFaelleLoeschen().click();
@@ -84,9 +96,11 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.login(userGS);
             cy.visit('/#/dossier/gesuchstellerDashboard');
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                GesuchstellendeDashboardPO.getAntragBearbeitenButton(gesuchsPeriode.ganze).click();
+                GesuchstellendeDashboardPO.getAntragBearbeitenButton(
+                    gesuchsPeriode.ganze
+                ).click();
             });
-          AntragCreationPO.getPageTitle().should('include.text', 'Antrag');
+            AntragCreationPO.getPageTitle().should('include.text', 'Antrag');
         };
 
         //INIT Antrag
@@ -97,9 +111,12 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
         //Familiensituation
         {
-            AntragFamSitPO.getPageTitle().should('have.text', 'Familiensituation');
+            AntragFamSitPO.getPageTitle().should(
+                'have.text',
+                'Familiensituation'
+            );
             cy.url()
-                .then((url) => /familiensituation\/(.*)$/.exec(url)[1])
+                .then(url => /familiensituation\/(.*)$/.exec(url)[1])
                 .as('antragsId');
             AntragFamSitPO.fillFamiliensituationForm('withValid');
             clickSave();
@@ -129,7 +146,11 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //KITA
             {
                 AntragBetreuungPO.createNewBetreuung(0);
-                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset, 'London', { mobile: true });
+                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(
+                    famsitDataset,
+                    'London',
+                    {mobile: true}
+                );
                 AntragBetreuungPO.fillKeinePlatzierung();
                 AntragBetreuungPO.fillErweiterteBeduerfnisse();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -138,13 +159,20 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //TFO
             {
                 AntragBetreuungPO.createNewBetreuung(1);
-                AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid', 'London', { mobile: true });
+                AntragBetreuungPO.fillOnlineTfoBetreuungsForm(
+                    'withValid',
+                    'London',
+                    {mobile: true}
+                );
                 AntragBetreuungPO.fillKeinePlatzierung();
                 AntragBetreuungPO.getHasErweiterteBeduerfnisse('nein').click();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
             }
 
-            AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
+            AntragBetreuungPO.getPageTitle().should(
+                'include.text',
+                'Betreuung'
+            );
             cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
                 clickSave();
             });
@@ -152,8 +180,14 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
         // BESCHAEFTIGUNGSPENSUM
         {
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1', 'withValid');
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2', 'withValid');
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+                'GS1',
+                'withValid'
+            );
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+                'GS2',
+                'withValid'
+            );
             clickSave();
         }
 
@@ -161,14 +195,19 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         {
             // Config
             {
-                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm('withValid');
+                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm(
+                    'withValid'
+                );
                 FinanzielleSituationStartPO.saveForm();
             }
 
             // Finanzielle Situation - GS 1
             {
                 FinanzielleSituationPO.getSteuerdatenzugriff('nein').click();
-                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
+                FinanzielleSituationPO.fillFinanzielleSituationForm(
+                    'withValid',
+                    'GS1'
+                );
                 FinanzielleSituationPO.getAutomatischePruefung('nein').click();
                 FinanzielleSituationPO.saveFormAndGoNext();
             }
@@ -176,72 +215,149 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             // Finanzielle Situation - GS 2
             {
                 FinanzielleSituationPO.getSteuerdatenzugriff('nein').click();
-                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
+                FinanzielleSituationPO.fillFinanzielleSituationForm(
+                    'withValid',
+                    'GS2'
+                );
                 FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Resultate
             {
-                FinanzielleSituationResultatePO.fillFinSitResultate('withValid');
-                FixtureFinSit.withValid(({ Resultate }) => {
+                FinanzielleSituationResultatePO.fillFinSitResultate(
+                    'withValid'
+                );
+                FixtureFinSit.withValid(({Resultate}) => {
                     FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
                         .find('input')
-                        .should('have.value', Resultate.einkommenBeiderGesuchsteller);
+                        .should(
+                            'have.value',
+                            Resultate.einkommenBeiderGesuchsteller
+                        );
                     FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
                         .find('input')
-                        .should('have.value', Resultate.nettovermoegenFuenfProzent);
-                    FinanzielleSituationResultatePO.getAnrechenbaresEinkommen().find('input').should('have.value', Resultate.anrechenbaresEinkommen);
+                        .should(
+                            'have.value',
+                            Resultate.nettovermoegenFuenfProzent
+                        );
+                    FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
+                        .find('input')
+                        .should('have.value', Resultate.anrechenbaresEinkommen);
                     FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden()
                         .find('input')
-                        .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
+                        .should(
+                            'have.value',
+                            Resultate.abzuegeBeiderGesuchsteller
+                        );
                     FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse()
                         .find('input')
-                        .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
+                        .should(
+                            'have.value',
+                            Resultate.massgebendesEinkVorAbzFamGr
+                        );
                 });
             }
-            cy.waitForRequest('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**', () => {
-                clickSave();
-            });
+            cy.waitForRequest(
+                'GET',
+                '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**',
+                () => {
+                    clickSave();
+                }
+            );
         }
 
         // EINKOMMENSVERSCHLECHTERUNG
         {
-            EinkommensverschlechterungInfoPO.fillEinkommensverschlechterungInfoForm('withValid');
-            cy.waitForRequest('POST', '**/einkommensverschlechterung/calculateTemp/1', () => {
-                clickSave();
-            });
+            EinkommensverschlechterungInfoPO.fillEinkommensverschlechterungInfoForm(
+                'withValid'
+            );
+            cy.waitForRequest(
+                'POST',
+                '**/einkommensverschlechterung/calculateTemp/1',
+                () => {
+                    clickSave();
+                }
+            );
             cy.groupBy('Einkommensverschlechterung - Jahr 1', () => {
-                EinkommensverschlechterungPO.getPageTitle().should('include.text', gesuchsPeriode.anfang);
-                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm('withValid', 'jahr1', 'GS1');
+                EinkommensverschlechterungPO.getPageTitle().should(
+                    'include.text',
+                    gesuchsPeriode.anfang
+                );
+                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm(
+                    'withValid',
+                    'jahr1',
+                    'GS1'
+                );
                 clickSave();
-                FixtureFamSit[famsitDataset](({ GS2 }) => {
-                    EinkommensverschlechterungPO.getPageTitle().should('include.text', `${GS2.vorname} ${GS2.nachname}`);
+                FixtureFamSit[famsitDataset](({GS2}) => {
+                    EinkommensverschlechterungPO.getPageTitle().should(
+                        'include.text',
+                        `${GS2.vorname} ${GS2.nachname}`
+                    );
                 });
-                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm('withValid', 'jahr1', 'GS2');
+                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm(
+                    'withValid',
+                    'jahr1',
+                    'GS2'
+                );
                 clickSave();
             });
             cy.groupBy('Einkommensverschlechterung - Jahr 2', () => {
-                EinkommensverschlechterungPO.getPageTitle().should('include.text', gesuchsPeriode.ende);
-                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm('withValid', 'jahr2', 'GS1');
-                cy.waitForRequest('POST', '**/einkommensverschlechterung/calculateTemp/2', () => {
-                    clickSave();
+                EinkommensverschlechterungPO.getPageTitle().should(
+                    'include.text',
+                    gesuchsPeriode.ende
+                );
+                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm(
+                    'withValid',
+                    'jahr2',
+                    'GS1'
+                );
+                cy.waitForRequest(
+                    'POST',
+                    '**/einkommensverschlechterung/calculateTemp/2',
+                    () => {
+                        clickSave();
+                    }
+                );
+                FixtureFamSit[famsitDataset](({GS2}) => {
+                    EinkommensverschlechterungPO.getPageTitle().should(
+                        'include.text',
+                        `${GS2.vorname} ${GS2.nachname}`
+                    );
                 });
-                FixtureFamSit[famsitDataset](({ GS2 }) => {
-                    EinkommensverschlechterungPO.getPageTitle().should('include.text', `${GS2.vorname} ${GS2.nachname}`);
-                });
-                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm('withValid', 'jahr2', 'GS2');
-                cy.waitForRequest('POST', '**/finanzielleSituation/calculateTemp', () => {
-                    clickSave();
-                });
+                EinkommensverschlechterungPO.fillEinkommensverschlechterungForm(
+                    'withValid',
+                    'jahr2',
+                    'GS2'
+                );
+                cy.waitForRequest(
+                    'POST',
+                    '**/finanzielleSituation/calculateTemp',
+                    () => {
+                        clickSave();
+                    }
+                );
             });
             cy.groupBy('Resultate', () => {
-                EinkommensverschlechterungResultatePO.getPageTitle().should('include.text', gesuchsPeriode.anfang);
-                EinkommensverschlechterungResultatePO.fillResultateForm('withValid', 'jahr1');
+                EinkommensverschlechterungResultatePO.getPageTitle().should(
+                    'include.text',
+                    gesuchsPeriode.anfang
+                );
+                EinkommensverschlechterungResultatePO.fillResultateForm(
+                    'withValid',
+                    'jahr1'
+                );
                 checkResultateForm('withValid', 'jahr1');
                 clickSave();
 
-                EinkommensverschlechterungPO.getPageTitle().should('include.text', gesuchsPeriode.ende);
-                EinkommensverschlechterungResultatePO.fillResultateForm('withValid', 'jahr2');
+                EinkommensverschlechterungPO.getPageTitle().should(
+                    'include.text',
+                    gesuchsPeriode.ende
+                );
+                EinkommensverschlechterungResultatePO.fillResultateForm(
+                    'withValid',
+                    'jahr2'
+                );
                 checkResultateForm('withValid', 'jahr2');
             });
             cy.waitForRequest('GET', '**/dokumente/**', () => {
@@ -264,9 +380,9 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 cy.wrap($el).selectFile(
                     {
                         contents: '@smallPng',
-                        fileName: `small-${index}.png`,
+                        fileName: `small-${index}.png`
                     },
-                    { force: true }
+                    {force: true}
                 );
                 return cy.wait(`@${upload}`);
             });
@@ -283,29 +399,50 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.viewport('macbook-15');
 
             const goToBetreuungen = () => {
-                cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
+                cy.get('@antragsId').then(antragsId =>
+                    cy.visit(`/#/gesuch/familiensituation/${antragsId}`)
+                );
 
-                cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-                    SidenavPO.goTo('BETREUUNG');
-                });
+                cy.waitForRequest(
+                    'GET',
+                    '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**',
+                    () => {
+                        SidenavPO.goTo('BETREUUNG');
+                    }
+                );
             };
 
             goToBetreuungen();
-            AntragBetreuungPO.getBetreuung(0,0).click();
-            AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', 'London');
-            AntragBetreuungPO.getBetreuungspensumAb(0).find('input').clear().type('01.08.2023');
-            AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type('31.07.2024');
+            AntragBetreuungPO.getBetreuung(0, 0).click();
+            AntragBetreuungPO.fillKitaBetreuungspensumForm(
+                'withValid',
+                'London'
+            );
+            AntragBetreuungPO.getBetreuungspensumAb(0)
+                .find('input')
+                .clear()
+                .type('01.08.2023');
+            AntragBetreuungPO.getBetreuungspensumBis(0)
+                .find('input')
+                .clear()
+                .type('31.07.2024');
             AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
             AntragBetreuungPO.platzBestaetigen();
 
             cy.changeLogin(userTraegerschaft);
             goToBetreuungen();
 
-            cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung', () => {
-                AntragBetreuungPO.getBetreuung(1, 0).click();
-            });
+            cy.waitForRequest(
+                'GET',
+                '**/fachstellen/erweiterteBetreuung',
+                () => {
+                    AntragBetreuungPO.getBetreuung(1, 0).click();
+                }
+            );
 
-            AntragBetreuungPO.platzAbweisen('Ein sehr legitimer Grund der hier nicht weiter aufgeführt wird.');
+            AntragBetreuungPO.platzAbweisen(
+                'Ein sehr legitimer Grund der hier nicht weiter aufgeführt wird.'
+            );
         }
 
         cy.changeLogin(userGS);
@@ -316,10 +453,17 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // FREIGABE
         {
             FallToolbarPO.getMobileSidenavTrigger().click();
-            cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-                SidenavPO.goTo('BETREUUNG');
-            });
-            AntragBetreuungPO.getBetreuungsstatus(1, 0).should('include.text', 'Abgewiesen');
+            cy.waitForRequest(
+                'GET',
+                '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**',
+                () => {
+                    SidenavPO.goTo('BETREUUNG');
+                }
+            );
+            AntragBetreuungPO.getBetreuungsstatus(1, 0).should(
+                'include.text',
+                'Abgewiesen'
+            );
             AntragBetreuungPO.getBetreuungLoeschenButton(1, 0).click();
             cy.waitForRequest('DELETE', '**/betreuungen/**', () => {
                 ConfirmDialogPO.getDvLoadingConfirmButton().click();
@@ -333,8 +477,13 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                     ConfirmDialogPO.getDvLoadingConfirmButton().click();
                 });
             }).then(downloadUrl => {
-                return cy.request(downloadUrl)
-                    .then(response => expect(response.headers['content-disposition']).to.match(/Freigabequittung_.*\.pdf/));
+                return cy
+                    .request(downloadUrl)
+                    .then(response =>
+                        expect(
+                            response.headers['content-disposition']
+                        ).to.match(/Freigabequittung_.*\.pdf/)
+                    );
             });
         }
 
@@ -342,20 +491,27 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // VERFUEGUNG
         {
             cy.changeLogin(userSuperadmin);
-            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
+            cy.get('@antragsId').then(antragsId =>
+                cy.visit(`/#/gesuch/freigabe/${antragsId}`)
+            );
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
             });
             // attempt to reduce flakyness
             cy.wait(2000);
             SidenavPO.goTo('GESUCH_ERSTELLEN');
-            AntragCreationPO.getEingangsdatum().find('input').clear().type('01.07.2023');
+            AntragCreationPO.getEingangsdatum()
+                .find('input')
+                .clear()
+                .type('01.07.2023');
             cy.waitForRequest('PUT', '**/gesuche', () => {
                 clickSave();
             });
 
             cy.changeLogin(userGemeinde);
-            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
+            cy.get('@antragsId').then(antragsId =>
+                cy.visit(`/#/gesuch/freigabe/${antragsId}`)
+            );
             clickSave();
             SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
 
@@ -369,7 +525,10 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             });
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
             VerfuegenPO.getVerfuegung(0, 0).click();
-            VerfuegungPO.getAnspruchberechtigtesBetreuungspensum(5).should('include.text', '80%');
+            VerfuegungPO.getAnspruchberechtigtesBetreuungspensum(5).should(
+                'include.text',
+                '80%'
+            );
             VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
             cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
                 VerfuegungPO.getVerfuegenButton().click();
@@ -381,14 +540,26 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 });
 
 function clickSave() {
-    NavigationPO.getSaveAndNextButton().should('not.have.a.property', 'disabled');
+    NavigationPO.getSaveAndNextButton().should(
+        'not.have.a.property',
+        'disabled'
+    );
     NavigationPO.saveAndGoNext();
 }
 
-function checkResultateForm(dataset: keyof typeof FixtureEinkommensverschlechterung, jahr: 'jahr1' | 'jahr2') {
+function checkResultateForm(
+    dataset: keyof typeof FixtureEinkommensverschlechterung,
+    jahr: 'jahr1' | 'jahr2'
+) {
     FixtureEinkommensverschlechterung[dataset](({[jahr]: {Resultate}}) => {
-        EinkommensverschlechterungResultatePO.getEinkommenBeiderGesuchsteller().find('input').should('have.value', Resultate.einkommenBeiderGesuchsteller);
-        EinkommensverschlechterungResultatePO.getEinkommenVorjahrBasis().find('input').should('have.value', Resultate.einkommenVorjahrBasis);
-        EinkommensverschlechterungResultatePO.getEinkommenVorjahr().find('input').should('have.value', Resultate.einkommenVorjahr);
-    })
+        EinkommensverschlechterungResultatePO.getEinkommenBeiderGesuchsteller()
+            .find('input')
+            .should('have.value', Resultate.einkommenBeiderGesuchsteller);
+        EinkommensverschlechterungResultatePO.getEinkommenVorjahrBasis()
+            .find('input')
+            .should('have.value', Resultate.einkommenVorjahrBasis);
+        EinkommensverschlechterungResultatePO.getEinkommenVorjahr()
+            .find('input')
+            .should('have.value', Resultate.einkommenVorjahr);
+    });
 }

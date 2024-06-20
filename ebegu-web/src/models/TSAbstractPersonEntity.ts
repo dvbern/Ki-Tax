@@ -18,7 +18,6 @@ import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSAbstractPersonEntity extends TSAbstractMutableEntity {
-
     private _vorname: string;
     private _nachname: string;
     private _geburtsdatum: moment.Moment;

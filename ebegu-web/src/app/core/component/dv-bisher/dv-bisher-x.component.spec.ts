@@ -27,7 +27,8 @@ import {WindowRef} from '../../service/windowRef.service';
 import {DvBisherXComponent} from './dv-bisher-x.component';
 
 const translateSpy = jasmine.createSpyObj<TranslateService>(
-    TranslateService.name, ['instant', 'setDefaultLang', 'use']
+    TranslateService.name,
+    ['instant', 'setDefaultLang', 'use']
 );
 const dvBisherClass = '.dv-bisher-content-row';
 
@@ -38,11 +39,7 @@ describe('DvBisherXComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DvBisherXComponent],
-            imports: [
-                MaterialModule,
-                BrowserAnimationsModule,
-                SharedModule
-            ],
+            imports: [MaterialModule, BrowserAnimationsModule, SharedModule],
             providers: [
                 WindowRef,
                 {provide: TranslateService, useValue: translateSpy}
@@ -66,7 +63,9 @@ describe('DvBisherXComponent', () => {
         component.deklaration = 10;
         component.korrektur = 11;
         fixture.detectChanges();
-        expect(fixture.debugElement.query(By.css(dvBisherClass))).not.toBeNull();
+        expect(
+            fixture.debugElement.query(By.css(dvBisherClass))
+        ).not.toBeNull();
     });
 
     it('should not display dv-bisher', () => {
@@ -88,6 +87,8 @@ describe('DvBisherXComponent', () => {
         component.deklaration = 10;
         component.korrektur = '11';
         fixture.detectChanges();
-        expect(fixture.debugElement.query(By.css(dvBisherClass))).not.toBeNull();
+        expect(
+            fixture.debugElement.query(By.css(dvBisherClass))
+        ).not.toBeNull();
     });
 });

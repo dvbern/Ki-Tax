@@ -17,7 +17,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {MitteilungenViewComponentConfig} from './component/mitteilungenView/mitteilungenView';
 import {mitteilungenRun} from './mitteilungen.route';
 
-export const MITTEILUNGEN_JS_MODULE =
-    angular.module('ebeguWeb.mitteilungen', [CORE_JS_MODULE.name])
-        .run(mitteilungenRun)
-        .component('mitteilungenView', new MitteilungenViewComponentConfig());
+export const MITTEILUNGEN_JS_MODULE = angular
+    .module('ebeguWeb.mitteilungen', [CORE_JS_MODULE.name])
+    .run(mitteilungenRun)
+    .component('mitteilungenView', new MitteilungenViewComponentConfig());

@@ -15,11 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Category, UIRouter} from '@uirouter/core';
 import {visualizer} from '@uirouter/visualizer';
-import * as Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -34,11 +41,12 @@ const LOG = LogFactory.createLog('DebuggingComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebuggingComponent implements OnInit, OnDestroy {
-
-    @ViewChild('traceForm', { static: true }) private readonly traceForm: NgForm;
+    @ViewChild('traceForm', {static: true}) private readonly traceForm: NgForm;
 
     public readonly TRACE_CATEGORY = Category;
-    public readonly TRACE_CATEGORY_KEYS = Object.keys(Category).filter(k => typeof Category[k as any] === 'number');
+    public readonly TRACE_CATEGORY_KEYS = Object.keys(Category).filter(
+        k => typeof Category[k as any] === 'number'
+    );
 
     public routerTraceCategories: Category[];
     public hasVisualizer: boolean;
@@ -54,9 +62,9 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         private readonly gesuchRS: GesuchRS,
         private readonly cd: ChangeDetectorRef
     ) {
-        this.routerTraceCategories = this.TRACE_CATEGORY_KEYS
-            .map(k => Category[k as any] as any)
-            .filter(c => router.trace.enabled(c));
+        this.routerTraceCategories = this.TRACE_CATEGORY_KEYS.map(
+            k => Category[k as any] as any
+        ).filter(c => router.trace.enabled(c));
 
         this.hasVisualizer = !!router.getPlugin('visualizer');
     }
@@ -80,29 +88,35 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     private initTracer(): void {
         this.traceForm.valueChanges
             .pipe(
-                filter(values => !!values && values.hasOwnProperty('routerTraceCategories')),
+                filter(
+                    values =>
+                        !!values &&
+                        values.hasOwnProperty('routerTraceCategories')
+                ),
                 map(values => values.routerTraceCategories),
                 distinctUntilChanged(),
                 takeUntil(this.unsubscribe$)
             )
             .subscribe(
-                (categories: Category[]) => categories.forEach(c => this.router.trace.enable(c)),
+                (categories: Category[]) =>
+                    categories.forEach(c => this.router.trace.enable(c)),
                 err => LOG.error(err)
             );
     }
 
     public doUndefined(): void {
         const test = [1, 2];
-        // eslint-disable-next-line
         test[2].toFixed(1);
     }
 
     public doThrowError(): void {
-        throw new Error('This is a delibrate error thrown from an Angular controller');
+        throw new Error(
+            'This is a delibrate error thrown from an Angular controller'
+        );
     }
 
     public doShowDialog(): void {
-        Raven.showReportDialog();
+        Sentry.showReportDialog();
     }
 
     public findCategory(key: string): Category {
@@ -130,13 +144,11 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         this.simulationsFinished = 0;
         this.gesuchIds = this.gesuchIdsStr.split('\n');
         this.gesuchIds.forEach(id => {
-            this.gesuchRS.simulateNewVerfuegung(id.trim())
-                .then(res => {
-                    this.simulationResult += res;
-                    this.simulationsFinished++;
-                    this.cd.markForCheck();
-                });
+            this.gesuchRS.simulateNewVerfuegung(id.trim()).then(res => {
+                this.simulationResult += res;
+                this.simulationsFinished++;
+                this.cd.markForCheck();
+            });
         });
     }
-
 }

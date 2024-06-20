@@ -26,7 +26,8 @@ md-input-container {
 .contrast {
     /*stylelint-disable*/
 
-    .dv-datepicker, dv-timepicker {
+    .dv-datepicker,
+    dv-timepicker {
         /*stylelint-enable*/
         background: @contrast-light;
     }
@@ -37,7 +38,13 @@ md-input-container {
     .ebeguDisabledPlaceholder();
 }
 
-input[type='text'], input[type='number'], input[type='email'], textarea, textarea.md-input, .form-control, .dv-select-style select,
+input[type='text'],
+input[type='number'],
+input[type='email'],
+textarea,
+textarea.md-input,
+.form-control,
+.dv-select-style select,
 dv-input-container-x .form-control {
     .ebeguPlaceholder();
     .ebeguSemi-bold();
@@ -61,16 +68,17 @@ dv-input-container-x .form-control {
         width: calc(100% - 4rem);
     }
 
-    .table &, &.contrast {
+    .table &,
+    &.contrast {
         background: @contrast-lighter;
     }
 
-    &[disabled], &:disabled {
+    &[disabled],
+    &:disabled {
         .ebeguDisabledPlaceholder();
         .DisabledInput();
         -webkit-text-fill-color: @contrast-darkest;
     }
-
 
     &:focus {
         box-shadow: none /*@secondary-dark*/;
@@ -93,7 +101,6 @@ input[type='number'] {
         -webkit-appearance: none;
         margin: 0;
     }
-
 }
 
 .dv-select-style {
@@ -115,7 +122,8 @@ input[type='number'] {
         outline: none;
         width: 100%;
 
-        &[disabled], &:disabled {
+        &[disabled],
+        &:disabled {
             .DisabledInput();
         }
 
@@ -137,9 +145,8 @@ input[type='number'] {
     }
 }
 
-@supports ( -webkit-appearance: none ) or ( appearance: none )
-    or ( ( -moz-appearance: none ) and ( mask-type: alpha ) ) {
-
+@supports (-webkit-appearance: none) or (appearance: none) or
+    ((-moz-appearance: none) and (mask-type: alpha)) {
     .dv-select-style::after {
         display: block;
     }
@@ -178,7 +185,7 @@ input[type='number'] {
         width: -moz-calc(100% + 2.4em);
         width: calc(100% + 2.4em);
     }
-    @supports ( mask-type: alpha ) {
+    @supports (mask-type: alpha) {
         .dv-select-style {
             overflow: visible;
         }
@@ -215,7 +222,8 @@ input[type='number'] {
     }
 }
 
-textarea.md-input, textarea.form-control {
+textarea.md-input,
+textarea.form-control {
     .ebeguNormal();
     padding: 1rem;
 
@@ -229,7 +237,6 @@ input.filter {
     outline-style: solid;
     outline-width: 2px;
 }
-
 
 .mat-mdc-select {
     display: flex !important;

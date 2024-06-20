@@ -22,7 +22,10 @@ const getFreigebenButton = () => {
 };
 
 const getFreigabequittungEinscannenSimulierenButton = () => {
-	return cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button');
+    return cy.getByData(
+        'container.antrag-freigeben-simulieren',
+        'navigation-button'
+    );
 };
 
 const freigeben = () => {
@@ -32,8 +35,13 @@ const freigeben = () => {
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     }).then(downloadUrl => {
-        return cy.request(downloadUrl)
-            .then(response => expect(response.headers['content-disposition']).to.match(/Freigabequittung_.*\.pdf/));
+        return cy
+            .request(downloadUrl)
+            .then(response =>
+                expect(response.headers['content-disposition']).to.match(
+                    /Freigabequittung_.*\.pdf/
+                )
+            );
     });
 };
 
@@ -42,5 +50,5 @@ export const FreigabePO = {
     getFreigebenButton,
     getFreigabequittungEinscannenSimulierenButton,
     // PAGE ACTIONS
-    freigeben,
+    freigeben
 };

@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {
+    IHttpPromise,
+    IHttpService,
+    ILogService,
+    IPromise,
+    IQService
+} from 'angular';
 import {DossierRS} from '../../../gesuch/service/dossierRS.rest';
 import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
@@ -23,8 +29,15 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class GesuchsperiodeRS {
-
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q', 'GlobalCacheService', 'DossierRS'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        '$q',
+        'GlobalCacheService',
+        'DossierRS'
+    ];
     public serviceURL: string;
 
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
@@ -46,111 +59,204 @@ export class GesuchsperiodeRS {
         return 'GesuchsperiodeRS';
     }
 
-    public findGesuchsperiode(gesuchsperiodeID: string): IPromise<TSGesuchsperiode> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeID)}`)
-            .then(response => this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data));
+    public findGesuchsperiode(
+        gesuchsperiodeID: string
+    ): IPromise<TSGesuchsperiode> {
+        return this.http
+            .get(
+                `${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeID)}`
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseGesuchsperiode(
+                    new TSGesuchsperiode(),
+                    response.data
+                )
+            );
     }
 
-    public saveGesuchsperiode(gesuchsperiode: TSGesuchsperiode): IPromise<TSGesuchsperiode> {
+    public saveGesuchsperiode(
+        gesuchsperiode: TSGesuchsperiode
+    ): IPromise<TSGesuchsperiode> {
         let restGesuchsperiode = {};
-        restGesuchsperiode = this.ebeguRestUtil.gesuchsperiodeToRestObject(restGesuchsperiode, gesuchsperiode);
-        return this.http.put(this.serviceURL, restGesuchsperiode).then((response: any) => {
-            this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
-            return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
-        });
+        restGesuchsperiode = this.ebeguRestUtil.gesuchsperiodeToRestObject(
+            restGesuchsperiode,
+            gesuchsperiode
+        );
+        return this.http
+            .put(this.serviceURL, restGesuchsperiode)
+            .then((response: any) => {
+                this.log.debug(
+                    'PARSING Gesuchsperiode REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseGesuchsperiode(
+                    new TSGesuchsperiode(),
+                    response.data
+                );
+            });
     }
 
-    public removeGesuchsperiode(gesuchsperiodeId: string): IHttpPromise<TSGesuchsperiode> {
-        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(gesuchsperiodeId)}`);
+    public removeGesuchsperiode(
+        gesuchsperiodeId: string
+    ): IHttpPromise<TSGesuchsperiode> {
+        return this.http.delete(
+            `${this.serviceURL}/${encodeURIComponent(gesuchsperiodeId)}`
+        );
     }
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GESUCHSPERIODEN_ACTIVE);
-        return this.http.get(`${this.serviceURL}/active`, {cache}).then(response => {
-            const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
-            this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
-            return this.activeGesuchsperiodenList;
-        });
+        const cache = this.globalCacheService.getCache(
+            TSCacheTyp.EBEGU_GESUCHSPERIODEN_ACTIVE
+        );
+        return this.http
+            .get(`${this.serviceURL}/active`, {cache})
+            .then(response => {
+                const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(
+                    response.data
+                );
+                this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
+                return this.activeGesuchsperiodenList;
+            });
     }
 
     public getAllActiveGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        if (!this.activeGesuchsperiodenList || this.activeGesuchsperiodenList.length <= 0) { // if the list is empty, reload it
-            return this.updateActiveGesuchsperiodenList().then(() => this.activeGesuchsperiodenList);
+        if (
+            !this.activeGesuchsperiodenList ||
+            this.activeGesuchsperiodenList.length <= 0
+        ) {
+            // if the list is empty, reload it
+            return this.updateActiveGesuchsperiodenList().then(
+                () => this.activeGesuchsperiodenList
+            );
         }
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
     }
 
-    public getActiveGesuchsperiodenForDossier(dossierId: string): IPromise<TSGesuchsperiode[]> {
-        return this.dossierRS.findDossier(dossierId)
-            .then(dossier => this.getAllPeriodenForGemeinde(dossier.gemeinde.id));
+    public getActiveGesuchsperiodenForDossier(
+        dossierId: string
+    ): IPromise<TSGesuchsperiode[]> {
+        return this.dossierRS
+            .findDossier(dossierId)
+            .then(dossier =>
+                this.getAllPeriodenForGemeinde(dossier.gemeinde.id)
+            );
     }
 
-    public getAktivePeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
+    public getAktivePeriodenForGemeinde(
+        gemeindeId: string,
+        dossierId?: string
+    ): IPromise<TSGesuchsperiode[]> {
         return this.http
             .get(`${this.serviceURL}/aktive/gemeinde/${gemeindeId}`, {
                 params: {
                     dossierId
                 }
             })
-            .then(response => this.ebeguRestUtil.parseGesuchsperioden(response.data));
+            .then(response =>
+                this.ebeguRestUtil.parseGesuchsperioden(response.data)
+            );
     }
 
-    public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
+    public getAllPeriodenForGemeinde(
+        gemeindeId: string,
+        dossierId?: string
+    ): IPromise<TSGesuchsperiode[]> {
         return this.http
             .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
                 params: {
                     dossierId
                 }
             })
-            .then(response => this.ebeguRestUtil.parseGesuchsperioden(response.data));
+            .then(response =>
+                this.ebeguRestUtil.parseGesuchsperioden(response.data)
+            );
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/`)
-            .then((response: any) => this.ebeguRestUtil.parseGesuchsperioden(response.data));
+        return this.http
+            .get(`${this.serviceURL}/`)
+            .then((response: any) =>
+                this.ebeguRestUtil.parseGesuchsperioden(response.data)
+            );
     }
 
-    public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/unclosed`).then((response: any) => {
-            const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
-            this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(gesuchsperioden);
-            return this.nichtAbgeschlosseneGesuchsperiodenList;
-        });
+    public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<
+        TSGesuchsperiode[]
+    > {
+        return this.http
+            .get(`${this.serviceURL}/unclosed`)
+            .then((response: any) => {
+                const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(
+                    response.data
+                );
+                this.nichtAbgeschlosseneGesuchsperiodenList =
+                    angular.copy(gesuchsperioden);
+                return this.nichtAbgeschlosseneGesuchsperiodenList;
+            });
     }
 
-    public getAllAktivUndInaktivGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
+    public getAllAktivUndInaktivGesuchsperioden(): IPromise<
+        TSGesuchsperiode[]
+    > {
         // if the list is empty, reload it
-        if (!this.nichtAbgeschlosseneGesuchsperiodenList || this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0) {
-            return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(() => this.nichtAbgeschlosseneGesuchsperiodenList);
+        if (
+            !this.nichtAbgeschlosseneGesuchsperiodenList ||
+            this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0
+        ) {
+            return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(
+                () => this.nichtAbgeschlosseneGesuchsperiodenList
+            );
         }
         return this.$q.when(this.nichtAbgeschlosseneGesuchsperiodenList); // we need to return a promise
     }
 
     public getNewestGesuchsperiode(): IPromise<TSGesuchsperiode> {
-        return this.http.get(`${this.serviceURL}/newestGesuchsperiode/`)
+        return this.http
+            .get(`${this.serviceURL}/newestGesuchsperiode/`)
             .then((response: any) => {
-                this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
-                return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
+                this.log.debug(
+                    'PARSING Gesuchsperiode REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseGesuchsperiode(
+                    new TSGesuchsperiode(),
+                    response.data
+                );
             });
     }
 
-    public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
-                                        dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
-        // eslint-disable-next-line max-len
-        return this.http.delete(`${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
+    public removeGesuchsperiodeDokument(
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IHttpPromise<TSGesuchsperiode> {
+        return this.http.delete(
+            `${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`
+        );
     }
 
-    public existDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<boolean> {
-        return this.http.get(
-            `${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
+    public existDokument(
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IPromise<boolean> {
+        return this.http
+            .get(
+                `${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`
+            )
             .then((response: any) => response.data);
     }
 
-    public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
-                                          dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        // eslint-disable-next-line max-len
-        return this.http.get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
-            {responseType: 'blob'})
+    public downloadGesuchsperiodeDokument(
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IPromise<BlobPart> {
+        return this.http
+            .get(
+                `${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
+                {responseType: 'blob'}
+            )
             .then((response: any) => response.data);
     }
 }

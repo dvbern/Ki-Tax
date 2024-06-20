@@ -1,124 +1,196 @@
 <div class="admin-view admin-modul dv-table">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-
             <div class="view-title margin-top-10">
                 <h1 translate>ADMIN</h1>
             </div>
             <!-- Application Properties: Tabelle -->
             <div class="row margin-top-10">
                 <div class="col-md-12 ebegu-table table-responsive">
-
-                    <mat-table [dataSource]="displayedCollection" matSort >
+                    <mat-table [dataSource]="displayedCollection" matSort>
                         <!--Name-->
                         <ng-container matColumnDef="name">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header="name">
+                            <mat-header-cell
+                                *matHeaderCellDef
+                                mat-sort-header="name"
+                            >
                                 <span translate>PROPERTY_NAME</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let property">
-                                <span [title]="property.name">{{property.name | translate}}
-                                    <dv-tooltip [text]="property.erklaerung"></dv-tooltip>
+                                <span [title]="property.name"
+                                    >{{ property.name | translate }}
+                                    <dv-tooltip
+                                        [text]="property.erklaerung"
+                                    ></dv-tooltip>
                                 </span>
                             </mat-cell>
                         </ng-container>
 
                         <!--Value-->
                         <ng-container matColumnDef="value">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header="value">
+                            <mat-header-cell
+                                *matHeaderCellDef
+                                mat-sort-header="value"
+                            >
                                 <span translate>PROPERTY_VALUE</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let property">
-                                <span [title]="property.value">{{property.value | translate}}</span>
+                                <span [title]="property.value">{{
+                                    property.value | translate
+                                }}</span>
                             </mat-cell>
                         </ng-container>
 
                         <!--Timestamp Erstellt-->
                         <ng-container matColumnDef="timestampErstellt">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header="timestampErstellt">
+                            <mat-header-cell
+                                *matHeaderCellDef
+                                mat-sort-header="timestampErstellt"
+                            >
                                 <span translate>TIMEERSTELLT</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let property">
-                                <span [title]="property.timestampErstellt">{{property.timestampErstellt.format('DD.MM.YYYY')}}</span>
+                                <span [title]="property.timestampErstellt">{{
+                                    property.timestampErstellt.format(
+                                        'DD.MM.YYYY'
+                                    )
+                                }}</span>
                             </mat-cell>
                         </ng-container>
 
                         <ng-container matColumnDef="filter">
                             <mat-header-cell *matHeaderCellDef="let column">
-                                <mat-form-field  floatLabel="never" class="dv-table-mat-form-field">
-                                    <input matInput
-                                           type="text"
-                                           class="einstellung-filter"
-                                           (keyup)="doFilter($event.target.value)"
-                                           placeholder="{{'SEARCH_FOR_NAME' | translate}}">
+                                <mat-form-field
+                                    floatLabel="never"
+                                    class="dv-table-mat-form-field"
+                                >
+                                    <input
+                                        matInput
+                                        type="text"
+                                        class="einstellung-filter"
+                                        (keyup)="doFilter($event.target.value)"
+                                        placeholder="{{
+                                            'SEARCH_FOR_NAME' | translate
+                                        }}"
+                                    />
                                 </mat-form-field>
                             </mat-header-cell>
                         </ng-container>
 
-
-                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-header-row *matHeaderRowDef="filterColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="editRow(row)"></mat-row>
-
+                        <mat-header-row
+                            *matHeaderRowDef="displayedColumns"
+                        ></mat-header-row>
+                        <mat-header-row
+                            *matHeaderRowDef="filterColumns"
+                        ></mat-header-row>
+                        <mat-row
+                            *matRowDef="let row; columns: displayedColumns"
+                            (click)="editRow(row)"
+                        ></mat-row>
                     </mat-table>
                 </div>
             </div>
             <!-- Application Properties Detail -->
             <div *ngIf="!isReadonly()">
-                <form (ngSubmit)="form.valid && submit()" name="form" role="form" class="" novalidate
-                      *ngIf="applicationProperty"
-                      unsaved-warning-form>
+                <form
+                    (ngSubmit)="form.valid && submit()"
+                    name="form"
+                    role="form"
+                    class=""
+                    novalidate
+                    *ngIf="applicationProperty"
+                    unsaved-warning-form
+                >
                     <div class="row margin-top-40">
                         <div class="col-md-12 form-group">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <label class="md-no-float" for="propName">{{'PROPERTY_NAME' | translate}}</label>
+                                    <label class="md-no-float" for="propName">{{
+                                        'PROPERTY_NAME' | translate
+                                    }}</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input id="propName" type="text" name="propertyName"
-                                           #propertyName="ngModel"
-                                           [(ngModel)]="applicationProperty.name"
-                                           dv-max-length class="input-element smallfont" required
-                                           [disabled]="applicationProperty.timestampErstellt">
+                                    <input
+                                        id="propName"
+                                        type="text"
+                                        name="propertyName"
+                                        #propertyName="ngModel"
+                                        [(ngModel)]="applicationProperty.name"
+                                        dv-max-length
+                                        class="input-element smallfont"
+                                        required
+                                        [disabled]="
+                                            applicationProperty.timestampErstellt
+                                        "
+                                    />
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="md-no-float" for="propVal">{{'PROPERTY_VALUE' | translate}}</label>
+                                    <label class="md-no-float" for="propVal">{{
+                                        'PROPERTY_VALUE' | translate
+                                    }}</label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input id="propVal" type="text" name="propertyValue"
-                                           [(ngModel)]="applicationProperty.value"
-                                           #proeprtyValue="ngModel"
-                                           [maxlength]="4000" class="smallfont">
+                                    <input
+                                        id="propVal"
+                                        type="text"
+                                        name="propertyValue"
+                                        [(ngModel)]="applicationProperty.value"
+                                        #proeprtyValue="ngModel"
+                                        [maxlength]="4000"
+                                        class="smallfont"
+                                    />
                                 </div>
-                                <div class="col-md-12" *ngIf="getApplicationPropertyArray().length > 1" >
+                                <div
+                                    class="col-md-12"
+                                    *ngIf="
+                                        getApplicationPropertyArray().length > 1
+                                    "
+                                >
                                     <div>
-                                        <ul *ngFor="let value of getApplicationPropertyArray()">
-                                            <li>{{value}}</li>
+                                        <ul
+                                            *ngFor="
+                                                let value of getApplicationPropertyArray()
+                                            "
+                                        >
+                                            <li>{{ value }}</li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-3 col-md-offset-3">
-                                    <dv-error-messages [errorObject]="propertyName.errors"></dv-error-messages>
+                                    <dv-error-messages
+                                        [errorObject]="propertyName.errors"
+                                    ></dv-error-messages>
                                 </div>
                                 <div class="col-md-3 col-md-offset-3">
-                                    <dv-error-messages [errorObject]="proeprtyValue.errors"></dv-error-messages>
+                                    <dv-error-messages
+                                        [errorObject]="proeprtyValue.errors"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-md-2">
-                            <dv-loading-button type="submit" [buttonClass]="'color-success'">
-                                <span>{{'SAVE' | translate}}</span>
+                            <dv-loading-button
+                                type="submit"
+                                [buttonClass]="'color-success'"
+                            >
+                                <span>{{ 'SAVE' | translate }}</span>
                             </dv-loading-button>
                         </div>
-                        <div class="col-md-4 ">
-                            <dv-loading-button type="submit"
-                                               (buttonClick)="resetForm();  form.form.markAsPristine();form.form.markAsUntouched(); "
-                                               [buttonClass]="'cancel-button'">
-                                <span>{{'CANCEL' | translate}}</span>
+                        <div class="col-md-4">
+                            <dv-loading-button
+                                type="submit"
+                                (buttonClick)="
+                                    resetForm();
+                                    form.form.markAsPristine();
+                                    form.form.markAsUntouched()
+                                "
+                                [buttonClass]="'cancel-button'"
+                            >
+                                <span>{{ 'CANCEL' | translate }}</span>
                             </dv-loading-button>
                         </div>
                     </div>
@@ -128,12 +200,15 @@
             <!-- Suchindex -->
             <div *ngIf="!isReadonly() && isSuperadmin()">
                 <div class="view-title margin-top-40">
-                    <h1>{{'CREATE_SEARCHINDEX' | translate}}</h1>
+                    <h1>{{ 'CREATE_SEARCHINDEX' | translate }}</h1>
                 </div>
                 <div class="row margin-top-10">
                     <div class="col-md-12 form-group">
-                       <dv-loading-button [buttonDisabled]="reindexInProgress" (buttonClick)="startReindex()">
-                            <span>{{'CREATE_SEARCHINDEX' | translate}}</span>
+                        <dv-loading-button
+                            [buttonDisabled]="reindexInProgress"
+                            (buttonClick)="startReindex()"
+                        >
+                            <span>{{ 'CREATE_SEARCHINDEX' | translate }}</span>
                         </dv-loading-button>
                     </div>
                 </div>
@@ -142,12 +217,17 @@
             <!-- Alle Faelle Sicht erneu bauen -->
             <div *ngIf="!isReadonly() && isSuperadmin()">
                 <div class="view-title margin-top-40">
-                    <h1>{{'RECREATE_ALLE_FAELLE_VIEW' | translate}}</h1>
+                    <h1>{{ 'RECREATE_ALLE_FAELLE_VIEW' | translate }}</h1>
                 </div>
                 <div class="row margin-top-10">
                     <div class="col-md-12 form-group">
-                        <dv-loading-button [buttonDisabled]="recreateAlleFaelleInProgress" (buttonClick)="startRecreateAlleFaelleView()">
-                            <span>{{'RECREATE_ALLE_FAELLE_VIEW' | translate}}</span>
+                        <dv-loading-button
+                            [buttonDisabled]="recreateAlleFaelleInProgress"
+                            (buttonClick)="startRecreateAlleFaelleView()"
+                        >
+                            <span>{{
+                                'RECREATE_ALLE_FAELLE_VIEW' | translate
+                            }}</span>
                         </dv-loading-button>
                     </div>
                 </div>

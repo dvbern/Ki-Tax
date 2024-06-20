@@ -18,13 +18,14 @@
         <div class="row">
             <div class="col-md-12">
                 <dv-antrag-list
-                    table-title="{{'PENDENZEN_LIST' | translate}}"
+                    table-title="{{ 'PENDENZEN_LIST' | translate }}"
                     on-filter-change="vm.passFilterToServer(tableState)"
                     on-edit="vm.editpendenzSteueramt(antrag, event)"
                     table-id="pendenzenSTVTable"
                     add-button-visible="false"
                     total-result-count="vm.totalResultCount"
-                    pendenz="false">
+                    pendenz="false"
+                >
                 </dv-antrag-list>
             </div>
         </div>

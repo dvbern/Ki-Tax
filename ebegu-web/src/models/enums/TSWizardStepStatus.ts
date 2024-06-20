@@ -20,7 +20,7 @@ export enum TSWizardStepStatus {
     PLATZBESTAETIGUNG = 'PLATZBESTAETIGUNG',
     WARTEN = 'WARTEN',
     IN_BEARBEITUNG = 'IN_BEARBEITUNG',
-    UNBESUCHT = 'UNBESUCHT',
+    UNBESUCHT = 'UNBESUCHT'
 }
 
 export function getTSWizardStepStatusValues(): Array<TSWizardStepStatus> {

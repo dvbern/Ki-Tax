@@ -20,7 +20,8 @@
 /* Add Component LESS Above */
 .ebegu {
     //smart table
-    .st-selected, .table-striped .st-selected {
+    .st-selected,
+    .table-striped .st-selected {
         background: transparent;
         color: white;
     }
@@ -32,7 +33,6 @@
         p:last-child {
             margin-bottom: 5rem;
         }
-
     }
 
     .view-sub-title {
@@ -42,7 +42,6 @@
         p:last-child {
             margin-bottom: 1rem;
         }
-
     }
 
     .inline-hint {
@@ -52,7 +51,8 @@
     }
 
     //SmartTable Styles
-    .table > thead > tr:first-child > th.sortable, .table > thead:first-child > tr:first-child > th.sortable {
+    .table > thead > tr:first-child > th.sortable,
+    .table > thead:first-child > tr:first-child > th.sortable {
         cursor: pointer;
         padding-right: 0;
         white-space: nowrap;
@@ -78,14 +78,14 @@
         font-size: 1.2rem;
     }
     .pagination {
-
         .active {
             a {
                 background-color: @primary;
                 border-color: @primary-dark;
                 color: @contrast-lightest;
 
-                &:hover, &:focus {
+                &:hover,
+                &:focus {
                     background-color: @primary-dark;
                     border-color: @primary;
                     color: @contrast-lightest;
@@ -96,11 +96,14 @@
         a {
             color: @primary;
 
-            &, &:first-child, &:last-child {
+            &,
+            &:first-child,
+            &:last-child {
                 border-radius: 0;
             }
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 color: @primary-dark;
             }
         }
@@ -212,7 +215,7 @@
         padding-left: 0.5rem;
     }
 
-    .padding-left-0{
+    .padding-left-0 {
         padding-left: 0rem;
     }
 
@@ -268,19 +271,29 @@
         margin-bottom: 3rem;
     }
 
-
     //errors sofort nach verlassen des feldes anzeigen oder sobald das form submitted wurde
     form:not(.ng-submitted) .form-group {
         //geschwisterelement von .formcontrol feldern oder .input-element feldern sollen Fehlermeldung noch nicht anzeigen wenn input untouched ist
-        .form-control.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
-        .input-element.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
-        .form-group.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
-        .md-input-container.ng-untouched ~ dv-error-messages > .dv-error-messages > .error,
+        .form-control.ng-untouched
+            ~ dv-error-messages
+            > .dv-error-messages
+            > .error,
+        .input-element.ng-untouched
+            ~ dv-error-messages
+            > .dv-error-messages
+            > .error,
+        .form-group.ng-untouched
+            ~ dv-error-messages
+            > .dv-error-messages
+            > .error,
+        .md-input-container.ng-untouched
+            ~ dv-error-messages
+            > .dv-error-messages
+            > .error,
         .input-element.ng-untouched ~ .dv-error-messages > .error,
         input[type='text'].ng-untouched ~ .dv-error-messages > .error {
             display: none;
         }
-
     }
 
     // aktuell gibt es eingentlich keine hints mehr
@@ -299,7 +312,6 @@
     }
 
     md-input-container .error.hint [ng-messages] {
-
         /* position: relative;
          -webkit-order: 4;
          -ms-flex- order: 4;
@@ -310,8 +322,8 @@
     }
 
     /*stylelint-disable selector-class-pattern */
-    ._md-open-menu-container, .md-open-menu-container {
-
+    ._md-open-menu-container,
+    .md-open-menu-container {
         /*stylelint-enable */
         z-index: @z-index-error !important;
     }
@@ -322,7 +334,14 @@
         border-radius: 0;
         box-shadow: none;
         padding: 2rem 2.5rem 2rem 5rem;
-        span:not(.mat-checkbox-inner-container, .mat-checkbox-background, .mat-ripple, .mat-ripple-element, .mat-checkbox-frame, .mat-checkbox-label) {
+        span:not(
+                .mat-checkbox-inner-container,
+                .mat-checkbox-background,
+                .mat-ripple,
+                .mat-ripple-element,
+                .mat-checkbox-frame,
+                .mat-checkbox-label
+            ) {
             .ebeguH3();
         }
         i {
@@ -358,20 +377,22 @@
         content: '\00a0*';
         display: inline;
     }
-    h1.required span:after, .ebegu-h1.required span:after {
+    h1.required span:after,
+    .ebegu-h1.required span:after {
         content: '\00a0*';
     }
-    h1.required:after, .ebegu-h1.required:after {
+    h1.required:after,
+    .ebegu-h1.required:after {
         content: '';
     }
     .md-required:after {
         content: '\00a0*' !important;
     }
-
 }
 
 .dv-input-container-question {
-    h1, .ebegu-h1 {
+    h1,
+    .ebegu-h1 {
         line-height: 2.4rem;
     }
 }

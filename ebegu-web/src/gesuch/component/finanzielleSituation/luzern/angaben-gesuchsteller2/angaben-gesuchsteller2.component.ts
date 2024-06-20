@@ -33,7 +33,6 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
-
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
@@ -42,7 +41,15 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         protected readonly translate: TranslateService,
         protected readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        super(gesuchModelManager, wizardStepManager, 2, finSitLuService, authServiceRS, translate, applicationPropertyRS);
+        super(
+            gesuchModelManager,
+            wizardStepManager,
+            2,
+            finSitLuService,
+            authServiceRS,
+            translate,
+            applicationPropertyRS
+        );
     }
 
     public isGemeinsam(): boolean {
@@ -65,7 +72,9 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return TSFinanzielleSituationSubStepName.LUZERN_GS2;
     }
 
-    public prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => any
+    ): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -73,15 +82,23 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return this.save(onResult);
     }
 
-    protected save(onResult: (arg: any) => any): angular.IPromise<TSFinanzielleSituationContainer> {
+    protected save(
+        onResult: (arg: any) => any
+    ): angular.IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation()
-            .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
-                this.updateWizardStepStatus();
-                onResult(finanzielleSituationContainer);
-                return finanzielleSituationContainer;
-            }).catch(error => {
-                throw(error);
+        return this.gesuchModelManager
+            .saveFinanzielleSituation()
+            .then(
+                (
+                    finanzielleSituationContainer: TSFinanzielleSituationContainer
+                ) => {
+                    this.updateWizardStepStatus();
+                    onResult(finanzielleSituationContainer);
+                    return finanzielleSituationContainer;
+                }
+            )
+            .catch(error => {
+                throw error;
             });
     }
 

@@ -39,5 +39,4 @@ export class DVErrorMessageCallback {
         this._text = text;
         this._callback = callback;
     }
-
 }

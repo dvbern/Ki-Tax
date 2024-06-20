@@ -15,14 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
+import {
+    getTSTaetigkeit,
+    getTSTaetigkeitWithFreiwilligenarbeit,
+    TSTaetigkeit
+} from '../../../models/enums/TSTaetigkeit';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class TaetigkeitVisitor implements MandantVisitor<ReadonlyArray<TSTaetigkeit>> {
+export class TaetigkeitVisitor
+    implements MandantVisitor<ReadonlyArray<TSTaetigkeit>>
+{
     private readonly _konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean;
 
-    public constructor(konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean) {
+    public constructor(
+        konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean
+    ) {
         this._konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled =
             konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled;
     }
@@ -32,9 +40,9 @@ export class TaetigkeitVisitor implements MandantVisitor<ReadonlyArray<TSTaetigk
     }
 
     public visitBern(): ReadonlyArray<TSTaetigkeit> {
-        return this._konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled ?
-            getTSTaetigkeitWithFreiwilligenarbeit() :
-            getTSTaetigkeit();
+        return this._konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled
+            ? getTSTaetigkeitWithFreiwilligenarbeit()
+            : getTSTaetigkeit();
     }
 
     public visitAppenzellAusserrhoden(): ReadonlyArray<TSTaetigkeit> {
@@ -63,5 +71,4 @@ export class TaetigkeitVisitor implements MandantVisitor<ReadonlyArray<TSTaetigk
             TSTaetigkeit.RAV
         ];
     }
-
 }

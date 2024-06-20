@@ -20,9 +20,12 @@ import {pendenzBetreuungenFilter} from './filter/pendenzBetreuungenFilter';
 import {pendenzRun} from './pendenzenBetreuungen.route';
 import {PendenzBetreuungenRS} from './service/PendenzBetreuungenRS.rest';
 
-export const PENDENZEN_BETREUUNGEN_JS_MODULE =
-    angular.module('ebeguWeb.pendenzenBetreuungen', [CORE_JS_MODULE.name])
-        .run(pendenzRun)
-        .service('PendenzBetreuungenRS', PendenzBetreuungenRS)
-        .filter('pendenzBetreuungenFilter', pendenzBetreuungenFilter)
-        .component('pendenzenBetreuungenListView', new PendenzenBetreuungenListViewComponentConfig());
+export const PENDENZEN_BETREUUNGEN_JS_MODULE = angular
+    .module('ebeguWeb.pendenzenBetreuungen', [CORE_JS_MODULE.name])
+    .run(pendenzRun)
+    .service('PendenzBetreuungenRS', PendenzBetreuungenRS)
+    .filter('pendenzBetreuungenFilter', pendenzBetreuungenFilter)
+    .component(
+        'pendenzenBetreuungenListView',
+        new PendenzenBetreuungenListViewComponentConfig()
+    );

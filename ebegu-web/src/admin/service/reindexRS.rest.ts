@@ -22,17 +22,13 @@ import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
     providedIn: 'root'
 })
 export class ReindexRS {
-
     public readonly serviceURL: string = `${CONSTANTS.REST_API}admin/reindex`;
 
-    public constructor(
-        public readonly $http: HttpClient
-    ) {}
+    public constructor(public readonly $http: HttpClient) {}
 
     public reindex(): Observable<any> {
         return this.$http.get(`${this.serviceURL}/`, {
             responseType: 'text'
         });
     }
-
 }

@@ -15,7 +15,7 @@
 
 export enum TSZahlungslaufTyp {
     GEMEINDE_INSTITUTION = 'GEMEINDE_INSTITUTION',
-    GEMEINDE_ANTRAGSTELLER = 'GEMEINDE_ANTRAGSTELLER',
+    GEMEINDE_ANTRAGSTELLER = 'GEMEINDE_ANTRAGSTELLER'
 }
 
 export function getTSZahlungslaufTypValues(): Array<TSZahlungslaufTyp> {

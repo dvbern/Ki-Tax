@@ -16,62 +16,102 @@
   -->
 
 <dv-full-height-container>
-    <form role="form"
-          #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          novalidate>
-
+    <form
+        role="form"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        novalidate
+    >
         <div class="dv-content">
-
-            <h1 class="access-for-all-title" translate>AFA_INSTITUTIONENVERWALTUNG</h1>
+            <h1 class="access-for-all-title" translate>
+                AFA_INSTITUTIONENVERWALTUNG
+            </h1>
             <div class="view-title">
                 <h2 translate>NEUE_INSTITUTION</h2>
-                <hr class="header">
+                <hr class="header" />
             </div>
             <fieldset>
                 <!-- Betreuungsangebot -->
 
-                <div class="row" *ngIf="!isBGInstitution && gemeinden.length === 0" translate>
-                    <div class="col-sm-12 well well-status-abgewiesen" translate>KEINE_GEMEINDE_KONFIGURATION</div>
+                <div
+                    class="row"
+                    *ngIf="!isBGInstitution && gemeinden.length === 0"
+                    translate
+                >
+                    <div
+                        class="col-sm-12 well well-status-abgewiesen"
+                        translate
+                    >
+                        KEINE_GEMEINDE_KONFIGURATION
+                    </div>
                 </div>
                 <div *ngIf="isLatsInstitution" translate>
                     <dv-warning>LATS_ONLY_WARNUNG</dv-warning>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group" data-test="'container.context' + index">
-                            <label class="required" translate for="betreuungsangebot_id">BETREUUNGSANGEBOT</label>
-                            <mat-select [(ngModel)]="betreuungsangebot" id="betreuungsangebot_id"
-                                        data-test="betreuungsangebot"
-                                        name="betreuungsangebot_id" class="form-control" required>
-                                <mat-option *ngFor="let ba of betreuungsangebote" [value]="ba">{{ba | translate}}
+                        <div
+                            class="form-group"
+                            data-test="'container.context' + index"
+                        >
+                            <label
+                                class="required"
+                                translate
+                                for="betreuungsangebot_id"
+                                >BETREUUNGSANGEBOT</label
+                            >
+                            <mat-select
+                                [(ngModel)]="betreuungsangebot"
+                                id="betreuungsangebot_id"
+                                data-test="betreuungsangebot"
+                                name="betreuungsangebot_id"
+                                class="form-control"
+                                required
+                            >
+                                <mat-option
+                                    *ngFor="let ba of betreuungsangebote"
+                                    [value]="ba"
+                                    >{{ ba | translate }}
                                 </mat-option>
                             </mat-select>
-                            <dv-error-messages [errorObject]="form.controls.betreuungsangebot_id?.errors"
-                                               input-id="betreuungsangebot_id">
+                            <dv-error-messages
+                                [errorObject]="
+                                    form.controls.betreuungsangebot_id?.errors
+                                "
+                                input-id="betreuungsangebot_id"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
                     <div class="col-sm-6" *ngIf="selectGemeindeVisible()">
                         <div class="form-group">
-                            <label [ngClass]="{'required' : selectGemeindeRequired()}"
-                                   class="md-no-float"
-                                   translate
-                                   for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
-                            <select [(ngModel)]="selectedGemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    data-test="institution.create-tagesschule.gemeinde-auswaehlen"
-                                    [required]="selectGemeindeRequired()">
-                                <option *ngFor="let gemeinde of (gemeinden)"
-                                        [ngValue]="gemeinde">
-                                    {{gemeinde.name}}
+                            <label
+                                [ngClass]="{required: selectGemeindeRequired()}"
+                                class="md-no-float"
+                                translate
+                                for="gemeinde"
+                                >GEMEINDE_AUSWAEHLEN</label
+                            >
+                            <select
+                                [(ngModel)]="selectedGemeinde"
+                                name="gemeinde"
+                                class="form-control"
+                                id="gemeinde"
+                                data-test="institution.create-tagesschule.gemeinde-auswaehlen"
+                                [required]="selectGemeindeRequired()"
+                            >
+                                <option
+                                    *ngFor="let gemeinde of gemeinden"
+                                    [ngValue]="gemeinde"
+                                >
+                                    {{ gemeinde.name }}
                                 </option>
                             </select>
-                            <dv-error-messages [errorObject]="form.controls.gemeindeId?.errors"
-                                               inputId="gemeinde"
-                                               class="input-error">
+                            <dv-error-messages
+                                [errorObject]="form.controls.gemeindeId?.errors"
+                                inputId="gemeinde"
+                                class="input-error"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
@@ -81,32 +121,62 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="institution_ID">INSTITUTIONSNAME</label>
-                            <input id="institution_ID" type="text" name="institution_name" #name="ngModel"
-                                   [(ngModel)]="institution.name"
-                                   [maxlength]="255" class="form-control"
-                                   data-test="institution.create-tagesschule.institutionsname" required>
-                            <dv-error-messages [errorObject]="form.controls.institution_name?.errors"
-                                               inputId="institution_ID">
+                            <label
+                                class="required"
+                                translate
+                                for="institution_ID"
+                                >INSTITUTIONSNAME</label
+                            >
+                            <input
+                                id="institution_ID"
+                                type="text"
+                                name="institution_name"
+                                #name="ngModel"
+                                [(ngModel)]="institution.name"
+                                [maxlength]="255"
+                                class="form-control"
+                                data-test="institution.create-tagesschule.institutionsname"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="
+                                    form.controls.institution_name?.errors
+                                "
+                                inputId="institution_ID"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
                     <div class="col-sm-6" *ngIf="isBGInstitution">
                         <div class="form-group">
-                            <label class="required"
-                                   class="md-no-float"
-                                   translate
-                                   for="begu_start_ID">INSTITUTION_BEGU_START</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="start_date" id="begu_start_ID"
-                                   [(ngModel)]="startDate"
-                                   [matDatepicker]="start_date"
-                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                                   required>
-                            <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+                            <label
+                                class="required"
+                                class="md-no-float"
+                                translate
+                                for="begu_start_ID"
+                                >INSTITUTION_BEGU_START</label
+                            >
+                            <input
+                                class="dv-mat-datepicker"
+                                type="text"
+                                name="start_date"
+                                id="begu_start_ID"
+                                [(ngModel)]="startDate"
+                                [matDatepicker]="start_date"
+                                placeholder="{{
+                                    'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate
+                                }}"
+                                required
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="start_date"
+                            ></mat-datepicker-toggle>
                             <mat-datepicker #start_date></mat-datepicker>
-                            <dv-error-messages input-id="begu_start_ID"
-                                               [errorObject]="form.controls.begu_start?.errors">
+                            <dv-error-messages
+                                input-id="begu_start_ID"
+                                [errorObject]="form.controls.begu_start?.errors"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
@@ -116,39 +186,85 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <div style="display: flex; justify-content: space-between">
-                                <label *ngIf="isBGInstitution" class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                                <button type="button"
-                                        class="dv-btn btn-link link-underline link-color-primary"
-                                        style="height: 100%;"
-                                        (click)="selectAdminMail()"
-                                        *ngIf="institution.traegerschaft">
-                                    <span [textContent]="'ADMIN_MAIL_BUTTON' | translate"></span>
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                "
+                            >
+                                <label
+                                    *ngIf="isBGInstitution"
+                                    class="required"
+                                    translate
+                                    for="admin_mail_ID"
+                                    >ADMIN_MAIL</label
+                                >
+                                <button
+                                    type="button"
+                                    class="dv-btn btn-link link-underline link-color-primary"
+                                    style="height: 100%"
+                                    (click)="selectAdminMail()"
+                                    *ngIf="institution.traegerschaft"
+                                >
+                                    <span
+                                        [textContent]="
+                                            'ADMIN_MAIL_BUTTON' | translate
+                                        "
+                                    ></span>
                                 </button>
                             </div>
-                            <label *ngIf="!isBGInstitution" class="required" translate for="admin_mail_ID">KONTAKT_MAIL</label>
-                            <input id="admin_mail_ID" type="email" name="admin_mail"
-                                   [(ngModel)]="adminMail"
-                                   email
-                                   [maxlength]="255" class="form-control"
-                                   data-test="institution.create-tagesschule.email-adresse" required>
-                            <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
-                                               input-id="admin_mail_ID">
+                            <label
+                                *ngIf="!isBGInstitution"
+                                class="required"
+                                translate
+                                for="admin_mail_ID"
+                                >KONTAKT_MAIL</label
+                            >
+                            <input
+                                id="admin_mail_ID"
+                                type="email"
+                                name="admin_mail"
+                                [(ngModel)]="adminMail"
+                                email
+                                [maxlength]="255"
+                                class="form-control"
+                                data-test="institution.create-tagesschule.email-adresse"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="form.controls.admin_mail?.errors"
+                                input-id="admin_mail_ID"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
                     <div class="col-sm-6" *ngIf="isBGInstitution">
                         <div class="form-group">
-                            <label translate for="traegerschaft_id">TRAEGERSCHAFT</label>
-                            <mat-select [(ngModel)]="institution.traegerschaft" id="traegerschaft_id"
-                                        name="traegerschaft_id" class="form-control">
-                                <mat-option value="">{{'KEINE' | translate}}</mat-option>
-                                <mat-option *ngFor="let tr of traegerschaften" [value]="tr">
-                                    {{tr.name}}
+                            <label translate for="traegerschaft_id"
+                                >TRAEGERSCHAFT</label
+                            >
+                            <mat-select
+                                [(ngModel)]="institution.traegerschaft"
+                                id="traegerschaft_id"
+                                name="traegerschaft_id"
+                                class="form-control"
+                            >
+                                <mat-option value="">{{
+                                    'KEINE' | translate
+                                }}</mat-option>
+                                <mat-option
+                                    *ngFor="let tr of traegerschaften"
+                                    [value]="tr"
+                                >
+                                    {{ tr.name }}
                                 </mat-option>
                             </mat-select>
-                            <dv-error-messages [errorObject]="form.controls.traegerschaft_id?.errors"
-                                               input-id="traegerschaft_id">
+                            <dv-error-messages
+                                [errorObject]="
+                                    form.controls.traegerschaft_id?.errors
+                                "
+                                input-id="traegerschaft_id"
+                            >
                             </dv-error-messages>
                         </div>
                     </div>
@@ -158,21 +274,29 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <button *ngIf="isBGInstitution" (click)="institutionErstellen()" class="dv-btn next-button">
+            <button
+                *ngIf="isBGInstitution"
+                (click)="institutionErstellen()"
+                class="dv-btn next-button"
+            >
                 <span translate>EINLADUNG_SENDEN</span>
             </button>
 
-            <button *ngIf="!isBGInstitution"
-                    (click)="institutionErstellen()"
-                    class="dv-btn next-button"
-                    data-test="institution.create-tagesschule.submit">
+            <button
+                *ngIf="!isBGInstitution"
+                (click)="institutionErstellen()"
+                class="dv-btn next-button"
+                data-test="institution.create-tagesschule.submit"
+            >
                 <span translate>INSTITUTION_ERSTELLEN</span>
             </button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                (click)="cancel()"
+                [textContent]="'CANCEL' | translate"
+            ></button>
         </div>
     </form>
 </dv-full-height-container>

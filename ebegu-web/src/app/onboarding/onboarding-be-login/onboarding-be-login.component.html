@@ -14,16 +14,22 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div style="display: inline-block; max-width:100%;">
-    <div class="onboarding-subtitle">{{'ONBOARDING_BG_LOGIN_REQUIRED' | translate}}</div>
+<div style="display: inline-block; max-width: 100%">
+    <div class="onboarding-subtitle">
+        {{ 'ONBOARDING_BG_LOGIN_REQUIRED' | translate }}
+    </div>
 
-    <p class="justify">{{'ONBOARDING_BE_LOGIN_DESCRIPTION' | translate}}</p>
+    <p class="justify">{{ 'ONBOARDING_BE_LOGIN_DESCRIPTION' | translate }}</p>
 
     <div class="be-login-actions">
         <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
-        <a class="dv-btn onboarding-big-red-button" href=""
-           uiSref="onboarding.gesuchsteller.registration" [uiParams]="{gemeindeBGId: gemeindeBGId, gemeindenId: gemeindenId}">
-            {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
+        <a
+            class="dv-btn onboarding-big-red-button"
+            href=""
+            uiSref="onboarding.gesuchsteller.registration"
+            [uiParams]="{gemeindeBGId: gemeindeBGId, gemeindenId: gemeindenId}"
+        >
+            {{ 'ONBOARDING_BE_LOGIN_ANMELDEN' | translate }}
             <i class="fa fa-external-link"></i>
         </a>
     </div>

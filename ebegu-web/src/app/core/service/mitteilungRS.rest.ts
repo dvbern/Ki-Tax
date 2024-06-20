@@ -308,7 +308,9 @@ export class MitteilungRS {
         betreuung.betreuungspensumContainers.forEach(betpenContainer => {
             const pensumJA = angular.copy(betpenContainer.betreuungspensumJA);
             pensumJA.id = undefined; // the id must be set to undefined in order no to duplicate it
-            if (EbeguUtil.isNotNullOrUndefined(pensumJA.eingewoehnung)) {
+            if (
+                EbeguUtil.isNotNullOrUndefined(pensumJA.eingewoehnung)
+            ) {
                 pensumJA.eingewoehnung.id = undefined;
             }
             pensen.push(pensumJA);
@@ -348,7 +350,7 @@ export class MitteilungRS {
         const mitteilungenByFall = this.groupMitteilungenByFall(mitteilungen);
 
         Object.entries(mitteilungenByFall).forEach(
-            ([_, mitteilungenOfFall]) => {
+            ([, mitteilungenOfFall]) => {
                 from(mitteilungenOfFall ?? [])
                     .pipe(
                         // apply all mitteilungen of one fall in sequence

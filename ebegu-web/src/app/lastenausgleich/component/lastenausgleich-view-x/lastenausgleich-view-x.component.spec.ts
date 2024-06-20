@@ -29,16 +29,33 @@ import {LastenausgleichRS} from '../../services/lastenausgleichRS.rest';
 
 import {LastenausgleichViewXComponent} from './lastenausgleich-view-x.component';
 
-const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
-const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-    ['prepareDownloadWindow', 'startDownload']);
-const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadZemisExcel']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'isRole']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode']);
+const translateSpy = jasmine.createSpyObj<TranslateService>(
+    TranslateService.name,
+    ['instant']
+);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+    'prepareDownloadWindow',
+    'startDownload'
+]);
+const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, [
+    'uploadZemisExcel'
+]);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles',
+    'isRole'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+    ApplicationPropertyRS.name,
+    ['isDevMode']
+);
 const matDialogSpy = jasmine.createSpyObj<MatDialog>(MatDialog.name, ['open']);
-const lastenausgleichSpy = jasmine.createSpyObj<LastenausgleichRS>(LastenausgleichRS.name,
-    ['getAllLastenausgleiche']);
+const lastenausgleichSpy = jasmine.createSpyObj<LastenausgleichRS>(
+    LastenausgleichRS.name,
+    ['getAllLastenausgleiche']
+);
 
 describe('LastenausgleichViewXComponent', () => {
     let component: LastenausgleichViewXComponent;
@@ -53,17 +70,19 @@ describe('LastenausgleichViewXComponent', () => {
                 {provide: UploadRS, useValue: uploadRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                },
                 {provide: MatDialog, useValue: matDialogSpy},
                 {provide: LastenausgleichRS, useValue: lastenausgleichSpy}
             ],
-            imports: [
-                HttpClientModule
-            ]
-        })
-            .compileComponents();
+            imports: [HttpClientModule]
+        }).compileComponents();
 
-        applicationPropertyRSSpy.isDevMode.and.returnValue(of(true).toPromise());
+        applicationPropertyRSSpy.isDevMode.and.returnValue(
+            of(true).toPromise()
+        );
         lastenausgleichSpy.getAllLastenausgleiche.and.returnValue(of([]));
     });
 

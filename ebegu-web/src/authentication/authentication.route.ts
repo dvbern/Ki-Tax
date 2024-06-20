@@ -43,7 +43,6 @@ const ng1States: Ng1StateDeclaration[] = [
         }
     },
     {
-
         name: 'authentication.schulung',
         template: '<dv-schulung flex="auto" class="overflow-scroll">',
         url: '/schulung',
@@ -68,7 +67,10 @@ export class IAuthenticationStateParams {
 returnTo.$inject = ['$transition$'];
 
 export function returnTo($transition$: Transition): TargetState {
-    if ($transition$.redirectedFrom() !== null && $transition$.redirectedFrom() !== undefined) {
+    if (
+        $transition$.redirectedFrom() !== null &&
+        $transition$.redirectedFrom() !== undefined
+    ) {
         // The user was redirected to the login state (e.g., via the requiresAuth hook when trying to activate contacts)
         // Return to the original attempted target state (e.g., contacts)
         return $transition$.redirectedFrom().targetState();

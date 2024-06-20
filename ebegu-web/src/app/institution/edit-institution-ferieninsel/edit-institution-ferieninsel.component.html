@@ -16,37 +16,63 @@
   -->
 
 <fieldset>
-
     <!-- Gemeinde -->
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group" *ngIf="editMode">
                 <h3 translate for="gemeinde">GEMEINDE</h3>
-                <mat-select [value]="stammdaten.institutionStammdatenFerieninsel.gemeinde"
-                            [compareWith]="compareGemeinde"
-                            id="gemeinde" name="gemeinde"
-                            class="form-control"
-                            disabled>
-                    <mat-option *ngFor="let gemeinde of gemeindeList" [value]="gemeinde">{{gemeinde.name}}</mat-option>
+                <mat-select
+                    [value]="
+                        stammdaten.institutionStammdatenFerieninsel.gemeinde
+                    "
+                    [compareWith]="compareGemeinde"
+                    id="gemeinde"
+                    name="gemeinde"
+                    class="form-control"
+                    disabled
+                >
+                    <mat-option
+                        *ngFor="let gemeinde of gemeindeList"
+                        [value]="gemeinde"
+                        >{{ gemeinde.name }}</mat-option
+                    >
                 </mat-select>
             </div>
             <div class="form-group" *ngIf="!editMode">
                 <h3 translate for="gemeinde">GEMEINDE</h3>
-                <p>{{stammdaten.institutionStammdatenFerieninsel.gemeinde.name}}</p>
+                <p>
+                    {{
+                        stammdaten.institutionStammdatenFerieninsel.gemeinde
+                            .name
+                    }}
+                </p>
             </div>
         </div>
     </div>
 
-    <dv-accordion class="gesuchsperioden-list" allow-multiple-sections="true" id="moduleListProEinstellungen">
+    <dv-accordion
+        class="gesuchsperioden-list"
+        allow-multiple-sections="true"
+        id="moduleListProEinstellungen"
+    >
         <ng-container
-            *ngFor="let einstellungGP of stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel;
-            trackBy: trackById; let i = index">
+            *ngFor="
+                let einstellungGP of stammdaten.institutionStammdatenFerieninsel
+                    .einstellungenFerieninsel;
+                trackBy: trackById;
+                let i = index
+            "
+        >
             <dv-accordion-tab
                 [tabid]="i"
-                *ngIf="showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)">
+                *ngIf="
+                    showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)
+                "
+            >
                 <tab-title>
                     <div class="message-header">
-                        <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
+                        <p class="fa fa-angle-right"></p>
+                        {{ einstellungGP.gesuchsperiode.gesuchsperiodeString }}
                     </div>
                 </tab-title>
                 <tab-body>
@@ -58,50 +84,112 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="md-no-float" translate="HERBSTFERIEN"
-                                           for="ausweichstandortHerbstferien-{{einstellungGP?.id}}">
+                                    <label
+                                        class="md-no-float"
+                                        translate="HERBSTFERIEN"
+                                        for="ausweichstandortHerbstferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                    >
                                     </label>
-                                    <input id="ausweichstandortHerbstferien-{{einstellungGP?.id}}" type="text"
-                                           name="ausweichstandortHerbstferien-{{einstellungGP?.id}}"
-                                           [(ngModel)]="einstellungGP.ausweichstandortHerbstferien"
-                                           [maxlength]="255" [disabled]="!editMode" class="form-control">
+                                    <input
+                                        id="ausweichstandortHerbstferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        type="text"
+                                        name="ausweichstandortHerbstferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        [(ngModel)]="
+                                            einstellungGP.ausweichstandortHerbstferien
+                                        "
+                                        [maxlength]="255"
+                                        [disabled]="!editMode"
+                                        class="form-control"
+                                    />
                                 </div>
-
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="md-no-float" translate="SPORTFERIEN"
-                                           for="ausweichstandortSportferien-{{einstellungGP?.id}}">
+                                    <label
+                                        class="md-no-float"
+                                        translate="SPORTFERIEN"
+                                        for="ausweichstandortSportferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                    >
                                     </label>
-                                    <input id="ausweichstandortSportferien-{{einstellungGP?.id}}" type="text"
-                                           name="ausweichstandortSportferien-{{einstellungGP?.id}}"
-                                           [(ngModel)]="einstellungGP.ausweichstandortSportferien"
-                                           [maxlength]="255" [disabled]="!editMode" class="form-control">
+                                    <input
+                                        id="ausweichstandortSportferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        type="text"
+                                        name="ausweichstandortSportferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        [(ngModel)]="
+                                            einstellungGP.ausweichstandortSportferien
+                                        "
+                                        [maxlength]="255"
+                                        [disabled]="!editMode"
+                                        class="form-control"
+                                    />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="md-no-float" translate="FRUEHLINGSFERIEN"
-                                           for="ausweichstandortFruehlingsferien-{{einstellungGP?.id}}">
+                                    <label
+                                        class="md-no-float"
+                                        translate="FRUEHLINGSFERIEN"
+                                        for="ausweichstandortFruehlingsferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                    >
                                     </label>
-                                    <input id="ausweichstandortFruehlingsferien-{{einstellungGP?.id}}" type="text"
-                                           name="ausweichstandortFruehlingsferien-{{einstellungGP?.id}}"
-                                           [(ngModel)]="einstellungGP.ausweichstandortFruehlingsferien"
-                                           [maxlength]="255" [disabled]="!editMode" class="form-control">
+                                    <input
+                                        id="ausweichstandortFruehlingsferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        type="text"
+                                        name="ausweichstandortFruehlingsferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        [(ngModel)]="
+                                            einstellungGP.ausweichstandortFruehlingsferien
+                                        "
+                                        [maxlength]="255"
+                                        [disabled]="!editMode"
+                                        class="form-control"
+                                    />
                                 </div>
-
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="md-no-float" translate="SOMMERFERIEN"
-                                           for="ausweichstandortSommerferien-{{einstellungGP?.id}}">
+                                    <label
+                                        class="md-no-float"
+                                        translate="SOMMERFERIEN"
+                                        for="ausweichstandortSommerferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                    >
                                     </label>
-                                    <input id="ausweichstandortSommerferien-{{einstellungGP?.id}}" type="text"
-                                           name="ausweichstandortSommerferien-{{einstellungGP?.id}}"
-                                           [(ngModel)]="einstellungGP.ausweichstandortSommerferien"
-                                           [maxlength]="255" [disabled]="!editMode" class="form-control">
+                                    <input
+                                        id="ausweichstandortSommerferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        type="text"
+                                        name="ausweichstandortSommerferien-{{
+                                            einstellungGP?.id
+                                        }}"
+                                        [(ngModel)]="
+                                            einstellungGP.ausweichstandortSommerferien
+                                        "
+                                        [maxlength]="255"
+                                        [disabled]="!editMode"
+                                        class="form-control"
+                                    />
                                 </div>
                             </div>
                         </div>

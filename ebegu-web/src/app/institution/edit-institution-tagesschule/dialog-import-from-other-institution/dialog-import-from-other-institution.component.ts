@@ -29,7 +29,6 @@ import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdat
     styleUrls: ['./dialog-import-from-other-institution.component.less']
 })
 export class DialogImportFromOtherInstitutionComponent implements OnInit {
-
     public selectedInstitutionStammdaten: TSInstitutionStammdaten;
     public institutionStammdatenList: TSInstitutionStammdaten[];
     public selectedEinstellungTagesschule: TSEinstellungenTagesschule;
@@ -44,7 +43,9 @@ export class DialogImportFromOtherInstitutionComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.institutionStammdatenList = this.filterStammdatenList(this.institutionStammdatenList);
+        this.institutionStammdatenList = this.filterStammdatenList(
+            this.institutionStammdatenList
+        );
     }
 
     /**
@@ -52,13 +53,19 @@ export class DialogImportFromOtherInstitutionComponent implements OnInit {
      *  haben. Die Perioden mit Scolaris Modulen werden gelöscht. Ausserdem soll die momentan
      *  aktive Tagesschule nicht im Dropdown erscheinen.
      */
-    private filterStammdatenList(institutionStammdaten: TSInstitutionStammdaten[]): Array<TSInstitutionStammdaten> {
+    private filterStammdatenList(
+        institutionStammdaten: TSInstitutionStammdaten[]
+    ): Array<TSInstitutionStammdaten> {
         const filtered: TSInstitutionStammdaten[] = [];
         institutionStammdaten.forEach(stammdaten => {
             // nur wenn mindestens eine Periode mit stammdaten
-            if (stammdaten.institutionStammdatenTagesschule &&
-                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule &&
-                stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.length > 0) {
+            if (
+                stammdaten.institutionStammdatenTagesschule &&
+                stammdaten.institutionStammdatenTagesschule
+                    .einstellungenTagesschule &&
+                stammdaten.institutionStammdatenTagesschule
+                    .einstellungenTagesschule.length > 0
+            ) {
                 filtered.push(stammdaten);
             }
         });
@@ -68,20 +75,28 @@ export class DialogImportFromOtherInstitutionComponent implements OnInit {
     /**
      * Filtert einstellungen. ModulTagesschuleTyp muss dynamisch sein und es muss mindestens ein modul existieren.
      */
-    public filterEinstellungenTagesschule(einstellungenTagesschule: Array<TSEinstellungenTagesschule>):
-        TSEinstellungenTagesschule[] {
-        return einstellungenTagesschule.filter(einstellung => einstellung.modulTagesschuleTyp === TSModulTagesschuleTyp.DYNAMISCH
-                && einstellung.modulTagesschuleGroups.length > 0);
+    public filterEinstellungenTagesschule(
+        einstellungenTagesschule: Array<TSEinstellungenTagesschule>
+    ): TSEinstellungenTagesschule[] {
+        return einstellungenTagesschule.filter(
+            einstellung =>
+                einstellung.modulTagesschuleTyp ===
+                    TSModulTagesschuleTyp.DYNAMISCH &&
+                einstellung.modulTagesschuleGroups.length > 0
+        );
     }
 
     public save(): void {
-        this.dialogRef.close(this.selectedEinstellungTagesschule ?
-            this.copyModules() : undefined);
+        this.dialogRef.close(
+            this.selectedEinstellungTagesschule ? this.copyModules() : undefined
+        );
     }
 
     // module müssen kopiert werden, um sicherzustellen, dass nicht dieselben ids verwendet werden.
     private copyModules(): TSModulTagesschuleGroup[] {
-        return this.selectedEinstellungTagesschule.modulTagesschuleGroups.map(module => module.getCopy());
+        return this.selectedEinstellungTagesschule.modulTagesschuleGroups.map(
+            module => module.getCopy()
+        );
     }
 
     public close(): void {

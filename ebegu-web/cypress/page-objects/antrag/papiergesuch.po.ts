@@ -15,13 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixturePapierAntrag } from '@dv-e2e/fixtures';
+import {FixturePapierAntrag} from '@dv-e2e/fixtures';
 import {NavigationPO} from './navigation.po';
 
 const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
     cy.getByData('fall-eroeffnen').click();
-    FixturePapierAntrag[dataset]((data) => {
-        cy.getByData('fall-creation-eingangsdatum').find('input').type(data.fallCreationEingangsdatum);
+    FixturePapierAntrag[dataset](data => {
+        cy.getByData('fall-creation-eingangsdatum')
+            .find('input')
+            .type(data.fallCreationEingangsdatum);
     });
     cy.getByData('gesuchsperioden.2022/23').find('label').click();
     cy.intercept('POST', '**/gesuche');
@@ -31,5 +33,5 @@ const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
 };
 
 export const AntragPapierPO = {
-    createPapierGesuch,
+    createPapierGesuch
 };

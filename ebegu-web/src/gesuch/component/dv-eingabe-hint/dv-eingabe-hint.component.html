@@ -16,5 +16,9 @@
   -->
 
 <div class="eingabe-hint inline-hint" *ngIf="isVisible()">
-    <span>{{label}}&nbsp;{{vergleichswert?.toLocaleString('de-CH') }}&nbsp;{{'CHF' | translate}}</span>
+    <span
+        >{{ label }}&nbsp;{{ vergleichswert?.toLocaleString('de-CH') }}&nbsp;{{
+            'CHF' | translate
+        }}</span
+    >
 </div>

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
     selector: 'dv-ferienbetreuung-freigabe',
@@ -23,12 +23,4 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
     styleUrls: ['./ferienbetreuung-freigabe.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FerienbetreuungFreigabeComponent implements OnInit {
-
-    public constructor() {
-    }
-
-    public ngOnInit(): void {
-    }
-
-}
+export class FerienbetreuungFreigabeComponent {}

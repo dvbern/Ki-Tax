@@ -16,11 +16,13 @@
 import {TSMitteilung} from './TSMitteilung';
 
 export class TSMtteilungSearchresultDTO {
-
     private _mitteilungen: Array<TSMitteilung>;
     private _totalResultSize: number;
 
-    public constructor(mitteilungen?: Array<TSMitteilung>, totalResultSize?: number) {
+    public constructor(
+        mitteilungen?: Array<TSMitteilung>,
+        totalResultSize?: number
+    ) {
         this._mitteilungen = mitteilungen;
         this._totalResultSize = totalResultSize;
     }

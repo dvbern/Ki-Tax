@@ -21,10 +21,7 @@ import {TutorialGemeindeLoginComponent} from './tutorial/tutorial-gemeinde-login
 import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution-login/tutorial-institution-login.component';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        NgAuthenticationRoutingModule
-    ],
+    imports: [SharedModule, NgAuthenticationRoutingModule],
     declarations: [
         LocalLoginComponent,
         TutorialInstitutionLoginComponent,
@@ -34,6 +31,4 @@ import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution
         // use providedIn in the class instead
     ]
 })
-
-export class NgAuthenticationModule {
-}
+export class NgAuthenticationModule {}

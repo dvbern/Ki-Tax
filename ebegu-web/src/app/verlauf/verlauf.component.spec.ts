@@ -27,18 +27,28 @@ import {SharedModule} from '../shared/shared.module';
 
 import {VerlaufComponent} from './verlauf.component';
 
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
-    ['getAllAntragDTOForDossier', 'getAllAntragDTOForDossier']);
-const antragStatusHistoryRSSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
-    ['loadAllAntragStatusHistoryByGesuchsperiode']);
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
-const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-    ['params']);
-const ebeguUtilSpy = jasmine.createSpyObj<EbeguUtil>(EbeguUtil.name,
-    ['getAntragTextDateAsString']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, [
+    'getAllAntragDTOForDossier',
+    'getAllAntragDTOForDossier'
+]);
+const antragStatusHistoryRSSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(
+    AntragStatusHistoryRS.name,
+    ['loadAllAntragStatusHistoryByGesuchsperiode']
+);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+    AuthServiceRS.name,
+    ['isOneOfRoles']
+);
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+    UIRouterGlobals.name,
+    ['params']
+);
+const ebeguUtilSpy = jasmine.createSpyObj<EbeguUtil>(EbeguUtil.name, [
+    'getAntragTextDateAsString'
+]);
 
 describe('VerlaufComponent', () => {
     let component: VerlaufComponent;
@@ -51,7 +61,10 @@ describe('VerlaufComponent', () => {
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: GesuchRS, useValue: gesuchRSSpy},
-                {provide: AntragStatusHistoryRS, useValue: antragStatusHistoryRSSpy},
+                {
+                    provide: AntragStatusHistoryRS,
+                    useValue: antragStatusHistoryRSSpy
+                },
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: EbeguUtil, useValue: ebeguUtilSpy}

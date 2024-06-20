@@ -38,15 +38,15 @@ const getEinkommenBeiderGesuchsteller = () => {
 };
 
 const getNettovermoegenFuenfProzent = () => {
-	return cy.getByData('nettovermoegenFuenfProzent');
+    return cy.getByData('nettovermoegenFuenfProzent');
 };
 
 const getAnrechenbaresEinkommen = () => {
-	return cy.getByData('anrechenbaresEinkommen');
+    return cy.getByData('anrechenbaresEinkommen');
 };
 
 const getAbzuegeBeiderGesuchstellenden = () => {
-	return cy.getByData('abzuegeBeiderGesuchsteller');
+    return cy.getByData('abzuegeBeiderGesuchsteller');
 };
 
 const getMassgebendesEinkommenVorAbzugFamGroesse = () => {
@@ -76,5 +76,5 @@ export const FinanzielleSituationResultatePO = {
     getAbzuegeBeiderGesuchstellenden,
     getMassgebendesEinkommenVorAbzugFamGroesse,
     // page actions
-    fillFinSitResultate,
+    fillFinSitResultate
 };

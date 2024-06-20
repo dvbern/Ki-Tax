@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GemeindeKennzahlenFormularComponent} from '../gemeinde-kennzahlen-formular/gemeinde-kennzahlen-formular.component';
@@ -32,8 +35,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'gemeindeKennzahlenId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().id)
+                resolveFn: (trans: Transition) => trans.params().id
             }
         ],
         data: {
@@ -48,12 +50,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class GemeindeKennzahlenRoutingModule {
-}
+export class GemeindeKennzahlenRoutingModule {}

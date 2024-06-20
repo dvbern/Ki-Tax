@@ -19,13 +19,14 @@ import {Moment} from 'moment';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 
 export abstract class FamiliensituationUtil {
-
     public static isChangeFrom2GSTo1GS(
         previous: TSFamiliensituation,
         current: TSFamiliensituation | null,
-        stichtag: Moment,
+        stichtag: Moment
     ): boolean {
-        return previous.hasSecondGesuchsteller(stichtag)
-            && !current?.hasSecondGesuchsteller(stichtag);
+        return (
+            previous.hasSecondGesuchsteller(stichtag) &&
+            !current?.hasSecondGesuchsteller(stichtag)
+        );
     }
 }

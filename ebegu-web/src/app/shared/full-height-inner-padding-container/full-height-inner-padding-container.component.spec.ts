@@ -26,12 +26,13 @@ describe('FullHeightContainerComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [FullHeightInnerPaddingContainerComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(FullHeightInnerPaddingContainerComponent);
+        fixture = TestBed.createComponent(
+            FullHeightInnerPaddingContainerComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

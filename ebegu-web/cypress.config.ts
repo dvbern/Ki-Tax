@@ -1,4 +1,4 @@
-import { defineConfig } from 'cypress';
+import {defineConfig} from 'cypress';
 
 import * as dvTasks from './cypress/support/tasks';
 import * as fs from 'fs';
@@ -12,23 +12,26 @@ export default defineConfig({
             // implement node event listeners here
 
             on('task', {
-                ...dvTasks,
+                ...dvTasks
             });
-            on('after:spec',
+            on(
+                'after:spec',
                 (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
-                  if (results && results.video) {
-                    // Do we have failures for any retry attempts?
-                    const failures = results.tests.some((test) =>
-                      test.attempts.some((attempt) => attempt.state === 'failed')
-                    )
-                    if (!failures) {
-                      // delete the video if the spec passed and no tests retried
-                      fs.unlinkSync(results.video)
+                    if (results && results.video) {
+                        // Do we have failures for any retry attempts?
+                        const failures = results.tests.some(test =>
+                            test.attempts.some(
+                                attempt => attempt.state === 'failed'
+                            )
+                        );
+                        if (!failures) {
+                            // delete the video if the spec passed and no tests retried
+                            fs.unlinkSync(results.video);
+                        }
                     }
-                  }
                 }
-              );
-            on('before:browser:launch', (browser , launchOptions) => {
+            );
+            on('before:browser:launch', (browser, launchOptions) => {
                 // the browser width and height we want to get
                 // our screenshots and videos will be of that resolution
                 const width = 1920;
@@ -73,5 +76,5 @@ export default defineConfig({
         video: true,
         videoCompression: 0
     },
-    scrollBehavior: 'nearest',
+    scrollBehavior: 'nearest'
 });

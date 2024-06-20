@@ -26,30 +26,47 @@ export enum TSRueckforderungStatus {
     BEREIT_ZUM_VERFUEGEN = 'BEREIT_ZUM_VERFUEGEN',
     IN_PRUEFUNG_KANTON_STUFE_2 = 'IN_PRUEFUNG_KANTON_STUFE_2',
     VERFUEGT = 'VERFUEGT',
-    ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
+    ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH'
 }
 
-export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.NEU
-        || status === TSRueckforderungStatus.EINGELADEN;
+export function isNeuOrEingeladenStatus(
+    status: TSRueckforderungStatus
+): boolean {
+    return (
+        status === TSRueckforderungStatus.NEU ||
+        status === TSRueckforderungStatus.EINGELADEN
+    );
 }
 
-export function isStatusRelevantForFrist(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.NEU
-        || status === TSRueckforderungStatus.EINGELADEN
-        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
-        || status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-        || status === TSRueckforderungStatus.GEPRUEFT_STUFE_1
-        || status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2;
+export function isStatusRelevantForFrist(
+    status: TSRueckforderungStatus
+): boolean {
+    return (
+        status === TSRueckforderungStatus.NEU ||
+        status === TSRueckforderungStatus.EINGELADEN ||
+        status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1 ||
+        status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1 ||
+        status === TSRueckforderungStatus.GEPRUEFT_STUFE_1 ||
+        status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_2
+    );
 }
 
-export function isBereitZumVerfuegenOderVerfuegt(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.VERFUEGT || status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN;
+export function isBereitZumVerfuegenOderVerfuegt(
+    status: TSRueckforderungStatus
+): boolean {
+    return (
+        status === TSRueckforderungStatus.VERFUEGT ||
+        status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN
+    );
 }
 
-export function isAnyOfVerfuegtOrPruefungKantonStufe2(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.VERFUEGT ||
+export function isAnyOfVerfuegtOrPruefungKantonStufe2(
+    status: TSRueckforderungStatus
+): boolean {
+    return (
+        status === TSRueckforderungStatus.VERFUEGT ||
         status === TSRueckforderungStatus.BEREIT_ZUM_VERFUEGEN ||
         status === TSRueckforderungStatus.VERFUEGT_PROVISORISCH ||
-        status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2;
+        status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2
+    );
 }

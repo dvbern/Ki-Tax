@@ -16,11 +16,11 @@
  */
 
 const getSubjectInput = () => {
-	return cy.getByData('subject');
+    return cy.getByData('subject');
 };
 
 const getNachrichtInput = () => {
-	return cy.getByData('nachricht');
+    return cy.getByData('nachricht');
 };
 
 const getNachrichtSendenButton = () => {
@@ -28,23 +28,33 @@ const getNachrichtSendenButton = () => {
 };
 
 const getEmpfangendeInput = () => {
-	return cy.getByData('empfaenger');
+    return cy.getByData('empfaenger');
 };
 
 const getMitteilung = (mitteilungIndex: number) => {
-	return cy.getByData('container.mitteilung#' + mitteilungIndex);
+    return cy.getByData('container.mitteilung#' + mitteilungIndex);
 };
 
 const getSubjectOfMitteilung = (mitteilungIndex: number) => {
-	return cy.getByData('container.mitteilung#' + mitteilungIndex, 'nachricht-subject');
+    return cy.getByData(
+        'container.mitteilung#' + mitteilungIndex,
+        'nachricht-subject'
+    );
 };
 
 const getInhaltOfMitteilung = (mitteilungIndex: number) => {
-	return cy.getByData('container.mitteilung#' + mitteilungIndex, 'nachricht-inhalt');
+    return cy.getByData(
+        'container.mitteilung#' + mitteilungIndex,
+        'nachricht-inhalt'
+    );
 };
 
 const getMutationsmeldungHinzufuegenButton = (mitteilungsIndex: number) => {
-	return cy.getByData('container.mitteilung#' + mitteilungsIndex, 'container.mutationsmeldung-hinzufuegen', 'navigation-button');
+    return cy.getByData(
+        'container.mitteilung#' + mitteilungsIndex,
+        'container.mutationsmeldung-hinzufuegen',
+        'navigation-button'
+    );
 };
 
 export const MitteilungenPO = {
@@ -55,5 +65,5 @@ export const MitteilungenPO = {
     getMitteilung,
     getSubjectOfMitteilung,
     getInhaltOfMitteilung,
-    getMutationsmeldungHinzufuegenButton,
+    getMutationsmeldungHinzufuegenButton
 };

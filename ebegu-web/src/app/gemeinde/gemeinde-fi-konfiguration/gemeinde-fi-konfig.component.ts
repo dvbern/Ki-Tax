@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
@@ -47,24 +53,27 @@ export class GemeindeFiKonfigComponent implements OnInit {
 
     private navigationDest: StateDeclaration;
 
-    public constructor(
-        private readonly $transition$: Transition
-    ) {
-    }
+    public constructor(private readonly $transition$: Transition) {}
 
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
     }
 
     public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {
-        return 'gemeinde.edit' === this.navigationDest.name
-            && this.editMode
-            && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
-                || (gk.gesuchsperiode && gk.gesuchsperiode.status &&
-                    TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiode.status));
+        return (
+            'gemeinde.edit' === this.navigationDest.name &&
+            this.editMode &&
+            (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus ||
+                (gk.gesuchsperiode &&
+                    gk.gesuchsperiode.status &&
+                    TSGesuchsperiodeStatus.GESCHLOSSEN !==
+                        gk.gesuchsperiode.status))
+        );
     }
 
-    public addFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten): void {
+    public addFerieninselZeitraum(
+        ferieninselStammdaten: TSFerieninselStammdaten
+    ): void {
         if (!ferieninselStammdaten.zeitraumList) {
             ferieninselStammdaten.zeitraumList = [];
         }
@@ -73,28 +82,49 @@ export class GemeindeFiKonfigComponent implements OnInit {
         ferieninselStammdaten.zeitraumList.push(zeitraum);
     }
 
-    public isAnmeldeschlussRequired(fiStammdaten: TSFerieninselStammdaten): boolean {
+    public isAnmeldeschlussRequired(
+        fiStammdaten: TSFerieninselStammdaten
+    ): boolean {
         // Wenn mindestens ein Zeitraum erfasst ist
-        return this.hasZeitraeume(fiStammdaten) &&
-            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigAb) ||
-            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigBis);
+        return (
+            (this.hasZeitraeume(fiStammdaten) &&
+                EbeguUtil.isNotNullOrUndefined(
+                    fiStammdaten.zeitraumList[0].gueltigkeit.gueltigAb
+                )) ||
+            EbeguUtil.isNotNullOrUndefined(
+                fiStammdaten.zeitraumList[0].gueltigkeit.gueltigBis
+            )
+        );
     }
 
-    public isDatumAbRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
+    public isDatumAbRequired(
+        zeitraum: TSFerieninselZeitraum,
+        fiStammdaten: TSFerieninselStammdaten
+    ): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum bis
-        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss)
-            || (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit)
-                && EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigBis));
+        return (
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss) ||
+            (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit) &&
+                EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigBis))
+        );
     }
 
-    public isDatumBisRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
+    public isDatumBisRequired(
+        zeitraum: TSFerieninselZeitraum,
+        fiStammdaten: TSFerieninselStammdaten
+    ): boolean {
         // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum ab
-        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss)
-            || (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit)
-                && EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigAb));
+        return (
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss) ||
+            (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit) &&
+                EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigAb))
+        );
     }
 
-    public removeFerieninselZeitraum(fiStammdaten: TSFerieninselStammdaten, zeitraum: TSFerieninselZeitraum): void {
+    public removeFerieninselZeitraum(
+        fiStammdaten: TSFerieninselStammdaten,
+        zeitraum: TSFerieninselZeitraum
+    ): void {
         const index = fiStammdaten.zeitraumList.indexOf(zeitraum, 0);
         fiStammdaten.zeitraumList.splice(index, 1);
     }
@@ -107,15 +137,24 @@ export class GemeindeFiKonfigComponent implements OnInit {
         return date.format(CONSTANTS.DATE_FORMAT);
     }
 
-    public ferieninselAktivierungsdatumChanged(config: TSGemeindeKonfiguration): void {
+    public ferieninselAktivierungsdatumChanged(
+        config: TSGemeindeKonfiguration
+    ): void {
         config.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB === property.key)
+            .filter(
+                property =>
+                    TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB ===
+                    property.key
+            )
             .forEach(property => {
-                property.value = this.getFerieninselAktivierungsdatumAsString(config);
+                property.value =
+                    this.getFerieninselAktivierungsdatumAsString(config);
             });
     }
 
-    public getFerieninselAktivierungsdatumAsString(konfiguration: TSGemeindeKonfiguration): string {
+    public getFerieninselAktivierungsdatumAsString(
+        konfiguration: TSGemeindeKonfiguration
+    ): string {
         const datum = konfiguration.konfigFerieninselAktivierungsdatum;
         if (datum && datum.isValid()) {
             return datum.format(CONSTANTS.DATE_FORMAT);
@@ -123,11 +162,15 @@ export class GemeindeFiKonfigComponent implements OnInit {
         return '';
     }
 
-    public areAnyFerienConfiguredForStammdatenArray(stammdatenArr: TSFerieninselStammdaten[]): boolean {
+    public areAnyFerienConfiguredForStammdatenArray(
+        stammdatenArr: TSFerieninselStammdaten[]
+    ): boolean {
         return stammdatenArr.filter(f => f.anmeldeschluss).length > 0;
     }
 
-    public areAnyFerienConfiguredForStammdaten(stammdaten: TSFerieninselStammdaten): boolean {
+    public areAnyFerienConfiguredForStammdaten(
+        stammdaten: TSFerieninselStammdaten
+    ): boolean {
         return EbeguUtil.isNotNullOrUndefined(stammdaten.anmeldeschluss);
     }
 

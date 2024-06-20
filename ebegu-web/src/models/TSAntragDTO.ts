@@ -202,9 +202,9 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
             return this._gesuchsperiodeString;
         }
 
-        return this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis ?
-            `${this._gesuchsperiodeGueltigAb.year()}/${this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000}` :
-            undefined;
+        return this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis
+            ? `${this._gesuchsperiodeGueltigAb.year()}/${this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000}`
+            : undefined;
     }
 
     public set gesuchsperiodeString(value: string) {
@@ -228,7 +228,10 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public hasBesitzer(): boolean {
-        return this._besitzerUsername !== undefined && this.besitzerUsername !== null;
+        return (
+            this._besitzerUsername !== undefined &&
+            this.besitzerUsername !== null
+        );
     }
 
     public get beschwerdeHaengig(): boolean {
@@ -269,7 +272,10 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
 
     public hasAnySchulamtAngebot(): boolean {
         for (const angebot of this.angebote) {
-            if (TSBetreuungsangebotTyp.TAGESSCHULE === angebot || TSBetreuungsangebotTyp.FERIENINSEL === angebot) {
+            if (
+                TSBetreuungsangebotTyp.TAGESSCHULE === angebot ||
+                TSBetreuungsangebotTyp.FERIENINSEL === angebot
+            ) {
                 return true;
             }
         }
@@ -287,7 +293,10 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
 
     public hasAnyJugendamtAngebot(): boolean {
         for (const angebot of this.angebote) {
-            if (TSBetreuungsangebotTyp.TAGESSCHULE !== angebot && TSBetreuungsangebotTyp.FERIENINSEL !== angebot) {
+            if (
+                TSBetreuungsangebotTyp.TAGESSCHULE !== angebot &&
+                TSBetreuungsangebotTyp.FERIENINSEL !== angebot
+            ) {
                 return true;
             }
         }

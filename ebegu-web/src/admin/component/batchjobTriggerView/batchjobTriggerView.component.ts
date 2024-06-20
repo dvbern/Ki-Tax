@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
@@ -28,37 +28,50 @@ const LOG = LogFactory.createLog('BatchjobTriggerViewComponent');
     styleUrls: ['./batchjobTrigger.component.less']
 })
 export class BatchjobTriggerViewComponent {
-
     public constructor(
         private readonly dialog: MatDialog,
         private readonly databaseMigrationRS: DatabaseMigrationRS,
         private readonly dailyBatchRS: DailyBatchRS
-    ) {
-    }
+    ) {}
 
     public processScript(script: string): void {
         this.databaseMigrationRS.processScript(script);
     }
 
     public runBatchCleanDownloadFiles(): void {
-        this.dailyBatchRS.runBatchCleanDownloadFiles().subscribe(response => {
-            const title = response ? 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK' : 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
-            this.createAndOpenDialog(title);
-        }, error => LOG.error(error));
+        this.dailyBatchRS.runBatchCleanDownloadFiles().subscribe(
+            response => {
+                const title = response
+                    ? 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK'
+                    : 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
+                this.createAndOpenDialog(title);
+            },
+            error => LOG.error(error)
+        );
     }
 
     public runBatchMahnungFristablauf(): void {
-        this.dailyBatchRS.runBatchMahnungFristablauf().subscribe(response => {
-            const title = response ? 'MAHNUNG_BATCH_EXECUTED_OK' : 'MAHNUNG_BATCH_EXECUTED_ERROR';
-            this.createAndOpenDialog(title);
-        }, error => LOG.error(error));
+        this.dailyBatchRS.runBatchMahnungFristablauf().subscribe(
+            response => {
+                const title = response
+                    ? 'MAHNUNG_BATCH_EXECUTED_OK'
+                    : 'MAHNUNG_BATCH_EXECUTED_ERROR';
+                this.createAndOpenDialog(title);
+            },
+            error => LOG.error(error)
+        );
     }
 
     public runBatchUpdateGemeindeForBGInstitutionen(): void {
-        this.dailyBatchRS.runBatchUpdateGemeindeForBGInstitutionen().subscribe(response => {
-            const title = response ? 'Gemeinden erfolgreich aktualisiert' : 'Fehler beim aktualisieren der Gemeinden';
-            this.createAndOpenDialog(title);
-        }, error => LOG.error(error));
+        this.dailyBatchRS.runBatchUpdateGemeindeForBGInstitutionen().subscribe(
+            response => {
+                const title = response
+                    ? 'Gemeinden erfolgreich aktualisiert'
+                    : 'Fehler beim aktualisieren der Gemeinden';
+                this.createAndOpenDialog(title);
+            },
+            error => LOG.error(error)
+        );
     }
 
     private createAndOpenDialog(title: string): void {

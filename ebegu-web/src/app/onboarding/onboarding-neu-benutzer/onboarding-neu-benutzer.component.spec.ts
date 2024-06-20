@@ -30,16 +30,29 @@ describe('OnboardingNeuBenutzerComponent', () => {
     let component: OnboardingNeuBenutzerComponent;
     let fixture: ComponentFixture<OnboardingNeuBenutzerComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveUndVonSchulverbundGemeinden']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getAktiveUndVonSchulverbundGemeinden'
+    ]);
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode', 'getPublicPropertiesCached']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['isDummyMode', 'getPublicPropertiesCached']
+        );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(waitForAsync(() => {
-        gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden.and.returnValue(of([]).toPromise());
-        applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of({} as any).toPromise());
+        gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden.and.returnValue(
+            of([]).toPromise()
+        );
+        applicationPropertyRSSpy.isDummyMode.and.returnValue(
+            of(true).toPromise()
+        );
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of({} as any).toPromise()
+        );
 
         TestBed.configureTestingModule({
             imports: [
@@ -50,7 +63,10 @@ describe('OnboardingNeuBenutzerComponent', () => {
             declarations: [OnboardingNeuBenutzerComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                },
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ]
         })
@@ -69,6 +85,8 @@ describe('OnboardingNeuBenutzerComponent', () => {
     });
 
     it('should load all active und von Schulverbund Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden).toHaveBeenCalled();
+        expect(
+            gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden
+        ).toHaveBeenCalled();
     });
 });

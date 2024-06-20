@@ -18,7 +18,6 @@ import {TSEinstellungenFerieninsel} from './TSEinstellungenFerieninsel';
 import {TSGemeinde} from './TSGemeinde';
 
 export class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
-
     private _gemeinde: TSGemeinde;
     private _einstellungenFerieninsel: Array<TSEinstellungenFerieninsel>;
 
@@ -38,7 +37,9 @@ export class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
         return this._einstellungenFerieninsel;
     }
 
-    public set einstellungenFerieninsel(value: Array<TSEinstellungenFerieninsel>) {
+    public set einstellungenFerieninsel(
+        value: Array<TSEinstellungenFerieninsel>
+    ) {
         this._einstellungenFerieninsel = value;
     }
 }

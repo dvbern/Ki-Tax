@@ -72,33 +72,49 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     }
 
     public isAtLeastInBearbeitungKantonOrZurueckgegeben(): boolean {
-        return this.isAtLeastInBearbeitungKanton()
-            || this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
+        return (
+            this.isAtLeastInBearbeitungKanton() ||
+            this.status ===
+                TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE
+        );
     }
 
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {
         switch (role) {
             case TSRole.SUPER_ADMIN:
-                return (this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung()) ||
-                    (this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung());
+                return (
+                    (this.isInBearbeitungKanton() &&
+                        this.angabenKorrektur?.isInBearbeitung()) ||
+                    (this.isInBearbeitungGemeinde() &&
+                        this.angabenDeklaration?.isInBearbeitung())
+                );
             case TSRole.SACHBEARBEITER_MANDANT:
             case TSRole.ADMIN_MANDANT:
-                return this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung();
+                return (
+                    this.isInBearbeitungKanton() &&
+                    this.angabenKorrektur?.isInBearbeitung()
+                );
             case TSRole.ADMIN_TS:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung();
+                return (
+                    this.isInBearbeitungGemeinde() &&
+                    this.angabenDeklaration?.isInBearbeitung()
+                );
             default:
                 return false;
         }
     }
 
     public allAngabenInstitutionContainersGeprueft(): boolean {
-        return this.angabenInstitutionContainers.reduce((
-            prev: boolean,
-            cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer
-        ) => prev && cur.isGeprueftGemeinde(), true);
+        return this.angabenInstitutionContainers.reduce(
+            (
+                prev: boolean,
+                cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+            ) => prev && cur.isGeprueftGemeinde(),
+            true
+        );
     }
 
     public isAtLeastGeprueft(): boolean {
@@ -116,11 +132,17 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     }
 
     public isInZweitPruefung(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG
+        );
     }
 
     public isGeprueft(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT
+        );
     }
 
     public get betreuungsstundenPrognose(): number {
@@ -140,6 +162,9 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     }
 
     public isAbgeschlossen(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN
+        );
     }
 }

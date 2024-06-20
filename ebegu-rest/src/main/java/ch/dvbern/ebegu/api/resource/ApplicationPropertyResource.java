@@ -286,106 +286,85 @@ public class ApplicationPropertyResource {
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
 		boolean isEbeguKibonAnfrageTestGuiEnabled = ebeguConfiguration.getEbeguKibonAnfrageTestGuiEnabled();
+		boolean testfaelleEnabled = ebeguConfiguration.isTestfaelleEnabled();
 
-		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-
-		ApplicationProperty einreichefristOeffentlich  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH,
-							mandant)
-			.orElseThrow(() -> notFound);
-		ApplicationProperty einreichefristPrivat  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT,
-							mandant)
-			.orElseThrow(() -> notFound);
-		ApplicationProperty ferienbetreuungAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FERIENBETREUUNG_AKTIV,
-							mandant)
-				.orElseThrow(() -> notFound);
+		ApplicationProperty einreichefristOeffentlich =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH);
+		ApplicationProperty einreichefristPrivat =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT);
+		ApplicationProperty ferienbetreuungAktiv =
+				getApplicationProperty(mandant, ApplicationPropertyKey.FERIENBETREUUNG_AKTIV);
 		ApplicationProperty lastenausgleichAktiv =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_AKTIV,
-				mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty lastenausgleichTagesschulenAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty gemeindeKennzahlenAktiv  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty primaryColor  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty primaryColorDark  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_DARK,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty primaryColorLight  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.PRIMARY_COLOR_LIGHT,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty logoFileName  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_FILE_NAME,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty logoFileNameWhite  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.LOGO_WHITE_FILE_NAME,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty infomaZahlungen  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
-							mandant)
-				.orElseThrow(() -> notFound);
-		ApplicationProperty auszahlungAnEltern  =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.AUSZAHLUNGEN_AN_ELTERN,
-					mandant)
-				.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.LASTENAUSGLEICH_AKTIV);
+		ApplicationProperty lastenausgleichTagesschulenAktiv =
+				getApplicationProperty(mandant, ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AKTIV);
+		ApplicationProperty gemeindeKennzahlenAktiv =
+				getApplicationProperty(mandant, ApplicationPropertyKey.GEMEINDE_KENNZAHLEN_AKTIV);
+		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungDe =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE);
+		ApplicationProperty lastenausgleichTagesschulenAnteilZweitpruefungFr =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR);
+		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungDe =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE);
+		ApplicationProperty lastenausgleichTagesschulenAutoZweitpruefungFr =
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR);
+		ApplicationProperty primaryColor =
+				getApplicationProperty(mandant, ApplicationPropertyKey.PRIMARY_COLOR);
+		ApplicationProperty primaryColorDark =
+				getApplicationProperty(mandant, ApplicationPropertyKey.PRIMARY_COLOR_DARK);
+		ApplicationProperty primaryColorLight =
+				getApplicationProperty(mandant, ApplicationPropertyKey.PRIMARY_COLOR_LIGHT);
+		ApplicationProperty logoFileName =
+				getApplicationProperty(mandant, ApplicationPropertyKey.LOGO_FILE_NAME);
+		ApplicationProperty logoFileNameWhite =
+				getApplicationProperty(mandant, ApplicationPropertyKey.LOGO_WHITE_FILE_NAME);
+		ApplicationProperty infomaZahlungen =
+				getApplicationProperty(mandant, ApplicationPropertyKey.INFOMA_ZAHLUNGEN);
+		ApplicationProperty auszahlungAnEltern =
+				getApplicationProperty(mandant, ApplicationPropertyKey.AUSZAHLUNGEN_AN_ELTERN);
 		ApplicationProperty frenchEnabled =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FRENCH_ENABLED, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.FRENCH_ENABLED);
 		ApplicationProperty geresEnabledForMandant =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GERES_ENABLED_FOR_MANDANT, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.GERES_ENABLED_FOR_MANDANT);
 		ApplicationProperty steuerschnittstelleAktivAb =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB);
 		ApplicationProperty zusatzinformationenInstitution =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION);
 		ApplicationProperty activatedDemoFeatures =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant)
-				.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES);
 		ApplicationProperty checkboxAuszahlungInZukunft =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(mandant, ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT);
 		ApplicationProperty institutionenDurchGemeindenEinladen =
-				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN, mandant)
-						.orElseThrow(() -> notFound);
+				getApplicationProperty(
+						mandant,
+						ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN);
 
-		ApplicationProperty erlaubenInstitutionenZuWaehlen = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty angebotTSEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TS_ENABLED, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty angebotFIEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_FI_ENABLED, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty angebotMittagstischEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_MITTAGSTISCH_ENABLED, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty angebotTFOEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TFO_ENABLED, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty abweichungenEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ABWEICHUNGEN_ENABLED, mandant).orElseThrow(() -> notFound);
-		ApplicationProperty gemeindeVereinfachteKonfigAktiv = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GEMEINDE_VEREINFACHTE_KONFIG_AKTIV, mandant).orElseThrow(() -> notFound);
+		ApplicationProperty erlaubenInstitutionenZuWaehlen =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN);
+		ApplicationProperty angebotTSEnabled =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ANGEBOT_TS_ENABLED);
+		ApplicationProperty angebotFIEnabled =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ANGEBOT_FI_ENABLED);
+		ApplicationProperty angebotMittagstischEnabled =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ANGEBOT_MITTAGSTISCH_ENABLED);
+		ApplicationProperty angebotTFOEnabled =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ANGEBOT_TFO_ENABLED);
+		ApplicationProperty abweichungenEnabled =
+				getApplicationProperty(mandant, ApplicationPropertyKey.ABWEICHUNGEN_ENABLED);
+		ApplicationProperty gemeindeVereinfachteKonfigAktiv =
+				getApplicationProperty(mandant, ApplicationPropertyKey.GEMEINDE_VEREINFACHTE_KONFIG_AKTIV);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -403,52 +382,67 @@ public class ApplicationPropertyResource {
 		} catch (NumberFormatException e) {
 			throw new EbeguRuntimeException("new BigDecimal()", "Fehler beim Parsen einer Einstellung", e);
 		}
-		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
-			nodeName,
-			devmode,
-			whitelist,
-			dummyMode,
-			sentryEnvName,
-			background,
-			zahlungentestmode,
-			personenSucheDisabled,
-			kitaxHost,
-			kitaxendpoint,
-			einreichefristOeffentlich.getValue(),
-			einreichefristPrivat.getValue(),
-			stringToBool(lastenausgleichAktiv.getValue()),
-			stringToBool(ferienbetreuungAktiv.getValue()),
-			stringToBool(lastenausgleichTagesschulenAktiv.getValue()),
-			stringToBool(gemeindeKennzahlenAktiv.getValue()),
-			lastenausgleichTagesschulenAnteilZweitpruefungDeConverted,
-			lastenausgleichTagesschulenAnteilZweitpruefungFrConverted,
-			lastenausgleichTagesschulenAutoZweitpruefungDeConverted,
-			lastenausgleichTagesschulenAutoZweitpruefungFrConverted,
-			primaryColor.getValue(),
-			primaryColorDark.getValue(),
-			primaryColorLight.getValue(),
-			logoFileName.getValue(),
-			logoFileNameWhite.getValue(),
-			multimandantEnabled,
-			stringToBool(infomaZahlungen.getValue()),
-			stringToBool(frenchEnabled.getValue()),
-			stringToBool(geresEnabledForMandant.getValue()),
-			isEbeguKibonAnfrageTestGuiEnabled,
-			steuerschnittstelleAktivAb.getValue(),
-			stringToBool(zusatzinformationenInstitution.getValue()),
-			activatedDemoFeatures.getValue(),
-			stringToBool(checkboxAuszahlungInZukunft.getValue()),
-			stringToBool(institutionenDurchGemeindenEinladen.getValue()),
-			stringToBool(erlaubenInstitutionenZuWaehlen.getValue()),
-			stringToBool(angebotTSEnabled.getValue()),
-			stringToBool(angebotFIEnabled.getValue()),
-			stringToBool(angebotMittagstischEnabled.getValue()),
-			stringToBool(angebotTFOEnabled.getValue()),
-			stringToBool(auszahlungAnEltern.getValue()),
-			stringToBool(abweichungenEnabled.getValue()),
-			stringToBool(gemeindeVereinfachteKonfigAktiv.getValue())
-			);
+		JaxPublicAppConfig pubAppConf = JaxPublicAppConfig.builder()
+				.currentNode(nodeName)
+				.devmode(devmode)
+				.whitelist(whitelist)
+				.dummyMode(dummyMode)
+				.sentryEnvName(sentryEnvName)
+				.backgroundColor(background)
+				.zahlungentestmode(zahlungentestmode)
+				.personenSucheDisabled(personenSucheDisabled)
+				.kitaxHost(kitaxHost)
+				.kitaxEndpoint(kitaxendpoint)
+				.notverordnungDefaultEinreichefristOeffentlich(einreichefristOeffentlich.getValue())
+				.notverordnungDefaultEinreichefristPrivat(einreichefristPrivat.getValue())
+				.lastenausgleichAktiv(stringToBool(lastenausgleichAktiv.getValue()))
+				.ferienbetreuungAktiv(stringToBool(ferienbetreuungAktiv.getValue()))
+				.lastenausgleichTagesschulenAktiv(stringToBool(lastenausgleichTagesschulenAktiv.getValue()))
+				.gemeindeKennzahlenAktiv(stringToBool(gemeindeKennzahlenAktiv.getValue()))
+				.lastenausgleichTagesschulenAnteilZweitpruefungDe(
+						lastenausgleichTagesschulenAnteilZweitpruefungDeConverted)
+				.lastenausgleichTagesschulenAnteilZweitpruefungFr(
+						lastenausgleichTagesschulenAnteilZweitpruefungFrConverted)
+				.lastenausgleichTagesschulenAutoZweitpruefungDe(lastenausgleichTagesschulenAutoZweitpruefungDeConverted)
+				.lastenausgleichTagesschulenAutoZweitpruefungFr(lastenausgleichTagesschulenAutoZweitpruefungFrConverted)
+				.primaryColor(primaryColor.getValue())
+				.primaryColorDark(primaryColorDark.getValue())
+				.primaryColorLight(primaryColorLight.getValue())
+				.logoFileName(logoFileName.getValue())
+				.logoFileNameWhite(logoFileNameWhite.getValue())
+				.multimandantAktiviert(multimandantEnabled)
+				.infomaZahlungen(stringToBool(infomaZahlungen.getValue()))
+				.frenchEnabled(stringToBool(frenchEnabled.getValue()))
+				.geresEnabledForMandant(stringToBool(geresEnabledForMandant.getValue()))
+				.ebeguKibonAnfrageTestGuiEnabled(isEbeguKibonAnfrageTestGuiEnabled)
+				.steuerschnittstelleAktivAb(steuerschnittstelleAktivAb.getValue())
+				.zusatzinformationenInstitution(stringToBool(zusatzinformationenInstitution.getValue()))
+				.activatedDemoFeatures(activatedDemoFeatures.getValue())
+				.checkboxAuszahlungInZukunft(stringToBool(checkboxAuszahlungInZukunft.getValue()))
+				.institutionenDurchGemeindenEinladen(stringToBool(institutionenDurchGemeindenEinladen.getValue()))
+				.erlaubenInstitutionenZuWaehlen(stringToBool(erlaubenInstitutionenZuWaehlen.getValue()))
+				.angebotTSActivated(stringToBool(angebotTSEnabled.getValue()))
+				.angebotFIActivated(stringToBool(angebotFIEnabled.getValue()))
+				.angebotMittagstischEnabled(stringToBool(angebotMittagstischEnabled.getValue()))
+				.angebotTFOActivated(stringToBool(angebotTFOEnabled.getValue()))
+				.auszahlungAnEltern(stringToBool(auszahlungAnEltern.getValue()))
+				.abweichungenEnabled(stringToBool(abweichungenEnabled.getValue()))
+				.gemeindeVereinfachteKonfigAktiv(stringToBool(gemeindeVereinfachteKonfigAktiv.getValue()))
+				.testfaelleEnabled(testfaelleEnabled)
+				.build();
+
 		return Response.ok(pubAppConf).build();
+	}
+
+	private ApplicationProperty getApplicationProperty(
+			Mandant mandant,
+			ApplicationPropertyKey applicationPropertyKey) {
+		return this.applicationPropertyService.readApplicationProperty(
+						applicationPropertyKey,
+						mandant)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"getPublicProperties",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 
 	private boolean stringToBool(@Nonnull String str) {

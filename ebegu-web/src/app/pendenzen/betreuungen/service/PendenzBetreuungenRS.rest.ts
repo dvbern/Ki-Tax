@@ -18,7 +18,6 @@ import {TSPendenzBetreuung} from '../../../../models/TSPendenzBetreuung';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 
 export class PendenzBetreuungenRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -28,14 +27,18 @@ export class PendenzBetreuungenRS {
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService
     ) {
-        this.serviceURL = `${REST_API  }search/pendenzenBetreuungen`;
+        this.serviceURL = `${REST_API}search/pendenzenBetreuungen`;
     }
 
     public getPendenzenBetreuungenList(): IPromise<Array<TSPendenzBetreuung>> {
-        return this.$http.get(this.serviceURL)
-            .then((response: any) => {
-                this.$log.debug('PARSING pendenzenBetreuungen REST object ', response.data);
-                return this.ebeguRestUtil.parsePendenzBetreuungenList(response.data);
-            });
+        return this.$http.get(this.serviceURL).then((response: any) => {
+            this.$log.debug(
+                'PARSING pendenzenBetreuungen REST object ',
+                response.data
+            );
+            return this.ebeguRestUtil.parsePendenzBetreuungenList(
+                response.data
+            );
+        });
     }
 }

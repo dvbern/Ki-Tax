@@ -18,7 +18,6 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 
 describe('dvBisher', () => {
-
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
@@ -27,11 +26,13 @@ describe('dvBisher', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
+        })
+    );
 
     it('should be defined', () => {
         /*

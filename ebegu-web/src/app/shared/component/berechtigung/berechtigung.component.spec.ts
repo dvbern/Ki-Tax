@@ -37,16 +37,29 @@ describe('BerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenEditableForCurrentBenutzer']);
-    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
-    const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-        ['getSozialdienstList']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['getInstitutionenEditableForCurrentBenutzer']
+    );
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['getAllTraegerschaften']
+    );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal', 'principal$']
+    );
+    const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenForPrincipal$'
+    ]);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(
+        SozialdienstRS.name,
+        ['getSozialdienstList']
+    );
 
     const inputSelector = '.dv-input-container-medium';
 
@@ -54,15 +67,15 @@ describe('BerechtigungComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         sozialdienstSpy.getSozialdienstList.and.returnValue(of([]));
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
@@ -90,7 +103,9 @@ describe('BerechtigungComponent', () => {
 
     it('should load institutionen', () => {
         fixture.detectChanges();
-        expect(insitutionSpy.getInstitutionenEditableForCurrentBenutzer).toHaveBeenCalled();
+        expect(
+            insitutionSpy.getInstitutionenEditableForCurrentBenutzer
+        ).toHaveBeenCalled();
     });
 
     it('should load traegerschaften for role ADMIN_TRAEGERSCHAFT', () => {
@@ -106,10 +121,14 @@ describe('BerechtigungComponent', () => {
         expect(component.berechtigung.hasGemeindeRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        const debugElements = fixture.debugElement.queryAll(
+            By.css(inputSelector)
+        );
         expect(debugElements.length).toBe(0);
 
-        expect(fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))).toBeTruthy();
+        expect(
+            fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))
+        ).toBeTruthy();
     });
 
     it('should display institution when institution dependent role', () => {
@@ -117,10 +136,14 @@ describe('BerechtigungComponent', () => {
         expect(component.berechtigung.hasInstitutionRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        const debugElements = fixture.debugElement.queryAll(
+            By.css(inputSelector)
+        );
         expect(debugElements.length).toBe(0);
 
-        expect(fixture.debugElement.query(By.css('[id^=institution-]'))).toBeTruthy();
+        expect(
+            fixture.debugElement.query(By.css('[id^=institution-]'))
+        ).toBeTruthy();
     });
 
     it('should display institution when institution dependent role', () => {
@@ -128,10 +151,14 @@ describe('BerechtigungComponent', () => {
         expect(component.berechtigung.hasTraegerschaftRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        const debugElements = fixture.debugElement.queryAll(
+            By.css(inputSelector)
+        );
         expect(debugElements.length).toBe(0);
 
-        expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();
+        expect(
+            fixture.debugElement.query(By.css('[id^=treagerschaft-]'))
+        ).toBeTruthy();
     });
 
     it('should display sozialdienst when sozialdienst dependent role', () => {
@@ -139,9 +166,13 @@ describe('BerechtigungComponent', () => {
         expect(component.berechtigung.hasSozialdienstRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
+        const debugElements = fixture.debugElement.queryAll(
+            By.css(inputSelector)
+        );
         expect(debugElements.length).toBe(0);
 
-        expect(fixture.debugElement.query(By.css('[id^=sozialdienst-]'))).toBeTruthy();
+        expect(
+            fixture.debugElement.query(By.css('[id^=sozialdienst-]'))
+        ).toBeTruthy();
     });
 });

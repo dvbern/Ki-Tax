@@ -15,7 +15,6 @@
 
 import * as angular from 'angular';
 
-import * as Raven from 'raven-js';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
@@ -36,13 +35,17 @@ import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import ITimeoutService = angular.ITimeoutService;
+import * as Sentry from '@sentry/browser';
 
 const LOG = LogFactory.createLog('AuthServiceRS');
 
 export class AuthServiceRS {
-
     public static $inject = [
-        '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil',
+        '$http',
+        '$q',
+        '$timeout',
+        '$cookies',
+        'EbeguRestUtil',
         'AuthLifeCycleService',
         'BenutzerRS',
         'ApplicationPropertyRS'
@@ -53,9 +56,12 @@ export class AuthServiceRS {
     // We are using a ReplaySubject, because it blocks the authenticationHook until the first value is emitted.
     // Thus the session restoration from the cookie is completed before the authenticationHook checks for
     // authentication.
-    private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(1);
+    private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(
+        1
+    );
 
-    private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
+    private _principal$: Observable<TSBenutzer | null> =
+        this.principalSubject$.asObservable();
     private portalAccCreationLink: string;
     private angebotTSEnabled: boolean;
 
@@ -95,33 +101,40 @@ export class AuthServiceRS {
         return undefined;
     }
 
-    public loginRequest(userCredentials: TSBenutzer): IPromise<TSBenutzer> | undefined {
+    public loginRequest(
+        userCredentials: TSBenutzer
+    ): IPromise<TSBenutzer> | undefined {
         if (!userCredentials) {
             return undefined;
         }
 
-        return this.$http.post(
-            `${CONSTANTS.REST_API  }auth/login`,
-            this.ebeguRestUtil.userToRestObject({}, userCredentials)
-        ).then(() => {
-            // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
-            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
-            // Response cookies are not immediately accessible, so lets wait for a bit
-            return this.$timeout(() => this.initWithCookie(), 100);
-        });
+        return this.$http
+            .post(
+                `${CONSTANTS.REST_API}auth/login`,
+                this.ebeguRestUtil.userToRestObject({}, userCredentials)
+            )
+            .then(() => {
+                // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
+                this.authLifeCycleService.changeAuthStatus(
+                    TSAuthEvent.LOGOUT_SUCCESS,
+                    'logged out before logging in'
+                );
+                // Response cookies are not immediately accessible, so lets wait for a bit
+                return this.$timeout(() => this.initWithCookie(), 100);
+            });
     }
 
     public initWithCookie(): IPromise<TSBenutzer> {
         LOG.debug('initWithCookie');
 
-        const authIdbase64 = this.$cookies.get('authIdSuperuser') || this.$cookies.get('authId');
+        const authIdbase64 =
+            this.$cookies.get('authIdSuperuser') || this.$cookies.get('authId');
         if (!authIdbase64) {
             LOG.info('no login cookie available');
             this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
-        // eslint-disable-next-line
         try {
             // we take the complete user from Server and store it in principal
             return this.reloadUser();
@@ -137,43 +150,57 @@ export class AuthServiceRS {
             return this.$q.when(this.portalAccCreationLink);
         }
 
-        return this.$http.get(`${CONSTANTS.REST_API  }auth/portalAccountPage`).then((res: any) => {
-            this.portalAccCreationLink = res.data;
-            return res.data;
-        });
+        return this.$http
+            .get(`${CONSTANTS.REST_API}auth/portalAccountPage`)
+            .then((res: any) => {
+                this.portalAccCreationLink = res.data;
+                return res.data;
+            });
     }
 
     public burnPortalTimeout(): IPromise<any> {
-        return this.getPortalAccountCreationPageLink().then((linktext: string) => {
-            if (EbeguUtil.isEmptyStringNullOrUndefined(linktext)) {
-                return Promise.resolve(undefined);
-            }
-
-            if (linktext && this.isBeLoginLink(linktext)) {
-                LOG.debug(`Burn BE-Login timeout page at ${  linktext}`);
-                // the no-cors options will prevent the browser to log an error because be-login has not
-                // set Access-Control-Allow-Origin: * that would allow us to fetch the page from javascript
-                // instead it will prevent js code from even trying to use the response but we don't need that anyway
-                let fetchPromise: IPromise<any>;
-                if ('fetch' in window) { // if available get page using fetch api to be able to use no-cors
-                    fetchPromise = fetch(linktext, {
-                        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-                        mode: 'no-cors', // no-cors, *cors, same-origin
-                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                        credentials: 'include', // include, *same-origin, omit
-                        redirect: 'follow' // manual, *follow, error
-                    });
-                } else {
-                    fetchPromise = this.$http.get(linktext, {withCredentials: true});
+        return this.getPortalAccountCreationPageLink().then(
+            (linktext: string) => {
+                if (EbeguUtil.isEmptyStringNullOrUndefined(linktext)) {
+                    return Promise.resolve(undefined);
                 }
 
-                return fetchPromise.then(() =>
-                        LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
-                    , () => LOG.debug(`failed to read ${linktext} during burnrequest but this is expected`));
-            }
+                if (linktext && this.isBeLoginLink(linktext)) {
+                    LOG.debug(`Burn BE-Login timeout page at ${linktext}`);
+                    // the no-cors options will prevent the browser to log an error because be-login has not
+                    // set Access-Control-Allow-Origin: * that would allow us to fetch the page from javascript
+                    // instead it will prevent js code from even trying to use the response but we don't need that anyway
+                    let fetchPromise: IPromise<any>;
+                    if ('fetch' in window) {
+                        // if available get page using fetch api to be able to use no-cors
+                        fetchPromise = fetch(linktext, {
+                            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                            mode: 'no-cors', // no-cors, *cors, same-origin
+                            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                            credentials: 'include', // include, *same-origin, omit
+                            redirect: 'follow' // manual, *follow, error
+                        });
+                    } else {
+                        fetchPromise = this.$http.get(linktext, {
+                            withCredentials: true
+                        });
+                    }
 
-            return this.$q(undefined);
-        });
+                    return fetchPromise.then(
+                        () =>
+                            LOG.debug(
+                                'retrieved portal account creation page to burn unwanted timeout warning'
+                            ),
+                        () =>
+                            LOG.debug(
+                                `failed to read ${linktext} during burnrequest but this is expected`
+                            )
+                    );
+                }
+
+                return this.$q(undefined);
+            }
+        );
     }
 
     /**
@@ -185,9 +212,10 @@ export class AuthServiceRS {
         try {
             if (link) {
                 const parsedURL = new URL(link);
-                return (parsedURL.hostname && parsedURL.hostname.endsWith('.be.ch'));
+                return (
+                    parsedURL.hostname && parsedURL.hostname.endsWith('.be.ch')
+                );
             }
-
         } catch (ignore) {
             return false;
         }
@@ -202,27 +230,35 @@ export class AuthServiceRS {
         return this.loadPrincipal().then(user => {
             this.principal = user;
             this.principalSubject$.next(user);
-            this.setPrincipalInRavenUserContext();
+            this.setPrincipalInSentryUserContext();
 
-            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
+            this.authLifeCycleService.changeAuthStatus(
+                TSAuthEvent.LOGIN_SUCCESS,
+                'logged in'
+            );
 
             return user;
         });
     }
 
     private loadPrincipal(): IPromise<TSBenutzer> {
-        return this.$http.get(`${CONSTANTS.REST_API  }auth/authenticated-user`)
+        return this.$http
+            .get(`${CONSTANTS.REST_API}auth/authenticated-user`)
             .then(response => response.data)
-            .then(restBenutzer => this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer));
+            .then(restBenutzer =>
+                this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer)
+            );
     }
 
-    private setPrincipalInRavenUserContext(): void {
-        Raven.setUserContext({
+    private setPrincipalInSentryUserContext(): void {
+        Sentry.setUser({
             id: this.principal.username,
             email: this.principal.email,
             role: this.principal.getCurrentRole(),
             status: this.principal.status,
-            mandant: this.principal.mandant ? this.principal.mandant.name : null,
+            mandant: this.principal.mandant
+                ? this.principal.mandant.name
+                : null,
             traegerschaft: this.principal.currentBerechtigung.traegerschaft
                 ? this.principal.currentBerechtigung.traegerschaft.name
                 : null,
@@ -233,12 +269,17 @@ export class AuthServiceRS {
     }
 
     public logoutRequest(): any {
-        return this.$http.post(`${CONSTANTS.REST_API  }auth/logout`, null).then((res: any) => {
-            this.clearPrincipal();
-            Raven.setUserContext({});
-            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
-            return res;
-        });
+        return this.$http
+            .post(`${CONSTANTS.REST_API}auth/logout`, null)
+            .then((res: any) => {
+                this.clearPrincipal();
+                Sentry.setUser(null);
+                this.authLifeCycleService.changeAuthStatus(
+                    TSAuthEvent.LOGOUT_SUCCESS,
+                    'logged out'
+                );
+                return res;
+            });
     }
 
     public clearPrincipal(): void {
@@ -247,19 +288,30 @@ export class AuthServiceRS {
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.initSSO(`${CONSTANTS.REST_API  }auth/singleSignOn`, relayPath);
+        return this.initSSO(
+            `${CONSTANTS.REST_API}auth/singleSignOn`,
+            relayPath
+        );
     }
 
     public initConnectGSZPV(relayPath: string): IPromise<string> {
-        return this.initSSO(`${CONSTANTS.REST_API  }auth/init-connect-gs-zpv`, relayPath);
+        return this.initSSO(
+            `${CONSTANTS.REST_API}auth/init-connect-gs-zpv`,
+            relayPath
+        );
     }
 
     public initSingleLogout(relayPath: string): IPromise<string> {
-        return this.initSSO(`${CONSTANTS.REST_API  }auth/singleLogout`, relayPath);
+        return this.initSSO(
+            `${CONSTANTS.REST_API}auth/singleLogout`,
+            relayPath
+        );
     }
 
     private initSSO(path: string, relayPath: string): IPromise<string> {
-        return this.$http.get(path, {params: {relayPath}}).then((res: any) => res.data);
+        return this.$http
+            .get(path, {params: {relayPath}})
+            .then((res: any) => res.data);
     }
 
     /**
@@ -296,8 +348,9 @@ export class AuthServiceRS {
                 return PERMISSIONS[Permission.ROLE_INSTITUTION];
 
             case TSRole.ADMIN_TRAEGERSCHAFT:
-                return PERMISSIONS[Permission.ROLE_INSTITUTION]
-                    .concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
+                return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(
+                    PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]
+                );
 
             case TSRole.ADMIN_MANDANT:
                 return PERMISSIONS[Permission.ROLE_MANDANT];
@@ -316,9 +369,11 @@ export class AuthServiceRS {
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
             case TSRole.ADMIN_SOZIALDIENST:
-                    return PERMISSIONS[Permission.ROLE_SOZIALDIENST];
+                return PERMISSIONS[Permission.ROLE_SOZIALDIENST];
             case TSRole.ADMIN_FERIENBETREUUNG:
-                return PERMISSIONS[Permission.BENUTZER_FERIENBETREUUNG_EINLADEN];
+                return PERMISSIONS[
+                    Permission.BENUTZER_FERIENBETREUUNG_EINLADEN
+                ];
 
             default:
                 // by default the role of the user itself. the user can always see his role
@@ -327,6 +382,8 @@ export class AuthServiceRS {
     }
 
     public setMandant(mandant: KiBonMandant): IPromise<any> {
-        return this.$http.post(`${CONSTANTS.REST_API  }auth/set-mandant`, {name: mandant.fullName});
+        return this.$http.post(`${CONSTANTS.REST_API}auth/set-mandant`, {
+            name: mandant.fullName
+        });
     }
 }

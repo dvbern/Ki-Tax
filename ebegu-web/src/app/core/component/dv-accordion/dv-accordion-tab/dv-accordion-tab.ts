@@ -28,7 +28,6 @@ export class DvAccordionTabComponentConfig implements IComponentOptions {
         tabid: '@'
     };
     public require: any = {vm: '^dvAccordion'};
-
 }
 
 export class DvAccordionTabController {

@@ -16,7 +16,6 @@
  */
 
 import {registerLocaleData} from '@angular/common';
-// eslint-disable-next-line
 import deCH from '@angular/common/locales/de-CH';
 import {
     APP_INITIALIZER,
@@ -29,7 +28,11 @@ import {
 } from '@angular/core';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
-import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {
+    TranslateModule,
+    TranslatePipe,
+    TranslateService
+} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -41,22 +44,26 @@ import {MandantService} from '../shared/services/mandant.service';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
-import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
+import {configureSentry, SentryErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
-// sentry
-configureRaven();
+
+configureSentry();
 
 registerLocaleData(deCH);
 
-export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
+export function paginatorI18nFactory(
+    translateService: TranslateService
+): PaginatorI18n {
     return new PaginatorI18n(translateService);
 }
 
-export function initMandantCookie(mandantService: MandantService): () => Promise<any> {
+export function initMandantCookie(
+    mandantService: MandantService
+): () => Promise<any> {
     return () => mandantService.initMandantCookies();
 }
 
@@ -96,10 +103,13 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
     ]
 })
 export class CoreModule {
-
-    public constructor(@Optional() @SkipSelf() private readonly parentModule: CoreModule) {
+    public constructor(
+        @Optional() @SkipSelf() private readonly parentModule: CoreModule
+    ) {
         if (parentModule) {
-            throw new Error('CoreModule has already been loaded. Import Core modules in the AppModule only.');
+            throw new Error(
+                'CoreModule has already been loaded. Import Core modules in the AppModule only.'
+            );
         }
     }
 
@@ -113,7 +123,7 @@ export class CoreModule {
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
                 {provide: MAT_DATE_LOCALE, useValue: DEFAULT_LOCALE},
-                {provide: ErrorHandler, useClass: RavenErrorHandler},
+                {provide: ErrorHandler, useClass: SentryErrorHandler},
                 // {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
                 {
                     provide: MatPaginatorIntl,

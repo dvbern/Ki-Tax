@@ -17,7 +17,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 export class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
-
     private _einkommensverschlechterung: boolean = false;
 
     private _ekvFuerBasisJahrPlus1: boolean;

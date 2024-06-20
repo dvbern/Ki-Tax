@@ -42,7 +42,13 @@ export class AdresseComponentConfig implements IComponentOptions {
 }
 
 export class DvAdresseController {
-    public static $inject = ['AdresseRS', 'ListResourceRS', 'GesuchModelManager', '$translate', 'AuthServiceRS'];
+    public static $inject = [
+        'AdresseRS',
+        'ListResourceRS',
+        'GesuchModelManager',
+        '$translate',
+        'AuthServiceRS'
+    ];
 
     public adresse: TSAdresseContainer;
     public gemeinde: TSGemeinde;
@@ -69,13 +75,12 @@ export class DvAdresseController {
     }
 
     public submit(): void {
-        this.adresseRS.create(this.adresse)
-            .then((response: any) => {
-                const responseCode = 201;
-                if (response.status === responseCode) {
-                    this.resetForm();
-                }
-            });
+        this.adresseRS.create(this.adresse).then((response: any) => {
+            const responseCode = 201;
+            if (response.status === responseCode) {
+                this.resetForm();
+            }
+        });
     }
 
     public resetForm(): void {
@@ -95,16 +100,26 @@ export class DvAdresseController {
     }
 
     private getBisherLand(): string {
-        if (this.getModel() && this.getModel().adresseGS && this.getModel().adresseGS.land) {
-            return this.$translate.instant(`Land_${  this.getModel().adresseGS.land}`);
+        if (
+            this.getModel() &&
+            this.getModel().adresseGS &&
+            this.getModel().adresseGS.land
+        ) {
+            return this.$translate.instant(
+                `Land_${this.getModel().adresseGS.land}`
+            );
         }
         return '';
     }
 
     public enableNichtInGemeinde(): boolean {
-        return !this.isGesuchReadonly()
-            && this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        return (
+            !this.isGesuchReadonly() &&
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorOrAmtRole()
+            )
+        );
     }
 }

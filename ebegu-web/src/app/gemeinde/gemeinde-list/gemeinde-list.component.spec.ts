@@ -29,24 +29,33 @@ import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
 
 describe('GemeindeListComponent', () => {
-
     let component: GemeindeListComponent;
     let fixture: ComponentFixture<GemeindeListComponent>;
 
     beforeEach(waitForAsync(() => {
-        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['isRole', 'isOneOfRoles']);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(
+            StateService.name,
+            ['go']
+        );
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            ['getGemeindenForPrincipal$']
+        );
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+            ErrorService.name,
+            ['getErrors']
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['isRole', 'isOneOfRoles']
+        );
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule],
             providers: [
                 WindowRef,
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
@@ -60,8 +69,12 @@ describe('GemeindeListComponent', () => {
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(
+            of([
+                TestDataUtil.createGemeindeParis(),
+                TestDataUtil.createGemeindeLondon()
+            ])
+        );
     }));
 
     beforeEach(() => {

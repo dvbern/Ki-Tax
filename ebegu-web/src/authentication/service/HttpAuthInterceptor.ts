@@ -19,24 +19,28 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 
 export class HttpAuthInterceptor implements IHttpInterceptor {
-
     public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS'];
 
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly $q: IQService,
         private readonly CONSTANTS: any
-    ) {
-    }
+    ) {}
 
-    public responseError = <T>(response: any): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {
+    public responseError = <T>(
+        response: any
+    ): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {
         const http401 = 401;
         const http403 = 403;
 
         switch (response.status) {
             case http401:
                 // exclude requests from the login form
-                if (response.config && response.config.url === `${this.CONSTANTS.REST_API}auth/login`) {
+                if (
+                    response.config &&
+                    response.config.url ===
+                        `${this.CONSTANTS.REST_API}auth/login`
+                ) {
                     return this.$q.reject(response);
                 }
                 // if this request was a background polling request we do not want to relogin or show errors
@@ -44,10 +48,16 @@ export class HttpAuthInterceptor implements IHttpInterceptor {
                     return this.$q.reject(response);
                 }
                 const deferred = this.$q.defer();
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, response);
+                this.authLifeCycleService.changeAuthStatus(
+                    TSAuthEvent.NOT_AUTHENTICATED,
+                    response
+                );
                 return deferred.promise as IPromise<IHttpResponse<T>>;
             case http403:
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, response);
+                this.authLifeCycleService.changeAuthStatus(
+                    TSAuthEvent.NOT_AUTHORISED,
+                    response
+                );
                 return this.$q.reject(response);
             default:
                 return this.$q.reject(response);

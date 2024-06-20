@@ -558,7 +558,9 @@ export class EbeguRestUtil {
         eingewoehnungFromServer: any
     ): TSEingewoehnung {
         if (eingewoehnungFromServer) {
-            this.parseDateRangeEntity(eingewoehnungTS, eingewoehnungFromServer);
+            this.parseDateRangeEntity(
+                eingewoehnungTS, eingewoehnungFromServer
+            );
             eingewoehnungTS.kosten = eingewoehnungFromServer.kosten;
             return eingewoehnungTS;
         }
@@ -1431,7 +1433,6 @@ export class EbeguRestUtil {
         return restGemeinde;
     }
 
-    // eslint-disable-next-line
     public gemeindeStammdatenToRestObject(
         restStammdaten: any,
         stammdaten: TSGemeindeStammdaten
@@ -5311,6 +5312,8 @@ export class EbeguRestUtil {
                 zeitabschnittFromServer.auszahlungAnEltern;
             verfuegungZeitabschnittTS.beitragshoeheProzent =
                 zeitabschnittFromServer.beitragshoeheProzent;
+            verfuegungZeitabschnittTS.zusaetzlicherGutscheinGemeindeBetrag =
+                zeitabschnittFromServer.zusaetzlicherGutscheinGemeindeBetrag;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach(
@@ -6866,6 +6869,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
         publicAppConfigTS.gemeindeVereinfachteKonfigAktiv =
             data.gemeindeVereinfachteKonfigAktiv;
+        publicAppConfigTS.testfaelleEnabled = data.testfaelleEnabled;
         return publicAppConfigTS;
     }
 

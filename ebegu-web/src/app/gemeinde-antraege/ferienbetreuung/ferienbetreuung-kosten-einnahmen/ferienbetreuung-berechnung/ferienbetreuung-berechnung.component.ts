@@ -30,9 +30,7 @@ import {combineLatest, Subscription} from 'rxjs';
 import {mergeMap, startWith, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {TSFerienbetreuungAngaben} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
-import {
-    TSFerienbetreuungAngabenContainer
-} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
@@ -45,8 +43,9 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, OnChanges {
-
+export class FerienbetreuungBerechnungComponent
+    implements OnInit, OnDestroy, OnChanges
+{
     @Input()
     private readonly form: FormGroup<{
         personalkosten: FormControl<null | number>;
@@ -74,28 +73,43 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, On
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
+        this.subscription = this.ferienbetreuungService
+            .getFerienbetreuungContainer()
             .pipe(
                 tap(container => {
                     this.container = container;
                 }),
-                mergeMap(() => this.einstellungRS.getPauschalbetraegeFerienbetreuung(this.container))
-            ).subscribe(([pauschale, pauschaleSonderschueler]) => {
-                this.berechnung = this.getAngabenForStatus().berechnungen;
-                this.setUpValuesPauschalbetraege(pauschale, pauschaleSonderschueler);
-                this.setUpValuesFromContainer();
-                this.setUpValuesFromForm();
-            }, error => {
-                LOG.error(error);
-            });
+                mergeMap(() =>
+                    this.einstellungRS.getPauschalbetraegeFerienbetreuung(
+                        this.container
+                    )
+                )
+            )
+            .subscribe(
+                ([pauschale, pauschaleSonderschueler]) => {
+                    this.berechnung = this.getAngabenForStatus().berechnungen;
+                    this.setUpValuesPauschalbetraege(
+                        pauschale,
+                        pauschaleSonderschueler
+                    );
+                    this.setUpValuesFromContainer();
+                    this.setUpValuesFromForm();
+                },
+                error => {
+                    LOG.error(error);
+                }
+            );
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes.form && changes.form.currentValue && !changes.form.firstChange) {
+        if (
+            changes.form &&
+            changes.form.currentValue &&
+            !changes.form.firstChange
+        ) {
             this.setUpValuesFromForm();
         }
     }
@@ -135,39 +149,46 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, On
                 startWith(angaben?.kostenEinnahmen.beitraegeNachAnmeldungen)
             ),
             this.form.controls.vorfinanzierteKantonsbeitraege.valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.vorfinanzierteKantonsbeitraege)
+                startWith(
+                    angaben?.kostenEinnahmen.vorfinanzierteKantonsbeitraege
+                )
             ),
             this.form.controls.eigenleistungenGemeinde.valueChanges.pipe(
                 startWith(angaben?.kostenEinnahmen.eigenleistungenGemeinde)
             )
-        ]).subscribe(formValues => {
-            this.berechnung.personalkosten = formValues[0];
-            this.berechnung.sachkosten = formValues[1];
-            this.berechnung.verpflegungskosten = formValues[2];
-            this.berechnung.weitereKosten = formValues[3];
-            this.berechnung.einnahmenElterngebuehren = formValues[4];
-            this.berechnung.weitereEinnahmen = formValues[5];
-            this.berechnung.sockelbeitrag = formValues[6];
-            this.berechnung.beitraegeNachAnmeldungen = formValues[7];
-            this.berechnung.vorfinanzierteKantonsbeitraege = formValues[8];
-            this.berechnung.eigenleistungenGemeinde = formValues[9];
+        ]).subscribe(
+            formValues => {
+                this.berechnung.personalkosten = formValues[0];
+                this.berechnung.sachkosten = formValues[1];
+                this.berechnung.verpflegungskosten = formValues[2];
+                this.berechnung.weitereKosten = formValues[3];
+                this.berechnung.einnahmenElterngebuehren = formValues[4];
+                this.berechnung.weitereEinnahmen = formValues[5];
+                this.berechnung.sockelbeitrag = formValues[6];
+                this.berechnung.beitraegeNachAnmeldungen = formValues[7];
+                this.berechnung.vorfinanzierteKantonsbeitraege = formValues[8];
+                this.berechnung.eigenleistungenGemeinde = formValues[9];
 
-            this.calculate();
-        }, err => {
-            LOG.error(err);
-        });
+                this.calculate();
+            },
+            err => {
+                LOG.error(err);
+            }
+        );
     }
 
     private getAngabenForStatus(): TSFerienbetreuungAngaben {
-        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben() ?
-            this.container?.angabenKorrektur :
-            this.container?.angabenDeklaration;
+        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben()
+            ? this.container?.angabenKorrektur
+            : this.container?.angabenDeklaration;
     }
 
     private setUpValuesFromContainer(): void {
         const angaben = this.getAngabenForStatus();
-        this.berechnung.anzahlBetreuungstageKinderBern = angaben?.nutzung?.anzahlBetreuungstageKinderBern;
-        this.berechnung.betreuungstageKinderDieserGemeinde = angaben?.nutzung?.betreuungstageKinderDieserGemeinde;
+        this.berechnung.anzahlBetreuungstageKinderBern =
+            angaben?.nutzung?.anzahlBetreuungstageKinderBern;
+        this.berechnung.betreuungstageKinderDieserGemeinde =
+            angaben?.nutzung?.betreuungstageKinderDieserGemeinde;
         this.berechnung.betreuungstageKinderDieserGemeindeSonderschueler =
             angaben?.nutzung?.betreuungstageKinderDieserGemeindeSonderschueler;
         this.berechnung.betreuungstageKinderAndererGemeinde =
@@ -184,8 +205,12 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, On
         this.cd.markForCheck();
     }
 
-    private setUpValuesPauschalbetraege(pauschale: number, pauschaleSonderschueler: number): void {
+    private setUpValuesPauschalbetraege(
+        pauschale: number,
+        pauschaleSonderschueler: number
+    ): void {
         this.berechnung.pauschaleBetreuungstag = pauschale;
-        this.berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+        this.berechnung.pauschaleBetreuungstagSonderschueler =
+            pauschaleSonderschueler;
     }
 }

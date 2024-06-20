@@ -25,13 +25,9 @@ import {BroadcastService} from '../../service/broadcast.service';
     providedIn: 'root'
 })
 export class ErrorServiceX {
-
     public errors: Array<TSExceptionReport> = [];
 
-    public constructor(
-        private readonly broadcastService: BroadcastService
-    ) {
-    }
+    public constructor(private readonly broadcastService: BroadcastService) {}
 
     public getErrors(): ReadonlyArray<TSExceptionReport> {
         return this.errors;
@@ -58,7 +54,10 @@ export class ErrorServiceX {
 
         if (cleared.length !== this.errors.length) {
             this.errors = cleared;
-            this.broadcastService.broadcast(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], this.errors);
+            this.broadcastService.broadcast(
+                TSMessageEvent[TSMessageEvent.ERROR_UPDATE],
+                this.errors
+            );
         }
     }
 
@@ -69,7 +68,11 @@ export class ErrorServiceX {
      * @param [args] message parameters
      */
     public addValidationError(msgKey: string, args?: any): void {
-        const err = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
+        const err = TSExceptionReport.createClientSideError(
+            TSErrorLevel.SEVERE,
+            msgKey,
+            args
+        );
         this.addDvbError(err);
     }
 
@@ -79,7 +82,10 @@ export class ErrorServiceX {
 
     public addDvbError(dvbError: TSExceptionReport): void {
         if (!(dvbError && dvbError.isValid())) {
-            console.log('could not display received TSExceptionReport', dvbError);
+            console.log(
+                'could not display received TSExceptionReport',
+                dvbError
+            );
             return;
         }
 
@@ -88,27 +94,52 @@ export class ErrorServiceX {
         }
 
         this.errors.push(dvbError);
-        const udateEvent = (dvbError.severity === TSErrorLevel.INFO) ?
-            TSMessageEvent.INFO_UPDATE :
-            TSMessageEvent.ERROR_UPDATE;
-        this.broadcastService.broadcast(TSMessageEvent[udateEvent], this.errors);
+        const udateEvent =
+            dvbError.severity === TSErrorLevel.INFO
+                ? TSMessageEvent.INFO_UPDATE
+                : TSMessageEvent.ERROR_UPDATE;
+        this.broadcastService.broadcast(
+            TSMessageEvent[udateEvent],
+            this.errors
+        );
     }
 
-    public addMesageAsError(msg: string, errorCallback?: DVErrorMessageCallback): void {
-        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null, errorCallback);
+    public addMesageAsError(
+        msg: string,
+        errorCallback?: DVErrorMessageCallback
+    ): void {
+        const error = new TSExceptionReport(
+            TSErrorType.INTERNAL,
+            TSErrorLevel.SEVERE,
+            msg,
+            null,
+            errorCallback
+        );
         this.addDvbError(error);
-
     }
 
-    public addMesageAsInfo(msg: string, errorCallback?: DVErrorMessageCallback): void {
-        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null, errorCallback);
+    public addMesageAsInfo(
+        msg: string,
+        errorCallback?: DVErrorMessageCallback
+    ): void {
+        const error = new TSExceptionReport(
+            TSErrorType.INTERNAL,
+            TSErrorLevel.INFO,
+            msg,
+            null,
+            errorCallback
+        );
         this.addDvbError(error);
     }
 
     /**
      * when isValid FALSE a new validationError is added. Otherwise the validationError is cleared
      */
-    public handleValidationError(isValid: boolean, msgKey: string, args?: any): void {
+    public handleValidationError(
+        isValid: boolean,
+        msgKey: string,
+        args?: any
+    ): void {
         // noinspection NegatedIfStatementJS
         if (!!isValid) {
             this.clearError(msgKey);

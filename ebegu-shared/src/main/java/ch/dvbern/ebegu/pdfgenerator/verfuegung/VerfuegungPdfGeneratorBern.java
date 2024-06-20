@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
 import java.math.BigDecimal;
 
@@ -35,11 +35,9 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 	public VerfuegungPdfGeneratorBern(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte,
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
+		@Nonnull Art art,
+		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration) {
+		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
 	}
 
 	@Override

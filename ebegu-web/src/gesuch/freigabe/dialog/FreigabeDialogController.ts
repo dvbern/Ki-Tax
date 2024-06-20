@@ -22,7 +22,6 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class FreigabeDialogController {
-
     public static $inject = ['$mdDialog', '$translate', 'parentController'];
 
     public deleteText: string;
@@ -36,7 +35,9 @@ export class FreigabeDialogController {
         private readonly parentController: FreigabeViewController
     ) {
         this.title = $translate.instant('CONFIRM_GESUCH_FREIGEBEN');
-        this.deleteText = $translate.instant('CONFIRM_GESUCH_FREIGEBEN_DESCRIPTION');
+        this.deleteText = $translate.instant(
+            'CONFIRM_GESUCH_FREIGEBEN_DESCRIPTION'
+        );
         this.cancelText = $translate.instant('LABEL_NEIN');
         this.confirmText = $translate.instant('LABEL_JA');
     }

@@ -23,7 +23,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
 describe('traegerschaftRS', () => {
-
     let traegerschaftRS: TraegerschaftRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -36,17 +35,22 @@ describe('traegerschaftRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        traegerschaftRS = $injector.get('TraegerschaftRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            traegerschaftRS = $injector.get('TraegerschaftRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
         mockTraegerschaft = new TSTraegerschaft();
         mockTraegerschaft.name = 'TraegerschaftTest';
         mockTraegerschaft.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
-        mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
+        mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject(
+            {},
+            mockTraegerschaft
+        );
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
@@ -58,25 +62,32 @@ describe('traegerschaftRS', () => {
                 $httpBackend.expectGET(url).respond(mockTraegerschaftRest);
 
                 let foundTraegerschaft: TSTraegerschaft;
-                traegerschaftRS.findTraegerschaft(mockTraegerschaft.id).then(result => {
-                    foundTraegerschaft = result;
-                });
+                traegerschaftRS
+                    .findTraegerschaft(mockTraegerschaft.id)
+                    .then(result => {
+                        foundTraegerschaft = result;
+                    });
                 $httpBackend.flush();
                 checkFieldValues(foundTraegerschaft, mockTraegerschaft);
             });
-
         });
 
         describe('createTraegerschaft', () => {
             it('should create a traegerschaft', () => {
                 let createdTraegerschaft: TSTraegerschaft;
                 const url = traegerschaftRS.serviceURL;
-                $httpBackend.expectPOST(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                $httpBackend
+                    .expectPOST(url, mockTraegerschaftRest)
+                    .respond(mockTraegerschaftRest);
 
-                traegerschaftRS.createTraegerschaft(mockTraegerschaft, 'myAdminMail')
+                traegerschaftRS
+                    .createTraegerschaft(mockTraegerschaft, 'myAdminMail')
                     .then(result => {
                         createdTraegerschaft = result;
-                        checkFieldValues(createdTraegerschaft, mockTraegerschaft);
+                        checkFieldValues(
+                            createdTraegerschaft,
+                            mockTraegerschaft
+                        );
                     });
             });
         });
@@ -84,12 +95,20 @@ describe('traegerschaftRS', () => {
         describe('saveTraegerschaft', () => {
             it('should update a traegerschaft', () => {
                 mockTraegerschaft.name = 'changedname';
-                mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
+                mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject(
+                    {},
+                    mockTraegerschaft
+                );
                 let updatedTraegerschaft: TSTraegerschaft;
-                $httpBackend.expectPUT(traegerschaftRS.serviceURL,
-                    mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                $httpBackend
+                    .expectPUT(
+                        traegerschaftRS.serviceURL,
+                        mockTraegerschaftRest
+                    )
+                    .respond(mockTraegerschaftRest);
 
-                traegerschaftRS.saveTraegerschaft(mockTraegerschaft)
+                traegerschaftRS
+                    .saveTraegerschaft(mockTraegerschaft)
                     .then(result => {
                         updatedTraegerschaft = result;
                     });
@@ -105,7 +124,8 @@ describe('traegerschaftRS', () => {
                 $httpBackend.expectDELETE(url).respond(httpOk);
 
                 let deleteResult: any;
-                traegerschaftRS.removeTraegerschaft(mockTraegerschaft.id)
+                traegerschaftRS
+                    .removeTraegerschaft(mockTraegerschaft.id)
                     .then(result => {
                         deleteResult = result;
                     });
@@ -117,8 +137,13 @@ describe('traegerschaftRS', () => {
 
         describe('getAllTraegerschaften', () => {
             it('should return all Traegerschaften', () => {
-                const traegerschaftenRestArray = [mockTraegerschaftRest, mockTraegerschaftRest];
-                $httpBackend.expectGET(traegerschaftRS.serviceURL).respond(traegerschaftenRestArray);
+                const traegerschaftenRestArray = [
+                    mockTraegerschaftRest,
+                    mockTraegerschaftRest
+                ];
+                $httpBackend
+                    .expectGET(traegerschaftRS.serviceURL)
+                    .respond(traegerschaftenRestArray);
 
                 let returnedTraegerschaften: Array<TSTraegerschaft>;
                 traegerschaftRS.getAllTraegerschaften().then(result => {
@@ -127,16 +152,24 @@ describe('traegerschaftRS', () => {
                 $httpBackend.flush();
                 expect(returnedTraegerschaften).toBeDefined();
                 expect(returnedTraegerschaften.length).toEqual(2);
-                checkFieldValues(returnedTraegerschaften[0], traegerschaftenRestArray[0]);
-                checkFieldValues(returnedTraegerschaften[1], traegerschaftenRestArray[1]);
+                checkFieldValues(
+                    returnedTraegerschaften[0],
+                    traegerschaftenRestArray[0]
+                );
+                checkFieldValues(
+                    returnedTraegerschaften[1],
+                    traegerschaftenRestArray[1]
+                );
             });
         });
     });
 
-    function checkFieldValues(traegerschaft1: TSTraegerschaft, traegerschaft2: TSTraegerschaft): void {
+    function checkFieldValues(
+        traegerschaft1: TSTraegerschaft,
+        traegerschaft2: TSTraegerschaft
+    ): void {
         expect(traegerschaft1).toBeDefined();
         expect(traegerschaft1.name).toEqual(traegerschaft2.name);
         expect(traegerschaft1.id).toEqual(traegerschaft2.id);
     }
-
 });

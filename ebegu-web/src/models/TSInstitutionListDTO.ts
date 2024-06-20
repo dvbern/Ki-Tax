@@ -23,7 +23,6 @@ import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
 export class TSInstitutionListDTO extends TSInstitution {
-
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
     public gemeinde: TSGemeinde;
 

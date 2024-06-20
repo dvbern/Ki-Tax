@@ -20,7 +20,6 @@ import {TSSupportAnfrage} from '../../models/TSSupportAnfrage';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class SupportRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -30,14 +29,17 @@ export class SupportRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService
     ) {
-        this.serviceURL = `${REST_API  }support`;
+        this.serviceURL = `${REST_API}support`;
     }
 
     public sendSupportAnfrage(supportAnfrage: TSSupportAnfrage): IPromise<any> {
         let anfrageRestObject = {};
-        anfrageRestObject = this.ebeguRestUtil.supportAnfrageToRestObject(anfrageRestObject, supportAnfrage);
+        anfrageRestObject = this.ebeguRestUtil.supportAnfrageToRestObject(
+            anfrageRestObject,
+            supportAnfrage
+        );
         // Damit wir Sentryangaben zu diesem Fall mappen koennen
-        this.$log.warn(`Supportanfrage erstellt mit ID ${  supportAnfrage.id}`);
+        this.$log.warn(`Supportanfrage erstellt mit ID ${supportAnfrage.id}`);
         return this.$http.put(this.serviceURL, anfrageRestObject, {
             headers: {
                 'Content-Type': 'application/json'

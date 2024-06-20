@@ -26,9 +26,12 @@ export const CONSTANTS = {
     PATTERN_ONE_DECIMALS: '^[0-9]+(\\.[0-9])?$',
     PATTERN_TWO_DECIMALS: '^[0-9]+(\\.[0-9]{1,2})?$',
     PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',
-    PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
-    PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
-    PATTERN_ZEMIS_NUMMER: '(^0?\\d{8}\\.\\d$)|(^0\\d{2}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
+    PATTERN_PHONE:
+        '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
+    PATTERN_MOBILE:
+        '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
+    PATTERN_ZEMIS_NUMMER:
+        '(^0?\\d{8}\\.\\d$)|(^0\\d{2}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
     PATTERN_HHHMM: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
     PARTS_OF_BETREUUNGSNUMMER: 5,
     END_OF_TIME_STRING: '31.12.9999',

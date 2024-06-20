@@ -34,7 +34,6 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
     templateUrl: './dv-ng-gemeinde-dialog.template.html'
 })
 export class DvNgGemeindeDialogComponent {
-
     public selectedGemeinde: TSGemeinde;
     public gemeindeList: TSGemeinde[];
 
@@ -51,7 +50,9 @@ export class DvNgGemeindeDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
-        this.isUserSozialdienst = authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+        this.isUserSozialdienst = authServiceRS.isOneOfRoles(
+            TSRoleUtil.getSozialdienstRolle()
+        );
         this.allGemeinden = data.gemeindeList;
         this.sortGemeinden();
         this.filterGemeindeList();
@@ -59,10 +60,15 @@ export class DvNgGemeindeDialogComponent {
     }
 
     private filterGemeindeList(): void {
-        this.gemeindeList =
-            this.allGemeinden.filter(gemeinde =>
+        this.gemeindeList = this.allGemeinden.filter(
+            gemeinde =>
                 gemeinde.besondereVolksschule === this.besondereVolksschulen &&
-                !(gemeinde.nurLats && !gemeinde.angebotBG && !gemeinde.angebotFI));
+                !(
+                    gemeinde.nurLats &&
+                    !gemeinde.angebotBG &&
+                    !gemeinde.angebotFI
+                )
+        );
         this.selectedGemeinde = this.gemeindeList[0];
     }
 
@@ -71,16 +77,22 @@ export class DvNgGemeindeDialogComponent {
             return;
         }
         this.dialogRef.close({
-            gemeindeId: this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-            gesuchsperiodeId: this.selectedGesuchsperiode ? this.selectedGesuchsperiode.id : undefined
+            gemeindeId: this.selectedGemeinde
+                ? this.selectedGemeinde.id
+                : undefined,
+            gesuchsperiodeId: this.selectedGesuchsperiode
+                ? this.selectedGesuchsperiode.id
+                : undefined
         });
     }
 
     public isValid(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.selectedGemeinde) &&
-            ((EbeguUtil.isNotNullOrUndefined(this.gesuchsperiodeList)
-                && EbeguUtil.isNotNullOrUndefined(this.selectedGesuchsperiode))
-                || EbeguUtil.isNullOrUndefined(this.gesuchsperiodeList));
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.selectedGemeinde) &&
+            ((EbeguUtil.isNotNullOrUndefined(this.gesuchsperiodeList) &&
+                EbeguUtil.isNotNullOrUndefined(this.selectedGesuchsperiode)) ||
+                EbeguUtil.isNullOrUndefined(this.gesuchsperiodeList))
+        );
     }
 
     public close(): void {
@@ -88,7 +100,10 @@ export class DvNgGemeindeDialogComponent {
     }
 
     private sortGemeinden(): void {
-        if (EbeguUtil.isNullOrUndefined(this.allGemeinden) || !Array.isArray(this.allGemeinden)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.allGemeinden) ||
+            !Array.isArray(this.allGemeinden)
+        ) {
             return;
         }
         this.allGemeinden.sort((a, b) => a.name.localeCompare(b.name));

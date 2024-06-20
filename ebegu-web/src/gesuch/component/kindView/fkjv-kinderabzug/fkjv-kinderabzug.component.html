@@ -34,10 +34,16 @@
                     <dv-radio-input-x
                         data-test="container.pflege-entschaedigung-erhalten"
                         [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
-                        [tooltip]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN_INFO'"
-                        [(model)]="kindContainer.kindJA.pflegeEntschaedigungErhalten"
+                        [tooltip]="
+                            'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN_INFO'
+                        "
+                        [(model)]="
+                            kindContainer.kindJA.pflegeEntschaedigungErhalten
+                        "
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.pflegeEntschaedigungErhalten"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.pflegeEntschaedigungErhalten
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -49,10 +55,16 @@
                     <dv-radio-input-x
                         data-test="container.obhut-alternierend-ausueben"
                         [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
-                        [tooltip]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN_INFO'"
-                        [(model)]="kindContainer.kindJA.obhutAlternierendAusueben"
+                        [tooltip]="
+                            'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN_INFO'
+                        "
+                        [(model)]="
+                            kindContainer.kindJA.obhutAlternierendAusueben
+                        "
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.obhutAlternierendAusueben"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.obhutAlternierendAusueben
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -64,10 +76,14 @@
                     <dv-radio-input-x
                         data-test="container.ergaenzende-betreuung-beide"
                         [label]="'FAM_ERGAENZENDE_BETREUUNG_BEIDE'"
-                        [(model)]="kindContainer.kindJA.familienErgaenzendeBetreuung"
+                        [(model)]="
+                            kindContainer.kindJA.familienErgaenzendeBetreuung
+                        "
                         (modelChange)="change()"
                         [readonly]="hasKindBetreuungen()"
-                        [dvBisherValue]="kindContainer.kindGS?.familienErgaenzendeBetreuung"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.familienErgaenzendeBetreuung
+                        "
                         [inlineHint]="'FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE'"
                         [required]="true"
                     ></dv-radio-input-x>
@@ -83,7 +99,9 @@
                         [tooltip]="'KINDERABZUG_GEMEINSAMES_GESUCH_INFO'"
                         [(model)]="kindContainer.kindJA.gemeinsamesGesuch"
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.gemeinsamesGesuch"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.gemeinsamesGesuch
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -112,7 +130,9 @@
                         [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
                         [(model)]="kindContainer.kindJA.lebtKindAlternierend"
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.lebtKindAlternierend"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.lebtKindAlternierend
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>

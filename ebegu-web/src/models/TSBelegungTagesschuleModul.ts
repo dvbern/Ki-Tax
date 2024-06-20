@@ -20,8 +20,6 @@ import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSModulTagesschule} from './TSModulTagesschule';
 
 export class TSBelegungTagesschuleModul extends TSAbstractEntity {
-
     public intervall: TSBelegungTagesschuleModulIntervall;
     public modulTagesschule: TSModulTagesschule;
-
 }

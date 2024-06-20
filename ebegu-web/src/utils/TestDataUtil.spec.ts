@@ -47,24 +47,28 @@ import {DateUtil} from './DateUtil';
 
 /* eslint-disable no-magic-numbers */
 export class TestDataUtil {
-
-    public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity): void {
+    public static setAbstractFieldsUndefined(
+        abstractEntity: TSAbstractEntity
+    ): void {
         abstractEntity.id = undefined;
         abstractEntity.timestampErstellt = undefined;
         abstractEntity.timestampMutiert = undefined;
         abstractEntity.version = undefined;
     }
 
-    public static setAbstractMutableFieldsUndefined(abstractEntity: TSAbstractMutableEntity): void {
+    public static setAbstractMutableFieldsUndefined(
+        abstractEntity: TSAbstractMutableEntity
+    ): void {
         this.setAbstractFieldsUndefined(abstractEntity);
         abstractEntity.vorgaengerId = undefined;
     }
 
     public static createErwerbspensumContainer(): TSErwerbspensumContainer {
-
         const dummyErwerbspensumContainer = new TSErwerbspensumContainer();
-        dummyErwerbspensumContainer.erwerbspensumGS = this.createErwerbspensum();
-        dummyErwerbspensumContainer.erwerbspensumJA = this.createErwerbspensum();
+        dummyErwerbspensumContainer.erwerbspensumGS =
+            this.createErwerbspensum();
+        dummyErwerbspensumContainer.erwerbspensumJA =
+            this.createErwerbspensum();
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensumContainer);
         return dummyErwerbspensumContainer;
     }
@@ -73,7 +77,10 @@ export class TestDataUtil {
         const dummyErwerbspensum = new TSErwerbspensum();
         dummyErwerbspensum.taetigkeit = TSTaetigkeit.ANGESTELLT;
         dummyErwerbspensum.pensum = 100;
-        dummyErwerbspensum.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today().add(7, 'months'));
+        dummyErwerbspensum.gueltigkeit = new TSDateRange(
+            DateUtil.today(),
+            DateUtil.today().add(7, 'months')
+        );
         dummyErwerbspensum.bezeichnung = undefined;
         dummyErwerbspensum.unbezahlterUrlaub = undefined;
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensum);
@@ -86,42 +93,91 @@ export class TestDataUtil {
     ): void {
         // Dieses hack wird gebraucht weil um 2 Moment zu vergleichen kann man nicht einfach equal() benutzen sondern
         // isSame
-        expect(first.gueltigkeit.gueltigAb.isSame(second.gueltigkeit.gueltigAb)).toBe(true);
-        expect(first.gueltigkeit.gueltigBis.isSame(second.gueltigkeit.gueltigBis)).toBe(true);
+        expect(
+            first.gueltigkeit.gueltigAb.isSame(second.gueltigkeit.gueltigAb)
+        ).toBe(true);
+        expect(
+            first.gueltigkeit.gueltigBis.isSame(second.gueltigkeit.gueltigBis)
+        ).toBe(true);
         first.gueltigkeit.gueltigAb = second.gueltigkeit.gueltigAb;
         first.gueltigkeit.gueltigBis = second.gueltigkeit.gueltigBis;
     }
 
-    public static mockDefaultGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/application-properties/public/all').respond({});
+    public static mockDefaultGesuchModelManagerHttpCalls(
+        $httpBackend: IHttpBackendService
+    ): void {
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/active')
+            .respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/application-properties/public/all')
+            .respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gemeinde/all').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed')
+            .respond({});
+        $httpBackend
+            .when(
+                'GET',
+                '/ebegu/api/v1/gesuchsperioden/0621fb5d-a187-5a91-abaf-8a813c4d263a'
+            )
+            .respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/wizard-steps').respond({});
         $httpBackend.when('POST', '/ebegu/api/v1/wizard-steps').respond({});
         $httpBackend
-            .when('GET', '/ebegu/api/v1/fachstellen/anspruch?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .when(
+                'GET',
+                '/ebegu/api/v1/fachstellen/anspruch?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a'
+            )
             .respond({});
         $httpBackend
-            .when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .when(
+                'GET',
+                '/ebegu/api/v1/fachstellen/erweiterteBetreuung?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a'
+            )
             .respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/gesuchsperiode/123').respond({});
+        $httpBackend
+            .when(
+                'GET',
+                '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active'
+            )
+            .respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/einstellung/gesuchsperiode/123')
+            .respond({});
     }
 
-    public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
-        $httpBackend.when('GET', '/ebegu/api/v1/application-properties/public/all').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gemeinde/all').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
+    public static mockLazyGesuchModelManagerHttpCalls(
+        $httpBackend: IHttpBackendService
+    ): void {
         $httpBackend
-            .when('GET', '/ebegu/api/v1/fachstellen/anspruch?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .when('GET', '/ebegu/api/v1/application-properties/public/all')
+            .respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/gemeinde/all').respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/active')
+            .respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed')
+            .respond({});
+        $httpBackend
+            .when(
+                'GET',
+                '/ebegu/api/v1/fachstellen/anspruch?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a'
+            )
             .respond([]);
         $httpBackend
-            .when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .when(
+                'GET',
+                '/ebegu/api/v1/fachstellen/erweiterteBetreuung?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a'
+            )
             .respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active').respond({});
+        $httpBackend
+            .when(
+                'GET',
+                '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active'
+            )
+            .respond({});
     }
 
     public static createWizardStep(gesuchId: string): TSWizardStep {
@@ -143,11 +199,17 @@ export class TestDataUtil {
     }
 
     public static createGesuchsperiode20162017(): TSGesuchsperiode {
-        const gueltigkeit = new TSDateRange(moment('01.07.2016', 'DD.MM.YYYY'), moment('31.08.2017', 'DD.MM.YYYY'));
+        const gueltigkeit = new TSDateRange(
+            moment('01.07.2016', 'DD.MM.YYYY'),
+            moment('31.08.2017', 'DD.MM.YYYY')
+        );
         return new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, gueltigkeit);
     }
 
-    public static createGesuchsteller(vorname: string, nachname: string): TSGesuchstellerContainer {
+    public static createGesuchsteller(
+        vorname: string,
+        nachname: string
+    ): TSGesuchstellerContainer {
         const gesuchstellerCont = new TSGesuchstellerContainer();
         const gesuchsteller = new TSGesuchsteller();
         gesuchsteller.vorname = vorname;
@@ -157,12 +219,16 @@ export class TestDataUtil {
         return gesuchstellerCont;
     }
 
-    public static createAdresse(strasse: string, nummer: string): TSAdresseContainer {
+    public static createAdresse(
+        strasse: string,
+        nummer: string
+    ): TSAdresseContainer {
         const adresseCont = new TSAdresseContainer();
         const adresse = new TSAdresse();
         adresse.strasse = strasse;
         adresse.hausnummer = nummer;
-        adresse.gueltigkeit = TestDataUtil.createGesuchsperiode20162017().gueltigkeit;
+        adresse.gueltigkeit =
+            TestDataUtil.createGesuchsperiode20162017().gueltigkeit;
         adresseCont.showDatumVon = true;
         adresseCont.adresseJA = adresse;
         return adresseCont;
@@ -171,10 +237,8 @@ export class TestDataUtil {
     public static createDummyForm(): any {
         const form: any = {};
         form.$valid = true;
-        form.$setPristine = () => {
-        };
-        form.$setUntouched = () => {
-        };
+        form.$setPristine = () => {};
+        form.$setUntouched = () => {};
         return form;
     }
 
@@ -189,7 +253,8 @@ export class TestDataUtil {
                     {
                         constraintType: 'PARAMETER',
                         path: 'markAsRead.arg1',
-                        message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
+                        message:
+                            'Die Länge des Feldes muss zwischen 36 und 36 sein',
                         value: '8a146418-ab12-456f-9b17-aad6990f51'
                     }
                 ],
@@ -223,9 +288,18 @@ export class TestDataUtil {
         gemeinde.gemeindeNummer = 2;
         gemeinde.bfsNummer = 99999;
         gemeinde.status = TSGemeindeStatus.AKTIV;
-        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
-        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
-        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.betreuungsgutscheineStartdatum = moment(
+            '20160801',
+            'YYYYMMDD'
+        );
+        gemeinde.tagesschulanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
+        gemeinde.ferieninselanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
         gemeinde.angebotBG = true;
         gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
@@ -246,9 +320,18 @@ export class TestDataUtil {
         gemeinde.gemeindeNummer = 1;
         gemeinde.bfsNummer = 99998;
         gemeinde.status = TSGemeindeStatus.AKTIV;
-        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
-        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
-        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.betreuungsgutscheineStartdatum = moment(
+            '20160801',
+            'YYYYMMDD'
+        );
+        gemeinde.tagesschulanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
+        gemeinde.ferieninselanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
         gemeinde.angebotBG = true;
         gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
@@ -268,9 +351,18 @@ export class TestDataUtil {
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
         gemeinde.status = TSGemeindeStatus.AKTIV;
-        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
-        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
-        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.betreuungsgutscheineStartdatum = moment(
+            '20160801',
+            'YYYYMMDD'
+        );
+        gemeinde.tagesschulanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
+        gemeinde.ferieninselanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
         gemeinde.angebotBG = true;
         gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
@@ -287,7 +379,10 @@ export class TestDataUtil {
         return konfiguration;
     }
 
-    public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {
+    public static createBerechtigung(
+        role: TSRole,
+        createGemeinde: boolean
+    ): TSBerechtigung {
         const berechtigung = new TSBerechtigung();
         if (createGemeinde) {
             berechtigung.gemeindeList.push(TestDataUtil.createGemeindeLondon());
@@ -343,7 +438,10 @@ export class TestDataUtil {
      * sometimes in a mock we don't need to define all parameters and we just focus in some of them. So using this
      * method we don't need to worry about all those parameters that are not existing in the mock
      */
-    public static compareDefinedProperties(objectToCheck: any, expected: any): void {
+    public static compareDefinedProperties(
+        objectToCheck: any,
+        expected: any
+    ): void {
         Object.keys(expected)
             .filter(value => expected[value])
             .forEach(key => {
