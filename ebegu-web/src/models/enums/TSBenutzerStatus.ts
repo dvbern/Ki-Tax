@@ -18,5 +18,5 @@
 export enum TSBenutzerStatus {
     GESPERRT = 'GESPERRT',
     AKTIV = 'AKTIV',
-    EINGELADEN = 'EINGELADEN',
+    EINGELADEN = 'EINGELADEN'
 }

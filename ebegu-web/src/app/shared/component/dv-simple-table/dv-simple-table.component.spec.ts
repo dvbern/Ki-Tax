@@ -28,10 +28,7 @@ describe('DvSimpleTableComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                BrowserAnimationsModule
-            ],
+            imports: [SharedModule, BrowserAnimationsModule],
             declarations: [DvSimpleTableComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

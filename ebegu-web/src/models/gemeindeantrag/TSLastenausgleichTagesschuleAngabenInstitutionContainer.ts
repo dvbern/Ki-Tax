@@ -40,10 +40,16 @@ export class TSLastenausgleichTagesschuleAngabenInstitutionContainer extends TSA
     }
 
     public isInPruefungGemeinde(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE
+        );
     }
 
     public isGeprueftGemeinde(): boolean {
-        return this.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT;
+        return (
+            this.status ===
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT
+        );
     }
 }

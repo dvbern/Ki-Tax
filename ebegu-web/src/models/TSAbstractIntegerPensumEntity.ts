@@ -16,7 +16,6 @@
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
 export class TSAbstractIntegerPensumEntity extends TSAbstractDateRangedEntity {
-
     private _pensum: number;
 
     public constructor() {

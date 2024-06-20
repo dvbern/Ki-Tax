@@ -14,75 +14,111 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div style="display: inline-block; max-width:100%;">
-
+<div style="display: inline-block; max-width: 100%">
     <div class="onboarding-container-info onboarding-info">
         <i class="fa fa-arrow-circle-left"></i>&nbsp;
-        <a href=""
-           uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
-        <br/>
+        <a href="" uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
+        <br />
         <h1 translate>ONBOARDING_INFO_GEMEINDE</h1>
         <p translate>ONBOARDING_INFO_GEMEINDE_INTRO</p>
         <p class="onboarding-info-action">
-            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_GEMEINDE_LINK_BG' | translate}}">
+            <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="{{ 'ONBOARDING_GEMEINDE_LINK_BG' | translate }}"
+            >
                 <button class="dv-btn onboarding-big-red-button">
                     <span translate>ONBOARDING_ZULASSUNG_BG</span>
                 </button>
             </a>
-            <br/>
-            <br/>
+            <br />
+            <br />
         </p>
         <p class="onboarding-info-action" *ngIf="isTSEnabled">
-            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_GEMEINDE_LINK_TS' | translate}}">
+            <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="{{ 'ONBOARDING_GEMEINDE_LINK_TS' | translate }}"
+            >
                 <button class="dv-btn onboarding-big-red-button">
                     <span translate>ONBOARDING_ZULASSUNG_TS</span>
                 </button>
             </a>
-            <br/>
-            <br/>
+            <br />
+            <br />
         </p>
-        <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+        <form
+            (ngSubmit)="onSubmit(form)"
+            #form="ngForm"
+            [ngClass]="{'ng-submitted': form.submitted}"
+            novalidate
+        >
             <div class="testdaten-checkbox">
-                <mat-checkbox id="testZugangBeantragen_id" name="testZugangBeantragen_id"
-                              [(ngModel)]="testZugangBeantragen">
-                    {{'ONBOARDING_TESTZUGANG_KIBON'|translate}}
+                <mat-checkbox
+                    id="testZugangBeantragen_id"
+                    name="testZugangBeantragen_id"
+                    [(ngModel)]="testZugangBeantragen"
+                >
+                    {{ 'ONBOARDING_TESTZUGANG_KIBON' | translate }}
                 </mat-checkbox>
             </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="testZugangBeantragen">
+                    <div
+                        class="onboarding-nb-gemeinde-search"
+                        *ngIf="testZugangBeantragen"
+                    >
                         <p translate>ONBOARDING_MEIN_GEMEINDE</p>
                         <div class="onboarding-nb-gemeinde-search-input">
-                            <div class="dv-select-style dv-select-style-onboarding">
-                                <select [(ngModel)]="gemeinde"
-                                        name="gemeinde"
-                                        class="form-control"
-                                        id="gemeinde"
-                                        [required]="true" class="text-center">
-                                    <option [ngValue]="null" selected="selected"></option>
-                                    <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
-                                        {{gemeinde.name}}
+                            <div
+                                class="dv-select-style dv-select-style-onboarding"
+                            >
+                                <select
+                                    [(ngModel)]="gemeinde"
+                                    name="gemeinde"
+                                    class="form-control"
+                                    id="gemeinde"
+                                    [required]="true"
+                                    class="text-center"
+                                >
+                                    <option
+                                        [ngValue]="null"
+                                        selected="selected"
+                                    ></option>
+                                    <option
+                                        *ngFor="
+                                            let gemeinde of gemeinden$ | async
+                                        "
+                                        [ngValue]="gemeinde"
+                                    >
+                                        {{ gemeinde.name }}
                                     </option>
                                 </select>
                             </div>
                         </div>
-                        <dv-error-messages [errorObject]="form.controls.gemeinde?.errors"
-                                           inputId="gemeinde"
-                                           class="input-error">
+                        <dv-error-messages
+                            [errorObject]="form.controls.gemeinde?.errors"
+                            inputId="gemeinde"
+                            class="input-error"
+                        >
                         </dv-error-messages>
                     </div>
                 </div>
                 <div class="onboarding-nb-gemeinde-input-button">
                     <div *ngIf="testZugangBeantragen">
-                            <button [type]="'submit'" class="dv-btn onboarding-big-red-button onboarding-info-gem-padding">
-                                <span translate>ONBOARDING_TESTZUGANG_SHORT</span>
-                            </button>
+                        <button
+                            [type]="'submit'"
+                            class="dv-btn onboarding-big-red-button onboarding-info-gem-padding"
+                        >
+                            <span translate>ONBOARDING_TESTZUGANG_SHORT</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </form>
-        <br/>
-        <a href=""
-           uiSref="onboarding.infoinstitution" translate>ONBOARDING_INFO_INSTITUTION_LINK</a>
+        <br />
+        <a href="" uiSref="onboarding.infoinstitution" translate
+            >ONBOARDING_INFO_INSTITUTION_LINK</a
+        >
     </div>
 </div>

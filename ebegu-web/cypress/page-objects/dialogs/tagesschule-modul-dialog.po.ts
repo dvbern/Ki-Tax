@@ -20,39 +20,49 @@ const getBezeichnungDe = () => {
 };
 
 const getBezeichnungFr = () => {
-	return cy.getByData('institution.tageschule.modul.bezeichnungFr');
+    return cy.getByData('institution.tageschule.modul.bezeichnungFr');
 };
 
 const getZeitVon = () => {
-	return cy.getByData('institution.tageschule.modul.zeitVon');
+    return cy.getByData('institution.tageschule.modul.zeitVon');
 };
 
 const getZeitBis = () => {
-	return cy.getByData('institution.tageschule.modul.zeitBis');
+    return cy.getByData('institution.tageschule.modul.zeitBis');
 };
 
 const getVerpflegungskosten = () => {
-	return cy.getByData('institution.tageschule.modul.verpflegungskosten');
+    return cy.getByData('institution.tageschule.modul.verpflegungskosten');
 };
 
 const getMontag = () => {
-	return cy.getByData('institution.tageschule.modul.montag').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.montag')
+        .find('.mdc-checkbox');
 };
 
 const getDienstag = () => {
-	return cy.getByData('institution.tageschule.modul.dienstag').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.dienstag')
+        .find('.mdc-checkbox');
 };
 
 const getMittwoch = () => {
-	return cy.getByData('institution.tageschule.modul.mittwoch').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.mittwoch')
+        .find('.mdc-checkbox');
 };
 
 const getDonnerstag = () => {
-	return cy.getByData('institution.tageschule.modul.donnerstag').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.donnerstag')
+        .find('.mdc-checkbox');
 };
 
 const getFreitag = () => {
-	return cy.getByData('institution.tageschule.modul.freitag').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.freitag')
+        .find('.mdc-checkbox');
 };
 
 const getOkButton = () => {
@@ -60,15 +70,17 @@ const getOkButton = () => {
 };
 
 const getWirdPaedagogischBetreut = () => {
-	return cy.getByData('institution.tageschule.modul.wirdPaedagogischBetreut').find('.mdc-checkbox');
+    return cy
+        .getByData('institution.tageschule.modul.wirdPaedagogischBetreut')
+        .find('.mdc-checkbox');
 };
 
 const getIntervall = () => {
-	return cy.getByData('institution.tageschule.modul.intervall');
+    return cy.getByData('institution.tageschule.modul.intervall');
 };
 
 const getIntervallOption = (option: string) => {
-	return cy.getByData('institution.tageschule.modul.intervall.' + option);
+    return cy.getByData('institution.tageschule.modul.intervall.' + option);
 };
 
 export const TagesschuleModulDialogPO = {
@@ -85,5 +97,5 @@ export const TagesschuleModulDialogPO = {
     getWirdPaedagogischBetreut,
     getIntervall,
     getIntervallOption,
-    getOkButton,
+    getOkButton
 };

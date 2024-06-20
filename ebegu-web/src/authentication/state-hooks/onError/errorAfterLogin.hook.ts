@@ -35,27 +35,40 @@ const loginStates = [
     'authentication.tutorialGemeindeLogin'
 ];
 
-export function errorAfterLoginHookRunBlock($transitions: TransitionService): void {
-    $transitions.onError({from: state => loginStates.includes(state.name)},
+export function errorAfterLoginHookRunBlock(
+    $transitions: TransitionService
+): void {
+    $transitions.onError(
+        {from: state => loginStates.includes(state.name)},
         recover,
-        {priority: OnErrorPriorities.ERROR_AFTER_LOGIN});
+        {priority: OnErrorPriorities.ERROR_AFTER_LOGIN}
+    );
 }
 
 const LOG = LogFactory.createLog('errorAfterLoginHookRunBlock');
 
 function recover(transition: Transition): HookResult {
-    LOG.debug('recover from navigation error after login', transition.isActive());
+    LOG.debug(
+        'recover from navigation error after login',
+        transition.isActive()
+    );
     if (!transition.isActive()) {
         return;
     }
 
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+    const authService: AuthServiceRS = transition
+        .injector()
+        .get('AuthServiceRS');
 
     return authService.principal$
         .pipe(
             take(1),
-            map(principal => principal ? principal.getCurrentRole() : TSRole.ANONYMOUS),
-            mergeMap(role => navigateToStartPageForRole(role, transition.router.stateService)),
+            map(principal =>
+                principal ? principal.getCurrentRole() : TSRole.ANONYMOUS
+            ),
+            mergeMap(role =>
+                navigateToStartPageForRole(role, transition.router.stateService)
+            ),
             map(() => true)
         )
         .toPromise();

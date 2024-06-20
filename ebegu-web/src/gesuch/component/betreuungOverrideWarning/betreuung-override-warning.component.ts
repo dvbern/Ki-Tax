@@ -17,7 +17,10 @@
 
 import {
     ChangeDetectionStrategy,
-    Component, Input, OnChanges, SimpleChanges
+    Component,
+    Input,
+    OnChanges,
+    SimpleChanges
 } from '@angular/core';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import * as moment from 'moment';
@@ -33,7 +36,6 @@ import * as moment from 'moment';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BetreuungOverrideWarningComponent implements OnChanges {
-
     @Input()
     private readonly betreuungspensum: number;
 
@@ -49,21 +51,31 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
     private gueltigAbInPast: boolean = null;
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (EbeguUtil.isNullOrUndefined(this.firstBetreuungspensum)
-            && changes.betreuungspensum
-            && EbeguUtil.isNotNullOrUndefined(changes.betreuungspensum.currentValue)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.firstBetreuungspensum) &&
+            changes.betreuungspensum &&
+            EbeguUtil.isNotNullOrUndefined(
+                changes.betreuungspensum.currentValue
+            )
+        ) {
             this.firstBetreuungspensum = changes.betreuungspensum.currentValue;
         }
-        if (EbeguUtil.isNullOrUndefined(this.firstBetreuungskosten)
-            && changes.betreuungskosten
-            && EbeguUtil.isNotNullOrUndefined(changes.betreuungskosten.currentValue)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.firstBetreuungskosten) &&
+            changes.betreuungskosten &&
+            EbeguUtil.isNotNullOrUndefined(
+                changes.betreuungskosten.currentValue
+            )
+        ) {
             this.firstBetreuungskosten = changes.betreuungskosten.currentValue;
         }
-        if (EbeguUtil.isNullOrUndefined(this.gueltigAbInPast)
-            && changes.gueltigAb
-            && EbeguUtil.isNotNullOrUndefined(changes.gueltigAb.currentValue)) {
-                this.firstGueltigAb = this.gueltigAb;
-                this.gueltigAbInPast = moment().isAfter(this.gueltigAb);
+        if (
+            EbeguUtil.isNullOrUndefined(this.gueltigAbInPast) &&
+            changes.gueltigAb &&
+            EbeguUtil.isNotNullOrUndefined(changes.gueltigAb.currentValue)
+        ) {
+            this.firstGueltigAb = this.gueltigAb;
+            this.gueltigAbInPast = moment().isAfter(this.gueltigAb);
         }
     }
 
@@ -74,13 +86,15 @@ export class BetreuungOverrideWarningComponent implements OnChanges {
      * * gueltigAb liegt in Vergangenheit und wird verändert
      */
     public showWarning(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.firstBetreuungskosten)
-            && EbeguUtil.isNotNullOrUndefined(this.betreuungskosten)
-            && EbeguUtil.isNotNullOrUndefined(this.firstBetreuungspensum)
-            && EbeguUtil.isNotNullOrUndefined(this.betreuungspensum)
-            && this.gueltigAbInPast
-            && (this.firstBetreuungspensum !== this.betreuungspensum
-                || this.firstBetreuungskosten !== this.betreuungskosten
-                || !this.firstGueltigAb.isSame(this.gueltigAb));
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.firstBetreuungskosten) &&
+            EbeguUtil.isNotNullOrUndefined(this.betreuungskosten) &&
+            EbeguUtil.isNotNullOrUndefined(this.firstBetreuungspensum) &&
+            EbeguUtil.isNotNullOrUndefined(this.betreuungspensum) &&
+            this.gueltigAbInPast &&
+            (this.firstBetreuungspensum !== this.betreuungspensum ||
+                this.firstBetreuungskosten !== this.betreuungskosten ||
+                !this.firstGueltigAb.isSame(this.gueltigAb))
+        );
     }
 }

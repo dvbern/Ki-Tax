@@ -22,12 +22,13 @@ import {Observable, Subject} from 'rxjs';
 
 @Injectable()
 export class KinderabzugExchangeService {
-
     private readonly _forms: NgForm[] = [];
-    private readonly _geburtsdatumChanged: Subject<moment.Moment> = new Subject();
+    private readonly _geburtsdatumChanged: Subject<moment.Moment> =
+        new Subject();
     private readonly _formValidationTriggered: Subject<void> = new Subject();
 
-    private readonly _familienErgaenzendeBetreuungChanged: Subject<moment.Moment> = new Subject();
+    private readonly _familienErgaenzendeBetreuungChanged: Subject<moment.Moment> =
+        new Subject();
 
     public get forms(): NgForm[] {
         return this._forms;

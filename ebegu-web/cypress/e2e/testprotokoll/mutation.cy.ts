@@ -16,15 +16,17 @@
  */
 
 import {
-    AbwesenheitPo, AntragCreationPO,
+    AbwesenheitPo,
+    AntragCreationPO,
     ConfirmDialogPO,
     DossierToolbarPO,
     FreigabePO,
     NavigationPO,
     TestFaellePO,
-    UmzugPO, VerfuegenPO,
+    UmzugPO,
+    VerfuegenPO
 } from '@dv-e2e/page-objects';
-import { getUser, normalizeUser } from '@dv-e2e/types';
+import {getUser, normalizeUser} from '@dv-e2e/types';
 import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 import {VerfuegungPO} from '../../page-objects/antrag/verfuegung.po';
 
@@ -34,7 +36,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
     const userSB = getUser('[6-L-Admin-Gemeinde] Gerlinde Bader');
     let gesuchUrl: string;
     before(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
@@ -46,7 +48,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
             betreuungsstatus: 'verfuegt'
         });
 
-        cy.url().then((url) => {
+        cy.url().then(url => {
             const parts = new URL(url);
             gesuchUrl = `/${parts.hash}`;
         });
@@ -56,7 +58,9 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.login(userGS);
         cy.visit(gesuchUrl);
 
-        cy.intercept('GET', '**/gemeinde/stammdaten/lite/**').as('mutationReady');
+        cy.intercept('GET', '**/gemeinde/stammdaten/lite/**').as(
+            'mutationReady'
+        );
         DossierToolbarPO.getAntragMutieren().click();
         cy.wait('@mutationReady');
 
@@ -71,7 +75,10 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         UmzugPO.getUmzugPlz(0).type('3000');
         UmzugPO.getUmzugOrt(0).type('Bern');
         UmzugPO.getUmzugGueltigAb(0).find('input').type('01.11.2023');
-        cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goingToAbwesenheit');
+        cy.intercept(
+            'GET',
+            '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**'
+        ).as('goingToAbwesenheit');
         NavigationPO.saveAndGoNext();
         cy.wait('@goingToAbwesenheit');
 
@@ -81,7 +88,10 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         AbwesenheitPo.getAbwesenheitAb().find('input').type('01.10.2023');
         AbwesenheitPo.getAbwesenheitBis().find('input').type('30.11.2023');
 
-        cy.intercept('GET', '**/gesuche/ausserordentlicheranspruchpossible/**').as('abwesenheitSaved');
+        cy.intercept(
+            'GET',
+            '**/gesuche/ausserordentlicheranspruchpossible/**'
+        ).as('abwesenheitSaved');
         NavigationPO.saveAndGoNext();
         cy.wait('@abwesenheitSaved');
 
@@ -91,9 +101,11 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.changeLogin(userSB);
         cy.visit(gesuchUrl);
 
-
         DossierToolbarPO.getAntraegeTrigger().click();
-        cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goToLatestMutation');
+        cy.intercept(
+            'GET',
+            '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**'
+        ).as('goToLatestMutation');
         DossierToolbarPO.getAntrag(1).click();
         cy.wait('@goToLatestMutation');
 
@@ -110,30 +122,48 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkVerfuegen');
         cy.wait('@checkVerfuegen');
 
-        cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('openingVerfuegung');
-        VerfuegenPO.getVerfuegung(0,0).click();
+        cy.intercept(
+            'GET',
+            '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**'
+        ).as('openingVerfuegung');
+        VerfuegenPO.getVerfuegung(0, 0).click();
         cy.wait('@openingVerfuegung');
-        VerfuegungPO.getVerguenstigungOhneBeruecksichtigungVollkosten(3).should('have.text', '0.00');
+        VerfuegungPO.getVerguenstigungOhneBeruecksichtigungVollkosten(3).should(
+            'have.text',
+            '0.00'
+        );
         VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
         VerfuegungPO.getVerfuegenButton().click();
-        cy.intercept('PUT', '**/verfuegung/verfuegen/**').as('verfuegungVerfuegen');
+        cy.intercept('PUT', '**/verfuegung/verfuegen/**').as(
+            'verfuegungVerfuegen'
+        );
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@verfuegungVerfuegen');
         NavigationPO.getAbbrechenButton().click();
-        VerfuegenPO.getVerfuegung(1,0).click();
+        VerfuegenPO.getVerfuegung(1, 0).click();
         VerfuegungPO.getVerfuegenVerzichtenButton().click();
-        cy.intercept('POST', '**/verfuegung/schliessenOhneVerfuegen/**').as('ohneVerfuegung');
+        cy.intercept('POST', '**/verfuegung/schliessenOhneVerfuegen/**').as(
+            'ohneVerfuegung'
+        );
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@ohneVerfuegung');
 
-        VerfuegenPO.getBetreuungsstatus(0,0).should('include.text', 'Verfügt');
-        VerfuegenPO.getBetreuungsstatus(1,0).should('include.text', 'Geschlossen ohne Verfügung');
+        VerfuegenPO.getBetreuungsstatus(0, 0).should('include.text', 'Verfügt');
+        VerfuegenPO.getBetreuungsstatus(1, 0).should(
+            'include.text',
+            'Geschlossen ohne Verfügung'
+        );
 
         DossierToolbarPO.getAntragMutieren().click();
         // we have an issue, that the input field cannot be typed in but it has not yet been reproducable locally
         cy.wait(1000);
-        AntragCreationPO.getEingangsdatum().find('input').should('not.have.attr', 'disabled');
-        AntragCreationPO.getEingangsdatum().find('input').click().type('01.05.2023');
+        AntragCreationPO.getEingangsdatum()
+            .find('input')
+            .should('not.have.attr', 'disabled');
+        AntragCreationPO.getEingangsdatum()
+            .find('input')
+            .click()
+            .type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
         NavigationPO.saveAndGoNext();
         cy.wait('@createNewMutation');
@@ -143,7 +173,9 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.closeMaterialOverlay();
 
         DossierToolbarPO.getAntragLoeschen().click();
-        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('deletingMutation');
+        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as(
+            'deletingMutation'
+        );
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@deletingMutation');
 

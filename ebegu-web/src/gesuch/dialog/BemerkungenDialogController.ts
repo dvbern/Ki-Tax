@@ -18,7 +18,6 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class BemerkungenDialogController {
-
     public static $inject = ['$mdDialog', '$translate', 'title', 'bemerkungen'];
 
     public title: string;

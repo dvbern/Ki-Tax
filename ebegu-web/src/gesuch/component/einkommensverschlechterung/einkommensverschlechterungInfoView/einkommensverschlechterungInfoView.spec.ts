@@ -23,7 +23,6 @@ import {GESUCH_JS_MODULE} from '../../../gesuch.module';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 describe('einkommensverschlechterungInfoView', () => {
-
     let gesuchModelManager: GesuchModelManager;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
@@ -34,18 +33,27 @@ describe('einkommensverschlechterungInfoView', () => {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
+        })
+    );
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined)
+        gesuchModelManager
+            .initGesuch(
+                TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_FALL,
+                undefined
+            )
             .then(() => {
-                gesuchModelManager.getGesuch().dossier.gemeinde = new TSGemeinde();
-                gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
+                gesuchModelManager.getGesuch().dossier.gemeinde =
+                    new TSGemeinde();
+                gesuchModelManager.getGesuch().gesuchsperiode =
+                    new TSGesuchsperiode();
             });
     }));
 
@@ -55,7 +63,11 @@ describe('einkommensverschlechterungInfoView', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('einkommensverschlechterungInfoView', {$scope: scope}, bindings);
+        component = $componentController(
+            'einkommensverschlechterungInfoView',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
 });

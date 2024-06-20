@@ -27,15 +27,19 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 export class UebersichtVersendeteMailsRS {
     public readonly serviceURL = `${CONSTANTS.REST_API}versendeteMails`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
-    public constructor(
-        public http: HttpClient
-    ) {
-    }
+    public constructor(public http: HttpClient) {}
     public getAllMails(): Observable<TSVersendeteMail[]> {
         return this.getInfo(`${this.serviceURL}/allMails`);
     }
     private getInfo(url: string): Observable<Array<TSVersendeteMail>> {
-        return this.http.get(url)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(response)));
+        return this.http
+            .get(url)
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(
+                        response
+                    )
+                )
+            );
     }
 }

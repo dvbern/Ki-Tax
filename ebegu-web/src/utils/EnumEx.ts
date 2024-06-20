@@ -19,8 +19,7 @@ export class EnumEx {
      * @param e takes an enum and returns the names of the objects as a string arry
      */
     public static getNames(e: any): string[] {
-        return Object.keys(e).filter(v => isNaN(parseInt(v, 10))
-        );
+        return Object.keys(e).filter(v => isNaN(parseInt(v, 10)));
     }
 
     public static getValues(e: any): number[] {

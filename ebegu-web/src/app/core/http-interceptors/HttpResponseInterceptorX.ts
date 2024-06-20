@@ -34,21 +34,26 @@ import {BroadcastService} from '../service/broadcast.service';
  */
 @Injectable()
 export class HttpResponseInterceptorX implements HttpInterceptor {
+    public constructor(private readonly broadcastService: BroadcastService) {}
 
-    public constructor(private readonly broadcastService: BroadcastService) {
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
+        return next.handle(req).pipe(
+            catchError((err: HttpErrorResponse) => {
+                this.broadcastService.broadcast(
+                    TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED],
+                    err
+                );
+                throw err;
+            }),
+            tap((res: HttpResponse<any>) => {
+                this.broadcastService.broadcast(
+                    TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED],
+                    res
+                );
+            })
+        );
     }
-
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req)
-            .pipe(
-                catchError((err: HttpErrorResponse) => {
-                    this.broadcastService.broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], err);
-                    throw err;
-                }),
-                tap((res: HttpResponse<any>) => {
-                    this.broadcastService.broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], res);
-                })
-            );
-    }
-
 }

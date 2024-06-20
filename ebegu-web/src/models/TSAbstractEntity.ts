@@ -16,7 +16,6 @@
 import * as moment from 'moment';
 
 export class TSAbstractEntity {
-
     public id: string;
     public version: number;
     public timestampErstellt: moment.Moment;

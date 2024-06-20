@@ -16,17 +16,34 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p class="dv-dialog-compact-text" id="dv-dialog-text" [innerHTML]="question | translate"></p>
-    <mat-checkbox id="confirmGesuchDelete" name="confirmGesuchDelete"
-                  [(ngModel)]="confirmGesuchDelete">
-        {{confirmationText}}</mat-checkbox>
+    <p
+        class="dv-dialog-compact-text"
+        id="dv-dialog-text"
+        [innerHTML]="question | translate"
+    ></p>
+    <mat-checkbox
+        id="confirmGesuchDelete"
+        name="confirmGesuchDelete"
+        [(ngModel)]="confirmGesuchDelete"
+    >
+        {{ confirmationText }}</mat-checkbox
+    >
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="ng-scope dv-btn cancel-button uppercase" type="button"
-                (click)="close()" [textContent]="'CANCEL' | translate">
-        </button>
-        <button class="dv-btn" ng-if="selected > 0" (click)="save()" [disabled]="!confirmGesuchDelete" [textContent]="'BESTAETIGEN' | translate"></button>
+        <button
+            class="ng-scope dv-btn cancel-button uppercase"
+            type="button"
+            (click)="close()"
+            [textContent]="'CANCEL' | translate"
+        ></button>
+        <button
+            class="dv-btn"
+            ng-if="selected > 0"
+            (click)="save()"
+            [disabled]="!confirmGesuchDelete"
+            [textContent]="'BESTAETIGEN' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

@@ -25,17 +25,19 @@ const LOG = LogFactory.createLog('DVsTPersistService');
  * existing namespace, this configuration will overwrite the existing one.
  */
 export class DVsTPersistService {
-
     public static $inject: any = ['AuthLifeCycleService'];
 
     public persistedData: Map<string, string> = new Map<string, string>();
 
-    public constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly authLifeCycleService: AuthLifeCycleService
+    ) {
         this.clearAll();
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.clearAll(),
-                err => LOG.error(err));
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS).subscribe(
+            () => this.clearAll(),
+            err => LOG.error(err)
+        );
     }
 
     private clearAll(): void {
@@ -64,5 +66,4 @@ export class DVsTPersistService {
         }
         return false;
     }
-
 }

@@ -70,41 +70,77 @@ class MockNewUserSelectDirective {
     public schulamt: boolean;
 
     @Output()
-    public readonly userChanged: EventEmitter<{ user: TSBenutzerNoDetails }> = new EventEmitter<{ user: TSBenutzerNoDetails }>();
+    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> =
+        new EventEmitter<{user: TSBenutzerNoDetails}>();
 }
 
 describe('NewAntragListComponent', () => {
     let component: NewAntragListComponent;
     let fixture: ComponentFixture<NewAntragListComponent>;
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['findInstitution', 'getInstitutionenReadableForCurrentBenutzer']);
-    const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['findGesuchsperiode', 'getAllGesuchsperioden']);
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege', 'countAntraege']);
-    const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['getPrincipalRole', 'isOneOfRoles']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
-        ['addMesageAsError']);
-    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
-        ['getAllBenutzerBgOrGemeinde', 'getAllBenutzerTsOrGemeinde']);
-    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-        ['onStart']);
-    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
-        ['has', 'get']);
-    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-        ['$current']);
-    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getPublicPropertiesCached', 'getActivatedDemoFeatures']);
-    appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['findInstitution', 'getInstitutionenReadableForCurrentBenutzer']
+    );
+    const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+        GesuchsperiodeRS.name,
+        ['findGesuchsperiode', 'getAllGesuchsperioden']
+    );
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenForPrincipal$'
+    ]);
+    const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, [
+        'searchAntraege',
+        'countAntraege'
+    ]);
+    const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+        'getPrincipalRole',
+        'isOneOfRoles'
+    ]);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['addMesageAsError']
+    );
+    const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, [
+        'getAllBenutzerBgOrGemeinde',
+        'getAllBenutzerTsOrGemeinde'
+    ]);
+    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(
+        TransitionService.name,
+        ['onStart']
+    );
+    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(
+        StateStoreService.name,
+        ['has', 'get']
+    );
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(
+        UIRouterGlobals.name,
+        ['$current']
+    );
+    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+        ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached', 'getActivatedDemoFeatures']
+    );
+    appPropRSSpy.getPublicPropertiesCached.and.returnValue(
+        Promise.resolve(new TSPublicAppConfig())
+    );
     appPropRSSpy.getActivatedDemoFeatures.and.returnValue($q.when(''));
-    const demofeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(DemoFeatureRS.name, ['isDemoFeatureAllowed']);
-    demofeatureRSSpy.isDemoFeatureAllowed.and.returnValue(Promise.resolve(false));
+    const demofeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(
+        DemoFeatureRS.name,
+        ['isDemoFeatureAllowed']
+    );
+    demofeatureRSSpy.isDemoFeatureAllowed.and.returnValue(
+        Promise.resolve(false)
+    );
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [NewAntragListComponent, MockNewUserSelectDirective],
-            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
+            imports: [
+                MaterialModule,
+                TranslateModule.forRoot(),
+                UpgradeModule,
+                BrowserAnimationsModule
+            ],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchPeriodeSpy},
@@ -118,11 +154,14 @@ describe('NewAntragListComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
                 {provide: ApplicationPropertyRS, useValue: appPropRSSpy}
             ]
-        })
-            .compileComponents();
+        }).compileComponents();
 
-        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(of([]));
-        gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
+        gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(
+            Promise.resolve([])
+        );
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         authRSSpy.getPrincipalRole.and.returnValue(undefined);
         const dummySearchResult: TSAntragSearchresultDTO = {

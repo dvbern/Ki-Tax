@@ -24,7 +24,7 @@ describe('DvInputContainerX', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ DVInputContainerXComponent ]
+            declarations: [DVInputContainerXComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

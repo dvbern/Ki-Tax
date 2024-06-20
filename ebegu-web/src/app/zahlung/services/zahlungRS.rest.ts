@@ -39,27 +39,29 @@ const LOG = LogFactory.createLog('ZahlungRS');
     providedIn: 'root'
 })
 export class ZahlungRS {
-
     private readonly serviceURL = `${CONSTANTS.REST_API}zahlungen`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        private readonly http: HttpClient
-    ) {
-    }
+    public constructor(private readonly http: HttpClient) {}
 
     private static getSearchParams(
         sort: MatSort | undefined,
         page: number,
         pageSize: number,
         filterGemeinde: TSGemeinde | undefined,
-        zahlungslaufTyp: TSZahlungslaufTyp): HttpParams {
-
+        zahlungslaufTyp: TSZahlungslaufTyp
+    ): HttpParams {
         let searchParams = new HttpParams();
 
         if (sort) {
-            searchParams = searchParams.append('sortPredicate', sort.active.toString());
-            searchParams = searchParams.append('sortReverse', String(sort.direction === 'desc'));
+            searchParams = searchParams.append(
+                'sortPredicate',
+                sort.active.toString()
+            );
+            searchParams = searchParams.append(
+                'sortReverse',
+                String(sort.direction === 'desc')
+            );
         }
         if (EbeguUtil.isNullOrUndefined(page) || !pageSize) {
             throw Error('page or pageSize not set');
@@ -81,60 +83,102 @@ export class ZahlungRS {
         return 'ZahlungRS';
     }
 
-    public getAllZahlungsauftraege(searchParams: HttpParams):
-        Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
-        return this.http.get(`${this.serviceURL}/all`, {
-            params: searchParams
-        }).pipe(
-            map(response => this.parseZahlungenResultDTO(response))
-        );
+    public getAllZahlungsauftraege(
+        searchParams: HttpParams
+    ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
+        return this.http
+            .get(`${this.serviceURL}/all`, {
+                params: searchParams
+            })
+            .pipe(map(response => this.parseZahlungenResultDTO(response)));
     }
 
-    public getAllZahlungsauftraegeInstitution(searchParams: HttpParams): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
-        return this.http.get(`${this.serviceURL}/institution`, {
-            params: searchParams
-        }).pipe(
-            map(response => this.parseZahlungenResultDTO(response))
-        );
+    public getAllZahlungsauftraegeInstitution(
+        searchParams: HttpParams
+    ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
+        return this.http
+            .get(`${this.serviceURL}/institution`, {
+                params: searchParams
+            })
+            .pipe(map(response => this.parseZahlungenResultDTO(response)));
     }
 
-    private parseZahlungenResultDTO(response: any): TSPaginationResultDTO<TSZahlungsauftrag> {
+    private parseZahlungenResultDTO(
+        response: any
+    ): TSPaginationResultDTO<TSZahlungsauftrag> {
         const dto = new TSPaginationResultDTO<TSZahlungsauftrag>();
-        dto.resultList = this.ebeguRestUtil.parseZahlungsauftragList(response.resultList);
+        dto.resultList = this.ebeguRestUtil.parseZahlungsauftragList(
+            response.resultList
+        );
         dto.totalResultSize = response.totalCount;
         return dto;
     }
 
-    public getZahlungsauftrag(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
-        return this.http.get(`${this.serviceURL}/zahlungsauftrag/${encodeURIComponent(zahlungsauftragId)}`)
+    public getZahlungsauftrag(
+        zahlungsauftragId: string
+    ): Observable<TSZahlungsauftrag> {
+        return this.http
+            .get(
+                `${this.serviceURL}/zahlungsauftrag/${encodeURIComponent(zahlungsauftragId)}`
+            )
             .pipe(
-                map((response: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response))
+                map((response: any) =>
+                    this.ebeguRestUtil.parseZahlungsauftrag(
+                        new TSZahlungsauftrag(),
+                        response
+                    )
+                )
             );
     }
 
-    public getZahlungsauftragInstitution(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
-        return this.http.get(`${this.serviceURL}/zahlungsauftraginstitution/${encodeURIComponent(
-            zahlungsauftragId)}`)
+    public getZahlungsauftragInstitution(
+        zahlungsauftragId: string
+    ): Observable<TSZahlungsauftrag> {
+        return this.http
+            .get(
+                `${this.serviceURL}/zahlungsauftraginstitution/${encodeURIComponent(
+                    zahlungsauftragId
+                )}`
+            )
             .pipe(
-                map((response: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response))
+                map((response: any) =>
+                    this.ebeguRestUtil.parseZahlungsauftrag(
+                        new TSZahlungsauftrag(),
+                        response
+                    )
+                )
             );
     }
 
-    public zahlungsauftragAusloesen(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
-        return this.http.put(`${this.serviceURL}/ausloesen/${encodeURIComponent(zahlungsauftragId)}`,
-            null)
+    public zahlungsauftragAusloesen(
+        zahlungsauftragId: string
+    ): Observable<TSZahlungsauftrag> {
+        return this.http
+            .put(
+                `${this.serviceURL}/ausloesen/${encodeURIComponent(zahlungsauftragId)}`,
+                null
+            )
             .pipe(
                 map((response: any) => {
                     LOG.debug('PARSING user REST array object', response);
-                    return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response);
+                    return this.ebeguRestUtil.parseZahlungsauftrag(
+                        new TSZahlungsauftrag(),
+                        response
+                    );
                 })
             );
     }
 
     public zahlungBestaetigen(zahlungId: string): Observable<TSZahlung> {
-        return this.http.put(`${this.serviceURL}/bestaetigen/${encodeURIComponent(zahlungId)}`, null)
+        return this.http
+            .put(
+                `${this.serviceURL}/bestaetigen/${encodeURIComponent(zahlungId)}`,
+                null
+            )
             .pipe(
-                map((response: any) => this.ebeguRestUtil.parseZahlung(new TSZahlung(), response))
+                map((response: any) =>
+                    this.ebeguRestUtil.parseZahlung(new TSZahlung(), response)
+                )
             );
     }
 
@@ -157,13 +201,18 @@ export class ZahlungRS {
             params.datumGeneriert = DateUtil.momentToLocalDate(datumGeneriert);
         }
 
-        return this.http.get(`${this.serviceURL}/create`,
-            {
+        return this.http
+            .get(`${this.serviceURL}/create`, {
                 params
-            }
-        ).pipe(
-            map((httpresponse: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse))
-        );
+            })
+            .pipe(
+                map((httpresponse: any) =>
+                    this.ebeguRestUtil.parseZahlungsauftrag(
+                        new TSZahlungsauftrag(),
+                        httpresponse
+                    )
+                )
+            );
     }
 
     public updateZahlungsauftrag(
@@ -171,20 +220,29 @@ export class ZahlungRS {
         faelligkeitsdatum: moment.Moment,
         id: string
     ): Observable<TSZahlungsauftrag> {
-        return this.http.get(`${this.serviceURL}/update`,
-            {
+        return this.http
+            .get(`${this.serviceURL}/update`, {
                 params: {
                     beschrieb,
-                    faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
+                    faelligkeitsdatum:
+                        DateUtil.momentToLocalDate(faelligkeitsdatum),
                     id
                 }
-            }
-        ).pipe(
-            map((httpresponse: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse))
-        );
+            })
+            .pipe(
+                map((httpresponse: any) =>
+                    this.ebeguRestUtil.parseZahlungsauftrag(
+                        new TSZahlungsauftrag(),
+                        httpresponse
+                    )
+                )
+            );
     }
 
-    public getZahlungsauftragForRole$(role: TSRole, zahlungsauftragId: string): Observable<TSZahlungsauftrag | null> {
+    public getZahlungsauftragForRole$(
+        role: TSRole,
+        zahlungsauftragId: string
+    ): Observable<TSZahlungsauftrag | null> {
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
@@ -214,7 +272,13 @@ export class ZahlungRS {
         filterGemeinde: TSGemeinde,
         zahlungslaufTyp: TSZahlungslaufTyp
     ): Observable<TSPaginationResultDTO<TSZahlungsauftrag>> {
-        const searchParams = ZahlungRS.getSearchParams(sort, page, pageSize, filterGemeinde, zahlungslaufTyp);
+        const searchParams = ZahlungRS.getSearchParams(
+            sort,
+            page,
+            pageSize,
+            filterGemeinde,
+            zahlungslaufTyp
+        );
         switch (role) {
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:

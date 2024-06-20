@@ -5,12 +5,20 @@ import {BehaviorSubject} from 'rxjs';
     providedIn: 'root'
 })
 export class OnboardingPlaceholderService {
-
-    public description1$: BehaviorSubject<string> = new BehaviorSubject('ONBOARDING_MAIN_DESC1');
-    public description2$: BehaviorSubject<string> = new BehaviorSubject('ONBOARDING_MAIN_DESC2');
-    public description3$: BehaviorSubject<string> = new BehaviorSubject('ONBOARDING_MAIN_DESC3');
-    public description4$: BehaviorSubject<string> = new BehaviorSubject('ONBOARDING_MAIN_DESC4');
-    public splittedScreen$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    public description1$: BehaviorSubject<string> = new BehaviorSubject(
+        'ONBOARDING_MAIN_DESC1'
+    );
+    public description2$: BehaviorSubject<string> = new BehaviorSubject(
+        'ONBOARDING_MAIN_DESC2'
+    );
+    public description3$: BehaviorSubject<string> = new BehaviorSubject(
+        'ONBOARDING_MAIN_DESC3'
+    );
+    public description4$: BehaviorSubject<string> = new BehaviorSubject(
+        'ONBOARDING_MAIN_DESC4'
+    );
+    public splittedScreen$: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(true);
 
     public setDescription1(description1: string): void {
         this.description1$.next(description1);

@@ -28,8 +28,7 @@ import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMittei
     styleUrls: ['./send-notrecht-mitteilung.component.less']
 })
 export class SendNotrechtMitteilungComponent implements OnInit {
-
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
 
     public mitteilung: TSRueckforderungMitteilung;
     public isEinladung: boolean;

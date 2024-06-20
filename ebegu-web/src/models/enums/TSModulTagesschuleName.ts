@@ -24,7 +24,7 @@ export enum TSModulTagesschuleName {
     SCOLARIS_08 = 'SCOLARIS_08',
     SCOLARIS_09 = 'SCOLARIS_09',
     SCOLARIS_10 = 'SCOLARIS_10',
-    DYNAMISCH = 'DYNAMISCH',
+    DYNAMISCH = 'DYNAMISCH'
 }
 
 export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName> {

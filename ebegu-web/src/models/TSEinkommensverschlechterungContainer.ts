@@ -17,7 +17,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 
 export class TSEinkommensverschlechterungContainer extends TSAbstractMutableEntity {
-
     private _ekvGSBasisJahrPlus1: TSEinkommensverschlechterung;
     private _ekvGSBasisJahrPlus2: TSEinkommensverschlechterung;
     private _ekvJABasisJahrPlus1: TSEinkommensverschlechterung;
@@ -73,14 +72,14 @@ export class TSEinkommensverschlechterungContainer extends TSAbstractMutableEnti
     }
 
     public getJA(basisJahrPlus: number): TSEinkommensverschlechterung {
-        return basisJahrPlus === 2 ?
-            this.ekvJABasisJahrPlus2 :
-            this.ekvJABasisJahrPlus1;
+        return basisJahrPlus === 2
+            ? this.ekvJABasisJahrPlus2
+            : this.ekvJABasisJahrPlus1;
     }
 
     public getGS(basisJahrPlus: number): TSEinkommensverschlechterung {
-        return basisJahrPlus === 2 ?
-            this.ekvGSBasisJahrPlus2 :
-            this.ekvGSBasisJahrPlus1;
+        return basisJahrPlus === 2
+            ? this.ekvGSBasisJahrPlus2
+            : this.ekvGSBasisJahrPlus1;
     }
 }

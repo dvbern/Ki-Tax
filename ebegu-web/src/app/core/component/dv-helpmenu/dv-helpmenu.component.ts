@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 
 @Component({
@@ -23,14 +23,11 @@ import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dial
     styleUrls: ['./dv-helpmenu.component.less']
 })
 export class DvHelpmenuComponent {
-
     public display: boolean = false;
 
-    public constructor(private readonly dialog: MatDialog) {
-    }
+    public constructor(private readonly dialog: MatDialog) {}
 
     public showDialog(): void {
         this.dialog.open(DvNgHelpDialogComponent);
     }
-
 }

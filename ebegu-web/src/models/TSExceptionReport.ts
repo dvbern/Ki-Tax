@@ -180,25 +180,44 @@ export class TSExceptionReport {
         path: string,
         value: string
     ): TSExceptionReport {
-        const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
+        const report = new TSExceptionReport(
+            TSErrorType.VALIDATION,
+            TSErrorLevel.SEVERE,
+            message,
+            value
+        );
         report.path = path;
         // hint: here we could also pass along the path to the Exception Report
         return report;
     }
 
-    public static createClientSideError(severity: TSErrorLevel, msgKey: string, args: any): TSExceptionReport {
-        return new TSExceptionReport(TSErrorType.CLIENT_SIDE, severity, msgKey, args);
+    public static createClientSideError(
+        severity: TSErrorLevel,
+        msgKey: string,
+        args: any
+    ): TSExceptionReport {
+        return new TSExceptionReport(
+            TSErrorType.CLIENT_SIDE,
+            severity,
+            msgKey,
+            args
+        );
     }
 
     /**
      * takes a data Object that matches the fields of a EbeguExceptionReport and transforms them to a TSExceptionReport.
      */
     public static createFromExceptionReport(data: any): TSExceptionReport {
-        const msgToDisp = data.translatedMessage || data.customMessage || 'ERROR_UNEXPECTED_EBEGU_RUNTIME';
-        const exceptionReport = new TSExceptionReport(TSErrorType.BADREQUEST,
+        const msgToDisp =
+            data.translatedMessage ||
+            data.customMessage ||
+            'ERROR_UNEXPECTED_EBEGU_RUNTIME';
+        const exceptionReport = new TSExceptionReport(
+            TSErrorType.BADREQUEST,
             TSErrorLevel.SEVERE,
             msgToDisp,
-            data.argumentList);
+            data.argumentList
+        );
         exceptionReport.errorCodeEnum = data.errorCodeEnum;
         exceptionReport.exceptionName = data.exceptionName;
         exceptionReport.methodName = data.methodName;
@@ -209,7 +228,6 @@ export class TSExceptionReport {
         exceptionReport.argumentList = data.argumentList;
         exceptionReport.addActionToMessage();
         return exceptionReport;
-
     }
 
     public isConstantValue(constant: any, value: any): boolean {
@@ -227,7 +245,8 @@ export class TSExceptionReport {
     public isValid(): boolean {
         const validType = this.isConstantValue(TSErrorType, this.type);
         const validSeverity = this.isConstantValue(TSErrorLevel, this.severity);
-        const validMsgKey = typeof this.msgKey === 'string' && this.msgKey.length > 0;
+        const validMsgKey =
+            typeof this.msgKey === 'string' && this.msgKey.length > 0;
 
         return validType && validSeverity && validMsgKey;
     }
@@ -239,7 +258,6 @@ export class TSExceptionReport {
     private addActionToMessage(): void {
         if (this.errorCodeEnum === 'ERROR_EXISTING_ONLINE_MUTATION') {
             this.action = TSErrorAction.REMOVE_ONLINE_MUTATION;
-
         } else if (this.errorCodeEnum === 'ERROR_EXISTING_ERNEUERUNGSGESUCH') {
             this.action = TSErrorAction.REMOVE_ONLINE_ERNEUERUNGSGESUCH;
         }

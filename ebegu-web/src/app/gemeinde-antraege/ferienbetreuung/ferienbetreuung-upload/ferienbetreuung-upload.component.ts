@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {NEVER, Subscription} from 'rxjs';
@@ -47,7 +53,6 @@ const LOG = LogFactory.createLog('FerienbetreuungUploadComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
-
     public dokumente: TSFerienbetreuungDokument[];
     public filesTooBig: File[];
 
@@ -65,32 +70,48 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
         private readonly downloadRS: DownloadRS,
         private readonly wizardRS: WizardStepXRS,
         private readonly authService: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
-            .pipe(concatMap(container => {
-                this.container = container;
-                return this.ferienbetreuungDokumentService.getAllDokumente(container.id);
-            }))
-            .subscribe(dokumente => {
-                this.dokumente = dokumente;
-                this.cd.markForCheck();
-            }, error => {
-                LOG.error(error);
-            });
+        this.subscription = this.ferienbetreuungService
+            .getFerienbetreuungContainer()
+            .pipe(
+                concatMap(container => {
+                    this.container = container;
+                    return this.ferienbetreuungDokumentService.getAllDokumente(
+                        container.id
+                    );
+                })
+            )
+            .subscribe(
+                dokumente => {
+                    this.dokumente = dokumente;
+                    this.cd.markForCheck();
+                },
+                error => {
+                    LOG.error(error);
+                }
+            );
     }
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
-    public download(dokument: TSFerienbetreuungDokument, attachment: boolean): void {
+    public download(
+        dokument: TSFerienbetreuungDokument,
+        attachment: boolean
+    ): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenFerienbetreuungDokument(dokument.id)
+        this.downloadRS
+            .getAccessTokenFerienbetreuungDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    attachment,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
@@ -102,22 +123,34 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
             title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
             text: ''
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
-            .pipe(concatMap(userAccepted => {
-                if (!userAccepted) {
-                    return NEVER;
-                }
-                return this.ferienbetreuungDokumentService.deleteDokument(dokument.id);
-            }))
-            .subscribe(() => {
-                    this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
-                    this.wizardRS.updateSteps(TSWizardStepXTyp.FERIENBETREUUNG, this.container.id);
+            .pipe(
+                concatMap(userAccepted => {
+                    if (!userAccepted) {
+                        return NEVER;
+                    }
+                    return this.ferienbetreuungDokumentService.deleteDokument(
+                        dokument.id
+                    );
+                })
+            )
+            .subscribe(
+                () => {
+                    this.dokumente = this.dokumente.filter(
+                        d => d.id !== dokument.id
+                    );
+                    this.wizardRS.updateSteps(
+                        TSWizardStepXTyp.FERIENBETREUUNG,
+                        this.container.id
+                    );
                     this.cd.markForCheck();
                 },
                 err => {
                     LOG.error(err);
-                });
+                }
+            );
     }
 
     public onUpload(event: any): void {
@@ -128,25 +161,38 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
         if (this.checkFilesLength(files as File[])) {
             return;
         }
-        this.uploadRS.uploadFerienbetreuungDokumente(files, this.container.id)
+        this.uploadRS
+            .uploadFerienbetreuungDokumente(files, this.container.id)
             .then(dokumente => {
                 this.dokumente = this.dokumente.concat(dokumente);
-                this.wizardRS.updateSteps(TSWizardStepXTyp.FERIENBETREUUNG, this.container.id);
+                this.wizardRS.updateSteps(
+                    TSWizardStepXTyp.FERIENBETREUUNG,
+                    this.container.id
+                );
                 this.cd.markForCheck();
             })
             .catch(err => {
                 LOG.error(err);
-                this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED'));
+                this.errorService.addMesageAsError(
+                    this.translate.instant('ERROR_UNEXPECTED')
+                );
             });
-
     }
 
     public isReadonly(): boolean {
-        return (this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
-            && this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) ||
-            (this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON &&
-                this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrFBOnlyRoles())) ||
-            this.container?.isGeprueft();
+        return (
+            (this.container?.status ===
+                FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE &&
+                this.authService.isOneOfRoles(
+                    TSRoleUtil.getMandantOnlyRoles()
+                )) ||
+            (this.container?.status ===
+                FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON &&
+                this.authService.isOneOfRoles(
+                    TSRoleUtil.getGemeindeOrFBOnlyRoles()
+                )) ||
+            this.container?.isGeprueft()
+        );
     }
 
     /**

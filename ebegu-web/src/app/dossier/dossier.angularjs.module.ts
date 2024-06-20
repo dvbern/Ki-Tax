@@ -23,45 +23,44 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import IPromise = angular.IPromise;
 
-export const DOSSIER_JS_MODULE = angular.module('ebeguWebDossier', [
-        CORE_JS_MODULE.name
-    ])
-        .config(conf)
-;
+export const DOSSIER_JS_MODULE = angular
+    .module('ebeguWebDossier', [CORE_JS_MODULE.name])
+    .config(conf);
 
 conf.$inject = ['$stateProvider'];
 
 function conf($stateProvider: StateProvider): void {
-    $stateProvider.state(
-        {
-            parent: 'app',
-            name: 'dossier',
-            abstract: true,
-            url: '/dossier/:dossierId',
-            resolve: {
-                dossier
-            },
-            data: {
-                roles: TSRoleUtil.getAllRolesButAnonymous()
-            },
-            params: {
-                dossierId: {
-                    // wir brauchen einen default value, weil der landing state gesuchsteller.dashboard normalerweise
-                    // ohne Parameter aufgerufen wird. D.h. in diesem Fall wird einfach das aktuelle Dossier des
-                    // Benutzers geladen.
-                    // In der URL wird die ID des Dossiers nur angezeigt, wenn man die dossierId explizit spezifiziert.
-                    // Mit etwas Zusatzaufwand könnte man die ID in die URL schreiben (dynamic parameter).
-                    value: '',
-                    squash: true
-                }
+    $stateProvider.state({
+        parent: 'app',
+        name: 'dossier',
+        abstract: true,
+        url: '/dossier/:dossierId',
+        resolve: {
+            dossier
+        },
+        data: {
+            roles: TSRoleUtil.getAllRolesButAnonymous()
+        },
+        params: {
+            dossierId: {
+                // wir brauchen einen default value, weil der landing state gesuchsteller.dashboard normalerweise
+                // ohne Parameter aufgerufen wird. D.h. in diesem Fall wird einfach das aktuelle Dossier des
+                // Benutzers geladen.
+                // In der URL wird die ID des Dossiers nur angezeigt, wenn man die dossierId explizit spezifiziert.
+                // Mit etwas Zusatzaufwand könnte man die ID in die URL schreiben (dynamic parameter).
+                value: '',
+                squash: true
             }
         }
-    );
+    });
 }
 
 dossier.$inject = ['$transition$', 'DossierRS'];
 
-export function dossier($transition$: Transition, dossierService: DossierRS): IPromise<TSDossier> {
+export function dossier(
+    $transition$: Transition,
+    dossierService: DossierRS
+): IPromise<TSDossier> {
     const dossierId: string = $transition$.params().dossierId;
 
     if (!dossierId) {

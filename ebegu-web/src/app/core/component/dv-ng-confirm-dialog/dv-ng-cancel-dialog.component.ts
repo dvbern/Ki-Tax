@@ -26,7 +26,6 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     templateUrl: './dv-ng-cancel-dialog.template.html'
 })
 export class DvNgCancelDialogComponent {
-
     public frage: string = '';
 
     public constructor(

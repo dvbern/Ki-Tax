@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FreigabeComponent} from '../antrag/freigabe/freigabe.component';
@@ -41,8 +44,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'lastenausgleichId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().id)
+                resolveFn: (trans: Transition) => trans.params().id
             }
         ]
     },
@@ -60,8 +62,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'lastenausgleichId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().id)
+                resolveFn: (trans: Transition) => trans.params().id
             }
         ]
     },
@@ -83,8 +84,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'institutionContainerId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().institutionId)
+                resolveFn: (trans: Transition) => trans.params().institutionId
             }
         ]
     },
@@ -101,8 +101,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'institutionContainerId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().institutionId)
+                resolveFn: (trans: Transition) => trans.params().institutionId
             }
         ]
     },
@@ -114,12 +113,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class LastenausgleichTsRoutingModule {
-}
+export class LastenausgleichTsRoutingModule {}

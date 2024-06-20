@@ -29,23 +29,36 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
     providedIn: 'root'
 })
 export class EinstellungRS {
-
     public serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
-    private readonly _einstellungenCacheMap = new Map<string, TSEinstellung[]>();
+    private readonly _einstellungenCacheMap = new Map<
+        string,
+        TSEinstellung[]
+    >();
 
-    public constructor(
-        public readonly http: HttpClient
-    ) {
+    public constructor(public readonly http: HttpClient) {
         this.serviceURL = `${CONSTANTS.REST_API}einstellung`;
     }
 
-    public saveEinstellung(tsEinstellung: TSEinstellung): Observable<TSEinstellung> {
+    public saveEinstellung(
+        tsEinstellung: TSEinstellung
+    ): Observable<TSEinstellung> {
         let restEinstellung = {};
-        restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
-        return this.http.put(this.serviceURL, restEinstellung)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response)));
+        restEinstellung = this.ebeguRestUtil.einstellungToRestObject(
+            restEinstellung,
+            tsEinstellung
+        );
+        return this.http
+            .put(this.serviceURL, restEinstellung)
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseEinstellung(
+                        new TSEinstellung(),
+                        response
+                    )
+                )
+            );
     }
 
     public findEinstellung(
@@ -53,53 +66,86 @@ export class EinstellungRS {
         gemeindeId: string,
         gesuchsperiodeId: string
     ): Observable<TSEinstellung> {
-        return this.http.get<TSEinstellung>(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`);
+        return this.http.get<TSEinstellung>(
+            `${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`
+        );
     }
 
-    public findEinstellungByKey(key: TSEinstellungKey): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/key/${key}`)
-            .pipe(map((param: any) => this.ebeguRestUtil.parseEinstellungList(param)));
+    public findEinstellungByKey(
+        key: TSEinstellungKey
+    ): Observable<TSEinstellung[]> {
+        return this.http
+            .get(`${this.serviceURL}/key/${key}`)
+            .pipe(
+                map((param: any) =>
+                    this.ebeguRestUtil.parseEinstellungList(param)
+                )
+            );
     }
 
-    public getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}/mandant-active`)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
+    public getAllEinstellungenActiveForMandantBySystem(
+        gesuchsperiodeId: string
+    ): Observable<TSEinstellung[]> {
+        return this.http
+            .get(
+                `${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}/mandant-active`
+            )
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseEinstellungList(response)
+                )
+            );
     }
 
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(
+        gesuchsperiodeId: string
+    ): Observable<TSEinstellung[]> {
         if (this._einstellungenCacheMap.has(gesuchsperiodeId)) {
             return of(this._einstellungenCacheMap.get(gesuchsperiodeId));
         }
 
-        return this.getAllEinstellungenBySystem(gesuchsperiodeId)
-            .pipe(map(result => {
+        return this.getAllEinstellungenBySystem(gesuchsperiodeId).pipe(
+            map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
-            }));
+            })
+        );
     }
 
-    public getEinstellung(gesuchsperiodeId: string, key: TSEinstellungKey): Observable<TSEinstellung> {
-        return this.getAllEinstellungenBySystemCached(gesuchsperiodeId)
-            .pipe(map(einstellungen => {
-                const einstellung = einstellungen.find(_einstellung => _einstellung.key === key);
+    public getEinstellung(
+        gesuchsperiodeId: string,
+        key: TSEinstellungKey
+    ): Observable<TSEinstellung> {
+        return this.getAllEinstellungenBySystemCached(gesuchsperiodeId).pipe(
+            map(einstellungen => {
+                const einstellung = einstellungen.find(
+                    _einstellung => _einstellung.key === key
+                );
 
                 if (!einstellung) {
                     throw new Error(`Einstellung ${key} not found`);
                 }
 
                 return einstellung;
-            }));
+            })
+        );
     }
 
-    private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .pipe(map((response: any) =>
-                this.ebeguRestUtil.parseEinstellungList(response)
-            ));
+    private getAllEinstellungenBySystem(
+        gesuchsperiodeId: string
+    ): Observable<TSEinstellung[]> {
+        return this.http
+            .get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseEinstellungList(response)
+                )
+            );
     }
 
-    public getPauschalbetraegeFerienbetreuung(container: TSFerienbetreuungAngabenContainer):
-        Observable<[number, number]> {
+    public getPauschalbetraegeFerienbetreuung(
+        container: TSFerienbetreuungAngabenContainer
+    ): Observable<[number, number]> {
         const findPauschale$ = this.findEinstellung(
             TSEinstellungKey.FERIENBETREUUNG_CHF_PAUSCHALBETRAG,
             container.gemeinde.id,
@@ -110,12 +156,8 @@ export class EinstellungRS {
             container.gemeinde.id,
             container.gesuchsperiode.id
         );
-        return forkJoin([
-            findPauschale$,
-            findPauschaleSonderschueler$
-        ]).pipe(map(([e1, e2]) => [
-                parseFloat(e1.value),
-                parseFloat(e2.value)
-            ]));
+        return forkJoin([findPauschale$, findPauschaleSonderschueler$]).pipe(
+            map(([e1, e2]) => [parseFloat(e1.value), parseFloat(e2.value)])
+        );
     }
 }

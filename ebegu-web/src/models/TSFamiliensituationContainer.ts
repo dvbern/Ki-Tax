@@ -56,24 +56,37 @@ export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
         return this._sozialhilfeZeitraumContainers;
     }
 
-    public set sozialhilfeZeitraumContainers(value: Array<TSSozialhilfeZeitraumContainer>) {
+    public set sozialhilfeZeitraumContainers(
+        value: Array<TSSozialhilfeZeitraumContainer>
+    ) {
         this._sozialhilfeZeitraumContainers = value;
     }
 
-    public deepCopyTo(target: TSFamiliensituationContainer): TSFamiliensituationContainer {
+    public deepCopyTo(
+        target: TSFamiliensituationContainer
+    ): TSFamiliensituationContainer {
         super.deepCopyTo(target);
-        target.familiensituationJA = this._familiensituationJA.deepCopyTo(new TSFamiliensituation());
+        target.familiensituationJA = this._familiensituationJA.deepCopyTo(
+            new TSFamiliensituation()
+        );
         if (EbeguUtil.isNotNullOrUndefined(this._familiensituationGS)) {
-            target.familiensituationGS = this._familiensituationGS.deepCopyTo(new TSFamiliensituation());
+            target.familiensituationGS = this._familiensituationGS.deepCopyTo(
+                new TSFamiliensituation()
+            );
         }
         if (EbeguUtil.isNotNullOrUndefined(this._familiensituationErstgesuch)) {
-            target.familiensituationErstgesuch = this._familiensituationErstgesuch.deepCopyTo(new TSFamiliensituation());
+            target.familiensituationErstgesuch =
+                this._familiensituationErstgesuch.deepCopyTo(
+                    new TSFamiliensituation()
+                );
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.sozialhilfeZeitraumContainers)) {
-            target.sozialhilfeZeitraumContainers = this._sozialhilfeZeitraumContainers
-                .map(value => (
-                     value.deepCopyTo(new TSSozialhilfeZeitraumContainer())
-                ));
+        if (
+            EbeguUtil.isNotNullOrUndefined(this.sozialhilfeZeitraumContainers)
+        ) {
+            target.sozialhilfeZeitraumContainers =
+                this._sozialhilfeZeitraumContainers.map(value =>
+                    value.deepCopyTo(new TSSozialhilfeZeitraumContainer())
+                );
         }
         return target;
     }

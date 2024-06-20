@@ -18,10 +18,10 @@
 import {SidenavStep} from '@dv-e2e/types';
 
 const getSidenavStep = (step: SidenavStep) => {
-	return cy.getByData(`sidenav.${step}`);
+    return cy.getByData(`sidenav.${step}`);
 };
 
-const goTo = (step: SidenavStep): void  => {
+const goTo = (step: SidenavStep): void => {
     getSidenavStep(step).click();
 };
 
@@ -30,11 +30,11 @@ const getGesuchStatus = () => {
 };
 
 const getGesuchsDaten = () => {
-	return cy.getByData('antrags-daten');
+    return cy.getByData('antrags-daten');
 };
 
 const getSidenavStepStatus = (step: SidenavStep) => {
-	return getSidenavStep(step).siblings('.fa').first();
+    return getSidenavStep(step).siblings('.fa').first();
 };
 
 export const SidenavPO = {

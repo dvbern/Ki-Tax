@@ -19,11 +19,12 @@ import IDialogOptions = angular.material.IDialogOptions;
 import IDialogService = angular.material.IDialogService;
 
 export class DvDialog {
-
     public static $inject: ReadonlyArray<string> = ['$mdDialog', '$log'];
 
-    public constructor(private readonly $mdDialog: IDialogService, private readonly $log: ILogService) {
-    }
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        private readonly $log: ILogService
+    ) {}
 
     /**
      * Erstellt einen neuen confim Dialog mit den uebergegebenen Parametern
@@ -33,12 +34,17 @@ export class DvDialog {
      * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller
      *         injected
      */
-    public showDialog(template: string, controller?: any, params?: any): IPromise<any> {
+    public showDialog(
+        template: string,
+        controller?: any,
+        params?: any
+    ): IPromise<any> {
         // form parameter is required for injection for RemoveDialogController, so set missing parameter here.
         // Im IE11 ist controller.name undefined!
         if (controller.name === 'RemoveDialogController' && !params.form) {
             this.$log.error(
-                'You should not use showDialog() for a RemoveDialogController. Use showRemoveDialog() instead!');
+                'You should not use showDialog() for a RemoveDialogController. Use showRemoveDialog() instead!'
+            );
             params.form = undefined;
         }
         const confirm: IDialogOptions = {
@@ -67,7 +73,7 @@ export class DvDialog {
         template: string,
         form: IFormController,
         controller?: any,
-        params?: { [k in RemoveDialogParams]?: any }
+        params?: {[k in RemoveDialogParams]?: any}
     ): IPromise<any> {
         // form is the only required parameter, thus it's explicitly kept in the method signature
         params.form = form;
@@ -80,7 +86,11 @@ export class DvDialog {
         return this.$mdDialog.show(confirm);
     }
 
-    public showDialogFullscreen(template: string, controller?: any, params?: any): IPromise<any> {
+    public showDialogFullscreen(
+        template: string,
+        controller?: any,
+        params?: any
+    ): IPromise<any> {
         const confirm: IDialogOptions = {
             template,
             controller,

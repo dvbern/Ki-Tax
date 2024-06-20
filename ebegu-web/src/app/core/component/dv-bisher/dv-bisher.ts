@@ -56,7 +56,6 @@ export class DvBisherComponentConfig implements IComponentOptions {
 const defaultDateFormat = 'DD.MM.YYYY';
 
 export class DvBisher implements IController {
-
     public static $inject = ['GesuchModelManager', '$translate'];
 
     public gs: any;
@@ -72,15 +71,16 @@ export class DvBisher implements IController {
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         if (this.showIfBisherNone === undefined) {
             // wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
-        if (EbeguUtil.isNullOrUndefined(this.showSpecificBisherTextIfBisherNone)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.showSpecificBisherTextIfBisherNone)
+        ) {
             this.showSpecificBisherTextIfBisherNone = false;
         }
     }
@@ -88,15 +88,22 @@ export class DvBisher implements IController {
     public getBisher(): Array<string> {
         // noinspection IfStatementWithTooManyBranchesJS
         if (this.specificBisherText) {
-            this.bisherText = this.specificBisherText ? this.specificBisherText.split('\n') : undefined;
+            this.bisherText = this.specificBisherText
+                ? this.specificBisherText.split('\n')
+                : undefined;
             // War es eine Loeschung, oder ein Hinzufuegen?
             if (this.hasBisher() || this.showSpecificBisherTextIfBisherNone) {
                 return this.bisherText; // neue eingabe als ein einzelner block
             }
-            return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
+            return [this.$translate.instant('LABEL_KEINE_ANGABE')]; // vorher war keine angabe da
         }
         if (this.gs instanceof moment) {
-            return [DateUtil.momentToLocalDateFormat(this.gs as Moment, defaultDateFormat)];
+            return [
+                DateUtil.momentToLocalDateFormat(
+                    this.gs as Moment,
+                    defaultDateFormat
+                )
+            ];
         }
         if (this.gs === true) {
             return [this.$translate.instant('LABEL_JA')];
@@ -115,27 +122,41 @@ export class DvBisher implements IController {
     }
 
     public showBisher(): boolean {
-        return ((this.showIfBisherNone || this.blockExisted) || this.hasBisher())
-            && this.isKorrekturModusJugendamtOrFreigegeben();
+        return (
+            (this.showIfBisherNone || this.blockExisted || this.hasBisher()) &&
+            this.isKorrekturModusJugendamtOrFreigegeben()
+        );
     }
 
     private isKorrekturModusJugendamtOrFreigegeben(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            TSEingangsart.ONLINE ===
+                this.gesuchModelManager.getGesuch().eingangsart
+        );
     }
 
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
-            return this.equals(DateUtil.momentToLocalDateFormat(gs as Moment, defaultDateFormat),
-                DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
+            return this.equals(
+                DateUtil.momentToLocalDateFormat(
+                    gs as Moment,
+                    defaultDateFormat
+                ),
+                DateUtil.momentToLocalDateFormat(ja, defaultDateFormat)
+            );
         }
         if (Array.isArray(gs)) {
             return JSON.stringify(gs) === JSON.stringify(ja);
         }
         if (gs instanceof TSAbstractMutableEntity) {
-            return (EbeguUtil.isNotNullOrUndefined(gs) && EbeguUtil.isNotNullOrUndefined(ja))
-                || (EbeguUtil.isNullOrUndefined(gs) && EbeguUtil.isNullOrUndefined(ja));
+            return (
+                (EbeguUtil.isNotNullOrUndefined(gs) &&
+                    EbeguUtil.isNotNullOrUndefined(ja)) ||
+                (EbeguUtil.isNullOrUndefined(gs) &&
+                    EbeguUtil.isNullOrUndefined(ja))
+            );
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); // either they are equal or both are a form of empty
     }

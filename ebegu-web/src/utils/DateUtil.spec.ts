@@ -20,22 +20,33 @@ import {DateUtil} from './DateUtil';
 
 /* eslint-disable */
 describe('dateUtil', () => {
-
     describe('localDateToMoment()', () => {
         it('should return null for invalid input', () => {
             // avoid log spam
             LogFactory.setModuleLevel('DateUtil', LogLevel.ERROR);
-            expect(DateUtil.localDateTimeToMoment(undefined)).toEqual(undefined);
+            expect(DateUtil.localDateTimeToMoment(undefined)).toEqual(
+                undefined
+            );
             expect(DateUtil.localDateTimeToMoment(null)).toEqual(undefined);
             expect(DateUtil.localDateTimeToMoment('')).toEqual(undefined);
-            expect(DateUtil.localDateTimeToMoment('invalid format')).toEqual(undefined);
-            expect(DateUtil.localDateTimeToMoment('1995-12-25')).toEqual(undefined);
+            expect(DateUtil.localDateTimeToMoment('invalid format')).toEqual(
+                undefined
+            );
+            expect(DateUtil.localDateTimeToMoment('1995-12-25')).toEqual(
+                undefined
+            );
             LogFactory.setModuleLevel('DateUtil', LogLevel.WARN);
         });
 
         it('should return a valid moment', () => {
-            const actual = DateUtil.localDateTimeToMoment('1995-12-25T16:06:34.564');
-            const expected = moment('1995-12-25T16:06:34.564', 'YYYY-MM-DDTHH:mm:ss.SSS', true);
+            const actual = DateUtil.localDateTimeToMoment(
+                '1995-12-25T16:06:34.564'
+            );
+            const expected = moment(
+                '1995-12-25T16:06:34.564',
+                'YYYY-MM-DDTHH:mm:ss.SSS',
+                true
+            );
             expect(expected.isSame(actual)).toBeTruthy();
         });
     });

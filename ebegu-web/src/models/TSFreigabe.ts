@@ -20,7 +20,6 @@ export class TSFreigabe {
     public constructor(
         private readonly usernameJA: string | null,
         private readonly usernameSCH: string | null,
-        private readonly userConfirmedCorrectness?: boolean,
-    ) {
-    }
+        private readonly userConfirmedCorrectness?: boolean
+    ) {}
 }

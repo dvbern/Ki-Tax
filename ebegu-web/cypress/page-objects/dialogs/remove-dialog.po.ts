@@ -16,9 +16,9 @@
  */
 
 const getRemoveOkButton = () => {
-	return cy.getByData('remove-ok');
+    return cy.getByData('remove-ok');
 };
 
 export const RemoveDialogPO = {
-    getRemoveOkButton,
+    getRemoveOkButton
 };

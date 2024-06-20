@@ -22,22 +22,33 @@ quicksearchFilter.$inject = ['$filter'];
 // Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
 // Comparator aufgerufen. Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach
 // implementiert wird.
-export function quicksearchFilter($filter: any): (array: any, expression: any) => any {
+export function quicksearchFilter(
+    $filter: any
+): (array: any, expression: any) => any {
     const filterFilter = $filter('filter');
 
     return (array, expression) => {
         function customComparator(actual: any, expected: any): boolean {
-            if (expression.eingangsdatum && expression.eingangsdatum === expected) {
+            if (
+                expression.eingangsdatum &&
+                expression.eingangsdatum === expected
+            ) {
                 return EbeguUtil.compareDates(actual, expected);
             }
             if (expression.fallNummer && expression.fallNummer === expected) {
                 const actualString = EbeguUtil.addZerosToFallNummer(actual);
                 return actualString.indexOf(expected) >= 0;
             }
-            if (expression.gesuchsperiodeGueltigAb && expression.gesuchsperiodeGueltigAb === expected) {
+            if (
+                expression.gesuchsperiodeGueltigAb &&
+                expression.gesuchsperiodeGueltigAb === expected
+            ) {
                 return EbeguUtil.compareDates(actual, expected);
             }
-            if (expression.gesuchsperiodeGueltigBis && expression.gesuchsperiodeGueltigBis === expected) {
+            if (
+                expression.gesuchsperiodeGueltigBis &&
+                expression.gesuchsperiodeGueltigBis === expected
+            ) {
                 return EbeguUtil.compareDates(actual, expected);
             }
 

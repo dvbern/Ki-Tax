@@ -38,7 +38,6 @@ import {GesuchRS} from './gesuchRS.rest';
 import {WizardStepManager} from './wizardStepManager';
 
 describe('gesuchGenerator', () => {
-
     const gpId = '2222-1111';
     const gesuchId = '33333-1111';
     const dossierId = '44444-1111';
@@ -50,47 +49,70 @@ describe('gesuchGenerator', () => {
     const gemeinde = new TSGemeinde();
 
     beforeEach(waitForAsync(() => {
-
         initValues();
 
-        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            getAllGemeinden: Promise.resolve([gemeinde])
-        });
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            {
+                getAllGemeinden: Promise.resolve([gemeinde])
+            }
+        );
 
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            isOneOfRoles: true
-        });
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            {
+                isOneOfRoles: true
+            }
+        );
         authServiceSpy.principal$ = of(user) as any;
 
-        const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            findDossier: Promise.resolve(dossier)
-        });
+        const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(
+            DossierRS.name,
+            {
+                findDossier: Promise.resolve(dossier)
+            }
+        );
 
-        const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
-            ['loadLastStatusChange']);
+        const antragStatusHistoryServiceSpy =
+            jasmine.createSpyObj<AntragStatusHistoryRS>(
+                AntragStatusHistoryRS.name,
+                ['loadLastStatusChange']
+            );
         antragStatusHistoryServiceSpy.loadLastStatusChange.and.resolveTo();
 
-        const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
-            findGesuchsperiode: Promise.resolve(gesuchsperiode)
-        });
+        const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+            GesuchsperiodeRS.name,
+            {
+                findGesuchsperiode: Promise.resolve(gesuchsperiode)
+            }
+        );
 
-        const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name, [
-            'setHiddenSteps',
-            'initWizardSteps'
+        const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(
+            WizardStepManager.name,
+            ['setHiddenSteps', 'initWizardSteps']
+        );
+
+        const fallServiceSpy = jasmine.createSpyObj<FallRS>(FallRS.name, [
+            'createFall'
         ]);
 
-        const fallServiceSpy = jasmine.createSpyObj<FallRS>(FallRS.name, ['createFall']);
+        const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, [
+            'createGesuch'
+        ]);
 
-        const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['createGesuch']);
-
-        const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-            ['getSozialdienstStammdaten']);
+        const sozialdienstSpy = jasmine.createSpyObj<SozialdienstRS>(
+            SozialdienstRS.name,
+            ['getSozialdienstStammdaten']
+        );
 
         TestBed.configureTestingModule({
             imports: [],
             providers: [
                 {provide: GesuchRS, useValue: gesuchServiceSpy},
-                {provide: AntragStatusHistoryRS, useValue: antragStatusHistoryServiceSpy},
+                {
+                    provide: AntragStatusHistoryRS,
+                    useValue: antragStatusHistoryServiceSpy
+                },
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: DossierRS, useValue: dossierServiceSpy},
@@ -106,55 +128,70 @@ describe('gesuchGenerator', () => {
     }));
 
     describe('initGesuch', () => {
-        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored',
-            waitForAsync(() => {
-                gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
+        it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
+            gesuchGenerator
+                .initGesuch(
+                    TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
                     gpId,
                     fall,
                     dossier,
-                    null)
-                    .then(gesuch => {
-                        expect(gesuch).toBeDefined();
-                        expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
-                        expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
-                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST);
-                        expect(gesuch.isNew()).toBe(true);
-                        expect(gesuch.dossier).toBeDefined();
-                        expect(gesuch.dossier).not.toBe(dossier);
-                        expect(gesuch.dossier.fall).toBeDefined();
-                        expect(gesuch.dossier.fall).not.toBe(fall);
-                        expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
-                    });
-            }));
-        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored',
-            waitForAsync(() => {
-                gesuchGenerator.initGesuch(TSEingangsart.ONLINE,
+                    null
+                )
+                .then(gesuch => {
+                    expect(gesuch).toBeDefined();
+                    expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
+                    expect(gesuch.eingangsart).toBe(TSEingangsart.PAPIER);
+                    expect(gesuch.status).toBe(
+                        TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+                    );
+                    expect(gesuch.isNew()).toBe(true);
+                    expect(gesuch.dossier).toBeDefined();
+                    expect(gesuch.dossier).not.toBe(dossier);
+                    expect(gesuch.dossier.fall).toBeDefined();
+                    expect(gesuch.dossier.fall).not.toBe(fall);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
+                });
+        }));
+        it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', waitForAsync(() => {
+            gesuchGenerator
+                .initGesuch(
+                    TSEingangsart.ONLINE,
                     TSCreationAction.CREATE_NEW_FALL,
                     gpId,
                     fall,
                     dossier,
-                    null)
-                    .then(gesuch => {
-                        expect(gesuch).toBeDefined();
-                        expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
-                        expect(gesuch.eingangsart).toBe(TSEingangsart.ONLINE);
-                        expect(gesuch.status).toBe(TSAntragStatus.IN_BEARBEITUNG_GS);
-                        expect(gesuch.isNew()).toBe(true);
-                        expect(gesuch.dossier).toBeDefined();
-                        expect(gesuch.dossier).not.toBe(dossier);
-                        expect(gesuch.dossier.fall).toBeDefined();
-                        expect(gesuch.dossier.fall).not.toBe(fall);
-                        expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
-                    });
-            }));
+                    null
+                )
+                .then(gesuch => {
+                    expect(gesuch).toBeDefined();
+                    expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
+                    expect(gesuch.eingangsart).toBe(TSEingangsart.ONLINE);
+                    expect(gesuch.status).toBe(
+                        TSAntragStatus.IN_BEARBEITUNG_GS
+                    );
+                    expect(gesuch.isNew()).toBe(true);
+                    expect(gesuch.dossier).toBeDefined();
+                    expect(gesuch.dossier).not.toBe(dossier);
+                    expect(gesuch.dossier.fall).toBeDefined();
+                    expect(gesuch.dossier.fall).not.toBe(fall);
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
+                });
+        }));
         it('creates a new Gesuch and Dossier linked to the existing fall', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
-                TSCreationAction.CREATE_NEW_DOSSIER,
-                gpId,
-                fall,
-                dossier,
-                null)
+            gesuchGenerator
+                .initGesuch(
+                    TSEingangsart.PAPIER,
+                    TSCreationAction.CREATE_NEW_DOSSIER,
+                    gpId,
+                    fall,
+                    dossier,
+                    null
+                )
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -162,16 +199,21 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).not.toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
                 });
         }));
         it('creates a new Gesuch linked to the existing fall and Dossier', waitForAsync(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER,
-                TSCreationAction.CREATE_NEW_GESUCH,
-                gpId,
-                fall,
-                dossier,
-                null)
+            gesuchGenerator
+                .initGesuch(
+                    TSEingangsart.PAPIER,
+                    TSCreationAction.CREATE_NEW_GESUCH,
+                    gpId,
+                    fall,
+                    dossier,
+                    null
+                )
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -179,45 +221,71 @@ describe('gesuchGenerator', () => {
                     expect(gesuch.dossier).toBe(dossier);
                     expect(gesuch.dossier.fall).toBeDefined();
                     expect(gesuch.dossier.fall).toBe(fall);
-                    expect(gesuch.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    expect(gesuch.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
                 });
         }));
     });
 
     describe('initMutation', () => {
         it('creates a new mutation', waitForAsync(() => {
-            gesuchGenerator.initMutation(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
+            gesuchGenerator
+                .initMutation(
+                    gesuchId,
+                    TSEingangsart.PAPIER,
+                    gpId,
+                    dossierId,
+                    fall,
+                    dossier
+                )
                 .then(mutation => {
                     expect(mutation).toBeDefined();
                     expect(mutation.id).toBe(gesuchId);
                     expect(mutation.isMutation()).toBe(true);
                     expect(mutation.eingangsart).toBe(TSEingangsart.PAPIER);
-                    expect(mutation.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
+                    expect(mutation.status).toBe(
+                        TSAntragStatus.IN_BEARBEITUNG_JA
+                    );
                     expect(mutation.isNew()).toBe(true);
                     expect(mutation.dossier).toBeDefined();
                     expect(mutation.dossier).toBe(dossier);
                     expect(mutation.dossier.fall).toBeDefined();
                     expect(mutation.dossier.fall).toBe(fall);
-                    expect(mutation.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    expect(mutation.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
                 });
         }));
     });
 
     describe('initErneuerungsgesuch', () => {
         it('creates a new Erneuerungsgesuch', waitForAsync(() => {
-            gesuchGenerator.initErneuerungsgesuch(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
+            gesuchGenerator
+                .initErneuerungsgesuch(
+                    gesuchId,
+                    TSEingangsart.PAPIER,
+                    gpId,
+                    dossierId,
+                    fall,
+                    dossier
+                )
                 .then(mutation => {
                     expect(mutation).toBeDefined();
                     expect(mutation.id).toBe(gesuchId);
                     expect(mutation.isFolgegesuch()).toBe(true);
                     expect(mutation.eingangsart).toBe(TSEingangsart.PAPIER);
-                    expect(mutation.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
+                    expect(mutation.status).toBe(
+                        TSAntragStatus.IN_BEARBEITUNG_JA
+                    );
                     expect(mutation.isNew()).toBe(true);
                     expect(mutation.dossier).toBeDefined();
                     expect(mutation.dossier).toBe(dossier);
                     expect(mutation.dossier.fall).toBeDefined();
                     expect(mutation.dossier.fall).toBe(fall);
-                    expect(mutation.dossier.verantwortlicherBG).toEqual(user.toBenutzerNoDetails());
+                    expect(mutation.dossier.verantwortlicherBG).toEqual(
+                        user.toBenutzerNoDetails()
+                    );
                 });
         }));
     });

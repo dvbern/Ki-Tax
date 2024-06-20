@@ -21,7 +21,6 @@ import {IPromise} from 'angular';
 import {TSZahlungslaufTyp} from '../../models/enums/TSZahlungslaufTyp';
 
 export class StepDialogController {
-
     public static $inject = [
         '$mdDialog',
         '$translate',
@@ -63,7 +62,8 @@ export class StepDialogController {
         zahlungslaufTyp: TSZahlungslaufTyp,
         zahlungDirektIgnorieren: boolean
     ) {
-        const isInstitutionszahlung = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === zahlungslaufTyp;
+        const isInstitutionszahlung =
+            TSZahlungslaufTyp.GEMEINDE_INSTITUTION === zahlungslaufTyp;
         this.zahlungDirektIgnorieren = zahlungDirektIgnorieren;
 
         // "Mutaton fuehrt zu Korrekturen von bereits ausbezahlten.."
@@ -77,28 +77,42 @@ export class StepDialogController {
         this.firstOkText = $translate.instant('WEITER_ONLY');
         this.radioYes = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA');
 
-        this.radioNo = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN');
-        this.checkboxLabel = $translate.instant('KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL');
-        this.titleStep2 = $translate.instant('KORREKTURZAHLUNG_DIALOG_STEP2_TITLE');
+        this.radioNo = $translate.instant(
+            'KORREKTURZAHLUNG_DIALOG_OPTION_NEIN'
+        );
+        this.checkboxLabel = $translate.instant(
+            'KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL'
+        );
+        this.titleStep2 = $translate.instant(
+            'KORREKTURZAHLUNG_DIALOG_STEP2_TITLE'
+        );
         this.warning = $translate.instant('KORREKTURZAHLUNG_DIALOG_IMMUTABLE');
         this.backText = $translate.instant('KORREKTURZAHLUNG_DIALOG_BACK');
         this.nextText = $translate.instant('WEITER_ONLY');
         this.finishText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FINISH');
 
         // Erklaerungen, nur fuer Institutiosnzahlungen relevant
-        // eslint-disable-next-line
         if (isInstitutionszahlung) {
-            this.radioYesCasesInfo = $translate.instant('KORREKTURZAHLUNG_YES_CASE_INFO');
-            this.radioYesCases = [$translate.instant('KORREKTURZAHLUNG_YES_CASE_1')];
-            this.radioNoCasesInfo = $translate.instant('KORREKTURZAHLUNG_NO_CASE_INFO');
+            this.radioYesCasesInfo = $translate.instant(
+                'KORREKTURZAHLUNG_YES_CASE_INFO'
+            );
+            this.radioYesCases = [
+                $translate.instant('KORREKTURZAHLUNG_YES_CASE_1')
+            ];
+            this.radioNoCasesInfo = $translate.instant(
+                'KORREKTURZAHLUNG_NO_CASE_INFO'
+            );
             this.radioNoCases = [
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_3'),
-                $translate.instant('KORREKTURZAHLUNG_NO_CASE_4')];
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_4')
+            ];
             if (this.zahlungDirektIgnorieren) {
-                this.warningZahlungAusserhalbKibon =
-                    $translate.instant('WARNUNG_ZAHLUNG_AUSSERHALB_KIBON', {institution: institutionName});
+                this.warningZahlungAusserhalbKibon = $translate.instant(
+                    'WARNUNG_ZAHLUNG_AUSSERHALB_KIBON',
+                    {institution: institutionName}
+                );
                 this.selected = 2;
             }
         }

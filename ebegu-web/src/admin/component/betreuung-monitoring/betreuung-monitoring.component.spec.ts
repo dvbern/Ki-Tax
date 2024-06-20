@@ -13,20 +13,22 @@ describe('BetreuungMonitoringComponent', () => {
     let component: BetreuungMonitoringComponent;
     let fixture: ComponentFixture<BetreuungMonitoringComponent>;
 
-    const betreuungMonitoringRSSpy = jasmine.createSpyObj<BetreuungMonitoringRS>(BetreuungMonitoringRS.name,
-        ['getBetreuungMonitoring', 'getAllExternalClient']);
+    const betreuungMonitoringRSSpy =
+        jasmine.createSpyObj<BetreuungMonitoringRS>(
+            BetreuungMonitoringRS.name,
+            ['getBetreuungMonitoring', 'getAllExternalClient']
+        );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [BetreuungMonitoringComponent],
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 WindowRef,
-                {provide: BetreuungMonitoringRS, useValue: betreuungMonitoringRSSpy}
+                {
+                    provide: BetreuungMonitoringRS,
+                    useValue: betreuungMonitoringRSSpy
+                }
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

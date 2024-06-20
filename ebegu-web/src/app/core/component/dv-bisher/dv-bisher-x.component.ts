@@ -34,7 +34,7 @@
  * - showBisher: Wenn das Flag auf false gesetzt wird, wird dv-bisher nie angezeigt
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
@@ -49,8 +49,7 @@ import {CONSTANTS} from '../../constants/CONSTANTS';
     styleUrls: ['./dv-bisher-x.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class DvBisherXComponent implements OnInit {
-
+export class DvBisherXComponent {
     /**
      * erster Wert. Z.B. Gesuchsteller, Gemeinde, etc.
      */
@@ -84,29 +83,30 @@ export class DvBisherXComponent implements OnInit {
     public bisherText: Array<string>;
     public blockExisted: boolean;
 
-    public constructor(
-        private readonly $translate: TranslateService
-    ) {
-    }
-
-    public ngOnInit(): void {
-    }
+    public constructor(private readonly $translate: TranslateService) {}
 
     public getBisher(): Array<string> {
         // noinspection IfStatementWithTooManyBranchesJS
         if (this.specificBisherText) {
-            this.bisherText = this.specificBisherText ? this.specificBisherText.split('\n') : undefined;
+            this.bisherText = this.specificBisherText
+                ? this.specificBisherText.split('\n')
+                : undefined;
             // War es eine Loeschung, oder ein Hinzufuegen?
             if (this.hasBisher() || this.showSpecificBisherTextIfBisherNone) {
                 return this.bisherText; // neue eingabe als ein einzelner block
             }
-            return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
+            return [this.$translate.instant('LABEL_KEINE_ANGABE')]; // vorher war keine angabe da
         }
-        if (typeof(this.deklaration ) === 'number') {
+        if (typeof this.deklaration === 'number') {
             return [this.deklaration.toString()];
         }
         if (this.deklaration instanceof moment) {
-            return [DateUtil.momentToLocalDateFormat(this.deklaration as Moment, CONSTANTS.DATE_FORMAT)];
+            return [
+                DateUtil.momentToLocalDateFormat(
+                    this.deklaration as Moment,
+                    CONSTANTS.DATE_FORMAT
+                )
+            ];
         }
         if (this.deklaration === true) {
             return [this.$translate.instant('LABEL_JA')];
@@ -126,22 +126,36 @@ export class DvBisherXComponent implements OnInit {
 
     public equals(deklaration: any, korrektur: any): boolean {
         if (deklaration instanceof moment) {
-            return this.equals(DateUtil.momentToLocalDateFormat(deklaration as Moment, CONSTANTS.DATE_FORMAT),
-                DateUtil.momentToLocalDateFormat(korrektur, CONSTANTS.DATE_FORMAT));
+            return this.equals(
+                DateUtil.momentToLocalDateFormat(
+                    deklaration as Moment,
+                    CONSTANTS.DATE_FORMAT
+                ),
+                DateUtil.momentToLocalDateFormat(
+                    korrektur,
+                    CONSTANTS.DATE_FORMAT
+                )
+            );
         }
         if (Array.isArray(deklaration)) {
             return JSON.stringify(deklaration) === JSON.stringify(korrektur);
         }
         if (deklaration instanceof TSAbstractMutableEntity) {
-            return (EbeguUtil.isNotNullOrUndefined(deklaration) && EbeguUtil.isNotNullOrUndefined(korrektur))
-                || (EbeguUtil.isNullOrUndefined(deklaration) && EbeguUtil.isNullOrUndefined(korrektur));
+            return (
+                (EbeguUtil.isNotNullOrUndefined(deklaration) &&
+                    EbeguUtil.isNotNullOrUndefined(korrektur)) ||
+                (EbeguUtil.isNullOrUndefined(deklaration) &&
+                    EbeguUtil.isNullOrUndefined(korrektur))
+            );
         }
         // either they are equal
-        return deklaration === korrektur
+        return (
+            deklaration === korrektur ||
             // or both are a form of empty
-            || (this.isEmpty(deklaration) && this.isEmpty(korrektur))
+            (this.isEmpty(deklaration) && this.isEmpty(korrektur)) ||
             // or one is a string and the other one of another type with the same string representation
-            || deklaration?.toString() === korrektur?.toString();
+            deklaration?.toString() === korrektur?.toString()
+        );
     }
 
     private isEmpty(val: any): boolean {

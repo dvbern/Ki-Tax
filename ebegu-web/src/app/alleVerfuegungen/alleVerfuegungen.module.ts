@@ -18,7 +18,10 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {alleVerfuegungenRun} from './alleVerfuegungen.route';
 import {AlleVerfuegungenViewComponentConfig} from './component/alleVerfuegungenView/alleVerfuegungenView';
 
-export const ALLE_VERFUEGUNGEN_JS_MODULE =
-    angular.module('ebeguWeb.alleVerfuegungen', [CORE_JS_MODULE.name])
-        .run(alleVerfuegungenRun)
-        .component('alleVerfuegungenView', new AlleVerfuegungenViewComponentConfig());
+export const ALLE_VERFUEGUNGEN_JS_MODULE = angular
+    .module('ebeguWeb.alleVerfuegungen', [CORE_JS_MODULE.name])
+    .run(alleVerfuegungenRun)
+    .component(
+        'alleVerfuegungenView',
+        new AlleVerfuegungenViewComponentConfig()
+    );

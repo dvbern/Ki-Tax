@@ -1,4 +1,11 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -14,8 +21,12 @@ import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
-
-    public displayedColumns: string[] = ['refNummer', 'benutzer', 'infoText', 'timestamp'];
+    public displayedColumns: string[] = [
+        'refNummer',
+        'benutzer',
+        'infoText',
+        'timestamp'
+    ];
 
     public dataSource: MatTableDataSource<TSBetreuungMonitoring>;
     public refNummerTooShort: boolean = false;
@@ -33,8 +44,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     public constructor(
         private readonly betreuungMonitoringRS: BetreuungMonitoringRS,
         private readonly changeDetectorRef: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.passFilterToServer();
@@ -80,13 +90,15 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     private passFilterToServer(): void {
         this.dataSource = new MatTableDataSource<TSBetreuungMonitoring>([]);
-        this.betreuungMonitoringRS.getBetreuungMonitoring(this.refNumerValue, this.benutzerValue)
-            .subscribe((result: TSBetreuungMonitoring[]) => {
+        this.betreuungMonitoringRS
+            .getBetreuungMonitoring(this.refNumerValue, this.benutzerValue)
+            .subscribe(
+                (result: TSBetreuungMonitoring[]) => {
                     this.assignResultToDataSource(result);
                     this.changeDetectorRef.markForCheck();
                 },
-                () => {
-                });
+                () => {}
+            );
     }
 
     /**
@@ -94,23 +106,24 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
      */
     private sortTable(): void {
         this.sort.sort({
-                id: 'timestamp',
-                start: 'desc',
-                disableClear: false
-            }
-        );
+            id: 'timestamp',
+            start: 'desc',
+            disableClear: false
+        });
     }
 
     public validateRefNummber(refNummer: string): void {
-        this.refNummerTooShort = refNummer.length < this.MIN_REF_NUMMER_SIZE && refNummer.length !== 0;
+        this.refNummerTooShort =
+            refNummer.length < this.MIN_REF_NUMMER_SIZE &&
+            refNummer.length !== 0;
     }
 
     private initExternalClientList(): void {
-        this.betreuungMonitoringRS.getAllExternalClient()
-            .subscribe((result: TSExternalClient[]) => {
-                    this.externalClientNames = result.map(x => x.clientName).join();
-                },
-                () => {
-                });
+        this.betreuungMonitoringRS.getAllExternalClient().subscribe(
+            (result: TSExternalClient[]) => {
+                this.externalClientNames = result.map(x => x.clientName).join();
+            },
+            () => {}
+        );
     }
 }

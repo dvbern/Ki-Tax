@@ -20,16 +20,21 @@ import {HookResult} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
-import ITranslateService = angular.translate.ITranslateService;
 
-languageEnabledHookRunBlock.$inject = ['$transitions', 'ApplicationPropertyRS', 'I18nServiceRSRest'];
+languageEnabledHookRunBlock.$inject = [
+    '$transitions',
+    'ApplicationPropertyRS',
+    'I18nServiceRSRest'
+];
 
 export function languageEnabledHookRunBlock(
     $transitions: TransitionService,
     applicationPropertyService: ApplicationPropertyRS,
     i18nService: I18nServiceRSRest
 ): void {
-    $transitions.onBefore({}, async () => changeLanguageIfNotEnabled(applicationPropertyService, i18nService));
+    $transitions.onBefore({}, async () =>
+        changeLanguageIfNotEnabled(applicationPropertyService, i18nService)
+    );
 }
 
 async function changeLanguageIfNotEnabled(
@@ -37,7 +42,10 @@ async function changeLanguageIfNotEnabled(
     i18nService: I18nServiceRSRest
 ): Promise<HookResult> {
     await applicationPropertyService.getFrenchEnabled().then(frenchEnabled => {
-        if (!frenchEnabled && i18nService.currentLanguage() === TSBrowserLanguage.FR) {
+        if (
+            !frenchEnabled &&
+            i18nService.currentLanguage() === TSBrowserLanguage.FR
+        ) {
             i18nService.changeClientLanguage(TSBrowserLanguage.DE);
         }
     });

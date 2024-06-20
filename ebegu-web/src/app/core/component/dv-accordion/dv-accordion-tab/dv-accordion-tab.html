@@ -14,11 +14,16 @@
   -->
 
 <!--suppress Annotator -->
-<div class="dv-accordion-tab-title" ng-click="vm.vm.toggleTab(vm.tabid)"
-     ng-class="{'tab-open': vm.vm.isTagOpen(vm.tabid)}" ng-transclude="title">
-    {{vm.title}}
+<div
+    class="dv-accordion-tab-title"
+    ng-click="vm.vm.toggleTab(vm.tabid)"
+    ng-class="{'tab-open': vm.vm.isTagOpen(vm.tabid)}"
+    ng-transclude="title"
+>
+    {{ vm.title }}
 </div>
-<div class="dv-accordion-tab-content" ng-show="vm.vm.isTagOpen(vm.tabid)" ng-transclude="body">
-</div>
-
-
+<div
+    class="dv-accordion-tab-content"
+    ng-show="vm.vm.isTagOpen(vm.tabid)"
+    ng-transclude="body"
+></div>

@@ -34,7 +34,6 @@
     .gesuch-menu {
         padding: 0;
         width: auto;
-
     }
     li {
         box-sizing: content-box;
@@ -59,7 +58,8 @@
             height: @sidebar-height;
             padding: 0;
             text-align: left;
-            &:active, &:hover {
+            &:active,
+            &:hover {
                 outline: none;
                 text-decoration: none;
             }
@@ -67,7 +67,6 @@
                 outline: 2px solid @contrast-darkest;
                 outline-offset: -1.5rem;
                 text-decoration: underline;
-
             }
             &[disabled] span {
                 color: @contrast-dark;
@@ -104,7 +103,6 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
     }
     li.active-element {
         &:after {
@@ -119,7 +117,6 @@
         }
         &:before {
             left: 2.5rem;
-
         }
         button {
             span {
@@ -132,7 +129,6 @@
             .ebeguNormal();
             margin: 0;
         }
-
     }
 
     .fa-check.green {
@@ -153,5 +149,4 @@
     .fa-pencil.green {
         color: @success;
     }
-
 }

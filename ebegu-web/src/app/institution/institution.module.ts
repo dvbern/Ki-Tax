@@ -58,5 +58,4 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
     ],
     providers: []
 })
-export class InstitutionModule {
-}
+export class InstitutionModule {}

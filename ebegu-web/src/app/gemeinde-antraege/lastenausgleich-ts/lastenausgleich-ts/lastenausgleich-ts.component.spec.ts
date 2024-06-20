@@ -38,15 +38,21 @@ import {LastenausgleichTSComponent} from './lastenausgleich-ts.component';
 describe('LastenausgleichTSComponent', () => {
     let component: LastenausgleichTSComponent;
     let fixture: ComponentFixture<LastenausgleichTSComponent>;
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
     const latsTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(
         LastenausgleichTSService.name,
-        ['getLATSAngabenGemeindeContainer',
+        [
+            'getLATSAngabenGemeindeContainer',
             'updateLATSAngabenGemeindeContainerStore',
             'emptyStore'
-        ]);
-    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-        ['getAccessTokenDokument']);
+        ]
+    );
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'getAccessTokenDokument'
+    ]);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -82,17 +88,18 @@ describe('LastenausgleichTSComponent', () => {
     }));
 
     beforeEach(() => {
-        const container = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+        const container =
+            new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
         container.gemeinde = new TSGemeinde();
         container.gesuchsperiode = new TSGesuchsperiode();
-        container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-        container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenDeklaration =
+            new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenKorrektur =
+            new TSLastenausgleichTagesschuleAngabenGemeinde();
         latsTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(container)
         );
-        latsTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of()
-        );
+        latsTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(of());
         fixture = TestBed.createComponent(LastenausgleichTSComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

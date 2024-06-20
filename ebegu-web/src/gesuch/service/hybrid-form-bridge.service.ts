@@ -20,10 +20,9 @@ import {NgForm} from '@angular/forms';
 
 // Synchronous bridge to pass the references of angular2 forms to angularJS
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class HybridFormBridgeService {
-
     public get forms(): NgForm[] {
         return this._forms;
     }

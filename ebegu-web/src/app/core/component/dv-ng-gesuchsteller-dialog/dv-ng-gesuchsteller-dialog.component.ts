@@ -30,7 +30,6 @@ import {TranslateService} from '@ngx-translate/core';
     templateUrl: './dv-ng-gesuchsteller-dialog.template.html'
 })
 export class DvNgGesuchstellerDialogComponent {
-
     public emailAdresse: string;
     public administratorRolle: string;
     public gesuchstellerName: string;
@@ -44,16 +43,24 @@ export class DvNgGesuchstellerDialogComponent {
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.emailAdresse = data.emailAdresse;
-        this.administratorRolle = this.translate.instant(data.administratorRolle);
+        this.administratorRolle = this.translate.instant(
+            data.administratorRolle
+        );
         this.gesuchstellerName = data.gesuchstellerName;
         this.confirmGesuchDelete = false;
-        this.question = this.translate.instant('GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE', {
-            emailAdresse: this.emailAdresse,
-            administratorRolle: this.administratorRolle
-        });
-        this.confirmationText = this.translate.instant('GESUCHSTELLER_DIALOG_CONFIRM_DELETE', {
-            gesuchstellerName: this.gesuchstellerName
-        });
+        this.question = this.translate.instant(
+            'GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE',
+            {
+                emailAdresse: this.emailAdresse,
+                administratorRolle: this.administratorRolle
+            }
+        );
+        this.confirmationText = this.translate.instant(
+            'GESUCHSTELLER_DIALOG_CONFIRM_DELETE',
+            {
+                gesuchstellerName: this.gesuchstellerName
+            }
+        );
     }
 
     public save(): void {

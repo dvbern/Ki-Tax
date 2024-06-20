@@ -18,7 +18,6 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class TraegerschaftRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -31,11 +30,20 @@ export class TraegerschaftRS {
         this.serviceURL = `${REST_API}traegerschaften`;
     }
 
-    public findTraegerschaft(traegerschaftID: string): IPromise<TSTraegerschaft> {
-        return this.http.get(`${this.serviceURL}/id/${encodeURIComponent(traegerschaftID)}`)
+    public findTraegerschaft(
+        traegerschaftID: string
+    ): IPromise<TSTraegerschaft> {
+        return this.http
+            .get(`${this.serviceURL}/id/${encodeURIComponent(traegerschaftID)}`)
             .then((response: any) => {
-                this.log.debug('PARSING traegerschaft REST object ', response.data);
-                return this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data);
+                this.log.debug(
+                    'PARSING traegerschaft REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseTraegerschaft(
+                    new TSTraegerschaft(),
+                    response.data
+                );
             });
     }
 
@@ -43,43 +51,79 @@ export class TraegerschaftRS {
      * It sends all required parameters (new Traegerschaft and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createTraegerschaft(traegerschaft: TSTraegerschaft, email: string): IPromise<TSTraegerschaft> {
+    public createTraegerschaft(
+        traegerschaft: TSTraegerschaft,
+        email: string
+    ): IPromise<TSTraegerschaft> {
         let restTraegerschaft = {};
-        restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(restTraegerschaft, traegerschaft);
-        return this.http.post(this.serviceURL, restTraegerschaft,
-            {
+        restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(
+            restTraegerschaft,
+            traegerschaft
+        );
+        return this.http
+            .post(this.serviceURL, restTraegerschaft, {
                 params: {
                     adminMail: email
                 }
             })
-            .then(response => this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data));
+            .then(response =>
+                this.ebeguRestUtil.parseTraegerschaft(
+                    new TSTraegerschaft(),
+                    response.data
+                )
+            );
     }
 
-    public saveTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {
+    public saveTraegerschaft(
+        traegerschaft: TSTraegerschaft
+    ): IPromise<TSTraegerschaft> {
         let restTraegerschaft = {};
-        restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(restTraegerschaft, traegerschaft);
-        return this.http.put(this.serviceURL, restTraegerschaft).then(response => {
-            this.log.debug('PARSING traegerschaft REST object ', response.data);
-            return this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data);
-        });
+        restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(
+            restTraegerschaft,
+            traegerschaft
+        );
+        return this.http
+            .put(this.serviceURL, restTraegerschaft)
+            .then(response => {
+                this.log.debug(
+                    'PARSING traegerschaft REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseTraegerschaft(
+                    new TSTraegerschaft(),
+                    response.data
+                );
+            });
     }
 
-    public removeTraegerschaft(traegerschaftID: string): IHttpPromise<TSTraegerschaft> {
-        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(traegerschaftID)}`);
+    public removeTraegerschaft(
+        traegerschaftID: string
+    ): IHttpPromise<TSTraegerschaft> {
+        return this.http.delete(
+            `${this.serviceURL}/${encodeURIComponent(traegerschaftID)}`
+        );
     }
 
     public getAllTraegerschaften(): IPromise<TSTraegerschaft[]> {
         return this.http.get<any[]>(this.serviceURL).then(response => {
-            this.log.debug('PARSING traegerschaften REST array object', response.data);
+            this.log.debug(
+                'PARSING traegerschaften REST array object',
+                response.data
+            );
             return this.ebeguRestUtil.parseTraegerschaften(response.data);
         });
     }
 
     public getAllActiveTraegerschaften(): IPromise<TSTraegerschaft[]> {
-        return this.http.get<any[]>(`${this.serviceURL}/active`).then(response => {
-            this.log.debug('PARSING traegerschaften REST array object', response.data);
-            return this.ebeguRestUtil.parseTraegerschaften(response.data);
-        });
+        return this.http
+            .get<any[]>(`${this.serviceURL}/active`)
+            .then(response => {
+                this.log.debug(
+                    'PARSING traegerschaften REST array object',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseTraegerschaften(response.data);
+            });
     }
 
     public getServiceName(): string {

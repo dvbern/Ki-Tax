@@ -22,7 +22,6 @@ import {UpgradeComponent} from '@angular/upgrade/static';
     selector: 'dossier-toolbar'
 })
 export class NewDossierToolbarDirective extends UpgradeComponent {
-
     @Input() public gesuchid: string;
     @Input() public dossierId: string;
     @Input() public isDashboardScreen: string;

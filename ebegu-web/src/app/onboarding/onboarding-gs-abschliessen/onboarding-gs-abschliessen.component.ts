@@ -36,10 +36,12 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
     selector: 'dv-onboarding-gs-abschliessen',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-gs-abschliessen.component.html',
-    styleUrls: ['./onboarding-gs-abschliessen.component.less', '../onboarding.less']
+    styleUrls: [
+        './onboarding-gs-abschliessen.component.less',
+        '../onboarding.less'
+    ]
 })
 export class OnboardingGsAbschliessenComponent implements OnInit {
-
     public user$: Observable<TSBenutzer>;
     public gemeindenAndVerbund$: Observable<TSGemeindeRegistrierung[]>;
 
@@ -60,8 +62,12 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public ngOnInit(): void {
         const gemeindenTSIdList = this.gemeindenTSIds.split(',');
-        this.gemeindenAndVerbund$ = from(this.gemeindeRS
-            .getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList));
+        this.gemeindenAndVerbund$ = from(
+            this.gemeindeRS.getGemeindenRegistrierung(
+                this.gemeindeBGId,
+                gemeindenTSIdList
+            )
+        );
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -71,7 +77,10 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         }
     }
 
-    public createDossier(form: NgForm, gemList: TSGemeindeRegistrierung[]): void {
+    public createDossier(
+        form: NgForm,
+        gemList: TSGemeindeRegistrierung[]
+    ): void {
         if (!form.valid) {
             return;
         }
@@ -81,43 +90,62 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         const firstGemeinde = gemList.pop();
         let firstGemeindeId: string;
         if (EbeguUtil.isNotNullOrUndefined(firstGemeinde)) {
-            firstGemeindeId = firstGemeinde.verbundId === null ? firstGemeinde.id : firstGemeinde.verbundId;
+            firstGemeindeId =
+                firstGemeinde.verbundId === null
+                    ? firstGemeinde.id
+                    : firstGemeinde.verbundId;
         }
         gemeindenAdded.push(firstGemeindeId);
         if (EbeguUtil.isNullOrUndefined(firstGemeindeId)) {
             // Gemaess Sentry 36245 ist hier die ID ab und zu undefined -> herausfinden welche und warum
             LOG.error('firstGemeinde ID undefined', firstGemeinde);
         }
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
-            gemList.forEach(tsGemeindeRegistrierung => {
-                // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
-                const gemeindeIdForDossier = EbeguUtil.isNullOrUndefined(tsGemeindeRegistrierung.verbundId) ?
-                    tsGemeindeRegistrierung.id : tsGemeindeRegistrierung.verbundId;
-                // In der Liste sind jetzt immer noch Duplikate, im Sinne von
-                // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur
-                // 1 Dossier (für Verbund 1) erstellt werden
-                if (gemeindenAdded.indexOf(gemeindeIdForDossier) !== -1) {
-                    return;
-                }
-                if (EbeguUtil.isNullOrUndefined(gemeindeIdForDossier)) {
-                    // Gemaess Sentry 36245 ist hier die ID ab und zu undefined -> herausfinden welche und warum
-                    LOG.error('tsGemeindeRegistrierung ID undefined', tsGemeindeRegistrierung);
-                }
-                this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
-                gemeindenAdded.push(gemeindeIdForDossier);
+        this.dossierRS
+            .getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId)
+            .then((dossier: TSDossier) => {
+                gemList.forEach(tsGemeindeRegistrierung => {
+                    // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
+                    const gemeindeIdForDossier = EbeguUtil.isNullOrUndefined(
+                        tsGemeindeRegistrierung.verbundId
+                    )
+                        ? tsGemeindeRegistrierung.id
+                        : tsGemeindeRegistrierung.verbundId;
+                    // In der Liste sind jetzt immer noch Duplikate, im Sinne von
+                    // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur
+                    // 1 Dossier (für Verbund 1) erstellt werden
+                    if (gemeindenAdded.indexOf(gemeindeIdForDossier) !== -1) {
+                        return;
+                    }
+                    if (EbeguUtil.isNullOrUndefined(gemeindeIdForDossier)) {
+                        // Gemaess Sentry 36245 ist hier die ID ab und zu undefined -> herausfinden welche und warum
+                        LOG.error(
+                            'tsGemeindeRegistrierung ID undefined',
+                            tsGemeindeRegistrierung
+                        );
+                    }
+                    this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(
+                        gemeindeIdForDossier
+                    );
+                    gemeindenAdded.push(gemeindeIdForDossier);
+                });
+                this.stateService.go('gesuchsteller.dashboard', {
+                    dossierId: dossier.id
+                });
             });
-            this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id
-            });
-        });
     }
 
     public changeGemeinde(): void {
         switch (this.authServiceRS.getPrincipalRole()) {
             case TSRole.GESUCHSTELLER:
-                this.stateService.transitionTo('onboarding.gesuchsteller.registration-incomplete').then(() => {
-                    this.onboardingPlaceholderService.setSplittedScreen(true);
-                });
+                this.stateService
+                    .transitionTo(
+                        'onboarding.gesuchsteller.registration-incomplete'
+                    )
+                    .then(() => {
+                        this.onboardingPlaceholderService.setSplittedScreen(
+                            true
+                        );
+                    });
                 break;
             case TSRole.ANONYMOUS:
                 this.onboardingPlaceholderService.setSplittedScreen(true);

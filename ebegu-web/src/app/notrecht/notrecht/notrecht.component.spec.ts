@@ -37,14 +37,29 @@ import {NotrechtComponent} from './notrecht.component';
 describe('NotrechtComponent', () => {
     let component: NotrechtComponent;
     let fixture: ComponentFixture<NotrechtComponent>;
-    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name,
-        ['initializeRueckforderungFormulare', 'getRueckforderungFormulareForCurrentBenutzer']);
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole', 'isOneOfRoles']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, [
+        'initializeRueckforderungFormulare',
+        'getRueckforderungFormulareForCurrentBenutzer'
+    ]);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isRole', 'isOneOfRoles']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['addMesageAsInfo']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'prepareDownloadWindow'
+    ]);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -67,9 +82,12 @@ describe('NotrechtComponent', () => {
                 {provide: DownloadRS, useValue: downloadRSSpy}
             ],
             declarations: []
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
-        notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo([]);
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+        notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo(
+            []
+        );
     }));
 
     beforeEach(() => {

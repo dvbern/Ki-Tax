@@ -16,33 +16,57 @@
   -->
 
 <div class="gesuch-modul">
-	<h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
-	<div class="row view-title">
-		<div class="col-md-12">
-			<h2>
-                <span translate
-					  [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
-			</h2>
-			<hr class="header"/>
-		</div>
-	</div>
-	<form #form="ngForm" role="form">
-		<dv-steuerveranlagung-erhalten *ngIf="!isSteuerveranlagungGemeinsam()" [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
-		<div *ngIf="isSelbststaendigErwerbendAnswered()">
-			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()" [model]="getModel()"
-									  [dvValueChange]="onValueChangeFunction"
-									  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
-			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()"
-						   [model]="getModel()"
-						   [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
-			<dv-massgebendes-einkommen
-                    [massgebendesEinkommen$]="getMassgebendesEinkommen$()"
-					[isGemeinsam]="isGemeinsam()"
-					[antragstellerNummer]="getAntragstellerNummer()"
-					[nameGS1]="extractFullNameGS1()"
-					[nameGS2]="extractFullNameGS2()"></dv-massgebendes-einkommen>
-		</div>
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span
+                    translate
+                    [translateParams]="{
+                        gesuchsteller: getAntragstellerNameForCurrentStep(),
+                        basisjahr: getYearForDeklaration()
+                    }"
+                    >FINANZIELLE_SITUATION</span
+                >
+            </h2>
+            <hr class="header" />
+        </div>
+    </div>
+    <form #form="ngForm" role="form">
+        <dv-steuerveranlagung-erhalten
+            *ngIf="!isSteuerveranlagungGemeinsam()"
+            [model]="getModel()"
+            (steuerveranlagungErhaltenChange)="
+                steuerveranlagungErhaltenChange($event)
+            "
+        ></dv-steuerveranlagung-erhalten>
+        <div *ngIf="isSelbststaendigErwerbendAnswered()">
+            <dv-veranlagung-solothurn
+                *ngIf="hasSteuerveranlagungErhalten()"
+                [model]="getModel()"
+                [dvValueChange]="onValueChangeFunction"
+                [readOnly]="gesuchModelManager.isGesuchReadonly()"
+            ></dv-veranlagung-solothurn>
+            <dv-bruttolohn
+                *ngIf="!hasSteuerveranlagungErhalten()"
+                [model]="getModel()"
+                [dvValueChange]="onValueChangeFunction"
+            ></dv-bruttolohn>
+            <dv-massgebendes-einkommen
+                [massgebendesEinkommen$]="getMassgebendesEinkommen$()"
+                [isGemeinsam]="isGemeinsam()"
+                [antragstellerNummer]="getAntragstellerNummer()"
+                [nameGS1]="extractFullNameGS1()"
+                [nameGS2]="extractFullNameGS2()"
+            ></dv-massgebendes-einkommen>
+        </div>
 
-		<dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvNext]="true" [dvPrevious]="true" [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
-	</form>
+        <dv-navigation-x
+            (dvSave)="prepareSave($event.onResult)"
+            [dvNext]="true"
+            [dvPrevious]="true"
+            [dvSubStep]="getSubStepIndex()"
+            [dvSubStepName]="getSubStepName()"
+        ></dv-navigation-x>
+    </form>
 </div>

@@ -12,9 +12,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {isMoment} from 'moment';
-import {
-    DvNgRemoveDialogComponent
-} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSInternePendenz} from '../../../../models/TSInternePendenz';
 
 @Component({
@@ -24,14 +22,15 @@ import {TSInternePendenz} from '../../../../models/TSInternePendenz';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternePendenzenTableComponent implements OnInit, OnChanges {
-
     @Input()
     public internePendenzen: TSInternePendenz[] = [];
 
     @Output()
-    public readonly rowClicked: EventEmitter<TSInternePendenz> = new EventEmitter<TSInternePendenz>();
+    public readonly rowClicked: EventEmitter<TSInternePendenz> =
+        new EventEmitter<TSInternePendenz>();
     @Output()
-    public readonly deletePendenz: EventEmitter<TSInternePendenz> = new EventEmitter<TSInternePendenz>();
+    public readonly deletePendenz: EventEmitter<TSInternePendenz> =
+        new EventEmitter<TSInternePendenz>();
 
     public datasource: MatTableDataSource<TSInternePendenz>;
     public readonly initialSortColumn = 'termin';
@@ -40,10 +39,10 @@ export class InternePendenzenTableComponent implements OnInit, OnChanges {
 
     private currentSort: Sort = new MatSort();
 
-    public constructor(
-        private readonly dialog: MatDialog
-    ) {
-        this.datasource = new MatTableDataSource<TSInternePendenz>(this.internePendenzen);
+    public constructor(private readonly dialog: MatDialog) {
+        this.datasource = new MatTableDataSource<TSInternePendenz>(
+            this.internePendenzen
+        );
     }
 
     public ngOnInit(): void {
@@ -72,9 +71,13 @@ export class InternePendenzenTableComponent implements OnInit, OnChanges {
             return;
         }
         // copy so we don't manipulate the original input array
-        this.datasource.data = [].concat(this.internePendenzen).sort(((a, b) => sortEvent.direction === 'asc' ?
-            this.compare(a[sortEvent.active], b[sortEvent.active]) :
-            this.compare(b[sortEvent.active], a[sortEvent.active])));
+        this.datasource.data = []
+            .concat(this.internePendenzen)
+            .sort((a, b) =>
+                sortEvent.direction === 'asc'
+                    ? this.compare(a[sortEvent.active], b[sortEvent.active])
+                    : this.compare(b[sortEvent.active], a[sortEvent.active])
+            );
 
         // cache sort to use it later again, when data updates
         this.currentSort = sortEvent;
@@ -93,7 +96,10 @@ export class InternePendenzenTableComponent implements OnInit, OnChanges {
         throw new Error('Compare type not defined');
     }
 
-    public async delete(pendenz: TSInternePendenz, $event: MouseEvent): Promise<void> {
+    public async delete(
+        pendenz: TSInternePendenz,
+        $event: MouseEvent
+    ): Promise<void> {
         $event.stopPropagation();
         const confirmation = await this.confirmDelete();
         if (confirmation) {
@@ -106,7 +112,9 @@ export class InternePendenzenTableComponent implements OnInit, OnChanges {
         dialogConfig.data = {
             title: 'PENDENZ_WIRKLICH_LOESCHEN'
         };
-        return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
-            .afterClosed().toPromise();
+        return this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
     }
 }

@@ -19,7 +19,6 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSAbstractEntity} from '../../../../models/TSAbstractEntity';
 
 export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
-
     private _pauschaleBetreuungstag: number;
     private _pauschaleBetreuungstagSonderschueler: number;
 
@@ -82,10 +81,11 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
         if (EbeguUtil.isNullOrUndefined(this._weitereKosten)) {
             this._weitereKosten = 0;
         }
-        this._totalKosten = this._personalkosten
-            + this._sachkosten
-            + this._verpflegungskosten
-            + this._weitereKosten;
+        this._totalKosten =
+            this._personalkosten +
+            this._sachkosten +
+            this._verpflegungskosten +
+            this._weitereKosten;
     }
 
     private calculateTotalLeistungenLeistungsvertrag(): void {
@@ -101,41 +101,66 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
         if (EbeguUtil.isNullOrUndefined(this._eigenleistungenGemeinde)) {
             this._eigenleistungenGemeinde = 0;
         }
-        this._totalLeistungenLeistungsvertrag = this._sockelbeitrag
-            + this._beitraegeNachAnmeldungen
-            - this._vorfinanzierteKantonsbeitraege
-            + this._eigenleistungenGemeinde;
+        this._totalLeistungenLeistungsvertrag =
+            this._sockelbeitrag +
+            this._beitraegeNachAnmeldungen -
+            this._vorfinanzierteKantonsbeitraege +
+            this._eigenleistungenGemeinde;
     }
 
     private calculateKinderAnbietendeGemeindeMinusSonderschueler(): void {
-        if (EbeguUtil.isNullOrUndefined(this._betreuungstageKinderDieserGemeinde)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this._betreuungstageKinderDieserGemeinde
+            )
+        ) {
             this._betreuungstageKinderDieserGemeinde = 0;
         }
-        if (EbeguUtil.isNullOrUndefined(this._betreuungstageKinderDieserGemeindeSonderschueler)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this._betreuungstageKinderDieserGemeindeSonderschueler
+            )
+        ) {
             this._betreuungstageKinderDieserGemeindeSonderschueler = 0;
         }
         this._betreuungstageKinderDieserGemeindeMinusSonderschueler =
-            this._betreuungstageKinderDieserGemeinde - this._betreuungstageKinderDieserGemeindeSonderschueler;
+            this._betreuungstageKinderDieserGemeinde -
+            this._betreuungstageKinderDieserGemeindeSonderschueler;
     }
 
     private calculateKinderAndereGemeindeMinusSonderschueler(): void {
-        if (EbeguUtil.isNullOrUndefined(this._betreuungstageKinderAndererGemeinde)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this._betreuungstageKinderAndererGemeinde
+            )
+        ) {
             this._betreuungstageKinderAndererGemeinde = 0;
         }
-        if (EbeguUtil.isNullOrUndefined(this._betreuungstageKinderAndererGemeindenSonderschueler)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this._betreuungstageKinderAndererGemeindenSonderschueler
+            )
+        ) {
             this._betreuungstageKinderAndererGemeindenSonderschueler = 0;
         }
         this._betreuungstageKinderAndererGemeindeMinusSonderschueler =
-            this._betreuungstageKinderAndererGemeinde - this._betreuungstageKinderAndererGemeindenSonderschueler;
+            this._betreuungstageKinderAndererGemeinde -
+            this._betreuungstageKinderAndererGemeindenSonderschueler;
     }
 
     private calculateTotalKantonsbeitrag(): void {
         this._totalKantonsbeitrag =
-            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
-        + this._betreuungstageKinderDieserGemeindeSonderschueler * this._pauschaleBetreuungstagSonderschueler
-        + this._betreuungstageKinderAndererGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
-        + this._betreuungstageKinderAndererGemeindenSonderschueler * this._pauschaleBetreuungstagSonderschueler;
-        this._totalKantonsbeitrag = EbeguUtil.roundToFiveRappen(this._totalKantonsbeitrag);
+            this._betreuungstageKinderDieserGemeindeMinusSonderschueler *
+                this._pauschaleBetreuungstag +
+            this._betreuungstageKinderDieserGemeindeSonderschueler *
+                this._pauschaleBetreuungstagSonderschueler +
+            this._betreuungstageKinderAndererGemeindeMinusSonderschueler *
+                this._pauschaleBetreuungstag +
+            this._betreuungstageKinderAndererGemeindenSonderschueler *
+                this._pauschaleBetreuungstagSonderschueler;
+        this._totalKantonsbeitrag = EbeguUtil.roundToFiveRappen(
+            this._totalKantonsbeitrag
+        );
     }
 
     private calculateTotalEinnahmen(): void {
@@ -145,25 +170,35 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
         if (EbeguUtil.isNullOrUndefined(this._weitereEinnahmen)) {
             this._weitereEinnahmen = 0;
         }
-        this._totalEinnahmen = this._einnahmenElterngebuehren + this._weitereEinnahmen;
+        this._totalEinnahmen =
+            this._einnahmenElterngebuehren + this._weitereEinnahmen;
     }
 
     private calculateBeteiligungen(): void {
         this._beitragFuerKinderDerAnbietendenGemeinde =
-            this._betreuungstageKinderDieserGemeindeMinusSonderschueler * this._pauschaleBetreuungstag
-            + this._betreuungstageKinderDieserGemeindeSonderschueler * this._pauschaleBetreuungstagSonderschueler;
+            this._betreuungstageKinderDieserGemeindeMinusSonderschueler *
+                this._pauschaleBetreuungstag +
+            this._betreuungstageKinderDieserGemeindeSonderschueler *
+                this._pauschaleBetreuungstagSonderschueler;
         this._beitragFuerKinderDerAnbietendenGemeinde =
-            EbeguUtil.roundToFiveRappen(this._beitragFuerKinderDerAnbietendenGemeinde);
+            EbeguUtil.roundToFiveRappen(
+                this._beitragFuerKinderDerAnbietendenGemeinde
+            );
 
-        this._beteiligungDurchAnbietendeGemeinde = this.calculateBeteiligungDurchAnbietendeGemeinde();
-        this._beteiligungZuTief = this._beteiligungDurchAnbietendeGemeinde < this._beitragFuerKinderDerAnbietendenGemeinde;
+        this._beteiligungDurchAnbietendeGemeinde =
+            this.calculateBeteiligungDurchAnbietendeGemeinde();
+        this._beteiligungZuTief =
+            this._beteiligungDurchAnbietendeGemeinde <
+            this._beitragFuerKinderDerAnbietendenGemeinde;
     }
 
     private calculateBeteiligungDurchAnbietendeGemeinde(): number {
         if (this._isDelegationsmodell) {
             return this._totalLeistungenLeistungsvertrag;
         }
-        return this._totalKosten - this._totalKantonsbeitrag - this._totalEinnahmen;
+        return (
+            this._totalKosten - this._totalKantonsbeitrag - this._totalEinnahmen
+        );
     }
 
     public get personalkosten(): number {
@@ -203,7 +238,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set anzahlBetreuungstageKinderBern(value: number) {
-        this._anzahlBetreuungstageKinderBern = this.convertPossibleStringToNumber(value);
+        this._anzahlBetreuungstageKinderBern =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderDieserGemeinde(): number {
@@ -211,7 +247,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set betreuungstageKinderDieserGemeinde(value: number) {
-        this._betreuungstageKinderDieserGemeinde = this.convertPossibleStringToNumber(value);
+        this._betreuungstageKinderDieserGemeinde =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderDieserGemeindeSonderschueler(): number {
@@ -219,7 +256,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set betreuungstageKinderDieserGemeindeSonderschueler(value: number) {
-        this._betreuungstageKinderDieserGemeindeSonderschueler = this.convertPossibleStringToNumber(value);
+        this._betreuungstageKinderDieserGemeindeSonderschueler =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderAndererGemeinde(): number {
@@ -227,15 +265,19 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set betreuungstageKinderAndererGemeinde(value: number) {
-        this._betreuungstageKinderAndererGemeinde = this.convertPossibleStringToNumber(value);
+        this._betreuungstageKinderAndererGemeinde =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get betreuungstageKinderAndererGemeindenSonderschueler(): number {
         return this._betreuungstageKinderAndererGemeindenSonderschueler;
     }
 
-    public set betreuungstageKinderAndererGemeindenSonderschueler(value: number) {
-        this._betreuungstageKinderAndererGemeindenSonderschueler = this.convertPossibleStringToNumber(value);
+    public set betreuungstageKinderAndererGemeindenSonderschueler(
+        value: number
+    ) {
+        this._betreuungstageKinderAndererGemeindenSonderschueler =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get einnahmenElterngebuehren(): number {
@@ -243,7 +285,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set einnahmenElterngebuehren(value: number) {
-        this._einnahmenElterngebuehren = this.convertPossibleStringToNumber(value);
+        this._einnahmenElterngebuehren =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get weitereEinnahmen(): number {
@@ -267,7 +310,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set beitraegeNachAnmeldungen(value: number) {
-        this._beitraegeNachAnmeldungen = this.convertPossibleStringToNumber(value);
+        this._beitraegeNachAnmeldungen =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get vorfinanzierteKantonsbeitraege(): number {
@@ -275,7 +319,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set vorfinanzierteKantonsbeitraege(value: number) {
-        this._vorfinanzierteKantonsbeitraege = this.convertPossibleStringToNumber(value);
+        this._vorfinanzierteKantonsbeitraege =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get eigenleistungenGemeinde(): number {
@@ -283,7 +328,8 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
     }
 
     public set eigenleistungenGemeinde(value: number) {
-        this._eigenleistungenGemeinde = this.convertPossibleStringToNumber(value);
+        this._eigenleistungenGemeinde =
+            this.convertPossibleStringToNumber(value);
     }
 
     public get isDelegationsmodell(): boolean {
@@ -310,7 +356,9 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
         return this._totalLeistungenLeistungsvertrag;
     }
 
-    public set betreuungstageKinderDieserGemeindeMinusSonderschueler(value: number) {
+    public set betreuungstageKinderDieserGemeindeMinusSonderschueler(
+        value: number
+    ) {
         this._betreuungstageKinderDieserGemeindeMinusSonderschueler = value;
     }
 
@@ -318,7 +366,9 @@ export class TSFerienbetreuungBerechnung extends TSAbstractEntity {
         return this._betreuungstageKinderDieserGemeindeMinusSonderschueler;
     }
 
-    public set betreuungstageKinderAndererGemeindeMinusSonderschueler(value: number) {
+    public set betreuungstageKinderAndererGemeindeMinusSonderschueler(
+        value: number
+    ) {
         this._betreuungstageKinderAndererGemeindeMinusSonderschueler = value;
     }
 

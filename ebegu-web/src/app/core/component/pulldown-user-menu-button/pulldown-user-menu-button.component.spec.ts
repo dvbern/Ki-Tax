@@ -24,17 +24,17 @@ describe('PulldownUserMenuButtonComponent', () => {
     let component: PulldownUserMenuButtonComponent;
     let fixture: ComponentFixture<PulldownUserMenuButtonComponent>;
 
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['href']
+    );
     stateServiceSpy.href.and.returnValue('');
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            providers: [
-                {provide: StateService, useValue: stateServiceSpy}
-            ],
+            providers: [{provide: StateService, useValue: stateServiceSpy}],
             declarations: [PulldownUserMenuButtonComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

@@ -19,7 +19,7 @@ import {FixtureEinkommensverschlechterung} from '@dv-e2e/fixtures';
 
 // !! -- PAGE OBJECTS -- !!
 const getPageTitle = () => {
-	return cy.getByData('page-title');
+    return cy.getByData('page-title');
 };
 const getBruttovermoegenGS1 = () => {
     return cy.getByData('bruttovermoegen1');
@@ -49,16 +49,22 @@ const getEinkommenVorjahr = () => {
     return cy.getByData('einkommen-vorjahr');
 };
 
-const// !! -- PAGE ACTIONS -- !!
-    fillResultateForm = (dataset: keyof typeof FixtureEinkommensverschlechterung, jahr: 'jahr1' | 'jahr2') => {
-    FixtureEinkommensverschlechterung[dataset](({[jahr]: {Resultate}}) => {
-        getBruttovermoegenGS1().find('input').type(Resultate.bruttovermoegen1);
-        getBruttovermoegenGS2().find('input').type(Resultate.bruttovermoegen2);
-        getSchuldenGS1().find('input').type(Resultate.schulden1);
-        getSchuldenGS2().find('input').type(Resultate.schulden2);
-    })
-};
-
+const // !! -- PAGE ACTIONS -- !!
+    fillResultateForm = (
+        dataset: keyof typeof FixtureEinkommensverschlechterung,
+        jahr: 'jahr1' | 'jahr2'
+    ) => {
+        FixtureEinkommensverschlechterung[dataset](({[jahr]: {Resultate}}) => {
+            getBruttovermoegenGS1()
+                .find('input')
+                .type(Resultate.bruttovermoegen1);
+            getBruttovermoegenGS2()
+                .find('input')
+                .type(Resultate.bruttovermoegen2);
+            getSchuldenGS1().find('input').type(Resultate.schulden1);
+            getSchuldenGS2().find('input').type(Resultate.schulden2);
+        });
+    };
 
 export const EinkommensverschlechterungResultatePO = {
     getPageTitle,
@@ -70,6 +76,5 @@ export const EinkommensverschlechterungResultatePO = {
     getEinkommenVorjahrBasis,
     getEinkommenVorjahr,
     // page actions
-    fillResultateForm,
+    fillResultateForm
 };
-

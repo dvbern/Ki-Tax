@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
+import {
+    IHttpPromise,
+    IHttpRequestTransformer,
+    IHttpService,
+    ILogService,
+    IPromise
+} from 'angular';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
@@ -37,15 +43,28 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {GlobalCacheService} from './globalCacheService';
 
 export class GemeindeRS implements IEntityRS {
-
-    public static $inject =
-        ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        'GlobalCacheService',
+        'AuthServiceRS'
+    ];
     public serviceURL: string;
 
-    private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
-    private readonly principalGemeindenSubjectTS$ = new BehaviorSubject<TSGemeinde[]>([]);
-    private readonly principalGemeindenSubjectFI$ = new BehaviorSubject<TSGemeinde[]>([]);
-    private readonly principalGemeindenSubjectBG$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubject$ = new BehaviorSubject<
+        TSGemeinde[]
+    >([]);
+    private readonly principalGemeindenSubjectTS$ = new BehaviorSubject<
+        TSGemeinde[]
+    >([]);
+    private readonly principalGemeindenSubjectFI$ = new BehaviorSubject<
+        TSGemeinde[]
+    >([]);
+    private readonly principalGemeindenSubjectBG$ = new BehaviorSubject<
+        TSGemeinde[]
+    >([]);
 
     public constructor(
         public $http: IHttpService,
@@ -61,21 +80,36 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public getAllGemeinden(): IPromise<TSGemeinde[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
-        return this.$http.get(`${this.serviceURL}/all`, {cache})
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        const cache = this.globalCacheService.getCache(
+            TSCacheTyp.EBEGU_GEMEINDEN
+        );
+        return this.$http
+            .get(`${this.serviceURL}/all`, {cache})
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
     public getAktiveGemeinden(): IPromise<TSGemeinde[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE);
-        return this.$http.get(`${this.serviceURL}/active`, {cache})
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        const cache = this.globalCacheService.getCache(
+            TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE
+        );
+        return this.$http
+            .get(`${this.serviceURL}/active`, {cache})
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
     public getAktiveGueltigeGemeinden(): IPromise<TSGemeinde[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE);
-        return this.$http.get(`${this.serviceURL}/activegueltig`, {cache})
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        const cache = this.globalCacheService.getCache(
+            TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE
+        );
+        return this.$http
+            .get(`${this.serviceURL}/activegueltig`, {cache})
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
     public getGemeindenForTSByPrincipal$(): Observable<TSGemeinde[]> {
@@ -95,8 +129,14 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
-        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(gemeindeId)}`)
-            .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
+        return this.$http
+            .get(`${this.serviceURL}/id/${encodeURIComponent(gemeindeId)}`)
+            .then(response =>
+                this.ebeguRestUtil.parseGemeinde(
+                    new TSGemeinde(),
+                    response.data
+                )
+            );
     }
 
     private initGemeindenForPrincipal(): void {
@@ -106,9 +146,15 @@ export class GemeindeRS implements IEntityRS {
                 gemeinden => {
                     this.principalGemeindenSubject$.next(gemeinden);
 
-                    const gemeindenTS = angular.copy(gemeinden.filter(g => g.angebotTS));
-                    const gemeindenFI = angular.copy(gemeinden.filter(g => g.angebotFI));
-                    const gemeindenBG = angular.copy(gemeinden.filter(g => g.angebotBG));
+                    const gemeindenTS = angular.copy(
+                        gemeinden.filter(g => g.angebotTS)
+                    );
+                    const gemeindenFI = angular.copy(
+                        gemeinden.filter(g => g.angebotFI)
+                    );
+                    const gemeindenBG = angular.copy(
+                        gemeinden.filter(g => g.angebotBG)
+                    );
 
                     this.principalGemeindenSubjectTS$.next(gemeindenTS);
                     this.principalGemeindenSubjectFI$.next(gemeindenFI);
@@ -118,12 +164,17 @@ export class GemeindeRS implements IEntityRS {
             );
     }
 
-    public toGemeindenForPrincipal$(user: TSBenutzer | null): Observable<TSGemeinde[]> {
+    public toGemeindenForPrincipal$(
+        user: TSBenutzer | null
+    ): Observable<TSGemeinde[]> {
         if (!user) {
             return of([]); // empty list for unknown user
         }
 
-        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole()) && TSRole.SUPER_ADMIN !== user.getCurrentRole()) {
+        if (
+            TSRoleUtil.isGemeindeRole(user.getCurrentRole()) &&
+            TSRole.SUPER_ADMIN !== user.getCurrentRole()
+        ) {
             return of(angular.copy(user.extractCurrentGemeinden()));
         }
 
@@ -134,12 +185,17 @@ export class GemeindeRS implements IEntityRS {
      * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createGemeinde(gemeinde: TSGemeinde, email: string): IPromise<TSGemeinde> {
+    public createGemeinde(
+        gemeinde: TSGemeinde,
+        email: string
+    ): IPromise<TSGemeinde> {
+        const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(
+            {},
+            gemeinde
+        );
 
-        const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
-
-        return this.$http.post(this.serviceURL, restGemeinde,
-            {
+        return this.$http
+            .post(this.serviceURL, restGemeinde, {
                 params: {
                     adminMail: email
                 }
@@ -147,38 +203,80 @@ export class GemeindeRS implements IEntityRS {
             .then(response => {
                 this.resetGemeindeCache(); // damit die neue Gemeinde in der Liste erscheint
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
-                return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
+                return this.ebeguRestUtil.parseGemeinde(
+                    new TSGemeinde(),
+                    response.data
+                );
             });
     }
 
     private resetGemeindeCache(): void {
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE).removeAll();
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG).removeAll();
+        this.globalCacheService
+            .getCache(TSCacheTyp.EBEGU_GEMEINDEN)
+            .removeAll();
+        this.globalCacheService
+            .getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE)
+            .removeAll();
+        this.globalCacheService
+            .getCache(TSCacheTyp.EBEGU_GEMEINDEN_WITH_MAHLZEITENVERGUENSTIGUNG)
+            .removeAll();
         // Nur beim SuperAdmin und Mandant-User werden die Gemeinden aus dem Service gelesen,
         // bei allen Gemeinde-Benutzern aus dem User! Dieser ist aber u.U. nicht mehr aktuell
         this.authServiceRS.reloadCurrentUser();
         this.initGemeindenForPrincipal();
     }
 
-    public getGemeindeStammdaten(gemeindeId: string): IPromise<TSGemeindeStammdaten> {
-        return this.$http.get(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`)
-            .then(response => this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data));
+    public getGemeindeStammdaten(
+        gemeindeId: string
+    ): IPromise<TSGemeindeStammdaten> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeStammdaten(
+                    new TSGemeindeStammdaten(),
+                    response.data
+                )
+            );
     }
 
-    public getGemeindeStammdatenLite(gemeindeId: string): IPromise<TSGemeindeStammdatenLite> {
-        return this.$http.get(`${this.serviceURL}/stammdaten/lite/${encodeURIComponent(gemeindeId)}`)
-            .then(response => this.ebeguRestUtil.parseGemeindeStammdatenLite(new TSGemeindeStammdatenLite(), response.data));
+    public getGemeindeStammdatenLite(
+        gemeindeId: string
+    ): IPromise<TSGemeindeStammdatenLite> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/stammdaten/lite/${encodeURIComponent(gemeindeId)}`
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeStammdatenLite(
+                    new TSGemeindeStammdatenLite(),
+                    response.data
+                )
+            );
     }
 
-    public saveGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): IPromise<TSGemeindeStammdaten> {
+    public saveGemeindeStammdaten(
+        stammdaten: TSGemeindeStammdaten
+    ): IPromise<TSGemeindeStammdaten> {
         let restStammdaten = {};
-        restStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(restStammdaten, stammdaten);
-        return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).then((response: any) => {
-            this.resetGemeindeCache(); // damit die Statusänderung (eingeladen->aktiv) geladen werden kann
-            this.$log.debug('PARSING GemeindeStammdaten REST object ', response.data);
-            return this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data);
-        });
+        restStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(
+            restStammdaten,
+            stammdaten
+        );
+        return this.$http
+            .put(`${this.serviceURL}/stammdaten`, restStammdaten)
+            .then((response: any) => {
+                this.resetGemeindeCache(); // damit die Statusänderung (eingeladen->aktiv) geladen werden kann
+                this.$log.debug(
+                    'PARSING GemeindeStammdaten REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseGemeindeStammdaten(
+                    new TSGemeindeStammdaten(),
+                    response.data
+                );
+            });
     }
 
     public getLogoUrl(gemeindeId: string): string {
@@ -193,28 +291,39 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
     }
 
-    public uploadAlternativeLogoTagesschule(gemeindeId: string, fileToUpload: File): IPromise<any> {
-        const formData=  this.createFormDataFromFileToUpload(fileToUpload);
+    public uploadAlternativeLogoTagesschule(
+        gemeindeId: string,
+        fileToUpload: File
+    ): IPromise<any> {
+        const formData = this.createFormDataFromFileToUpload(fileToUpload);
         return this.postLogo(this.getAlternativeLogoUrl(gemeindeId), formData);
     }
 
-    public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+    public uploadLogoImage(
+        gemeindeId: string,
+        fileToUpload: File
+    ): IPromise<any> {
         const formData = this.createFormDataFromFileToUpload(fileToUpload);
         return this.postLogo(this.getLogoUrl(gemeindeId), formData);
     }
 
     private createFormDataFromFileToUpload(fileToUpload: File): FormData {
         const formData = new FormData();
-        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append(
+            'file',
+            fileToUpload,
+            encodeURIComponent(fileToUpload.name)
+        );
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
         return formData;
     }
 
     private postLogo(logoUrl: string, formData: FormData): IPromise<any> {
-        const result = this.$http.post(logoUrl, formData, {
-            transformRequest: (request: IHttpRequestTransformer) => request,
-            headers: {'Content-Type': undefined}
-        })
+        const result = this.$http
+            .post(logoUrl, formData, {
+                transformRequest: (request: IHttpRequestTransformer) => request,
+                headers: {'Content-Type': undefined}
+            })
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
                 return response.data;
@@ -227,7 +336,11 @@ export class GemeindeRS implements IEntityRS {
 
     public isSupportedImage(fileToUpload: File): IPromise<any> {
         const formData = new FormData();
-        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append(
+            'file',
+            fileToUpload,
+            encodeURIComponent(fileToUpload.name)
+        );
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
         return this.$http.post(this.getSupportedImageUrl(), formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
@@ -236,94 +349,160 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public getUnregisteredBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
-        return this.$http.get(`${this.serviceURL}/unregistered`)
-            .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
+        return this.$http
+            .get(`${this.serviceURL}/unregistered`)
+            .then(response =>
+                this.ebeguRestUtil.parseBfsGemeindeList(response.data)
+            );
     }
 
     public getAllBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
-        return this.$http.get(`${this.serviceURL}/allBfs`)
-            .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
+        return this.$http
+            .get(`${this.serviceURL}/allBfs`)
+            .then(response =>
+                this.ebeguRestUtil.parseBfsGemeindeList(response.data)
+            );
     }
 
     public hasGemeindenInStatusAngemeldet(): IPromise<boolean> {
-        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => response.data);
+        return this.$http
+            .get(`${this.serviceURL}/hasEinladungen/currentuser`)
+            .then((response: any) => response.data);
     }
 
-    public getGemeindenRegistrierung(gemeindeBGId: string, gemeindenTSIds: string[]
+    public getGemeindenRegistrierung(
+        gemeindeBGId: string,
+        gemeindenTSIds: string[]
     ): IPromise<TSGemeindeRegistrierung[]> {
-        const gemeindeBGIdOrNull = gemeindeBGId.length !== 0
-            ? encodeURIComponent(gemeindeBGId)
-            : null;
+        const gemeindeBGIdOrNull =
+            gemeindeBGId.length !== 0 ? encodeURIComponent(gemeindeBGId) : null;
         let gemeindenTSIdOrNull = '';
-        gemeindenTSIds.forEach(
-            id => (gemeindenTSIdOrNull.length > 0
-                ? gemeindenTSIdOrNull += `,${  encodeURIComponent(id)}`
-                : gemeindenTSIdOrNull += encodeURIComponent(id)));
-        return this.$http.get(
-            `${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull.length !== 0 ?
-                encodeURIComponent(gemeindenTSIdOrNull) : null}`)
-            .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
+        gemeindenTSIds.forEach(id =>
+            gemeindenTSIdOrNull.length > 0
+                ? (gemeindenTSIdOrNull += `,${encodeURIComponent(id)}`)
+                : (gemeindenTSIdOrNull += encodeURIComponent(id))
+        );
+        return this.$http
+            .get(
+                `${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${
+                    gemeindenTSIdOrNull.length !== 0
+                        ? encodeURIComponent(gemeindenTSIdOrNull)
+                        : null
+                }`
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data)
+            );
     }
 
     public getAktiveUndVonSchulverbundGemeinden(): IPromise<TSGemeinde[]> {
-        return this.$http.get(`${this.serviceURL}/activeAndSchulverbund`)
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        return this.$http
+            .get(`${this.serviceURL}/activeAndSchulverbund`)
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
     public updateAngebote(gemeinde: TSGemeinde): IPromise<any> {
         let restGemeinde = {};
-        restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
-        return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);
+        restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(
+            restGemeinde,
+            gemeinde
+        );
+        return this.$http.put(
+            `${this.serviceURL}/updateangebote`,
+            restGemeinde
+        );
     }
 
-    public removeGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
-                                                dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
-        // eslint-disable-next-line max-len
-        return this.$http.delete(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
+    public removeGemeindeGesuchsperiodeDokument(
+        gemeindeId: string,
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IHttpPromise<TSGesuchsperiode> {
+        return this.$http.delete(
+            `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`
+        );
     }
 
-    public existGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
-                                               dokumentTyp: TSDokumentTyp): IPromise<boolean> {
-        // eslint-disable-next-line max-len
-        return this.$http.get(`${this.serviceURL}/existGemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
+    public existGemeindeGesuchsperiodeDokument(
+        gemeindeId: string,
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IPromise<boolean> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/existGemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`
+            )
             .then((response: any) => response.data);
     }
 
-    public downloadGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
-                                                  dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        // eslint-disable-next-line max-len
-        return this.$http.get(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
-            {responseType: 'blob'})
+    public downloadGemeindeGesuchsperiodeDokument(
+        gemeindeId: string,
+        gesuchsperiodeId: string,
+        sprache: TSSprache,
+        dokumentTyp: TSDokumentTyp
+    ): IPromise<BlobPart> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
+                {responseType: 'blob'}
+            )
             .then((response: any) => response.data);
     }
 
-    public getExternalClients(gemeindeId: string): IPromise<TSExternalClientAssignment> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gemeindeId)}/externalclients`)
-            .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
+    public getExternalClients(
+        gemeindeId: string
+    ): IPromise<TSExternalClientAssignment> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/${encodeURIComponent(gemeindeId)}/externalclients`
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseExternalClientAssignment(response.data)
+            );
     }
 
-    public getGemeindenWithMahlzeitenverguenstigungForBenutzer(): IPromise<TSGemeinde[]> {
-        return this.$http.get(`${this.serviceURL}/mahlzeitenverguenstigung`)
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    public getGemeindenWithMahlzeitenverguenstigungForBenutzer(): IPromise<
+        TSGemeinde[]
+    > {
+        return this.$http
+            .get(`${this.serviceURL}/mahlzeitenverguenstigung`)
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
     public getNextBesondereVolksschuleBfsNummer(): IPromise<number> {
-        return this.$http.get(`${this.serviceURL}/next-vollksschule-bfsnummer`)
+        return this.$http
+            .get(`${this.serviceURL}/next-vollksschule-bfsnummer`)
             .then(response => response.data as number);
     }
 
     public downloadMusterDokument(gemeindeId: string): IPromise<BlobPart> {
-        return this.$http.get(`${this.serviceURL}/musterdokument/${encodeURIComponent(gemeindeId)}`,
-            {responseType: 'blob'})
+        return this.$http
+            .get(
+                `${this.serviceURL}/musterdokument/${encodeURIComponent(gemeindeId)}`,
+                {responseType: 'blob'}
+            )
             .then((response: any) => response.data);
     }
 
     public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {
-        return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
-            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        return this.$http
+            .get(`${this.serviceURL}/gemeinden-with-lats`)
+            .then(response =>
+                this.ebeguRestUtil.parseGemeindeList(response.data)
+            );
     }
 
-    public deleteAlternativeLogoTagesschule(gemeindeId: string): IHttpPromise<void> {
-        return this.$http.delete<void>(`${this.serviceURL}/alternativeLogo/${encodeURIComponent(gemeindeId)}`);
+    public deleteAlternativeLogoTagesschule(
+        gemeindeId: string
+    ): IHttpPromise<void> {
+        return this.$http.delete<void>(
+            `${this.serviceURL}/alternativeLogo/${encodeURIComponent(gemeindeId)}`
+        );
     }
 }

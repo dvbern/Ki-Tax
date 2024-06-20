@@ -26,7 +26,6 @@ import {ZemisDialogDTO} from './zemisDialog.interface';
     styleUrls: ['zemis-dialog.component.less']
 })
 export class ZemisDialogComponent {
-
     public jahr: number;
     public file: File;
     public upload: boolean;

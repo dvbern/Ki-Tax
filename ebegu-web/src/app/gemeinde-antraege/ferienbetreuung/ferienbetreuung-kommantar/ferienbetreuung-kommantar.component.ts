@@ -16,7 +16,13 @@
  */
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ReplaySubject, Subscription} from 'rxjs';
@@ -36,12 +42,11 @@ const LOG = LogFactory.createLog('FerienbetreuungKommantarComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
-
     public form = this.fb.group({
         kommentar: this.fb.control({
-            value: <null | string> null,
-            disabled: true,
-        }),
+            value: <null | string>null,
+            disabled: true
+        })
     });
     public saving$ = new ReplaySubject(1);
     private subscription: Subscription;
@@ -59,12 +64,16 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     ) {}
 
     public ngOnInit(): void {
-        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.ferienbetreuungContainer = container;
-                this.initForm();
-                this.ref.markForCheck();
-            }, err => LOG.error(err));
+        this.subscription = this.ferienbetreuungService
+            .getFerienbetreuungContainer()
+            .subscribe(
+                container => {
+                    this.ferienbetreuungContainer = container;
+                    this.initForm();
+                    this.ref.markForCheck();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {
@@ -76,16 +85,23 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
             return;
         }
         this.saving$.next(true);
-        this.ferienbetreuungService.saveKommentar(
-            this.ferienbetreuungContainer.id,
-            this.form.getRawValue().kommentar
-        ).subscribe(() => {
-            this.saving$.next(false);
-        }, (error: HttpErrorResponse) => {
-            LOG.error(error);
-            const translated = this.translate.instant('ERROR_LATS_KOMMENTAR_SAVE');
-            this.errorService.addMesageAsError(translated);
-        });
+        this.ferienbetreuungService
+            .saveKommentar(
+                this.ferienbetreuungContainer.id,
+                this.form.getRawValue().kommentar
+            )
+            .subscribe(
+                () => {
+                    this.saving$.next(false);
+                },
+                (error: HttpErrorResponse) => {
+                    LOG.error(error);
+                    const translated = this.translate.instant(
+                        'ERROR_LATS_KOMMENTAR_SAVE'
+                    );
+                    this.errorService.addMesageAsError(translated);
+                }
+            );
     }
 
     private initForm(): void {
@@ -94,7 +110,9 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
         } else {
             this.form.controls.kommentar.enable();
         }
-        this.form.controls.kommentar.setValue(this.ferienbetreuungContainer?.internerKommentar);
+        this.form.controls.kommentar.setValue(
+            this.ferienbetreuungContainer?.internerKommentar
+        );
         this.loadUserList();
     }
 
@@ -111,14 +129,15 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     public saveVerantwortlicher(): void {
-        this.ferienbetreuungService.saveVerantwortlicher(this.ferienbetreuungContainer.id,
-            this.ferienbetreuungContainer.verantwortlicher?.username);
+        this.ferienbetreuungService.saveVerantwortlicher(
+            this.ferienbetreuungContainer.id,
+            this.ferienbetreuungContainer.verantwortlicher?.username
+        );
     }
 
     private loadUserList(): void {
-        this.benutzerRS.getAllActiveBenutzerMandant()
-            .then(response => {
-                this.userList = response;
-            });
+        this.benutzerRS.getAllActiveBenutzerMandant().then(response => {
+            this.userList = response;
+        });
     }
 }

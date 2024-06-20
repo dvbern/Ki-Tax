@@ -30,26 +30,37 @@ import {SharedModule} from '../../shared/shared.module';
 import {TraegerschaftAddComponent} from './traegerschaft-add.component';
 
 describe('TraegerschaftAddComponent', () => {
-
     let component: TraegerschaftAddComponent;
     let fixture: ComponentFixture<TraegerschaftAddComponent>;
 
-    const traegerschaftRSSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
-        ['findTraegerschaft']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
+    const traegerschaftRSSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['findTraegerschaft']
+    );
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params',
+        'from'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(
+        BenutzerRSX.name,
+        ['removeBenutzer']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
@@ -60,8 +71,9 @@ describe('TraegerschaftAddComponent', () => {
                 {provide: BenutzerRSX, useValue: benutzerServiceSpy}
             ],
             declarations: [TraegerschaftAddComponent]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});

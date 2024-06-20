@@ -19,21 +19,27 @@
     <div class="antrag-container">
         <div class="side-nav">
             <dv-wizard-side-nav
-                    [status]="lATSAngabenGemeindeContainer?.status | translate"
-                    [subHeader]="'AFA_ABRECHNUNG_REPORTING' | translate"
-                    [id]="lastenausgleichId"
-                    [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde"
-                    [gesuchsperiode]="lATSAngabenGemeindeContainer?.gesuchsperiode"
-                    [wizardTyp]="wizardTyp">
+                [status]="lATSAngabenGemeindeContainer?.status | translate"
+                [subHeader]="'AFA_ABRECHNUNG_REPORTING' | translate"
+                [id]="lastenausgleichId"
+                [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde"
+                [gesuchsperiode]="lATSAngabenGemeindeContainer?.gesuchsperiode"
+                [wizardTyp]="wizardTyp"
+            >
             </dv-wizard-side-nav>
             <div class="flex-spacing-6"></div>
             <div class="padding-left-20">
-                <dv-loading-button (buttonClick)="downloadFerienbetreuungReport()">{{'PDF_EXPORTIEREN' | translate}}</dv-loading-button>
+                <dv-loading-button
+                    (buttonClick)="downloadFerienbetreuungReport()"
+                    >{{ 'PDF_EXPORTIEREN' | translate }}</dv-loading-button
+                >
             </div>
         </div>
         <div class="antrag">
             <ui-view></ui-view>
         </div>
-        <dv-lastenausgleich-ts-kommentar *ngIf="showKommentare()"></dv-lastenausgleich-ts-kommentar>
+        <dv-lastenausgleich-ts-kommentar
+            *ngIf="showKommentare()"
+        ></dv-lastenausgleich-ts-kommentar>
     </div>
 </div>

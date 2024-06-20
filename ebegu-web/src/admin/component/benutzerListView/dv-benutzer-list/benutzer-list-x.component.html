@@ -19,14 +19,14 @@
         <div class="row">
             <div class="col-md-10">
                 <div id="titleText">
-                    <h3 class="ng-scope">{{tableTitle | translate}}</h3>
+                    <h3 class="ng-scope">{{ tableTitle | translate }}</h3>
                 </div>
                 <div id="refreshIcon">
                     <i class="fa fa-undo" (click)="resetSearch()"></i>
                 </div>
             </div>
             <div class="col-md-2 text-right">
-                <h3>{{totalResultCount}}</h3>
+                <h3>{{ totalResultCount }}</h3>
             </div>
         </div>
 
@@ -36,135 +36,252 @@
                 matSort="sort"
                 [matSortDirection]="sort.direction"
                 [matSortActive]="sort.active"
-                (matSortChange)="sortChange($event)">
-
+                (matSortChange)="sortChange($event)"
+            >
                 <ng-container matColumnDef="username">
-                    <mat-header-cell mat-sort-header="username" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="username"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>USERNAME</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.username">{{element.username}}</span>
+                        <span [title]="element.username">{{
+                            element.username
+                        }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="vorname">
-                    <mat-header-cell mat-sort-header="vorname" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="vorname"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>VORNAME</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.vorname">{{element.vorname}}</span>
+                        <span [title]="element.vorname">{{
+                            element.vorname
+                        }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="name">
-                    <mat-header-cell mat-sort-header="name" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="name"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>NAME</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.name">{{element.nachname}}</span>
+                        <span [title]="element.name">{{
+                            element.nachname
+                        }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="email">
-                    <mat-header-cell mat-sort-header="email" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="email"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>EMAIL</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.email">{{element.email}}</span>
+                        <span [title]="element.email">{{ element.email }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="role">
-                    <mat-header-cell mat-sort-header="role" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="role"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>ROLLE</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="'TSRole_' + element.getCurrentRole() | translate">
-                        {{'TSRole_' + element.getCurrentRole() | translate}}
-                    </span>
+                        <span
+                            [title]="
+                                'TSRole_' + element.getCurrentRole() | translate
+                            "
+                        >
+                            {{
+                                'TSRole_' + element.getCurrentRole() | translate
+                            }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="roleGueltigAb">
-                    <mat-header-cell mat-sort-header="roleGueltigAb" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>ROLLE_GUELTIG_AB</span>
+                    <mat-header-cell
+                        mat-sort-header="roleGueltigAb"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span class="no-padding-left" translate
+                            >ROLLE_GUELTIG_AB</span
+                        >
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.currentBerechtigung.gueltigkeit.gueltigAb | ebeguDate">
-                        {{element.currentBerechtigung.gueltigkeit.gueltigAb | ebeguDate}}
-                    </span>
+                        <span
+                            [title]="
+                                element.currentBerechtigung.gueltigkeit
+                                    .gueltigAb | ebeguDate
+                            "
+                        >
+                            {{
+                                element.currentBerechtigung.gueltigkeit
+                                    .gueltigAb | ebeguDate
+                            }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="roleGueltigBis">
-                    <mat-header-cell mat-sort-header="roleGueltigBis" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>ROLLE_GUELTIG_BIS</span>
+                    <mat-header-cell
+                        mat-sort-header="roleGueltigBis"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span class="no-padding-left" translate
+                            >ROLLE_GUELTIG_BIS</span
+                        >
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.currentBerechtigung.gueltigkeit.gueltigBis | ebeguDate">
-                        {{element.currentBerechtigung.gueltigkeit.gueltigBis | ebeguDate}}
-                    </span>
+                        <span
+                            [title]="
+                                element.currentBerechtigung.gueltigkeit
+                                    .gueltigBis | ebeguDate
+                            "
+                        >
+                            {{
+                                element.currentBerechtigung.gueltigkeit
+                                    .gueltigBis | ebeguDate
+                            }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="gemeinde">
-                    <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="gemeinde"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>GEMEINDEN</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="gemeindenStr">{{getGemeindenForBenutzer(element)}}</span>
+                        <span [title]="gemeindenStr">{{
+                            getGemeindenForBenutzer(element)
+                        }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="institution">
-                    <mat-header-cell mat-sort-header="institution" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>INSTITUTION</span>
+                    <mat-header-cell
+                        mat-sort-header="institution"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span class="no-padding-left" translate
+                            >INSTITUTION</span
+                        >
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.currentBerechtigung.institution?.name">
-                        {{element.currentBerechtigung.institution?.name}}
-                    </span>
+                        <span
+                            [title]="
+                                element.currentBerechtigung.institution?.name
+                            "
+                        >
+                            {{ element.currentBerechtigung.institution?.name }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="traegerschaft">
-                    <mat-header-cell mat-sort-header="traegerschaft" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>TRAEGERSCHAFT</span>
+                    <mat-header-cell
+                        mat-sort-header="traegerschaft"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span class="no-padding-left" translate
+                            >TRAEGERSCHAFT</span
+                        >
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.currentBerechtigung.traegerschaft?.name">
-                        {{element.currentBerechtigung.traegerschaft?.name}}
-                    </span>
+                        <span
+                            [title]="
+                                element.currentBerechtigung.traegerschaft?.name
+                            "
+                        >
+                            {{
+                                element.currentBerechtigung.traegerschaft?.name
+                            }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="sozialdienst">
-                    <mat-header-cell mat-sort-header="sozialdienst" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>SOZIALDIENST_TITLE</span>
+                    <mat-header-cell
+                        mat-sort-header="sozialdienst"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span class="no-padding-left" translate
+                            >SOZIALDIENST_TITLE</span
+                        >
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="element.currentBerechtigung.sozialdienst?.name">
-                        {{element.currentBerechtigung.sozialdienst?.name}}
-                    </span>
+                        <span
+                            [title]="
+                                element.currentBerechtigung.sozialdienst?.name
+                            "
+                        >
+                            {{ element.currentBerechtigung.sozialdienst?.name }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
-                    <mat-header-cell mat-sort-header="status" *matHeaderCellDef class="ellipsis">
+                    <mat-header-cell
+                        mat-sort-header="status"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
                         <span class="no-padding-left" translate>STATUS</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="'BENUTZER_STATUS_' + element.status  | translate">
-                        {{'BENUTZER_STATUS_' + element.status  | translate}}
-                    </span>
+                        <span
+                            [title]="
+                                'BENUTZER_STATUS_' + element.status | translate
+                            "
+                        >
+                            {{
+                                'BENUTZER_STATUS_' + element.status | translate
+                            }}
+                        </span>
                     </mat-cell>
                 </ng-container>
 
-<!--                FILTERS-->
+                <!--                FILTERS-->
                 <ng-container matColumnDef="username-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-username-mat-form-field">
-                            <input [value]="filterPredicate.username || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'username')">
+                            <input
+                                [value]="filterPredicate.username || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'username'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -172,7 +289,16 @@
                 <ng-container matColumnDef="vorname-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-vorname-mat-form-field">
-                            <input [value]="filterPredicate.vorname || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'vorname')">
+                            <input
+                                [value]="filterPredicate.vorname || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'vorname'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -180,7 +306,16 @@
                 <ng-container matColumnDef="name-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-name-mat-form-field">
-                            <input [value]="filterPredicate.nachname || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'nachname')">
+                            <input
+                                [value]="filterPredicate.nachname || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'nachname'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -188,18 +323,43 @@
                 <ng-container matColumnDef="email-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-email-mat-form-field">
-                            <input [value]="filterPredicate.email || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'email')">
+                            <input
+                                [value]="filterPredicate.email || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'email'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="role-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-username-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.role" (selectionChange)="applyFilter($event.value, 'role')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let r of getRoles()"
-                                            [value]="r"><span>{{'TSRole_' + r | translate}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-username-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.role"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'role')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let r of getRoles()"
+                                    [value]="r"
+                                    ><span>{{
+                                        'TSRole_' + r | translate
+                                    }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -208,7 +368,16 @@
                 <ng-container matColumnDef="roleGueltigAb-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-roleGueltigAb-mat-form-field">
-                            <input [value]="filterPredicate.roleGueltigAb || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'roleGueltigAb')">
+                            <input
+                                [value]="filterPredicate.roleGueltigAb || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'roleGueltigAb'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -216,18 +385,41 @@
                 <ng-container matColumnDef="roleGueltigBis-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-roleGueltigAb-mat-form-field">
-                            <input [value]="filterPredicate.roleGueltigBis || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'roleGueltigBis')">
+                            <input
+                                [value]="filterPredicate.roleGueltigBis || null"
+                                matInput
+                                (keyup)="
+                                    applyFilterWithDebounce(
+                                        $event.target.value,
+                                        'roleGueltigBis'
+                                    )
+                                "
+                            />
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="gemeinde-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-gemeinde-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.gemeinde" (selectionChange)="applyFilter($event.value, 'gemeinde')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let g of gemeindeList"
-                                            [value]="g.name"><span>{{g.name}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-gemeinde-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.gemeinde"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'gemeinde')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let g of gemeindeList"
+                                    [value]="g.name"
+                                    ><span>{{ g.name }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -235,11 +427,25 @@
 
                 <ng-container matColumnDef="institution-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-institution-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.institution" (selectionChange)="applyFilter($event.value, 'institution')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let i of institutionenList"
-                                            [value]="i.name"><span>{{i.name}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-institution-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.institution"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'institution')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let i of institutionenList"
+                                    [value]="i.name"
+                                    ><span>{{ i.name }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -247,11 +453,25 @@
 
                 <ng-container matColumnDef="traegerschaft-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-traegerschaft-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.traegerschaft" (selectionChange)="applyFilter($event.value, 'traegerschaft')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let t of traegerschaftenList"
-                                            [value]="t.name"><span>{{t.name}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-traegerschaft-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.traegerschaft"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'traegerschaft')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let t of traegerschaftenList"
+                                    [value]="t.name"
+                                    ><span>{{ t.name }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -259,11 +479,25 @@
 
                 <ng-container matColumnDef="sozialdienst-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-sozialdienst-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.sozialdienst" (selectionChange)="applyFilter($event.value, 'sozialdienst')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let s of sozialdienstList"
-                                            [value]="s.name"><span>{{s.name}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-sozialdienst-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.sozialdienst"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'sozialdienst')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let s of sozialdienstList"
+                                    [value]="s.name"
+                                    ><span>{{ s.name }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -271,36 +505,68 @@
 
                 <ng-container matColumnDef="status-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
-                        <mat-form-field class="dv-status-mat-form-field" floatLabel="never">
-                            <mat-select [value]="filterPredicate.status" (selectionChange)="applyFilter($event.value, 'status')" panelClass="mat-select-panel1">
-                                <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let s of benutzerStatuses"
-                                            [value]="s"><span>{{'BENUTZER_STATUS_' + s | translate}}</span></mat-option>
+                        <mat-form-field
+                            class="dv-status-mat-form-field"
+                            floatLabel="never"
+                        >
+                            <mat-select
+                                [value]="filterPredicate.status"
+                                (selectionChange)="
+                                    applyFilter($event.value, 'status')
+                                "
+                                panelClass="mat-select-panel1"
+                            >
+                                <mat-option selected
+                                    ><span translate>ALLE</span></mat-option
+                                >
+                                <mat-option
+                                    *ngFor="let s of benutzerStatuses"
+                                    [value]="s"
+                                    ><span>{{
+                                        'BENUTZER_STATUS_' + s | translate
+                                    }}</span></mat-option
+                                >
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-benutzer-mat-header-row"></mat-header-row>
-                <mat-header-row class="dv-faelle-mat-header-row"
-                                *matHeaderRowDef="filterColumns"></mat-header-row>
+                <mat-header-row
+                    *matHeaderRowDef="displayedColumns"
+                    class="dv-benutzer-mat-header-row"
+                ></mat-header-row>
+                <mat-header-row
+                    class="dv-faelle-mat-header-row"
+                    *matHeaderRowDef="filterColumns"
+                ></mat-header-row>
 
-                <mat-row *matRowDef="let element; columns: displayedColumns;"
-                         (click)="editClicked(element)"
-                         class="pointer-cursor"></mat-row>
-
+                <mat-row
+                    *matRowDef="let element; columns: displayedColumns"
+                    (click)="editClicked(element)"
+                    class="pointer-cursor"
+                ></mat-row>
             </mat-table>
 
             <div class="bottom-pagination">
                 <nav>
                     <ul class="pagination">
-                        <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
-                            <a (click)="paginationChange({pageIndex: index - 1, pageSize: pageSize})">{{index}}</a>
+                        <li
+                            *ngFor="let index of paginationItems"
+                            [ngClass]="{active: index - 1 === page}"
+                        >
+                            <a
+                                (click)="
+                                    paginationChange({
+                                        pageIndex: index - 1,
+                                        pageSize: pageSize
+                                    })
+                                "
+                                >{{ index }}</a
+                            >
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
-
     </div>
 </div>

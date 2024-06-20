@@ -15,8 +15,10 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
     templateUrl: './finanzielle-situation-solothurn.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView implements OnInit {
-
+export class FinanzielleSituationStartSolothurnComponent
+    extends AbstractFinSitsolothurnView
+    implements OnInit
+{
     public sozialhilfeBezueger: boolean;
     public finanzielleSituationRequired: boolean = false;
 
@@ -26,16 +28,24 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         protected wizardStepManager: WizardStepManager
     ) {
         super(gesuchModelManager, wizardStepManager, finSitSoService, 1);
-        this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
     }
 
     public ngOnInit(): void {
         // verguenstigungGewunscht ist alway true for Solothurn, expect when sozialhilfeempfaenger is true
         this.model.familienSituation.verguenstigungGewuenscht =
-            !EbeguUtil.isNotNullAndTrue(this.model.familienSituation.sozialhilfeBezueger);
+            !EbeguUtil.isNotNullAndTrue(
+                this.model.familienSituation.sozialhilfeBezueger
+            );
 
-        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger)) {
+        if (
+            EbeguUtil.isNotNullAndFalse(
+                this.model.familienSituation.sozialhilfeBezueger
+            )
+        ) {
             this.finanzielleSituationRequired = true;
         }
     }
@@ -53,13 +63,16 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public isGemeinsam(): boolean {
-        return FinanzielleSituationSolothurnService.finSitIsGemeinsam(this.gesuchModelManager);
+        return FinanzielleSituationSolothurnService.finSitIsGemeinsam(
+            this.gesuchModelManager
+        );
     }
 
-    public notify(): void {
-    }
+    public notify(): void {}
 
-    public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -67,17 +80,24 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.save(onResult);
     }
 
-    protected save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    protected save(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituationStart()
+        return this.gesuchModelManager
+            .saveFinanzielleSituationStart()
             .then(async () => {
-                if (!this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
+                if (
+                    !this.isGemeinsam() ||
+                    this.getAntragstellerNummer() === 2
+                ) {
                     await this.updateWizardStepStatus();
                 }
                 onResult(this.getModel());
                 return this.getModel();
-            }).catch(error => {
-                throw(error);
+            })
+            .catch(error => {
+                throw error;
             }) as Promise<TSFinanzielleSituationContainer>;
     }
 
@@ -86,7 +106,8 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public onSozialhilfeBezuegerChange(isSozialhilfebezueger: boolean): void {
-        this.model.familienSituation.verguenstigungGewuenscht = !isSozialhilfebezueger;
+        this.model.familienSituation.verguenstigungGewuenscht =
+            !isSozialhilfebezueger;
         this.finanzielleSituationRequired = !isSozialhilfebezueger;
 
         if (EbeguUtil.isNotNullAndFalse(isSozialhilfebezueger)) {
@@ -95,14 +116,16 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         }
     }
 
-    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+    public steuerveranlagungErhaltenChange(
+        steuerveranlagungErhalten: boolean
+    ): void {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
             if (this.isGemeinsam()) {
                 this.resetBruttoLohnGS2();
             }
         }
-        // eslint-disable-next-line
+
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
             if (this.isGemeinsam()) {
@@ -110,5 +133,4 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
             }
         }
     }
-
 }
