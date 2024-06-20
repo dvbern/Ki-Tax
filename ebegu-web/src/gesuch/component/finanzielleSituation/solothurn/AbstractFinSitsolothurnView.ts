@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {Observable} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
