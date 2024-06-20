@@ -636,20 +636,14 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.hoehereBeitraegeBeeintraechtigungAktiviert;
     }
 
-    public isBedarfsstufeSelected(): boolean {
+    public isBedarfsstufeNotSelected(): boolean {
         const kinderWithBetreuung: TSKindContainer[] = this.gesuchModelManager.getKinderWithBetreuungList();
         let isSelected = false;
 
-        kinderWithBetreuung.forEach(kind => {
+        kinderWithBetreuung.some(kind => {
             if (kind.kindJA?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true) {
                 kind.betreuungen?.every(betreuung => {
-                    if (EbeguUtil.isNullOrUndefined(betreuung.bedarfsstufe)) {
-                        isSelected = false;
-                        return isSelected;
-                    } else {
-                        isSelected = true;
-                        return isSelected;
-                    }
+                    isSelected = EbeguUtil.isNullOrUndefined(betreuung.bedarfsstufe);
                 });
             }
         });
@@ -657,7 +651,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isRolleGemeinde(): boolean {
-        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
+        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())
             || this.authServiceRs.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
     }
 
@@ -863,13 +857,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id
             ).subscribe(response => {
-                console.log(response);
                 this.hoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
-                console.log(this.hoehereBeitraegeBeeintraechtigungAktiviert);
             }, error => LOG.error(error));
         }
 
-        this.isBedarfsstufeSelected();
+        this.isBedarfsstufeNotSelected();
     }
 
     private refreshKinderListe(): IPromise<any> {
