@@ -30,7 +30,6 @@ import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class AufteilungComponent implements OnInit {
-
     @Input()
     public aufteilung: TSAufteilungDTO;
 
@@ -54,18 +53,21 @@ export class AufteilungComponent implements OnInit {
 
     public constructor(
         private readonly gesuchModelManger: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.gs1Name = this.gesuchModelManger.getGesuch().gesuchsteller1?.extractFullName();
-        this.gs2Name = this.gesuchModelManger.getGesuch().gesuchsteller2?.extractFullName();
-        this.restDebounce = new BehaviorSubject<number>(this.aufteilung.getRest())
-            .pipe(debounceTime(this._dueTime)) as BehaviorSubject<number>;
+        this.gs1Name = this.gesuchModelManger
+            .getGesuch()
+            .gesuchsteller1?.extractFullName();
+        this.gs2Name = this.gesuchModelManger
+            .getGesuch()
+            .gesuchsteller2?.extractFullName();
+        this.restDebounce = new BehaviorSubject<number>(
+            this.aufteilung.getRest()
+        ).pipe(debounceTime(this._dueTime)) as BehaviorSubject<number>;
     }
 
     public updateRest(): void {
         this.restDebounce.next(this.aufteilung.getRest());
     }
-
 }

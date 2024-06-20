@@ -31,8 +31,12 @@ export enum TSSteuerdatenAnfrageStatus {
     FAILED_UNREGELMAESSIGKEIT = 'FAILED_UNREGELMAESSIGKEIT'
 }
 
-export function isSteuerdatenAnfrageStatusErfolgreich(status: TSSteuerdatenAnfrageStatus): boolean {
-    return status === TSSteuerdatenAnfrageStatus.OFFEN
-    || status === TSSteuerdatenAnfrageStatus.PROVISORISCH
-    || status === TSSteuerdatenAnfrageStatus.RECHTSKRAEFTIG;
+export function isSteuerdatenAnfrageStatusErfolgreich(
+    status: TSSteuerdatenAnfrageStatus
+): boolean {
+    return (
+        status === TSSteuerdatenAnfrageStatus.OFFEN ||
+        status === TSSteuerdatenAnfrageStatus.PROVISORISCH ||
+        status === TSSteuerdatenAnfrageStatus.RECHTSKRAEFTIG
+    );
 }

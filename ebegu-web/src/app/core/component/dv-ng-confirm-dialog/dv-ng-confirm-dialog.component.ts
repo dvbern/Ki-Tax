@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * This Dialog should be used for asking the user to confirm an action
@@ -26,7 +26,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './dv-ng-confirm-dialog.template.html'
 })
 export class DvNgConfirmDialogComponent {
-
     public frage: string = '';
 
     public constructor(

@@ -35,7 +35,6 @@ export class DvLanguageSelectorComponentConfig implements IComponentOptions {
 }
 
 export class DvLanguageSelector implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         'AuthServiceRS',
         '$translate',
@@ -49,8 +48,7 @@ export class DvLanguageSelector implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
         private readonly i18nServiceRS: I18nServiceRSRest
-    ) {
-    }
+    ) {}
 
     public changeLanguage(selectedLanguage: TSBrowserLanguage): void {
         this.i18nServiceRS.changeClientLanguage(selectedLanguage);
@@ -62,6 +60,8 @@ export class DvLanguageSelector implements IController {
     }
 
     public hideLanguageSelector(): boolean {
-        return this.hideForLoggedUser && !!this.authServiceRS.getPrincipalRole();
+        return (
+            this.hideForLoggedUser && !!this.authServiceRS.getPrincipalRole()
+        );
     }
 }

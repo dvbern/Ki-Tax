@@ -18,7 +18,6 @@
 import {PaginationDTO} from '../../app/shared/interfaces/PaginationDTO';
 
 export class TSPagination {
-
     private _number: number = 20;
     private _totalItemCount: number = 0;
     private _start: number = 0;

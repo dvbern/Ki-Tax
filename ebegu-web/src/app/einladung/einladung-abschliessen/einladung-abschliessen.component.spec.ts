@@ -37,34 +37,50 @@ describe('EinladungAbschliessenComponent', () => {
     let superadmin: TSBenutzer;
 
     beforeEach(waitForAsync(() => {
-        const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-            ['getInstitutionenEditableForCurrentBenutzer']);
-        const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-        const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-            ['getSozialdienstList']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['getVisibleRolesForPrincipal']);
-        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-            ['uploadLogoImage', 'getLogoUrl', 'getGemeindenForPrincipal$']);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const transitionSpy = jasmine.createSpyObj<Transition>(
+            Transition.name,
+            ['params']
+        );
+        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+            InstitutionRS.name,
+            ['getInstitutionenEditableForCurrentBenutzer']
+        );
+        const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(
+            TraegerschaftRS.name,
+            ['getAllTraegerschaften']
+        );
+        const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(
+            SozialdienstRS.name,
+            ['getSozialdienstList']
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['getVisibleRolesForPrincipal']
+        );
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            ['uploadLogoImage', 'getLogoUrl', 'getGemeindenForPrincipal$']
+        );
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
 
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
-        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(
+            Promise.resolve([])
+        );
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
-            declarations: [
-                EinladungAbschliessenComponent
-            ],
+            imports: [SharedModule],
+            declarations: [EinladungAbschliessenComponent],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},

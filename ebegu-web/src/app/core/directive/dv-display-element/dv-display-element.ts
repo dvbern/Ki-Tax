@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IScope} from 'angular';
+import {
+    IAttributes,
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IScope
+} from 'angular';
 import {DVRoleElementController} from '../../controller/DVRoleElementController';
 
 /* eslint-disable max-len */
@@ -31,7 +37,6 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  */
 /* eslint-enable max-len */
 export class DVDisplayElement implements IDirective {
-
     public static $inject: ReadonlyArray<string> = ['ngShowDirective'];
     public restrict = 'A';
     public controller = DVRoleElementController;
@@ -47,7 +52,8 @@ export class DVDisplayElement implements IDirective {
     }
 
     public static factory(): IDirectiveFactory {
-        const directive = (ngShowDirective: any) => new DVDisplayElement(ngShowDirective);
+        const directive = (ngShowDirective: any) =>
+            new DVDisplayElement(ngShowDirective);
         directive.$inject = ['ngShowDirective'];
         return directive;
     }
@@ -61,27 +67,45 @@ export class DVDisplayElement implements IDirective {
     ) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in
         // ES3 and ES5. Consider using a standard function expression.
-        const arguments2 = [scope, element, attributes, controller, $transclude];
+        const arguments2 = [
+            scope,
+            element,
+            attributes,
+            controller,
+            $transclude
+        ];
         this.callNgShowThrough(attributes, controller, arguments2);
 
         // Die Version mit attributes.$observe funktioniert nicht. Als Wert bekommen wir immer ein string mit dem Namen
         // der Variable, den wir danach evaluieren muessen. Da dieser String sich nie aendert (sondern eher seine
         // evaluation), wird das observe nie aufgerufen. Mit scope.$watch funktioniert es weil die Variable immer
         // transcluded wird und somit der Wert aendert sich.
-        scope.$watch(attributes.dvDisplayAllowedRoles, (newValue: any, _oldValue: any, _scope: any) => {
-            controller.dvAllowedRoles = newValue;
-        }, true);
-        scope.$watch(attributes.dvDisplayExpression, (newValue: any, _oldValue: any) => {
-            controller.dvExpression = newValue;
-        }, true);
+        scope.$watch(
+            attributes.dvDisplayAllowedRoles,
+            (newValue: any) => {
+                controller.dvAllowedRoles = newValue;
+            },
+            true
+        );
+        scope.$watch(
+            attributes.dvDisplayExpression,
+            (newValue: any) => {
+                controller.dvExpression = newValue;
+            },
+            true
+        );
     };
 
     /**
      * Diese Methode darf nur einmal aufgerufen werden.
      * VORSICHT. Sollte diese Methode X-Mal aufgerufen werden, wird das Element dann X-Mall angezeigt
      */
-    private callNgShowThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>): void {
-        attributes.ngShow = () => (controller.checkValidity());
-        this.ngShow.link.apply(this.ngShow, arguments2);
+    private callNgShowThrough(
+        attributes: any,
+        controller: DVRoleElementController,
+        arguments2: Array<any>
+    ): void {
+        attributes.ngShow = () => controller.checkValidity();
+        this.ngShow.link(...arguments2);
     }
 }

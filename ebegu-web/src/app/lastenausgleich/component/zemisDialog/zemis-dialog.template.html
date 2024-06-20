@@ -14,39 +14,57 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
-<form role="form" #form=ngForm name="form">
+<form role="form" #form="ngForm" name="form">
     <mat-dialog-content tabindex="-1">
-            <dv-input-container-x verticalAlign="true" class="form-group" *ngIf="!upload">
-                <label class="md-no-float required" for="download-year" translate>LASTENAUSGLEICH_JAHR</label>
-                <input type="number"
-                       id="download-year"
-                       name="download-year"
-                       [(ngModel)]="jahr"
-                       class="form-control contrast-input"
-                       required
-                       tabindex="0"
-                       aria-describedby="jahr-error">
-                <dv-error-messages [errorObject]="form?.form.get('download-year')?.errors"
-                                   class="error"></dv-error-messages>
-            </dv-input-container-x>
-            <div class="form-group-upload margin-top-20 margin-bottom-20" *ngIf="upload">
-                <label for="file"></label>
-                <input type="file"
-                       id="file"
-                       class="no-outline-on-mouse-focus"
-                       tabindex="0"
-                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                       (change)="handleFileInput($event)">
-            </div>
+        <dv-input-container-x
+            verticalAlign="true"
+            class="form-group"
+            *ngIf="!upload"
+        >
+            <label class="md-no-float required" for="download-year" translate
+                >LASTENAUSGLEICH_JAHR</label
+            >
+            <input
+                type="number"
+                id="download-year"
+                name="download-year"
+                [(ngModel)]="jahr"
+                class="form-control contrast-input"
+                required
+                tabindex="0"
+                aria-describedby="jahr-error"
+            />
+            <dv-error-messages
+                [errorObject]="form?.form.get('download-year')?.errors"
+                class="error"
+            ></dv-error-messages>
+        </dv-input-container-x>
+        <div
+            class="form-group-upload margin-top-20 margin-bottom-20"
+            *ngIf="upload"
+        >
+            <label for="file"></label>
+            <input
+                type="file"
+                id="file"
+                class="no-outline-on-mouse-focus"
+                tabindex="0"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                (change)="handleFileInput($event)"
+            />
+        </div>
     </mat-dialog-content>
 
     <mat-dialog-actions>
-        <button class="dv-btn" type="submit" (click)="ok()"
-                [disabled]="upload && !file">
+        <button
+            class="dv-btn"
+            type="submit"
+            (click)="ok()"
+            [disabled]="upload && !file"
+        >
             <span class="ng-binding ng-scope" translate>LABEL_OK</span>
         </button>
-        <button class="dv-btn cancel-button" type="button"
-                (click)="cancel()">
+        <button class="dv-btn cancel-button" type="button" (click)="cancel()">
             <span class="ng-binding ng-scope" translate>CANCEL</span>
         </button>
     </mat-dialog-actions>

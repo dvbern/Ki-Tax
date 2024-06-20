@@ -15,30 +15,43 @@
 
 <div class="schulung row">
     <h3 class="col-md-8 col-md-offset-2">
-        Willkommen zur Schulung von kiBon! <br/>
-        Bitte loggen Sie sich mit dem Benutzer ein, welcher auf Ihren Schulungsunterlagen aufgeführt ist:
+        Willkommen zur Schulung von kiBon! <br />
+        Bitte loggen Sie sich mit dem Benutzer ein, welcher auf Ihren
+        Schulungsunterlagen aufgeführt ist:
     </h3>
 
     <!-- Gesuchsteller -->
     <div class="col-md-3 col-md-offset-2">
         <div class="panel panel-default" ng-repeat="user in vm.usersList">
-            <div class="mark-hover panel-body" ng-click="vm.logIn(user)"
-                 ng-bind="user.vorname + ' ' + user.nachname"></div>
+            <div
+                class="mark-hover panel-body"
+                ng-click="vm.logIn(user)"
+                ng-bind="user.vorname + ' ' + user.nachname"
+            ></div>
         </div>
     </div>
     <div class="col-md-3">
         <!-- Institutionsbenutzer -->
-        <div class="panel panel-default" ng-repeat="user in vm.institutionsuserList">
-            <div class="mark-hover panel-body" ng-click="vm.logIn(user)"
-                 ng-bind="user.vorname + ' ' + user.nachname + ', ' + (user.getRoleKey() | translate) + ' '
-                          + user.institution.name + user.traegerschaft.name"></div>
+        <div
+            class="panel panel-default"
+            ng-repeat="user in vm.institutionsuserList"
+        >
+            <div
+                class="mark-hover panel-body"
+                ng-click="vm.logIn(user)"
+                ng-bind="user.vorname + ' ' + user.nachname + ', ' + (user.getRoleKey() | translate) + ' '
+                          + user.institution.name + user.traegerschaft.name"
+            ></div>
         </div>
 
         <!-- AmtBenutzer -->
         <div class="panel panel-default" ng-repeat="user in vm.amtUserList">
-            <div class="mark-hover panel-body" ng-click="vm.logIn(user)"
-                 ng-bind="user.vorname + ' ' + user.nachname + ', ' + (user.getRoleKey() | translate) + ' '
-                          + user.institution.name + user.traegerschaft.name"></div>
+            <div
+                class="mark-hover panel-body"
+                ng-click="vm.logIn(user)"
+                ng-bind="user.vorname + ' ' + user.nachname + ', ' + (user.getRoleKey() | translate) + ' '
+                          + user.institution.name + user.traegerschaft.name"
+            ></div>
         </div>
     </div>
 </div>

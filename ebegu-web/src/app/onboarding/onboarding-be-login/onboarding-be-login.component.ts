@@ -25,7 +25,6 @@ import {Transition} from '@uirouter/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnboardingBeLoginComponent {
-
     public readonly gemeindenId: string;
     public readonly gemeindeBGId: string;
 
@@ -33,5 +32,4 @@ export class OnboardingBeLoginComponent {
         this.gemeindenId = this.transition.params().gemeindenId;
         this.gemeindeBGId = this.transition.params().gemeindeBGId;
     }
-
 }

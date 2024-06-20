@@ -23,12 +23,8 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FinanzielleSituationGsSchwyzComponent} from './finanzielle-situation-gs-schwyz/finanzielle-situation-gs-schwyz.component';
-import {
-    FinanzielleSituationResultateSchwyzComponent
-} from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
-import {
-    FinanzielleSituationStartSchwyzComponent
-} from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
+import {FinanzielleSituationResultateSchwyzComponent} from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
+import {FinanzielleSituationStartSchwyzComponent} from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
 
 finSitSchwyzRun.$inject = ['RouterHelper'];
 
@@ -38,29 +34,33 @@ export function finSitSchwyzRun(routerHelper: RouterHelper): void {
 
 const kommentarView = '<kommentar-view>';
 
-export class EbeguFinanzielleSituationStartSchwyzState implements Ng1StateDeclaration {
+export class EbeguFinanzielleSituationStartSchwyzState
+    implements Ng1StateDeclaration
+{
     public name = 'gesuch.finanzielleSituationStartSchwyz';
     public url = '/finanzielleSituationSchywz/:gesuchId';
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationStartSchwyzComponent,
+            component: FinanzielleSituationStartSchwyzComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuchModelManager: getGesuchModelManager,
+        gesuchModelManager: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
-export class EbeguFinanzielleSituationGS1SchwyzState implements Ng1StateDeclaration {
+export class EbeguFinanzielleSituationGS1SchwyzState
+    implements Ng1StateDeclaration
+{
     public name = 'gesuch.finanzielleSituationSchwyzGS1';
     public url = '/finanzielleSituationSchywz/:gesuchstellerNumber/:gesuchId';
 
@@ -70,23 +70,25 @@ export class EbeguFinanzielleSituationGS1SchwyzState implements Ng1StateDeclarat
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationGsSchwyzComponent,
+            component: FinanzielleSituationGsSchwyzComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuchModelManager: getGesuchModelManager,
+        gesuchModelManager: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
-export class EbeguFinanzielleSituationGS2SchwyzState implements Ng1StateDeclaration {
+export class EbeguFinanzielleSituationGS2SchwyzState
+    implements Ng1StateDeclaration
+{
     public name = 'gesuch.finanzielleSituationSchwyzGS2';
     public url = '/finanzielleSituationSchywz/:gesuchstellerNumber/:gesuchId';
 
@@ -96,41 +98,43 @@ export class EbeguFinanzielleSituationGS2SchwyzState implements Ng1StateDeclarat
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationGsSchwyzComponent,
+            component: FinanzielleSituationGsSchwyzComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuchModelManager: getGesuchModelManager,
+        gesuchModelManager: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
-export class EbeguFinanzielleSituationResultateSchwyzState implements Ng1StateDeclaration {
+export class EbeguFinanzielleSituationResultateSchwyzState
+    implements Ng1StateDeclaration
+{
     public name = 'gesuch.finanzielleSituationSchwyzResultate';
     public url = '/finanzielleSituationSchywz/:gesuchId/resultate';
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationResultateSchwyzComponent,
+            component: FinanzielleSituationResultateSchwyzComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuchModelManager: getGesuchModelManager,
+        gesuchModelManager: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
     };
 }
 
@@ -138,29 +142,37 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationStartSchwyzState(),
     new EbeguFinanzielleSituationGS1SchwyzState(),
     new EbeguFinanzielleSituationGS2SchwyzState(),
-    new EbeguFinanzielleSituationResultateSchwyzState(),
+    new EbeguFinanzielleSituationResultateSchwyzState()
 ];
 
 export class IGesuchStateParams {
     public gesuchId: string;
 }
 
-getGesuchModelManager.$inject =
-    ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
+getGesuchModelManager.$inject = [
+    'GesuchModelManager',
+    'BerechnungsManager',
+    '$stateParams',
+    '$q',
+    '$log'
+];
 
 export function getGesuchModelManager(
     gesuchModelManager: GesuchModelManager,
     berechnungsManager: BerechnungsManager,
     $stateParams: IGesuchStateParams,
     $q: IQService,
-    $log: ILogService,
+    $log: ILogService
 ): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
-            if (!gesuchModelManager.getGesuch() ||
-                gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
-                || gesuchModelManager.getGesuch().emptyCopy) {
+            if (
+                !gesuchModelManager.getGesuch() ||
+                (gesuchModelManager.getGesuch() &&
+                    gesuchModelManager.getGesuch().id !== gesuchIdParam) ||
+                gesuchModelManager.getGesuch().emptyCopy
+            ) {
                 // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch
                 // neu geladen Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im
                 // Gesuchmodelmanager um eine leere Mutation handelt oder um ein leeres Erneuerungsgesuch
@@ -174,4 +186,3 @@ export function getGesuchModelManager(
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
     return $q.resolve(undefined);
 }
-

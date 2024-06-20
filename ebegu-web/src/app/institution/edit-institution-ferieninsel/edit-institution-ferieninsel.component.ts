@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
@@ -29,20 +36,15 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     templateUrl: './edit-institution-ferieninsel.component.html',
     styleUrls: ['./edit-institution-ferieninsel.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-
 export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
-
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean;
 
     public gemeindeList: TSGemeinde[] = [];
 
-    public constructor(
-        private readonly gemeindeRS: GemeindeRS
-    ) {
-    }
+    public constructor(private readonly gemeindeRS: GemeindeRS) {}
 
     public ngOnInit(): void {
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
@@ -57,12 +59,16 @@ export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
     }
 
     private sortByPeriod(): void {
-        this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel.sort((a, b) => {
-            if (a.gesuchsperiode && b.gesuchsperiode) {
-                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+        this.stammdaten.institutionStammdatenFerieninsel.einstellungenFerieninsel.sort(
+            (a, b) => {
+                if (a.gesuchsperiode && b.gesuchsperiode) {
+                    return b.gesuchsperiode.gesuchsperiodeString.localeCompare(
+                        a.gesuchsperiode.gesuchsperiodeString
+                    );
+                }
+                return -1;
             }
-            return -1;
-        });
+        );
     }
 
     public trackById(einstellungGP: TSEinstellungenFerieninsel): string {
@@ -70,9 +76,19 @@ export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
     }
 
     public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
-        let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(this.stammdaten.gueltigkeit.gueltigAb);
-        if (EbeguUtil.isNotNullOrUndefined(this.stammdaten.gueltigkeit.gueltigBis)) {
-            showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
+        let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(
+            this.stammdaten.gueltigkeit.gueltigAb
+        );
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.stammdaten.gueltigkeit.gueltigBis
+            )
+        ) {
+            showGesuchsperiode =
+                showGesuchsperiode &&
+                gueltigkeit.gueltigAb.isBefore(
+                    this.stammdaten.gueltigkeit.gueltigBis
+                );
         }
         return showGesuchsperiode;
     }

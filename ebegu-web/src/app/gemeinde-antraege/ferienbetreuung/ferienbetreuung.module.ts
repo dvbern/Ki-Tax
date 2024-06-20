@@ -33,7 +33,7 @@ import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload/ferienbet
 import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
 import {FerienbetreuungDokumentService} from './services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from './services/ferienbetreuung.service';
-import { FerienbetreuungLastYearValueComponent } from './ferienbetreuung-last-year-value/ferienbetreuung-last-year-value.component';
+import {FerienbetreuungLastYearValueComponent} from './ferienbetreuung-last-year-value/ferienbetreuung-last-year-value.component';
 
 @NgModule({
     declarations: [
@@ -56,10 +56,6 @@ import { FerienbetreuungLastYearValueComponent } from './ferienbetreuung-last-ye
         SharedModule,
         ReactiveFormsModule
     ],
-    providers: [
-        FerienbetreuungService,
-        FerienbetreuungDokumentService
-    ]
+    providers: [FerienbetreuungService, FerienbetreuungDokumentService]
 })
-export class FerienbetreuungModule {
-}
+export class FerienbetreuungModule {}

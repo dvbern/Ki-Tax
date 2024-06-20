@@ -17,7 +17,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSAdresseContainer extends TSAbstractMutableEntity {
-
     private _adresseJA: TSAdresse;
     private _adresseGS: TSAdresse;
     private _showDatumVon: boolean;

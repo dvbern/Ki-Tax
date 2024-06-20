@@ -22,88 +22,151 @@
             <h2 data-test="page-title">
                 <span data-translate="KINDER"></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
             <p ng-if="!vm.allFamilienPauschalAbzuegeZero">
-                <span data-translate="KINDER_HINT1">
-                </span>
-                <span data-translate="KINDER_HINT2">
-                </span>
+                <span data-translate="KINDER_HINT1"> </span>
+                <span data-translate="KINDER_HINT2"> </span>
             </p>
-            <p ng-if="vm.getKinderHint3()" class="inline-hint">{{vm.getKinderHint3()}}</p>
+            <p ng-if="vm.getKinderHint3()" class="inline-hint">
+                {{ vm.getKinderHint3() }}
+            </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 table-responsive">
-
-            <table st-table="displayedCollection" st-safe-src="vm.getKinderList()"
-                   class="table table-hover" st-delay="20">
+            <table
+                st-table="displayedCollection"
+                st-safe-src="vm.getKinderList()"
+                class="table table-hover"
+                st-delay="20"
+            >
                 <thead>
-                <tr>
-                    <th data-translate="VORNAME"></th>
-                    <th data-translate="NAME"></th>
-                    <th data-translate="GEBURTSDATUM"></th>
-                    <th data-translate="DUBLETTEN"
-                        dv-show-element
-                        dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"></th>
-                    <th ng-if="vm.isThereAnyNotGeprueftesKind()" data-translate="STATUS"></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th data-translate="VORNAME"></th>
+                        <th data-translate="NAME"></th>
+                        <th data-translate="GEBURTSDATUM"></th>
+                        <th
+                            data-translate="DUBLETTEN"
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                        ></th>
+                        <th
+                            ng-if="vm.isThereAnyNotGeprueftesKind()"
+                            data-translate="STATUS"
+                        ></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
-                    ng-attr-data-test="{{'kind#' + row.kindNummer}}"
-                    ng-click="vm.editKind(row)" role="row" tabindex="-1">
-                    <td ng-bind="row.kindJA.vorname"></td>
-                    <td ng-bind="row.kindJA.nachname"></td>
-                    <td ng-bind="row.kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'"></td>
-                    <td dv-show-element
-                        dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()">
-                        <span class="betreuung"
-                              ng-repeat="dublette in vm.getDubletten(row)"
-                              ng-click="vm.gotoKindDublette(dublette); $event.stopPropagation();"
-                              ng-show="dublette.fallNummer"
-                              ng-bind="vm.getFallNummer(dublette) + ($last ? ' ' : ', ')"></span>
-                    </td>
-                    <td  class="betreuung-status ng-class:betreuung.betreuungsstatus; WARTEN" ng-if="vm.isThereAnyNotGeprueftesKind()">
-                        <div ng-if="!row.kindJA.isGeprueft()" data-translate="KINDER_UEBERPRUEFEN_STATUS"></div>
-                        <span ng-if="!row.kindJA.isGeprueft()" class="betreuung-bar"></span>
-                    </td>
-                    <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
-                        <dv-loading-button type="button" button-click="vm.editKind(row);"
-                                           button-class="dv-btn-operation dv-btn-row" title="{{'TABLE_EDIT'|translate}}"
-                                           aria-label="{{'TABLE_EDIT'|translate}}">
-                            <i class="fa fa-lg fa-arrow-right"
-                               title="{{'TABLE_EDIT'|translate}}"
-                               aria-label="{{'TABLE_EDIT'|translate}}">
-                            </i>
-                        </dv-loading-button>
-                    </td>
-                    <td role="cell"
+                    <tr
+                        ng-repeat="row in displayedCollection"
+                        st-select-row="row"
+                        st-select-mode="single"
+                        ng-attr-data-test="{{ 'kind#' + row.kindNummer }}"
+                        ng-click="vm.editKind(row)"
+                        role="row"
                         tabindex="-1"
-                        ng-click="$event.stopPropagation()"
-                        ng-if="vm.canRemoveKind(row)"
-                        width="5%">
-                        <dv-loading-button type="button" button-click="vm.removeKind(row,$index);"
-                                           button-class="dv-btn-operation" input-id="{{'removeKindButton_'+$index}}"
-                                           title="{{'EINTRAG_DELETE' | translate}}" delay="0"
-                                           aria-label="{{'KINDER_DELETE'|translate}}">
-                            <i class="fa fa-lg fa-trash-o" aria-label="{{'KINDER_DELETE' | translate}}">
-                            </i>
-                        </dv-loading-button>
-                    </td>
-                    <td ng-if="!vm.canRemoveKind(row)"></td>
-                </tr>
-                <tr ng-if="vm.getKinderList().length === 0">
-                    <td colspan="{{vm.getColsNumber()}}" class="empty-table" data-translate="KINDER_NOCH_KEINE"></td>
-                </tr>
+                    >
+                        <td ng-bind="row.kindJA.vorname"></td>
+                        <td ng-bind="row.kindJA.nachname"></td>
+                        <td
+                            ng-bind="row.kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'"
+                        ></td>
+                        <td
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                        >
+                            <span
+                                class="betreuung"
+                                ng-repeat="dublette in vm.getDubletten(row)"
+                                ng-click="vm.gotoKindDublette(dublette); $event.stopPropagation();"
+                                ng-show="dublette.fallNummer"
+                                ng-bind="vm.getFallNummer(dublette) + ($last ? ' ' : ', ')"
+                            ></span>
+                        </td>
+                        <td
+                            class="betreuung-status ng-class:betreuung.betreuungsstatus; WARTEN"
+                            ng-if="vm.isThereAnyNotGeprueftesKind()"
+                        >
+                            <div
+                                ng-if="!row.kindJA.isGeprueft()"
+                                data-translate="KINDER_UEBERPRUEFEN_STATUS"
+                            ></div>
+                            <span
+                                ng-if="!row.kindJA.isGeprueft()"
+                                class="betreuung-bar"
+                            ></span>
+                        </td>
+                        <td
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            width="5%"
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.editKind(row);"
+                                button-class="dv-btn-operation dv-btn-row"
+                                title="{{ 'TABLE_EDIT' | translate }}"
+                                aria-label="{{ 'TABLE_EDIT' | translate }}"
+                            >
+                                <i
+                                    class="fa fa-lg fa-arrow-right"
+                                    title="{{ 'TABLE_EDIT' | translate }}"
+                                    aria-label="{{ 'TABLE_EDIT' | translate }}"
+                                >
+                                </i>
+                            </dv-loading-button>
+                        </td>
+                        <td
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            ng-if="vm.canRemoveKind(row)"
+                            width="5%"
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.removeKind(row,$index);"
+                                button-class="dv-btn-operation"
+                                input-id="{{ 'removeKindButton_' + $index }}"
+                                title="{{ 'EINTRAG_DELETE' | translate }}"
+                                delay="0"
+                                aria-label="{{ 'KINDER_DELETE' | translate }}"
+                            >
+                                <i
+                                    class="fa fa-lg fa-trash-o"
+                                    aria-label="{{
+                                        'KINDER_DELETE' | translate
+                                    }}"
+                                >
+                                </i>
+                            </dv-loading-button>
+                        </td>
+                        <td ng-if="!vm.canRemoveKind(row)"></td>
+                    </tr>
+                    <tr ng-if="vm.getKinderList().length === 0">
+                        <td
+                            colspan="{{ vm.getColsNumber() }}"
+                            class="empty-table"
+                            data-translate="KINDER_NOCH_KEINE"
+                        ></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        <div class="col-md-12" style="margin-bottom: 2rem" ng-if="!vm.isGesuchReadonly()">
-            <dv-loading-button type="button" button-click="vm.createKind()"
-                               data-test="container.create-kind"
-                               button-class="dv-btn-operation">
+        <div
+            class="col-md-12"
+            style="margin-bottom: 2rem"
+            ng-if="!vm.isGesuchReadonly()"
+        >
+            <dv-loading-button
+                type="button"
+                button-click="vm.createKind()"
+                data-test="container.create-kind"
+                button-class="dv-btn-operation"
+            >
                 <i class="fa fa-lg fa-plus-circle"></i>
                 <span data-translate="KIND_HINZUFUEGEN"></span>
             </dv-loading-button>
@@ -111,9 +174,11 @@
     </div>
 
     <!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
-    <div ng-if="vm.isThereAnyNotGeprueftesKind()" class="well well-status-warten">
-        <p class="ebegu-h3" data-translate="KINDER_UEBERPRUEFEN_HINT">
-        </p>
+    <div
+        ng-if="vm.isThereAnyNotGeprueftesKind()"
+        class="well well-status-warten"
+    >
+        <p class="ebegu-h3" data-translate="KINDER_UEBERPRUEFEN_HINT"></p>
     </div>
 
     <div class="row">

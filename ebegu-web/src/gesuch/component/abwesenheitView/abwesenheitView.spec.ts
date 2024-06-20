@@ -33,7 +33,6 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbwesenheitViewController, KindBetreuungUI} from './abwesenheitView';
 
 describe('abwesenheitView', () => {
-
     let abwesenheitController: AbwesenheitViewController;
     let gesuchModelManager: GesuchModelManager;
     let wizardStepManager: WizardStepManager;
@@ -50,38 +49,57 @@ describe('abwesenheitView', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        wizardStepManager = $injector.get('WizardStepManager');
-        berechnungsManager = $injector.get('BerechnungsManager');
-        errorService = $injector.get('ErrorService');
-        $translate = $injector.get('$translate');
-        dialog = $injector.get('DvDialog');
-        $q = $injector.get('$q');
-        $scope = $injector.get('$rootScope');
-        $timeout = $injector.get('$timeout');
-        einstellungRS = $injector.get('EinstellungRS');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            wizardStepManager = $injector.get('WizardStepManager');
+            berechnungsManager = $injector.get('BerechnungsManager');
+            errorService = $injector.get('ErrorService');
+            $translate = $injector.get('$translate');
+            dialog = $injector.get('DvDialog');
+            $q = $injector.get('$q');
+            $scope = $injector.get('$rootScope');
+            $timeout = $injector.get('$timeout');
+            einstellungRS = $injector.get('EinstellungRS');
+        })
+    );
 
     beforeEach(() => {
-        spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue(of(new TSEinstellung()));
-        spyOn(gesuchModelManager, 'getGemeinde')
-            .and.returnValue(new TSGemeinde());
-        spyOn(gesuchModelManager, 'getGesuchsperiode')
-            .and.returnValue(new TSGesuchsperiode());
-        abwesenheitController = new AbwesenheitViewController(gesuchModelManager, berechnungsManager,
-            wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout, einstellungRS);
+        spyOn(einstellungRS, 'findEinstellung').and.returnValue(
+            of(new TSEinstellung())
+        );
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(
+            new TSGemeinde()
+        );
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+            new TSGesuchsperiode()
+        );
+        abwesenheitController = new AbwesenheitViewController(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            dialog,
+            $translate,
+            $q,
+            errorService,
+            $scope,
+            $timeout,
+            einstellungRS
+        );
     });
 
     describe('getNameFromBetroffene', () => {
         it('should return empty string for undefined kindBetreuung', () => {
             const kindBetreuung = new KindBetreuungUI();
-            expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
+            expect(
+                abwesenheitController.getTextForBetreuungDDL(kindBetreuung)
+            ).toBe('');
         });
         it('should return empty string for empty data', () => {
             const kindBetreuung = new KindBetreuungUI();
-            expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
+            expect(
+                abwesenheitController.getTextForBetreuungDDL(kindBetreuung)
+            ).toBe('');
         });
         it('should return Name of KindBetreuung', () => {
             const kindBetreuung = new KindBetreuungUI();
@@ -100,8 +118,9 @@ describe('abwesenheitView', () => {
             kind.kindJA = kindJA;
             kindBetreuung.kind = kind;
 
-            expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe(
-                'Pedrito Contreras - InstitutionTest');
+            expect(
+                abwesenheitController.getTextForBetreuungDDL(kindBetreuung)
+            ).toBe('Pedrito Contreras - InstitutionTest');
         });
     });
 
@@ -111,8 +130,12 @@ describe('abwesenheitView', () => {
             abwesenheitController.createAbwesenheit();
             expect(abwesenheitController.getAbwesenheiten().length).toBe(1);
             expect(abwesenheitController.getAbwesenheiten()[0]).toBeDefined();
-            expect(abwesenheitController.getAbwesenheiten()[0].kindBetreuung).toBeUndefined();
-            expect(abwesenheitController.getAbwesenheiten()[0].abwesenheit).toBeDefined();
+            expect(
+                abwesenheitController.getAbwesenheiten()[0].kindBetreuung
+            ).toBeUndefined();
+            expect(
+                abwesenheitController.getAbwesenheiten()[0].abwesenheit
+            ).toBeDefined();
         });
     });
 });

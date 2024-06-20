@@ -28,7 +28,6 @@ import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
 const LOG = LogFactory.createLog('BerechnungsManager');
 
 export class BerechnungsManager {
-
     public static $inject = [
         'FinanzielleSituationRS',
         'EinkommensverschlechterungContainerRS',
@@ -47,34 +46,40 @@ export class BerechnungsManager {
         private readonly dokumenteRS: DokumenteRS,
         private readonly authLifeCycleService: AuthLifeCycleService
     ) {
-
         this.initValues();
 
-        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-            .subscribe(() => this.initValues(),
-                err => LOG.error(err));
+        this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS).subscribe(
+            () => this.initValues(),
+            err => LOG.error(err)
+        );
     }
 
     private initValues(): void {
-        this.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
-        this.einkommensverschlechterungResultateBjP1 = new TSFinanzielleSituationResultateDTO();
-        this.einkommensverschlechterungResultateBjP2 = new TSFinanzielleSituationResultateDTO();
+        this.finanzielleSituationResultate =
+            new TSFinanzielleSituationResultateDTO();
+        this.einkommensverschlechterungResultateBjP1 =
+            new TSFinanzielleSituationResultateDTO();
+        this.einkommensverschlechterungResultateBjP2 =
+            new TSFinanzielleSituationResultateDTO();
         this.dokumente = new TSDokumenteDTO();
     }
 
-    public calculateFinanzielleSituation(gesuch: TSGesuch): IPromise<TSFinanzielleSituationResultateDTO> {
-        return this.finanzielleSituationRS.calculateFinanzielleSituation(
-            gesuch)
+    public calculateFinanzielleSituation(
+        gesuch: TSGesuch
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
+        return this.finanzielleSituationRS
+            .calculateFinanzielleSituation(gesuch)
             .then((finSitContRespo: TSFinanzielleSituationResultateDTO) => {
                 this.finanzielleSituationResultate = finSitContRespo;
                 return finSitContRespo;
             });
     }
 
-    public calculateFinanzielleSituationTemp(tsFinSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
-
-        return this.finanzielleSituationRS.calculateFinanzielleSituationTemp(
-            tsFinSitModel)
+    public calculateFinanzielleSituationTemp(
+        tsFinSitModel: TSFinanzModel
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
+        return this.finanzielleSituationRS
+            .calculateFinanzielleSituationTemp(tsFinSitModel)
             .then((finSitContRespo: TSFinanzielleSituationResultateDTO) => {
                 this.finanzielleSituationResultate = finSitContRespo;
                 return finSitContRespo;
@@ -87,14 +92,18 @@ export class BerechnungsManager {
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         return this.einkommensverschlechterungContainerRS
             .calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
-            .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
+            .then(finSitContRespo =>
+                this.setEinkommensverschlechterung(
+                    basisJahrPlus,
+                    finSitContRespo
+                )
+            );
     }
 
     private setEinkommensverschlechterung(
         basisJahrPlus: number,
         finSitContRespo: TSFinanzielleSituationResultateDTO
     ): TSFinanzielleSituationResultateDTO {
-
         if (basisJahrPlus === 2) {
             this.einkommensverschlechterungResultateBjP2 = finSitContRespo;
         } else {
@@ -108,14 +117,19 @@ export class BerechnungsManager {
         finanzModel: TSFinanzModel,
         basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
-
         return this.einkommensverschlechterungContainerRS
             .calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)
-            .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
-
+            .then(finSitContRespo =>
+                this.setEinkommensverschlechterung(
+                    basisJahrPlus,
+                    finSitContRespo
+                )
+            );
     }
 
-    public getEinkommensverschlechterungResultate(basisJahrPlus: number): TSFinanzielleSituationResultateDTO {
+    public getEinkommensverschlechterungResultate(
+        basisJahrPlus: number
+    ): TSFinanzielleSituationResultateDTO {
         if (basisJahrPlus === 2) {
             return this.einkommensverschlechterungResultateBjP2;
         }
@@ -123,16 +137,22 @@ export class BerechnungsManager {
     }
 
     public getDokumente(gesuch: TSGesuch): IPromise<TSDokumenteDTO> {
-        return this.dokumenteRS.getDokumente(
-            gesuch)
+        return this.dokumenteRS
+            .getDokumente(gesuch)
             .then((promiseValue: TSDokumenteDTO) => {
                 this.dokumente = promiseValue;
                 return promiseValue;
             });
     }
 
-    public calculateProzentualeDifferenz(jahr: number, jahrPlus1: number): IPromise<string> {
-        return this.einkommensverschlechterungContainerRS.calculateProzentualeDifferenz(jahr, jahrPlus1);
+    public calculateProzentualeDifferenz(
+        jahr: number,
+        jahrPlus1: number
+    ): IPromise<string> {
+        return this.einkommensverschlechterungContainerRS.calculateProzentualeDifferenz(
+            jahr,
+            jahrPlus1
+        );
     }
 
     /**

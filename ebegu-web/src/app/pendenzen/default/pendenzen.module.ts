@@ -21,8 +21,11 @@ import {PendenzenListViewComponent} from './component/pendenzenListView/pendenze
 import {EllipsisTooltip} from './directive/ellipsisTooltip';
 import {pendenzRun} from './pendenzen.route';
 
-export const PENDENZEN_JS_MODULE =
-    angular.module('ebeguWeb.pendenzen', [CORE_JS_MODULE.name])
-        .run(pendenzRun)
-        .directive('ellipsisTooltip', EllipsisTooltip.factory())
-        .directive('pendenzenListView', downgradeComponent({component: PendenzenListViewComponent}));
+export const PENDENZEN_JS_MODULE = angular
+    .module('ebeguWeb.pendenzen', [CORE_JS_MODULE.name])
+    .run(pendenzRun)
+    .directive('ellipsisTooltip', EllipsisTooltip.factory())
+    .directive(
+        'pendenzenListView',
+        downgradeComponent({component: PendenzenListViewComponent})
+    );

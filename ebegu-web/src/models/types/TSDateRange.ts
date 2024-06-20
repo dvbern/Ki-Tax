@@ -16,7 +16,6 @@
 import * as moment from 'moment';
 
 export class TSDateRange {
-
     private _gueltigAb: moment.Moment;
     private _gueltigBis: moment.Moment;
 
@@ -49,13 +48,19 @@ export class TSDateRange {
      * * Date 31.7.2023 is in Date Range
      */
     public isInDateRange(date: moment.Moment): boolean {
-        return date.isSameOrBefore(this.gueltigBis) && date.isSameOrAfter(this.gueltigAb);
+        return (
+            date.isSameOrBefore(this.gueltigBis) &&
+            date.isSameOrAfter(this.gueltigAb)
+        );
     }
 
     public contains(other: TSDateRange): boolean {
         if (!this.gueltigBis || !other.gueltigBis) {
             return other.gueltigAb.isSameOrAfter(this.gueltigAb);
         }
-        return other.gueltigAb.isSameOrAfter(this.gueltigAb) && other.gueltigBis.isSameOrBefore(this.gueltigBis);
+        return (
+            other.gueltigAb.isSameOrAfter(this.gueltigAb) &&
+            other.gueltigBis.isSameOrBefore(this.gueltigBis)
+        );
     }
 }

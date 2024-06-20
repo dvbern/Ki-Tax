@@ -4,33 +4,33 @@
             "GS1": {
                 "nettolohn": "40000",
                 "familienzulage": "4000",
-                "ersatzeinkommen":  "0",
+                "ersatzeinkommen": "0",
                 "erhalteneAlimente": "0",
-                "bruttoertraegeVermoegen":  "0",
+                "bruttoertraegeVermoegen": "0",
                 "nettoertraegeErbengemeinschaften": "0",
                 "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
-                "geleisteteAlimente":  "0",
+                "geleisteteAlimente": "0",
                 "abzugSchuldzinsen": "0",
-                "gewinnungskosten":  "0"
+                "gewinnungskosten": "0"
             },
             "GS2": {
                 "nettolohn": "15000",
                 "familienzulage": "0",
-                "ersatzeinkommen":  "0",
+                "ersatzeinkommen": "0",
                 "erhalteneAlimente": "0",
-                "bruttoertraegeVermoegen":  "0",
+                "bruttoertraegeVermoegen": "0",
                 "nettoertraegeErbengemeinschaften": "0",
                 "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
-                "geleisteteAlimente":  "0",
+                "geleisteteAlimente": "0",
                 "abzugSchuldzinsen": "0",
-                "gewinnungskosten":  "0"
+                "gewinnungskosten": "0"
             },
             "Resultate": {
                 "einkommenBeiderGesuchsteller": "59'000",
                 "einkommenVorjahrBasis": "85'750",
                 "einkommenVorjahr": "60'250",
                 "bruttovermoegen1": "20000",
-                "bruttovermoegen2":"5000",
+                "bruttovermoegen2": "5000",
                 "schulden1": "0",
                 "schulden2": "0"
             }
@@ -39,33 +39,33 @@
             "GS1": {
                 "nettolohn": "30000",
                 "familienzulage": "4000",
-                "ersatzeinkommen":  "0",
+                "ersatzeinkommen": "0",
                 "erhalteneAlimente": "0",
-                "bruttoertraegeVermoegen":  "0",
+                "bruttoertraegeVermoegen": "0",
                 "nettoertraegeErbengemeinschaften": "0",
                 "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
-                "geleisteteAlimente":  "0",
+                "geleisteteAlimente": "0",
                 "abzugSchuldzinsen": "0",
-                "gewinnungskosten":  "0"
+                "gewinnungskosten": "0"
             },
             "GS2": {
                 "nettolohn": "10000",
                 "familienzulage": "0",
-                "ersatzeinkommen":  "0",
+                "ersatzeinkommen": "0",
                 "erhalteneAlimente": "0",
-                "bruttoertraegeVermoegen":  "0",
+                "bruttoertraegeVermoegen": "0",
                 "nettoertraegeErbengemeinschaften": "0",
                 "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
-                "geleisteteAlimente":  "0",
+                "geleisteteAlimente": "0",
                 "abzugSchuldzinsen": "0",
-                "gewinnungskosten":  "0"
+                "gewinnungskosten": "0"
             },
             "Resultate": {
                 "einkommenBeiderGesuchsteller": "44'000",
                 "einkommenVorjahrBasis": "85'750",
                 "einkommenVorjahr": "44'750",
                 "bruttovermoegen1": "15000",
-                "bruttovermoegen2":"0000",
+                "bruttovermoegen2": "0000",
                 "schulden1": "0",
                 "schulden2": "2000"
             }

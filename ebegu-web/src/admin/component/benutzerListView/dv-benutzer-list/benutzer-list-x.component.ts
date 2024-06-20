@@ -57,7 +57,6 @@ const LOG = LogFactory.createLog('BenutzerListXComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerListXComponent implements OnInit {
-
     @Input()
     public tableTitle: string;
 
@@ -68,7 +67,9 @@ export class BenutzerListXComponent implements OnInit {
     public pendenz: boolean;
 
     @Output()
-    public readonly edit: EventEmitter<{user: TSBenutzer}> = new EventEmitter<{user: TSBenutzer}>();
+    public readonly edit: EventEmitter<{user: TSBenutzer}> = new EventEmitter<{
+        user: TSBenutzer;
+    }>();
 
     public institutionenList: Array<TSInstitution>;
     public traegerschaftenList: Array<TSTraegerschaft>;
@@ -79,10 +80,24 @@ export class BenutzerListXComponent implements OnInit {
 
     public datasource: MatTableDataSource<TSBenutzer>;
 
-    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'role',
-        'roleGueltigAb', 'roleGueltigBis'];
-    public filterColumns: string[] = ['username-filter', 'vorname-filter', 'name-filter',
-        'email-filter', 'role-filter', 'roleGueltigAb-filter', 'roleGueltigBis-filter'];
+    public displayedColumns: string[] = [
+        'username',
+        'vorname',
+        'name',
+        'email',
+        'role',
+        'roleGueltigAb',
+        'roleGueltigBis'
+    ];
+    public filterColumns: string[] = [
+        'username-filter',
+        'vorname-filter',
+        'name-filter',
+        'email-filter',
+        'role-filter',
+        'roleGueltigAb-filter',
+        'roleGueltigBis-filter'
+    ];
 
     public gemeindenStr: string;
 
@@ -109,8 +124,7 @@ export class BenutzerListXComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly cd: ChangeDetectorRef,
         private readonly benutzerRS: BenutzerRSX
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.initFilterSortPaginate();
@@ -125,7 +139,10 @@ export class BenutzerListXComponent implements OnInit {
             this.updateTraegerschaftenList();
             this.updateSozialdienstList();
             this.displayedColumns.push('traegerschaft', 'sozialdienst');
-            this.filterColumns.push('traegerschaft-filter', 'sozialdienst-filter');
+            this.filterColumns.push(
+                'traegerschaft-filter',
+                'sozialdienst-filter'
+            );
         }
         this.displayedColumns.push('status');
         this.filterColumns.push('status-filter');
@@ -144,25 +161,37 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     private updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenEditableForCurrentBenutzer().subscribe((response: TSInstitution[]) => {
-            this.institutionenList = response;
-            this.institutionenList.sort((a, b) => a.name.localeCompare(b.name));
-            this.cd.markForCheck();
-        }, error => LOG.error(error));
+        this.institutionRS
+            .getInstitutionenEditableForCurrentBenutzer()
+            .subscribe(
+                (response: TSInstitution[]) => {
+                    this.institutionenList = response;
+                    this.institutionenList.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    );
+                    this.cd.markForCheck();
+                },
+                error => LOG.error(error)
+            );
     }
 
     private updateTraegerschaftenList(): void {
-        this.traegerschaftRS.getAllTraegerschaften().then((response: TSTraegerschaft[]) => {
-            this.traegerschaftenList = response;
-            this.cd.markForCheck();
-        });
+        this.traegerschaftRS
+            .getAllTraegerschaften()
+            .then((response: TSTraegerschaft[]) => {
+                this.traegerschaftenList = response;
+                this.cd.markForCheck();
+            });
     }
 
     private updateSozialdienstList(): void {
-        this.sozialdienstRS.getSozialdienstList().toPromise().then((response: TSSozialdienst[]) => {
-            this.sozialdienstList = response;
-            this.cd.markForCheck();
-        });
+        this.sozialdienstRS
+            .getSozialdienstList()
+            .toPromise()
+            .then((response: TSSozialdienst[]) => {
+                this.sozialdienstList = response;
+                this.cd.markForCheck();
+            });
     }
 
     /**
@@ -170,7 +199,8 @@ export class BenutzerListXComponent implements OnInit {
      * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
      */
     private updateGemeindeList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(take(1))
             .subscribe(
                 gemeinden => {
@@ -220,17 +250,18 @@ export class BenutzerListXComponent implements OnInit {
         });
     }
 
-    public applyFilter(value: any, property: string): void {
-        // @ts-ignore
-        this.filterPredicate[property] = value ? value : undefined;
+    public applyFilter(value: any, property: keyof BenutzerListFilter): void {
+        this.filterPredicate[property] = value ?? undefined;
         this.page = 0;
         this.searchUsers();
     }
 
     // für textinputs wollen wir nicht bei jedem KeyUp Event einen Request senden. Wir fügen ein Debounce hinzu
-    public applyFilterWithDebounce(value: any, property: string): void {
-        // @ts-ignore
-        this.filterPredicate[property] = value ? value : undefined;
+    public applyFilterWithDebounce(
+        value: any,
+        property: keyof BenutzerListFilter
+    ): void {
+        this.filterPredicate[property] = value ?? undefined;
         this.page = 0;
         clearTimeout(this.keyupTimeout);
         this.keyupTimeout = setTimeout(() => {
@@ -251,8 +282,15 @@ export class BenutzerListXComponent implements OnInit {
 
     private updatePagination(): void {
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalResultCount / this.pageSize),
-            this.page + 5); i++) {
+        for (
+            let i = Math.max(1, this.page - 4);
+            i <=
+            Math.min(
+                Math.ceil(this.totalResultCount / this.pageSize),
+                this.page + 5
+            );
+            i++
+        ) {
             this.paginationItems.push(i);
         }
     }

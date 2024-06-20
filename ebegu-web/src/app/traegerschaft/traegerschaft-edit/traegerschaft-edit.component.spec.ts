@@ -17,7 +17,7 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -30,17 +30,29 @@ import {TraegerschaftModule} from '../traegerschaft.module';
 import {TraegerschaftEditComponent} from './traegerschaft-edit.component';
 
 describe('TraegerschaftEditComponent', () => {
-
     let component: TraegerschaftEditComponent;
     let fixture: ComponentFixture<TraegerschaftEditComponent>;
 
-    const traegerschaftRSSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
-        ['findTraegerschaft']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const traegerschaftRSSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['findTraegerschaft']
+    );
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params',
+        'from'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -58,10 +70,10 @@ describe('TraegerschaftEditComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
-            declarations: [
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+            declarations: []
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});

@@ -7,12 +7,14 @@ import {SolothurnFinSitTestHelpers} from '../../SolothurnFinSitTestHelpers';
 
 import {AngabenGs2Component} from './angaben-gs2.component';
 
-const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+const gesuchModelManagerSpy =
+    SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
 
 describe('AngabenGs2Component', () => {
     let component: AngabenGs2Component;
     let fixture: ComponentFixture<AngabenGs2Component>;
-    const finSitSolothurnServiceMock = SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
+    const finSitSolothurnServiceMock =
+        SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -20,19 +22,22 @@ describe('AngabenGs2Component', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptGesuchModelManager(),
-                {provide: FinanzielleSituationSolothurnService, useValue: finSitSolothurnServiceMock},
+                {
+                    provide: FinanzielleSituationSolothurnService,
+                    useValue: finSitSolothurnServiceMock
+                },
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
-        gesuchModelManagerSpy.getGesuch.and.returnValue(SolothurnFinSitTestHelpers.createGesuch());
+        gesuchModelManagerSpy.getGesuch.and.returnValue(
+            SolothurnFinSitTestHelpers.createGesuch()
+        );
         fixture = TestBed.createComponent(AngabenGs2Component);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -14,7 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    QueryList,
+    ViewChildren
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -52,8 +59,7 @@ export class EditSozialdienstComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.sozialdienstId = this.$transition$.params().sozialdienstId;
@@ -84,7 +90,9 @@ export class EditSozialdienstComponent implements OnInit {
     }
 
     private loadStammdaten(): void {
-        this.stammdaten$ = this.sozialdienstRS.getSozialdienstStammdaten(this.sozialdienstId);
+        this.stammdaten$ = this.sozialdienstRS.getSozialdienstStammdaten(
+            this.sozialdienstId
+        );
     }
 
     private persistStammdaten(stammdaten: TSSozialdienstStammdaten): void {
@@ -99,10 +107,13 @@ export class EditSozialdienstComponent implements OnInit {
             EbeguUtil.selectFirstInvalid();
             return;
         }
-        this.stammdaten$ = this.sozialdienstRS.saveSozialdienstStammdaten(stammdaten)
-            .pipe(tap(() => {
-                this.editMode = false;
-            }));
+        this.stammdaten$ = this.sozialdienstRS
+            .saveSozialdienstStammdaten(stammdaten)
+            .pipe(
+                tap(() => {
+                    this.editMode = false;
+                })
+            );
         this.changeDetectorRef.markForCheck();
     }
 

@@ -13,27 +13,46 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" ng-class="vm.css" aria-label="{{'BESTAETIGUNG_DIALOG'|translate}}"
-           class="md-default-theme md-transition-in"
-           role="dialog" tabindex="-1" aria-describedby="dialogContent">
-
-    <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent">
+<md-dialog
+    md-theme="default"
+    ng-class="vm.css"
+    aria-label="{{ 'BESTAETIGUNG_DIALOG' | translate }}"
+    class="md-default-theme md-transition-in"
+    role="dialog"
+    tabindex="-1"
+    aria-describedby="dialogContent"
+>
+    <md-dialog-content
+        class="md-dialog-content"
+        role="document"
+        tabindex="-1"
+        id="dialogContent"
+    >
         <h2 class="md-title ng-binding" ng-bind="vm.title"></h2>
-        <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind-html="vm.deleteText"></p></div>
+        <div class="md-dialog-content-body ng-scope">
+            <p class="ng-binding" ng-bind-html="vm.deleteText"></p>
+        </div>
     </md-dialog-content>
 
     <md-dialog-actions layout-align="center center">
-        <dv-loading-button class="md-default-theme" type="button"
-                           data-test="container.cancel"
-                           button-click="vm.cancel()" aria-label="vm.cancelText">
+        <dv-loading-button
+            class="md-default-theme"
+            type="button"
+            data-test="container.cancel"
+            button-click="vm.cancel()"
+            aria-label="vm.cancelText"
+        >
             <span ng-bind="vm.cancelText"></span>
         </dv-loading-button>
-        <dv-loading-button class="md-default-theme " type="button"
-                           data-test="container.confirm"
-                           button-click="vm.hide()" md-autofocus="dialog.$type==='alert'"
-                           aria-label="vm.confirmText">
+        <dv-loading-button
+            class="md-default-theme"
+            type="button"
+            data-test="container.confirm"
+            button-click="vm.hide()"
+            md-autofocus="dialog.$type==='alert'"
+            aria-label="vm.confirmText"
+        >
             <span ng-bind="vm.confirmText"></span>
         </dv-loading-button>
     </md-dialog-actions>
-
 </md-dialog>

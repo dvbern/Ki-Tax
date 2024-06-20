@@ -17,9 +17,14 @@
 
 <div class="row" *ngIf="aufteilung">
     <div class="col-xs-12">
-        <p class="ebegu-h1 margin-bottom-30">{{label | translate}}</p>
+        <p class="ebegu-h1 margin-bottom-30">{{ label | translate }}</p>
 
-        <div [ngModelGroup]="groupName" #fgName="ngModelGroup" [class.has-error]="fgName.invalid" class="aufteilung-container">
+        <div
+            [ngModelGroup]="groupName"
+            #fgName="ngModelGroup"
+            [class.has-error]="fgName.invalid"
+            class="aufteilung-container"
+        >
             <div>
                 <dv-input-label-field
                     [(model)]="aufteilung.gs1"
@@ -27,7 +32,8 @@
                     [inputRequired]="true"
                     (keyup)="updateRest()"
                     [inputDisabled]="readonly"
-                    [allowNegative]="allowNegative">
+                    [allowNegative]="allowNegative"
+                >
                 </dv-input-label-field>
             </div>
             <div>
@@ -37,15 +43,22 @@
                     [inputRequired]="true"
                     (keyup)="updateRest()"
                     [inputDisabled]="readonly"
-                    [allowNegative]="allowNegative">
+                    [allowNegative]="allowNegative"
+                >
                 </dv-input-label-field>
             </div>
             <div class="rest">
-                <ng-container *ngIf="restDebounce | async as rest; else check ">
+                <ng-container *ngIf="restDebounce | async as rest; else check">
                     <i class="fa fa-lg fa-times-circle"></i>
-                    <p>{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{rest | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
+                    <p>
+                        {{ 'FINANZIELLE_SITUATION_REST' | translate }}&nbsp;{{
+                            rest | ebeguNumber
+                        }}&nbsp;{{ 'CHF' | translate }}
+                    </p>
                 </ng-container>
-                <ng-template #check><i class="fa fa-lg fa-check"></i></ng-template>
+                <ng-template #check
+                    ><i class="fa fa-lg fa-check"></i
+                ></ng-template>
             </div>
         </div>
     </div>

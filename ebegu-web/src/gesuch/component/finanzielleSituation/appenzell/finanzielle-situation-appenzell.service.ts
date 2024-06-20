@@ -28,44 +28,64 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
     providedIn: 'root'
 })
 export class FinanzielleSituationAppenzellService {
-
-    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
+    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> =
+        new ReplaySubject(1);
 
     public constructor(
         private readonly berechnungsManager: BerechnungsManager
-    ) {
-    }
+    ) {}
 
     public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
         return this._massgebendesEinkommenStore.asObservable();
     }
 
     public calculateMassgebendesEinkommen(finanzModel: TSFinanzModel): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(finanzModel)
+        this.berechnungsManager
+            .calculateFinanzielleSituationTemp(finanzModel)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public calculateEinkommensverschlechterung(finanzModel: TSFinanzModel, basisJahrPlus: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)
+    public calculateEinkommensverschlechterung(
+        finanzModel: TSFinanzModel,
+        basisJahrPlus: number
+    ): void {
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public static finSitNeedsTwoSeparateAntragsteller(gesuch: TSGesuch): boolean {
+    public static finSitNeedsTwoSeparateAntragsteller(
+        gesuch: TSGesuch
+    ): boolean {
         if (EbeguUtil.isNullOrUndefined(gesuch)) {
             return false;
         }
         if (EbeguUtil.isNullOrUndefined(gesuch.extractFamiliensituation())) {
             return false;
         }
-        const spezialFall1 = gesuch.extractFamiliensituation().geteilteObhut
-            && EbeguUtil.isNotNullAndFalse(gesuch.extractFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson)
-            && gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
-        const spezialFall2 = EbeguUtil.isNotNullAndFalse(gesuch.extractFamiliensituation().geteilteObhut)
-            && gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
-        const gesuchHasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuch.gesuchsteller2);
-        const gemeinsameSteuererklaerung = gesuch.extractFamiliensituation().gemeinsameSteuererklaerung;
-        return gesuchHasSecondAntragsteller && EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung)
-            || (gesuch.extractFamiliensituation().familienstatus === TSFamilienstatus.APPENZELL
-                && (spezialFall1 || spezialFall2));
+        const spezialFall1 =
+            gesuch.extractFamiliensituation().geteilteObhut &&
+            EbeguUtil.isNotNullAndFalse(
+                gesuch.extractFamiliensituation()
+                    .gemeinsamerHaushaltMitObhutsberechtigterPerson
+            ) &&
+            gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
+        const spezialFall2 =
+            EbeguUtil.isNotNullAndFalse(
+                gesuch.extractFamiliensituation().geteilteObhut
+            ) &&
+            gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
+        const gesuchHasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(
+            gesuch.gesuchsteller2
+        );
+        const gemeinsameSteuererklaerung =
+            gesuch.extractFamiliensituation().gemeinsameSteuererklaerung;
+        return (
+            (gesuchHasSecondAntragsteller &&
+                EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung)) ||
+            (gesuch.extractFamiliensituation().familienstatus ===
+                TSFamilienstatus.APPENZELL &&
+                (spezialFall1 || spezialFall2))
+        );
     }
 }

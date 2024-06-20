@@ -43,20 +43,35 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 
 import {GemeindeAngabenComponent} from './gemeinde-angaben.component';
 
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'getPrincipalRole']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, [
-    'saveEinstellung',
-    'findEinstellung'
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        ['getLATSAngabenGemeindeContainer']
+    );
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles',
+    'getPrincipalRole'
 ]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'clearError'
+]);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(
+    EinstellungRS.name,
+    ['saveEinstellung', 'findEinstellung']
+);
 
-const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
-    ['registerForm']);
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(
+    UnsavedChangesService.name,
+    ['registerForm']
+);
 
-const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+    UIRouterGlobals.name,
+    ['params']
+);
 
 describe('GemeindeAngabenComponent', () => {
     let component: GemeindeAngabenComponent;
@@ -76,27 +91,38 @@ describe('GemeindeAngabenComponent', () => {
             declarations: [GemeindeAngabenComponent],
             providers: [
                 WindowRef,
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
+                {
+                    provide: UnsavedChangesService,
+                    useValue: unsavedChangesServiceSpy
+                },
                 {provide: StateService, useValue: stateServiceSpy}
             ]
-
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
     beforeEach(() => {
-        const container = new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
+        const container =
+            new TSLastenausgleichTagesschuleAngabenGemeindeContainer();
         container.gemeinde = new TSGemeinde();
         container.gesuchsperiode = new TSGesuchsperiode();
-        container.gesuchsperiode.gueltigkeit = new TSDateRange(moment(), moment());
-        container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
-        container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.gesuchsperiode.gueltigkeit = new TSDateRange(
+            moment(),
+            moment()
+        );
+        container.angabenDeklaration =
+            new TSLastenausgleichTagesschuleAngabenGemeinde();
+        container.angabenKorrektur =
+            new TSLastenausgleichTagesschuleAngabenGemeinde();
         container.angabenInstitutionContainers = [];
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(container)
@@ -105,7 +131,9 @@ describe('GemeindeAngabenComponent', () => {
         einstellungServiceSpy.findEinstellung.and.returnValue(
             of(new TSEinstellung())
         );
-        einstellungServiceSpy.findEinstellung.and.returnValue(of(new TSEinstellung()));
+        einstellungServiceSpy.findEinstellung.and.returnValue(
+            of(new TSEinstellung())
+        );
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

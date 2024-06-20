@@ -37,29 +37,56 @@ describe('StatistikComponent', () => {
     let component: StatistikComponent;
     let fixture: ComponentFixture<StatistikComponent>;
 
-    const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['getAllGesuchsperioden']);
-    const institutionStammdatenRSSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
-        ['getAllTagesschulenForCurrentBenutzer', 'getBetreuungsangeboteForInstitutionenOfCurrentBenutzer']);
-    const reportAsyncSpy = jasmine.createSpyObj<ReportAsyncRS>(ReportAsyncRS.name,
-        ['getGesuchStichtagReportExcel']);
-    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-        ['prepareDownloadWindow', 'startDownload']);
-    const batchJobRSSpy = jasmine.createSpyObj<BatchJobRS>(BatchJobRS.name,
-        ['getBatchJobsOfUser']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isOneOfRoles', 'isRole']);
-    const gemeindeRSSpy =
-        jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
+    const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+        GesuchsperiodeRS.name,
+        ['getAllGesuchsperioden']
+    );
+    const institutionStammdatenRSSpy =
+        jasmine.createSpyObj<InstitutionStammdatenRS>(
+            InstitutionStammdatenRS.name,
+            [
+                'getAllTagesschulenForCurrentBenutzer',
+                'getBetreuungsangeboteForInstitutionenOfCurrentBenutzer'
+            ]
+        );
+    const reportAsyncSpy = jasmine.createSpyObj<ReportAsyncRS>(
+        ReportAsyncRS.name,
+        ['getGesuchStichtagReportExcel']
+    );
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'prepareDownloadWindow',
+        'startDownload'
+    ]);
+    const batchJobRSSpy = jasmine.createSpyObj<BatchJobRS>(BatchJobRS.name, [
+        'getBatchJobsOfUser'
+    ]);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['addMesageAsInfo']
+    );
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles', 'isRole']
+    );
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenWithMahlzeitenverguenstigungForBenutzer'
+    ]);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule, NoopAnimationsModule, MaterialModule, GemeindeModule],
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+                GemeindeModule
+            ],
             schemas: [],
             providers: [
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
-                {provide: InstitutionStammdatenRS, useValue: institutionStammdatenRSSpy},
+                {
+                    provide: InstitutionStammdatenRS,
+                    useValue: institutionStammdatenRSSpy
+                },
                 {provide: ReportAsyncRS, useValue: reportAsyncSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: BatchJobRS, useValue: batchJobRSSpy},
@@ -67,16 +94,23 @@ describe('StatistikComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy}
             ],
-            declarations: [StatistikComponent
-            ]
+            declarations: [StatistikComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
-        institutionStammdatenRSSpy.getAllTagesschulenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
-        gemeindeRSSpy.getGemeindenWithMahlzeitenverguenstigungForBenutzer.and.returnValue(Promise.resolve([]));
-        institutionStammdatenRSSpy.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(
+            Promise.resolve([])
+        );
+        institutionStammdatenRSSpy.getAllTagesschulenForCurrentBenutzer.and.returnValue(
+            Promise.resolve([])
+        );
+        gemeindeRSSpy.getGemeindenWithMahlzeitenverguenstigungForBenutzer.and.returnValue(
+            Promise.resolve([])
+        );
+        institutionStammdatenRSSpy.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer.and.returnValue(
+            Promise.resolve([])
+        );
         batchJobRSSpy.getBatchJobsOfUser.and.returnValue(of([]));
     }));
 

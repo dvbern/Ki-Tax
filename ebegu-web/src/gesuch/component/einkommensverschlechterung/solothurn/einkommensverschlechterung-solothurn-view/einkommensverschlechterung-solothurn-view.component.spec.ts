@@ -51,26 +51,50 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getBasisjahrToWorkWith',
         'getStammdatenToWorkWith',
         'getGesuchstellerNumber'
-    ]);
-gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(new TSGesuchstellerContainer());
+    ]
+);
+gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(
+    new TSGesuchstellerContainer()
+);
 
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
-    WizardStepManager.name, [
-        'getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
-        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe'
-    ]);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp', 'calculateEinkommensverschlechterungTemp']);
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+    WizardStepManager.name,
+    [
+        'getCurrentStep',
+        'setCurrentStep',
+        'isNextStepBesucht',
+        'isNextStepEnabled',
+        'getCurrentStepName',
+        'updateCurrentWizardStepStatusSafe'
+    ]
+);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(
+    FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+);
+const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+    'params'
+]);
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+    BerechnungsManager.name,
+    [
+        'calculateFinanzielleSituation',
+        'calculateFinanzielleSituationTemp',
+        'calculateEinkommensverschlechterungTemp'
+    ]
+);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
+berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'clearError'
+]);
 
 describe('EinkommensverschlechterungSolothurnViewComponent', () => {
     let component: EinkommensverschlechterungSolothurnViewComponent;
@@ -82,25 +106,31 @@ describe('EinkommensverschlechterungSolothurnViewComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        transitionSpy.params.and.returnValue({gesuchstellerNumber: 1, basisjahrPlus: 1});
+        transitionSpy.params.and.returnValue({
+            gesuchstellerNumber: 1,
+            basisjahrPlus: 1
+        });
     });
 
     beforeEach(() => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
-        fixture = TestBed.createComponent(EinkommensverschlechterungSolothurnViewComponent);
+        fixture = TestBed.createComponent(
+            EinkommensverschlechterungSolothurnViewComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -116,12 +146,17 @@ describe('EinkommensverschlechterungSolothurnViewComponent', () => {
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
-        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
         return gesuch;
     }
 });

@@ -6,16 +6,14 @@ import {DvNgSupportDialogComponent} from '../../../gesuch/dialog/dv-ng-support-d
     providedIn: 'root'
 })
 export class SupportDialogService {
-
     private supportDialogRef: MatDialogRef<DvNgSupportDialogComponent>;
 
-    public constructor(
-        private readonly supportDialog: MatDialog
-    ) {
-    }
+    public constructor(private readonly supportDialog: MatDialog) {}
 
     public openDialog(): void {
-        this.supportDialogRef = this.supportDialog.open(DvNgSupportDialogComponent);
+        this.supportDialogRef = this.supportDialog.open(
+            DvNgSupportDialogComponent
+        );
     }
 
     public closeDialog(): void {
@@ -29,5 +27,4 @@ export class SupportDialogService {
     public isDialogClosed(): boolean {
         return this.supportDialogRef.getState() === 2;
     }
-
 }

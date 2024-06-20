@@ -18,7 +18,6 @@
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
 export class TSFerienbetreuungAngabenKostenEinnahmen extends TSFerienbetreuungAbstractAngaben {
-
     private _personalkosten: number;
     private _personalkostenLeitungAdmin: number;
     private _sachkosten: number;

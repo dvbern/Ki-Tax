@@ -18,10 +18,11 @@
 @import (reference) '../../../style/mixins.less';
 
 .abweichungen-view {
-    .table input[type=number] {
+    .table input[type='number'] {
         background: @contrast-lightest;
 
-        &[disabled], &:disabled {
+        &[disabled],
+        &:disabled {
             .DisabledInput();
             .ebeguDisabledPlaceholder();
             -webkit-text-fill-color: @contrast-darkest;
@@ -33,7 +34,6 @@
         background-color: transparent;
     }
 }
-
 
 .green {
     color: @success;

@@ -52,22 +52,39 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getBasisjahrToWorkWith',
         'getStammdatenToWorkWith',
         'getBasisJahrPlusNumber'
-    ]);
+    ]
+);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
-    WizardStepManager.name, [
-        'getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
-        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe'
-    ]);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+    WizardStepManager.name,
+    [
+        'getCurrentStep',
+        'setCurrentStep',
+        'isNextStepBesucht',
+        'isNextStepEnabled',
+        'getCurrentStepName',
+        'updateCurrentWizardStepStatusSafe'
+    ]
+);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(
+    FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+);
+const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+    'params'
+]);
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+    BerechnungsManager.name,
+    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'clearError'
+]);
 
 describe('EinkommensverschlechterungLuzernViewComponent', () => {
     let component: EinkommensverschlechterungLuzernViewComponent;
@@ -79,26 +96,34 @@ describe('EinkommensverschlechterungLuzernViewComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        transitionSpy.params.and.returnValue({gesuchstellerNumber: 1, basisjahrPlus: 1});
+        transitionSpy.params.and.returnValue({
+            gesuchstellerNumber: 1,
+            basisjahrPlus: 1
+        });
     });
 
     beforeEach(() => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
-        gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(new TSGesuchstellerContainer());
-        fixture = TestBed.createComponent(EinkommensverschlechterungLuzernViewComponent);
+        gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(
+            new TSGesuchstellerContainer()
+        );
+        fixture = TestBed.createComponent(
+            EinkommensverschlechterungLuzernViewComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -112,10 +137,13 @@ describe('EinkommensverschlechterungLuzernViewComponent', () => {
         gesuch.finSitTyp = TSFinanzielleSituationTyp.LUZERN;
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
         return gesuch;
     }
 });

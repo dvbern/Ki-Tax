@@ -50,7 +50,7 @@ const rootInteractionElements = [
     'dv-date-picker-x',
     'dv-input-label-field',
     'dv-valueinput',
-    'dv-valueinput-x',
+    'dv-valueinput-x'
 ] as const;
 const elementsWithSuffixSelector: [
     (typeof rootInteractionElements)[number],
@@ -63,28 +63,33 @@ const elementsWithSuffixSelector: [
     ['dv-valueinput', 'input'],
     ['dv-valueinput-x', 'input'],
     ['md-autocomplete', 'input'],
-    ['mat-radio-button', 'label'],
+    ['mat-radio-button', 'label']
 ];
 
-
 Cypress.SelectorPlayground.defaults({
-    onElement: (el) => {
+    onElement: el => {
         const prefixSelector = el
             .parents('[data-test^="container."]')
             .toArray()
-            .map((el) => `[data-test="${el.dataset.test}"]`)
+            .map(el => `[data-test="${el.dataset.test}"]`)
             .join(' ');
         let suffixSelector = '';
         let workingEl = el.parents(
-            rootInteractionElements.map((input) => `${input}[data-test]`).join(','),
+            rootInteractionElements
+                .map(input => `${input}[data-test]`)
+                .join(',')
         );
-        if (workingEl.length === 0 || el.data('test') || workingEl.data('test')?.startsWith('container.')) {
+        if (
+            workingEl.length === 0 ||
+            el.data('test') ||
+            workingEl.data('test')?.startsWith('container.')
+        ) {
             workingEl = el;
         }
         const [, suffix] =
-        elementsWithSuffixSelector.find(
-            ([sel]) => workingEl.prop('tagName') === sel.toUpperCase(),
-        ) ?? [];
+            elementsWithSuffixSelector.find(
+                ([sel]) => workingEl.prop('tagName') === sel.toUpperCase()
+            ) ?? [];
         if (suffix) {
             suffixSelector = suffix;
         }
@@ -92,11 +97,11 @@ Cypress.SelectorPlayground.defaults({
             return [
                 prefixSelector,
                 `[data-test="${workingEl.data('test')}"]`,
-                suffixSelector,
+                suffixSelector
             ]
-                .filter((s) => s.length > 0)
+                .filter(s => s.length > 0)
                 .join(' ');
         }
         return undefined;
-    },
+    }
 });

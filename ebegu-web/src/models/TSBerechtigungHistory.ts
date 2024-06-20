@@ -22,7 +22,6 @@ import {TSInstitution} from './TSInstitution';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
 export class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
-
     private _userErstellt: string;
     private _username: string;
     private _role: TSRole;

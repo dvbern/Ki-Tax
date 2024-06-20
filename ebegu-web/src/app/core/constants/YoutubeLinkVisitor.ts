@@ -51,5 +51,4 @@ export class YoutubeLinkVisitor implements MandantVisitor<string | null> {
     public visitSchwyz(): string | null {
         return null;
     }
-
 }

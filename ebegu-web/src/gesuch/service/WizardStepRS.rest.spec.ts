@@ -23,7 +23,6 @@ import {WizardStepRS} from './WizardStepRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 
 describe('WizardStepRS', () => {
-
     let wizardStepRS: WizardStepRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -38,16 +37,21 @@ describe('WizardStepRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        wizardStepRS = $injector.get('WizardStepRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            wizardStepRS = $injector.get('WizardStepRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
         mockWizardStep = TestDataUtil.createWizardStep(gesuchId);
         TestDataUtil.setAbstractMutableFieldsUndefined(mockWizardStep);
-        mockWizardStepRest = ebeguRestUtil.wizardStepToRestObject({}, mockWizardStep);
+        mockWizardStepRest = ebeguRestUtil.wizardStepToRestObject(
+            {},
+            mockWizardStep
+        );
         mockWizardStepListRest = [mockWizardStepRest];
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
@@ -62,16 +66,23 @@ describe('WizardStepRS', () => {
     describe('API Usage', () => {
         describe('findWizardStepsFromGesuch', () => {
             it('should return the all wizardSteps of a Gesuch', () => {
-                $httpBackend.expectGET(`${wizardStepRS.serviceURL}/${gesuchId}`).respond(mockWizardStepListRest);
+                $httpBackend
+                    .expectGET(`${wizardStepRS.serviceURL}/${gesuchId}`)
+                    .respond(mockWizardStepListRest);
 
                 let foundSteps: Array<TSWizardStep>;
-                wizardStepRS.findWizardStepsFromGesuch(gesuchId).then(result => {
-                    foundSteps = result;
-                });
+                wizardStepRS
+                    .findWizardStepsFromGesuch(gesuchId)
+                    .then(result => {
+                        foundSteps = result;
+                    });
                 $httpBackend.flush();
                 expect(foundSteps).toBeDefined();
                 expect(foundSteps.length).toEqual(1);
-                TestDataUtil.compareDefinedProperties(foundSteps[0], mockWizardStep);
+                TestDataUtil.compareDefinedProperties(
+                    foundSteps[0],
+                    mockWizardStep
+                );
             });
         });
     });

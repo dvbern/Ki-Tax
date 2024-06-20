@@ -19,18 +19,20 @@ import {FixtureEinkommensverschlechterungInfo} from '@dv-e2e/fixtures';
 
 // !! -- PAGE OBJECTS -- !!
 const getHasEinkommensverschlechterung = (answer: string) => {
-	return cy.getByData('einkommensverschlechterung.radio-value.' + answer);
+    return cy.getByData('einkommensverschlechterung.radio-value.' + answer);
 };
 
 // !! -- PAGE ACTIONS -- !!
 const getHasEKVFuerBasisJahrPlus = (plus: number) => {
-	return cy.getByData('ekv-fuer-basis-jahr-plus#' + plus);
+    return cy.getByData('ekv-fuer-basis-jahr-plus#' + plus);
 };
 
-const fillEinkommensverschlechterungInfoForm = (dataset: keyof typeof FixtureEinkommensverschlechterungInfo) => {
+const fillEinkommensverschlechterungInfoForm = (
+    dataset: keyof typeof FixtureEinkommensverschlechterungInfo
+) => {
     FixtureEinkommensverschlechterungInfo[dataset](ekvInfo => {
         getHasEinkommensverschlechterung(ekvInfo.ekv).click();
-        if(ekvInfo.basisjahrPlus1) {
+        if (ekvInfo.basisjahrPlus1) {
             getHasEKVFuerBasisJahrPlus(1).click();
         }
         if (ekvInfo.basisjahrPlus2) {
@@ -44,5 +46,5 @@ export const EinkommensverschlechterungInfoPO = {
     getHasEinkommensverschlechterung,
     getHasEKVFuerBasisJahrPlus,
     // page actions
-    fillEinkommensverschlechterungInfoForm,
+    fillEinkommensverschlechterungInfoForm
 };

@@ -21,14 +21,8 @@ import {WelcomeMainComponent} from './welcome-main/welcome-main.component';
 import {WelcomeRoutingModule} from './welcome-routing/welcome-routing.module';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        WelcomeRoutingModule
-    ],
-    declarations: [
-        WelcomeMainComponent
-    ],
+    imports: [SharedModule, WelcomeRoutingModule],
+    declarations: [WelcomeMainComponent],
     providers: []
 })
-export class WelcomeModule {
-}
+export class WelcomeModule {}

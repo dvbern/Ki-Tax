@@ -17,7 +17,6 @@ import {TSBetreuungsmitteilungPensum} from './TSBetreuungsmitteilungPensum';
 import {TSMitteilung} from './TSMitteilung';
 
 export class TSBetreuungsmitteilung extends TSMitteilung {
-
     private _betreuungspensen: Array<TSBetreuungsmitteilungPensum>;
     private _applied: boolean;
     private _errorMessage: string;

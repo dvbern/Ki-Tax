@@ -16,9 +16,12 @@
  */
 
 const getAutomatischVerfuegteMitteilungForFall = (fallnummer: string) => {
-	return cy.getByData('container.automatisch-verfuegte-mitteilungen', `verfuegt#${parseInt(fallnummer, 10)}`);
+    return cy.getByData(
+        'container.automatisch-verfuegte-mitteilungen',
+        `verfuegt#${parseInt(fallnummer, 10)}`
+    );
 };
 
 export const MitteilungenResultDialogPO = {
-    getAutomatischVerfuegteMitteilungForFall,
+    getAutomatischVerfuegteMitteilungForFall
 };

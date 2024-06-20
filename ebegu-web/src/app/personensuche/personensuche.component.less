@@ -1,0 +1,76 @@
+@import (reference) '../../style/variables.less';
+@import (reference) '../../style/mixins.less';
+
+// revert what bootstrap's normalize.less is doing. summary cannot be 'block'. Otherwise the disclosure icon is not visible.
+summary {
+    display: revert;
+}
+
+.icon-padding() {
+    padding: 0 0.5rem;
+}
+
+.trigger-search {
+    i {
+        .icon-padding;
+    }
+}
+
+.icons {
+    width: 5rem;
+
+    i {
+        .icon-padding;
+    }
+}
+
+.ewk-label {
+    .ebeguBold();
+    -webkit-user-select: none; /* Safari*/
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+
+    &:after {
+        content: ' : ';
+    }
+}
+
+.short-description() {
+    background: @contrast-lightest;
+    border-top: 1px solid @contrast-darkest;
+    color: @contrast-darkest;
+    padding: 1rem;
+}
+
+.person-found {
+    .short-description();
+}
+
+.person-not-found {
+    .short-description();
+    color: @danger;
+
+    i {
+        .icon-padding();
+        padding-left: 0;
+    }
+}
+
+.person-details {
+    padding-left: 1.5rem;
+}
+
+.adresse {
+    padding: 1rem 0;
+}
+
+.beziehung {
+    border-top: 1px solid @contrast-light;
+    padding: 1rem 0;
+}
+
+.beziehung-details {
+    padding-left: 2rem;
+}

@@ -28,8 +28,10 @@ describe('OnboardingInfoInstitutionComponent', () => {
     let component: OnboardingInfoInstitutionComponent;
     let fixture: ComponentFixture<OnboardingInfoInstitutionComponent>;
 
-    const i18nServiceSpy =
-        jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -39,8 +41,7 @@ describe('OnboardingInfoInstitutionComponent', () => {
                 UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingInfoInstitutionComponent],
-            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy}
-            ]
+            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy}]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

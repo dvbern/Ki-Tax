@@ -29,30 +29,37 @@ export class DvSkiplinksComponentConfig implements IComponentOptions {
 const gesuchstellerDashboard = 'gesuchsteller.dashboard';
 
 export class DvSkiplinksController implements IDVFocusableController {
-
-    public static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
+    public static $inject: ReadonlyArray<string> = [
+        '$state',
+        'DvDialog',
+        'EbeguUtil'
+    ];
 
     public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(
         private readonly $state: StateService,
         private readonly routerGlobals: UIRouterGlobals
-    ) {
-    }
+    ) {}
 
     public goBackHome(): void {
         this.$state.go(gesuchstellerDashboard);
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.routerGlobals.current && this.routerGlobals.current.name === gesuchstellerDashboard);
+        return (
+            this.routerGlobals.current &&
+            this.routerGlobals.current.name === gesuchstellerDashboard
+        );
     }
 
     public isCurrentPageGesuch(): boolean {
-        return (this.routerGlobals.current &&
+        return (
+            this.routerGlobals.current &&
             this.routerGlobals.current.name !== gesuchstellerDashboard &&
             this.routerGlobals.current.name !== 'alleVerfuegungen.view' &&
-            this.routerGlobals.current.name !== 'mitteilungen.view');
+            this.routerGlobals.current.name !== 'mitteilungen.view'
+        );
     }
 
     public focusLink(a: string): void {
@@ -60,7 +67,10 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public focusToolbar(): void {
-        angular.element('.dossier-toolbar-gesuchsteller.desktop button').first().focus();
+        angular
+            .element('.dossier-toolbar-gesuchsteller.desktop button')
+            .first()
+            .focus();
     }
 
     public focusSidenav(): void {
@@ -70,7 +80,7 @@ export class DvSkiplinksController implements IDVFocusableController {
     /**
      * Sets the focus back to the Kontakt icon.
      */
-    public setFocusBack(_elementID: string): void {
+    public setFocusBack(): void {
         angular.element('#SKIP_4').first().focus();
     }
 }

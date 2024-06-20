@@ -19,7 +19,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
  * DTO für eine Adresse aus dem EWK
  */
 export class TSEWKAdresse extends TSAbstractMutableEntity {
-
     private _adresszusatz1: string;
     private _adresszusatz2: string;
     private _hausnummer: string;

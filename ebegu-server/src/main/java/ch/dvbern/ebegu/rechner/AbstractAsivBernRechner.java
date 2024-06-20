@@ -37,7 +37,6 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
-
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
@@ -66,7 +65,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verguenstigungProZeiteinheit = getVerguenstigungProZeiteinheit(
 			parameterDTO,
 			unter12Monate,
-				besonderebeduerfnisse,
+			besonderebeduerfnisse,
 			massgebendesEinkommen,
 			input.isBezahltKompletteVollkosten(),
 			input.getEinschulungTyp());
@@ -79,7 +78,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		// Falls die Eltern ein Teil des Monats die Vollkosten komplett tragen, wird ausgerechnet an wie vielen Tagen
 		// die Zeiteinheiten effektiv ausbezahlt werden
 		BigDecimal effektivAusbezahlteZeiteinheiten =
-			EXACT.multiply(verfuegteZeiteinheiten,input.getMonatAnteilVollkostenNichtBezahlt());
+			EXACT.multiply(verfuegteZeiteinheiten, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
@@ -135,6 +134,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 		result.setBabyTarif(unter12Monate);
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
+		handleAnteileZusaetzlicherGutscheinGemeindeBetrag(result, effektivAusbezahlteZeiteinheiten);
 
 		return result;
 	}
@@ -172,8 +172,8 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	@Nonnull
 	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean besonderebeduerfnisse,
+		boolean unter12Monate,
+		boolean besonderebeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		boolean bezahltVollkosten,
 		@Nullable EinschulungTyp einschulungTyp) {
@@ -188,13 +188,12 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
-		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
-		BigDecimal augment = EXACT.divide(product, EXACT.subtract(minEinkommen, maxEinkommen));
-		BigDecimal verguenstigungProTag = EXACT.add(augment, maximaleVerguenstigungProTag);
-		// Max und Min beachten
-		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
-		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
+		BigDecimal verguenstigungProTag = KantonBernRechnerUtil.calculateKantonalerZuschlag(
+			minEinkommen,
+			maxEinkommen,
+			massgebendesEinkommen,
+			maximaleVerguenstigungProTag);
+
 		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
 		BigDecimal zuschlagFuerBesondereBeduerfnisse =
 			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);
@@ -214,17 +213,25 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	@Nonnull
 	protected abstract BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
+		boolean unter12Monate,
 		@Nullable EinschulungTyp einschulungTyp);
 
 	@Nonnull
 	protected abstract BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean besonderebeduerfnisse);
+		boolean besonderebeduerfnisse);
 
 	@Nonnull
 	protected abstract PensumUnits getZeiteinheit();
 
 	@Nonnull
-	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
+	protected abstract void handleAnteileMahlzeitenverguenstigung(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal anteilMonat,
+		@Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
+
+	protected abstract void handleAnteileZusaetzlicherGutscheinGemeindeBetrag(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal effektivAusbezahlteZeiteinheiten);
+
 }

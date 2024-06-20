@@ -24,7 +24,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {VerfuegungRS} from './verfuegungRS.rest';
 
 describe('VerfuegungRS', () => {
-
     let verfuegungRS: VerfuegungRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -38,11 +37,13 @@ describe('VerfuegungRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        verfuegungRS = $injector.get('VerfuegungRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            verfuegungRS = $injector.get('VerfuegungRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
         const kindGS = new TSKind();
@@ -59,7 +60,10 @@ describe('VerfuegungRS', () => {
         mockKind.betreuungen = [];
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
-        mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
+        mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject(
+            {},
+            mockKind
+        );
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
@@ -73,8 +77,11 @@ describe('VerfuegungRS', () => {
     describe('API Usage', () => {
         describe('calculate', () => {
             it('should return all KindContainer', () => {
-                $httpBackend.expectGET(`${verfuegungRS.serviceURL}/calculate/${gesuchId}`).respond(
-                    mockKindContainerListRest);
+                $httpBackend
+                    .expectGET(
+                        `${verfuegungRS.serviceURL}/calculate/${gesuchId}`
+                    )
+                    .respond(mockKindContainerListRest);
 
                 let foundKind: Array<TSKindContainer>;
                 verfuegungRS.calculateVerfuegung(gesuchId).then(result => {

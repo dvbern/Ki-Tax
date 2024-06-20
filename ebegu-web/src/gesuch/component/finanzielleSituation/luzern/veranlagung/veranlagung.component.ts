@@ -31,7 +31,6 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class VeranlagungComponent implements OnInit {
-
     @Input()
     public isGemeinsam: boolean;
 
@@ -52,8 +51,7 @@ export class VeranlagungComponent implements OnInit {
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
@@ -64,17 +62,25 @@ export class VeranlagungComponent implements OnInit {
     };
 
     public antragsteller1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller1?.extractFullName();
     }
 
     public antragsteller2Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller2?.extractFullName();
     }
 
     public antragstellerName(): string {
-        return this.antragstellerNummer === 1 ?
-            this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName() :
-            this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+        return this.antragstellerNummer === 1
+            ? this.gesuchModelManager
+                  .getGesuch()
+                  .gesuchsteller1?.extractFullName()
+            : this.gesuchModelManager
+                  .getGesuch()
+                  .gesuchsteller2?.extractFullName();
     }
 
     public isNotNullOrUndefined(toCheck: any): boolean {

@@ -32,27 +32,49 @@ import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView.component';
 
 describe('testdatenView', () => {
-
     let component: TestdatenViewComponent;
     let fixture: ComponentFixture<TestdatenViewComponent>;
 
     beforeEach(waitForAsync(() => {
-        const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(TestFaelleRS.name,
+        const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(
+            TestFaelleRS.name,
             [
-                'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
-                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten'
-            ]);
-        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
-            ['getAllGesuchsteller']);
+                'createTestFall',
+                'createTestFallGS',
+                'removeFaelleOfGS',
+                'mutiereFallHeirat',
+                'mutiereFallScheidung',
+                'resetSchulungsdaten',
+                'deleteSchulungsdaten'
+            ]
+        );
+        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(
+            BenutzerRSX.name,
+            ['getAllGesuchsteller']
+        );
         benutzerRSSpy.getAllGesuchsteller.and.resolveTo([]);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-        const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-            ['getAllGesuchsperioden', 'removeGesuchsperiode']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+            ErrorService.name,
+            ['addMesageAsInfo']
+        );
+        const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(
+            GesuchsperiodeRS.name,
+            ['getAllGesuchsperioden', 'removeGesuchsperiode']
+        );
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
-        const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['isDevMode', 'getPublicPropertiesCached', 'isEbeguKibonAnfrageTestGuiEnabled']);
+        const applicationPropertyRSSpy =
+            jasmine.createSpyObj<ApplicationPropertyRS>(
+                ApplicationPropertyRS.name,
+                [
+                    'isDevMode',
+                    'getPublicPropertiesCached',
+                    'isEbeguKibonAnfrageTestGuiEnabled'
+                ]
+            );
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
-        applicationPropertyRSSpy.isEbeguKibonAnfrageTestGuiEnabled.and.resolveTo(false);
+        applicationPropertyRSSpy.isEbeguKibonAnfrageTestGuiEnabled.and.resolveTo(
+            false
+        );
         applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({
             currentNode: '',
             devmode: false,
@@ -92,26 +114,38 @@ describe('testdatenView', () => {
             erlaubenInstitutionenZuWaehlen: false,
             auszahlungAnEltern: true,
             abweichungenEnabled: true,
-            gemeindeVereinfachteKonfigAktiv: false
+            gemeindeVereinfachteKonfigAktiv: false,
+            testfaelleEnabled: false
         });
-        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            ['getAktiveGemeinden']
+        );
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['principal$']
+        );
         authServiceSpy.principal$ = of(new TSBenutzer());
-        const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['getSteuerdaten']);
+        const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, [
+            'getSteuerdaten'
+        ]);
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
                 {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                },
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},

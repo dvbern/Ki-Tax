@@ -41,13 +41,14 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     changeDetection: ChangeDetectionStrategy.Default
 })
 export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
-
     /**
      * Emits when the user clicks on a row
      */
-    @Output() public readonly openEvent: EventEmitter<string> = new EventEmitter<any>();
+    @Output() public readonly openEvent: EventEmitter<string> =
+        new EventEmitter<any>();
 
-    @Output() public readonly removeEvent: EventEmitter<string> = new EventEmitter<any>();
+    @Output() public readonly removeEvent: EventEmitter<string> =
+        new EventEmitter<any>();
 
     @Input() public hiddenColumns: string[] = [];
 
@@ -57,15 +58,30 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() public columnName: string;
 
-    public displayedColumns: string[] = ['name', 'institutionCount', 'status', 'gemeinde', 'type', 'detail', 'remove'];
-    private readonly allColumns = ['name', 'institutionCount', 'status', 'gemeinde', 'type', 'detail', 'remove'];
+    public displayedColumns: string[] = [
+        'name',
+        'institutionCount',
+        'status',
+        'gemeinde',
+        'type',
+        'detail',
+        'remove'
+    ];
+    private readonly allColumns = [
+        'name',
+        'institutionCount',
+        'status',
+        'gemeinde',
+        'type',
+        'detail',
+        'remove'
+    ];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
 
-    public constructor(private readonly changeDetectorRef: ChangeDetectorRef) {
-    }
+    public constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
     public ngOnInit(): void {
         this.initTable();
@@ -74,9 +90,10 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.hiddenColumns) {
-            this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+            this.displayedColumns = this.allColumns.filter(
+                column => !this.hiddenColumns.includes(column)
+            );
         }
-        // eslint-disable-next-line
         if (changes.data$ && !changes.data$.firstChange) {
             this.loadData();
         }
@@ -108,13 +125,14 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     private loadData(): void {
-        this.data$.subscribe((result: DVAntragListItem[]) => {
+        this.data$.subscribe(
+            (result: DVAntragListItem[]) => {
                 this.dataSource.data = result;
                 this.dataSource.paginator = this.paginator;
                 this.changeDetectorRef.markForCheck();
             },
-            () => {
-            });
+            () => {}
+        );
     }
 
     /**
@@ -122,10 +140,9 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
      */
     private sortTable(): void {
         this.sort.sort({
-                id: 'name',
-                start: 'asc',
-                disableClear: false
-            }
-        );
+            id: 'name',
+            start: 'asc',
+            disableClear: false
+        });
     }
 }

@@ -15,9 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ViewChild, Inject} from '@angular/core';
+import {
+    Component,
+    ChangeDetectionStrategy,
+    ViewChild,
+    Inject
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSRueckforderungFormular} from '../../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {NotrechtRS} from '../../../core/service/notrechtRS.rest';
@@ -29,14 +34,14 @@ import {NotrechtRS} from '../../../core/service/notrechtRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungVerlaengerungDialogComponent {
-
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
     public rueckforderungFormular: TSRueckforderungFormular;
 
-    public constructor(private readonly dialogRef: MatDialogRef<RueckforderungVerlaengerungDialogComponent>,
-                       private readonly notrechtRS: NotrechtRS,
-                       @Inject(MAT_DIALOG_DATA) private readonly data: any
-                       ) {
+    public constructor(
+        private readonly dialogRef: MatDialogRef<RueckforderungVerlaengerungDialogComponent>,
+        private readonly notrechtRS: NotrechtRS,
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
+    ) {
         this.rueckforderungFormular = data.rueckforderungFormular;
     }
 
@@ -45,9 +50,13 @@ export class RueckforderungVerlaengerungDialogComponent {
             EbeguUtil.selectFirstInvalid();
             return;
         }
-        this.notrechtRS.saveRueckforderungFormularEinreicheFrist(this.rueckforderungFormular).then(
-            modifiedRueckforderungFormular => this.dialogRef.close(modifiedRueckforderungFormular)
-        );
+        this.notrechtRS
+            .saveRueckforderungFormularEinreicheFrist(
+                this.rueckforderungFormular
+            )
+            .then(modifiedRueckforderungFormular =>
+                this.dialogRef.close(modifiedRueckforderungFormular)
+            );
     }
 
     public close(): void {

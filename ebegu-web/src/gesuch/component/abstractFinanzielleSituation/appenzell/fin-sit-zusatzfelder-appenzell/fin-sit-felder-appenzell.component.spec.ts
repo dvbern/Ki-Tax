@@ -33,12 +33,17 @@ import {FinSitFelderAppenzellComponent} from './fin-sit-felder-appenzell.compone
 describe('FinanzielleVerhaeltnisseComponent', () => {
     let component: FinSitFelderAppenzellComponent;
     let fixture: ComponentFixture<FinSitFelderAppenzellComponent>;
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-        ['getGesuch', 'getBasisjahr']);
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch', 'getBasisjahr']
+    );
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
@@ -58,10 +63,13 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(FinSitFelderAppenzellComponent);
         component = fixture.componentInstance;
-        component.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
-        component.finSitZusatzangabenAppenzell.zusatzangabenPartner = new TSFinSitZusatzangabenAppenzell();
+        component.finSitZusatzangabenAppenzell =
+            new TSFinSitZusatzangabenAppenzell();
+        component.finSitZusatzangabenAppenzell.zusatzangabenPartner =
+            new TSFinSitZusatzangabenAppenzell();
         component.finanzModel = new TSFinanzModel(0, false, 1);
-        component.finanzModel.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
+        component.finanzModel.finanzielleSituationContainerGS1 =
+            new TSFinanzielleSituationContainer();
         fixture.detectChanges();
     });
 

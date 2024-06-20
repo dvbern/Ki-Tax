@@ -19,25 +19,35 @@ import {TestDataUtil} from '../../../../../utils/TestDataUtil.spec';
 import {DvErrorMessagesPanelComponent} from './dvb-error-messages-panel';
 
 describe('dvbErrorMessages', () => {
-
     let controller: DvErrorMessagesPanelComponent;
     let exceptionReport: any;
 
     beforeEach(angular.mock.module('dvbAngular.errors'));
 
-    beforeEach(angular.mock.inject($injector => {
-        controller = new DvErrorMessagesPanelComponent($injector.get('$rootScope'), $injector.get('ErrorService'),
-            undefined, undefined, undefined, undefined, undefined, undefined);
-        // mock 'show' method, because in unit tests, jqLite is used instead of jQuery, but jqLite does not support
-        // selectors
-        spyOn(controller, 'show').and.returnValue();
-        exceptionReport = TestDataUtil.createExceptionReport();
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            controller = new DvErrorMessagesPanelComponent(
+                $injector.get('$rootScope'),
+                $injector.get('ErrorService'),
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined
+            );
+            // mock 'show' method, because in unit tests, jqLite is used instead of jQuery, but jqLite does not support
+            // selectors
+            spyOn(controller, 'show').and.returnValue();
+            exceptionReport = TestDataUtil.createExceptionReport();
+        })
+    );
 
     describe('displayMessages', () => {
         it('should not add any action', () => {
             exceptionReport.errorCodeEnum = 'OTHER_TYPE';
-            const error = TSExceptionReport.createFromExceptionReport(exceptionReport);
+            const error =
+                TSExceptionReport.createFromExceptionReport(exceptionReport);
             const errors = [error];
             controller.displayMessages(undefined, errors);
 
@@ -45,7 +55,8 @@ describe('dvbErrorMessages', () => {
         });
         it('should add an action to ERROR_EXISTING_ONLINE_MUTATION', () => {
             exceptionReport.errorCodeEnum = 'ERROR_EXISTING_ONLINE_MUTATION';
-            const error = TSExceptionReport.createFromExceptionReport(exceptionReport);
+            const error =
+                TSExceptionReport.createFromExceptionReport(exceptionReport);
             const errors = [error];
             controller.displayMessages(undefined, errors);
 

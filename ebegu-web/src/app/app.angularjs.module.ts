@@ -30,7 +30,8 @@ import {PENDENZEN_STEUERAMT_JS_MODULE} from './pendenzen/steueramt/pendenzenSteu
 import {QUICKSEARCH_JS_MODULE} from './quicksearch/quicksearch.module';
 import {SEARCH_JS_MODULE} from './searchResult/search.module';
 
-export const APP_JS_MODULE = angular.module('ebeguWeb', [
+export const APP_JS_MODULE = angular
+    .module('ebeguWeb', [
         'ui.router',
         upgradeModule.name,
         CORE_JS_MODULE.name,
@@ -46,9 +47,8 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
         QUICKSEARCH_JS_MODULE.name
     ])
-        .component('appRoot', APP_ANGULARJS_COMPONENT)
-        .config(conf)
-;
+    .component('appRoot', APP_ANGULARJS_COMPONENT)
+    .config(conf);
 
 conf.$inject = ['$stateProvider'];
 
@@ -60,7 +60,5 @@ function conf($stateProvider: StateProvider): void {
         redirectTo: 'onboarding.start',
         abstract: true
     };
-    $stateProvider.state(
-        definition
-    );
+    $stateProvider.state(definition);
 }

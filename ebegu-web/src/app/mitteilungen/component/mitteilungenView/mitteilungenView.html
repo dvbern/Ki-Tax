@@ -13,26 +13,44 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.fallId" [dossier-id]="vm.dossierId" hide-xs hide-sm>
+<dv-fall-toolbar
+    [fall-id]="vm.fallId"
+    [dossier-id]="vm.dossierId"
+    hide-xs
+    hide-sm
+>
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow" dossier-id="{{vm.dossierId}}"
-                 hide-action-buttons="{{true}}"
-                 force-loading-from-fall="{{true}}"
-                 dv-show-element
-                 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
+<dossier-toolbar
+    flex="nogrow"
+    dossier-id="{{ vm.dossierId }}"
+    hide-action-buttons="{{ true }}"
+    force-loading-from-fall="{{ true }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+>
 </dossier-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossierId}}"
-                               hide-action-buttons="{{true}}"
-                               dv-show-element
-                               dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    dossier-id="{{ vm.dossierId }}"
+    hide-action-buttons="{{ true }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+>
 </dossier-toolbar-gesuchsteller>
 
 <div class="mitteilungen-view overflow-auto" flex="auto">
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
                 <fieldset>
                     <dv-mitteilung-list form="vm.form"></dv-mitteilung-list>
                 </fieldset>

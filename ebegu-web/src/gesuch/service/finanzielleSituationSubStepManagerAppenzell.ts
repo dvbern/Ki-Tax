@@ -16,26 +16,27 @@
  */
 
 import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanzielleSituationSubStepName';
-import {
-    FinanzielleSituationAppenzellService
-} from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
+import {FinanzielleSituationAppenzellService} from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepManager';
 import {GesuchModelManager} from './gesuchModelManager';
 
 export class FinanzielleSituationSubStepManagerAppenzell extends FinanzielleSituationSubStepManager {
-
-    public constructor(
-        gesuchModelManager: GesuchModelManager
-    ) {
+    public constructor(gesuchModelManager: GesuchModelManager) {
         super(gesuchModelManager);
     }
 
     public getNextSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.APPENZELL_START
-        && FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager.getGesuch())
-        && !this.gesuchModelManager.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung) {
+        if (
+            currentSubStep ===
+                TSFinanzielleSituationSubStepName.APPENZELL_START &&
+            FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
+                this.gesuchModelManager.getGesuch()
+            ) &&
+            !this.gesuchModelManager.getGesuch().extractFamiliensituation()
+                .gemeinsameSteuererklaerung
+        ) {
             return TSFinanzielleSituationSubStepName.APPENZELL_GS2;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
@@ -44,7 +45,9 @@ export class FinanzielleSituationSubStepManagerAppenzell extends FinanzielleSitu
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.APPENZELL_GS2) {
+        if (
+            currentSubStep === TSFinanzielleSituationSubStepName.APPENZELL_GS2
+        ) {
             return TSFinanzielleSituationSubStepName.APPENZELL_START;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

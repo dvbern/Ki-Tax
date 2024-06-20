@@ -44,15 +44,13 @@ const defaultDateFormat = 'DD.MM.YYYY';
  * Klasse die allgemeine utils Methoden implementiert
  */
 export class EbeguUtil {
-
     public static $inject = ['$filter', '$translate', '$log'];
 
     public constructor(
         private readonly $filter: IFilterService,
         private readonly $translate: ITranslateService,
         private readonly $log: ILogService
-    ) {
-    }
+    ) {}
 
     public static hasTextCaseInsensitive(obj: any, text: any): boolean {
         const result = String(text).toLowerCase();
@@ -66,7 +64,10 @@ export class EbeguUtil {
 
     public static handleDownloadError(win: Window, error: any): void {
         win.close();
-        LOG.error('An error occurred downloading the document, closing download window.', error);
+        LOG.error(
+            'An error occurred downloading the document, closing download window.',
+            error
+        );
     }
 
     public static compareByName<T extends Displayable>(a: T, b: T): number {
@@ -81,12 +82,16 @@ export class EbeguUtil {
      * Compares two array and returns TRUE when both arrays contain objects with the same IDs (but not necessarily the
      * same references)
      */
-    public static isSameById<T extends TSAbstractEntity>(a: T[], b: T[]): boolean {
+    public static isSameById<T extends TSAbstractEntity>(
+        a: T[],
+        b: T[]
+    ): boolean {
         if (a.length !== b.length) {
             return false;
         }
 
-        const compareId = (value1: T, value2: T) => value1.id.localeCompare(value2.id);
+        const compareId = (value1: T, value2: T) =>
+            value1.id.localeCompare(value2.id);
 
         const aSorted = a.concat().sort(compareId);
         const bSorted = b.concat().sort(compareId);
@@ -133,14 +138,23 @@ export class EbeguUtil {
     }
 
     public static addZerosToFallNummer(fallNummer: number): string {
-        return EbeguUtil.addZerosToNumber(fallNummer, CONSTANTS.FALLNUMMER_LENGTH);
+        return EbeguUtil.addZerosToNumber(
+            fallNummer,
+            CONSTANTS.FALLNUMMER_LENGTH
+        );
     }
 
     public static addZerosToGemeindeNummer(gemeindeNummer: number): string {
-        return EbeguUtil.addZerosToNumber(gemeindeNummer, CONSTANTS.GEMEINDENUMMER_LENGTH);
+        return EbeguUtil.addZerosToNumber(
+            gemeindeNummer,
+            CONSTANTS.GEMEINDENUMMER_LENGTH
+        );
     }
 
-    public static getIndexOfElementwithID(entityToSearch: TSAbstractEntity, listToSearchIn: Array<any>): number {
+    public static getIndexOfElementwithID(
+        entityToSearch: TSAbstractEntity,
+        listToSearchIn: Array<any>
+    ): number {
         const idToSearch = entityToSearch.id;
         for (let i = 0; i < listToSearchIn.length; i++) {
             if (listToSearchIn[i].id === idToSearch) {
@@ -162,37 +176,53 @@ export class EbeguUtil {
      */
     public static generateRandomName(numberOfCharacters: number): string {
         let text = '';
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const possible =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         for (let i = 0; i < numberOfCharacters; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+            text += possible.charAt(
+                Math.floor(Math.random() * possible.length)
+            );
         }
         return text;
     }
 
     public static selectFirst(): void {
-        let tmp = angular.element('md-radio-button:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) input:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) textarea:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) select:not([disabled="disabled"]),'
-            + 'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) md-checkbox:not([disabled="disabled"]),'
-            + '#gesuchContainer button:not([disabled="disabled"]),'
-            + '#gesuchContainer .dvb-loading-button button:not([disabled="disabled"]),'
-            + '.dv-btn-row,'
-            + '#gesuchContainer button.link-underline:not([disabled="disabled"]),'
-            + '.dv-dokumente-list a:not([disabled="disabled"])').first();
+        let tmp = angular
+            .element(
+                'md-radio-button:not([disabled="disabled"]),' +
+                    'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) input:not([disabled="disabled"]),' +
+                    'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) textarea:not([disabled="disabled"]),' +
+                    'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) select:not([disabled="disabled"]),' +
+                    'fieldset:not([disabled="disabled"],.dv-adresse__fieldset) md-checkbox:not([disabled="disabled"]),' +
+                    '#gesuchContainer button:not([disabled="disabled"]),' +
+                    '#gesuchContainer .dvb-loading-button button:not([disabled="disabled"]),' +
+                    '.dv-btn-row,' +
+                    '#gesuchContainer button.link-underline:not([disabled="disabled"]),' +
+                    '.dv-dokumente-list a:not([disabled="disabled"])'
+            )
+            .first();
         if (!tmp) {
             return;
         }
 
         const ariaDescribedby = 'aria-describedby';
-        let tmpAria = tmp.attr(ariaDescribedby) === undefined ? '' : `${tmp.attr(ariaDescribedby)} `;
+        let tmpAria =
+            tmp.attr(ariaDescribedby) === undefined
+                ? ''
+                : `${tmp.attr(ariaDescribedby)} `;
         const h2 = angular.element('h2:not(.access-for-all-title)').first();
-        const h2Id = h2.attr('id') === undefined ? 'aria-describe-form-h2' : h2.attr('id');
+        const h2Id =
+            h2.attr('id') === undefined
+                ? 'aria-describe-form-h2'
+                : h2.attr('id');
         h2.attr('id', h2Id);
         tmpAria += h2Id;
         const h3 = angular.element('h3:not(.access-for-all-title)').first();
-        const h3Id = h3.attr('id') === undefined ? 'aria-describe-form-h3' : h3.attr('id');
+        const h3Id =
+            h3.attr('id') === undefined
+                ? 'aria-describe-form-h3'
+                : h3.attr('id');
         h3.attr('id', h3Id);
         tmpAria += ` ${h3Id}`;
         tmp.attr(ariaDescribedby, tmpAria);
@@ -203,13 +233,17 @@ export class EbeguUtil {
     }
 
     public static selectFirstInvalid(): void {
-        const tmp: any = angular.element('md-radio-group.ng-invalid,'
-            + ' .ng-invalid>input,'
-            + 'input.ng-invalid,'
-            + 'textarea.ng-invalid,'
-            + 'select.ng-invalid,'
-            + 'mat-select.ng-invalid,'
-            + 'md-checkbox.ng-invalid').first();
+        const tmp: any = angular
+            .element(
+                'md-radio-group.ng-invalid,' +
+                    ' .ng-invalid>input,' +
+                    'input.ng-invalid,' +
+                    'textarea.ng-invalid,' +
+                    'select.ng-invalid,' +
+                    'mat-select.ng-invalid,' +
+                    'md-checkbox.ng-invalid'
+            )
+            .first();
         if (tmp) {
             tmp.focus();
         }
@@ -227,9 +261,7 @@ export class EbeguUtil {
         return !EbeguUtil.isNullOrUndefined(data);
     }
 
-    public static areAllNotNullOrUndefined(
-        ...args: any[]
-    ): boolean {
+    public static areAllNotNullOrUndefined(...args: any[]): boolean {
         for (const datum of args) {
             if (EbeguUtil.isNullOrUndefined(datum)) {
                 return false;
@@ -239,8 +271,11 @@ export class EbeguUtil {
     }
 
     public static areSameOrWithoutValue(right: any, left: any): boolean {
-        return (EbeguUtil.isNullOrUndefined(right) && EbeguUtil.isNullOrUndefined(left)) ||
-            right === left;
+        return (
+            (EbeguUtil.isNullOrUndefined(right) &&
+                EbeguUtil.isNullOrUndefined(left)) ||
+            right === left
+        );
     }
 
     public static isNotNullAndTrue(data: boolean): boolean {
@@ -277,20 +312,49 @@ export class EbeguUtil {
         return Math.ceil(betrag * fraction) / fraction;
     }
 
+    private static getYear(gueltigkeit: TSDateRange): string {
+        return gueltigkeit.gueltigAb.year().toString().substring(2);
+    }
+
+    private static toBetreuungsId(
+        gueltigkeit: TSDateRange,
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        kindNr: number,
+        betreuungNumber: number
+    ): string {
+        const year = EbeguUtil.getYear(gueltigkeit);
+        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
+        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(
+            gemeinde.gemeindeNummer
+        );
+
+        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
+    }
+
     /**
      * Achtung: Diese Logik befindet sich ebenfalls serverseitig hier:
      * EbeguUtil.java#isFinanzielleSituationRequired
      */
-    public static isFinanzielleSituationRequiredForGesuch(gesuch: TSGesuch): boolean {
+    public static isFinanzielleSituationRequiredForGesuch(
+        gesuch: TSGesuch
+    ): boolean {
         if (!gesuch) {
             return false;
         }
-        return EbeguUtil.isNotNullOrUndefined(gesuch)
-            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer)
-            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer.familiensituationJA)
-            && EbeguUtil.isFinanzielleSituationRequired(
-                gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger,
-                gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht);
+        return (
+            EbeguUtil.isNotNullOrUndefined(gesuch) &&
+            EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer) &&
+            EbeguUtil.isNotNullOrUndefined(
+                gesuch.familiensituationContainer.familiensituationJA
+            ) &&
+            EbeguUtil.isFinanzielleSituationRequired(
+                gesuch.familiensituationContainer.familiensituationJA
+                    .sozialhilfeBezueger,
+                gesuch.familiensituationContainer.familiensituationJA
+                    .verguenstigungGewuenscht
+            )
+        );
     }
 
     /**
@@ -304,18 +368,22 @@ export class EbeguUtil {
         sozialhilfeBezueger: boolean,
         verguenstigungGewuenscht: boolean
     ): boolean {
-        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true;
+        return (
+            sozialhilfeBezueger === false && verguenstigungGewuenscht === true
+        );
     }
 
     public static getAmtsspracheAsString(
         gemeindeStammdaten: TSAbstractGemeindeStammdaten,
         translate: ITranslateService
     ): string {
-
         if (!gemeindeStammdaten || !translate) {
             return '';
         }
-        if (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
+        if (
+            gemeindeStammdaten.korrespondenzspracheDe &&
+            gemeindeStammdaten.korrespondenzspracheFr
+        ) {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
@@ -324,7 +392,10 @@ export class EbeguUtil {
         return translate.instant('DEUTSCH');
     }
 
-    public static replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
+    public static replaceElementInList(
+        element: TSAbstractEntity,
+        list: TSAbstractEntity[]
+    ): void {
         const index = EbeguUtil.getIndexOfElementwithID(element, list);
         if (index > -1) {
             list[index] = element;
@@ -334,7 +405,10 @@ export class EbeguUtil {
         }
     }
 
-    public static removeElementFromList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
+    public static removeElementFromList(
+        element: TSAbstractEntity,
+        list: TSAbstractEntity[]
+    ): void {
         const index = EbeguUtil.getIndexOfElementwithID(element, list);
         if (index > -1) {
             list.splice(index, 1);
@@ -349,7 +423,9 @@ export class EbeguUtil {
         return url;
     }
 
-    public static zemisNummerToStandardZemisNummer(zemisNummer: string): string {
+    public static zemisNummerToStandardZemisNummer(
+        zemisNummer: string
+    ): string {
         if (!zemisNummer) {
             return zemisNummer;
         }
@@ -360,14 +436,14 @@ export class EbeguUtil {
         if (zemisNummer.match(re1)) {
             standardZemisNummer = zemisNummer.slice(1);
         } else if (zemisNummer.match(re2)) {
-            const tmp = zemisNummer
-                .replace(/[\\.-]/g, '')
-                .slice(1);
+            const tmp = zemisNummer.replace(/[\\.-]/g, '').slice(1);
             standardZemisNummer = `${tmp.slice(0, 8)}.${tmp.slice(-1)}`;
         } else {
             standardZemisNummer = zemisNummer;
         }
-        if (!(new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm')).test(zemisNummer)) {
+        if (
+            !new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm').test(zemisNummer)
+        ) {
             throw new Error(`Wrong Format for ZEMIS-Nummer ${zemisNummer}`);
         }
         return standardZemisNummer;
@@ -383,7 +459,10 @@ export class EbeguUtil {
     /**
      * Hilfmethode fuer dvNewUserSelect
      */
-    public static findUserByNameInList(name: string, list: TSBenutzerNoDetails[]): TSBenutzerNoDetails | null {
+    public static findUserByNameInList(
+        name: string,
+        list: TSBenutzerNoDetails[]
+    ): TSBenutzerNoDetails | null {
         if (!name || !list) {
             return null;
         }
@@ -391,7 +470,10 @@ export class EbeguUtil {
     }
 
     // returns true if age (z.B. of a child) gets volljaehrig in this gesuchsperiode
-    public static calculateKindIsOrGetsVolljaehrig(age: moment.Moment, gp: TSGesuchsperiode): boolean {
+    public static calculateKindIsOrGetsVolljaehrig(
+        age: moment.Moment,
+        gp: TSGesuchsperiode
+    ): boolean {
         const volljaehrigNumberYears = 18;
         if (!age) {
             return false;
@@ -399,15 +481,6 @@ export class EbeguUtil {
         const ageClone = age.clone();
         const dateWith18 = ageClone.add(volljaehrigNumberYears, 'years');
         return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
-    }
-
-    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
-        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
-            .filter(fachstelle =>
-                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
-
-        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
-            sprachlicheIntegrationen.length === 0);
     }
 
     public static roundDefaultBetreuungspensum(toRound: number): number {
@@ -428,30 +501,21 @@ export class EbeguUtil {
         }
     }
 
-    private static getYear(gueltigkeit: TSDateRange): string {
-        return gueltigkeit.gueltigAb.year().toString().substring(2);
-    }
-
-    private static toBetreuungsId(
-        gueltigkeit: TSDateRange,
-        fall: TSFall,
-        gemeinde: TSGemeinde,
-        kindNr: number,
-        betreuungNumber: number
-    ): string {
-        const year = EbeguUtil.getYear(gueltigkeit);
-        const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
-        const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
-
-        return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
-    }
-
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
-    public getFirstDayGesuchsperiodeAsString(gesuchsperiode: TSGesuchsperiode): string {
-        if (gesuchsperiode && gesuchsperiode.gueltigkeit && gesuchsperiode.gueltigkeit.gueltigAb) {
-            return DateUtil.momentToLocalDateFormat(gesuchsperiode.gueltigkeit.gueltigAb, defaultDateFormat);
+    public getFirstDayGesuchsperiodeAsString(
+        gesuchsperiode: TSGesuchsperiode
+    ): string {
+        if (
+            gesuchsperiode &&
+            gesuchsperiode.gueltigkeit &&
+            gesuchsperiode.gueltigkeit.gueltigAb
+        ) {
+            return DateUtil.momentToLocalDateFormat(
+                gesuchsperiode.gueltigkeit.gueltigAb,
+                defaultDateFormat
+            );
         }
         return '';
     }
@@ -463,12 +527,17 @@ export class EbeguUtil {
     ): string {
         if (tsAntragTyp) {
             if (tsAntragTyp === TSAntragTyp.MUTATION && eingangsdatum) {
-                return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}`, {
-                    nummer: laufnummer,
-                    date: eingangsdatum.format(defaultDateFormat)
-                });
+                return this.$translate.instant(
+                    `TOOLBAR_${TSAntragTyp[tsAntragTyp]}`,
+                    {
+                        nummer: laufnummer,
+                        date: eingangsdatum.format(defaultDateFormat)
+                    }
+                );
             }
-            return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}_NO_DATE`);
+            return this.$translate.instant(
+                `TOOLBAR_${TSAntragTyp[tsAntragTyp]}_NO_DATE`
+            );
         }
         return '';
     }
@@ -505,19 +574,31 @@ export class EbeguUtil {
         kindContainerNumber: number,
         betreuungNumber: number
     ): string {
-        return gesuchsperiode && fall ?
-            EbeguUtil.toBetreuungsId(gesuchsperiode.gueltigkeit, fall, gemeinde, kindContainerNumber, betreuungNumber) :
-            '';
+        return gesuchsperiode && fall
+            ? EbeguUtil.toBetreuungsId(
+                  gesuchsperiode.gueltigkeit,
+                  fall,
+                  gemeinde,
+                  kindContainerNumber,
+                  betreuungNumber
+              )
+            : '';
     }
 
-    public calculateBetreuungsIdFromBetreuung(fall: TSFall, gemeinde: TSGemeinde, betreuung: TSBetreuung): string {
-        return betreuung && fall ?
-            EbeguUtil.toBetreuungsId(betreuung.gesuchsperiode.gueltigkeit,
-                fall,
-                gemeinde,
-                betreuung.kindNummer,
-                betreuung.betreuungNummer) :
-            '';
+    public calculateBetreuungsIdFromBetreuung(
+        fall: TSFall,
+        gemeinde: TSGemeinde,
+        betreuung: TSBetreuung
+    ): string {
+        return betreuung && fall
+            ? EbeguUtil.toBetreuungsId(
+                  betreuung.gesuchsperiode.gueltigkeit,
+                  fall,
+                  gemeinde,
+                  betreuung.kindNummer,
+                  betreuung.betreuungNummer
+              )
+            : '';
     }
 
     /**
@@ -526,16 +607,26 @@ export class EbeguUtil {
      *
      * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
-    public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
+    public splitBetreuungsnummer(
+        betreuungsnummer: string
+    ): TSBetreuungsnummerParts {
         const parts = betreuungsnummer.split('.');
         const betrNr = CONSTANTS.PARTS_OF_BETREUUNGSNUMMER;
 
         if (!parts || parts.length !== betrNr) {
-            this.$log.error(`A Betreuungsnummer must always have ${betrNr} parts. The given one had ${parts.length}`);
+            this.$log.error(
+                `A Betreuungsnummer must always have ${betrNr} parts. The given one had ${parts.length}`
+            );
             return undefined;
         }
 
-        return new TSBetreuungsnummerParts(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        return new TSBetreuungsnummerParts(
+            parts[0],
+            parts[1],
+            parts[2],
+            parts[3],
+            parts[4]
+        );
     }
 
     /**
@@ -547,9 +638,14 @@ export class EbeguUtil {
         let text = '';
         if (gesuch && gesuch.dossier) {
             if (gesuch.dossier.fall) {
-                text = EbeguUtil.addZerosToFallNummer(gesuch.dossier.fall.fallNummer);
+                text = EbeguUtil.addZerosToFallNummer(
+                    gesuch.dossier.fall.fallNummer
+                );
             }
-            if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.extractNachname()) {
+            if (
+                gesuch.gesuchsteller1 &&
+                gesuch.gesuchsteller1.extractNachname()
+            ) {
                 text = `${text} ${gesuch.gesuchsteller1.extractNachname()}`;
             }
         }
@@ -571,4 +667,18 @@ export class EbeguUtil {
         }
         return text;
     }
+
+    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
+        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen.filter(
+            fachstelle =>
+                fachstelle.integrationTyp ===
+                TSIntegrationTyp.SPRACHLICHE_INTEGRATION
+        );
+
+        return !(
+            EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
+            sprachlicheIntegrationen.length === 0
+        );
+    }
+
 }

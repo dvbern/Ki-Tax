@@ -34,12 +34,9 @@ export function languageEnabledHookRunBlockX(
     applicationPropertyService: ApplicationPropertyRS,
     i18nService: I18nServiceRSRest
 ): void {
-
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(
-        {},
-        async () =>
-            changeLanguageIfNotEnabled(applicationPropertyService, i18nService)
+    $transitions.onBefore({}, async () =>
+        changeLanguageIfNotEnabled(applicationPropertyService, i18nService)
     );
 }
 
@@ -48,7 +45,10 @@ async function changeLanguageIfNotEnabled(
     i18nService: I18nServiceRSRest
 ): Promise<HookResult> {
     await applicationPropertyService.getFrenchEnabled().then(frenchEnabled => {
-        if (!frenchEnabled && i18nService.currentLanguage() === TSBrowserLanguage.FR) {
+        if (
+            !frenchEnabled &&
+            i18nService.currentLanguage() === TSBrowserLanguage.FR
+        ) {
             i18nService.changeClientLanguage(TSBrowserLanguage.DE);
         }
     });

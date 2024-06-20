@@ -16,157 +16,225 @@
   -->
 
 <div class="gemeinde-kennzahlen">
+    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>{{ 'GEMEINDE_KENNZAHLEN' | translate }}</h2>
+            <hr class="header" />
+        </div>
+    </div>
 
-	<h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
-	<div class="row view-title">
-		<div class="col-md-12">
-			<h2>{{'GEMEINDE_KENNZAHLEN' | translate}}</h2>
-			<hr class="header"/>
-		</div>
-	</div>
+    <form
+        *ngIf="antragAndPrincipal$ | async as antragAndPrincipal"
+        #form="ngForm"
+    >
+        <div class="max-width-container-750">
+            <dv-input-container-x [noMargin]="true">
+                <label
+                    required
+                    [ngClass]="{'label-error': gemeindeKontingentiert.errors}"
+                    for="gemeindeKontingentiert-radio-group"
+                >
+                    {{
+                        'GEMEINDE_KENNZAHLEN_GEMEINDE_KONTINGENTIERT'
+                            | translate
+                    }}
+                </label>
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="gemeindeKontingentiert-radio-group"
+                        id="gemeindeKontingentiert-radio-group"
+                        class=""
+                        name="gemeindeKontingentiert"
+                        #gemeindeKontingentiert="ngModel"
+                        horizontal
+                        (change)="
+                            onGemeindeKontingentiertChange(
+                                $event,
+                                antragAndPrincipal[0]
+                            )
+                        "
+                        [disabled]="isFormDisabledFor(antragAndPrincipal)"
+                        [required]="abschlussValidationTriggered"
+                        [(ngModel)]="
+                            antragAndPrincipal[0].gemeindeKontingentiert
+                        "
+                    >
+                        <mat-radio-button [value]="true">{{
+                            'LABEL_JA' | translate
+                        }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{
+                            'LABEL_NEIN' | translate
+                        }}</mat-radio-button>
+                    </mat-radio-group>
+                    <dv-error-messages
+                        [errorObject]="gemeindeKontingentiert.errors"
+                    ></dv-error-messages>
+                </dv-radio-container-x>
+            </dv-input-container-x>
 
-	<form *ngIf="antragAndPrincipal$ | async as antragAndPrincipal" #form="ngForm">
+            <div *ngIf="gemeindeKontingentiert.value === true">
+                <dv-input-container-x [noMargin]="true">
+                    <label
+                        required
+                        [ngClass]="{'label-error': nachfrageErfuellt.errors}"
+                        for="nachfrageErfuellt-radio-group"
+                    >
+                        {{
+                            'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate
+                        }}
+                    </label>
+                    <dv-radio-container-x>
+                        <mat-radio-group
+                            aria-labelledby="nachfrageErfuellt-radio-group"
+                            id="nachfrageErfuellt-radio-group"
+                            class=""
+                            name="nachfrageErfuellt"
+                            #nachfrageErfuellt="ngModel"
+                            horizontal
+                            (change)="
+                                onNachfrageErfuelltChange(
+                                    $event,
+                                    antragAndPrincipal[0]
+                                )
+                            "
+                            [disabled]="isFormDisabledFor(antragAndPrincipal)"
+                            [required]="abschlussValidationTriggered"
+                            [(ngModel)]="
+                                antragAndPrincipal[0].nachfrageErfuellt
+                            "
+                        >
+                            <mat-radio-button [value]="true">{{
+                                'LABEL_JA' | translate
+                            }}</mat-radio-button>
+                            <mat-radio-button [value]="false">{{
+                                'LABEL_NEIN' | translate
+                            }}</mat-radio-button>
+                        </mat-radio-group>
+                        <dv-error-messages
+                            [errorObject]="nachfrageErfuellt.errors"
+                        ></dv-error-messages>
+                    </dv-radio-container-x>
+                </dv-input-container-x>
 
-		<div class="max-width-container-750">
+                <dv-input-container-x
+                    [noMargin]="true"
+                    *ngIf="nachfrageErfuellt.value === true"
+                >
+                    <label
+                        required
+                        [ngClass]="{'label-error': nachfrageAnzahl.errors}"
+                        for="nachfrageAnzahl_id"
+                    >
+                        {{
+                            'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL'
+                                | translate
+                                    : {
+                                          jahr: antragAndPrincipal[0].gesuchsperiode.getBasisJahrPlus2()
+                                      }
+                        }}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input
+                            matInput
+                            name="nachfrageAnzahl"
+                            #nachfrageAnzahl="ngModel"
+                            id="nachfrageAnzahl_id"
+                            [required]="abschlussValidationTriggered"
+                            type="number"
+                            pattern="{{ CONSTANTS.PATTERN_ANY_INT }}"
+                            [disabled]="isFormDisabledFor(antragAndPrincipal)"
+                            [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
+                            class="form-control dv-input"
+                        />
+                        <dv-error-messages
+                            [errorObject]="nachfrageAnzahl.errors"
+                        ></dv-error-messages>
+                    </mat-form-field>
+                </dv-input-container-x>
 
-			<dv-input-container-x [noMargin]="true">
-				<label required
-					   [ngClass]="{'label-error': gemeindeKontingentiert.errors}"
-					   for="gemeindeKontingentiert-radio-group">
-					{{'GEMEINDE_KENNZAHLEN_GEMEINDE_KONTINGENTIERT' | translate}}
-				</label>
-				<dv-radio-container-x>
-					<mat-radio-group
-							aria-labelledby="gemeindeKontingentiert-radio-group"
-							id="gemeindeKontingentiert-radio-group"
-							class=""
-							name="gemeindeKontingentiert"
-                            #gemeindeKontingentiert="ngModel"
-							horizontal
-                            (change)="onGemeindeKontingentiertChange($event, antragAndPrincipal[0])"
-							[disabled]="isFormDisabledFor(antragAndPrincipal)"
-							[required]="abschlussValidationTriggered"
-							[(ngModel)]="antragAndPrincipal[0].gemeindeKontingentiert">
-						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-					</mat-radio-group>
-					<dv-error-messages [errorObject]="gemeindeKontingentiert.errors"></dv-error-messages>
-				</dv-radio-container-x>
-			</dv-input-container-x>
+                <dv-input-container-x
+                    [noMargin]="true"
+                    *ngIf="nachfrageErfuellt.value === true"
+                >
+                    <label
+                        required
+                        [ngClass]="{'label-error': nachfrageDauer.errors}"
+                        for="nachfrageDauer_id"
+                    >
+                        {{ 'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input
+                            matInput
+                            id="nachfrageDauer_id"
+                            name="nachfrageDauer"
+                            #nachfrageDauer="ngModel"
+                            [required]="abschlussValidationTriggered"
+                            type="number"
+                            pattern="{{ CONSTANTS.PATTERN_ONE_DECIMALS }}"
+                            [disabled]="isFormDisabledFor(antragAndPrincipal)"
+                            [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
+                            class="form-control dv-input"
+                        />
+                        <dv-error-messages
+                            [errorObject]="nachfrageDauer.errors"
+                        ></dv-error-messages>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
 
-			<div *ngIf="gemeindeKontingentiert.value === true">
-
-				<dv-input-container-x [noMargin]="true">
-					<label required
-						   [ngClass]="{'label-error': nachfrageErfuellt.errors}"
-						   for="nachfrageErfuellt-radio-group">
-						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT' | translate}}
-					</label>
-					<dv-radio-container-x>
-						<mat-radio-group
-								aria-labelledby="nachfrageErfuellt-radio-group"
-								id="nachfrageErfuellt-radio-group"
-								class=""
-								name="nachfrageErfuellt"
-                                #nachfrageErfuellt="ngModel"
-								horizontal
-                                (change)="onNachfrageErfuelltChange($event, antragAndPrincipal[0])"
-								[disabled]="isFormDisabledFor(antragAndPrincipal)"
-								[required]="abschlussValidationTriggered"
-								[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
-							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-						</mat-radio-group>
-						<dv-error-messages [errorObject]="nachfrageErfuellt.errors"></dv-error-messages>
-					</dv-radio-container-x>
-				</dv-input-container-x>
-
-				<dv-input-container-x [noMargin]="true" *ngIf="nachfrageErfuellt.value === true">
-					<label required
-						   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
-						   for="nachfrageAnzahl_id">
-						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate: {jahr: antragAndPrincipal[0].gesuchsperiode.getBasisJahrPlus2()} }}
-					</label>
-					<mat-form-field floatLabel="always">
-						<input matInput
-							   name="nachfrageAnzahl"
-                               #nachfrageAnzahl="ngModel"
-							   id="nachfrageAnzahl_id"
-							   [required]="abschlussValidationTriggered"
-							   type="number"
-							   pattern="{{CONSTANTS.PATTERN_ANY_INT}}"
-							   [disabled]="isFormDisabledFor(antragAndPrincipal)"
-							   [(ngModel)]="antragAndPrincipal[0].nachfrageAnzahl"
-							   class="form-control dv-input"/>
-						<dv-error-messages [errorObject]="nachfrageAnzahl.errors"></dv-error-messages>
-					</mat-form-field>
-				</dv-input-container-x>
-
-				<dv-input-container-x [noMargin]="true" *ngIf="nachfrageErfuellt.value === true">
-					<label required
-						   [ngClass]="{'label-error': nachfrageDauer.errors}"
-						   for="nachfrageDauer_id">
-						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER' | translate }}
-					</label>
-					<mat-form-field floatLabel="always">
-						<input matInput
-							   id="nachfrageDauer_id"
-							   name="nachfrageDauer"
-                               #nachfrageDauer="ngModel"
-							   [required]="abschlussValidationTriggered"
-							   type="number"
-							   pattern="{{CONSTANTS.PATTERN_ONE_DECIMALS}}"
-							   [disabled]="isFormDisabledFor(antragAndPrincipal)"
-							   [(ngModel)]="antragAndPrincipal[0].nachfrageDauer"
-							   class="form-control dv-input"/>
-						<dv-error-messages [errorObject]="nachfrageDauer.errors"></dv-error-messages>
-					</mat-form-field>
-				</dv-input-container-x>
-			</div>
-
-			<dv-input-container-x [noMargin]="true">
-				<label required
-					   for="limitierungTfo_id">
-					{{'GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO' | translate }}
-				</label>
-				<mat-form-field floatLabel="always">
-					<mat-select class="form-control"
-								name="limitierungTfo"
-								[(ngModel)]="antragAndPrincipal[0].limitierungTfo"
-                                [required]="abschlussValidationTriggered"
-								id="limitierungTfo_id"
-                                #limitierungTfo='ngModel'
-								[disabled]="isFormDisabledFor(antragAndPrincipal)">
-						<mat-option *ngFor="let item of getEinschulungTypes()" [value]="item"
-									translate>{{item | translate}}</mat-option>
-					</mat-select>
-                    <dv-error-messages [errorObject]="limitierungTfo.errors"></dv-error-messages>
-				</mat-form-field>
-			</dv-input-container-x>
-		</div>
-		<div class="actions margin-top-50 max-width-container-750">
-
-			<button type="button" class="dv-btn cancel-button"
-					*ngIf="canSeeSaveAndAbschliessen$ | async"
-					[disabled]="form.invalid"
-					(click)="save(antragAndPrincipal[0])"
-					[textContent]="'SAVE' | translate">
-			</button>
-			<dv-loading-button
-					*ngIf="canSeeSaveAndAbschliessen$ | async"
-					type="button"
-					[buttonDisabled]="form.invalid"
-					(buttonClick)="abschliessen(antragAndPrincipal[0])">
-				<span translate>ABSCHLIESSEN</span>
-			</dv-loading-button>
-			<dv-loading-button
-					*ngIf="canSeeZurueckAnGemeinde$ | async"
-					(buttonClick)="zurueckAnGemeinde(antragAndPrincipal[0])"
-					type="button">
-				<span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
-			</dv-loading-button>
-		</div>
-	</form>
-
-
+            <dv-input-container-x [noMargin]="true">
+                <label required for="limitierungTfo_id">
+                    {{ 'GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <mat-select
+                        class="form-control"
+                        name="limitierungTfo"
+                        [(ngModel)]="antragAndPrincipal[0].limitierungTfo"
+                        [required]="abschlussValidationTriggered"
+                        id="limitierungTfo_id"
+                        #limitierungTfo="ngModel"
+                        [disabled]="isFormDisabledFor(antragAndPrincipal)"
+                    >
+                        <mat-option
+                            *ngFor="let item of getEinschulungTypes()"
+                            [value]="item"
+                            translate
+                            >{{ item | translate }}</mat-option
+                        >
+                    </mat-select>
+                    <dv-error-messages
+                        [errorObject]="limitierungTfo.errors"
+                    ></dv-error-messages>
+                </mat-form-field>
+            </dv-input-container-x>
+        </div>
+        <div class="actions margin-top-50 max-width-container-750">
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                *ngIf="canSeeSaveAndAbschliessen$ | async"
+                [disabled]="form.invalid"
+                (click)="save(antragAndPrincipal[0])"
+                [textContent]="'SAVE' | translate"
+            ></button>
+            <dv-loading-button
+                *ngIf="canSeeSaveAndAbschliessen$ | async"
+                type="button"
+                [buttonDisabled]="form.invalid"
+                (buttonClick)="abschliessen(antragAndPrincipal[0])"
+            >
+                <span translate>ABSCHLIESSEN</span>
+            </dv-loading-button>
+            <dv-loading-button
+                *ngIf="canSeeZurueckAnGemeinde$ | async"
+                (buttonClick)="zurueckAnGemeinde(antragAndPrincipal[0])"
+                type="button"
+            >
+                <span translate>ZURUECK_AN_GEMEINDE_TITLE</span>
+            </dv-loading-button>
+        </div>
+    </form>
 </div>

@@ -16,7 +16,7 @@
  */
 
 const getAntrag = (fallnummer: string) => {
-	return cy.getByData('antrag-entry#' + fallnummer);
+    return cy.getByData('antrag-entry#' + fallnummer);
 };
 
 export const FaelleListePO = {

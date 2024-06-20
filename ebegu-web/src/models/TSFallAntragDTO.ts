@@ -16,7 +16,6 @@
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSFallAntragDTO extends TSAbstractAntragDTO {
-
     public get fallId(): string {
         return this._fallId;
     }

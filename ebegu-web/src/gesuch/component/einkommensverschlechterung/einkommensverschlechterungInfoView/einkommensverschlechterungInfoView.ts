@@ -47,18 +47,20 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
-const LOG = LogFactory.createLog('EinkommensverschlechterungInfoViewComponentConfig');
+const LOG = LogFactory.createLog(
+    'EinkommensverschlechterungInfoViewComponentConfig'
+);
 
-export class EinkommensverschlechterungInfoViewComponentConfig implements IComponentOptions {
+export class EinkommensverschlechterungInfoViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./einkommensverschlechterungInfoView.html');
     public controller = EinkommensverschlechterungInfoViewController;
     public controllerAs = 'vm';
 }
 
-export class EinkommensverschlechterungInfoViewController
-    extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
-
+export class EinkommensverschlechterungInfoViewController extends AbstractGesuchViewController<TSEinkommensverschlechterungInfoContainer> {
     public static $inject: string[] = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -98,28 +100,36 @@ export class EinkommensverschlechterungInfoViewController
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             wizardStepManager.getEKVStepName(gesuchModelManager.getGesuch()),
-            $timeout);
-        this.initialEinkVersInfo =
-            angular.copy(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);
+            $timeout
+        );
+        this.initialEinkVersInfo = angular.copy(
+            this.gesuchModelManager.getGesuch()
+                .einkommensverschlechterungInfoContainer
+        );
         this.model = angular.copy(this.initialEinkVersInfo);
         this.initViewModel();
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.initEKVMinEinkommen();
     }
 
-    private static isEkvBisEinstellungActivated(ekvBisEinstellung: TSEinstellung): boolean {
+    private static isEkvBisEinstellungActivated(
+        ekvBisEinstellung: TSEinstellung
+    ): boolean {
         return ekvBisEinstellung.value !== 'null';
     }
 
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.initializeEKVContainers();
     }
 
@@ -138,15 +148,20 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public getEinkommensverschlechterungsInfo(): TSEinkommensverschlechterungInfo {
-        return this.getEinkommensverschlechterungsInfoContainer().einkommensverschlechterungInfoJA;
+        return this.getEinkommensverschlechterungsInfoContainer()
+            .einkommensverschlechterungInfoJA;
     }
 
     public getEinkommensverschlechterungsInfoGS(): TSEinkommensverschlechterungInfo {
-        return this.getEinkommensverschlechterungsInfoContainer().einkommensverschlechterungInfoGS;
+        return this.getEinkommensverschlechterungsInfoContainer()
+            .einkommensverschlechterungInfoGS;
     }
 
     public showEkvi(): boolean {
-        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
+        return (
+            !this.hasMandantOnlyEKVBasisJahr() &&
+            this.getEinkommensverschlechterungsInfo().einkommensverschlechterung
+        );
     }
 
     public showJahrPlus1(): boolean {
@@ -154,11 +169,17 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showJahrPlus2(): boolean {
-        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
+        return (
+            !this.hasMandantOnlyEKVBasisJahr() &&
+            this.getEinkommensverschlechterungsInfo().einkommensverschlechterung
+        );
     }
 
     private hasMandantOnlyEKVBasisJahr(): boolean {
-        return this.gesuchModelManager.getGesuch().finSitTyp === TSFinanzielleSituationTyp.SCHWYZ;
+        return (
+            this.gesuchModelManager.getGesuch().finSitTyp ===
+            TSFinanzielleSituationTyp.SCHWYZ
+        );
     }
 
     public confirmAndSave(): IPromise<TSEinkommensverschlechterungInfoContainer> {
@@ -173,24 +194,40 @@ export class EinkommensverschlechterungInfoViewController
             return this.$q.when(this.model);
         }
         if (this.isConfirmationDeleteDataRequired()) {
-            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'EINKVERS_WARNING',
-                deleteText: 'EINKVERS_WARNING_BESCHREIBUNG'
-            }).then(() =>    // User confirmed changes
-                 this.save()
-            );
+            return this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'EINKVERS_WARNING',
+                        deleteText: 'EINKVERS_WARNING_BESCHREIBUNG'
+                    }
+                )
+                .then(() =>
+                    // User confirmed changes
+                    this.save()
+                );
         }
         if (this.isConfirmationOnlyOnePeriodeRequired()) {
             const descriptionText: any = this.$translate.instant(
                 'EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG',
                 this.getBasisJahrUndPeriode()
             );
-            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'EINKVERS_ONE_PERIODE_WARNING',
-                deleteText: descriptionText
-            }).then(() =>    // User confirmed changes
-                 this.save()
-            );
+            return this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'EINKVERS_ONE_PERIODE_WARNING',
+                        deleteText: descriptionText
+                    }
+                )
+                .then(() =>
+                    // User confirmed changes
+                    this.save()
+                );
         }
         return this.save();
     }
@@ -201,69 +238,108 @@ export class EinkommensverschlechterungInfoViewController
      * Familiensituation the GS2 is new and doesn't have an EKVContainer yet.
      */
     private isThereSomethingNew(): boolean {
-        return (this.model && this.model.isNew())
-            || this.isThereAnyEinkommenverschlechterung() && (
-                this.gesuchModelManager.isGesuchsteller2Required()
-                && this.gesuchModelManager.getGesuch().gesuchsteller2
-                && (
-                    !this.gesuchModelManager.getGesuch().gesuchsteller2.einkommensverschlechterungContainer
-                    || this.gesuchModelManager.getGesuch().gesuchsteller2.einkommensverschlechterungContainer.isNew()
-                )
-            );
+        return (
+            (this.model && this.model.isNew()) ||
+            (this.isThereAnyEinkommenverschlechterung() &&
+                this.gesuchModelManager.isGesuchsteller2Required() &&
+                this.gesuchModelManager.getGesuch().gesuchsteller2 &&
+                (!this.gesuchModelManager.getGesuch().gesuchsteller2
+                    .einkommensverschlechterungContainer ||
+                    this.gesuchModelManager
+                        .getGesuch()
+                        .gesuchsteller2.einkommensverschlechterungContainer.isNew()))
+        );
     }
 
     private isThereAnyEinkommenverschlechterung(): boolean {
-        const infoContainer = this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer;
+        const infoContainer =
+            this.gesuchModelManager.getGesuch()
+                .einkommensverschlechterungInfoContainer;
 
-        return infoContainer
-            && infoContainer.einkommensverschlechterungInfoJA
-            && infoContainer.einkommensverschlechterungInfoJA.einkommensverschlechterung;
+        return (
+            infoContainer &&
+            infoContainer.einkommensverschlechterungInfoJA &&
+            infoContainer.einkommensverschlechterungInfoJA
+                .einkommensverschlechterung
+        );
     }
 
     private save(): IPromise<TSEinkommensverschlechterungInfoContainer> {
         this.errorService.clearAll();
         if (!this.isFinanzielleSituationRequired()) {
             // just return the existing one
-            return this.$q.when(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);
+            return this.$q.when(
+                this.gesuchModelManager.getGesuch()
+                    .einkommensverschlechterungInfoContainer
+            );
         }
 
-        if (this.getEinkommensverschlechterungsInfo().einkommensverschlechterung) {
-            if (this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 === undefined) {
-                this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
-                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert = false;
+        if (
+            this.getEinkommensverschlechterungsInfo().einkommensverschlechterung
+        ) {
+            if (
+                this.getEinkommensverschlechterungsInfo()
+                    .ekvFuerBasisJahrPlus1 === undefined
+            ) {
+                this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 =
+                    false;
+                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert =
+                    false;
             }
-            if (this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 === undefined) {
-                this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
-                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert = false;
+            if (
+                this.getEinkommensverschlechterungsInfo()
+                    .ekvFuerBasisJahrPlus2 === undefined
+            ) {
+                this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 =
+                    false;
+                this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert =
+                    false;
             }
 
             this.initializeEKVContainers();
         } else {
             // wenn keine EV eingetragen wird, setzen wir alles auf undefined, da keine Daten gespeichert werden
             // sollen
-            this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
-            this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
-            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert = false;
-            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert = false;
+            this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 =
+                false;
+            this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 =
+                false;
+            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert =
+                false;
+            this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert =
+                false;
         }
 
-        return this.einkommensverschlechterungInfoRS.saveEinkommensverschlechterungInfo(
-            this.getEinkommensverschlechterungsInfoContainer(), this.gesuchModelManager.getGesuch().id)
+        return this.einkommensverschlechterungInfoRS
+            .saveEinkommensverschlechterungInfo(
+                this.getEinkommensverschlechterungsInfoContainer(),
+                this.gesuchModelManager.getGesuch().id
+            )
             .then((ekvInfoRespo: TSEinkommensverschlechterungInfoContainer) => {
-                this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer = ekvInfoRespo;
-                return this.loadEKVContainersFromServer().then(() => ekvInfoRespo);
+                this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer =
+                    ekvInfoRespo;
+                return this.loadEKVContainersFromServer().then(
+                    () => ekvInfoRespo
+                );
             });
-
     }
 
     private initializeEKVContainers(): void {
         const gesuch = this.gesuchModelManager.getGesuch();
-        if (gesuch.gesuchsteller1 && !gesuch.gesuchsteller1.einkommensverschlechterungContainer) {
-            gesuch.gesuchsteller1.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
+        if (
+            gesuch.gesuchsteller1 &&
+            !gesuch.gesuchsteller1.einkommensverschlechterungContainer
+        ) {
+            gesuch.gesuchsteller1.einkommensverschlechterungContainer =
+                new TSEinkommensverschlechterungContainer();
         }
-        if (this.gesuchModelManager.isGesuchsteller2Required() && gesuch.gesuchsteller2
-            && !gesuch.gesuchsteller2.einkommensverschlechterungContainer) {
-            gesuch.gesuchsteller2.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
+        if (
+            this.gesuchModelManager.isGesuchsteller2Required() &&
+            gesuch.gesuchsteller2 &&
+            !gesuch.gesuchsteller2.einkommensverschlechterungContainer
+        ) {
+            gesuch.gesuchsteller2.einkommensverschlechterungContainer =
+                new TSEinkommensverschlechterungContainer();
         }
     }
 
@@ -274,13 +350,21 @@ export class EinkommensverschlechterungInfoViewController
 
         const id = this.gesuchModelManager.getGesuch().gesuchsteller1.id;
 
-        return this.ekvContainerRS.findEKVContainerForGesuchsteller(id)
+        return this.ekvContainerRS
+            .findEKVContainerForGesuchsteller(id)
             .then((responseGS1: TSEinkommensverschlechterungContainer) => {
                 const gesuch = this.gesuchModelManager.getGesuch();
-                gesuch.gesuchsteller1.einkommensverschlechterungContainer = responseGS1;
+                gesuch.gesuchsteller1.einkommensverschlechterungContainer =
+                    responseGS1;
 
-                if (this.gesuchModelManager.isGesuchsteller2Required() && gesuch.gesuchsteller2) {
-                    return this.ekvContainerRS.findEKVContainerForGesuchsteller(gesuch.gesuchsteller2.id)
+                if (
+                    this.gesuchModelManager.isGesuchsteller2Required() &&
+                    gesuch.gesuchsteller2
+                ) {
+                    return this.ekvContainerRS
+                        .findEKVContainerForGesuchsteller(
+                            gesuch.gesuchsteller2.id
+                        )
                         .then(responseGS2 => {
                             this.gesuchModelManager.getGesuch().gesuchsteller2.einkommensverschlechterungContainer =
                                 responseGS2;
@@ -288,28 +372,41 @@ export class EinkommensverschlechterungInfoViewController
                             return responseGS2;
                         });
                 }
-                return gesuch.gesuchsteller1.einkommensverschlechterungContainer;
+                return gesuch.gesuchsteller1
+                    .einkommensverschlechterungContainer;
             });
     }
 
-    public removeEkvBasisJahrPlus1(gesuchsteller: TSGesuchstellerContainer): void {
-        if (gesuchsteller && gesuchsteller.einkommensverschlechterungContainer) {
-            gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 = undefined;
+    public removeEkvBasisJahrPlus1(
+        gesuchsteller: TSGesuchstellerContainer
+    ): void {
+        if (
+            gesuchsteller &&
+            gesuchsteller.einkommensverschlechterungContainer
+        ) {
+            gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
+                undefined;
         }
     }
 
-    public removeEkvBasisJahrPlus2(gesuchsteller: TSGesuchstellerContainer): void {
-        if (gesuchsteller && gesuchsteller.einkommensverschlechterungContainer) {
-            gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus2 = undefined;
+    public removeEkvBasisJahrPlus2(
+        gesuchsteller: TSGesuchstellerContainer
+    ): void {
+        if (
+            gesuchsteller &&
+            gesuchsteller.einkommensverschlechterungContainer
+        ) {
+            gesuchsteller.einkommensverschlechterungContainer.ekvJABasisJahrPlus2 =
+                undefined;
         }
     }
 
     public isRequired(basisJahrPlus: number): boolean {
         const info = this.getEinkommensverschlechterungsInfo();
 
-        return basisJahrPlus === 2 ?
-            info && !info.ekvFuerBasisJahrPlus1 :
-            info && !info.ekvFuerBasisJahrPlus2;
+        return basisJahrPlus === 2
+            ? info && !info.ekvFuerBasisJahrPlus1
+            : info && !info.ekvFuerBasisJahrPlus2;
     }
 
     /**
@@ -318,10 +415,13 @@ export class EinkommensverschlechterungInfoViewController
     private isConfirmationDeleteDataRequired(): boolean {
         const info = this.getEinkommensverschlechterungsInfo();
 
-        return this.initialEinkVersInfo && this.initialEinkVersInfo.einkommensverschlechterungInfoJA
-            && info
-            && !info.einkommensverschlechterung
-            && this.hasGS1Ekv();
+        return (
+            this.initialEinkVersInfo &&
+            this.initialEinkVersInfo.einkommensverschlechterungInfoJA &&
+            info &&
+            !info.einkommensverschlechterung &&
+            this.hasGS1Ekv()
+        );
     }
 
     /**
@@ -329,46 +429,83 @@ export class EinkommensverschlechterungInfoViewController
      * users from entering wrong input data
      */
     private isConfirmationOnlyOnePeriodeRequired(): boolean {
-        return !this.hasMandantOnlyEKVBasisJahr() &&
+        return (
+            !this.hasMandantOnlyEKVBasisJahr() &&
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 &&
-            !this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
+            !this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2
+        );
     }
 
     /**
      * Checks whether the GS1 exists and has an Einkommensverschlechterung
      */
     private hasGS1Ekv(): boolean {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1
-            && this.gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer !== null
-            && this.gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer !== undefined
-            && !this.gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.isEmpty();
+        return (
+            this.gesuchModelManager.getGesuch().gesuchsteller1 &&
+            this.gesuchModelManager.getGesuch().gesuchsteller1
+                .einkommensverschlechterungContainer !== null &&
+            this.gesuchModelManager.getGesuch().gesuchsteller1
+                .einkommensverschlechterungContainer !== undefined &&
+            !this.gesuchModelManager
+                .getGesuch()
+                .gesuchsteller1.einkommensverschlechterungContainer.isEmpty()
+        );
     }
 
     public isAmt(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAdministratorOrAmtRole()
+        );
     }
 
     public isGesuchFreigegeben(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
-            return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().status
+        ) {
+            return isAtLeastFreigegeben(
+                this.gesuchModelManager.getGesuch().status
+            );
         }
         return false;
     }
 
     public showAblehnungBasisJahrPlus1(): boolean {
-        if (this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung) {
-            return this.isAmt()
-                || this.isGesuchFreigegeben() && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert;
+        if (
+            this.hasMandantOnlyEKVBasisJahr() &&
+            this.getEinkommensverschlechterungsInfo().einkommensverschlechterung
+        ) {
+            return (
+                this.isAmt() ||
+                (this.isGesuchFreigegeben() &&
+                    this.getEinkommensverschlechterungsInfo()
+                        .ekvBasisJahrPlus1Annulliert)
+            );
         }
-        return (!this.isAmt() && this.showEkvi() && this.showJahrPlus1()
-                && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert && this.isGesuchFreigegeben())
-            || (this.isAmt() && this.showEkvi() && this.showJahrPlus1());
+        return (
+            (!this.isAmt() &&
+                this.showEkvi() &&
+                this.showJahrPlus1() &&
+                this.getEinkommensverschlechterungsInfo()
+                    .ekvBasisJahrPlus1Annulliert &&
+                this.isGesuchFreigegeben()) ||
+            (this.isAmt() && this.showEkvi() && this.showJahrPlus1())
+        );
     }
 
     public showAblehnungBasisJahrPlus2(): boolean {
-        return (!this.isAmt() && this.showJahrPlus2() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2
-                && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert && this.isGesuchFreigegeben())
-            || (this.isAmt() && this.showJahrPlus2() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2);
+        return (
+            (!this.isAmt() &&
+                this.showJahrPlus2() &&
+                this.getEinkommensverschlechterungsInfo()
+                    .ekvFuerBasisJahrPlus2 &&
+                this.getEinkommensverschlechterungsInfo()
+                    .ekvBasisJahrPlus2Annulliert &&
+                this.isGesuchFreigegeben()) ||
+            (this.isAmt() &&
+                this.showJahrPlus2() &&
+                this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2)
+        );
     }
 
     public isFinanzielleSituationRequired(): boolean {
@@ -376,50 +513,67 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public warningEinkommenTooHighVisible(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.maxAllowedEinkommenForEKV)
-            && EbeguUtil.isNotNullOrUndefined(this.currentMinEinkommenEKV)
-            && this.maxAllowedEinkommenForEKV < this.currentMinEinkommenEKV;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.maxAllowedEinkommenForEKV) &&
+            EbeguUtil.isNotNullOrUndefined(this.currentMinEinkommenEKV) &&
+            this.maxAllowedEinkommenForEKV < this.currentMinEinkommenEKV
+        );
     }
 
     private initEKVMinEinkommen(): void {
-        combineLatest([this.getEinkommensverschlechterungBis$(), this.getMinMassgebendesEinkommen$()])
-            .subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
-            this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
-            this.currentMinEinkommenEKV = minMassgebendenEinkommen;
-        }, error => LOG.error(error));
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id)
-            .pipe(
-                map(einstellung => parseInt(einstellung.value, 10))
-            ).subscribe(value => {
+        combineLatest([
+            this.getEinkommensverschlechterungBis$(),
+            this.getMinMassgebendesEinkommen$()
+        ]).subscribe(
+            ([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
+                this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
+                this.currentMinEinkommenEKV = minMassgebendenEinkommen;
+            },
+            error => LOG.error(error)
+        );
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .pipe(map(einstellung => parseInt(einstellung.value, 10)))
+            .subscribe(value => {
                 this.grenzwertEKV = value;
-        });
-
+            });
     }
 
     private getMinMassgebendesEinkommen$(): Observable<number> {
-        return from(this.ekvContainerRS
-            .getMinimalesMassgebendesEinkommenForGesuch(this.gesuchModelManager.getGesuch()));
+        return from(
+            this.ekvContainerRS.getMinimalesMassgebendesEinkommenForGesuch(
+                this.gesuchModelManager.getGesuch()
+            )
+        );
     }
 
     private getEinkommensverschlechterungBis$(): Observable<number> {
-        return this.einstellungRS.findEinstellung(
-            TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).pipe(
-            filter(ekvBisEinstellung => EinkommensverschlechterungInfoViewController.isEkvBisEinstellungActivated(
-                ekvBisEinstellung)),
-            map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10))
-        );
+        return this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .pipe(
+                filter(ekvBisEinstellung =>
+                    EinkommensverschlechterungInfoViewController.isEkvBisEinstellungActivated(
+                        ekvBisEinstellung
+                    )
+                ),
+                map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10))
+            );
     }
 
     public getMaxEinkommenTranslateValues(): any {
         return {
-            maxEinkommenEKV: this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
-            massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch')
+            maxEinkommenEKV:
+                this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
+            massgebendesEinkommen:
+                this.currentMinEinkommenEKV.toLocaleString('de-ch')
         };
     }
 
@@ -436,8 +590,12 @@ export class EinkommensverschlechterungInfoViewController
         if (!this.hasMandantOnlyEKVBasisJahr()) {
             return;
         }
-        if (this.model.einkommensverschlechterungInfoJA.einkommensverschlechterung) {
-            this.model.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 = true;
+        if (
+            this.model.einkommensverschlechterungInfoJA
+                .einkommensverschlechterung
+        ) {
+            this.model.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 =
+                true;
         }
     }
 }

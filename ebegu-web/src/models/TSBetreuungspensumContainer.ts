@@ -17,11 +17,13 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBetreuungspensum} from './TSBetreuungspensum';
 
 export class TSBetreuungspensumContainer extends TSAbstractMutableEntity {
-
     private _betreuungspensumGS: TSBetreuungspensum;
     private _betreuungspensumJA: TSBetreuungspensum;
 
-    public constructor(betreuungspensumGS?: TSBetreuungspensum, betreuungspensumJA?: TSBetreuungspensum) {
+    public constructor(
+        betreuungspensumGS?: TSBetreuungspensum,
+        betreuungspensumJA?: TSBetreuungspensum
+    ) {
         super();
         this._betreuungspensumGS = betreuungspensumGS;
         this._betreuungspensumJA = betreuungspensumJA;

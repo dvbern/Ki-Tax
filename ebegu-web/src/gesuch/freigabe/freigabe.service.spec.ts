@@ -32,10 +32,14 @@ describe('FreigabeService', () => {
     let gesuchModelManager: SpyObj<GesuchModelManager>;
 
     beforeEach(() => {
-        wizardStepManager = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
-            ['areAllStepsOK', 'hasStepGivenStatus', 'isStepStatusOk']);
-        gesuchModelManager = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-            ['getGesuch', 'isGesuchStatus', 'isGesuchReadonly', 'getFall']);
+        wizardStepManager = jasmine.createSpyObj<WizardStepManager>(
+            WizardStepManager.name,
+            ['areAllStepsOK', 'hasStepGivenStatus', 'isStepStatusOk']
+        );
+        gesuchModelManager = jasmine.createSpyObj<GesuchModelManager>(
+            GesuchModelManager.name,
+            ['getGesuch', 'isGesuchStatus', 'isGesuchReadonly', 'getFall']
+        );
 
         testee = new FreigabeService(gesuchModelManager, wizardStepManager);
     });
@@ -51,49 +55,46 @@ describe('FreigabeService', () => {
             wizardStepManager.isStepStatusOk.and.returnValue(false);
 
             expect(testee.canBeFreigegeben()).toBe(false);
-            expect(wizardStepManager.isStepStatusOk)
-                .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG);
+            expect(wizardStepManager.isStepStatusOk).toHaveBeenCalledWith(
+                TSWizardStepName.BETREUUNG
+            );
         });
-        it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly',
-            () => {
-                wizardStepManager.areAllStepsOK.and.returnValue(true);
-                wizardStepManager.isStepStatusOk.and.returnValue(true);
-                gesuchModelManager.isGesuchReadonly.and.returnValue(true);
-                expect(testee.canBeFreigegeben()).toBe(false);
-            });
-        it('should return true when all steps are true and all Betreuungen are accepted and the Gesuch is not ReadOnly',
-            () => {
-                wizardStepManager.areAllStepsOK.and.returnValue(true);
-                wizardStepManager.isStepStatusOk.and.returnValue(true);
-                gesuchModelManager.isGesuchReadonly.and.returnValue(false);
-                gesuchModelManager.isGesuchStatus.and.returnValue(true);
-                gesuchModelManager.getFall.and.returnValue(new TSFall());
-                expect(testee.canBeFreigegeben()).toBe(true);
-            });
+        it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly', () => {
+            wizardStepManager.areAllStepsOK.and.returnValue(true);
+            wizardStepManager.isStepStatusOk.and.returnValue(true);
+            gesuchModelManager.isGesuchReadonly.and.returnValue(true);
+            expect(testee.canBeFreigegeben()).toBe(false);
+        });
+        it('should return true when all steps are true and all Betreuungen are accepted and the Gesuch is not ReadOnly', () => {
+            wizardStepManager.areAllStepsOK.and.returnValue(true);
+            wizardStepManager.isStepStatusOk.and.returnValue(true);
+            gesuchModelManager.isGesuchReadonly.and.returnValue(false);
+            gesuchModelManager.isGesuchStatus.and.returnValue(true);
+            gesuchModelManager.getFall.and.returnValue(new TSFall());
+            expect(testee.canBeFreigegeben()).toBe(true);
+        });
 
-        it('should return false if the Fall is a Sozialdienstfall',
-            () => {
-                wizardStepManager.areAllStepsOK.and.returnValue(true);
-                wizardStepManager.isStepStatusOk.and.returnValue(true);
-                gesuchModelManager.isGesuchReadonly.and.returnValue(false);
-                gesuchModelManager.isGesuchStatus.and.returnValue(true);
-                const tsFall = new TSFall();
-                tsFall.sozialdienstFall = new TSSozialdienstFall();
-                gesuchModelManager.getFall.and.returnValue(tsFall);
-                expect(testee.canBeFreigegeben()).toBe(false);
-            })     ;
+        it('should return false if the Fall is a Sozialdienstfall', () => {
+            wizardStepManager.areAllStepsOK.and.returnValue(true);
+            wizardStepManager.isStepStatusOk.and.returnValue(true);
+            gesuchModelManager.isGesuchReadonly.and.returnValue(false);
+            gesuchModelManager.isGesuchStatus.and.returnValue(true);
+            const tsFall = new TSFall();
+            tsFall.sozialdienstFall = new TSSozialdienstFall();
+            gesuchModelManager.getFall.and.returnValue(tsFall);
+            expect(testee.canBeFreigegeben()).toBe(false);
+        });
 
-        it('should return true if the Fall is an active Sozialdienstfall',
-            () => {
-                wizardStepManager.areAllStepsOK.and.returnValue(true);
-                wizardStepManager.isStepStatusOk.and.returnValue(true);
-                gesuchModelManager.isGesuchReadonly.and.returnValue(false);
-                gesuchModelManager.isGesuchStatus.and.returnValue(true);
-                const tsFall = new TSFall();
-                tsFall.sozialdienstFall = new TSSozialdienstFall();
-                tsFall.sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
-                gesuchModelManager.getFall.and.returnValue(tsFall);
-                expect(testee.canBeFreigegeben()).toBe(true);
-            });
+        it('should return true if the Fall is an active Sozialdienstfall', () => {
+            wizardStepManager.areAllStepsOK.and.returnValue(true);
+            wizardStepManager.isStepStatusOk.and.returnValue(true);
+            gesuchModelManager.isGesuchReadonly.and.returnValue(false);
+            gesuchModelManager.isGesuchStatus.and.returnValue(true);
+            const tsFall = new TSFall();
+            tsFall.sozialdienstFall = new TSSozialdienstFall();
+            tsFall.sozialdienstFall.status = TSSozialdienstFallStatus.AKTIV;
+            gesuchModelManager.getFall.and.returnValue(tsFall);
+            expect(testee.canBeFreigegeben()).toBe(true);
+        });
     });
 });

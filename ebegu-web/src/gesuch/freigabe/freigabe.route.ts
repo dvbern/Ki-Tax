@@ -34,7 +34,7 @@ class EbeguFreigabeState implements Ng1StateDeclaration {
     public name = 'gesuch.freigabe';
     public url = '/freigabe/:gesuchId';
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
     public onEnter = redirectToConfiguredFreigabeView;
 }
@@ -44,28 +44,50 @@ const redirectToConfiguredFreigabeView = (
     gesuch: TSGesuch,
     $state: StateService,
     $stateParams: StateParams,
-    $log: ILogService,
+    $log: ILogService
 ) => {
-    einstellungRS.getEinstellung(
-        gesuch.gesuchsperiode.id,
-        TSEinstellungKey.GESUCHFREIGABE_ONLINE,
-    ).pipe(first())
-        .subscribe((onlineFreigabe: TSEinstellung) => {
-            const route = onlineFreigabe.getValueAsBoolean() ? freigabeOnlineState.name : freigabeMitQuittungState.name;
-            // ohne reload funktioniert navigation über sidenav nur einmal
-            $state.go(route, {gesuchId: $stateParams.gesuchId}, {reload: true});
-        }, (error: any) => $log.error(error));
+    einstellungRS
+        .getEinstellung(
+            gesuch.gesuchsperiode.id,
+            TSEinstellungKey.GESUCHFREIGABE_ONLINE
+        )
+        .pipe(first())
+        .subscribe(
+            (onlineFreigabe: TSEinstellung) => {
+                const route = onlineFreigabe.getValueAsBoolean()
+                    ? freigabeOnlineState.name
+                    : freigabeMitQuittungState.name;
+                // ohne reload funktioniert navigation über sidenav nur einmal
+                $state.go(
+                    route,
+                    {gesuchId: $stateParams.gesuchId},
+                    {reload: true}
+                );
+            },
+            (error: any) => $log.error(error)
+        );
 };
-redirectToConfiguredFreigabeView.$inject = ['EinstellungRS', 'gesuch', '$state', '$stateParams', '$log'];
+redirectToConfiguredFreigabeView.$inject = [
+    'EinstellungRS',
+    'gesuch',
+    '$state',
+    '$stateParams',
+    '$log'
+];
 
 const assertOnlinefreigabeEinstellungIs = (onlineFreigabeAktiv: boolean) => {
-    const fn = (
-        einstellungRS: EinstellungRS,
-        gesuch: TSGesuch,
-    ) => einstellungRS.getEinstellung(
-            gesuch.gesuchsperiode.id,
-            TSEinstellungKey.GESUCHFREIGABE_ONLINE,
-        ).pipe(first()).toPromise().then(einstellung => einstellung.getValueAsBoolean() === onlineFreigabeAktiv);
+    const fn = (einstellungRS: EinstellungRS, gesuch: TSGesuch) =>
+        einstellungRS
+            .getEinstellung(
+                gesuch.gesuchsperiode.id,
+                TSEinstellungKey.GESUCHFREIGABE_ONLINE
+            )
+            .pipe(first())
+            .toPromise()
+            .then(
+                einstellung =>
+                    einstellung.getValueAsBoolean() === onlineFreigabeAktiv
+            );
     fn.$inject = ['EinstellungRS', 'gesuch'];
     return fn;
 };
@@ -76,21 +98,21 @@ class EbeguFreigabeMitQuittungState implements Ng1StateDeclaration {
     public name = 'gesuch.freigabe-mitQuittung';
     public url = '/freigabe-mit-quittung/:gesuchId';
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: {[name: string]: Ng1StateDeclaration} = {
         gesuchViewPort: {
-            template: '<freigabe-view>',
+            template: '<freigabe-view>'
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
 
     public onEnter = assertOnlinefreigabeEinstellungIs(false);
@@ -104,21 +126,20 @@ class EbeguFreigabeOnlineState implements Ng1StateDeclaration {
 
     public views: any = {
         gesuchViewPort: {
-            component: OnlineFreigabeComponent,
+            component: OnlineFreigabeComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
     };
-
 }
 
 export const freigabeOnlineState = new EbeguFreigabeOnlineState();

@@ -2,32 +2,59 @@
     <div class="row">
         <div class="col-xs-12">
             <dv-checkbox-x
-                [tooltip]="'HOHEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGEN_INFO'"
+                [tooltip]="
+                    'HOHEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGEN_INFO'
+                "
                 data-test="hoehere-beitraege-beeintraechtigung-beantragen"
                 [label]="'HOHEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGEN'"
-                [(model)]="kindContainer.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen"
+                [(model)]="
+                    kindContainer.kindJA
+                        .hoehereBeitraegeWegenBeeintraechtigungBeantragen
+                "
                 (modelChange)="handleBeantragungChange()"
-                [dvBisherValue]="kindContainer.kindGS?.hoehereBeitraegeWegenBeeintraechtigungBeantragen"
+                [dvBisherValue]="
+                    kindContainer.kindGS
+                        ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen
+                "
                 [readonly]="readOnly"
             ></dv-checkbox-x>
         </div>
     </div>
 
-    <div class="row" *ngIf="kindContainer.kindJA.hoehereBeitraegeWegenBeeintraechtigungBeantragen">
-        <div class="well well-status-warten" [innerHTML]="'HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_HINT' | translate"></div>
+    <div
+        class="row"
+        *ngIf="
+            kindContainer.kindJA
+                .hoehereBeitraegeWegenBeeintraechtigungBeantragen
+        "
+    >
+        <div
+            class="well well-status-warten"
+            [innerHTML]="
+                'HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_HINT' | translate
+            "
+        ></div>
         <div class="col-xs-12">
             <dv-radio-container-x>
                 <dv-radio-input-x
                     data-test="container.hoehere-beitraege-digitale-unterlagen"
                     [label]="'HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN'"
-                    [(model)]="kindContainer.kindJA.hoehereBeitraegeUnterlagenDigital"
-                    [dvBisherValue]="kindContainer.kindGS?.hoehereBeitraegeUnterlagenDigital"
+                    [(model)]="
+                        kindContainer.kindJA.hoehereBeitraegeUnterlagenDigital
+                    "
+                    [dvBisherValue]="
+                        kindContainer.kindGS?.hoehereBeitraegeUnterlagenDigital
+                    "
                     [required]="true"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
     </div>
-    <div *ngIf="kindContainer.kindJA.hoehereBeitraegeUnterlagenDigital === false" class="well well-status-warten" translate>
+    <div
+        *ngIf="kindContainer.kindJA.hoehereBeitraegeUnterlagenDigital === false"
+        class="well well-status-warten"
+        translate
+    >
         HOEHERE_BEITRAEGE_DIGITALE_UNTERLAGEN_NEIN_HINT
     </div>
 </form>

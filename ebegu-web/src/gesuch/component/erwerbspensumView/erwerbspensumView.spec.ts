@@ -25,7 +25,6 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
 
 describe('erwerbspensumView', () => {
-
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
@@ -35,22 +34,35 @@ describe('erwerbspensumView', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
 
-        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(new TSGemeinde());
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
-    }));
+            spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(
+                new TSGemeinde()
+            );
+            spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                new TSGesuchsperiode()
+            );
+        })
+    );
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
-            const tsGesuchsperiode = new TSGesuchsperiode();
-            tsGesuchsperiode.id = '123';
-            gesuchModelManager.getGesuch().gesuchsperiode = tsGesuchsperiode;
-        });
+        gesuchModelManager
+            .initGesuch(
+                TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_FALL,
+                undefined
+            )
+            .then(() => {
+                const tsGesuchsperiode = new TSGesuchsperiode();
+                tsGesuchsperiode.id = '123';
+                gesuchModelManager.getGesuch().gesuchsperiode =
+                    tsGesuchsperiode;
+            });
     }));
 
     it('should be defined', () => {
@@ -59,7 +71,11 @@ describe('erwerbspensumView', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('erwerbspensumView', {$scope: scope}, bindings);
+        component = $componentController(
+            'erwerbspensumView',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
 });

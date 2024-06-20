@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSBrowserLanguage} from '../../../../models/enums/TSBrowserLanguage';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -30,8 +30,7 @@ const LOG = LogFactory.createLog('LangageSelectorComponent');
     styleUrls: ['./language-selector.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class LanguageSelectorComponent implements OnInit {
-
+export class LanguageSelectorComponent {
     @Input()
     public hideForLoggedUser: boolean = false;
 
@@ -41,11 +40,7 @@ export class LanguageSelectorComponent implements OnInit {
     public constructor(
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly authService: AuthServiceRS
-    ) {
-    }
-
-    public ngOnInit(): void {
-    }
+    ) {}
 
     public changeLanguage(language: TSBrowserLanguage): void {
         this.i18nServiceRS.changeClientLanguage(language);
@@ -57,6 +52,9 @@ export class LanguageSelectorComponent implements OnInit {
     }
 
     public hideLanguageSelector(): boolean {
-        return this.hideForLoggedUser && EbeguUtil.isUndefined(this.authService.getPrincipalRole());
+        return (
+            this.hideForLoggedUser &&
+            EbeguUtil.isUndefined(this.authService.getPrincipalRole())
+        );
     }
 }

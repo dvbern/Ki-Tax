@@ -19,7 +19,6 @@ import * as moment from 'moment';
 import {TSVeranlagungsstand} from './TSVeranlagungsstand';
 
 export class TSSteuerdatenResponse {
-
     private _zpvNrAntragsteller: number;
 
     private _geburtsdatumAntragsteller: moment.Moment;
@@ -91,9 +90,6 @@ export class TSSteuerdatenResponse {
     private _liegenschaftsAbzuege: number;
 
     private _nettovermoegen: number;
-
-    public constructor() {
-    }
 
     public get zpvNrAntragsteller(): number {
         return this._zpvNrAntragsteller;
@@ -267,7 +263,9 @@ export class TSSteuerdatenResponse {
         return this._ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger;
     }
 
-    public set ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger(value: number) {
+    public set ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger(
+        value: number
+    ) {
         this._ausgewiesenerGeschaeftsertragVorperiodeDossiertraeger = value;
     }
 
@@ -283,7 +281,9 @@ export class TSSteuerdatenResponse {
         return this._ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger;
     }
 
-    public set ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger(value: number) {
+    public set ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger(
+        value: number
+    ) {
         this._ausgewiesenerGeschaeftsertragVorperiode2Dossiertraeger = value;
     }
 
@@ -315,7 +315,9 @@ export class TSSteuerdatenResponse {
         return this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme;
     }
 
-    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(value: number) {
+    public set bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme(
+        value: number
+    ) {
         this._bruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme = value;
     }
 

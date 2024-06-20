@@ -30,7 +30,6 @@ const LOG = LogFactory.createLog('GemeindeKennzahlenUiComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeKennzahlenUiComponent implements OnInit {
-
     @Input()
     public gemeindeKennzahlenId: string;
 
@@ -40,16 +39,21 @@ export class GemeindeKennzahlenUiComponent implements OnInit {
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
         private readonly wizardService: WizardStepXRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag().subscribe(antrag => {
+        this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag().subscribe(
+            antrag => {
                 this.gemeindeKennzahlen = antrag;
-                this.wizardService.updateSteps(this.wizardTyp, this.gemeindeKennzahlen.id);
+                this.wizardService.updateSteps(
+                    this.wizardTyp,
+                    this.gemeindeKennzahlen.id
+                );
             },
-            error => LOG.error(error));
-        this.gemeindeKennzahlenService.updateGemeindeKennzahlenAntragStore(this.gemeindeKennzahlenId);
+            error => LOG.error(error)
+        );
+        this.gemeindeKennzahlenService.updateGemeindeKennzahlenAntragStore(
+            this.gemeindeKennzahlenId
+        );
     }
-
 }

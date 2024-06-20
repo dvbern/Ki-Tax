@@ -18,31 +18,29 @@ import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {PosteingangService} from './posteingang.service';
 
 describe('posteingangService', () => {
-
     let posteingangService: PosteingangService;
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            providers: [
-                PosteingangService
-            ]
+            providers: [PosteingangService]
         });
 
-        posteingangService = TestBed.inject<PosteingangService>(PosteingangService);
+        posteingangService =
+            TestBed.inject<PosteingangService>(PosteingangService);
     }));
 
     describe('posteingangChanged', () => {
         it('changes the status to POSTEINGANG_MIGHT_HAVE_CHANGED', done => {
             posteingangService.posteingangChanged();
 
-            posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
-                .subscribe(
-                    value => {
-                        expect(value).toBe(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
-                        done();
-                    },
-                    done.fail
-                );
+            posteingangService
+                .get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
+                .subscribe(value => {
+                    expect(value).toBe(
+                        TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED
+                    );
+                    done();
+                }, done.fail);
         });
     });
 });

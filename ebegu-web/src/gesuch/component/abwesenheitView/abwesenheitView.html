@@ -20,50 +20,85 @@
             <h2>
                 <span data-translate="ABWESENHEIT"></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
             <p>
-                <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT"
-                      data-translate-value-tage="{{vm.maxTageAbwesenheit}}"
-                      data-translate-value-tage-plus-1="{{vm.maxTageAbwesenheit + 1}}"></span>
-                <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT_FKJV"
-                      data-translate-value-tage="{{vm.maxTageAbwesenheit}}"
-                      data-translate-value-tage-plus-1="{{vm.maxTageAbwesenheit + 1}}"></span>
+                <span
+                    ng-if="!vm.gesuchModelManager.isFKJVTexte"
+                    data-translate="ABWESENHEIT_HINT"
+                    data-translate-value-tage="{{ vm.maxTageAbwesenheit }}"
+                    data-translate-value-tage-plus-1="{{
+                        vm.maxTageAbwesenheit + 1
+                    }}"
+                ></span>
+                <span
+                    ng-if="vm.gesuchModelManager.isFKJVTexte"
+                    data-translate="ABWESENHEIT_HINT_FKJV"
+                    data-translate-value-tage="{{ vm.maxTageAbwesenheit }}"
+                    data-translate-value-tage-plus-1="{{
+                        vm.maxTageAbwesenheit + 1
+                    }}"
+                ></span>
             </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" novalidate
-                  unsaved-warning-form>
-                <fieldset dv-enable-element
-                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                          dv-enable-expression="!vm.isGesuchReadonly()">
-
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
+                <fieldset
+                    dv-enable-element
+                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-enable-expression="!vm.isGesuchReadonly()"
+                >
                     <!--Abwesenheiten-->
-                    <div ng-repeat="abwesenheitInstance in vm.getAbwesenheiten()">
-
+                    <div
+                        ng-repeat="abwesenheitInstance in vm.getAbwesenheiten()"
+                    >
                         <!--Betreuungsangebot-->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium">
                                 <div class="form-group">
-                                    <label class="required"
-                                           data-translate="ABWESENHEIT_FUER_WELCHES_KIND"
-                                           for="betreuungsangebot-{{$index}}">
+                                    <label
+                                        class="required"
+                                        data-translate="ABWESENHEIT_FUER_WELCHES_KIND"
+                                        for="betreuungsangebot-{{ $index }}"
+                                    >
                                     </label>
                                     <div class="dv-select-style">
-                                        <select aria-describedby="betreuungsangebot-{{$index}}-error"
-                                                name="betreuungsangebot-{{$index}}" id="betreuungsangebot-{{$index}}"
-                                                ng-model="abwesenheitInstance.kindBetreuung"
-                                                data-test="kind"
-                                                class="input-element form-control"
-                                                ng-options="betreuungsangebot as vm.getTextForBetreuungDDL(betreuungsangebot) for betreuungsangebot in vm.getBetreuungList()"
-                                                ng-required="true"
-                                                ng-change="vm.changedAngebot('{{abwesenheitInstance.kindBetreuung.kind.id}}', '{{abwesenheitInstance.kindBetreuung.betreuung.id}}')"
-                                                ng-disabled="vm.isKorrekturModusJugendamt()">
-                                        </select>
-                                        <dv-error-messages input-id="betreuungsangebot-{{$index}}"
-                                                           for="vm.form['betreuungsangebot-' + $index].$error"
-                                                           class="error"></dv-error-messages>
+                                        <select
+                                            aria-describedby="betreuungsangebot-{{
+                                                $index
+                                            }}-error"
+                                            name="betreuungsangebot-{{
+                                                $index
+                                            }}"
+                                            id="betreuungsangebot-{{ $index }}"
+                                            ng-model="abwesenheitInstance.kindBetreuung"
+                                            data-test="kind"
+                                            class="input-element form-control"
+                                            ng-options="betreuungsangebot as vm.getTextForBetreuungDDL(betreuungsangebot) for betreuungsangebot in vm.getBetreuungList()"
+                                            ng-required="true"
+                                            ng-change="vm.changedAngebot('{{
+                                                abwesenheitInstance
+                                                    .kindBetreuung.kind.id
+                                            }}', '{{
+                                                abwesenheitInstance
+                                                    .kindBetreuung.betreuung.id
+                                            }}')"
+                                            ng-disabled="vm.isKorrekturModusJugendamt()"
+                                        ></select>
+                                        <dv-error-messages
+                                            input-id="betreuungsangebot-{{
+                                                $index
+                                            }}"
+                                            for="vm.form['betreuungsangebot-' + $index].$error"
+                                            class="error"
+                                        ></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -73,78 +108,122 @@
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="VON" for="datumAb-{{$index}}">
+                                    <label
+                                        class="md-no-float"
+                                        data-translate="VON"
+                                        for="datumAb-{{ $index }}"
+                                    >
                                     </label>
-                                    <dv-datepicker input-id="datumAb-{{$index}}" name="datumAb-{{$index}}"
-                                                   class="input-element"
-                                                   data-test="abwesenheit-von"
-                                                   ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigAb"
-                                                   ng-required="true"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                    <dv-datepicker
+                                        input-id="datumAb-{{ $index }}"
+                                        name="datumAb-{{ $index }}"
+                                        class="input-element"
+                                        data-test="abwesenheit-von"
+                                        ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigAb"
+                                        ng-required="true"
+                                        ng-attr-placeholder="{{
+                                            'DATE_PLACEHOLDER' | translate
+                                        }}"
+                                    >
                                     </dv-datepicker>
-                                    <dv-bisher gs="abwesenheitInstance.abwesenheit.abwesenheitGS.gueltigkeit.gueltigAb"
-                                               ja="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigAb"></dv-bisher>
+                                    <dv-bisher
+                                        gs="abwesenheitInstance.abwesenheit.abwesenheitGS.gueltigkeit.gueltigAb"
+                                        ja="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigAb"
+                                    ></dv-bisher>
 
-                                    <dv-error-messages input-id="datumAb-{{$index}}"
-                                                       for="vm.form['datumAb-' + $index].$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="datumAb-{{ $index }}"
+                                        for="vm.form['datumAb-' + $index].$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </dv-input-container>
                             </div>
 
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="BIS" for="datumBis-{{$index}}">
+                                    <label
+                                        class="md-no-float"
+                                        data-translate="BIS"
+                                        for="datumBis-{{ $index }}"
+                                    >
                                     </label>
-                                    <dv-datepicker input-id="datumBis-{{$index}}" name="datumBis-{{$index}}"
-                                                   class="input-element"
-                                                   data-test="abwesenheit-bis"
-                                                   ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigBis"
-                                                   ng-required="true"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                    <dv-datepicker
+                                        input-id="datumBis-{{ $index }}"
+                                        name="datumBis-{{ $index }}"
+                                        class="input-element"
+                                        data-test="abwesenheit-bis"
+                                        ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigBis"
+                                        ng-required="true"
+                                        ng-attr-placeholder="{{
+                                            'DATE_PLACEHOLDER' | translate
+                                        }}"
+                                    >
                                     </dv-datepicker>
-                                    <dv-bisher gs="abwesenheitInstance.abwesenheit.abwesenheitGS.gueltigkeit.gueltigBis"
-                                               ja="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigBis"></dv-bisher>
+                                    <dv-bisher
+                                        gs="abwesenheitInstance.abwesenheit.abwesenheitGS.gueltigkeit.gueltigBis"
+                                        ja="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigBis"
+                                    ></dv-bisher>
 
-                                    <dv-error-messages input-id="datumBis-{{$index}}"
-                                                       for="vm.form['datumBis-' + $index].$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-error-messages
+                                        input-id="datumBis-{{ $index }}"
+                                        for="vm.form['datumBis-' + $index].$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
 
                         <!--abwesenheit entfernen-->
-                        <div class="row" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                             dv-show-expression="!vm.isGesuchReadonly()">
+                        <div
+                            class="row"
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                            dv-show-expression="!vm.isGesuchReadonly()"
+                        >
                             <div class="col-md-12 dv-input-container-medium">
-                                <dv-loading-button type="button"
-                                                   button-click="vm.removeAbwesenheitConfirm(abwesenheitInstance)"
-                                                   button-class="dv-btn-operation"
-                                                   button-disabled="vm.isKorrekturModusJugendamt()"
-                                                   data-test="container.entfernen"
-                                                   title="{{'ABWESENHEIT_DELETE' | translate}}">
-                                    <i class="fa fa-lg fa-trash-o"
-                                       aria-label="{{'ABWESENHEIT_DELETE' | translate}}"></i>
-                                    <span data-translate="ABWESENHEIT_ENTFERNEN"></span>
+                                <dv-loading-button
+                                    type="button"
+                                    button-click="vm.removeAbwesenheitConfirm(abwesenheitInstance)"
+                                    button-class="dv-btn-operation"
+                                    button-disabled="vm.isKorrekturModusJugendamt()"
+                                    data-test="container.entfernen"
+                                    title="{{
+                                        'ABWESENHEIT_DELETE' | translate
+                                    }}"
+                                >
+                                    <i
+                                        class="fa fa-lg fa-trash-o"
+                                        aria-label="{{
+                                            'ABWESENHEIT_DELETE' | translate
+                                        }}"
+                                    ></i>
+                                    <span
+                                        data-translate="ABWESENHEIT_ENTFERNEN"
+                                    ></span>
                                 </dv-loading-button>
-                                <hr class="header"/>
+                                <hr class="header" />
                             </div>
                         </div>
-
                     </div>
                 </fieldset>
 
                 <!--Neue Abwesenheit hinzufuegen-->
-                <div class="row" dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                     dv-show-expression="!vm.isGesuchReadonly()">
+                <div
+                    class="row"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-show-expression="!vm.isGesuchReadonly()"
+                >
                     <div class="col-md-12">
-                        <dv-loading-button type="button" button-click="vm.createAbwesenheit()"
-                                           button-class="dv-btn-operation"
-                                           data-test="container.erfassen"
-                                           dv-enable-element
-                                           dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                                           button-disabled="vm.isKorrekturModusJugendamt()">
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.createAbwesenheit()"
+                            button-class="dv-btn-operation"
+                            data-test="container.erfassen"
+                            dv-enable-element
+                            dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                            button-disabled="vm.isKorrekturModusJugendamt()"
+                        >
                             <i class="fa fa-lg fa-plus-circle"></i>
                             <span data-translate="ABWESENHEIT_ERFASSEN"></span>
                         </dv-loading-button>
@@ -153,12 +232,14 @@
 
                 <!--Buttons-->
 
-                <dv-navigation dv-save="vm.save()"
-                               dv-previous="true" dv-next="true"
-                               dv-translate-next="{{vm.getNextButtonText()}}"
-                               dv-translate-previous="{{vm.getPreviousButtonText()}}">
+                <dv-navigation
+                    dv-save="vm.save()"
+                    dv-previous="true"
+                    dv-next="true"
+                    dv-translate-next="{{ vm.getNextButtonText() }}"
+                    dv-translate-previous="{{ vm.getPreviousButtonText() }}"
+                >
                 </dv-navigation>
-
             </form>
         </div>
     </div>

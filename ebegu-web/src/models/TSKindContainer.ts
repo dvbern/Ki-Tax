@@ -18,7 +18,6 @@ import {TSBetreuung} from './TSBetreuung';
 import {TSKind} from './TSKind';
 
 export class TSKindContainer extends TSAbstractMutableEntity {
-
     private _kindGS: TSKind;
     private _kindJA: TSKind;
     private _betreuungen: Array<TSBetreuung>;
@@ -96,5 +95,4 @@ export class TSKindContainer extends TSAbstractMutableEntity {
     public hasPensumFachstelle(): boolean {
         return this.kindJA?.pensumFachstellen.length > 0;
     }
-
 }

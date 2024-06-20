@@ -33,24 +33,23 @@ import {VeranlagungComponent} from './veranlagung.component';
 describe('VeranlagungComponent', () => {
     let component: VeranlagungComponent;
     let fixture: ComponentFixture<VeranlagungComponent>;
-    const berechnungsManagerSpy =
-        jasmine.createSpyObj<BerechnungsManager>(
-            BerechnungsManager.name,
-            ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy =
-        jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch']
+    );
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [VeranlagungComponent],
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
@@ -73,8 +72,10 @@ describe('VeranlagungComponent', () => {
     });
 
     function createFinSitContainer(): TSFinanzielleSituationContainer {
-        const finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        const finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         return finanzielleSituationContainer;
     }
 

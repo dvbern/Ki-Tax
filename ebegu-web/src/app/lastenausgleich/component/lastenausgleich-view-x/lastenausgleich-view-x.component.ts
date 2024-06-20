@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
@@ -41,13 +48,12 @@ import {ZemisDialogDTO} from '../zemisDialog/zemisDialog.interface';
 const LOG = LogFactory.createLog('LastenausgleichViewXComponent');
 
 @Component({
-  selector: 'dv-lastenausgleich-view-x',
-  templateUrl: './lastenausgleich-view-x.component.html',
-  styleUrls: ['./lastenausgleich-view-x.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-lastenausgleich-view-x',
+    templateUrl: './lastenausgleich-view-x.component.html',
+    styleUrls: ['./lastenausgleich-view-x.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
-
     // ab dem Jahr 2022 wird der Lastenausgleich ohne Selbstbehalt generiert
     private readonly FIRST_YEAR_WITHOUT_SELBSTBEHALT = 2022;
 
@@ -55,7 +61,8 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
     public selbstbehaltPro100ProzentPlatz: number;
     public lastenausgleiche: TSLastenausgleich[] = [];
     public readonly TSRoleUtil = TSRoleUtil;
-    public datasource: MatTableDataSource<TSLastenausgleich> = new MatTableDataSource<TSLastenausgleich>([]);
+    public datasource: MatTableDataSource<TSLastenausgleich> =
+        new MatTableDataSource<TSLastenausgleich>([]);
     public columndefs: string[] = [];
 
     @ViewChild(NgForm) private readonly form: NgForm;
@@ -72,7 +79,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         private readonly errorService: ErrorService,
         private readonly cd: ChangeDetectorRef,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) { }
+    ) {}
 
     private static handleDownloadError(err: Error, win: Window): void {
         LOG.error(err);
@@ -98,21 +105,26 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         if (this.showCSVDownload()) {
             this.columndefs.push('lastenausgleichCsv');
         }
-        this.isRemoveAllowed()
-            .subscribe(res => {
-            if (res) {
-                this.columndefs.push('lastenausgleichRemove');
-            }
-        }, err => LOG.error(err));
+        this.isRemoveAllowed().subscribe(
+            res => {
+                if (res) {
+                    this.columndefs.push('lastenausgleichRemove');
+                }
+            },
+            err => LOG.error(err)
+        );
     }
 
     private getAllLastenausgleiche(): void {
-        this.lastenausgleichRS.getAllLastenausgleiche().subscribe((response: TSLastenausgleich[]) => {
-            this.lastenausgleiche = response;
-            this.addToDataSource(response);
-        }, err => {
-            LOG.error(err);
-        });
+        this.lastenausgleichRS.getAllLastenausgleiche().subscribe(
+            (response: TSLastenausgleich[]) => {
+                this.lastenausgleiche = response;
+                this.addToDataSource(response);
+            },
+            err => {
+                LOG.error(err);
+            }
+        );
     }
 
     public createLastenausgleich(): void {
@@ -124,19 +136,27 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             title: this.translate.instant('LASTENAUSGLEICH_ERSTELLEN_TITLE'),
             text: this.translate.instant('LASTENAUSGLEICH_ERSTELLEN_INFO')
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
                 filter(q => EbeguUtil.isNotNullOrUndefined(q)), // break if dialog is canceled
                 mergeMap(() =>
-                    this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz))
+                    this.lastenausgleichRS.createLastenausgleich(
+                        this.jahr,
+                        this.selbstbehaltPro100ProzentPlatz
+                    )
+                )
             )
-            .subscribe((response: TSLastenausgleich) => {
-                this.lastenausgleiche.push(response);
-                this.addToDataSource(this.lastenausgleiche);
-                }, err => {
-                LOG.error(err);
-            });
+            .subscribe(
+                (response: TSLastenausgleich) => {
+                    this.lastenausgleiche.push(response);
+                    this.addToDataSource(this.lastenausgleiche);
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     private addToDataSource(lastenausgleiche: TSLastenausgleich[]): void {
@@ -150,26 +170,42 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         dialogConfig.data = {
             upload: false
         };
-        this.dialog.open(ZemisDialogComponent, dialogConfig)
+        this.dialog
+            .open(ZemisDialogComponent, dialogConfig)
             .afterClosed()
-            .subscribe((zemisDialogData: ZemisDialogDTO) => {
-                if (!zemisDialogData) {
-                    return;
+            .subscribe(
+                (zemisDialogData: ZemisDialogDTO) => {
+                    if (!zemisDialogData) {
+                        return;
+                    }
+                    if (!zemisDialogData.jahr) {
+                        LOG.error('year undefined');
+                        return;
+                    }
+                    const win = this.downloadRS.prepareDownloadWindow();
+                    this.lastenausgleichRS
+                        .getZemisExcel(zemisDialogData.jahr)
+                        .subscribe(
+                            (downloadFile: TSDownloadFile) => {
+                                this.downloadRS.startDownload(
+                                    downloadFile.accessToken,
+                                    downloadFile.filename,
+                                    false,
+                                    win
+                                );
+                            },
+                            err => {
+                                LastenausgleichViewXComponent.handleDownloadError(
+                                    err,
+                                    win
+                                );
+                            }
+                        );
+                },
+                err => {
+                    LOG.error(err);
                 }
-                if (!zemisDialogData.jahr) {
-                    LOG.error('year undefined');
-                    return;
-                }
-                const win = this.downloadRS.prepareDownloadWindow();
-                this.lastenausgleichRS.getZemisExcel(zemisDialogData.jahr)
-                    .subscribe((downloadFile: TSDownloadFile) => {
-                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-                    }, err => {
-                        LastenausgleichViewXComponent.handleDownloadError(err, win);
-                    });
-            }, err => {
-                LOG.error(err);
-            });
+            );
     }
 
     public uploadZemisExcel(): void {
@@ -177,90 +213,127 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         dialogConfig.data = {
             upload: true
         };
-        this.dialog.open(ZemisDialogComponent, dialogConfig)
+        this.dialog
+            .open(ZemisDialogComponent, dialogConfig)
             .afterClosed()
-            .subscribe((zemisDialogData: ZemisDialogDTO) => {
-                if (!zemisDialogData) {
-                    return;
-                }
-                if (!zemisDialogData.file) {
-                    LOG.error('file undefined');
-                }
-                this.uploadRS.uploadZemisExcel(zemisDialogData.file)
-                    .then(() => {
-                        this.errorService.addMesageAsInfo(this.translate.instant(
-                            'ZEMIS_UPLOAD_FINISHED'
-                        ));
-                    })
-                    .catch(err => {
+            .subscribe(
+                (zemisDialogData: ZemisDialogDTO) => {
+                    if (!zemisDialogData) {
+                        return;
+                    }
+                    if (!zemisDialogData.file) {
+                        LOG.error('file undefined');
+                    }
+                    this.uploadRS
+                        .uploadZemisExcel(zemisDialogData.file)
+                        .then(() => {
+                            this.errorService.addMesageAsInfo(
+                                this.translate.instant('ZEMIS_UPLOAD_FINISHED')
+                            );
+                        })
+                        .catch(err => {
                             LOG.error('Fehler beim Speichern', err);
-                        }
+                        });
+                    this.errorService.addMesageAsInfo(
+                        this.translate.instant('ZEMIS_UPLOAD_STARTED')
                     );
-                this.errorService.addMesageAsInfo(this.translate.instant(
-                    'ZEMIS_UPLOAD_STARTED'
-                ));
-            }, err => {
-                LOG.error(err);
-            });
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     public downloadExcel(lastenausgleich: TSLastenausgleich): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.lastenausgleichRS.getLastenausgleichReportExcel(lastenausgleich.id)
-            .subscribe((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-            }, err => {
-                LastenausgleichViewXComponent.handleDownloadError(err, win);
-            });
+        this.lastenausgleichRS
+            .getLastenausgleichReportExcel(lastenausgleich.id)
+            .subscribe(
+                (downloadFile: TSDownloadFile) => {
+                    this.downloadRS.startDownload(
+                        downloadFile.accessToken,
+                        downloadFile.filename,
+                        false,
+                        win
+                    );
+                },
+                err => {
+                    LastenausgleichViewXComponent.handleDownloadError(err, win);
+                }
+            );
     }
 
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.lastenausgleichRS.getLastenausgleichReportCSV(lastenausgleich.id)
-            .subscribe((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-            }, err => {
-                LastenausgleichViewXComponent.handleDownloadError(err, win);
-            });
+        this.lastenausgleichRS
+            .getLastenausgleichReportCSV(lastenausgleich.id)
+            .subscribe(
+                (downloadFile: TSDownloadFile) => {
+                    this.downloadRS.startDownload(
+                        downloadFile.accessToken,
+                        downloadFile.filename,
+                        false,
+                        win
+                    );
+                },
+                err => {
+                    LastenausgleichViewXComponent.handleDownloadError(err, win);
+                }
+            );
     }
 
     public isRemoveAllowed(): Observable<boolean> {
-        return from(this.applicationPropertyRS.isDevMode())
-            .pipe(
-                map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN)),
-                takeUntil(this.unsubscribe$)
-            );
+        return from(this.applicationPropertyRS.isDevMode()).pipe(
+            map(res => res && this.authServiceRS.isRole(TSRole.SUPER_ADMIN)),
+            takeUntil(this.unsubscribe$)
+        );
     }
 
     public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE'),
+            title: this.translate.instant(
+                'LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE'
+            ),
             text: this.translate.instant('LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT')
         };
 
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
-                mergeMap(() => this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id))
+                mergeMap(() =>
+                    this.lastenausgleichRS.removeLastenausgleich(
+                        lastenausgleich.id
+                    )
+                )
             )
-            .subscribe(() => {
-                this.getAllLastenausgleiche();
-            }, err => {
-                LOG.error(err);
-            });
+            .subscribe(
+                () => {
+                    this.getAllLastenausgleiche();
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     public showLastenausgleich(): boolean {
-        return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesForLastenausgleich());
+        return this.authServiceRS.isOneOfRoles(
+            this.TSRoleUtil.getAllRolesForLastenausgleich()
+        );
     }
 
     public showCSVDownload(): boolean {
-        return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles());
+        return this.authServiceRS.isOneOfRoles(
+            this.TSRoleUtil.getMandantRoles()
+        );
     }
 
     public showActions(): boolean {
-        return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles());
+        return this.authServiceRS.isOneOfRoles(
+            this.TSRoleUtil.getMandantRoles()
+        );
     }
 
     public showLastenausgleichSelbstbehalt(): boolean {

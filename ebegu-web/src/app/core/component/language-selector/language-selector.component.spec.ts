@@ -26,8 +26,14 @@ describe('LanguageSelectorComponent', () => {
     let component: LanguageSelectorComponent;
     let fixture: ComponentFixture<LanguageSelectorComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipalRole']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['currentLanguage']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipalRole']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['currentLanguage']
+    );
     i18nServiceSpy.currentLanguage.and.returnValue(TSBrowserLanguage.DE);
 
     beforeEach(async () => {
@@ -37,8 +43,7 @@ describe('LanguageSelectorComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

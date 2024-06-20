@@ -16,41 +16,64 @@
   -->
 
 <div [ngClass]="containerClass">
-    <dv-loading-button input-id="buttonSave"
-                       data-test="container.navigation-save"
-                       class="dv-navigation-item"
-                       *ngIf="dvNext"
-                       (buttonClick)="nextStep()"
-                       [buttonClass]="'next uppercase'"
-                       type="submit"
-                       [buttonDisabled]="isNextButtonDisabled()"
-                       title="{{getTooltip()}}"
-                       [ariaLabel]="getNextButtonName()">
+    <dv-loading-button
+        input-id="buttonSave"
+        data-test="container.navigation-save"
+        class="dv-navigation-item"
+        *ngIf="dvNext"
+        (buttonClick)="nextStep()"
+        [buttonClass]="'next uppercase'"
+        type="submit"
+        [buttonDisabled]="isNextButtonDisabled()"
+        title="{{ getTooltip() }}"
+        [ariaLabel]="getNextButtonName()"
+    >
         <div *ngIf="!doesdvTranslateNextExist()">
-            <span [textContent]="getNextButtonName()" *dvIfViewportSize="'screen'"></span>
-            <span class="fa fa-angle-right" style="font-size: 2rem; height:unset; line-height: 4rem;" *dvIfViewportSize="'mobile'"></span>
+            <span
+                [textContent]="getNextButtonName()"
+                *dvIfViewportSize="'screen'"
+            ></span>
+            <span
+                class="fa fa-angle-right"
+                style="font-size: 2rem; height: unset; line-height: 4rem"
+                *dvIfViewportSize="'mobile'"
+            ></span>
         </div>
-        <span *ngIf="doesdvTranslateNextExist()" [textContent]="getNextButtonName()"></span>
+        <span
+            *ngIf="doesdvTranslateNextExist()"
+            [textContent]="getNextButtonName()"
+        ></span>
     </dv-loading-button>
-    <dv-loading-button input-id="buttonPrevious"
-                       data-test="container.navigation-previous"
-                       class="dv-navigation-item"
-                       *ngIf="dvPrevious"
-                       (buttonClick)="previousStep()"
-                       [buttonClass]="'previous uppercase'"
-                       type="submit"
-                       [ariaLabel]="getPreviousButtonName()">
-        <span [textContent]="getPreviousButtonName()" *dvIfViewportSize="'screen'"></span>
-        <span class="fa fa-angle-left" style="font-size: 2rem; height:unset; line-height: 4rem;" *dvIfViewportSize="'mobile'"></span>
+    <dv-loading-button
+        input-id="buttonPrevious"
+        data-test="container.navigation-previous"
+        class="dv-navigation-item"
+        *ngIf="dvPrevious"
+        (buttonClick)="previousStep()"
+        [buttonClass]="'previous uppercase'"
+        type="submit"
+        [ariaLabel]="getPreviousButtonName()"
+    >
+        <span
+            [textContent]="getPreviousButtonName()"
+            *dvIfViewportSize="'screen'"
+        ></span>
+        <span
+            class="fa fa-angle-left"
+            style="font-size: 2rem; height: unset; line-height: 4rem"
+            *dvIfViewportSize="'mobile'"
+        ></span>
     </dv-loading-button>
-    <dv-loading-button input-id="buttonCancel"
-                       data-test="container.navigation-cancel"
-                       class="dv-navigation-item"
-                       *ngIf="doesCancelExist()"
-                       (buttonClick)="cancel()"
-                       [buttonClass]="'cancel-button uppercase'"
-                       type="reset"
-                       [ariaLabel]="'CANCEL' | translate">
+    <dv-loading-button
+        input-id="buttonCancel"
+        data-test="container.navigation-cancel"
+        class="dv-navigation-item"
+        *ngIf="doesCancelExist()"
+        (buttonClick)="cancel()"
+        [buttonClass]="'cancel-button uppercase'"
+        type="reset"
+        [ariaLabel]="'CANCEL' | translate"
+    >
         <span translate>ABBRECHEN</span>
     </dv-loading-button>
 </div>

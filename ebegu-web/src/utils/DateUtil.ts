@@ -21,16 +21,21 @@ import Moment = moment.Moment; // kann das über ein anderes Import Format gelö
 const LOG = LogFactory.createLog('DateUtil');
 
 export class DateUtil {
-
     /**
      * @param localDateTimeString string with format YYYY-MM-DDTHH:mm:ss.SSS
      */
-    public static localDateTimeToMoment(localDateTimeString: string): Moment | undefined {
+    public static localDateTimeToMoment(
+        localDateTimeString: string
+    ): Moment | undefined {
         // cannot use EbeguUtil. cycle dependency
         if (localDateTimeString === null || localDateTimeString === undefined) {
             return undefined;
         }
-        const formats = ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'];
+        const formats = [
+            'YYYY-MM-DDTHH:mm:ss.SSS',
+            'YYYY-MM-DDTHH:mm:ss',
+            'YYYY-MM-DDTHH:mm:ss.SSSZ'
+        ];
         const theMoment = moment(localDateTimeString, formats, true);
         if (!theMoment.isValid()) {
             LOG.warn('Trying to parse an invalid date to moment', theMoment);
@@ -48,7 +53,7 @@ export class DateUtil {
         if (aMoment && aMoment.isValid()) {
             return DateUtil.momentToLocalDateFormat(aMoment, 'YYYY-MM-DD');
         }
-        return (aMoment as any);
+        return aMoment as any;
     }
 
     /**
@@ -56,7 +61,10 @@ export class DateUtil {
      * @param format the format
      * @returns a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
      */
-    public static momentToLocalDateFormat(aMoment: Moment, format?: string): string | undefined {
+    public static momentToLocalDateFormat(
+        aMoment: Moment,
+        format?: string
+    ): string | undefined {
         if (!aMoment) {
             return undefined;
         }
@@ -69,7 +77,10 @@ export class DateUtil {
      * @param format format for the time
      * @returns a Date (YYYY-MM-DD) representation of the given moment. undefined when aMoment is invalid
      */
-    public static momentToLocalDateTimeFormat(aMoment: Moment, format: string): string | undefined {
+    public static momentToLocalDateTimeFormat(
+        aMoment: Moment,
+        format: string
+    ): string | undefined {
         if (!aMoment) {
             return undefined;
         }
@@ -82,13 +93,18 @@ export class DateUtil {
      * @returns a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
      */
     public static momentToLocalDateTime(aMoment: Moment): string | undefined {
-        return DateUtil.momentToLocalDateTimeFormat(aMoment, 'YYYY-MM-DDTHH:mm:ss.SSS');
+        return DateUtil.momentToLocalDateTimeFormat(
+            aMoment,
+            'YYYY-MM-DDTHH:mm:ss.SSS'
+        );
     }
 
     /**
      * @param localDateString string with format YYYY-MM-DD
      */
-    public static localDateToMoment(localDateString: string): Moment | undefined {
+    public static localDateToMoment(
+        localDateString: string
+    ): Moment | undefined {
         const theMoment = moment(localDateString, 'YYYY-MM-DD', true);
 
         return theMoment.isValid() ? theMoment : undefined;
@@ -121,10 +137,13 @@ export class DateUtil {
         return 1;
     }
 
-    public static calculatePeriodenStartdatumString(startdatum: Moment): string {
+    public static calculatePeriodenStartdatumString(
+        startdatum: Moment
+    ): string {
         // wenn nach 1.8. -> periode = year / year + 1
         // wenn vor 1.8. -> periode = year -1 / year
-        const year = startdatum.month() > 6 ? startdatum.year() : startdatum.year() - 1;
+        const year =
+            startdatum.month() > 6 ? startdatum.year() : startdatum.year() - 1;
 
         return `${year} / ${year + 1}`;
     }

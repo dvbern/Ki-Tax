@@ -18,11 +18,13 @@ import {TSBenutzer} from './TSBenutzer';
 import {TSFile} from './TSFile';
 
 export class TSDokument extends TSFile {
-
     private _timestampUpload: moment.Moment;
     private _userUploaded: TSBenutzer;
 
-    public constructor(timestampUpload?: moment.Moment, userUploaded?: TSBenutzer) {
+    public constructor(
+        timestampUpload?: moment.Moment,
+        userUploaded?: TSBenutzer
+    ) {
         super();
         this._timestampUpload = timestampUpload;
         this._userUploaded = userUploaded;
