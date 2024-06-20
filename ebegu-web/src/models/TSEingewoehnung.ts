@@ -16,7 +16,6 @@
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
 export class TSEingewoehnung extends TSAbstractDateRangedEntity {
-
     private _kosten: number;
 
     public constructor() {

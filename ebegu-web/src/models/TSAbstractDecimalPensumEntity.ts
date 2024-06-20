@@ -20,7 +20,6 @@ import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSEingewoehnung} from './TSEingewoehnung';
 
 export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
-
     private _unitForDisplay: TSPensumUnits;
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
