@@ -100,7 +100,7 @@ import {TSDokumentGrund} from '../models/TSDokumentGrund';
 import {TSDossier} from '../models/TSDossier';
 import {TSDownloadFile} from '../models/TSDownloadFile';
 import {TSEbeguVorlage} from '../models/TSEbeguVorlage';
-import {TSEingewoehnungPauschale} from '../models/TSEingewoehnungPauschale';
+import {TSEingewoehnung} from '../models/TSEingewoehnung';
 import {TSEinkommensverschlechterung} from '../models/TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from '../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfo} from '../models/TSEinkommensverschlechterungInfo';
@@ -496,25 +496,24 @@ export class EbeguRestUtil {
         restObj.stuendlicheVollkosten =
             betreuungspensumEntity.stuendlicheVollkosten;
         restObj.betreuteTage = betreuungspensumEntity.betreuteTage;
-        if (betreuungspensumEntity.eingewoehnungPauschale) {
-            restObj.eingewoehnungPauschale =
-                this.eingewohnungPauschaleToRestObject(
-                    {},
-                    betreuungspensumEntity.eingewoehnungPauschale
-                );
+        if (betreuungspensumEntity.eingewoehnung) {
+            restObj.eingewoehnung = this.eingewohnungToRestObject(
+                {},
+                betreuungspensumEntity.eingewoehnung
+            );
         }
     }
 
-    private eingewohnungPauschaleToRestObject(
-        restEingewoehnungPauschale: any,
-        eingewoehnungPauschale: TSEingewoehnungPauschale
+    private eingewohnungToRestObject(
+        restEingewoehnung: any,
+        eingewoehnung: TSEingewoehnung
     ): any {
         this.abstractDateRangeEntityToRestObject(
-            restEingewoehnungPauschale,
-            eingewoehnungPauschale
+            restEingewoehnung,
+            eingewoehnung
         );
-        restEingewoehnungPauschale.pauschale = eingewoehnungPauschale.pauschale;
-        return restEingewoehnungPauschale;
+        restEingewoehnung.kosten = eingewoehnung.kosten;
+        return restEingewoehnung;
     }
 
     private parseAbstractPensumEntity(
@@ -545,29 +544,23 @@ export class EbeguRestUtil {
             betreuungspensumFromServer.stuendlicheVollkosten;
         betreuungspensumTS.betreuteTage =
             betreuungspensumFromServer.betreuteTage;
-        betreuungspensumTS.eingewoehnungPauschale =
-            this.parseEingewoehnungPauschale(
-                new TSEingewoehnungPauschale(),
-                betreuungspensumFromServer.eingewoehnungPauschale
-            );
-        betreuungspensumTS.hasEingewoehnungsPauschale =
-            EbeguUtil.isNotNullOrUndefined(
-                betreuungspensumTS.eingewoehnungPauschale
-            );
+        betreuungspensumTS.eingewoehnung = this.parseEingewoehnung(
+            new TSEingewoehnung(),
+            betreuungspensumFromServer.eingewoehnung
+        );
+        betreuungspensumTS.hasEingewoehnung = EbeguUtil.isNotNullOrUndefined(
+            betreuungspensumTS.eingewoehnung
+        );
     }
 
-    private parseEingewoehnungPauschale(
-        eingewoehnungPauschaleTS: TSEingewoehnungPauschale,
-        eingewoehnungPauschaleFromServer: any
-    ): TSEingewoehnungPauschale {
-        if (eingewoehnungPauschaleFromServer) {
-            this.parseDateRangeEntity(
-                eingewoehnungPauschaleTS,
-                eingewoehnungPauschaleFromServer
-            );
-            eingewoehnungPauschaleTS.pauschale =
-                eingewoehnungPauschaleFromServer.pauschale;
-            return eingewoehnungPauschaleTS;
+    private parseEingewoehnung(
+        eingewoehnungTS: TSEingewoehnung,
+        eingewoehnungFromServer: any
+    ): TSEingewoehnung {
+        if (eingewoehnungFromServer) {
+            this.parseDateRangeEntity(eingewoehnungTS, eingewoehnungFromServer);
+            eingewoehnungTS.kosten = eingewoehnungFromServer.kosten;
+            return eingewoehnungTS;
         }
         return undefined;
     }

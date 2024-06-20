@@ -21,35 +21,35 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 
-public class EingewoehnungsPauschaleMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
+public class EingewoehnungMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
 
 	private final Mandant mandant;
 	private final Locale locale;
 
-	public EingewoehnungsPauschaleMessageFactory(Mandant mandant, Locale locale) {
+	public EingewoehnungMessageFactory(Mandant mandant, Locale locale) {
 		this.mandant = mandant;
 		this.locale = locale;
 	}
 
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
-		EingewoehnungPauschale eingewoehnungPauschale = pensum.getEingewoehnungPauschale();
-		if (eingewoehnungPauschale == null) {
+		Eingewoehnung eingewoehnung = pensum.getEingewoehnung();
+		if (eingewoehnung == null) {
 			return StringUtils.EMPTY;
 		}
 
 		return ServerMessageUtil.getMessage(
-			"mutationsmeldung_message_eingewoehnung_pauschale",
+			"mutationsmeldung_message_eingewoehnung",
 			locale,
 			mandant,
-			formatAb(eingewoehnungPauschale),
-			formatBis(eingewoehnungPauschale),
-			NumberFormat.getNumberInstance(locale).format(eingewoehnungPauschale.getPauschale())
+			formatAb(eingewoehnung),
+			formatBis(eingewoehnung),
+			NumberFormat.getNumberInstance(locale).format(eingewoehnung.getKosten())
 		);
 	}
 }

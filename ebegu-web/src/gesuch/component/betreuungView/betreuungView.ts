@@ -62,7 +62,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
-import {TSEingewoehnungPauschale} from '../../../models/TSEingewoehnungPauschale';
+import {TSEingewoehnung} from '../../../models/TSEingewoehnung';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
@@ -2060,7 +2060,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return true;
     }
 
-    public showEingewoehnungPauschale(): boolean {
+    public showEingewoehnungKosten(): boolean {
         return this.eingewoehnungTyp === TSEingewoehnungTyp.PAUSCHALE;
     }
 
@@ -2083,7 +2083,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return false;
     }
 
-    public isEingewoehnungPauschaleEnabled(): boolean {
+    public isEingewoehnungKostenEnabled(): boolean {
         if (!this.isPensumEditable()) {
             return false;
         }
@@ -2093,15 +2093,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         );
     }
 
-    public onEingewoehnungPauschaleChange(betreuungspensumIndex: number): void {
+    public onEingewoehnungKostenChange(betreuungspensumIndex: number): void {
         const pensumToUse = this.getBetreuungspensum(
             betreuungspensumIndex
         ).betreuungspensumJA;
 
-        if (pensumToUse.hasEingewoehnungsPauschale) {
-            pensumToUse.eingewoehnungPauschale = new TSEingewoehnungPauschale();
+        if (pensumToUse.hasEingewoehnung) {
+            pensumToUse.eingewoehnung = new TSEingewoehnung();
         } else {
-            pensumToUse.eingewoehnungPauschale = null;
+            pensumToUse.eingewoehnung = null;
         }
     }
 
