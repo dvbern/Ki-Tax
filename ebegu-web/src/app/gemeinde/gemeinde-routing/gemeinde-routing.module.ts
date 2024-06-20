@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddGemeindeComponent} from '../add-gemeinde/add-gemeinde.component';
@@ -52,7 +55,9 @@ const states: NgHybridStateDeclaration[] = [
         url: '/edit/:gemeindeId/:isRegistering',
         component: EditGemeindeComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole().concat(TSRoleUtil.getMandantRoles())
+            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole().concat(
+                TSRoleUtil.getMandantRoles()
+            )
         },
         params: {
             isRegistering: {
@@ -65,12 +70,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class GemeindeRoutingModule {
-}
+export class GemeindeRoutingModule {}

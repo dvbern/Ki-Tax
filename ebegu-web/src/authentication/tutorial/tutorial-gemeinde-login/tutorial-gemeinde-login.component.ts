@@ -31,8 +31,8 @@ import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
     styleUrls: ['../tutorial-login.component.less']
 })
 export class TutorialGemeindeLoginComponent {
-
-    private static readonly ID_GEMEINDE_TUTORIAL = '11111111-1111-4444-4444-111111111111';
+    private static readonly ID_GEMEINDE_TUTORIAL =
+        '11111111-1111-4444-4444-111111111111';
 
     @Input() public returnTo: TargetState;
 
@@ -47,13 +47,15 @@ export class TutorialGemeindeLoginComponent {
         private readonly stateService: StateService,
         private readonly gemeindeRS: GemeindeRS
     ) {
-
         this.mandant = TutorialGemeindeLoginComponent.getMandant();
 
         // getAktiveGemeinden() can be called by anonymous.
         this.gemeindeRS.getAktiveGemeinden().then(aktiveGemeinden => {
-            this.gemeindeTutorial = aktiveGemeinden
-                .find(gemeinde => gemeinde.id === TutorialGemeindeLoginComponent.ID_GEMEINDE_TUTORIAL);
+            this.gemeindeTutorial = aktiveGemeinden.find(
+                gemeinde =>
+                    gemeinde.id ===
+                    TutorialGemeindeLoginComponent.ID_GEMEINDE_TUTORIAL
+            );
 
             this.initUsers();
         });
@@ -74,7 +76,8 @@ export class TutorialGemeindeLoginComponent {
     }
 
     private createUsersOfGemeinde(): void {
-        this.sachbearbeiterGemeindeTutorial = new TSBenutzer('Gerlinde',
+        this.sachbearbeiterGemeindeTutorial = new TSBenutzer(
+            'Gerlinde',
             'Tutorial',
             'tust',
             'password9',
@@ -83,11 +86,15 @@ export class TutorialGemeindeLoginComponent {
             TSRole.ADMIN_BG,
             undefined,
             undefined,
-            [this.gemeindeTutorial]);
+            [this.gemeindeTutorial]
+        );
     }
 
     public logIn(): void {
-        this.authServiceRS.loginRequest(this.sachbearbeiterGemeindeTutorial)
-            .then(() => returnToOriginalState(this.stateService, this.returnTo));
+        this.authServiceRS
+            .loginRequest(this.sachbearbeiterGemeindeTutorial)
+            .then(() =>
+                returnToOriginalState(this.stateService, this.returnTo)
+            );
     }
 }

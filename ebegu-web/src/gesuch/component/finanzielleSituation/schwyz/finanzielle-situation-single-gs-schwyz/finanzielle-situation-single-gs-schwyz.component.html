@@ -1,10 +1,10 @@
 <div class="form-group">
     <dv-radio-container-x>
-                          <span>
-                             <label class="required ebegu-h1" for="quellenbesteuert_id">
-							        {{ 'QUELLENBESTEUERT' | translate }}
-						     </label>
-                          </span>
+        <span>
+            <label class="required ebegu-h1" for="quellenbesteuert_id">
+                {{ 'QUELLENBESTEUERT' | translate }}
+            </label>
+        </span>
         <mat-radio-group
             #quellenbesteuert="ngModel"
             (ngModelChange)="onQuellenbesteuertChange()"
@@ -13,30 +13,41 @@
             dvEnableElement
             id="quellenbesteuert_id"
             name="quellenbesteuert"
-            required>
-            <mat-radio-button [value]="true">{{ 'LABEL_JA' | translate }}</mat-radio-button>
+            required
+        >    <mat-radio-button [value]="true">{{ 'LABEL_JA' | translate }}</mat-radio-button>
             <mat-radio-button [value]="false">{{ 'LABEL_NEIN' | translate }}</mat-radio-button>
         </mat-radio-group>
-        <dv-error-messages *ngIf="quellenbesteuert.touched"
-                           [errorObject]="quellenbesteuert.errors"
-                           inputId="quellenbesteuert_id">
+        <dv-error-messages
+            *ngIf="quellenbesteuert.touched"
+            [errorObject]="quellenbesteuert.errors"
+            inputId="quellenbesteuert_id"
+        >
         </dv-error-messages>
     </dv-radio-container-x>
 </div>
 
 <ng-container *ngIf="isNotNullOrUndefined(getFinSitJA().quellenbesteuert)">
-    <ng-container *ngIf="getFinSitJA().quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
+    <ng-container
+        *ngIf="
+            getFinSitJA().quellenbesteuert;
+            then bruttolohnFragen;
+            else steuerveranlagFragen
+        "
+    ></ng-container>
 </ng-container>
 
 <ng-template #steuerveranlagFragen>
-    <dv-steuerveranlagt-schwyz (valueChanged)="emitValueChanged()"
+    <dv-steuerveranlagt-schwyz
+        (valueChanged)="emitValueChanged()"
                                [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
                                [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
-                               [readonly]="readonly">
+                               [readonly]="readonly"
+    >
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
-    <dv-bruttolohn-schwyz (valueChanged)="emitValueChanged()"
+    <dv-bruttolohn-schwyz
+        (valueChanged)="emitValueChanged()"
                           [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
                           [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
                           [readonly]="readonly"

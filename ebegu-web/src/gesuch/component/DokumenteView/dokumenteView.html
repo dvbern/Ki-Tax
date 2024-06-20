@@ -18,127 +18,269 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2 data-translate="DOKUMENTE"></h2>
-            <hr class="header"/>
+            <hr class="header" />
             <p class="inline-hint" data-translate="DOK_HINT_DOKUMENTE"></p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-
-            <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
-                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    <dv-dokumente-list dokumente="vm.dokumenteFamSit" table-id="dokumenteFamSit"
-                                       table-title="DOK_FAMILIENSITUATION" title-value=""
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteFamSit)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteFamSit)">
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                unsaved-warning-form=""
+                novalidate
+            >
+                <div
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                >
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteFamSit"
+                        table-id="dokumenteFamSit"
+                        table-title="DOK_FAMILIENSITUATION"
+                        title-value=""
+                        on-upload-done="
+                            vm.addUploadedDokuments(
+                                dokument,
+                                vm.dokumenteFamSit
+                            )
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteFamSit
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-                    <dv-dokumente-list dokumente="vm.dokumenteKinder" table-id="dokumenteKinder"
-                                       table-title="DOK_KINDER"
-                                       tag="'ZEITRAUM'"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteKinder)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteKinder)">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteKinder"
+                        table-id="dokumenteKinder"
+                        table-title="DOK_KINDER"
+                        tag="'ZEITRAUM'"
+                        on-upload-done="
+                            vm.addUploadedDokuments(
+                                dokument,
+                                vm.dokumenteKinder
+                            )
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteKinder
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-                    <dv-dokumente-list dokumente="vm.dokumenteErwBetr" table-id="dokumenteErweiterteBetreuung"
-                                       table-title="DOK_ERWEITERTE_BETREUUNG"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteErwBetr)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteErwBetr)">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteErwBetr"
+                        table-id="dokumenteErweiterteBetreuung"
+                        table-title="DOK_ERWEITERTE_BETREUUNG"
+                        on-upload-done="
+                            vm.addUploadedDokuments(
+                                dokument,
+                                vm.dokumenteErwBetr
+                            )
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteErwBetr
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-                    <dv-dokumente-list dokumente="vm.dokumenteFinSit" table-id="dokumenteFinSit"
-                                       table-title="DOK_FINANZIELLE_SITUATION"
-                                       tag="vm.getTagAnhandFinanzielleSituationTyp()"
-                                       title-value="vm.gesuchModelManager.getBasisjahr()"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteFinSit)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteFinSit)">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteFinSit"
+                        table-id="dokumenteFinSit"
+                        table-title="DOK_FINANZIELLE_SITUATION"
+                        tag="vm.getTagAnhandFinanzielleSituationTyp()"
+                        title-value="vm.gesuchModelManager.getBasisjahr()"
+                        on-upload-done="
+                            vm.addUploadedDokuments(
+                                dokument,
+                                vm.dokumenteFinSit
+                            )
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteFinSit
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-                    <dv-dokumente-list dokumente="vm.dokumenteErwp" table-id="dokumenteErwp"
-                                       table-title="DOK_ERWERBSPENSUM"
-                                       tag="'DOK_TAETIGKEIT'"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteErwp)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteErwp)">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteErwp"
+                        table-id="dokumenteErwp"
+                        table-title="DOK_ERWERBSPENSUM"
+                        tag="'DOK_TAETIGKEIT'"
+                        on-upload-done="
+                            vm.addUploadedDokuments(dokument, vm.dokumenteErwp)
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteErwp
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-                    <dv-dokumente-list dokumente="vm.dokumenteEkv" table-id="dokumenteEkv"
-                                       table-title="EKVI_EINKOMMENSVERSCHLECHTERUNG"
-                                       tag="vm.getTagAnhandFinanzielleSituationTyp()"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteEkv)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteEkv)">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteEkv"
+                        table-id="dokumenteEkv"
+                        table-title="EKVI_EINKOMMENSVERSCHLECHTERUNG"
+                        tag="vm.getTagAnhandFinanzielleSituationTyp()"
+                        on-upload-done="
+                            vm.addUploadedDokuments(dokument, vm.dokumenteEkv)
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteEkv
+                            )
+                        "
+                    >
                     </dv-dokumente-list>
 
-
-                    <dv-dokumente-list dokumente="vm.dokumenteSonst" table-id="dokumenteSonst"
-                                       table-title="DOK_SONSTIGES"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteSonst)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument,  vm.dokumenteSonst)"
-                                       sonstige="true">
+                    <dv-dokumente-list
+                        dokumente="vm.dokumenteSonst"
+                        table-id="dokumenteSonst"
+                        table-title="DOK_SONSTIGES"
+                        on-upload-done="
+                            vm.addUploadedDokuments(dokument, vm.dokumenteSonst)
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumenteSonst
+                            )
+                        "
+                        sonstige="true"
+                    >
                     </dv-dokumente-list>
                 </div>
 
-                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()">
-                    <dv-dokumente-list dokumente="vm.dokumentePapiergesuch" table-id="dokumentePapiergesuch"
-                                       table-title="DOK_PAPIERGESUCH"
-                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumentePapiergesuch)"
-                                       on-remove="vm.removeDokument(dokumentGrund, dokument,  vm.dokumentePapiergesuch)"
-                                       sonstige="true">
+                <div
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                >
+                    <dv-dokumente-list
+                        dokumente="vm.dokumentePapiergesuch"
+                        table-id="dokumentePapiergesuch"
+                        table-title="DOK_PAPIERGESUCH"
+                        on-upload-done="
+                            vm.addUploadedDokuments(
+                                dokument,
+                                vm.dokumentePapiergesuch
+                            )
+                        "
+                        on-remove="
+                            vm.removeDokument(
+                                dokumentGrund,
+                                dokument,
+                                vm.dokumentePapiergesuch
+                            )
+                        "
+                        sonstige="true"
+                    >
                     </dv-dokumente-list>
                 </div>
 
                 <div ng-hide="vm.isOnlineFreigabeAktiv">
-                    <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForKommentarSpalte()">
-                        <dv-dokumente-list dokumente="vm.dokumenteFreigabequittung" table-id="dokumenteFreigabequittung"
-                                           table-title="DOK_FREIGABEQUITTUNG"
-                                           on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteFreigabequittung)"
-                                           on-remove="vm.removeDokument(dokumentGrund, dokument,  vm.dokumenteFreigabequittung)"
-                                           sonstige="true">
+                    <div
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForKommentarSpalte()"
+                    >
+                        <dv-dokumente-list
+                            dokumente="vm.dokumenteFreigabequittung"
+                            table-id="dokumenteFreigabequittung"
+                            table-title="DOK_FREIGABEQUITTUNG"
+                            on-upload-done="
+                                vm.addUploadedDokuments(
+                                    dokument,
+                                    vm.dokumenteFreigabequittung
+                                )
+                            "
+                            on-remove="
+                                vm.removeDokument(
+                                    dokumentGrund,
+                                    dokument,
+                                    vm.dokumenteFreigabequittung
+                                )
+                            "
+                            sonstige="true"
+                        >
                         </dv-dokumente-list>
                     </div>
                 </div>
 
-
                 <!-- -------------------------------------------Massenversand -------------------------------------  -->
 
-                <div dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
-                     dv-show-expression="vm.massenversand.length > 0">
+                <div
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+                    dv-show-expression="vm.massenversand.length > 0"
+                >
                     <h2>
                         <span data-translate="MASSENVERSAND_LIST"></span>
                     </h2>
                     <div class="overflow-scroll-table">
-                        <table st-table="table" st-safe-src="vm.massenversand"
-                               class="table dokumentgrundtable" id="massenversand">
+                        <table
+                            st-table="table"
+                            st-safe-src="vm.massenversand"
+                            class="table dokumentgrundtable"
+                            id="massenversand"
+                        >
                             <tbody>
                                 <tr ng-repeat="row in table">
-                                    <td>{{row}}</td>
+                                    <td>{{ row }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-
                 <!-- -------------------------------------------Navigation--------------------------------------------  -->
 
                 <div class="nav-row-dokumente">
-
-                    <div dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
-                        <dv-loading-button type="button" button-click="vm.setDokumenteGeprueft()"
-                                           aria-label="{{'DOKUMENTE_GEPRUEFT' | translate}}"
-                                           ng-if="vm.showDokumenteGeprueftButton()">
-                            <span class="uppercase" data-translate="DOKUMENTE_GEPRUEFT"></span>
+                    <div
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+                    >
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.setDokumenteGeprueft()"
+                            aria-label="{{ 'DOKUMENTE_GEPRUEFT' | translate }}"
+                            ng-if="vm.showDokumenteGeprueftButton()"
+                        >
+                            <span
+                                class="uppercase"
+                                data-translate="DOKUMENTE_GEPRUEFT"
+                            ></span>
                         </dv-loading-button>
                     </div>
 
-                    <dv-navigation dv-previous="true" dv-next="true" class="dokumente-nav"></dv-navigation>
-
+                    <dv-navigation
+                        dv-previous="true"
+                        dv-next="true"
+                        class="dokumente-nav"
+                    ></dv-navigation>
                 </div>
-
             </form>
-
         </div>
     </div>
-
 </div>

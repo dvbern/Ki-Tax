@@ -23,7 +23,10 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
 @Component({
     selector: 'dv-onboarding-info-institution',
     templateUrl: './onboarding-info-institution.component.html',
-    styleUrls: ['./onboarding-info-institution.component.less', '../onboarding.less'],
+    styleUrls: [
+        './onboarding-info-institution.component.less',
+        '../onboarding.less'
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnboardingInfoInstitutionComponent implements OnInit {
@@ -38,16 +41,24 @@ export class OnboardingInfoInstitutionComponent implements OnInit {
     public testZugangBeantragen: boolean;
     public institutionName: string;
 
-    public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
-                       private readonly translate: TranslateService
-    ) {
-    }
+    public constructor(
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly translate: TranslateService
+    ) {}
 
     public ngOnInit(): void {
-        this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
-        this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
-        this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
-        this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
+        this.onboardingPlaceholderService.setDescription1(
+            this.translate.instant(this.description1)
+        );
+        this.onboardingPlaceholderService.setDescription2(
+            this.translate.instant(this.description2)
+        );
+        this.onboardingPlaceholderService.setDescription3(
+            this.translate.instant(this.description3)
+        );
+        this.onboardingPlaceholderService.setDescription4(
+            this.translate.instant(this.description4)
+        );
     }
 
     public onSubmit(form: NgForm): void {
@@ -58,9 +69,12 @@ export class OnboardingInfoInstitutionComponent implements OnInit {
         const mailto = `mailto:${supportMail}?subject=`;
         const emailBody = '&body=';
         const zeilenUmbruch = '%0D%0A%0D%0A';
-        const body: string = this.translate.instant(this.emailBody, {institution: this.institutionName});
+        const body: string = this.translate.instant(this.emailBody, {
+            institution: this.institutionName
+        });
         const subject: string = this.translate.instant(this.subjectText);
         const endBody: string = this.translate.instant(this.emailEnd);
-        window.location.href = mailto + subject + emailBody + body + zeilenUmbruch + endBody;
+        window.location.href =
+            mailto + subject + emailBody + body + zeilenUmbruch + endBody;
     }
 }

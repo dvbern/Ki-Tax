@@ -18,7 +18,6 @@ import {TSWizardStep} from '../../models/TSWizardStep';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class WizardStepRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -31,15 +30,29 @@ export class WizardStepRS {
     }
 
     public updateWizardStep(wizardStep: TSWizardStep): IPromise<TSWizardStep> {
-        const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
+        const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject(
+            {},
+            wizardStep
+        );
 
-        return this.$http.post(this.serviceURL, wizardStepObject)
-            .then((response: any) => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
+        return this.$http
+            .post(this.serviceURL, wizardStepObject)
+            .then((response: any) =>
+                this.ebeguRestUtil.parseWizardStep(
+                    new TSWizardStep(),
+                    response.data
+                )
+            );
     }
 
-    public findWizardStepsFromGesuch(gesuchID: string): IPromise<TSWizardStep[]> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => this.ebeguRestUtil.parseWizardStepList(response.data));
+    public findWizardStepsFromGesuch(
+        gesuchID: string
+    ): IPromise<TSWizardStep[]> {
+        return this.$http
+            .get(`${this.serviceURL}/${encodeURIComponent(gesuchID)}`)
+            .then((response: any) =>
+                this.ebeguRestUtil.parseWizardStepList(response.data)
+            );
     }
 
     public getServiceName(): string {
@@ -47,7 +60,16 @@ export class WizardStepRS {
     }
 
     public setWizardStepMutiert(wizardStepId: string): IPromise<TSWizardStep> {
-        return this.$http.post(`${this.serviceURL}/setWizardStepMutiert/${encodeURIComponent(wizardStepId)}`, null)
-            .then(response => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
+        return this.$http
+            .post(
+                `${this.serviceURL}/setWizardStepMutiert/${encodeURIComponent(wizardStepId)}`,
+                null
+            )
+            .then(response =>
+                this.ebeguRestUtil.parseWizardStep(
+                    new TSWizardStep(),
+                    response.data
+                )
+            );
     }
 }

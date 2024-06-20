@@ -18,8 +18,14 @@
 import {Injectable} from '@angular/core';
 import {DateAdapter} from '@angular/material/core';
 import {TranslateService} from '@ngx-translate/core';
-import {TSBrowserLanguage, tsBrowserLanguageFromString} from '../../../models/enums/TSBrowserLanguage';
-import {CONSTANTS, LOCALSTORAGE_LANGUAGE_KEY} from '../../core/constants/CONSTANTS';
+import {
+    TSBrowserLanguage,
+    tsBrowserLanguageFromString
+} from '../../../models/enums/TSBrowserLanguage';
+import {
+    CONSTANTS,
+    LOCALSTORAGE_LANGUAGE_KEY
+} from '../../core/constants/CONSTANTS';
 import {WindowRef} from '../../core/service/windowRef.service';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -27,7 +33,6 @@ import ITranslateService = angular.translate.ITranslateService;
     providedIn: 'root'
 })
 export class I18nServiceRSRest {
-
     public serviceURL: string;
     private $translate: ITranslateService; // will be removed in KIBON-2962
 
@@ -36,17 +41,18 @@ export class I18nServiceRSRest {
         private readonly $window: WindowRef,
         private readonly dateAdapter: DateAdapter<any>
     ) {
-        this.serviceURL =  `${CONSTANTS.REST_API}i18n`;
+        this.serviceURL = `${CONSTANTS.REST_API}i18n`;
     }
 
     /**
      * This method will change the language that the plugin of angular5 uses. It will also use the given
      * angularJsTranslateService to set the language in the corresponding plugin of angularjs
      */
-    public changeClientLanguage(
-        selectedLanguage: TSBrowserLanguage
-    ): void {
-        this.$window.nativeLocalStorage.setItem(LOCALSTORAGE_LANGUAGE_KEY, selectedLanguage);
+    public changeClientLanguage(selectedLanguage: TSBrowserLanguage): void {
+        this.$window.nativeLocalStorage.setItem(
+            LOCALSTORAGE_LANGUAGE_KEY,
+            selectedLanguage
+        );
         this.translate.use(selectedLanguage); // angular
         this.dateAdapter.setLocale(selectedLanguage);
         this.$translate.use(selectedLanguage); // will be removed in KIBON-2962
@@ -94,7 +100,12 @@ export function extractPreferredLanguage($window: Window): string {
  */
 function getFirstBrowserLanguage($window: Window): TSBrowserLanguage {
     const navigator = $window.navigator;
-    const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    const browserLanguagePropertyKeys = [
+        'language',
+        'browserLanguage',
+        'systemLanguage',
+        'userLanguage'
+    ];
     let foundLanguages: TSBrowserLanguage[];
 
     // support for HTML 5.1 "navigator.languages"
@@ -113,5 +124,7 @@ function getFirstBrowserLanguage($window: Window): TSBrowserLanguage {
         .filter(lang => lang && lang.length)
         .map(tsBrowserLanguageFromString);
 
-    return foundLanguages && foundLanguages.length > 0 ? foundLanguages[0] : TSBrowserLanguage.DE;
+    return foundLanguages && foundLanguages.length > 0
+        ? foundLanguages[0]
+        : TSBrowserLanguage.DE;
 }

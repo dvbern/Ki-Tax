@@ -23,13 +23,11 @@ import {SharedModule} from '../shared/shared.module';
 import {ZahlungRS} from './services/zahlungRS.rest';
 import {ZahlungRoutingModule} from './zahlung-routing/zahlung-routing.module';
 import {ZahlungsauftragViewXComponent} from './zahlungsauftrag-view-x/zahlungsauftrag-view-x.component';
-import { ZahlungviewXComponent } from './zahlungview-x/zahlungview-x.component';
+import {ZahlungviewXComponent} from './zahlungview-x/zahlungview-x.component';
 
 @NgModule({
     imports: [SharedModule, NgGesuchModule, CoreModule, ZahlungRoutingModule],
     declarations: [ZahlungsauftragViewXComponent, ZahlungviewXComponent],
     providers: [CurrencyPipe, ZahlungRS]
 })
-export class ZahlungXModule {
-
-}
+export class ZahlungXModule {}

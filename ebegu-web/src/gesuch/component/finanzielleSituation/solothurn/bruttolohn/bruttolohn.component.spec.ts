@@ -10,7 +10,8 @@ import {BruttolohnComponent} from './bruttolohn.component';
 describe('BruttolohnComponent', () => {
     let component: BruttolohnComponent;
     let fixture: ComponentFixture<BruttolohnComponent>;
-    const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+    const gesuchModelManagerSpy =
+        SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -19,9 +20,7 @@ describe('BruttolohnComponent', () => {
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -30,7 +29,8 @@ describe('BruttolohnComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(BruttolohnComponent);
         component = fixture.componentInstance;
-        component.model = SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
+        component.model =
+            SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
         fixture.detectChanges();
     });
 

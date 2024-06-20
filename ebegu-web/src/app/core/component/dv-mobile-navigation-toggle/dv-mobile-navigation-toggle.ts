@@ -15,7 +15,9 @@
 
 import {IComponentOptions} from 'angular';
 
-export class DvMobileNavigationToggleComponentConfig implements IComponentOptions {
+export class DvMobileNavigationToggleComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public bindings = {};
     public template = require('./dv-mobile-navigation-toggle.html');
@@ -24,11 +26,11 @@ export class DvMobileNavigationToggleComponentConfig implements IComponentOption
 }
 
 export class DvMobileNavigationToggleController {
-
     public static $inject: ReadonlyArray<string> = ['$mdSidenav'];
 
-    public constructor(private readonly $mdSidenav: ng.material.ISidenavService) {
-    }
+    public constructor(
+        private readonly $mdSidenav: ng.material.ISidenavService
+    ) {}
 
     public toggleSidenav(componentId: string): void {
         this.$mdSidenav(componentId).toggle();

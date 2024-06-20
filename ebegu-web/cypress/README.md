@@ -6,27 +6,27 @@
 
 **Local**
 
-* `npm ci`
-* Start the Frontend and Backend.
-  > Make sure that `webpack` does not throw an error.
-* `npm run cypress:open` (or `npm run cypress:run`/`npm run cypress:run:parallel`)
+-   `npm ci`
+-   Start the Frontend and Backend.
+    > Make sure that `webpack` does not throw an error.
+-   `npm run cypress:open` (or `npm run cypress:run`/`npm run cypress:run:parallel`)
 
 ## Writing new Tests
 
 Tests are located at `e2e/*.cy.ts`. All the common test Functions are also available with Cypress:
 
-* `describe`, `describe.only`, `describe.skip`
-* `it`, `it.only`, `it.skip`
-* `expect` - should always run inside a `cy.{...}.then(() => expect...)`, due to the async nature of the cypress tests.
+-   `describe`, `describe.only`, `describe.skip`
+-   `it`, `it.only`, `it.skip`
+-   `expect` - should always run inside a `cy.{...}.then(() => expect...)`, due to the async nature of the cypress tests.
 
 ### TL;DR
 
-* `npm run cypress:open` to start the Testsuite with UI
-* Add or extend a test in `e2e/*.cy.ts`
-* Keep the test plain sequential at the beginning and extract Page Objects (PO), fixtures, etc. at a later stage
-  > i.e. just add plain `cy.visit(`, `cy.get(`, `).should` etc. with hardcoded values, expectations and selectors.
-  > Only after reusable patterns emerge should we extract the relevant code into fixtures and POs.
-* Use [`cy.getByData`](#dv-get-by-id) if possible.
+-   `npm run cypress:open` to start the Testsuite with UI
+-   Add or extend a test in `e2e/*.cy.ts`
+-   Keep the test plain sequential at the beginning and extract Page Objects (PO), fixtures, etc. at a later stage
+    > i.e. just add plain `cy.visit(`, `cy.get(`, `).should` etc. with hardcoded values, expectations and selectors.
+    > Only after reusable patterns emerge should we extract the relevant code into fixtures and POs.
+-   Use [`cy.getByData`](#dv-get-by-id) if possible.
 
 ### Page Objects (PO)
 
@@ -42,7 +42,7 @@ It is not recommended to share POs that are specific to a test case, for example
 needs to be used:
 
 ```typescript
-    // An example of creating a valid Kind
+// An example of creating a valid Kind
 AntragKindPO.createNewKind();
 AntragKindPO.fillKindForm();
 AntragKindPO.fillPflegekind();
@@ -62,17 +62,17 @@ like triggering a save button on the page within an abstracted PO. Otherwise, th
 
 ### Anti-patterns (see [Cypress Best Practices](https://docs.cypress.io/guides/references/best-practices)):
 
-* **Nesting POs** - Like for example a PO that calls another PO should not go deeper than 1 dependency, otherwise it gets
-  confusing.
-* **Using UI to login** - Usually it is not recommended to login via the UI if it is not specifically part of the E2E test, but
-  the current implementation still needs to use the UI Login until a direct approach is implemented.
-* **Complex Selectors** - Always try to use the `[data-test="..."]` selector and only fall back to _class_, _id_, etc. if the HTML
-  code is unmodifiable.
-* **`cy.` return values** - Do not try to save the return values of `cy.` commands like for example `cy.get` use `.as(...)` and
-  `get('@...')`.
-* **Coupling multiple tests together** - It only makes refactorings more complicated and also induces test dependencies issues.
-* **Avoid `cy.wait`** - Each `cy.wait` will increase the test time drastically, use `cy.intercept` and other tools to find out if
-  the test can continue.
+-   **Nesting POs** - Like for example a PO that calls another PO should not go deeper than 1 dependency, otherwise it gets
+    confusing.
+-   **Using UI to login** - Usually it is not recommended to login via the UI if it is not specifically part of the E2E test, but
+    the current implementation still needs to use the UI Login until a direct approach is implemented.
+-   **Complex Selectors** - Always try to use the `[data-test="..."]` selector and only fall back to _class_, _id_, etc. if the HTML
+    code is unmodifiable.
+-   **`cy.` return values** - Do not try to save the return values of `cy.` commands like for example `cy.get` use `.as(...)` and
+    `get('@...')`.
+-   **Coupling multiple tests together** - It only makes refactorings more complicated and also induces test dependencies issues.
+-   **Avoid `cy.wait`** - Each `cy.wait` will increase the test time drastically, use `cy.intercept` and other tools to find out if
+    the test can continue.
 
 There are many more recipes and ideas out there that should be sporadically be evaluated and potentially used as a refactoring or
 improvement base for the E2E code, see https://docs.cypress.io/examples/recipes
@@ -121,45 +121,49 @@ To create a new Fixture dataset, follow these steps:
 
 1. Create or reuse a folder in `fixtures/`
 2. Add the data as JSON.
-   > For example (`fixtures/antrag/kind.json`):
-   > ```json
-   > {
-   >     "valid": {
-   >         "kind1": {
-   >             "vorname": "kind1-vorname",
-   >             "nachname": "kind1-nachname",
-   >             "geschlecht": "MAENNLICH",
-   >             "geburtsdatum":  "01.01.2020",
-   >             "einschulungstyp": "VORSCHULALTER"
-   >         }
-   >     }
-   > }
-   > ```
+    > For example (`fixtures/antrag/kind.json`):
+    >
+    > ```json
+    > {
+    >     "valid": {
+    >         "kind1": {
+    >             "vorname": "kind1-vorname",
+    >             "nachname": "kind1-nachname",
+    >             "geschlecht": "MAENNLICH",
+    >             "geburtsdatum": "01.01.2020",
+    >             "einschulungstyp": "VORSCHULALTER"
+    >         }
+    >     }
+    > }
+    > ```
 3. Extend the `support/fixture-helper.ts` file with the new Fixture:
-   > ```typescript
-   > export const FixtureKind = {
-   >     withValidBoy: fromFixture<typeof Kind>('antrag/kind.json', 'valid'),
-   > }
-   > ```
+    > ```typescript
+    > export const FixtureKind = {
+    >     withValidBoy: fromFixture<typeof Kind>('antrag/kind.json', 'valid')
+    > };
+    > ```
 4. Use the new fixture by importing `import { FixtureKind } from '@dv-e2e/fixtures';`:
-   > ```typescript
-   > FixtureKind.withValid(({ kind1 }) => { // shorthand for `(data) => { ... data.kind1 ... }`
-   >     cy.getByData(`geschlecht.radio-value.${kind1.geschlecht}`).click();
-   >     cy.getByData('vorname').type(kind1.vorname);
-   >     cy.getByData('nachname').type(kind1.nachname);
-   >     cy.getByData('geburtsdatum').find('input').type(kind1.geburtsdatum);
-   >     cy.getByData('einschulung-typ').select(kind1.einschulungstyp);
-   > });
-   > ```
+    > ```typescript
+    > FixtureKind.withValid(({kind1}) => {
+    >     // shorthand for `(data) => { ... data.kind1 ... }`
+    >     cy.getByData(`geschlecht.radio-value.${kind1.geschlecht}`).click();
+    >     cy.getByData('vorname').type(kind1.vorname);
+    >     cy.getByData('nachname').type(kind1.nachname);
+    >     cy.getByData('geburtsdatum').find('input').type(kind1.geburtsdatum);
+    >     cy.getByData('einschulung-typ').select(kind1.einschulungstyp);
+    > });
+    > ```
 
 ### Known issues
 
 #### Mat-Checkbox
+
 With the update to angular 15, we cannot directly click on a mat-checkbox anymore. This is probably
 due to our styling that moves quite a lot of stuff around (has yet to be confirmed with an empty
 new project). The currently employed workaround is to do a `.find('.mdc-checkbox')`.
 
 #### AngularJS Radio-Button
+
 When a radio button from AngularJS is clicked quickly after its first rendered, the click might
 not be registred leading to the radio-button not being activated. The workaround is to use
 `.wait()` with a short timeout to give AngularJS the time it apparently needs to make the click

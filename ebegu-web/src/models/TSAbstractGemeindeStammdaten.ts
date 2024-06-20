@@ -32,9 +32,14 @@ export class TSAbstractGemeindeStammdaten extends TSAbstractEntity {
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
 
-    public getGemeindeKonfigurationForGesuchsperiode(gesuchsperiode: TSGesuchsperiode): TSGemeindeKonfiguration {
+    public getGemeindeKonfigurationForGesuchsperiode(
+        gesuchsperiode: TSGesuchsperiode
+    ): TSGemeindeKonfiguration {
         for (const konfigurationsListeElement of this.konfigurationsListe) {
-            if (konfigurationsListeElement.gesuchsperiode.id === gesuchsperiode.id) {
+            if (
+                konfigurationsListeElement.gesuchsperiode.id ===
+                gesuchsperiode.id
+            ) {
                 return konfigurationsListeElement;
             }
         }

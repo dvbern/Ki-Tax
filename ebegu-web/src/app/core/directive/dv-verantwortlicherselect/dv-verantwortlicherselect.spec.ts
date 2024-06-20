@@ -26,7 +26,6 @@ import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
 
 describe('dvVerantwortlicherSelect', () => {
-
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
     let benutzerRS: BenutzerRSX;
@@ -40,31 +39,43 @@ describe('dvVerantwortlicherSelect', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        benutzerRS = $injector.get('BenutzerRS');
-        benutzer = new TSBenutzerNoDetails('Emiliano', 'Camacho');
-        $translate = $injector.get('$translate');
-        applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            benutzerRS = $injector.get('BenutzerRS');
+            benutzer = new TSBenutzerNoDetails('Emiliano', 'Camacho');
+            $translate = $injector.get('$translate');
+            applicationPropertyRS = $injector.get('ApplicationPropertyRS');
 
-        verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
-            gesuchModelManager,
-            $translate,
-            applicationPropertyRS);
-    }));
+            verantwortlicherselectController =
+                new VerantwortlicherselectController(
+                    benutzerRS,
+                    gesuchModelManager,
+                    $translate,
+                    applicationPropertyRS
+                );
+        })
+    );
 
     describe('getVerantwortlicherFullName', () => {
         it('returns empty string for empty verantwortlicherBG', () => {
-            expect(verantwortlicherselectController.getVerantwortlicherFullName()).toEqual('kein Verant.');
+            expect(
+                verantwortlicherselectController.getVerantwortlicherFullName()
+            ).toEqual('kein Verant.');
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            const verantwortlicher = new TSBenutzerNoDetails('Emiliano', 'Camacho');
+            const verantwortlicher = new TSBenutzerNoDetails(
+                'Emiliano',
+                'Camacho'
+            );
             const gesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(verantwortlicherselectController.getVerantwortlicherFullName()).toEqual('Emiliano Camacho');
+            expect(
+                verantwortlicherselectController.getVerantwortlicherFullName()
+            ).toEqual('Emiliano Camacho');
         });
     });
     describe('setVerantwortlicher()', () => {
@@ -73,7 +84,9 @@ describe('dvVerantwortlicherSelect', () => {
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
             verantwortlicherselectController.setVerantwortlicher(undefined);
-            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(benutzer);
+            expect(
+                gesuchModelManager.getGesuch().dossier.verantwortlicherBG
+            ).toBe(benutzer);
         });
         it('sets the user as the verantwortlicherBG of the current fall', () => {
             createGesuch();
@@ -81,7 +94,9 @@ describe('dvVerantwortlicherSelect', () => {
 
             const newUser = new TSBenutzerNoDetails('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
-            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
+            expect(
+                gesuchModelManager.getGesuch().dossier.verantwortlicherBG
+            ).toBe(newUser);
         });
     });
 
@@ -92,5 +107,4 @@ describe('dvVerantwortlicherSelect', () => {
         gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);
     }
-
 });

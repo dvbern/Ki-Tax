@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit
+} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
@@ -34,7 +40,6 @@ const LOG = LogFactory.createLog('SelbstdeklarationComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelbstdeklarationComponent implements OnInit {
-
     @Input()
     public antragstellerNummer: number; // antragsteller 1 or 2
 
@@ -71,27 +76,34 @@ export class SelbstdeklarationComponent implements OnInit {
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly ref: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         if (!this.model.selbstdeklaration) {
-            this.model.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+            this.model.selbstdeklaration =
+                new TSFinanzielleSituationSelbstdeklaration();
         }
         // load initial results
         this.onValueChangeFunction();
-        this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
+        this.finSitLuService.massgebendesEinkommenStore.subscribe(
+            resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error)
+            },
+            error => LOG.error(error)
         );
     }
 
     public onValueChangeFunction = (): void => {
         if (this.isEKV) {
-            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahrPlus);
+            this.finSitLuService.calculateEinkommensverschlechterung(
+                this.finanzModel,
+                this.basisJahrPlus
+            );
         } else {
-            this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
+            this.finSitLuService.calculateMassgebendesEinkommen(
+                this.finanzModel
+            );
         }
     };
 
@@ -104,11 +116,15 @@ export class SelbstdeklarationComponent implements OnInit {
     }
 
     public antragsteller1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller1?.extractFullName();
     }
 
     public antragsteller2Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller2?.extractFullName();
     }
 
     public getEinkommenForCurrentAntragsteller(): number {
@@ -150,8 +166,12 @@ export class SelbstdeklarationComponent implements OnInit {
         return null;
     }
 
-    public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
-        return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
-            && this.isKorrekturModusJungendamtOrFreigegeben;
+    public showBisher(
+        abstractFinanzielleSituation: TSAbstractFinanzielleSituation
+    ): boolean {
+        return (
+            EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation) &&
+            this.isKorrekturModusJungendamtOrFreigegeben
+        );
     }
 }

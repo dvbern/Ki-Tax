@@ -16,9 +16,13 @@
  */
 
 import {Location} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -35,7 +39,6 @@ const LOG = LogFactory.createLog('InternePendenzenComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InternePendenzenComponent implements OnInit {
-
     public internePendenzen: TSInternePendenz[] = [];
 
     public constructor(
@@ -44,19 +47,22 @@ export class InternePendenzenComponent implements OnInit {
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
         private readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.getPendenzen();
     }
 
     public getPendenzen(): void {
-        this.internePendenzenRS.findInternePendenzenForGesuch(this.gesuchModelManager.getGesuch())
-            .subscribe(internePendenzen => {
-                this.internePendenzen = internePendenzen;
-                this.cd.markForCheck();
-            }, error => this.handleError(error));
+        this.internePendenzenRS
+            .findInternePendenzenForGesuch(this.gesuchModelManager.getGesuch())
+            .subscribe(
+                internePendenzen => {
+                    this.internePendenzen = internePendenzen;
+                    this.cd.markForCheck();
+                },
+                error => this.handleError(error)
+            );
     }
 
     public async addInternePendenz(): Promise<void> {
@@ -66,12 +72,16 @@ export class InternePendenzenComponent implements OnInit {
         if (EbeguUtil.isNullOrUndefined(newPendenz)) {
             return;
         }
-        this.internePendenzenRS.createInternePendenz(newPendenz)
-            .subscribe(savedPendenz => {
+        this.internePendenzenRS.createInternePendenz(newPendenz).subscribe(
+            savedPendenz => {
                 // concat to change ref of element and trigger changeDetection of child
-                this.internePendenzen = this.internePendenzen.concat([savedPendenz]);
+                this.internePendenzen = this.internePendenzen.concat([
+                    savedPendenz
+                ]);
                 this.cd.markForCheck();
-            }, error => this.handleError(error));
+            },
+            error => this.handleError(error)
+        );
     }
 
     public async editPendenz(pendenz: TSInternePendenz): Promise<void> {
@@ -79,20 +89,28 @@ export class InternePendenzenComponent implements OnInit {
         if (EbeguUtil.isNullOrUndefined(editedPendenz)) {
             return;
         }
-        this.internePendenzenRS.updateInternePendenz(editedPendenz)
-            .subscribe(savedPendenz => {
-                this.internePendenzen = this.internePendenzen.filter(p => p.id !== editedPendenz.id);
+        this.internePendenzenRS.updateInternePendenz(editedPendenz).subscribe(
+            savedPendenz => {
+                this.internePendenzen = this.internePendenzen.filter(
+                    p => p.id !== editedPendenz.id
+                );
                 this.internePendenzen.push(savedPendenz);
                 this.cd.markForCheck();
-            }, error => this.handleError(error));
+            },
+            error => this.handleError(error)
+        );
     }
 
     public deletePendenz(deletedPendenz: TSInternePendenz): void {
-        this.internePendenzenRS.deleteInternePendenz(deletedPendenz)
-            .subscribe(() => {
-                this.internePendenzen = this.internePendenzen.filter(p => p.id !== deletedPendenz.id);
+        this.internePendenzenRS.deleteInternePendenz(deletedPendenz).subscribe(
+            () => {
+                this.internePendenzen = this.internePendenzen.filter(
+                    p => p.id !== deletedPendenz.id
+                );
                 this.cd.markForCheck();
-            }, error => this.handleError(error));
+            },
+            error => this.handleError(error)
+        );
     }
 
     public updateGesuchMarkiertFuerKontroll(value: boolean): void {
@@ -103,11 +121,16 @@ export class InternePendenzenComponent implements OnInit {
         this.location.back();
     }
 
-    private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
+    private openPendenzDialog(
+        internePendenz: TSInternePendenz
+    ): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
         dialogConfig.panelClass = 'interne-pendenzen-dialog';
-        return this.dialog.open(InternePendenzDialogComponent, dialogConfig).afterClosed().toPromise();
+        return this.dialog
+            .open(InternePendenzDialogComponent, dialogConfig)
+            .afterClosed()
+            .toPromise();
     }
 
     private handleError(error: Error): void {

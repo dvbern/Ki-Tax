@@ -13,18 +13,35 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ul class="dvb-version list-inline no-margin" >
+<ul class="dvb-version list-inline no-margin">
     <li ng-if="vm.showBlog" class="version" title="Blog">
-        <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_NEUIGKEITEN_LINK' | translate}}"
-           data-translate="BLOG_FOOTER_LINK"></a>
+        <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="{{ 'BLOG_NEUIGKEITEN_LINK' | translate }}"
+            data-translate="BLOG_FOOTER_LINK"
+        ></a>
     </li>
-    <li ng-if="vm.showSingleVersion" class="version" title="node: {{vm.currentNode}}"
+    <li
+        ng-if="vm.showSingleVersion"
+        class="version"
+        title="node: {{ vm.currentNode }}"
         data-translate="VERSION_INFO_SINGLE"
-        data-translate-value-version="{{vm.frontendVersion}}"></li>
-    <li ng-if="!vm.showSingleVersion" class="version" title="node: {{vm.currentNode}}"
+        data-translate-value-version="{{ vm.frontendVersion }}"
+    ></li>
+    <li
+        ng-if="!vm.showSingleVersion"
+        class="version"
+        title="node: {{ vm.currentNode }}"
         data-translate="VERSION_INFO"
-        data-translate-value-frontend-version="{{vm.frontendVersion}}"
-        data-translate-value-backend-version="{{vm.backendVersion}}">
+        data-translate-value-frontend-version="{{ vm.frontendVersion }}"
+        data-translate-value-backend-version="{{ vm.backendVersion }}"
+    ></li>
+    <li>
+        <i
+            ><span
+                ng-bind="vm.buildTime | amDateFormat : 'DD.MM.YYYY HH:MM:SS'"
+            ></span
+        ></i>
     </li>
-    <li><i><span ng-bind="vm.buildTime | amDateFormat : 'DD.MM.YYYY HH:MM:SS'"></span></i>
 </ul>

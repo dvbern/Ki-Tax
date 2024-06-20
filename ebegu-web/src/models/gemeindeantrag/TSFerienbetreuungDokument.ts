@@ -17,5 +17,4 @@
 
 import {TSUploadFile} from '../TSUploadFile';
 
-export class TSFerienbetreuungDokument extends TSUploadFile {
-}
+export class TSFerienbetreuungDokument extends TSUploadFile {}

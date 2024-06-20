@@ -17,14 +17,19 @@
   -->
 
 <div class="gesuch-modul">
-    <h1 class="access-for-all-title">{{ 'AFA_GESUCHSFORMULAR' | translate }}</h1>
-    <div class="row col-md-12 view-title ">
+    <h1 class="access-for-all-title">
+        {{ 'AFA_GESUCHSFORMULAR' | translate }}
+    </h1>
+    <div class="row col-md-12 view-title">
         <h2>{{ 'ONLINEFREIGABE_TITLE' | translate }}</h2>
-        <hr class="header"/>
+        <hr class="header" />
     </div>
     <article class="row col-md-12">
         <h3>{{ 'ONLINEFREIGABE_EINWILLIGUNG_TITLE' | translate }}</h3>
-        <section class="test" [innerHTML]="'ONLINEFREIGABE_EINWILLIGUNG_TEXT' | translate"></section>
+        <section
+            class="test"
+            [innerHTML]="'ONLINEFREIGABE_EINWILLIGUNG_TEXT' | translate"
+        ></section>
     </article>
 
     <div class="row col-md-12 margin-bottom-30">
@@ -36,11 +41,13 @@
                 [readonly]="checkboxDisabled()"
                 [displayBisher]="false"
                 [(model)]="model.userConfirmedCorrectness"
-                [label]="'ONLINEFREIGABE_CONFIRMATION_LABEL'"/>
+                [label]="'ONLINEFREIGABE_CONFIRMATION_LABEL'"
+            />
             <dv-loading-button
                 type="button"
                 [buttonDisabled]="freigebenButtonDisabled()"
-                (buttonClick)="freigeben()">
+                (buttonClick)="freigeben()"
+            >
                 {{ 'ONLINEFREIGABE_FREIGABE_BUTTON' | translate }}
             </dv-loading-button>
         </form>

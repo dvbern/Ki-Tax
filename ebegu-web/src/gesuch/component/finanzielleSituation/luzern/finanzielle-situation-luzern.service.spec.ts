@@ -22,24 +22,26 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
 
 describe('FinanzielleSituationLuzernService', () => {
-  let service: FinanzielleSituationLuzernService;
+    let service: FinanzielleSituationLuzernService;
 
-  const berechnungsManagerSpy =
-      jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-          ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-  berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-      .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+        BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']
+    );
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+        Promise.resolve(new TSFinanzielleSituationResultateDTO())
+    );
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
-      ]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+            ]
+        });
+        service = TestBed.inject(FinanzielleSituationLuzernService);
     });
-    service = TestBed.inject(FinanzielleSituationLuzernService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

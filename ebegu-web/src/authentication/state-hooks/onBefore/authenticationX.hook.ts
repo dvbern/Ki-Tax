@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookMatchCriteria,
+    HookResult,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -33,20 +38,32 @@ const LOG = LogFactory.createLog('authenticationHookRunBlockX');
  * - The user is navigating to a state that requires authentication
  */
 
-export function authenticationHookRunBlockX($transitions: TransitionService, authService: AuthServiceRS): void {
+export function authenticationHookRunBlockX(
+    $transitions: TransitionService,
+    authService: AuthServiceRS
+): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS)
+        to: state =>
+            state.data &&
+            Array.isArray(state.data.roles) &&
+            !state.data.roles.includes(TSRole.ANONYMOUS)
     };
 
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, transition =>
-        redirectToLogin(transition, authService), {priority: OnBeforePriorities.AUTHENTICATION});
+    $transitions.onBefore(
+        requiresAuthCriteria,
+        transition => redirectToLogin(transition, authService),
+        {priority: OnBeforePriorities.AUTHENTICATION}
+    );
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToLogin(transition: Transition, authService: AuthServiceRS): HookResult {
+function redirectToLogin(
+    transition: Transition,
+    authService: AuthServiceRS
+): HookResult {
     const $state = transition.router.stateService;
 
     return authService.principal$
@@ -58,7 +75,9 @@ function redirectToLogin(transition: Transition, authService: AuthServiceRS): Ho
                 if (!principal) {
                     LOG.debug('redirecting to login page');
 
-                    return $state.target('authentication.login', undefined, {location: false});
+                    return $state.target('authentication.login', undefined, {
+                        location: false
+                    });
                 }
 
                 // continue the original transition

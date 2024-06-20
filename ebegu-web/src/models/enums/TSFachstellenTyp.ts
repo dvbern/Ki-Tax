@@ -18,5 +18,5 @@
 export enum TSFachstellenTyp {
     BERN = 'BERN',
     LUZERN = 'LUZERN',
-    KEINE =  'KEINE'
+    KEINE = 'KEINE'
 }

@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DvDemoFeatureWrapperComponent } from './dv-demo-feature-wrapper.component';
+import {DvDemoFeatureWrapperComponent} from './dv-demo-feature-wrapper.component';
 
 describe('DvDemoFetureWrapperComponent', () => {
-  let component: DvDemoFeatureWrapperComponent;
-  let fixture: ComponentFixture<DvDemoFeatureWrapperComponent>;
+    let component: DvDemoFeatureWrapperComponent;
+    let fixture: ComponentFixture<DvDemoFeatureWrapperComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DvDemoFeatureWrapperComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [DvDemoFeatureWrapperComponent]
+        }).compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DvDemoFeatureWrapperComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DvDemoFeatureWrapperComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -16,15 +16,15 @@
  */
 
 const getUmzugHinzufuegenButton = () => {
-	return cy.getByData('container.hinzufuegen', 'navigation-button');
+    return cy.getByData('container.hinzufuegen', 'navigation-button');
 };
 
 const getUmzugStrasse = (umzugIndex: number) => {
-	return cy.getByData('container.umzug-' + umzugIndex, 'adresseStrasse');
+    return cy.getByData('container.umzug-' + umzugIndex, 'adresseStrasse');
 };
 
 const getUmzugHausnummer = (umzugIndex: number) => {
-	return cy.getByData('container.umzug-' + umzugIndex, 'adresseHausnummer');
+    return cy.getByData('container.umzug-' + umzugIndex, 'adresseHausnummer');
 };
 
 const getUmzugPlz = (umzugIndex: number) => {
@@ -32,14 +32,12 @@ const getUmzugPlz = (umzugIndex: number) => {
 };
 
 const getUmzugOrt = (umzugIndex: number) => {
-	return cy.getByData('container.umzug-' + umzugIndex, 'adresseOrt');
+    return cy.getByData('container.umzug-' + umzugIndex, 'adresseOrt');
 };
 
 const getUmzugGueltigAb = (umzugIndex: number) => {
-	return cy.getByData('container.umzug-' + umzugIndex, 'gueltigAb');
+    return cy.getByData('container.umzug-' + umzugIndex, 'gueltigAb');
 };
-
-
 
 export const UmzugPO = {
     getUmzugHinzufuegenButton,

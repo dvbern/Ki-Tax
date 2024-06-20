@@ -15,17 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 import {CONSTANTS} from '../../constants/CONSTANTS';
 
 export class DvIsNotQrIban implements IDirective {
-
     public restrict = 'A';
     public require = 'ngModel';
     public link: IDirectiveLinkFn;
 
     public constructor() {
-        this.link = (_scope: IScope, _element: IAugmentedJQuery, _attrs, ctrl: any) => {
+        this.link = (
+            _scope: IScope,
+            _element: IAugmentedJQuery,
+            _attrs,
+            ctrl: any
+        ) => {
             if (!ctrl) {
                 return;
             }
@@ -41,11 +51,14 @@ export class DvIsNotQrIban implements IDirective {
     }
 
     private isQrIbanLike(value: unknown): boolean {
-        return typeof value === 'string' && value.length > 0 &&  CONSTANTS.QR_IBAN_PATTERN.test(this.stripWhiteSpaces(value));
+        return (
+            typeof value === 'string' &&
+            value.length > 0 &&
+            CONSTANTS.QR_IBAN_PATTERN.test(this.stripWhiteSpaces(value))
+        );
     }
 
     private stripWhiteSpaces(value: string): string {
         return value.replace(/\s/g, '');
     }
-
 }

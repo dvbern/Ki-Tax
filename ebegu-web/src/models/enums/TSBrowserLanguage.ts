@@ -20,7 +20,7 @@
  */
 export enum TSBrowserLanguage {
     DE = 'de',
-    FR = 'fr',
+    FR = 'fr'
 }
 
 /**
@@ -30,7 +30,9 @@ export enum TSBrowserLanguage {
  * de    --> de
  * *     --> de
  */
-export function tsBrowserLanguageFromString(stringLanguage: string): TSBrowserLanguage {
+export function tsBrowserLanguageFromString(
+    stringLanguage: string
+): TSBrowserLanguage {
     if (stringLanguage && stringLanguage.startsWith('fr')) {
         return TSBrowserLanguage.FR;
     }

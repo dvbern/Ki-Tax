@@ -19,7 +19,6 @@ import * as moment from 'moment';
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSBetreuungMonitoring extends TSAbstractEntity {
-
     public refNummer: string;
     public benutzer: string;
     public infoText: string;

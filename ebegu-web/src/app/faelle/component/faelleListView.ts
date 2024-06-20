@@ -19,7 +19,10 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
-import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
@@ -32,8 +35,13 @@ export class FaelleListViewComponentConfig implements IComponentOptions {
 }
 
 export class FaelleListViewController {
-
-    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'AuthServiceRS', 'SearchRS'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        '$state',
+        '$log',
+        'AuthServiceRS',
+        'SearchRS'
+    ];
 
     public totalResultCount: string = '0';
 
@@ -42,8 +50,7 @@ export class FaelleListViewController {
         private readonly $state: StateService,
         private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
@@ -57,39 +64,64 @@ export class FaelleListViewController {
             return;
         }
 
-        const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+        const isCtrlKeyPressed: boolean = event && event.ctrlKey;
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             // Reload Gesuch in gesuchModelManager on Init in fallCreationView because it has been changed since
             // last time
             this.gesuchModelManager.clearGesuch();
             if (isAnyStatusOfVerfuegt(antrag.status)) {
-                this.openGesuch(antrag, 'gesuch.verfuegen',
+                this.openGesuch(
+                    antrag,
+                    'gesuch.verfuegen',
                     {gesuchId: antrag.antragId},
-                    isCtrlKeyPressed);
+                    isCtrlKeyPressed
+                );
             } else {
-                this.openGesuch(antrag, 'gesuch.betreuungen',
+                this.openGesuch(
+                    antrag,
+                    'gesuch.betreuungen',
                     {gesuchId: antrag.antragId},
-                    isCtrlKeyPressed);
+                    isCtrlKeyPressed
+                );
             }
-        } else if (antrag.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
+        } else if (
+            antrag.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+        ) {
             const navObj: any = {
                 gesuchId: antrag.antragId,
                 dossierId: antrag.dossierId,
                 fallId: antrag.fallId,
                 gemeindeId: antrag.gemeindeId
             };
-            this.openGesuch(antrag, 'gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
+            this.openGesuch(
+                antrag,
+                'gesuch.sozialdienstfallcreation',
+                navObj,
+                isCtrlKeyPressed
+            );
         } else {
-            this.openGesuch(antrag, 'gesuch.fallcreation',
+            this.openGesuch(
+                antrag,
+                'gesuch.fallcreation',
                 {gesuchId: antrag.antragId, dossierId: antrag.dossierId},
-                isCtrlKeyPressed);
+                isCtrlKeyPressed
+            );
         }
     }
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
      */
-    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, params: any, isCtrlKeyPressed: boolean): void {
+    private openGesuch(
+        antrag: TSAntragDTO,
+        urlToGoTo: string,
+        params: any,
+        isCtrlKeyPressed: boolean
+    ): void {
         if (!antrag) {
             return;
         }

@@ -26,10 +26,12 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.Constants;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 
 @MappedSuperclass
 @Audited
+@EqualsAndHashCode(callSuper = true)
 public abstract class AbstractMutableEntity extends AbstractEntity {
 
 	private static final long serialVersionUID = -979322154020183445L;

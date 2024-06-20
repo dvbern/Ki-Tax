@@ -31,25 +31,26 @@ const LOG = LogFactory.createLog('SozialdienstRS');
     providedIn: 'root'
 })
 export class SozialdienstRS {
-
     public readonly serviceURL: string = `${CONSTANTS.REST_API}sozialdienst`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        public readonly $http: HttpClient
-    ) {
-    }
+    public constructor(public readonly $http: HttpClient) {}
 
     public getServiceName(): string {
         return 'SozialdienstRS';
     }
 
-    public createSozialdienst(sozialdienst: TSSozialdienst, email: string): Observable<TSSozialdienst> {
+    public createSozialdienst(
+        sozialdienst: TSSozialdienst,
+        email: string
+    ): Observable<TSSozialdienst> {
+        const restSozialdienst = this.ebeguRestUtil.sozialdienstToRestObject(
+            {},
+            sozialdienst
+        );
 
-        const restSozialdienst = this.ebeguRestUtil.sozialdienstToRestObject({}, sozialdienst);
-
-        return this.$http.post(this.serviceURL, restSozialdienst,
-            {
+        return this.$http
+            .post(this.serviceURL, restSozialdienst, {
                 params: {
                     adminMail: email
                 }
@@ -57,40 +58,74 @@ export class SozialdienstRS {
             .pipe(
                 map(response => {
                     LOG.debug('PARSING sozialdienst REST object ', response);
-                    return this.ebeguRestUtil.parseSozialdienst(new TSSozialdienst(), response);
+                    return this.ebeguRestUtil.parseSozialdienst(
+                        new TSSozialdienst(),
+                        response
+                    );
                 })
             );
     }
 
     public getSozialdienstList(): Observable<TSSozialdienst[]> {
-        return this.$http.get<any[]>(this.serviceURL).pipe(map(response => {
-            LOG.debug('PARSING Sozialdienst REST array object', response);
-            return this.ebeguRestUtil.parseSozialdienstList(response);
-        }));
-    }
-
-    public getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
-        return this.$http.get<any[]>(`${this.serviceURL  }/`).pipe(
+        return this.$http.get<any[]>(this.serviceURL).pipe(
             map(response => {
                 LOG.debug('PARSING Sozialdienst REST array object', response);
                 return this.ebeguRestUtil.parseSozialdienstList(response);
-            }));
+            })
+        );
     }
 
-    public getSozialdienstStammdaten(sozialdienstId: string): Observable<TSSozialdienstStammdaten> {
-        return this.$http.get<any[]>(`${this.serviceURL}/stammdaten/${encodeURIComponent(sozialdienstId)}`)
-            .pipe(map(response => {
-                LOG.debug('PARSING Sozialdienst Stammdaten REST object', response);
-                return this.ebeguRestUtil.parseSozialdienstStammdaten(new TSSozialdienstStammdaten(), response);
-            }));
+    public getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
+        return this.$http.get<any[]>(`${this.serviceURL}/`).pipe(
+            map(response => {
+                LOG.debug('PARSING Sozialdienst REST array object', response);
+                return this.ebeguRestUtil.parseSozialdienstList(response);
+            })
+        );
     }
 
-    public saveSozialdienstStammdaten(stammdaten: TSSozialdienstStammdaten): Observable<TSSozialdienstStammdaten> {
+    public getSozialdienstStammdaten(
+        sozialdienstId: string
+    ): Observable<TSSozialdienstStammdaten> {
+        return this.$http
+            .get<
+                any[]
+            >(`${this.serviceURL}/stammdaten/${encodeURIComponent(sozialdienstId)}`)
+            .pipe(
+                map(response => {
+                    LOG.debug(
+                        'PARSING Sozialdienst Stammdaten REST object',
+                        response
+                    );
+                    return this.ebeguRestUtil.parseSozialdienstStammdaten(
+                        new TSSozialdienstStammdaten(),
+                        response
+                    );
+                })
+            );
+    }
+
+    public saveSozialdienstStammdaten(
+        stammdaten: TSSozialdienstStammdaten
+    ): Observable<TSSozialdienstStammdaten> {
         let restStammdaten = {};
-        restStammdaten = this.ebeguRestUtil.sozialdienstStammdatenToRestObject(restStammdaten, stammdaten);
-        return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).pipe(map((response: any) => {
-            LOG.debug('PARSING Sozialdienst Stammdaten object ', response);
-            return this.ebeguRestUtil.parseSozialdienstStammdaten(new TSSozialdienstStammdaten(), response);
-        }));
+        restStammdaten = this.ebeguRestUtil.sozialdienstStammdatenToRestObject(
+            restStammdaten,
+            stammdaten
+        );
+        return this.$http
+            .put(`${this.serviceURL}/stammdaten`, restStammdaten)
+            .pipe(
+                map((response: any) => {
+                    LOG.debug(
+                        'PARSING Sozialdienst Stammdaten object ',
+                        response
+                    );
+                    return this.ebeguRestUtil.parseSozialdienstStammdaten(
+                        new TSSozialdienstStammdaten(),
+                        response
+                    );
+                })
+            );
     }
 }

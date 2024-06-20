@@ -13,10 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 
 export class EllipsisTooltip implements IDirective {
-
     public link: IDirectiveLinkFn;
 
     public constructor() {

@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
@@ -41,12 +47,9 @@ let nextId = 0;
     templateUrl: './dv-month-picker.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
-    providers: [
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
-    ]
+    providers: [{provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}]
 })
 export class DvMonthPickerComponent {
-
     @Input() public date?: moment.Moment;
     @Input() public readonly required: boolean = false;
 
@@ -55,8 +58,7 @@ export class DvMonthPickerComponent {
 
     public inputId = `dv-month-picker-${nextId++}`;
 
-    public constructor(public readonly form: NgForm) {
-    }
+    public constructor(public readonly form: NgForm) {}
 
     public chosenYearHandler(normalizedYear: moment.Moment): void {
         const control = this.form.controls[this.inputId];
@@ -65,7 +67,10 @@ export class DvMonthPickerComponent {
         control.setValue(ctrlValue);
     }
 
-    public chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>): void {
+    public chosenMonthHandler(
+        normalizedMonth: moment.Moment,
+        datepicker: MatDatepicker<moment.Moment>
+    ): void {
         const control = this.form.controls[this.inputId];
 
         const ctrlValue = control.value || moment();

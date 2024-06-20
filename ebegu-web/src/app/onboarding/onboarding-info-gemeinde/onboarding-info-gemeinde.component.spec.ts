@@ -31,12 +31,18 @@ describe('OnboardingInfoGemComponent', () => {
     let component: OnboardingInfoGemeindeComponent;
     let fixture: ComponentFixture<OnboardingInfoGemeindeComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
-    const i18nServiceSpy =
-        jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getAllBfsGemeinden'
+    ]);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['getPublicPropertiesCached']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']
+        );
 
     beforeEach(waitForAsync(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
@@ -50,7 +56,10 @@ describe('OnboardingInfoGemComponent', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -58,7 +67,9 @@ describe('OnboardingInfoGemComponent', () => {
     }));
 
     beforeEach(() => {
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of({} as any).toPromise());
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of({} as any).toPromise()
+        );
         fixture = TestBed.createComponent(OnboardingInfoGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -69,6 +80,6 @@ describe('OnboardingInfoGemComponent', () => {
     });
 
     it('should load all BFS Gemeinden', () => {
-         expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
+        expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
     });
 });

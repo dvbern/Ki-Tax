@@ -17,42 +17,54 @@
 
 import {Permission} from '../app/authorisation/Permission';
 import {PERMISSIONS} from '../app/authorisation/Permissions';
-import {getTSRoleValues, getTSRoleValuesWithoutSuperAdmin, rolePrefix, TSRole} from '../models/enums/TSRole';
+import {
+    getTSRoleValues,
+    getTSRoleValuesWithoutSuperAdmin,
+    rolePrefix,
+    TSRole
+} from '../models/enums/TSRole';
 
 /**
  * Hier findet man unterschiedliche Hilfsmethoden, um die Rollen von TSRole zu holen
  */
 export class TSRoleUtil {
-
     public static getAllRolesButGesuchsteller(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element => element !== TSRole.GESUCHSTELLER);
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element => element !== TSRole.GESUCHSTELLER
+        );
     }
 
     public static getAllRolesButGesuchstellerSozialdienst(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element => (element !== TSRole.GESUCHSTELLER
-                && element !== TSRole.ADMIN_SOZIALDIENST
-                && element !== TSRole.SACHBEARBEITER_SOZIALDIENST));
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element =>
+                element !== TSRole.GESUCHSTELLER &&
+                element !== TSRole.ADMIN_SOZIALDIENST &&
+                element !== TSRole.SACHBEARBEITER_SOZIALDIENST
+        );
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getAllRolesButSchulamtAndSuperAdmin(): ReadonlyArray<TSRole> {
-        return getTSRoleValuesWithoutSuperAdmin()
-            .filter(role => !TSRoleUtil.getSchulamtOnlyRoles().includes(role));
+        return getTSRoleValuesWithoutSuperAdmin().filter(
+            role => !TSRoleUtil.getSchulamtOnlyRoles().includes(role)
+        );
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getAllRolesForMenuAlleVerfuegungen(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element => element !== TSRole.SACHBEARBEITER_TS
-                && element !== TSRole.ADMIN_TS
-                && element !== TSRole.STEUERAMT);
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element =>
+                element !== TSRole.SACHBEARBEITER_TS &&
+                element !== TSRole.ADMIN_TS &&
+                element !== TSRole.STEUERAMT
+        );
     }
 
     public static getAllRolesForMenuAlleFaelle(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymousAndFerienbetreuung()
-            .filter(element => element !== TSRole.GESUCHSTELLER && element !== TSRole.STEUERAMT);
+        return TSRoleUtil.getAllRolesButAnonymousAndFerienbetreuung().filter(
+            element =>
+                element !== TSRole.GESUCHSTELLER && element !== TSRole.STEUERAMT
+        );
     }
 
     public static getAllRolesForZahlungen(): ReadonlyArray<TSRole> {
@@ -101,12 +113,14 @@ export class TSRoleUtil {
     }
 
     public static getAllRolesButAnonymousAndFerienbetreuung(): ReadonlyArray<TSRole> {
-        return getTSRoleValues()
-            .filter(role => ![
-                TSRole.ANONYMOUS,
-                TSRole.SACHBEARBEITER_FERIENBETREUUNG,
-                TSRole.ADMIN_FERIENBETREUUNG
-            ].includes(role));
+        return getTSRoleValues().filter(
+            role =>
+                ![
+                    TSRole.ANONYMOUS,
+                    TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+                    TSRole.ADMIN_FERIENBETREUUNG
+                ].includes(role)
+        );
     }
 
     public static getSuperAdminRoles(): ReadonlyArray<TSRole> {
@@ -224,12 +238,19 @@ export class TSRoleUtil {
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getTraegerschaftRoles(): ReadonlyArray<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ];
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getTraegerschaftOnlyRoles(): ReadonlyArray<TSRole> {
-        return [TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
+        return [
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ];
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
@@ -270,17 +291,17 @@ export class TSRoleUtil {
     }
 
     public static getGesuchstellerJugendamtSchulamtRoles(): ReadonlyArray<TSRole> {
-            return [
-                TSRole.SUPER_ADMIN,
-                TSRole.GESUCHSTELLER,
-                TSRole.SACHBEARBEITER_BG,
-                TSRole.ADMIN_BG,
-                TSRole.ADMIN_GEMEINDE,
-                TSRole.SACHBEARBEITER_GEMEINDE,
-                TSRole.SACHBEARBEITER_TS,
-                TSRole.ADMIN_TS
-            ];
-        }
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.GESUCHSTELLER,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_TS
+        ];
+    }
 
     public static getSchulamtInstitutionRoles(): ReadonlyArray<TSRole> {
         return [
@@ -433,7 +454,11 @@ export class TSRoleUtil {
     }
 
     public static getMandantRoles(): ReadonlyArray<TSRole> {
-        return [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ];
     }
 
     public static getAllRolesForTraegerschaften(): ReadonlyArray<TSRole> {
@@ -500,20 +525,20 @@ export class TSRoleUtil {
     }
 
     public static getAllButAdministratorJugendamtRole(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element =>
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element =>
                 element !== TSRole.SACHBEARBEITER_BG &&
                 element !== TSRole.ADMIN_BG &&
                 element !== TSRole.SACHBEARBEITER_GEMEINDE &&
                 element !== TSRole.ADMIN_GEMEINDE &&
                 element !== TSRole.SUPER_ADMIN
-            );
+        );
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getAllButAdministratorAmtRole(): ReadonlyArray<TSRole> {
-        return getTSRoleValues()
-            .filter(element =>
+        return getTSRoleValues().filter(
+            element =>
                 element !== TSRole.SACHBEARBEITER_BG &&
                 element !== TSRole.ADMIN_BG &&
                 element !== TSRole.SACHBEARBEITER_GEMEINDE &&
@@ -521,32 +546,34 @@ export class TSRoleUtil {
                 element !== TSRole.SACHBEARBEITER_TS &&
                 element !== TSRole.ADMIN_TS &&
                 element !== TSRole.SUPER_ADMIN
-            );
+        );
     }
 
     public static getAllRolesButTraegerschaftInstitution(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element =>
-                element !== TSRole.ADMIN_INSTITUTION
-                && element !== TSRole.SACHBEARBEITER_INSTITUTION
-                && element !== TSRole.ADMIN_TRAEGERSCHAFT
-                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-            );
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element =>
+                element !== TSRole.ADMIN_INSTITUTION &&
+                element !== TSRole.SACHBEARBEITER_INSTITUTION &&
+                element !== TSRole.ADMIN_TRAEGERSCHAFT &&
+                element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        );
     }
 
     public static getAllRolesButTraegerschaftInstitutionSteueramt(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous()
-            .filter(element =>
-                element !== TSRole.ADMIN_INSTITUTION
-                && element !== TSRole.SACHBEARBEITER_INSTITUTION
-                && element !== TSRole.ADMIN_TRAEGERSCHAFT
-                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-                && element !== TSRole.STEUERAMT
-            );
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element =>
+                element !== TSRole.ADMIN_INSTITUTION &&
+                element !== TSRole.SACHBEARBEITER_INSTITUTION &&
+                element !== TSRole.ADMIN_TRAEGERSCHAFT &&
+                element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT &&
+                element !== TSRole.STEUERAMT
+        );
     }
 
     public static getAllRolesButSteueramt(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButAnonymous().filter(element => element !== TSRole.STEUERAMT);
+        return TSRoleUtil.getAllRolesButAnonymous().filter(
+            element => element !== TSRole.STEUERAMT
+        );
     }
 
     public static getSchulamtRoles(): ReadonlyArray<TSRole> {
@@ -589,10 +616,7 @@ export class TSRoleUtil {
     }
 
     public static getGemeindeOnlyRoles(): ReadonlyArray<TSRole> {
-        return [
-            TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE
-        ];
+        return [TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE];
     }
 
     public static getSchulamtOnlyRoles(): ReadonlyArray<TSRole> {
@@ -616,7 +640,13 @@ export class TSRoleUtil {
     }
 
     public static getReadOnlyRoles(): ReadonlyArray<TSRole> {
-        return [TSRole.REVISOR, TSRole.JURIST, TSRole.STEUERAMT, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+        return [
+            TSRole.REVISOR,
+            TSRole.JURIST,
+            TSRole.STEUERAMT,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ];
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
@@ -660,11 +690,15 @@ export class TSRoleUtil {
     }
 
     public static getTraegerschaftInstitutionOnlyRoles(): ReadonlyArray<TSRole> {
-        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(
+            PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]
+        );
     }
 
     public static getInstitutionRoles(): ReadonlyArray<TSRole> {
-        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(
+            TSRole.SUPER_ADMIN
+        );
     }
 
     public static getInstitutionOnlyRoles(): ReadonlyArray<TSRole> {
@@ -695,8 +729,13 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_SOZIALDIENST].includes(role);
     }
 
-    public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
-        return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? `${rolePrefix()  }NONE` : rolePrefix() + role;
+    public static translationKeyForRole(
+        role: TSRole,
+        gesuchstellerNone: boolean = false
+    ): string {
+        return role === TSRole.GESUCHSTELLER && gesuchstellerNone
+            ? `${rolePrefix()}NONE`
+            : rolePrefix() + role;
     }
 
     public static getAllRolesForNotrecht(): ReadonlyArray<TSRole> {
@@ -722,10 +761,7 @@ export class TSRoleUtil {
     }
 
     public static getSozialdienstRolle(): ReadonlyArray<TSRole> {
-        return [
-            TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST
-        ];
+        return [TSRole.ADMIN_SOZIALDIENST, TSRole.SACHBEARBEITER_SOZIALDIENST];
     }
 
     public static getAdministratorOrSozialdienstRolle(): ReadonlyArray<TSRole> {
@@ -737,11 +773,17 @@ export class TSRoleUtil {
     }
 
     public static getGesuchstellerSozialdienstRolle(): ReadonlyArray<TSRole> {
-        return [TSRole.GESUCHSTELLER, TSRole.ADMIN_SOZIALDIENST, TSRole.SACHBEARBEITER_SOZIALDIENST];
+        return [
+            TSRole.GESUCHSTELLER,
+            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
+        ];
     }
 
     public static getAdministratorOrAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {
-        return this.getAdministratorOrAmtRole().concat(this.getSozialdienstRolle());
+        return this.getAdministratorOrAmtRole().concat(
+            this.getSozialdienstRolle()
+        );
     }
 
     public static getAmtOrSozialdienstRolle(): ReadonlyArray<TSRole> {
@@ -749,12 +791,16 @@ export class TSRoleUtil {
     }
 
     public static getGemeindeBGTSAndAllSozialdienstRoles(): ReadonlyArray<TSRole> {
-        return this.getGemeindeOrBGOrTSRoles().concat(this.getAllRolesForSozialdienst());
+        return this.getGemeindeOrBGOrTSRoles().concat(
+            this.getAllRolesForSozialdienst()
+        );
     }
 
     public static getGemeindeOrFBOnlyRoles(): ReadonlyArray<TSRole> {
-        return this.getGemeindeOrBGOrTSRoles()
-            .concat([TSRole.SACHBEARBEITER_FERIENBETREUUNG, TSRole.ADMIN_FERIENBETREUUNG]);
+        return this.getGemeindeOrBGOrTSRoles().concat([
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+            TSRole.ADMIN_FERIENBETREUUNG
+        ]);
     }
 
     public static getAdministratorBgGemeindeRoles(): ReadonlyArray<TSRole> {
@@ -762,11 +808,15 @@ export class TSRoleUtil {
     }
 
     public static getAllRolesForPosteingang(): ReadonlyArray<TSRole> {
-        return this.getAdministratorOrAmtOrSozialdienstRolle().concat(this.getTraegerschaftInstitutionRoles());
+        return this.getAdministratorOrAmtOrSozialdienstRolle().concat(
+            this.getTraegerschaftInstitutionRoles()
+        );
     }
 
     public static getAllRolesForDossierMitteilungen(): ReadonlyArray<TSRole> {
-        return this.getGesuchstellerJugendamtSchulamtOtherAmtRoles().concat(this.getTraegerschaftInstitutionRoles());
+        return this.getGesuchstellerJugendamtSchulamtOtherAmtRoles().concat(
+            this.getTraegerschaftInstitutionRoles()
+        );
     }
 
     public static getGemeindeBgTSMandantRoles(): ReadonlyArray<TSRole> {
@@ -803,10 +853,7 @@ export class TSRoleUtil {
     }
 
     public static getGemeindeTSRoles(): ReadonlyArray<TSRole> {
-        return [
-            TSRole.SACHBEARBEITER_TS,
-            TSRole.ADMIN_TS
-        ];
+        return [TSRole.SACHBEARBEITER_TS, TSRole.ADMIN_TS];
     }
 
     public static getEditBemerkungenRoles(): ReadonlyArray<TSRole> {
@@ -822,9 +869,6 @@ export class TSRoleUtil {
     }
 
     public static getBGOnly(): ReadonlyArray<TSRole> {
-        return [
-            TSRole.ADMIN_BG,
-            TSRole.SACHBEARBEITER_BG
-        ];
+        return [TSRole.ADMIN_BG, TSRole.SACHBEARBEITER_BG];
     }
 }

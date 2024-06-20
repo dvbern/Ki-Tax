@@ -8,18 +8,19 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
     selector: '[dvEnableElement]'
 })
 export class EnableElementDirective implements OnChanges {
-
-    @Input() public allowedRoles: ReadonlyArray<TSRole> = TSRoleUtil.getAllRoles();
+    @Input() public allowedRoles: ReadonlyArray<TSRole> =
+        TSRoleUtil.getAllRoles();
     @Input() public enableExpression: boolean = true;
 
     public constructor(
         private readonly authService: AuthServiceRS,
         public ngControl: NgControl
-    ) {
-    }
+    ) {}
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (!this.authService.isOneOfRoles(this.allowedRoles) || !this.enableExpression) {
+        if (!this.authService.isOneOfRoles(this.allowedRoles) ||
+                !this.enableExpression
+        ) {
             if (changes.enableExpression && this.ngControl?.control) {
                 const action = this.enableExpression ? 'enable' : 'disable';
                 this.ngControl?.control[action]();

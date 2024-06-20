@@ -59,22 +59,26 @@
     .symbol {
         padding: 0;
         text-align: center;
-        span, .dv-btn-operation {
+        span,
+        .dv-btn-operation {
             color: @contrast-darkest;
             display: block;
             height: 100%;
             width: 100%;
-            &[disabled], &[disabled]:hover {
+            &[disabled],
+            &[disabled]:hover {
                 color: @contrast-dark;
             }
         }
         .dv-btn-operation {
             line-height: 5rem;
-            &[disabled], &[disabled]:hover {
+            &[disabled],
+            &[disabled]:hover {
                 color: @contrast-dark;
             }
         }
-        .dv-btn-operation:focus, span:focus {
+        .dv-btn-operation:focus,
+        span:focus {
             outline: 2px solid @contrast-darkest;
             outline-offset: -2px;
         }
@@ -85,22 +89,26 @@
     .dateientable {
         font-size: 1.2rem;
         margin-bottom: 0;
-        &-td, &-th {
+        &-td,
+        &-th {
             background-color: transparent;
             border: none;
             font-size: 1.2rem;
             height: 3rem !important;
             margin-bottom: 0;
         }
-        &-th, &-th:empty {
+        &-th,
+        &-th:empty {
             border-bottom: 1px solid @contrast-darkest;
             border-top: 0;
         }
-        &-td > span, &-th > span {
+        &-td > span,
+        &-th > span {
             font-size: 1.2rem;
         }
     }
-    table > thead:first-child > tr:first-child > th, table > thead > tr > th {
+    table > thead:first-child > tr:first-child > th,
+    table > thead > tr > th {
         .ebeguLabel();
         border: 1px solid @contrast-darkest;
         border-left: none;
@@ -134,10 +142,10 @@
     }
 
     table > tbody > tr:first-child > td {
-        &.documents-vailable, &.no-documents, &.no-color {
+        &.documents-vailable,
+        &.no-documents,
+        &.no-color {
             border-top: 1px solid @contrast-darkest;
         }
-
     }
-
 }

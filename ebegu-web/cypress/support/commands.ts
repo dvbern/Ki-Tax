@@ -20,7 +20,7 @@ import * as dvTasks from '@dv-e2e/tasks';
 
 type DvTasks = typeof dvTasks;
 
-import { OnlyValidSelectors, User } from '@dv-e2e/types';
+import {OnlyValidSelectors, User} from '@dv-e2e/types';
 import {Method, WaitOptions} from 'cypress/types/net-stubbing';
 
 declare global {
@@ -65,7 +65,10 @@ declare global {
              *   // technically equals
              *   cy.get('[data-test="dv-radiobutton"] label');
              */
-            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
+            getByData<T extends string>(
+                name: OnlyValidSelectors<T>,
+                ...nestedNames: OnlyValidSelectors<T>[]
+            ): Chainable<JQuery<HTMLElement>>;
 
             /**
              * Download a file using given url and save it with the given name
@@ -87,7 +90,10 @@ declare global {
              *   // also equals
              *   cy.getByData('dv-radiobutton').findByData('dv-label');
              */
-            findByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
+            findByData<T extends string>(
+                name: OnlyValidSelectors<T>,
+                ...nestedNames: OnlyValidSelectors<T>[]
+            ): Chainable<JQuery<HTMLElement>>;
 
             /**
              * Use custom dv tasks by using the 3rd param option `{ custom: true }`
@@ -138,7 +144,12 @@ declare global {
              * // More specifically it equals to
              * cy.intercept({ pathname: '**‍/einkommensverschlechterung/calculateTemp/1', method: 'POST', times: 1 }).as('...');
              */
-            waitForRequest<T>(method: Method, urlPart: string, run: () => T, params?: {waitOptions?: Partial<WaitOptions>}): Chainable<T>;
+            waitForRequest<T>(
+                method: Method,
+                urlPart: string,
+                run: () => T,
+                params?: {waitOptions?: Partial<WaitOptions>}
+            ): Chainable<T>;
 
             /**
              * Run an action and wait for a given download to initiate, the download url is the resulting subject
@@ -171,43 +182,60 @@ Cypress.Commands.add('login', (user: User) => {
     cy.session(
         'login' + user,
         () => {
-            cy.intercept({ pathname: '**/auth/authenticated-user', method: 'GET', times: 1 }).as('authCall');
+            cy.intercept({
+                pathname: '**/auth/authenticated-user',
+                method: 'GET',
+                times: 1
+            }).as('authCall');
             cy.visit('/#/locallogin');
             cy.get(`[data-test="test-user-${userSelector}"]`).click();
-            cy.wait('@authCall', { timeout: 3000 });
+            cy.wait('@authCall', {timeout: 3000});
         },
         {
             validate: () => {
-                cy.intercept({ pathname: '**/auth/authenticated-user', method: 'GET', times: 1 }).as('authCallValidation');
+                cy.intercept({
+                    pathname: '**/auth/authenticated-user',
+                    method: 'GET',
+                    times: 1
+                }).as('authCallValidation');
                 cy.visit('/#/');
                 cy.reload();
-                cy.wait('@authCallValidation', { timeout: 3000 })
+                cy.wait('@authCallValidation', {timeout: 3000})
                     .its('response.body')
-                    .then((response) => {
-                        expect(`${response.vorname}-${response.nachname}`).eq(userSelector);
+                    .then(response => {
+                        expect(`${response.vorname}-${response.nachname}`).eq(
+                            userSelector
+                        );
                     });
-            },
+            }
         }
     );
 });
 Cypress.Commands.add('groupBy', (context, run) => {
-    Cypress.log({ message: context, displayName: 'Group:' });
-    return cy.get('body', { log: false }).within(() => {
+    Cypress.log({message: context, displayName: 'Group:'});
+    return cy.get('body', {log: false}).within(() => {
         run();
     });
 });
-Cypress.Commands.add('waitForRequest', (method, pathname, run, params? ) => {
+Cypress.Commands.add('waitForRequest', (method, pathname, run, params?) => {
     const alias = `Request ${method} ${pathname}`;
-    cy.intercept({ method, pathname, times: 1 }).as(alias);
+    cy.intercept({method, pathname, times: 1}).as(alias);
     run();
     cy.wait(`@${alias}`, params?.waitOptions);
 });
 Cypress.Commands.addQuery('getByData', (name, ...names) => {
-    const getFn = cy.now('get', [name, ...names].map((name) => `[data-test="${name}"]`).join(' '), {}) as (subject: any) => any;
-    return (subject) => getFn(subject);
+    const getFn = cy.now(
+        'get',
+        [name, ...names].map(name => `[data-test="${name}"]`).join(' '),
+        {}
+    ) as (subject: any) => any;
+    return subject => getFn(subject);
 });
 Cypress.Commands.addQuery('findByData', (name, ...names) => {
-    return (subject) => subject.find([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+    return subject =>
+        subject.find(
+            [name, ...names].map(name => `[data-test="${name}"]`).join(' ')
+        );
 });
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();
@@ -223,11 +251,17 @@ Cypress.Commands.add('downloadFile', (url, fileName) => {
         .request({
             url: url as string,
             method: 'GET',
-            encoding: 'binary',
+            encoding: 'binary'
         })
-        .then((res) => {
+        .then(res => {
             if (res.status === 200) {
-                return cy.writeFile(`${Cypress.config('downloadsFolder')}/${fileName}`, res.body, 'binary').then(() => fileName);
+                return cy
+                    .writeFile(
+                        `${Cypress.config('downloadsFolder')}/${fileName}`,
+                        res.body,
+                        'binary'
+                    )
+                    .then(() => fileName);
             }
             throw new Error(`Failed to download: ${url}`);
         });
@@ -242,11 +276,11 @@ Cypress.Commands.add('closeMaterialOverlay', () => {
     cy.log('Closing material dialog/overlay');
     cy.get('.md-menu-backdrop').should('not.have.class', 'ng-animate').click();
 });
-Cypress.Commands.add('getDownloadUrl', (action) => {
-    cy.window().then((win) => {
-        const result = new Promise<string>((resolve) => {
+Cypress.Commands.add('getDownloadUrl', action => {
+    cy.window().then(win => {
+        const result = new Promise<string>(resolve => {
             // Mock the first window.open call to render the download preparation page into an iframe
-            cy.stub(win, 'open').callsFake((url) => {
+            cy.stub(win, 'open').callsFake(url => {
                 const iframe = win.document.createElement('iframe');
                 iframe.src = url;
                 win.document.body.appendChild(iframe);
@@ -254,7 +288,7 @@ Cypress.Commands.add('getDownloadUrl', (action) => {
 
                 iframe.onload = function (this: any) {
                     // Mock the second window.open to obtain the download url
-                    cy.stub(this.contentWindow, 'open').callsFake((url) => {
+                    cy.stub(this.contentWindow, 'open').callsFake(url => {
                         resolve(url);
                         iframe.onload = null;
                         iframe.remove();

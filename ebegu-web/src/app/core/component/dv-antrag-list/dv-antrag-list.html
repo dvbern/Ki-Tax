@@ -14,13 +14,18 @@
   -->
 
 <div class="dv-antrag-list">
-    <div class="row" dv-st-persist-antraege="{{vm.tableId}}" st-table="vm.displayedCollection" st-delay="20"
-         st-pipe="vm.callServer">
+    <div
+        class="row"
+        dv-st-persist-antraege="{{ vm.tableId }}"
+        st-table="vm.displayedCollection"
+        st-delay="20"
+        st-pipe="vm.callServer"
+    >
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-10">
                     <div id="titleText">
-                        <h3 data-translate="{{vm.tableTitle}}"></h3>
+                        <h3 data-translate="{{ vm.tableTitle }}"></h3>
                     </div>
                     <div id="refreshIcon">
                         <i class="fa fa-undo" dv-st-reset-search></i>
@@ -33,325 +38,615 @@
         </div>
         <div class="col-md-12 table-responsive">
             <!--Tabelle-->
-            <table class="table fixedtable table-hover" id="{{vm.tableId}}">
+            <table class="table fixedtable table-hover" id="{{ vm.tableId }}">
                 <thead>
-                <!--Sortierspalten-->
-                <tr id="antraegeHeadRow">
-                    <th st-sort="fallNummer" class="sortable row-fallnr uppercase" data-translate="FALL"></th>
-                    <th st-sort="gemeinde" class="sortable row-name uppercase" data-translate="GEMEINDE"></th>
-                    <th st-sort="familienName" class="sortable row-name uppercase" data-translate="FAMILIE"></th>
-                    <th st-sort="kinder" class="sortable row-name uppercase" data-translate="KINDER"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </th>
-                    <th st-sort="antragTyp" class="sortable row-antrag uppercase" data-translate="TYP"></th>
-                    <th st-sort="gesuchsperiode" class="sortable row-periode uppercase" data-translate="PERIODE"></th>
-                    <th st-sort="aenderungsdatum" class="sortable row-geandert uppercase"
-                        data-translate="GEANDERT" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="!vm.pendenz">
-                    </th>
-                    <th st-sort="eingangsdatum" class="sortable row-geandert uppercase"
-                        data-translate="EINGANG" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="vm.pendenz">
-                    </th>
-                    <th st-sort="eingangsdatumSTV" class="sortable row-geandert uppercase"
-                        data-translate="EINGANG" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
-                    </th>
-                    <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
-                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumente-hochgeladen uppercase"
-                        data-translate="DOKUMENTE_HOCHGELADEN_KURZ"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
-                    </th>
-                    <th st-sort="angebote" class="sortable row-angebot uppercase" data-translate="ANGEBOT"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </th>
-                    <th st-sort="institutionen" class="sortable row-inst uppercase" data-translate="INSTITUTION"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </th>
-                    <!-- Titel Verantwortlicher ohne Schulamt -->
-                    <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
-                        ng-if="!vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()"
-                        data-translate="VERANTWORTLICH"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        title="{{'VERANTWORTLICH'|translate}}">
-                    </th>
-                    <!-- Verantwortlicher bei NUR-TS -->
-                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()"
-                        title="{{'VERANTWORTLICHER_SCHULAMT'|translate}}">
-                        <i class="fa fa-graduation-cap"></i> {{"VERANTWORTLICH"|translate}}
-                    </th>
-                    <!-- Verantwortlicher bei NUR-BG -->
-                    <th ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        title="{{'VERANTWORTLICHER_JUGENDAMT'|translate}}">
-                        <i class="fa fa-gift"></i> {{"VERANTWORTLICH"|translate}}
-                    </th>
-					<!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
-                    <th ng-if="vm.isPendenzGemeindeRolle()" st-sort="verantwortlicherGemeinde" class="sortable row-ver uppercase"
-                        data-translate="VERANTWORTLICH"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        title="{{'VERANTWORTLICH'|translate}}">
-                    </th>
-
-                </tr>
-                <!--Filterspalten-->
-                <tr>
-                    <th><input st-search="fallNummer" class="form-control" type="text" max="999999"
-                               ng-model="vm.selectedFallNummer"/></th>
-                    <th>
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="gemeinde" id="gemeinde"
-                                    st-search="gemeinde" class="form-control"
+                    <!--Sortierspalten-->
+                    <tr id="antraegeHeadRow">
+                        <th
+                            st-sort="fallNummer"
+                            class="sortable row-fallnr uppercase"
+                            data-translate="FALL"
+                        ></th>
+                        <th
+                            st-sort="gemeinde"
+                            class="sortable row-name uppercase"
+                            data-translate="GEMEINDE"
+                        ></th>
+                        <th
+                            st-sort="familienName"
+                            class="sortable row-name uppercase"
+                            data-translate="FAMILIE"
+                        ></th>
+                        <th
+                            st-sort="kinder"
+                            class="sortable row-name uppercase"
+                            data-translate="KINDER"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></th>
+                        <th
+                            st-sort="antragTyp"
+                            class="sortable row-antrag uppercase"
+                            data-translate="TYP"
+                        ></th>
+                        <th
+                            st-sort="gesuchsperiode"
+                            class="sortable row-periode uppercase"
+                            data-translate="PERIODE"
+                        ></th>
+                        <th
+                            st-sort="aenderungsdatum"
+                            class="sortable row-geandert uppercase"
+                            data-translate="GEANDERT"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="!vm.pendenz"
+                        ></th>
+                        <th
+                            st-sort="eingangsdatum"
+                            class="sortable row-geandert uppercase"
+                            data-translate="EINGANG"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="vm.pendenz"
+                        ></th>
+                        <th
+                            st-sort="eingangsdatumSTV"
+                            class="sortable row-geandert uppercase"
+                            data-translate="EINGANG"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()"
+                        ></th>
+                        <th
+                            st-sort="status"
+                            class="sortable row-status uppercase"
+                            data-translate="STATUS"
+                        ></th>
+                        <th
+                            st-sort="dokumenteHochgeladen"
+                            class="sortable row-dokumente-hochgeladen uppercase"
+                            data-translate="DOKUMENTE_HOCHGELADEN_KURZ"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+                        ></th>
+                        <th
+                            st-sort="angebote"
+                            class="sortable row-angebot uppercase"
+                            data-translate="ANGEBOT"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></th>
+                        <th
+                            st-sort="institutionen"
+                            class="sortable row-inst uppercase"
+                            data-translate="INSTITUTION"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></th>
+                        <!-- Titel Verantwortlicher ohne Schulamt -->
+                        <th
+                            st-sort="verantwortlicherBG"
+                            class="sortable row-ver uppercase"
+                            ng-if="
+                                !vm.isTagesschulangebotEnabled() &&
+                                !vm.isPendenzGemeindeRolle()
+                            "
+                            data-translate="VERANTWORTLICH"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            title="{{ 'VERANTWORTLICH' | translate }}"
+                        ></th>
+                        <!-- Verantwortlicher bei NUR-TS -->
+                        <th
+                            st-sort="verantwortlicherTS"
+                            class="sortable row-ver uppercase"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="
+                                vm.isTagesschulangebotEnabled() &&
+                                !vm.isPendenzGemeindeRolle()
+                            "
+                            title="{{
+                                'VERANTWORTLICHER_SCHULAMT' | translate
+                            }}"
+                        >
+                            <i class="fa fa-graduation-cap"></i>
+                            {{ 'VERANTWORTLICH' | translate }}
+                        </th>
+                        <!-- Verantwortlicher bei NUR-BG -->
+                        <th
+                            ng-if="
+                                vm.isTagesschulangebotEnabled() &&
+                                !vm.isPendenzGemeindeRolle()
+                            "
+                            st-sort="verantwortlicherBG"
+                            class="sortable row-ver uppercase"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            title="{{
+                                'VERANTWORTLICHER_JUGENDAMT' | translate
+                            }}"
+                        >
+                            <i class="fa fa-gift"></i>
+                            {{ 'VERANTWORTLICH' | translate }}
+                        </th>
+                        <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                        <th
+                            ng-if="vm.isPendenzGemeindeRolle()"
+                            st-sort="verantwortlicherGemeinde"
+                            class="sortable row-ver uppercase"
+                            data-translate="VERANTWORTLICH"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            title="{{ 'VERANTWORTLICH' | translate }}"
+                        ></th>
+                    </tr>
+                    <!--Filterspalten-->
+                    <tr>
+                        <th>
+                            <input
+                                st-search="fallNummer"
+                                class="form-control"
+                                type="text"
+                                max="999999"
+                                ng-model="vm.selectedFallNummer"
+                            />
+                        </th>
+                        <th>
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="gemeinde"
+                                    id="gemeinde"
+                                    st-search="gemeinde"
+                                    class="form-control"
                                     ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name"
-                                    ng-model="vm.selectedGemeinde">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th><input st-search="familienName" class="form-control" type="text"
-                               ng-model="vm.selectedFamilienName"/></th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <input st-search="kinder" class="form-control" type="text"
-                               ng-model="vm.selectedKinder"/>
-                    </th>
-                    <th>
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="antragTyp" id="antragTyp" st-search="antragTyp"
+                                    ng-model="vm.selectedGemeinde"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th>
+                            <input
+                                st-search="familienName"
+                                class="form-control"
+                                type="text"
+                                ng-model="vm.selectedFamilienName"
+                            />
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        >
+                            <input
+                                st-search="kinder"
+                                class="form-control"
+                                type="text"
+                                ng-model="vm.selectedKinder"
+                            />
+                        </th>
+                        <th>
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="antragTyp"
+                                    id="antragTyp"
+                                    st-search="antragTyp"
                                     class="form-control"
                                     ng-options="typ | translate for typ in vm.getAntragTypen() track by typ"
-                                    ng-model="vm.selectedAntragTyp">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="gesuchsperiodeString" id="gesuchsperiodeString"
-                                    st-search="gesuchsperiodeString" class="form-control"
+                                    ng-model="vm.selectedAntragTyp"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="gesuchsperiodeString"
+                                    id="gesuchsperiodeString"
+                                    st-search="gesuchsperiodeString"
+                                    class="form-control"
                                     ng-options="periode for periode in vm.gesuchsperiodenList track by periode"
-                                    ng-model="vm.selectedGesuchsperiode">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="!vm.pendenz">
-                        <input st-search="aenderungsdatum" class="form-control" type="text"
-                               ng-model="vm.selectedAenderungsdatum"/>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="vm.pendenz">
-                        <input st-search="eingangsdatum" class="form-control" type="text"
-                               ng-model="vm.selectedEingangsdatum"/>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
-                        <input st-search="eingangsdatumSTV" class="form-control" type="text"
-                               ng-model="vm.selectedEingangsdatumSTV"/>
-                    </th>
-                    <th>
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="status" id="status" st-search="status"
+                                    ng-model="vm.selectedGesuchsperiode"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="!vm.pendenz"
+                        >
+                            <input
+                                st-search="aenderungsdatum"
+                                class="form-control"
+                                type="text"
+                                ng-model="vm.selectedAenderungsdatum"
+                            />
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="vm.pendenz"
+                        >
+                            <input
+                                st-search="eingangsdatum"
+                                class="form-control"
+                                type="text"
+                                ng-model="vm.selectedEingangsdatum"
+                            />
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()"
+                        >
+                            <input
+                                st-search="eingangsdatumSTV"
+                                class="form-control"
+                                type="text"
+                                ng-model="vm.selectedEingangsdatumSTV"
+                            />
+                        </th>
+                        <th>
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="status"
+                                    id="status"
+                                    st-search="status"
                                     class="form-control"
                                     ng-options="status | translate for status in vm.getAntragStatus() track by status"
-                                    ng-model="vm.selectedAntragStatus">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="dokumenteHochgeladen" id="dokumenteHochgeladen"
+                                    ng-model="vm.selectedAntragStatus"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+                        >
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="dokumenteHochgeladen"
+                                    id="dokumenteHochgeladen"
                                     st-search="dokumenteHochgeladen"
                                     class="form-control"
-                                    ng-model="vm.selectedDokumenteHochgeladen">
-                                <option value="">{{"ALLE" | translate}}</option>
-                                <option value="{{true}}">{{"LABEL_JA" | translate}}</option>
-                                <option value="{{false}}">{{"LABEL_NEIN" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="angebote" id="angebote"
-                                    st-search="angebote" class="form-control"
+                                    ng-model="vm.selectedDokumenteHochgeladen"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                    <option value="{{ true }}">
+                                        {{ 'LABEL_JA' | translate }}
+                                    </option>
+                                    <option value="{{ false }}">
+                                        {{ 'LABEL_NEIN' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        >
+                            <div class="dv-select-style">
+                                <select
+                                    st-input-event="change"
+                                    name="angebote"
+                                    id="angebote"
+                                    st-search="angebote"
+                                    class="form-control"
                                     ng-options="typ | translate for typ in vm.getBetreuungsangebotTypen() track by typ"
-                                    ng-model="vm.selectedBetreuungsangebotTyp">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
-                    </th>
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <input id="institutionen" st-search="institutionen" class="form-control" type="hidden"/>
-                        <md-autocomplete md-min-length="0"
-                                         md-no-cache="true"
-                                         md-delay="0"
-                                         md-require-exact-match="true"
-                                         ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
-                                         md-class="form-control"
-                                         md-select-on-focus="true"
-                                         md-selected-item="vm.selectedInstitution"
-                                         md-selected-item-change="vm.updateInstitutionFilter()"
-                                         md-menu-container-class="antrag-list-autocomplete"
-                                         md-search-text="vm.searchQuery"
-                                         md-items="item in vm.querySearch(vm.searchQuery)"
-                                         md-item-text="item.name">
-                            <md-item-template>
-                                        <span md-highlight-text="vm.searchQuery">
-                                            {{item.name}}
-                                        </span>
-                            </md-item-template>
-                        </md-autocomplete>
-                    </th>
-                    <!-- Verantwortlicher bei NUR-TS -->
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()">
-                        <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
-                                       initial-all="true"
-                                       show-selection-all="true" selected-user="vm.selectedVerantwortlicherTS"
-                                       schulamt="true"></dv-userselect>
-                    </th>
-                    <!-- Verantwortlicher bei NUR-BG -->
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="!vm.isPendenzGemeindeRolle()">
-                        <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
-                                       initial-all="true"
-                                       show-selection-all="true"
-                                       selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
-                    </th>
-                    <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
-                    <th dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                    	ng-if="vm.isPendenzGemeindeRolle()">
-                        <dv-userselect input-id="verantwortlicherGemeinde" dv-usersearch="verantwortlicherGemeinde"
-                                       initial-all="true"
-                                       show-selection-all="true" sachbearbeiter-gemeinde="true"
-                                       selected-user="vm.selectedVerantwortlicherGemeinde"></dv-userselect>
-                    </th>
-
-                </tr>
+                                    ng-model="vm.selectedBetreuungsangebotTyp"
+                                >
+                                    <option value="">
+                                        {{ 'ALLE' | translate }}
+                                    </option>
+                                </select>
+                            </div>
+                        </th>
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        >
+                            <input
+                                id="institutionen"
+                                st-search="institutionen"
+                                class="form-control"
+                                type="hidden"
+                            />
+                            <md-autocomplete
+                                md-min-length="0"
+                                md-no-cache="true"
+                                md-delay="0"
+                                md-require-exact-match="true"
+                                ng-attr-placeholder="{{
+                                    'SUCHBEGRIFF_EINGEBEN' | translate
+                                }}"
+                                md-class="form-control"
+                                md-select-on-focus="true"
+                                md-selected-item="vm.selectedInstitution"
+                                md-selected-item-change="vm.updateInstitutionFilter()"
+                                md-menu-container-class="antrag-list-autocomplete"
+                                md-search-text="vm.searchQuery"
+                                md-items="item in vm.querySearch(vm.searchQuery)"
+                                md-item-text="item.name"
+                            >
+                                <md-item-template>
+                                    <span md-highlight-text="vm.searchQuery">
+                                        {{ item.name }}
+                                    </span>
+                                </md-item-template>
+                            </md-autocomplete>
+                        </th>
+                        <!-- Verantwortlicher bei NUR-TS -->
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="
+                                vm.isTagesschulangebotEnabled() &&
+                                !vm.isPendenzGemeindeRolle()
+                            "
+                        >
+                            <dv-userselect
+                                input-id="verantwortlicherTS"
+                                dv-usersearch="verantwortlicherTS"
+                                initial-all="true"
+                                show-selection-all="true"
+                                selected-user="vm.selectedVerantwortlicherTS"
+                                schulamt="true"
+                            ></dv-userselect>
+                        </th>
+                        <!-- Verantwortlicher bei NUR-BG -->
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="!vm.isPendenzGemeindeRolle()"
+                        >
+                            <dv-userselect
+                                input-id="verantwortlicherBG"
+                                dv-usersearch="verantwortlicherBG"
+                                initial-all="true"
+                                show-selection-all="true"
+                                selected-user="vm.selectedVerantwortlicherBG"
+                            ></dv-userselect>
+                        </th>
+                        <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                        <th
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="vm.isPendenzGemeindeRolle()"
+                        >
+                            <dv-userselect
+                                input-id="verantwortlicherGemeinde"
+                                dv-usersearch="verantwortlicherGemeinde"
+                                initial-all="true"
+                                show-selection-all="true"
+                                sachbearbeiter-gemeinde="true"
+                                selected-user="vm.selectedVerantwortlicherGemeinde"
+                            ></dv-userselect>
+                        </th>
+                    </tr>
                 </thead>
                 <!--Spaltendefinitionen-->
                 <tbody>
-                <tr ng-repeat="row in vm.displayedCollection" st-select-row="row" st-select-mode="single"
-                    ng-click="vm.editClicked(row, $event)"
-                    data-test="antrag-entry#{{vm.addZerosToFallnummer(row.fallNummer)}}">
-                    <td class="ellipsis" title="{{vm.addZerosToFallnummer(row.fallNummer)}}"
-                        ng-bind="vm.addZerosToFallnummer(row.fallNummer)"></td>
-                    <td class="ellipsis" title="{{row.gemeinde}}" ng-bind="row.gemeinde"></td>
-                    <td class="ellipsis" title="{{row.familienName}}" ng-bind="row.familienName"></td>
-                    <td class="ellipsis" title="{{row.kinder | arrayToString}}" ng-bind="row.kinder | arrayToString"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </td>
-                    <td class="ellipsis" title="{{vm.getAntragTypBezeichnung(row)}}">
-                        <i class="fa fa-desktop margin-ri" aria-hidden="true" ng-show="row.hasBesitzer() && !row.isSozialdienst"></i>
-                        <i class="fa fa-file-text-o" aria-hidden="true" ng-show="!row.hasBesitzer() && !row.isSozialdienst"></i>
-                        <i class="fa fa-handshake-o margin-ri" ng-show="row.isSozialdienst"></i>
-                        <span ng-bind="vm.getAntragTypBezeichnung(row)" class="margin-left-5"></span>
-                    </td>
-                    <td class="ellipsis"
-                        title="{{row.gesuchsperiodeString}}"
-                        ng-bind="row.gesuchsperiodeString"></td>
-                    <td class="ellipsis" title="{{row.aenderungsdatum | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.aenderungsdatum | amDateFormat : 'DD.MM.YYYY'"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="!vm.pendenz">
-                    <td class="ellipsis" title="{{row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        dv-display-expression="vm.pendenz">
-                    <td class="ellipsis" title="{{row.eingangsdatumSTV | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.eingangsdatumSTV | amDateFormat : 'DD.MM.YYYY'"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
-                    </td>
-                    <td class="ellipsis" title="{{row.status | translate}}"
-                        ng-bind="row.status | translate">
-                    </td>
-                    <td class="ellipsis" title="{{row.dokumenteHochgeladen | translate}}"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
-                        <i class="fa fa-file-o" aria-hidden="true" ng-show="row.dokumenteHochgeladen"></i>
-                    </td>
-                    <td class="ellipsis" title="{{vm.translateBetreuungsangebotTypList(row.angebote)}}"
-                        ng-bind="vm.translateBetreuungsangebotTypList(row.angebote)"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </td>
-                    <td class="ellipsis" title="{{row.institutionen | arrayToString }}"
-                        ng-bind="row.institutionen | arrayToString"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                    </td>
-                    <!-- Verantwortlicher bei NUR-TS -->
-                    <td class="ellipsis" title="{{row.verantwortlicherTS}}"
-                        ng-bind="row.verantwortlicherTS"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled() && !vm.isPendenzGemeindeRolle()">
-                    </td>
-                    <!-- Verantwortlicher bei NUR-BG -->
-                    <td class="ellipsis" title="{{row.verantwortlicherBG}}"
-                        ng-bind="row.verantwortlicherBG" dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="!vm.isPendenzGemeindeRolle()">
-                    </td>
-                    <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
-                    <td class="ellipsis" title="{{vm.getVerantwortlicheBgAndTs(row)}}"
-                        ng-bind="vm.getVerantwortlicheBgAndTs(row)"
-                        dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isPendenzGemeindeRolle()">
-                    </td>
-                </tr>
-                <tr>
-                <tr ng-if="vm.displayedCollection.length === 0">
-                    <td colspan="9" class="empty-table" data-translate="KEIN_EINTRAG">...</td>
-                </tr>
+                    <tr
+                        ng-repeat="row in vm.displayedCollection"
+                        st-select-row="row"
+                        st-select-mode="single"
+                        ng-click="vm.editClicked(row, $event)"
+                        data-test="antrag-entry#{{
+                            vm.addZerosToFallnummer(row.fallNummer)
+                        }}"
+                    >
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                vm.addZerosToFallnummer(row.fallNummer)
+                            }}"
+                            ng-bind="vm.addZerosToFallnummer(row.fallNummer)"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.gemeinde }}"
+                            ng-bind="row.gemeinde"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.familienName }}"
+                            ng-bind="row.familienName"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.kinder | arrayToString }}"
+                            ng-bind="row.kinder | arrayToString"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ vm.getAntragTypBezeichnung(row) }}"
+                        >
+                            <i
+                                class="fa fa-desktop margin-ri"
+                                aria-hidden="true"
+                                ng-show="
+                                    row.hasBesitzer() && !row.isSozialdienst
+                                "
+                            ></i>
+                            <i
+                                class="fa fa-file-text-o"
+                                aria-hidden="true"
+                                ng-show="
+                                    !row.hasBesitzer() && !row.isSozialdienst
+                                "
+                            ></i>
+                            <i
+                                class="fa fa-handshake-o margin-ri"
+                                ng-show="row.isSozialdienst"
+                            ></i>
+                            <span
+                                ng-bind="vm.getAntragTypBezeichnung(row)"
+                                class="margin-left-5"
+                            ></span>
+                        </td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.gesuchsperiodeString }}"
+                            ng-bind="row.gesuchsperiodeString"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.aenderungsdatum | amDateFormat: 'DD.MM.YYYY'
+                            }}"
+                            ng-bind="row.aenderungsdatum | amDateFormat : 'DD.MM.YYYY'"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="!vm.pendenz"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.eingangsdatum | amDateFormat: 'DD.MM.YYYY'
+                            }}"
+                            ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            dv-display-expression="vm.pendenz"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.eingangsdatumSTV
+                                    | amDateFormat: 'DD.MM.YYYY'
+                            }}"
+                            ng-bind="row.eingangsdatumSTV | amDateFormat : 'DD.MM.YYYY'"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.status | translate }}"
+                            ng-bind="row.status | translate"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.dokumenteHochgeladen | translate }}"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()"
+                        >
+                            <i
+                                class="fa fa-file-o"
+                                aria-hidden="true"
+                                ng-show="row.dokumenteHochgeladen"
+                            ></i>
+                        </td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                vm.translateBetreuungsangebotTypList(
+                                    row.angebote
+                                )
+                            }}"
+                            ng-bind="vm.translateBetreuungsangebotTypList(row.angebote)"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{ row.institutionen | arrayToString }}"
+                            ng-bind="row.institutionen | arrayToString"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        ></td>
+                        <!-- Verantwortlicher bei NUR-TS -->
+                        <td
+                            class="ellipsis"
+                            title="{{ row.verantwortlicherTS }}"
+                            ng-bind="row.verantwortlicherTS"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="
+                                vm.isTagesschulangebotEnabled() &&
+                                !vm.isPendenzGemeindeRolle()
+                            "
+                        ></td>
+                        <!-- Verantwortlicher bei NUR-BG -->
+                        <td
+                            class="ellipsis"
+                            title="{{ row.verantwortlicherBG }}"
+                            ng-bind="row.verantwortlicherBG"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="!vm.isPendenzGemeindeRolle()"
+                        ></td>
+                        <!-- Verantwortlicher: Kombinierte Spalte fuer Gemeinde-Rollen -->
+                        <td
+                            class="ellipsis"
+                            title="{{ vm.getVerantwortlicheBgAndTs(row) }}"
+                            ng-bind="vm.getVerantwortlicheBgAndTs(row)"
+                            dv-display-element
+                            dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                            ng-if="vm.isPendenzGemeindeRolle()"
+                        ></td>
+                    </tr>
+                    <tr></tr>
+                    <tr ng-if="vm.displayedCollection.length === 0">
+                        <td
+                            colspan="9"
+                            class="empty-table"
+                            data-translate="KEIN_EINTRAG"
+                        >
+                            ...
+                        </td>
+                    </tr>
                 </tbody>
                 <tfoot>
-                <tr>
-                    <td colspan="{{vm.getColumnsNumber()}}" class="text-center">
-                        <div st-pagination="" st-items-by-page="20" st-displayed-pages="10"></div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td
+                            colspan="{{ vm.getColumnsNumber() }}"
+                            class="text-center"
+                        >
+                            <div
+                                st-pagination=""
+                                st-items-by-page="20"
+                                st-displayed-pages="10"
+                            ></div>
+                        </td>
+                    </tr>
                 </tfoot>
             </table>
-
         </div>
     </div>
     <!--Addbutton -->
     <div class="row">
-
-        <div class="col-md-12" style="margin-bottom: 2rem" ng-if="vm.isAddButtonVisible()">
-            <dv-loading-button type="button" button-click="vm.addClicked()" button-class="dv-btn-sm color-success">
-                <i class="glyphicon glyphicon-plus">
-                </i> {{vm.addButtonText}}
+        <div
+            class="col-md-12"
+            style="margin-bottom: 2rem"
+            ng-if="vm.isAddButtonVisible()"
+        >
+            <dv-loading-button
+                type="button"
+                button-click="vm.addClicked()"
+                button-class="dv-btn-sm color-success"
+            >
+                <i class="glyphicon glyphicon-plus"> </i> {{ vm.addButtonText }}
             </dv-loading-button>
         </div>
     </div>
-
 </div>

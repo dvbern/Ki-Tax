@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsstandort;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
@@ -69,7 +70,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
-import ch.dvbern.ebegu.api.dtos.JaxEingewoehnungPauschale;
+import ch.dvbern.ebegu.api.dtos.JaxEingewoehnung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
@@ -124,6 +125,7 @@ import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnittBemerkung;
+import ch.dvbern.ebegu.api.dtos.JaxVersendeteMail;
 import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
@@ -139,11 +141,9 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 
-import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
-import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -233,6 +233,7 @@ import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
+import ch.dvbern.ebegu.entities.VersendeteMail;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -3260,12 +3261,6 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull BetreuungspensumAbweichung abweichung
 	) {
 		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
-		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
-		jaxAbweichung.getTarifProHauptmahlzeit()
-			.ifPresent(abweichung::setTarifProHauptmahlzeit);
-		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
-		jaxAbweichung.getTarifProNebenmahlzeit()
-			.ifPresent(abweichung::setTarifProNebenmahlzeit);
 		abweichung.setStatus(jaxAbweichung.getStatus()); // the frontend should not be able to decide this...
 
 		return abweichung;
@@ -3588,12 +3583,6 @@ public class JaxBConverter extends AbstractConverter {
 		final Betreuungspensum betreuungspensum) {
 
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
-		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
-		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
-		jaxBetreuungspensum.getTarifProHauptmahlzeit()
-			.ifPresent(betreuungspensum::setTarifProHauptmahlzeit);
-		jaxBetreuungspensum.getTarifProNebenmahlzeit()
-			.ifPresent(betreuungspensum::setTarifProNebenmahlzeit);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 		return betreuungspensum;
@@ -3637,12 +3626,6 @@ public class JaxBConverter extends AbstractConverter {
 		final BetreuungsmitteilungPensum betreuungspensum) {
 
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
-		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
-		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
-		jaxBetreuungspensum.getTarifProHauptmahlzeit()
-			.ifPresent(betreuungspensum::setTarifProHauptmahlzeit);
-		jaxBetreuungspensum.getTarifProNebenmahlzeit()
-			.ifPresent(betreuungspensum::setTarifProNebenmahlzeit);
 		betreuungspensum.setBetreuungInFerienzeit(jaxBetreuungspensum.getBetreuungInFerienzeit());
 
 		return betreuungspensum;
@@ -3791,13 +3774,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
-		if (abweichung.getVertraglicheEingewoehnungPauschale() != null) {
-			jaxAbweichung.setEingewoehnungPauschale(eingewoehnungPauschaleToJax(
-				abweichung.getVertraglicheEingewoehnungPauschale(),
-				new JaxEingewoehnungPauschale()));
-			if (abweichung.getEingewoehnungPauschale() != null) {
-				jaxAbweichung.getEingewoehnungPauschale().setId(abweichung.getEingewoehnungPauschale().getId());
+		if (abweichung.getVertraglicheEingewoehnung() != null) {
+			var jaxEingewoehnung = eingewoehnungToJax(abweichung.getVertraglicheEingewoehnung(), new JaxEingewoehnung());
+			if (abweichung.getEingewoehnung() != null) {
+				jaxEingewoehnung.setId(abweichung.getEingewoehnung().getId());
 			}
+			jaxAbweichung.setEingewoehnung(jaxEingewoehnung);
 		}
 
 		return jaxAbweichung;
@@ -3994,6 +3976,7 @@ public class JaxBConverter extends AbstractConverter {
 			.getVerguenstigungMahlzeitenTotal());
 		jaxZeitabschn.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern());
 		jaxZeitabschn.setBeitragshoeheProzent(zeitabschnitt.getBeitraghoheProzent());
+		jaxZeitabschn.setZusaetzlicherGutscheinGemeindeBetrag(zeitabschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag());
 		return jaxZeitabschn;
 	}
 

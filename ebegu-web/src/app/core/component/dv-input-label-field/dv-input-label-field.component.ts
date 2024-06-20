@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
@@ -26,12 +32,11 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvInputLabelFieldComponent {
-
     @Input() public inputId: string = 'inputFieldId';
     @Input() public labelMessageKey: string;
-    @Input() public labelMessageKeyArgs: {};
+    @Input() public labelMessageKeyArgs: Record<string, unknown>;
     @Input() public tooltipMessageKey: string;
-    @Input() public tooltipMessageKeyArgs: {};
+    @Input() public tooltipMessageKeyArgs: Record<string, unknown>;
     @Input() public model: any;
     @Input() public inputRequired: boolean = false;
     @Input() public inputDisabled: boolean = false;
@@ -45,7 +50,8 @@ export class DvInputLabelFieldComponent {
     @Input() public showBisher: boolean = false;
     @Input() public allowNegative: boolean = false;
 
-    @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
+    @Output() public readonly modelChange: EventEmitter<any> =
+        new EventEmitter();
 
     public valueHasChange(event: any): void {
         this.modelChange.emit(event);

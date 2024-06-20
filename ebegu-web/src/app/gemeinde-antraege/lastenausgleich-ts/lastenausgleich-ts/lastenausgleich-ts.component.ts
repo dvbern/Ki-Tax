@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -37,8 +43,7 @@ const LOG = LogFactory.createLog('LastenausgleichTSComponent');
     changeDetection: ChangeDetectionStrategy.Default
 })
 export class LastenausgleichTSComponent implements OnInit, OnDestroy {
-
-    @Input() public  lastenausgleichId: string;
+    @Input() public lastenausgleichId: string;
 
     private subscription: Subscription;
 
@@ -52,17 +57,25 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
         private readonly wizardStepXRS: WizardStepXRS,
         private readonly downloadRS: DownloadRS,
         private readonly translate: TranslateService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
-        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
-            .subscribe(container => {
-                this.lATSAngabenGemeindeContainer = container;
-                // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
-                this.wizardStepXRS.updateSteps(this.wizardTyp, this.lastenausgleichId);
-            }, err => LOG.error(err));
+        this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(
+            this.lastenausgleichId
+        );
+        this.subscription = this.lastenausgleichTSService
+            .getLATSAngabenGemeindeContainer()
+            .subscribe(
+                container => {
+                    this.lATSAngabenGemeindeContainer = container;
+                    // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
+                    this.wizardStepXRS.updateSteps(
+                        this.wizardTyp,
+                        this.lastenausgleichId
+                    );
+                },
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {
@@ -79,17 +92,21 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     }
 
     public downloadFerienbetreuungReport(): void {
-        this.lastenausgleichTSService.generateLATSReport(this.lATSAngabenGemeindeContainer)
-            .subscribe(res => this.openDownloadForFile(res), err => LOG.error(err));
+        this.lastenausgleichTSService
+            .generateLATSReport(this.lATSAngabenGemeindeContainer)
+            .subscribe(
+                res => this.openDownloadForFile(res),
+                err => LOG.error(err)
+            );
     }
 
     private openDownloadForFile(response: BlobPart): void {
         const file = new Blob([response], {type: 'application/pdf'});
-        const filename = this.translate.instant('LATS_REPORT_NAME',
-            {
-                gemeinde: this.lATSAngabenGemeindeContainer.gemeinde.name,
-                gp: this.lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString
-            });
+        const filename = this.translate.instant('LATS_REPORT_NAME', {
+            gemeinde: this.lATSAngabenGemeindeContainer.gemeinde.name,
+            gp: this.lATSAngabenGemeindeContainer.gesuchsperiode
+                .gesuchsperiodeString
+        });
         this.downloadRS.openDownload(file, filename);
     }
 }

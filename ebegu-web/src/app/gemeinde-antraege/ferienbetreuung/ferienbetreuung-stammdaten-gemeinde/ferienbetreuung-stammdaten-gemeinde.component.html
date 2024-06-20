@@ -16,328 +16,558 @@
   -->
 
 <div class="ferienbetreuung-stammdaten">
-    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_STAMMDATEN_GEMEINDE</h1>
+    <h1 class="access-for-all-title" translate>
+        FERIENBETREUUNG_STAMMDATEN_GEMEINDE
+    </h1>
     <div class="row view-title">
         <div class="col-md-12">
             <h2 translate>FERIENBETREUUNG_STAMMDATEN_GEMEINDE</h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
 
-
     <form *ngIf="container" [formGroup]="form">
-
         <div class="max-width-container-750">
-
             <h3 translate class="uppercase" id="gemeinde-header">
-                {{'GEMEINDE' | translate }}
-                <dv-tooltip inputId="gemeinde-header"
-                            [text]="'FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT' | translate">
+                {{ 'GEMEINDE' | translate }}
+                <dv-tooltip
+                    inputId="gemeinde-header"
+                    [text]="
+                        'FERIENBETREUUNG_STAMMDATEN_GEMEINDE_HINT' | translate
+                    "
+                >
                 </dv-tooltip>
             </h3>
 
             <dv-input-container-x [verticalAlign]="true">
                 <label for="traegerschaft_id">
-                    {{'FERIENBETREUUNG_TRAEGERSCHAFT' | translate}}
+                    {{ 'FERIENBETREUUNG_TRAEGERSCHAFT' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input id="traegerschaft_id"
-                           type="text"
-                           matInput
-                           formControlName="traegerschaft"
-                           class="form-control dv-input"/>
+                    <input
+                        id="traegerschaft_id"
+                        type="text"
+                        matInput
+                        formControlName="traegerschaft"
+                        class="form-control dv-input"
+                    />
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.stammdaten?.traegerschaft"
+                        [deklaration]="
+                            container?.angabenDeklaration?.stammdaten
+                                ?.traegerschaft
+                        "
                         [korrektur]="form.value.traegerschaft"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
             <!--        am angebot beteiligte gemeinden-->
             <dv-input-container-x [verticalAlign]="true">
-                <label for="am-angebot-beteiligte-gemeinden"
-                       translate>FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label>
+                <label for="am-angebot-beteiligte-gemeinden" translate
+                    >FERIENBETREUUNG_AM_ANGEBOT_BETEILIGTE_GEMEINDEN</label
+                >
                 <mat-form-field *ngIf="bfsGemeinden?.length">
-                    <mat-select class="form-control"
-                                formControlName="amAngebotBeteiligteGemeinden"
-                                name="amAngebotBeteiligteGemeinden"
-                                id="am-angebot-beteiligte-gemeinden"
-                                [disabled]="form.controls.amAngebotBeteiligteGemeinden.disabled"
-                                [multiple]="true">
-                        <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                                    [value]="gemeinde.name">
-                            {{gemeinde.name}}
+                    <mat-select
+                        class="form-control"
+                        formControlName="amAngebotBeteiligteGemeinden"
+                        name="amAngebotBeteiligteGemeinden"
+                        id="am-angebot-beteiligte-gemeinden"
+                        [disabled]="
+                            form.controls.amAngebotBeteiligteGemeinden.disabled
+                        "
+                        [multiple]="true"
+                    >
+                        <mat-option
+                            *ngFor="let gemeinde of bfsGemeinden"
+                            [value]="gemeinde.name"
+                        >
+                            {{ gemeinde.name }}
                         </mat-option>
                     </mat-select>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
-                        [korrektur]="form.value.amAngebotBeteiligteGemeinden?.sort().join(', ')"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [deklaration]="
+                            container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(
+                                ', '
+                            )
+                        "
+                        [korrektur]="
+                            form.value.amAngebotBeteiligteGemeinden
+                                ?.sort()
+                                .join(', ')
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <div class="margin-bottom-20 label-black">
-                <label for="inputId"
-                       translate>FERIENBETREUUNG_SEIT_WANN</label>
-                <input class="dv-mat-datepicker"
-                       type="text"
-                       name="inputId"
-                       id="inputId"
-                       [matDatepicker]="dp"
-                       placeholder="mm.jjjj"
-                       formControlName="seitWannFerienbetreuungen">
-                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                <mat-datepicker #dp
-                                startView="multi-year"
-                                (yearSelected)="chosenYearHandler($event)"
-                                (monthSelected)="chosenMonthHandler($event, dp)"
-                                panelClass="example-month-picker">
+                <label for="inputId" translate>FERIENBETREUUNG_SEIT_WANN</label>
+                <input
+                    class="dv-mat-datepicker"
+                    type="text"
+                    name="inputId"
+                    id="inputId"
+                    [matDatepicker]="dp"
+                    placeholder="mm.jjjj"
+                    formControlName="seitWannFerienbetreuungen"
+                />
+                <mat-datepicker-toggle
+                    matSuffix
+                    [for]="dp"
+                ></mat-datepicker-toggle>
+                <mat-datepicker
+                    #dp
+                    startView="multi-year"
+                    (yearSelected)="chosenYearHandler($event)"
+                    (monthSelected)="chosenMonthHandler($event, dp)"
+                    panelClass="example-month-picker"
+                >
                 </mat-datepicker>
                 <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.stammdaten?.seitWannFerienbetreuungen"
+                    [deklaration]="
+                        container?.angabenDeklaration?.stammdaten
+                            ?.seitWannFerienbetreuungen
+                    "
                     [korrektur]="this.form.value.seitWannFerienbetreuungen"
-                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    [showBisher]="
+                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                    "
+                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                >
                 </dv-bisher-x>
             </div>
         </div>
 
         <mat-divider></mat-divider>
 
-        <div class=max-width-container-750>
-
-            <h3 translate class="uppercase margin-bottom-20" id="adresse-header">
-            <span>
-                {{'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate}}
-                <dv-tooltip inputId="adresse-header"
-                            [text]="'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate">
-                </dv-tooltip>
-            </span>
+        <div class="max-width-container-750">
+            <h3
+                translate
+                class="uppercase margin-bottom-20"
+                id="adresse-header"
+            >
+                <span>
+                    {{ 'FERIENBETREUUNG_ADRESSE_GEMEINDE' | translate }}
+                    <dv-tooltip
+                        inputId="adresse-header"
+                        [text]="
+                            'FERIENBETREUUNG_ADRESSE_GEMEINDE_HINT' | translate
+                        "
+                    >
+                    </dv-tooltip>
+                </span>
                 <span class="flex-whitespace-item"></span>
-                <button type="button"
-                        (click)="fillAdress()"
-                        *ngIf="fillActionsVisible()"
-                        class="dv-btn cancel-button">
-                    {{ 'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN' | translate }}
+                <button
+                    type="button"
+                    (click)="fillAdress()"
+                    *ngIf="fillActionsVisible()"
+                    class="dv-btn cancel-button"
+                >
+                    {{
+                        'FERIENBETREUUNG_AUS_GEMEINDESTAMMDATEN_UEBERNEHMEN'
+                            | translate
+                    }}
                 </button>
             </h3>
 
             <div formGroupName="stammdatenAdresse">
                 <dv-input-container-x [verticalAlign]="true">
-                    <label for="stammdaten_adresse_anschrift_id"
-                           required
-                           [ngClass]="{'label-required-error': form.controls.stammdatenAdresse.controls.organisation.errors}">
-                        {{'FERIENBETREUUNG_ANSCHRIFT' | translate}}
+                    <label
+                        for="stammdaten_adresse_anschrift_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                form.controls.stammdatenAdresse.controls
+                                    .organisation.errors
+                        }"
+                    >
+                        {{ 'FERIENBETREUUNG_ANSCHRIFT' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_adresse_anschrift_id"
-                               matInput
-                               formControlName="organisation"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="stammdaten_adresse_anschrift_id"
+                            matInput
+                            formControlName="organisation"
+                            class="form-control dv-input"
+                        />
                         <mat-error
-                            *ngIf="form.controls.stammdatenAdresse.controls.organisation.errors?.required"
-                            translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                            *ngIf="
+                                form.controls.stammdatenAdresse.controls
+                                    .organisation.errors?.required
+                            "
+                            translate
+                            >ERROR_ADRESSE_NICHT_VOLLSTAENDING
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.organisation"
-                            [korrektur]="form.value.stammdatenAdresse.organisation"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenAdresse?.organisation
+                            "
+                            [korrektur]="
+                                form.value.stammdatenAdresse.organisation
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
                 <div class="row">
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label for="stammdaten_adresse_strasse_id"
-                               required
-                               [ngClass]="{'label-required-error': form.controls.stammdatenAdresse.controls.strasse.errors}">
-                            {{'ADRESSE_STRASSE' | translate}}
+                    <dv-input-container-x
+                        [verticalAlign]="true"
+                        class="col-xs-10"
+                    >
+                        <label
+                            for="stammdaten_adresse_strasse_id"
+                            required
+                            [ngClass]="{
+                                'label-required-error':
+                                    form.controls.stammdatenAdresse.controls
+                                        .strasse.errors
+                            }"
+                        >
+                            {{ 'ADRESSE_STRASSE' | translate }}
                         </label>
                         <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="stammdaten_adresse_strasse_id"
-                                   matInput
-                                   formControlName="strasse"
-                                   class="form-control dv-input"/>
+                            <input
+                                type="text"
+                                id="stammdaten_adresse_strasse_id"
+                                matInput
+                                formControlName="strasse"
+                                class="form-control dv-input"
+                            />
                             <mat-error
-                                *ngIf="form.controls.stammdatenAdresse.controls.strasse.errors?.required"
-                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                                *ngIf="
+                                    form.controls.stammdatenAdresse.controls
+                                        .strasse.errors?.required
+                                "
+                                translate
+                                >ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.strasse"
-                                [korrektur]="form.value.stammdatenAdresse.strasse"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                [deklaration]="
+                                    container?.angabenDeklaration?.stammdaten
+                                        ?.stammdatenAdresse?.strasse
+                                "
+                                [korrektur]="
+                                    form.value.stammdatenAdresse.strasse
+                                "
+                                [showBisher]="
+                                    container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                "
+                                [specificBisherLabel]="
+                                    'LATS_BISHER_LABEL' | translate
+                                "
+                            >
                             </dv-bisher-x>
                         </mat-form-field>
                     </dv-input-container-x>
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                    <dv-input-container-x
+                        [verticalAlign]="true"
+                        class="col-xs-2"
+                    >
                         <label for="stammdaten_adresse_nr_id">
-                            {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                            {{ 'FERIENBETREUUNG_ADRESSE_NR' | translate }}
                         </label>
                         <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="stammdaten_adresse_nr_id"
-                                   matInput
-                                   formControlName="hausnummer"
-                                   class="form-control dv-input"/>
+                            <input
+                                type="text"
+                                id="stammdaten_adresse_nr_id"
+                                matInput
+                                formControlName="hausnummer"
+                                class="form-control dv-input"
+                            />
                         </mat-form-field>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.hausnummer"
-                            [korrektur]="form.value.stammdatenAdresse.hausnummer"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenAdresse?.hausnummer
+                            "
+                            [korrektur]="
+                                form.value.stammdatenAdresse.hausnummer
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </dv-input-container-x>
                 </div>
                 <dv-input-container-x [verticalAlign]="true">
                     <label for="adresse_stammdaten_zusatz_id">
-                        {{'ADRESSE_ZUSATZZEILE' | translate}}
+                        {{ 'ADRESSE_ZUSATZZEILE' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="adresse_stammdaten_zusatz_id"
-                               matInput
-                               formControlName="zusatzzeile"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="adresse_stammdaten_zusatz_id"
+                            matInput
+                            formControlName="zusatzzeile"
+                            class="form-control dv-input"
+                        />
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.zusatzzeile"
-                            [korrektur]="form.value.stammdatenAdresse.zusatzzeile"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenAdresse?.zusatzzeile
+                            "
+                            [korrektur]="
+                                form.value.stammdatenAdresse.zusatzzeile
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
                 <div class="row">
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label for="stammdaten_adresse_plz_id"
-                               required
-                               [ngClass]="{'label-required-error': form.controls.stammdatenAdresse.controls.plz.errors}">
-                            {{'ADRESSE_PLZ' | translate}}
+                    <dv-input-container-x
+                        [verticalAlign]="true"
+                        class="col-xs-2"
+                    >
+                        <label
+                            for="stammdaten_adresse_plz_id"
+                            required
+                            [ngClass]="{
+                                'label-required-error':
+                                    form.controls.stammdatenAdresse.controls.plz
+                                        .errors
+                            }"
+                        >
+                            {{ 'ADRESSE_PLZ' | translate }}
                         </label>
                         <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="stammdaten_adresse_plz_id"
-                                   matInput
-                                   formControlName="plz"
-                                   class="form-control dv-input"/>
+                            <input
+                                type="text"
+                                id="stammdaten_adresse_plz_id"
+                                matInput
+                                formControlName="plz"
+                                class="form-control dv-input"
+                            />
                             <mat-error
-                                *ngIf="form.controls.stammdatenAdresse.controls.plz.errors?.required"
-                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                                *ngIf="
+                                    form.controls.stammdatenAdresse.controls.plz
+                                        .errors?.required
+                                "
+                                translate
+                                >ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                         </mat-form-field>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.plz"
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenAdresse?.plz
+                            "
                             [korrektur]="form.value.stammdatenAdresse.plz"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </dv-input-container-x>
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label for="stammdaten_adresse_ort_id"
-                               required
-                               [ngClass]="{'label-required-error':form.controls.stammdatenAdresse.controls.ort.errors}">
-                            {{'ADRESSE_ORT' | translate}}
+                    <dv-input-container-x
+                        [verticalAlign]="true"
+                        class="col-xs-10"
+                    >
+                        <label
+                            for="stammdaten_adresse_ort_id"
+                            required
+                            [ngClass]="{
+                                'label-required-error':
+                                    form.controls.stammdatenAdresse.controls.ort
+                                        .errors
+                            }"
+                        >
+                            {{ 'ADRESSE_ORT' | translate }}
                         </label>
                         <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="stammdaten_adresse_ort_id"
-                                   matInput
-                                   formControlName="ort"
-                                   class="form-control dv-input"/>
+                            <input
+                                type="text"
+                                id="stammdaten_adresse_ort_id"
+                                matInput
+                                formControlName="ort"
+                                class="form-control dv-input"
+                            />
                             <mat-error
-                                *ngIf="form.controls.stammdatenAdresse.controls.ort.errors?.required"
-                                translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                                *ngIf="
+                                    form.controls.stammdatenAdresse.controls.ort
+                                        .errors?.required
+                                "
+                                translate
+                                >ERROR_ADRESSE_NICHT_VOLLSTAENDING
                             </mat-error>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.ort"
+                                [deklaration]="
+                                    container?.angabenDeklaration?.stammdaten
+                                        ?.stammdatenAdresse?.ort
+                                "
                                 [korrektur]="form.value.stammdatenAdresse.ort"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                [showBisher]="
+                                    container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                "
+                                [specificBisherLabel]="
+                                    'LATS_BISHER_LABEL' | translate
+                                "
+                            >
                             </dv-bisher-x>
                         </mat-form-field>
                     </dv-input-container-x>
                 </div>
             </div>
-
         </div>
 
         <mat-divider></mat-divider>
 
         <div class="max-width-container-750">
-
-            <h3 translate class="uppercase margin-bottom-20" id="kontaktperson-header">
-                    <span>
-                        {{'FERIENBETREUUNG_KONTAKTPERSON' | translate}}
-                        <dv-tooltip inputId="kontaktperson-header"
-                                    [text]="'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate">
-                        </dv-tooltip>
-                    </span>
+            <h3
+                translate
+                class="uppercase margin-bottom-20"
+                id="kontaktperson-header"
+            >
+                <span>
+                    {{ 'FERIENBETREUUNG_KONTAKTPERSON' | translate }}
+                    <dv-tooltip
+                        inputId="kontaktperson-header"
+                        [text]="
+                            'FERIENBETREUUNG_KONTAKTPERSON_HINT' | translate
+                        "
+                    >
+                    </dv-tooltip>
+                </span>
                 <span class="flex-whitespace-item"></span>
-                <button type="button"
-                        (click)="fillBenutzer()"
-                        *ngIf="fillActionsVisible()"
-                        class="dv-btn cancel-button">
-                    {{ 'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate }}
+                <button
+                    type="button"
+                    (click)="fillBenutzer()"
+                    *ngIf="fillActionsVisible()"
+                    class="dv-btn cancel-button"
+                >
+                    {{
+                        'FERIENBETREUUNG_MEINE_ANGABEN_UEBERNEHMEN' | translate
+                    }}
                 </button>
             </h3>
 
             <div class="row">
-
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="stammdaten_kontakt_vorname_id"
-                           required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form.controls.stammdatenKontaktpersonVorname.errors}">
-                        {{'VORNAME' | translate}}
+                    <label
+                        for="stammdaten_kontakt_vorname_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonVorname
+                                    .errors
+                        }"
+                    >
+                        {{ 'VORNAME' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_kontakt_vorname_id"
-                               matInput
-                               formControlName="stammdatenKontaktpersonVorname"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="stammdaten_kontakt_vorname_id"
+                            matInput
+                            formControlName="stammdatenKontaktpersonVorname"
+                            class="form-control dv-input"
+                        />
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonVorname.errors?.required"
-                            translate>ERROR_REQUIRED
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonVorname
+                                    .errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonVorname"
-                            [korrektur]="form.value.stammdatenKontaktpersonVorname"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenKontaktpersonVorname
+                            "
+                            [korrektur]="
+                                form.value.stammdatenKontaktpersonVorname
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="stammdaten_kontakt_nachname_id"
-                           required
-                           [ngClass]="{'label-required-error':formValidationTriggered && form.controls.stammdatenKontaktpersonNachname.errors}">
-                        {{'NAME' | translate}}
+                    <label
+                        for="stammdaten_kontakt_nachname_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonNachname
+                                    .errors
+                        }"
+                    >
+                        {{ 'NAME' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_kontakt_nachname_id"
-                               matInput
-                               formControlName="stammdatenKontaktpersonNachname"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="stammdaten_kontakt_nachname_id"
+                            matInput
+                            formControlName="stammdatenKontaktpersonNachname"
+                            class="form-control dv-input"
+                        />
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonNachname.errors?.required"
-                            translate>ERROR_REQUIRED
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonNachname
+                                    .errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonNachname"
-                            [korrektur]="form.value.stammdatenKontaktpersonNachname"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenKontaktpersonNachname
+                            "
+                            [korrektur]="
+                                form.value.stammdatenKontaktpersonNachname
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
@@ -345,122 +575,210 @@
 
             <dv-input-container-x [verticalAlign]="true">
                 <label for="stammdaten_kontakt_funktion_id">
-                    {{'FERIENBETREUUNG_FUNKTION' | translate}}
+                    {{ 'FERIENBETREUUNG_FUNKTION' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input type="text"
-                           id="stammdaten_kontakt_funktion_id"
-                           matInput
-                           formControlName="stammdatenKontaktpersonFunktion"
-                           class="form-control dv-input"/>
+                    <input
+                        type="text"
+                        id="stammdaten_kontakt_funktion_id"
+                        matInput
+                        formControlName="stammdatenKontaktpersonFunktion"
+                        class="form-control dv-input"
+                    />
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonFunktion"
+                        [deklaration]="
+                            container?.angabenDeklaration?.stammdaten
+                                ?.stammdatenKontaktpersonFunktion
+                        "
                         [korrektur]="form.value.stammdatenKontaktpersonFunktion"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
 
             <div class="row">
-
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="stammdaten_kontakt_telefon_id"
-                           required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form.controls.stammdatenKontaktpersonTelefon.errors}">
-                        {{'TELEFON' | translate}}
+                    <label
+                        for="stammdaten_kontakt_telefon_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonTelefon
+                                    .errors
+                        }"
+                    >
+                        {{ 'TELEFON' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_kontakt_telefon_id"
-                               matInput
-                               formControlName="stammdatenKontaktpersonTelefon"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="stammdaten_kontakt_telefon_id"
+                            matInput
+                            formControlName="stammdatenKontaktpersonTelefon"
+                            class="form-control dv-input"
+                        />
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonTelefon.errors?.required"
-                            translate>ERROR_REQUIRED
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonTelefon
+                                    .errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonTelefon.errors?.pattern"
-                            translate>ERROR_PHONE
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonTelefon
+                                    .errors?.pattern
+                            "
+                            translate
+                            >ERROR_PHONE
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonTelefon"
-                            [korrektur]="form.value.stammdatenKontaktpersonTelefon"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenKontaktpersonTelefon
+                            "
+                            [korrektur]="
+                                form.value.stammdatenKontaktpersonTelefon
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
 
                 <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                    <label for="stammdaten_kontakt_email_id"
-                           required
-                           [ngClass]="{'label-required-error': formValidationTriggered && form.controls.stammdatenKontaktpersonEmail.errors}">
-                        {{'EMAIL_FERIENBETREUUNG' | translate}}
+                    <label
+                        for="stammdaten_kontakt_email_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonEmail
+                                    .errors
+                        }"
+                    >
+                        {{ 'EMAIL_FERIENBETREUUNG' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="stammdaten_kontakt_email_id"
-                               matInput
-                               formControlName="stammdatenKontaktpersonEmail"
-                               class="form-control dv-input"/>
+                        <input
+                            type="text"
+                            id="stammdaten_kontakt_email_id"
+                            matInput
+                            formControlName="stammdatenKontaktpersonEmail"
+                            class="form-control dv-input"
+                        />
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonEmail.errors?.required"
-                            translate>ERROR_REQUIRED
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonEmail
+                                    .errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
                         <mat-error
-                            *ngIf="formValidationTriggered && form.controls.stammdatenKontaktpersonEmail.errors?.pattern"
-                            translate>ERROR_EMAIL
+                            *ngIf="
+                                formValidationTriggered &&
+                                form.controls.stammdatenKontaktpersonEmail
+                                    .errors?.pattern
+                            "
+                            translate
+                            >ERROR_EMAIL
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonEmail"
-                            [korrektur]="form.value.stammdatenKontaktpersonEmail"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="
+                                container?.angabenDeklaration?.stammdaten
+                                    ?.stammdatenKontaktpersonEmail
+                            "
+                            [korrektur]="
+                                form.value.stammdatenKontaktpersonEmail
+                            "
+                            [showBisher]="
+                                container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                            "
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
             </div>
-
         </div>
 
         <mat-divider></mat-divider>
 
         <div class="max-width-container-750">
-
             <h3 class="uppercase" id="auszahlung-header">
-                {{'AUSZAHLUNG' | translate}}
-                <dv-tooltip inputId="auszahlung-header"
-                            [text]="'FERIENBETREUUNG_AUSZAHLUNG_HINT' | translate">
+                {{ 'AUSZAHLUNG' | translate }}
+                <dv-tooltip
+                    inputId="auszahlung-header"
+                    [text]="'FERIENBETREUUNG_AUSZAHLUNG_HINT' | translate"
+                >
                 </dv-tooltip>
             </h3>
 
             <div formGroupName="auszahlungsdaten">
-
                 <div class="row">
                     <div class="col-xs-12">
                         <dv-input-container-x [verticalAlign]="true">
-                            <label for="kontoinhaber_id"
-                                   required
-                                   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.auszahlungsdaten.controls.kontoinhaber.errors}">
-                                {{'FERIENBETREUUNG_KONTOINHABER' | translate}}
+                            <label
+                                for="kontoinhaber_id"
+                                required
+                                [ngClass]="{
+                                    'label-required-error':
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .kontoinhaber.errors
+                                }"
+                            >
+                                {{ 'FERIENBETREUUNG_KONTOINHABER' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="kontoinhaber_id"
-                                       matInput
-                                       formControlName="kontoinhaber"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="kontoinhaber_id"
+                                    matInput
+                                    formControlName="kontoinhaber"
+                                    class="form-control dv-input"
+                                />
                                 <mat-error
-                                    *ngIf="formValidationTriggered && form.controls.auszahlungsdaten.controls.kontoinhaber.errors?.required"
-                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                    *ngIf="
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .kontoinhaber.errors?.required
+                                    "
+                                    translate
+                                    >ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.kontoinhaber"
-                                    [korrektur]="form.value.auszahlungsdaten.kontoinhaber"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.kontoinhaber
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten.kontoinhaber
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
@@ -469,186 +787,357 @@
 
                 <div formGroupName="adresseKontoinhaber">
                     <div class="row">
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                            <label for="adresse_kontoinhaber_strasse_id"
-                                   required
-                                   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.strasse.errors}">
-                                {{'ADRESSE_STRASSE' | translate}}
+                        <dv-input-container-x
+                            [verticalAlign]="true"
+                            class="col-xs-10"
+                        >
+                            <label
+                                for="adresse_kontoinhaber_strasse_id"
+                                required
+                                [ngClass]="{
+                                    'label-required-error':
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls
+                                            .strasse.errors
+                                }"
+                            >
+                                {{ 'ADRESSE_STRASSE' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_strasse_id"
-                                       matInput
-                                       formControlName="strasse"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="adresse_kontoinhaber_strasse_id"
+                                    matInput
+                                    formControlName="strasse"
+                                    class="form-control dv-input"
+                                />
                                 <mat-error
-                                    *ngIf="formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.strasse.errors?.required"
-                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                    *ngIf="
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls
+                                            .strasse.errors?.required
+                                    "
+                                    translate
+                                    >ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.strasse"
-                                    [korrektur]="form.value.auszahlungsdaten.adresseKontoinhaber.strasse"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.adresseKontoinhaber
+                                            ?.strasse
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten
+                                            .adresseKontoinhaber.strasse
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
 
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+                        <dv-input-container-x
+                            [verticalAlign]="true"
+                            class="col-xs-2"
+                        >
                             <label for="adresse_kontoinhaber_nr_id">
-                                {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+                                {{ 'FERIENBETREUUNG_ADRESSE_NR' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_nr_id"
-                                       matInput
-                                       formControlName="hausnummer"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="adresse_kontoinhaber_nr_id"
+                                    matInput
+                                    formControlName="hausnummer"
+                                    class="form-control dv-input"
+                                />
                             </mat-form-field>
                             <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.hausnummer"
-                                [korrektur]="form.value.auszahlungsdaten.adresseKontoinhaber.hausnummer"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                [deklaration]="
+                                    container?.angabenDeklaration?.stammdaten
+                                        ?.adresseKontoinhaber?.hausnummer
+                                "
+                                [korrektur]="
+                                    form.value.auszahlungsdaten
+                                        .adresseKontoinhaber.hausnummer
+                                "
+                                [showBisher]="
+                                    container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                "
+                                [specificBisherLabel]="
+                                    'LATS_BISHER_LABEL' | translate
+                                "
+                            >
                             </dv-bisher-x>
                         </dv-input-container-x>
                     </div>
                     <div class="row">
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-12">
+                        <dv-input-container-x
+                            [verticalAlign]="true"
+                            class="col-xs-12"
+                        >
                             <label for="adresse_kontoinhaber_ort_id">
-                                {{'ADRESSE_ZUSATZZEILE' | translate}}
+                                {{ 'ADRESSE_ZUSATZZEILE' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_zusatz_id"
-                                       matInput
-                                       formControlName="zusatzzeile"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="adresse_kontoinhaber_zusatz_id"
+                                    matInput
+                                    formControlName="zusatzzeile"
+                                    class="form-control dv-input"
+                                />
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.zusatzzeile"
-                                    [korrektur]="form.value.auszahlungsdaten.adresseKontoinhaber.zusatzzeile"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.adresseKontoinhaber
+                                            ?.zusatzzeile
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten
+                                            .adresseKontoinhaber.zusatzzeile
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
                     <div class="row">
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                            <label for="adresse_kontoinhaber_plz_id"
-                                   required
-                                   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.plz.errors}">
-                                {{'ADRESSE_PLZ' | translate}}
+                        <dv-input-container-x
+                            [verticalAlign]="true"
+                            class="col-xs-2"
+                        >
+                            <label
+                                for="adresse_kontoinhaber_plz_id"
+                                required
+                                [ngClass]="{
+                                    'label-required-error':
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls.plz
+                                            .errors
+                                }"
+                            >
+                                {{ 'ADRESSE_PLZ' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_plz_id"
-                                       matInput
-                                       formControlName="plz"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="adresse_kontoinhaber_plz_id"
+                                    matInput
+                                    formControlName="plz"
+                                    class="form-control dv-input"
+                                />
                                 <mat-error
-                                    *ngIf="formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.plz.errors?.required"
-                                    translate>ERROR_REQUIRED
+                                    *ngIf="
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls.plz
+                                            .errors?.required
+                                    "
+                                    translate
+                                    >ERROR_REQUIRED
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.plz"
-                                    [korrektur]="form.value.auszahlungsdaten.adresseKontoinhaber.plz"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.adresseKontoinhaber
+                                            ?.plz
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten
+                                            .adresseKontoinhaber.plz
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
 
-                        <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                            <label for="adresse_kontoinhaber_ort_id"
-                                   required
-                                   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.ort.errors}">
-                                {{'ADRESSE_ORT' | translate}}
+                        <dv-input-container-x
+                            [verticalAlign]="true"
+                            class="col-xs-10"
+                        >
+                            <label
+                                for="adresse_kontoinhaber_ort_id"
+                                required
+                                [ngClass]="{
+                                    'label-required-error':
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls.ort
+                                            .errors
+                                }"
+                            >
+                                {{ 'ADRESSE_ORT' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="adresse_kontoinhaber_ort_id"
-                                       matInput
-                                       formControlName="ort"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="adresse_kontoinhaber_ort_id"
+                                    matInput
+                                    formControlName="ort"
+                                    class="form-control dv-input"
+                                />
                                 <mat-error
-                                    *ngIf="formValidationTriggered && form.controls.auszahlungsdaten.controls.adresseKontoinhaber.controls.ort.errors?.required"
-                                    translate>ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
+                                    *ngIf="
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .adresseKontoinhaber.controls.ort
+                                            .errors?.required
+                                    "
+                                    translate
+                                    >ERROR_AUSZAHLUNGSDATEN_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.ort"
-                                    [korrektur]="form.value.auszahlungsdaten.adresseKontoinhaber.ort"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.adresseKontoinhaber
+                                            ?.ort
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten
+                                            .adresseKontoinhaber.ort
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
                     </div>
-
-
                 </div>
 
                 <div class="row">
                     <div class="col-xs-6">
-
                         <dv-input-container-x [verticalAlign]="true">
-                            <label for="iban_id"
-                                   required
-                                   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.auszahlungsdaten.controls.iban.errors}">
-                                {{'FERIENBETREUUNG_IBAN' | translate}}
+                            <label
+                                for="iban_id"
+                                required
+                                [ngClass]="{
+                                    'label-required-error':
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.errors
+                                }"
+                            >
+                                {{ 'FERIENBETREUUNG_IBAN' | translate }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="iban_id"
-                                       matInput
-                                       formControlName="iban"
-                                       isNotQrIbanN
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="iban_id"
+                                    matInput
+                                    formControlName="iban"
+                                    isNotQrIbanN
+                                    class="form-control dv-input"
+                                />
                                 <mat-error
-                                    *ngIf="formValidationTriggered && form.controls.auszahlungsdaten.controls.iban.errors?.required"
-                                    translate>ERROR_ADRESSE_NICHT_VOLLSTAENDING
+                                    *ngIf="
+                                        formValidationTriggered &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.errors?.required
+                                    "
+                                    translate
+                                    >ERROR_ADRESSE_NICHT_VOLLSTAENDING
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="form.controls.auszahlungsdaten.controls.iban.errors?.iban && form.controls.auszahlungsdaten.controls.iban.dirty"
-                                    translate>ERROR_IBAN
+                                    *ngIf="
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.errors?.iban &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.dirty
+                                    "
+                                    translate
+                                    >ERROR_IBAN
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="form.controls.auszahlungsdaten.controls.iban.errors?.qrIban && form.controls.auszahlungsdaten.controls.iban.dirty"
-                                    translate>ERROR_QR_IBAN
+                                    *ngIf="
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.errors?.qrIban &&
+                                        form.controls.auszahlungsdaten.controls
+                                            .iban.dirty
+                                    "
+                                    translate
+                                    >ERROR_QR_IBAN
                                 </mat-error>
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.iban"
-                                    [korrektur]="form.value.auszahlungsdaten.iban"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.iban
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten.iban
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
                         </dv-input-container-x>
-
                     </div>
 
                     <div class="col-xs-6">
                         <dv-input-container-x [verticalAlign]="true">
                             <label for="vermerk_auszahlung_id">
-                                {{'FERIENBETREUUNG_VERMERK_AUSZAHLUNG' | translate}}
+                                {{
+                                    'FERIENBETREUUNG_VERMERK_AUSZAHLUNG'
+                                        | translate
+                                }}
                             </label>
                             <mat-form-field floatLabel="always">
-                                <input type="text"
-                                       id="vermerk_auszahlung_id"
-                                       matInput
-                                       formControlName="vermerkAuszahlung"
-                                       class="form-control dv-input"/>
+                                <input
+                                    type="text"
+                                    id="vermerk_auszahlung_id"
+                                    matInput
+                                    formControlName="vermerkAuszahlung"
+                                    class="form-control dv-input"
+                                />
                                 <dv-bisher-x
-                                    [deklaration]="container?.angabenDeklaration?.stammdaten?.vermerkAuszahlung"
-                                    [korrektur]="form.value.auszahlungsdaten.vermerkAuszahlung"
-                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                                    [deklaration]="
+                                        container?.angabenDeklaration
+                                            ?.stammdaten?.vermerkAuszahlung
+                                    "
+                                    [korrektur]="
+                                        form.value.auszahlungsdaten
+                                            .vermerkAuszahlung
+                                    "
+                                    [showBisher]="
+                                        container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                                    "
+                                    [specificBisherLabel]="
+                                        'LATS_BISHER_LABEL' | translate
+                                    "
+                                >
                                 </dv-bisher-x>
                             </mat-form-field>
-
                         </dv-input-container-x>
-
-
                     </div>
                 </div>
             </div>
@@ -656,22 +1145,31 @@
     </form>
 
     <div class="actions">
-        <button type="button" class="dv-btn cancel-button"
-                *ngIf="canSeeFalscheAngaben | async"
-                (click)="onFalscheAngaben()"
-                [textContent]="'FERIENBETREUUNG_ANGABEN_KORRIGIEREN' | translate"
+        <button
+            type="button"
+            class="dv-btn cancel-button"
+            *ngIf="canSeeFalscheAngaben | async"
+            (click)="onFalscheAngaben()"
+            [textContent]="'FERIENBETREUUNG_ANGABEN_KORRIGIEREN' | translate"
         ></button>
-        <button type="button" class="dv-btn cancel-button"
-                *ngIf="canSeeSave | async"
-                (click)="save()"
-                [textContent]="'SAVE' | translate">
-        </button>
+        <button
+            type="button"
+            class="dv-btn cancel-button"
+            *ngIf="canSeeSave | async"
+            (click)="save()"
+            [textContent]="'SAVE' | translate"
+        ></button>
         <dv-loading-button
             *ngIf="canSeeAbschliessen | async"
             type="button"
-            (buttonClick)="onAbschliessen()">
-            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
-            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
+            (buttonClick)="onAbschliessen()"
+        >
+            <span *ngIf="!container?.isInPruefungKanton()" translate
+                >ABSCHLIESSEN</span
+            >
+            <span *ngIf="container?.isInPruefungKanton()" translate
+                >GEPRUEFT</span
+            >
         </dv-loading-button>
     </div>
 </div>

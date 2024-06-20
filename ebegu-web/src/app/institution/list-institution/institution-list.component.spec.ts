@@ -32,34 +32,53 @@ import {SharedModule} from '../../shared/shared.module';
 import {InstitutionListComponent} from './institution-list.component';
 
 describe('InstitutionListComponent', () => {
-
     let component: InstitutionListComponent;
     let fixture: ComponentFixture<InstitutionListComponent>;
 
     beforeEach(waitForAsync(() => {
-        const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(
+            InstitutionRS.name,
             [
                 'getInstitutionenEditableForCurrentBenutzer',
                 'getInstitutionenListDTOEditableForCurrentBenutzer'
-            ]);
-        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['isRole', 'isOneOfRoles', 'principal$']);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-        const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
+            ]
+        );
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(
+            StateService.name,
+            ['go']
+        );
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+            ErrorService.name,
+            ['getErrors']
+        );
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            ['getGemeindenForPrincipal$']
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['isRole', 'isOneOfRoles', 'principal$']
+        );
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
+        const applicationPropertyRSSpy =
+            jasmine.createSpyObj<ApplicationPropertyRS>(
+                ApplicationPropertyRS.name,
+                [
+                    'getPublicPropertiesCached',
+                    'getInstitutionenDurchGemeindenEinladen'
+                ]
+            );
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            Promise.resolve(new TSPublicAppConfig())
+        );
 
         authServiceSpy.principal$ = of(new TSBenutzer());
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
@@ -67,17 +86,25 @@ describe('InstitutionListComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
             declarations: [InstitutionListComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
-        insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(of([]));
-        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(Promise.resolve(false));
-
+        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
+        insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
+        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(
+            Promise.resolve(false)
+        );
     }));
 
     beforeEach(() => {

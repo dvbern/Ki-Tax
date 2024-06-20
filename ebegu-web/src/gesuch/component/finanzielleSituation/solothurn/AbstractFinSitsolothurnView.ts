@@ -30,7 +30,6 @@ import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationSolothurnService} from './finanzielle-situation-solothurn.service';
 
 export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TSFinanzModel> {
-
     public readonly: boolean = false;
     public finanzielleSituationResultate?: TSFinanzielleSituationResultateDTO;
 
@@ -40,11 +39,19 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         protected readonly finSitSoService: FinanzielleSituationSolothurnService,
         protected gesuchstellerNumber: number
     ) {
-        super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        super(
+            gesuchModelManager,
+            wizardStepManager,
+            TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN
+        );
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            gesuchstellerNumber);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            gesuchstellerNumber
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.setupForm();
         this.calculateMassgebendesEinkommen();
         this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
@@ -56,6 +63,75 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         }
         this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
         this.getModel().finanzielleSituationJA.veranlagt = undefined;
+    }
+
+    public showSelbstdeklaration(): boolean {
+        return (
+            EbeguUtil.isNotNullAndTrue(
+                this.getModel().finanzielleSituationJA.quellenbesteuert
+            ) ||
+            EbeguUtil.isNotNullAndFalse(
+                this.model.familienSituation.gemeinsameSteuererklaerung
+            ) ||
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.alleinigeStekVorjahr
+            ) ||
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.veranlagt
+            )
+        );
+    }
+
+    public showVeranlagung(): boolean {
+        return EbeguUtil.isNotNullAndTrue(
+            this.getModel().finanzielleSituationJA.veranlagt
+        );
+    }
+
+    public showResultat(): boolean {
+        return !this.gesuchModelManager.isGesuchsteller2Required();
+    }
+
+    public gemeinsameStekVisible(): boolean {
+        return (
+            this.isGemeinsam() &&
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.quellenbesteuert
+            )
+        );
+    }
+
+    public alleinigeStekVisible(): boolean {
+        return (
+            !this.isGemeinsam() &&
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.quellenbesteuert
+            )
+        );
+    }
+
+    public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
+        if (
+            newGemeinsameStek.value === false &&
+            EbeguUtil.isNullOrFalse(
+                this.getModel().finanzielleSituationJA.alleinigeStekVorjahr
+            )
+        ) {
+            this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        }
+    }
+
+    public alleinigeStekVorjahrChange(
+        newAlleinigeStekVorjahr: MatRadioChange
+    ): void {
+        if (
+            newAlleinigeStekVorjahr.value === false &&
+            EbeguUtil.isNullOrFalse(
+                this.model.familienSituation.gemeinsameSteuererklaerung
+            )
+        ) {
+            this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        }
     }
 
     public getYearForDeklaration(): number | string {
@@ -75,18 +151,24 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract getSubStepName(): string;
 
-    public abstract prepareSave(onResult: (arg: any) => void): IPromise<TSFinanzielleSituationContainer>;
+    public abstract prepareSave(
+        onResult: (arg: any) => void
+    ): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.getAntragstellerNummer() === 0) {
             return '';
         }
         if (this.getAntragstellerNummer() === 1) {
-            return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+            return this.gesuchModelManager
+                .getGesuch()
+                .gesuchsteller1.extractFullName();
         }
         if (this.getAntragstellerNummer() === 2) {
             try {
-                return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+                return this.gesuchModelManager
+                    .getGesuch()
+                    .gesuchsteller2.extractFullName();
             } catch (error) {
                 // Gesuchsteller has not yet filled in Form for Antragsteller 2
                 return '';
@@ -99,17 +181,28 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         return this.model.getFiSiConToWorkWith();
     }
 
-    protected save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
+    protected save(
+        onResult: (arg: any) => any
+    ): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation()
-            .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
-                if (!this.isGemeinsam() || this.getAntragstellerNummer() === 2) {
-                    await this.updateWizardStepStatus();
+        return this.gesuchModelManager
+            .saveFinanzielleSituation()
+            .then(
+                async (
+                    finanzielleSituationContainer: TSFinanzielleSituationContainer
+                ) => {
+                    if (
+                        !this.isGemeinsam() ||
+                        this.getAntragstellerNummer() === 2
+                    ) {
+                        await this.updateWizardStepStatus();
+                    }
+                    onResult(finanzielleSituationContainer);
+                    return finanzielleSituationContainer;
                 }
-                onResult(finanzielleSituationContainer);
-                return finanzielleSituationContainer;
-            }).catch(error => {
-                throw(error);
+            )
+            .catch(error => {
+                throw error;
             }) as Promise<TSFinanzielleSituationContainer>;
     }
 
@@ -117,12 +210,15 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     protected updateWizardStepStatus(): Promise<void> {
-        const status = this.isFinSitOk() ? TSWizardStepStatus.OK : TSWizardStepStatus.NOK;
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
-                status) as Promise<void>;
+        const status = this.isFinSitOk()
+            ? TSWizardStepStatus.OK
+            : TSWizardStepStatus.NOK;
+        return this.gesuchModelManager.getGesuch().isMutation()
+            ? (this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void>)
+            : (this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                  TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
+                  status
+              ) as Promise<void>);
     }
 
     private isFinSitOk(): boolean {
@@ -130,13 +226,17 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     private isGs2Ok(): boolean {
-        const gs2 = this.getGesuch().gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA;
-        const isGs2Ok = gs2.steuerveranlagungErhalten ?
-            EbeguUtil.areAllNotNullOrUndefined(gs2.nettolohn,
-                gs2.unterhaltsBeitraege,
-                gs2.abzuegeKinderAusbildung,
-                gs2.steuerbaresVermoegen) :
-            EbeguUtil.isNotNullOrUndefined(gs2.bruttoLohn);
+        const gs2 =
+            this.getGesuch().gesuchsteller2.finanzielleSituationContainer
+                .finanzielleSituationJA;
+        const isGs2Ok = gs2.steuerveranlagungErhalten
+            ? EbeguUtil.areAllNotNullOrUndefined(
+                  gs2.nettolohn,
+                  gs2.unterhaltsBeitraege,
+                  gs2.abzuegeKinderAusbildung,
+                  gs2.steuerbaresVermoegen
+              )
+            : EbeguUtil.isNotNullOrUndefined(gs2.bruttoLohn);
         return isGs2Ok;
     }
 
@@ -145,21 +245,25 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         if (this.model.familienSituation.sozialhilfeBezueger) {
             return true;
         }
-        const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten ?
-            EbeguUtil.areAllNotNullOrUndefined(
-                finanzielleSituationJA.nettolohn,
-                finanzielleSituationJA.unterhaltsBeitraege,
-                finanzielleSituationJA.abzuegeKinderAusbildung,
-                finanzielleSituationJA.steuerbaresVermoegen
-            ) :
-            EbeguUtil.isNotNullOrUndefined(finanzielleSituationJA.bruttoLohn);
+        const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten
+            ? EbeguUtil.areAllNotNullOrUndefined(
+                  finanzielleSituationJA.nettolohn,
+                  finanzielleSituationJA.unterhaltsBeitraege,
+                  finanzielleSituationJA.abzuegeKinderAusbildung,
+                  finanzielleSituationJA.steuerbaresVermoegen
+              )
+            : EbeguUtil.isNotNullOrUndefined(finanzielleSituationJA.bruttoLohn);
         return isStartOk;
     }
 
     public hasSteuerveranlagungErhalten(): boolean {
-        if (this.gesuchstellerNumber === 2 && this.isSteuerveranlagungGemeinsam()) {
+        if (
+            this.gesuchstellerNumber === 2 &&
+            this.isSteuerveranlagungGemeinsam()
+        ) {
             // this is only saved on the primary GS for Solothurn
-            return this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+            return this.getGesuch().gesuchsteller1.finanzielleSituationContainer
+                .finanzielleSituationJA.steuerveranlagungErhalten;
         }
         return this.getModel().finanzielleSituationJA.steuerveranlagungErhalten;
     }
@@ -198,7 +302,8 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     private getFinanzielleSituationJAGS2(): TSFinanzielleSituation {
-        return this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+        return this.model.finanzielleSituationContainerGS2
+            .finanzielleSituationJA;
     }
 
     public onValueChangeFunction = (): void => {
@@ -209,15 +314,24 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.finSitSoService.calculateMassgebendesEinkommen(this.model);
     }
 
-    public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
+    public abstract steuerveranlagungErhaltenChange(
+        steuerveranlagungErhalten: boolean
+    ): void;
 
     public isSelbststaendigErwerbendAnswered(): boolean {
-        if (this.gesuchstellerNumber === 2 && this.isSteuerveranlagungGemeinsam()) {
+        if (
+            this.gesuchstellerNumber === 2 &&
+            this.isSteuerveranlagungGemeinsam()
+        ) {
             // this is only saved on the primary GS for Solothurn
             return EbeguUtil.isNotNullOrUndefined(
-                this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.momentanSelbststaendig);
+                this.getGesuch().gesuchsteller1.finanzielleSituationContainer
+                    .finanzielleSituationJA.momentanSelbststaendig
+            );
         }
-        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.getModel().finanzielleSituationJA.momentanSelbststaendig
+        );
     }
 
     public getMassgebendesEinkommen$(): Observable<TSFinanzielleSituationResultateDTO> {

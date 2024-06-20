@@ -609,5 +609,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.AlleFaelleViewKind"/>
 	<entity class="ch.dvbern.ebegu.entities.VeranlagungEventLog"/>
 	<entity class="ch.dvbern.ebegu.entities.VersendeteMail"/>
-	<entity class="ch.dvbern.ebegu.entities.EingewoehnungPauschale"/>
+	<entity class="ch.dvbern.ebegu.entities.Eingewoehnung"/>
 </entity-mappings>

@@ -18,9 +18,13 @@
 import {TestPeriode} from '@dv-e2e/types';
 
 const getAntragBearbeitenButton = (periode: TestPeriode) => {
-	return cy.getByData('container.periode.' + periode, 'container.antrag-bearbeiten', 'navigation-button');
+    return cy.getByData(
+        'container.periode.' + periode,
+        'container.antrag-bearbeiten',
+        'navigation-button'
+    );
 };
 
 export const GesuchstellendeDashboardPO = {
-    getAntragBearbeitenButton,
+    getAntragBearbeitenButton
 };

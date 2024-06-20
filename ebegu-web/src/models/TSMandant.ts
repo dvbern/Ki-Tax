@@ -18,7 +18,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 
 export class TSMandant extends TSAbstractMutableEntity {
-
     public name: string;
     public mandantIdentifier: string;
 

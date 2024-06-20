@@ -23,7 +23,6 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {SozialdienstFallCreationViewController} from './sozialdienstFallCreationView';
 
 describe('sozialdienstFallCreationView', () => {
-
     let sozialdienstFallCreationView: SozialdienstFallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
     let $rootScope: IScope;
@@ -33,28 +32,37 @@ describe('sozialdienstFallCreationView', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        TestDataUtil.mockLazyGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        $rootScope = $injector.get('$rootScope');
-        form = {};
-        form.$valid = true;
-        form.$dirty = true;
-        sozialdienstFallCreationView = new SozialdienstFallCreationViewController(gesuchModelManager,
-            $injector.get('BerechnungsManager'),
-            $injector.get('ErrorService'),
-            $injector.get('$stateParams'),
-            $injector.get('WizardStepManager'),
-            $injector.get('$translate'),
-            $rootScope,
-            $injector.get('AuthServiceRS'),
-            $injector.get('$state'),
-            $injector.get('UploadRS'),
-            $injector.get('FallRS'),
-            $injector.get('DownloadRS'),
-            $injector.get('DvDialog'),
-            $injector.get('$timeout'));
-        sozialdienstFallCreationView.form = form;
-        spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(() => form.$valid);
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            TestDataUtil.mockLazyGesuchModelManagerHttpCalls(
+                $injector.get('$httpBackend')
+            );
+            $rootScope = $injector.get('$rootScope');
+            form = {};
+            form.$valid = true;
+            form.$dirty = true;
+            sozialdienstFallCreationView =
+                new SozialdienstFallCreationViewController(
+                    gesuchModelManager,
+                    $injector.get('BerechnungsManager'),
+                    $injector.get('ErrorService'),
+                    $injector.get('$stateParams'),
+                    $injector.get('WizardStepManager'),
+                    $injector.get('$translate'),
+                    $rootScope,
+                    $injector.get('AuthServiceRS'),
+                    $injector.get('$state'),
+                    $injector.get('UploadRS'),
+                    $injector.get('FallRS'),
+                    $injector.get('DownloadRS'),
+                    $injector.get('DvDialog'),
+                    $injector.get('$timeout')
+                );
+            sozialdienstFallCreationView.form = form;
+            spyOn(sozialdienstFallCreationView, 'isGesuchValid').and.callFake(
+                () => form.$valid
+            );
+        })
+    );
 });

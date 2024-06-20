@@ -17,15 +17,21 @@
 
 <div class="form-group">
     <label [for]="inputId" translate>PERMITTED_EXTERNAL_CLIENTS</label>
-    <mat-select *ngIf="externalClients" class="form-control"
-                [(ngModel)]="externalClients.assignedClients"
-                [name]="inputId"
-                [id]="inputId"
-                [multiple]="true">
+    <mat-select
+        *ngIf="externalClients"
+        class="form-control"
+        [(ngModel)]="externalClients.assignedClients"
+        [name]="inputId"
+        [id]="inputId"
+        [multiple]="true"
+    >
         <mat-option *ngFor="let item of options" [value]="item">
-            {{item.clientName}}
+            {{ item.clientName }}
         </mat-option>
     </mat-select>
-    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[inputId]?.errors">
+    <dv-error-messages
+        [inputId]="inputId"
+        [errorObject]="form.controls[inputId]?.errors"
+    >
     </dv-error-messages>
 </div>

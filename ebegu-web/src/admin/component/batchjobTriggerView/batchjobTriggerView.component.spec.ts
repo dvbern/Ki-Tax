@@ -14,7 +14,7 @@
  */
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
@@ -23,24 +23,31 @@ import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 import {BatchjobTriggerViewComponent} from './batchjobTriggerView.component';
 
 describe('batchjobTriggerView', () => {
-
     let component: BatchjobTriggerViewComponent;
     let fixture: ComponentFixture<BatchjobTriggerViewComponent>;
 
     beforeEach(waitForAsync(() => {
         const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-        const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
-        const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const databaseMigrationRSSpy = jasmine.createSpyObj(
+            'DatabaseMigrationRS',
+            ['processScript']
+        );
+        const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', [
+            'runBatchMahnungFristablauf'
+        ]);
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
                 {provide: MatDialog, useValue: dvDialogSpy},
-                {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
+                {
+                    provide: DatabaseMigrationRS,
+                    useValue: databaseMigrationRSSpy
+                },
                 {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],

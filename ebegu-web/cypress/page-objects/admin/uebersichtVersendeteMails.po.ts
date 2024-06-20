@@ -17,39 +17,41 @@
 
 const getNavigationToMailUebersichtsPage = () => {
     return cy.getByData('action-admin.uebersichtVersendeteMails');
-}
+};
 
 const getSentMailsSubject = () => {
     return cy.getByData('sentMailsSubject');
-}
+};
 
 const getSortedMails = () => {
-    return cy.getByData('sentMailsAdress')
-}
+    return cy.getByData('sentMailsAdress');
+};
 
 const getSearchBarSentMails = () => {
     return cy.getByData('SearchBarSentMails');
-}
+};
 
 const getPaginatorMailUebersicht = () => {
     return cy.get('#mat-select-value-1');
-}
+};
 
 const getPaginatorAmountMailUebersicht = () => {
     return cy.get('#mat-option-1');
-}
+};
 
 const getNextMailsInTablle = () => {
-    return cy.get('.mat-paginator-navigation-next')
-}
+    return cy.get('.mat-paginator-navigation-next');
+};
 
 const getNextMailsInTablleCheck = () => {
-    return cy.get('.mat-paginator-range-label')
-}
+    return cy.get('.mat-paginator-range-label');
+};
 
 const getVersendeteMailTableContent = () => {
-    return cy.get('.cdk-column-empfaengerAdresse > .mat-sort-header-container > .mat-sort-header-arrow')
-}
+    return cy.get(
+        '.cdk-column-empfaengerAdresse > .mat-sort-header-container > .mat-sort-header-arrow'
+    );
+};
 
 export const UebersichtVersendeteMailsPO = {
     getNavigationToMailUebersichtsPage,
@@ -60,5 +62,5 @@ export const UebersichtVersendeteMailsPO = {
     getPaginatorAmountMailUebersicht,
     getNextMailsInTablle,
     getNextMailsInTablleCheck,
-    getVersendeteMailTableContent,
-}
+    getVersendeteMailTableContent
+};

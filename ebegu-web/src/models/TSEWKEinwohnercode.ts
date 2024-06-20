@@ -20,13 +20,17 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
  * DTO für einen Einwohnercode aus dem EWK
  */
 export class TSEWKEinwohnercode extends TSAbstractMutableEntity {
-
     private _code: string;
     private _codeTxt: string;
     private _gueltigVon: moment.Moment;
     private _gueltigBis: moment.Moment;
 
-    public constructor(code?: string, codeTxt?: string, gueltigVon?: moment.Moment, gueltigBis?: moment.Moment) {
+    public constructor(
+        code?: string,
+        codeTxt?: string,
+        gueltigVon?: moment.Moment,
+        gueltigBis?: moment.Moment
+    ) {
         super();
         this._code = code;
         this._codeTxt = codeTxt;

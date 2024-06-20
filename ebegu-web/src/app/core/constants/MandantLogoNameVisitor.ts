@@ -19,7 +19,6 @@ import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
 export class MandantLogoNameVisitor implements MandantVisitor<string> {
-
     public process(mandant: KiBonMandant): string {
         return mandant.accept(this);
     }
@@ -43,5 +42,4 @@ export class MandantLogoNameVisitor implements MandantVisitor<string> {
     public visitSchwyz(): string {
         return 'logo-kibon-schwyz.svg';
     }
-
 }

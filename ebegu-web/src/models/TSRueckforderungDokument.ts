@@ -21,10 +21,12 @@ import {TSRueckforderungDokumentTyp} from './enums/TSRueckforderungDokumentTyp';
 import {TSUploadFile} from './TSUploadFile';
 
 export class TSRueckforderungDokument extends TSUploadFile {
-
     private _rueckforderungDokumentTyp: TSRueckforderungDokumentTyp;
 
-    public constructor(timestampUpload?: moment.Moment, rueckforderungDokumentTyp?: TSRueckforderungDokumentTyp) {
+    public constructor(
+        timestampUpload?: moment.Moment,
+        rueckforderungDokumentTyp?: TSRueckforderungDokumentTyp
+    ) {
         super(timestampUpload);
         this._rueckforderungDokumentTyp = rueckforderungDokumentTyp;
     }

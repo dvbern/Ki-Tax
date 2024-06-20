@@ -21,7 +21,7 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export type RemoveDialogParams =
-    'title'
+    | 'title'
     | 'deleteText'
     | 'cancelText'
     | 'confirmText'
@@ -30,14 +30,7 @@ export type RemoveDialogParams =
     | 'elementID';
 
 export class RemoveDialogController {
-
-    public static $inject = [
-        '$mdDialog',
-        '$translate',
-        '$q',
-        '$log',
-        'params'
-    ];
+    public static $inject = ['$mdDialog', '$translate', '$q', '$log', 'params'];
 
     public deleteText: string;
     public title: string;
@@ -49,24 +42,23 @@ export class RemoveDialogController {
         $translate: ITranslateService,
         private readonly $q: IQService,
         private readonly $log: ILogService,
-        private readonly params: { [key in RemoveDialogParams]?: any }
+        private readonly params: {[key in RemoveDialogParams]?: any}
     ) {
+        this.deleteText = EbeguUtil.isNotNullOrUndefined(params.deleteText)
+            ? $translate.instant(params.deleteText)
+            : $translate.instant('LOESCHEN_DIALOG_TEXT');
 
-        this.deleteText = EbeguUtil.isNotNullOrUndefined(params.deleteText) ?
-            $translate.instant(params.deleteText) :
-            $translate.instant('LOESCHEN_DIALOG_TEXT');
+        this.title = EbeguUtil.isNotNullOrUndefined(params.title)
+            ? $translate.instant(params.title)
+            : $translate.instant('LOESCHEN_DIALOG_TITLE');
 
-        this.title = EbeguUtil.isNotNullOrUndefined(params.title) ?
-            $translate.instant(params.title) :
-            $translate.instant('LOESCHEN_DIALOG_TITLE');
+        this.cancelText = EbeguUtil.isNotNullOrUndefined(params.cancelText)
+            ? $translate.instant(params.cancelText)
+            : $translate.instant('LABEL_NEIN');
 
-        this.cancelText = EbeguUtil.isNotNullOrUndefined(params.cancelText) ?
-            $translate.instant(params.cancelText) :
-            $translate.instant('LABEL_NEIN');
-
-        this.confirmText = EbeguUtil.isNotNullOrUndefined(params.confirmText) ?
-            $translate.instant(params.confirmText) :
-            $translate.instant('LABEL_JA');
+        this.confirmText = EbeguUtil.isNotNullOrUndefined(params.confirmText)
+            ? $translate.instant(params.confirmText)
+            : $translate.instant('LABEL_JA');
     }
 
     public hide(): IPromise<any> {
@@ -74,7 +66,10 @@ export class RemoveDialogController {
     }
 
     public cancel(): void {
-        if (this.params.parentController && typeof this.params.parentController.setFocusBack === 'function') {
+        if (
+            this.params.parentController &&
+            typeof this.params.parentController.setFocusBack === 'function'
+        ) {
             this.params.parentController.setFocusBack(this.params.elementID);
         }
 
@@ -84,7 +79,9 @@ export class RemoveDialogController {
         if (this.params.form) {
             this.params.form.$setDirty();
         } else {
-            this.$log.info('Cancel DialogController without setting form back to dirty may produce errors');
+            this.$log.info(
+                'Cancel DialogController without setting form back to dirty may produce errors'
+            );
         }
 
         this.$mdDialog.cancel(this.$q.reject());

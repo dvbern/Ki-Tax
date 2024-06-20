@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
@@ -204,9 +204,9 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 	@ParameterizedTest
 	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
-	void eingewoehnungPauschale(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+	void eingewoehnungKosten(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		pensum.setEingewoehnungPauschale(createEingewoehnungPauschale());
+		pensum.setEingewoehnung(createEingewoehnung());
 
 		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
 
@@ -216,7 +216,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", monatliche Betreuungskosten: CHF 1’230.35, Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
+				", monatliche Betreuungskosten: CHF 1’230.35, Eingewöhnung von 28.12.2023 bis 07.01.2024: Kosten: CHF 777"
 			));
 	}
 
@@ -395,10 +395,10 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	}
 
 	@Nonnull
-	private EingewoehnungPauschale createEingewoehnungPauschale() {
-		EingewoehnungPauschale pauschale = new EingewoehnungPauschale();
+	private Eingewoehnung createEingewoehnung() {
+		Eingewoehnung pauschale = new Eingewoehnung();
 		pauschale.setGueltigkeit(new DateRange(LocalDate.of(2023, 12, 28), LocalDate.of(2024, 1, 7)));
-		pauschale.setPauschale(BigDecimal.valueOf(777));
+		pauschale.setKosten(BigDecimal.valueOf(777));
 
 		return pauschale;
 	}

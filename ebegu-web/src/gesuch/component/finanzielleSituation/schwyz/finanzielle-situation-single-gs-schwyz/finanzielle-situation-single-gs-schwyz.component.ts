@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -11,7 +18,6 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class FinanzielleSituationSingleGsSchwyzComponent {
-
     @ViewChild(NgForm) public form: NgForm;
 
     @Input()

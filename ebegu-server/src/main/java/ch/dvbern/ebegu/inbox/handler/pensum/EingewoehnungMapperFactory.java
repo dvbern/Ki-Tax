@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
@@ -32,17 +33,20 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 @ApplicationScoped
 @NoArgsConstructor
 @AllArgsConstructor
-public class EingewoehnungPauschaleMapperFactory {
+public class EingewoehnungMapperFactory {
 
 	@Inject
 	private EinstellungService einstellungService;
 
-	public PensumMapper<AbstractMahlzeitenPensum> createForEingewoehnungPauschale(ProcessingContext ctx) {
+	@Inject
+	private Validator validator;
+
+	public PensumMapper<AbstractMahlzeitenPensum> createForEingewoehnung(ProcessingContext ctx) {
 		EingewoehnungTyp eingewoehnungTyp =
 			EingewoehnungTyp.valueOf(einstellungService.findEinstellung(EINGEWOEHNUNG_TYP, ctx.getBetreuung()).getValue());
 
 		return eingewoehnungTyp.isEingewoehnungTypPauschale() ?
-			PensumMapper.EINGEWOEHNUNG_PAUSCHALE_MAPPER :
+			new EingewoehnungMapper(ctx, validator) :
 			PensumMapper.nop();
 	}
 }

@@ -20,23 +20,23 @@ import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 
 import {FerienbetreuungService} from './ferienbetreuung.service';
 
-const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
-    ['getPauschalbetraegeFerienbetreuung']);
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(
+    EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']
+);
 
 describe('FerienbetreuungService', () => {
-  let service: FerienbetreuungService;
+    let service: FerienbetreuungService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule],
-        providers: [
-            {provide: EinstellungRS, useValue: einstellungRSSpy}
-        ]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [{provide: EinstellungRS, useValue: einstellungRSSpy}]
+        });
+        service = TestBed.inject(FerienbetreuungService);
     });
-    service = TestBed.inject(FerienbetreuungService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

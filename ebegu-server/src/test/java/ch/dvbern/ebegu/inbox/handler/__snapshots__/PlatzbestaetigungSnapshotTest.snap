@@ -4,14 +4,14 @@ ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungSnapshotTest.mappingMustBeReconsi
     "betreuungInFerienzeit": null,
     "betreuungsmitteilung": null,
     "betreuungspensumAbweichung": null,
-    "eingewoehnungPauschale": {
+    "eingewoehnung": {
       "gueltigkeit": {
         "gueltigAb": "2024-01-01",
         "gueltigBis": "2024-12-31",
         "stichtag": false,
         "valid": true
       },
-      "pauschale": 0,
+      "kosten": 0,
       "vorgaengerId": null
     },
     "gueltigkeit": {

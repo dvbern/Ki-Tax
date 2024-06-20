@@ -23,16 +23,20 @@ import {Log, LogFactory} from '../../core/logging/LogFactory';
     providedIn: 'root'
 })
 export class PosteingangService {
-
     private readonly LOG: Log = LogFactory.createLog(PosteingangService.name);
 
     // use ReplaySubject because we don't have an initial value
-    private readonly _posteingangSubject$ = new ReplaySubject<TSPostEingangEvent>(1);
+    private readonly _posteingangSubject$ =
+        new ReplaySubject<TSPostEingangEvent>(1);
 
     public posteingangChanged(): void {
-        this.LOG.info('Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of '
-            + 'elements in Posteingang might have changed');
-        this._posteingangSubject$.next(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
+        this.LOG.info(
+            'Thwrowing TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED because the number of ' +
+                'elements in Posteingang might have changed'
+        );
+        this._posteingangSubject$.next(
+            TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED
+        );
     }
 
     public get$(event: TSPostEingangEvent): Observable<TSPostEingangEvent> {

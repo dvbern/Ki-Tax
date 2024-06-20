@@ -20,20 +20,26 @@ import {TSHTTPEvent} from '../events/TSHTTPEvent';
  * this interceptor boradcasts a REQUEST_FINISHED event whenever a rest service responds
  */
 export class HttpResponseInterceptor implements IHttpInterceptor {
-
     public static $inject = ['$rootScope', '$q'];
 
-    public constructor(private readonly $rootScope: IRootScopeService, private readonly $q: IQService) {
-    }
+    public constructor(
+        private readonly $rootScope: IRootScopeService,
+        private readonly $q: IQService
+    ) {}
 
     public responseError = (response: any) => {
-        this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
+        this.$rootScope.$broadcast(
+            TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED],
+            response
+        );
         return this.$q.reject(response);
     };
 
     public response = (response: any) => {
-        this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
+        this.$rootScope.$broadcast(
+            TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED],
+            response
+        );
         return response;
     };
-
 }

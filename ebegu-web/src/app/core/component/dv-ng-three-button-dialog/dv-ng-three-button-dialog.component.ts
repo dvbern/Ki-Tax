@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * Dialog mit drei Buttons (2 Actions, 1 Abbrechen).
@@ -28,12 +28,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     styleUrls: ['./dv-ng-three-button-dialog.less']
 })
 export class DvNgThreeButtonDialogComponent {
-
     public title: string = '';
     public text: string = '';
-    public actionOneButtonLabel: string = 'LABEL_OK';   // Default-Buttontext
-    public actionTwoButtonLabel: string = 'LABEL_OK';   // Default-Buttontext
-    public cancelButtonLabel: string = 'CANCEL';        // Default-Buttontext
+    public actionOneButtonLabel: string = 'LABEL_OK'; // Default-Buttontext
+    public actionTwoButtonLabel: string = 'LABEL_OK'; // Default-Buttontext
+    public cancelButtonLabel: string = 'CANCEL'; // Default-Buttontext
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgThreeButtonDialogComponent>,

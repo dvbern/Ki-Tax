@@ -153,7 +153,7 @@ export const LOCALLOGIN_DATA = {
             id: 'e67aa195-b912-11ee-8d78-0242ac160002',
             name: 'Tagesschule Schwyz'
         }
-    },
+    }
 };
 
 export interface LocalLoginDaten {

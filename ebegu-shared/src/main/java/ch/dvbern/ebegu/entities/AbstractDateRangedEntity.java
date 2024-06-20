@@ -28,12 +28,14 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die eine Periode (DateRange) mit datumVon und datumBis haben.
  */
 @MappedSuperclass
+@EqualsAndHashCode(callSuper = true)
 public abstract class AbstractDateRangedEntity extends AbstractMutableEntity implements Gueltigkeit {
 
 	private static final long serialVersionUID = -7541083148864749528L;

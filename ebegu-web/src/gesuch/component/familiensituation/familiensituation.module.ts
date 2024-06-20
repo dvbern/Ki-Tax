@@ -18,12 +18,8 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../../../app/shared/shared.module';
-import {
-    DvNgGsRemovalConfirmationDialogComponent,
-} from './dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
-import {
-    FamiliensituationAppenzellViewXComponent,
-} from './familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {DvNgGsRemovalConfirmationDialogComponent} from './dv-ng-gs-removal-confirmation-dialog/dv-ng-gs-removal-confirmation-dialog.component';
+import {FamiliensituationAppenzellViewXComponent} from './familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {FamiliensituationSchwyzComponent} from './familiensituation-schwyz/familiensituation-schwyz.component';
 import {FamiliensituationViewXComponent} from './familiensituation-view-x/familiensituation-view-x.component';
 
@@ -32,12 +28,8 @@ import {FamiliensituationViewXComponent} from './familiensituation-view-x/famili
         DvNgGsRemovalConfirmationDialogComponent,
         FamiliensituationViewXComponent,
         FamiliensituationAppenzellViewXComponent,
-        FamiliensituationSchwyzComponent,
+        FamiliensituationSchwyzComponent
     ],
-    imports: [
-        CommonModule,
-        SharedModule,
-    ],
+    imports: [CommonModule, SharedModule]
 })
-export class FamiliensituationModule {
-}
+export class FamiliensituationModule {}

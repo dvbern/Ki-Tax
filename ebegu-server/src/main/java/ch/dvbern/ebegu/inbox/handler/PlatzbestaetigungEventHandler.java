@@ -447,6 +447,10 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			"PlatzbestaetigungEvent: Mutationsmeldung erstellt für die Betreuung mit RefNr: {}",
 			ctx.getDto().getRefnr());
 		ctx.getEventMonitor().record("PlatzbestaetigungEvent: Mutationsmeldung erstellt.");
+		if (!ctx.isReadyForBestaetigen()) {
+			String message = ctx.getHumanConfirmationMessages();
+			ctx.getEventMonitor().record("Die Mutationsmeldung erfordert manuelle Bestätigung: " + message);
+		}
 
 		return Processing.success();
 	}

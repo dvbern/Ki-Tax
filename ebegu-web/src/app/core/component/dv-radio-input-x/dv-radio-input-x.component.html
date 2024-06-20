@@ -16,11 +16,21 @@
   -->
 
 <div>
-    <label [for]="uniqueName + '_id'" class="ebegu-h1" [class.required]="required">
-        <span>{{label | translate}}</span>
-        <dv-tooltip *ngIf="tooltip" [text]="tooltip | translate" [inputId]="uniqueName + '_id'"></dv-tooltip>
+    <label
+        [for]="uniqueName + '_id'"
+        class="ebegu-h1"
+        [class.required]="required"
+    >
+        <span>{{ label | translate }}</span>
+        <dv-tooltip
+            *ngIf="tooltip"
+            [text]="tooltip | translate"
+            [inputId]="uniqueName + '_id'"
+        ></dv-tooltip>
     </label>
-    <span *ngIf="inlineHint" class="inline-hint">{{inlineHint | translate}}</span>
+    <span *ngIf="inlineHint" class="inline-hint">{{
+        inlineHint | translate
+    }}</span>
     <mat-radio-group
         (change)="change($event)"
         [(ngModel)]="model"
@@ -28,9 +38,14 @@
         [id]="uniqueName + '_id'"
         #radio="ngModel"
         [disabled]="readonly"
-        [required]="required">
-        <mat-radio-button [value]="true" data-test="radio-value.ja">{{'LABEL_JA' | translate}}</mat-radio-button>
-        <mat-radio-button [value]="false" data-test="radio-value.nein">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+        [required]="required"
+    >
+        <mat-radio-button [value]="true" data-test="radio-value.ja">{{
+            'LABEL_JA' | translate
+        }}</mat-radio-button>
+        <mat-radio-button [value]="false" data-test="radio-value.nein">{{
+            'LABEL_NEIN' | translate
+        }}</mat-radio-button>
     </mat-radio-group>
     <div class="margin-bottom-20">
         <dv-bisher-x
@@ -38,9 +53,11 @@
             [deklaration]="dvBisherValue"
             [showBisher]="showBisher()"
         ></dv-bisher-x>
-        <dv-error-messages *ngIf="form?.submitted"
-                           [errorObject]="radio.errors"
-                           [inputId]="uniqueName + '_id'">
+        <dv-error-messages
+            *ngIf="form?.submitted"
+            [errorObject]="radio.errors"
+            [inputId]="uniqueName + '_id'"
+        >
         </dv-error-messages>
     </div>
 </div>

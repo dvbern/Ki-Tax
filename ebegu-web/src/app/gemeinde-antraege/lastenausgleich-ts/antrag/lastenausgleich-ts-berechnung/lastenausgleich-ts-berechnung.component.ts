@@ -15,14 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSSprache} from '../../../../../models/enums/TSSprache';
-import {
-    TSLastenausgleichTagesschuleAngabenGemeindeContainer
-} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -40,13 +43,17 @@ const LOG = LogFactory.createLog('LastenausgleichTsBerechnungComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTsBerechnungComponent implements OnInit {
-
     private static readonly FILENAME_DE = 'Verfügung Tagesschulen kiBon';
     private static readonly FILENAME_FR = 'Décision EJC kiBon';
 
-    public canViewDokumentErstellenButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public downloadingDeFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public downloadingFrFile: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public canViewDokumentErstellenButton: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
+    public downloadingDeFile: BehaviorSubject<boolean> = new BehaviorSubject(
+        false
+    );
+    public downloadingFrFile: BehaviorSubject<boolean> = new BehaviorSubject(
+        false
+    );
 
     public latsContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     private principal: TSBenutzer | null;
@@ -60,95 +67,127 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         private readonly authService: AuthServiceRS,
         private readonly downloadRS: DownloadRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         combineLatest([
             this.latsService.getLATSAngabenGemeindeContainer(),
             this.authService.principal$
-        ]).subscribe(values => {
-            this.latsContainer = values[0];
-            this.principal = values[1];
-            this.canViewDokumentErstellenButton.next(this.principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
-            this.initErwarteteBetreuungsstundenFromKiBon();
-            this.hasSavedBetreuungsstundenPrognose =
-                EbeguUtil.isNotNullOrUndefined(this.latsContainer.betreuungsstundenPrognose);
-            this.cd.markForCheck();
-        }, () => this.errorService.addMesageAsInfo(this.translate.instant('DATA_RETRIEVAL_ERROR')));
+        ]).subscribe(
+            values => {
+                this.latsContainer = values[0];
+                this.principal = values[1];
+                this.canViewDokumentErstellenButton.next(
+                    this.principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())
+                );
+                this.initErwarteteBetreuungsstundenFromKiBon();
+                this.hasSavedBetreuungsstundenPrognose =
+                    EbeguUtil.isNotNullOrUndefined(
+                        this.latsContainer.betreuungsstundenPrognose
+                    );
+                this.cd.markForCheck();
+            },
+            () =>
+                this.errorService.addMesageAsInfo(
+                    this.translate.instant('DATA_RETRIEVAL_ERROR')
+                )
+        );
     }
 
     public createLatsDocumentDe(): void {
         this.downloadingDeFile.next(true);
-        this.latsService.latsDocxErstellen(
-            this.latsContainer,
-            TSSprache.DEUTSCH,
-            this.latsContainer.betreuungsstundenPrognose
-        ).subscribe(
-            response => {
-                this.createDownloadFile(response, TSSprache.DEUTSCH);
-                this.downloadingDeFile.next(false);
-            },
-            async err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
-                    'ERROR_UNEXPECTED'));
-                this.downloadingDeFile.next(false);
-            });
+        this.latsService
+            .latsDocxErstellen(
+                this.latsContainer,
+                TSSprache.DEUTSCH,
+                this.latsContainer.betreuungsstundenPrognose
+            )
+            .subscribe(
+                response => {
+                    this.createDownloadFile(response, TSSprache.DEUTSCH);
+                    this.downloadingDeFile.next(false);
+                },
+                async err => {
+                    LOG.error(err);
+                    this.errorService.addMesageAsError(
+                        err?.translatedMessage ||
+                            this.translate.instant('ERROR_UNEXPECTED')
+                    );
+                    this.downloadingDeFile.next(false);
+                }
+            );
     }
 
     public createLatsDocumentFr(): void {
         this.downloadingFrFile.next(true);
-        this.latsService.latsDocxErstellen(
-            this.latsContainer,
-            TSSprache.FRANZOESISCH,
-            this.latsContainer.betreuungsstundenPrognose
-        ).subscribe(
-            response => {
-                this.createDownloadFile(response, TSSprache.FRANZOESISCH);
-                this.downloadingFrFile.next(false);
-            },
-            async err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
-                    'ERROR_UNEXPECTED'));
-                this.downloadingFrFile.next(false);
-            }
-        );
+        this.latsService
+            .latsDocxErstellen(
+                this.latsContainer,
+                TSSprache.FRANZOESISCH,
+                this.latsContainer.betreuungsstundenPrognose
+            )
+            .subscribe(
+                response => {
+                    this.createDownloadFile(response, TSSprache.FRANZOESISCH);
+                    this.downloadingFrFile.next(false);
+                },
+                async err => {
+                    LOG.error(err);
+                    this.errorService.addMesageAsError(
+                        err?.translatedMessage ||
+                            this.translate.instant('ERROR_UNEXPECTED')
+                    );
+                    this.downloadingFrFile.next(false);
+                }
+            );
     }
 
     private createDownloadFile(response: BlobPart, sprache: TSSprache): void {
-        const file = new Blob([response],
-            {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+        const file = new Blob([response], {
+            type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
         const filename = this.getFilename(sprache);
         this.downloadRS.openDownload(file, filename);
     }
 
     private getFilename(sprache: TSSprache): string {
         const filename =
-        (sprache === TSSprache.DEUTSCH)
-            ? LastenausgleichTsBerechnungComponent.FILENAME_DE
-            : LastenausgleichTsBerechnungComponent.FILENAME_FR;
+            sprache === TSSprache.DEUTSCH
+                ? LastenausgleichTsBerechnungComponent.FILENAME_DE
+                : LastenausgleichTsBerechnungComponent.FILENAME_FR;
 
         return `${filename} ${this.latsContainer.gesuchsperiode.gesuchsperiodeString} ${this.latsContainer.gemeinde.name}.docx`;
     }
 
     private initErwarteteBetreuungsstundenFromKiBon(): void {
-        this.latsService.getErwarteteBetreuungsstundenPrognose(this.latsContainer)
-            .subscribe(res => {
-                this.betreuungsstundenPrognoseFromKiBon = res;
-                this.cd.markForCheck();
-            }, err => LOG.error(err));
+        this.latsService
+            .getErwarteteBetreuungsstundenPrognose(this.latsContainer)
+            .subscribe(
+                res => {
+                    this.betreuungsstundenPrognoseFromKiBon = res;
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public saveContainerWithPrognose(): void {
-        this.latsService.saveLATSAngabenGemeindePrognose(this.latsContainer.id,
-            this.latsContainer.betreuungsstundenPrognose, this.latsContainer.bemerkungenBetreuungsstundenPrognose)
-            .subscribe(() => {
-                this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
-            }, err => {
-                LOG.error(err);
-            });
+        this.latsService
+            .saveLATSAngabenGemeindePrognose(
+                this.latsContainer.id,
+                this.latsContainer.betreuungsstundenPrognose,
+                this.latsContainer.bemerkungenBetreuungsstundenPrognose
+            )
+            .subscribe(
+                () => {
+                    this.errorService.addMesageAsInfo(
+                        this.translate.instant('SAVED')
+                    );
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     public antragAbschliessen(): void {
@@ -156,8 +195,10 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     }
 
     public isAbschliessenVisible(): boolean {
-        return this.hasSavedBetreuungsstundenPrognose
-            && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
-            && !this.latsContainer?.isAbgeschlossen();
+        return (
+            this.hasSavedBetreuungsstundenPrognose &&
+            this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+            !this.latsContainer?.isAbgeschlossen()
+        );
     }
 }

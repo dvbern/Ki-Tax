@@ -20,7 +20,9 @@ import {
     HttpRequest,
     HttpHandler,
     HttpEvent,
-    HttpInterceptor, HttpResponse, HttpErrorResponse
+    HttpInterceptor,
+    HttpResponse,
+    HttpErrorResponse
 } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {catchError, filter, finalize} from 'rxjs/operators';
@@ -28,20 +30,25 @@ import {HttpPendingService} from '../../services/http-pending.service';
 
 @Injectable()
 export class HttpPendingInterceptor implements HttpInterceptor {
-
     public constructor(
         private readonly httpPendingService: HttpPendingService
-    ) {
-    }
+    ) {}
 
-    public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    public intercept(
+        request: HttpRequest<unknown>,
+        next: HttpHandler
+    ): Observable<HttpEvent<unknown>> {
         this.httpPendingService.pending(request);
         return next.handle(request).pipe(
             catchError(err => {
                 this.httpPendingService.resolve(request);
                 throw err;
             }),
-            filter(event => event instanceof HttpResponse || event instanceof HttpErrorResponse),
+            filter(
+                event =>
+                    event instanceof HttpResponse ||
+                    event instanceof HttpErrorResponse
+            ),
             finalize(() => this.httpPendingService.resolve(request))
         );
     }

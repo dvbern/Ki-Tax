@@ -89,9 +89,17 @@ export type TestPeriode = '2022/23' | '2023/24' | '2024/25';
 
 export type TestBetreuungsstatus = 'warten' | 'bestaetigt' | 'verfuegt';
 
-export type TestGesuchstellende = Extract<User, '[5-GS] Emma Gerber' | '[5-GS] Heinrich Mueller' | '[5-GS] Michael Berger' | '[5-GS] Hans Zimmermann' | '[5-GS] Jean Chambre'>;
+export type TestGesuchstellende = Extract<
+    User,
+    | '[5-GS] Emma Gerber'
+    | '[5-GS] Heinrich Mueller'
+    | '[5-GS] Michael Berger'
+    | '[5-GS] Hans Zimmermann'
+    | '[5-GS] Jean Chambre'
+>;
 
-export type SidenavStep = 'SOZIALDIENSTFALL_ERSTELLEN'
+export type SidenavStep =
+    | 'SOZIALDIENSTFALL_ERSTELLEN'
     | 'GESUCH_ERSTELLEN'
     | 'FAMILIENSITUATION'
     | 'GESUCHSTELLER'
@@ -112,7 +120,8 @@ export type SidenavStep = 'SOZIALDIENSTFALL_ERSTELLEN'
     | 'FREIGABE'
     | 'VERFUEGEN';
 
-export type MainnavStep = 'ALLE_FAELLE'
+export type MainnavStep =
+    | 'ALLE_FAELLE'
     | 'PENDENZEN'
     | 'PENDENZEN_BETREUUNGEN'
     | 'PENDENZEN_ANMELDUNGEN'

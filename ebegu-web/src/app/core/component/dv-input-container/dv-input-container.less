@@ -15,13 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 @import (reference) './../../../../style/mixins.less';
 @import (reference) './../../../../style/variables.less';
 
 dv-input-container-x {
     .dv-input-container {
-
         align-items: center;
         display: flex;
         justify-content: space-between;
@@ -30,7 +28,10 @@ dv-input-container-x {
         &.vertical-align {
             flex-direction: column;
             margin-bottom: 4rem;
-            > label, dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+            > label,
+            dv-radio-container-x,
+            mat-form-field,
+            .flex-whitespace-item {
                 flex-grow: 1;
                 margin: 0 2rem;
                 width: 100%;
@@ -40,21 +41,32 @@ dv-input-container-x {
             &:not(.no-margin) {
                 margin-bottom: 3rem;
             }
-            dv-radio-container-x, mat-form-field, .flex-whitespace-item {
+            dv-radio-container-x,
+            mat-form-field,
+            .flex-whitespace-item {
                 //space for outline
                 flex: 0 0 180px;
                 margin-left: 6rem;
             }
         }
 
-        input, textarea {
-            font-family: Open Sans, Arial, Helvetica, sans-serif;
+        input,
+        textarea {
+            font-family:
+                Open Sans,
+                Arial,
+                Helvetica,
+                sans-serif;
         }
 
         label {
             color: black;
             flex: 1 0 35%;
-            font-family: Open Sans, Arial, Helvetica, sans-serif;
+            font-family:
+                Open Sans,
+                Arial,
+                Helvetica,
+                sans-serif;
             &.bold-label {
                 font-weight: bold;
             }
@@ -80,14 +92,17 @@ dv-input-container-x {
                 padding-left: 0;
             }
         }
-
     }
 
     mat-label {
         .ebeguLabel();
         color: @contrast-darkest;
         display: block;
-        font-family: Open Sans, Arial, Helvetica, sans-serif;
+        font-family:
+            Open Sans,
+            Arial,
+            Helvetica,
+            sans-serif;
         &:after {
             .ebeguLabel();
             color: @contrast-darkest;
@@ -95,13 +110,12 @@ dv-input-container-x {
         }
     }
 
-
     .mat-form-field-underline {
         display: none;
     }
 
     .mat-mdc-text-field-wrapper {
-        padding-bottom: 0   ;
+        padding-bottom: 0;
     }
 
     .mat-form-field-infix {
@@ -112,11 +126,16 @@ dv-input-container-x {
         top: calc(100% - 0.9em);
     }
 
-    .mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input, .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
+    .mdc-text-field--no-label:not(.mdc-text-field--textarea)
+        .mat-mdc-form-field-input-control.mdc-text-field__input,
+    .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
         height: 4rem;
     }
 
-    .mdc-text-field--no-label:not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mat-mdc-form-field-infix {
+    .mdc-text-field--no-label:not(.mdc-text-field--outlined):not(
+            .mdc-text-field--textarea
+        )
+        .mat-mdc-form-field-infix {
         padding: 0;
     }
 
@@ -143,8 +162,11 @@ dv-input-container-x {
         display: none;
     }
 
-
-    .mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input, dv-input-container-x .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
+    .mdc-text-field--no-label:not(.mdc-text-field--textarea)
+        .mat-mdc-form-field-input-control.mdc-text-field__input,
+    dv-input-container-x
+        .mat-mdc-text-field-wrapper
+        .mat-mdc-form-field-input-control {
         font-size: 1.6rem;
         .ebeguFont-family();
         .ebeguSemi-bold();
@@ -160,14 +182,14 @@ dv-input-container-x {
     .mat-mdc-form-field-focus-overlay {
         background-color: transparent;
     }
-
 }
 
 .dv-input-container {
     width: 100%;
 
     &.disabled {
-        label, mat-label > .mat-label-content {
+        label,
+        mat-label > .mat-label-content {
             color: @dgrey;
         }
         label[required]:after {
@@ -177,13 +199,14 @@ dv-input-container-x {
 }
 
 .gesuch dv-input-container-x {
-
     .dv-input-container {
         &.vertical-align {
             align-items: start;
         }
     }
-    input.ng-invalid, select.ng-invalid, mat-radio-group.ng-invalid {
+    input.ng-invalid,
+    select.ng-invalid,
+    mat-radio-group.ng-invalid {
         background-color: @background-error-color;
     }
 
@@ -191,7 +214,8 @@ dv-input-container-x {
         width: 100%;
     }
 
-    mat-form-field, dv-radio-container-x {
+    mat-form-field,
+    dv-radio-container-x {
         margin-left: 0 !important;
     }
 
@@ -202,7 +226,6 @@ dv-input-container-x {
     }
 
     mat-form-field {
-
         .mat-mdc-select-arrow-wrapper {
             & > .mat-mdc-select-arrow {
                 display: none;
@@ -235,5 +258,4 @@ dv-input-container-x {
             }
         }
     }
-
 }

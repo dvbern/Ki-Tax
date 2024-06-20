@@ -37,7 +37,6 @@ export class DvCountdownComponentConfig implements IComponentOptions {
 }
 
 export class DvCountdownController implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         'AuthServiceRS',
         '$state',
@@ -59,15 +58,15 @@ export class DvCountdownController implements IController {
         private readonly dvDialog: DvDialog,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly uiRouterGlobals: UIRouterGlobals
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.$rootScope.$on(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], () => {
-            if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-                || !this.isGesuchAvailableAndWritable()
-                || !this.isOnGesuchView()) {
-
+            if (
+                !this.authServiceRS.isRole(TSRole.GESUCHSTELLER) ||
+                !this.isGesuchAvailableAndWritable() ||
+                !this.isOnGesuchView()
+            ) {
                 this.cancelInterval();
                 return;
             }
@@ -78,12 +77,14 @@ export class DvCountdownController implements IController {
                 this.resetTimer();
             }
         });
-
     }
 
     public getTimeLeft(): string {
         if (this.timer && this.timer.asMinutes() < 5) {
-            const seconds = this.timer.seconds() < 10 ? `0${  String(this.timer.seconds())}` : this.timer.seconds();
+            const seconds =
+                this.timer.seconds() < 10
+                    ? `0${String(this.timer.seconds())}`
+                    : this.timer.seconds();
             return `${this.timer.minutes()} : ${seconds}`;
         }
         return '';
@@ -126,7 +127,10 @@ export class DvCountdownController implements IController {
     }
 
     public isOnGesuchView(): boolean {
-        return (this.uiRouterGlobals?.current && this.uiRouterGlobals.current.name.substring(0, 7) === 'gesuch.');
+        return (
+            this.uiRouterGlobals?.current &&
+            this.uiRouterGlobals.current.name.substring(0, 7) === 'gesuch.'
+        );
     }
 
     public isGesuchAvailableAndWritable(): boolean {

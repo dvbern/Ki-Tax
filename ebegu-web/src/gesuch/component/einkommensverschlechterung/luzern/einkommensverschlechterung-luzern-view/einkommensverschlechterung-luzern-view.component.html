@@ -20,36 +20,66 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2 *ngIf="!isGemeinsam()">
-                <span translate
-                      [translateParams]="{gesuchsteller: this.gesuchModelManager.getStammdatenToWorkWith()?.extractFullName(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
+                <span
+                    translate
+                    [translateParams]="{
+                        gesuchsteller: this.gesuchModelManager
+                            .getStammdatenToWorkWith()
+                            ?.extractFullName(),
+                        basisjahr:
+                            this.gesuchModelManager.getBasisjahrToWorkWith()
+                    }"
+                    >EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span
+                >
             </h2>
             <h2 *ngIf="isGemeinsam()">
-                <span translate
-                      [translateParams]="{gesuchsteller: this.ekvViewUtil.getGemeinsameFullname(this.gesuchModelManager), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
+                <span
+                    translate
+                    [translateParams]="{
+                        gesuchsteller: this.ekvViewUtil.getGemeinsameFullname(
+                            this.gesuchModelManager
+                        ),
+                        basisjahr:
+                            this.gesuchModelManager.getBasisjahrToWorkWith()
+                    }"
+                    >EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span
+                >
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
             <!-- Infotext -->
             <p class="inline-hint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
         </div>
     </div>
     <div class="row">
-        <form role="form"
-              #form="ngForm"
-              novalidate>
+        <form role="form" #form="ngForm" novalidate>
             <div class="col-md-12">
-                <dv-selbstdeklaration [antragstellerNummer]="this.model.getGesuchstellerNumber()"
-                                      [isGemeinsam]="isGemeinsam()"
-                                      [readOnly]=" this.gesuchModelManager.isGesuchReadonly()"
-                                      [finanzModel]="model"
-                                      [model]="this.model.getEkvToWorkWith()"
-                                      [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith().toString()"
-                                      [basisJahrPlus]="this.gesuchModelManager.getBasisJahrPlusNumber()"
-                                      [isEKV]="true"
-                                      [isQuellenbesteuert]="this.model.getFiSiConToWorkWith().finanzielleSituationJA.quellenbesteuert"
-                                      [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
+                <dv-selbstdeklaration
+                    [antragstellerNummer]="this.model.getGesuchstellerNumber()"
+                    [isGemeinsam]="isGemeinsam()"
+                    [readOnly]="this.gesuchModelManager.isGesuchReadonly()"
+                    [finanzModel]="model"
+                    [model]="this.model.getEkvToWorkWith()"
+                    [basisJahr]="
+                        this.gesuchModelManager.getBasisjahrToWorkWith().toString()
+                    "
+                    [basisJahrPlus]="
+                        this.gesuchModelManager.getBasisJahrPlusNumber()
+                    "
+                    [isEKV]="true"
+                    [isQuellenbesteuert]="
+                        this.model.getFiSiConToWorkWith().finanzielleSituationJA
+                            .quellenbesteuert
+                    "
+                    [isKorrekturModusJungendamtOrFreigegeben]="
+                        this.isKorrekturModusJugendamtOrFreigegeben()
+                    "
                 ></dv-selbstdeklaration>
-                <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
-                                 [dvSubStep]="3"></dv-navigation-x>
+                <dv-navigation-x
+                    (dvSave)="save($event.onResult)"
+                    [dvPrevious]="true"
+                    [dvNext]="true"
+                    [dvSubStep]="3"
+                ></dv-navigation-x>
             </div>
         </form>
     </div>

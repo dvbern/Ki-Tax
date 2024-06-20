@@ -19,7 +19,6 @@ import {TSFall} from './TSFall';
 import {TSGemeinde} from './TSGemeinde';
 
 export class TSDossier extends TSAbstractMutableEntity {
-
     private _fall: TSFall;
     private _gemeinde: TSGemeinde;
     private _verantwortlicherBG: TSBenutzerNoDetails;
@@ -66,7 +65,10 @@ export class TSDossier extends TSAbstractMutableEntity {
     }
 
     public isHauptverantwortlicherTS(): boolean {
-        return this.getHauptverantwortlicher() && this.getHauptverantwortlicher() === this.verantwortlicherTS;
+        return (
+            this.getHauptverantwortlicher() &&
+            this.getHauptverantwortlicher() === this.verantwortlicherTS
+        );
     }
 
     public extractGemeindeName(): string {

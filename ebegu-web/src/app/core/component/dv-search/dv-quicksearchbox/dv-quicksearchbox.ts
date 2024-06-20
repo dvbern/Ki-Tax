@@ -14,12 +14,21 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFilterService, ILogService, IPromise, IQService} from 'angular';
+import {
+    IComponentOptions,
+    IFilterService,
+    ILogService,
+    IPromise,
+    IQService
+} from 'angular';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {TSQuickSearchResult} from '../../../../../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../../../../../models/dto/TSSearchResultEntry';
-import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus
+} from '../../../../../models/enums/TSAntragStatus';
 import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
@@ -34,7 +43,6 @@ export class DvQuicksearchboxComponentConfig implements IComponentOptions {
 }
 
 export class DvQuicksearchboxController {
-
     public static $inject: ReadonlyArray<string> = [
         '$log',
         '$q',
@@ -64,8 +72,7 @@ export class DvQuicksearchboxController {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $injector: IInjectorService
-    ) {
-    }
+    ) {}
 
     // wird von angular aufgerufen
     public $onInit(): void {
@@ -75,21 +82,25 @@ export class DvQuicksearchboxController {
     public querySearch(query: string): IPromise<Array<TSSearchResultEntry>> {
         this.searchString = query;
         const deferred = this.$q.defer<Array<TSSearchResultEntry>>();
-        this.searchIndexRS.quickSearch(query).then((quickSearchResult: TSQuickSearchResult) => {
-            this.limitResultsize(quickSearchResult);
-            deferred.resolve(quickSearchResult.resultEntities);
-        }).catch(ee => {
-            deferred.resolve([]);
-            this.$log.warn('error during quicksearch', ee);
-        });
+        this.searchIndexRS
+            .quickSearch(query)
+            .then((quickSearchResult: TSQuickSearchResult) => {
+                this.limitResultsize(quickSearchResult);
+                deferred.resolve(quickSearchResult.resultEntities);
+            })
+            .catch(ee => {
+                deferred.resolve([]);
+                this.$log.warn('error during quicksearch', ee);
+            });
 
         return deferred.promise;
-
     }
 
     private limitResultsize(quickSearchResult: TSQuickSearchResult): void {
-
-        const limitedResults = this.$filter('limitTo')(quickSearchResult.resultEntities, 8);
+        const limitedResults = this.$filter('limitTo')(
+            quickSearchResult.resultEntities,
+            8
+        );
         // if (limitedResults.length < quickSearchResult.length) { //total immer anzeigen
         this.addFakeTotalResultEntry(quickSearchResult, limitedResults);
     }
@@ -101,8 +112,9 @@ export class DvQuicksearchboxController {
         if (angular.isArray(limitedResults) && limitedResults.length > 0) {
             const totalResEntry = new TSSearchResultEntry();
             const alleFaelleEntry = new TSAntragDTO();
-            alleFaelleEntry.familienName =
-                this.$translate.instant('QUICKSEARCH_ALL_RESULTS');
+            alleFaelleEntry.familienName = this.$translate.instant(
+                'QUICKSEARCH_ALL_RESULTS'
+            );
             totalResEntry.entity = 'ALL';
             totalResEntry.antragDTO = alleFaelleEntry;
             limitedResults.push(totalResEntry);
@@ -113,33 +125,56 @@ export class DvQuicksearchboxController {
     public selectItemChanged(): void {
         this.navigateToFall();
         this.selectedItem = undefined;
-
     }
 
-    // eslint-disable-next-line
     private navigateToFall(): void {
         if (!this.selectedItem) {
             return;
         }
 
-        if (this.selectedItem.antragDTO instanceof TSAntragDTO && this.selectedItem.gesuchID) {
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) && this.selectedItem.antragDTO) {
+        if (
+            this.selectedItem.antragDTO instanceof TSAntragDTO &&
+            this.selectedItem.gesuchID
+        ) {
+            if (
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getTraegerschaftInstitutionRoles()
+                ) &&
+                this.selectedItem.antragDTO
+            ) {
                 // Reload Gesuch in gesuchModelManager on Init in fallCreationView because  maybe it has been
                 // changed since last time
                 if (!this.gesuchModelManager) {
-                    this.gesuchModelManager = this.$injector.get<GesuchModelManager>('GesuchModelManager');
+                    this.gesuchModelManager =
+                        this.$injector.get<GesuchModelManager>(
+                            'GesuchModelManager'
+                        );
                 }
                 this.gesuchModelManager.clearGesuch();
                 if (isAnyStatusOfVerfuegt(this.selectedItem.antragDTO.status)) {
-
-                    this.openGesuch(this.selectedItem.antragDTO, 'gesuch.verfuegen');
+                    this.openGesuch(
+                        this.selectedItem.antragDTO,
+                        'gesuch.verfuegen'
+                    );
                 } else {
-                    this.openGesuch(this.selectedItem.antragDTO, 'gesuch.betreuungen');
+                    this.openGesuch(
+                        this.selectedItem.antragDTO,
+                        'gesuch.betreuungen'
+                    );
                 }
-            } else if (this.selectedItem.antragDTO.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
-                this.openGesuch(this.selectedItem.antragDTO, 'gesuch.sozialdienstfallcreation');
+            } else if (
+                this.selectedItem.antragDTO.status ===
+                TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST
+            ) {
+                this.openGesuch(
+                    this.selectedItem.antragDTO,
+                    'gesuch.sozialdienstfallcreation'
+                );
             } else {
-                this.openGesuch(this.selectedItem.antragDTO, 'gesuch.fallcreation');
+                this.openGesuch(
+                    this.selectedItem.antragDTO,
+                    'gesuch.fallcreation'
+                );
             }
         } else if (this.selectedItem.entity === 'DOSSIER') {
             // open mitteilung
@@ -148,14 +183,20 @@ export class DvQuicksearchboxController {
                 fallId: this.selectedItem.fallID
             });
         } else {
-            this.$state.go('search.list-view', {searchString: this.searchString});
+            this.$state.go('search.list-view', {
+                searchString: this.searchString
+            });
         }
     }
 
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
      */
-    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab: boolean = false): void {
+    private openGesuch(
+        antrag: TSAntragDTO,
+        urlToGoTo: string,
+        inNewTab: boolean = false
+    ): void {
         if (!antrag) {
             return;
         }

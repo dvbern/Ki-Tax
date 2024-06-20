@@ -13,7 +13,6 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGs1Component extends AbstractFinSitsolothurnView {
-
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         public readonly finSitSoService: FinanzielleSituationSolothurnService,
@@ -46,11 +45,13 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
         return true;
     }
 
-    public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
+    public steuerveranlagungErhaltenChange(
+        steuerveranlagungErhalten: boolean
+    ): void {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }
-        // eslint-disable-next-line
+
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
         }

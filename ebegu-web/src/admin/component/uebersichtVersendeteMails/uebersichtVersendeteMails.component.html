@@ -15,57 +15,70 @@
 
 <div class="admin-modul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
-
         <h1 class="access-for-all-title" translate>AFA_VERSENDETE_MAILS</h1>
         <div class="view-title">
             <h2 translate>VERSENDETE_MAILS_TITLE</h2>
-            <hr class="header">
+            <hr class="header" />
         </div>
 
         <div class="filter margin-bottom-20">
-            <input class="filter"
-                   matInput
-                   type="text"
-                   (keyup)="doFilter($event.target.value)"
-                   placeholder="{{'VERSENDETE_MAILS_SUCHE_PLATZHALTER' | translate}}"
-                   data-test="SearchBarSentMails">
+            <input
+                class="filter"
+                matInput
+                type="text"
+                (keyup)="doFilter($event.target.value)"
+                placeholder="{{
+                    'VERSENDETE_MAILS_SUCHE_PLATZHALTER' | translate
+                }}"
+                data-test="SearchBarSentMails"
+            />
         </div>
 
         <div class="table-responsive">
             <mat-table #table [dataSource]="dataSource" matSort>
-
                 <!-- Column zeitpunktversand -->
                 <ng-container matColumnDef="zeitpunktVersand">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'ZEITPUNKTVERSAND_MAIL' | translate}}
+                        {{ 'ZEITPUNKTVERSAND_MAIL' | translate }}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let item" data-test="sentTimeMails">
-                        {{item.zeitpunktVersand}}
+                        {{ item.zeitpunktVersand }}
                     </mat-cell>
                 </ng-container>
 
                 <!-- Column empfaengeradresse -->
                 <ng-container matColumnDef="empfaengerAdresse">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'EMPFAENGERADRESSE_MAIL' | translate}}
+                        {{ 'EMPFAENGERADRESSE_MAIL' | translate }}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let item" data-test="sentMailsAdress">
-                        {{item.empfaengerAdresse}}
+                    <mat-cell
+                        *matCellDef="let item"
+                        data-test="sentMailsAdress"
+                    >
+                        {{ item.empfaengerAdresse }}
                     </mat-cell>
                 </ng-container>
 
                 <!-- Column betreff -->
                 <ng-container matColumnDef="betreff">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{'BETREFF_MAIL' | translate}}
+                        {{ 'BETREFF_MAIL' | translate }}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let item" data-test="sentMailsSubject">
-                        {{item.betreff}}
+                    <mat-cell
+                        *matCellDef="let item"
+                        data-test="sentMailsSubject"
+                    >
+                        {{ item.betreff }}
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer-cursor"></mat-row>
+                <mat-header-row
+                    *matHeaderRowDef="displayedColumns"
+                ></mat-header-row>
+                <mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                    class="pointer-cursor"
+                ></mat-row>
             </mat-table>
             <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
         </div>

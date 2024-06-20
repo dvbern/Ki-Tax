@@ -14,14 +14,20 @@
  */
 
 import {Transition} from '@uirouter/core';
-import {Ng1StateDeclaration, StateProvider, UIRouter} from '@uirouter/angularjs';
+import {
+    Ng1StateDeclaration,
+    StateProvider,
+    UIRouter
+} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
 export class RouterHelper {
     public static $inject = ['$stateProvider', '$uiRouterProvider'];
 
-    public constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
-    }
+    public constructor(
+        public stateProvider: StateProvider,
+        public uiRouterProvider: UIRouter
+    ) {}
 
     public configureStates(legacy: Ng1StateDeclaration[] = []): void {
         legacy.forEach(state => {
@@ -33,7 +39,11 @@ export class RouterHelper {
 }
 
 export class RouterHelperProvider implements IServiceProvider {
-    public static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
+    public static $inject = [
+        '$locationProvider',
+        '$stateProvider',
+        '$uiRouterProvider'
+    ];
 
     private readonly routerHelper: RouterHelper;
 

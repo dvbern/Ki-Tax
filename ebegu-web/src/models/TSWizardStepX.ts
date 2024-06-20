@@ -19,11 +19,9 @@ import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
 import {TSWizardStepXTyp} from './enums/TSWizardStepXTyp';
 
 export class TSWizardStepX {
-
     public wizardTyp: TSWizardStepXTyp;
 
     public stepName: string;
     public disabled: boolean;
     public status: TSWizardStepStatus;
-
 }

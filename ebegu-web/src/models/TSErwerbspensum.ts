@@ -21,7 +21,6 @@ import {TSUnbezahlterUrlaub} from './TSUnbezahlterUrlaub';
  * Definiert ein Erwerbspensum
  */
 export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
-
     private _taetigkeit: TSTaetigkeit;
 
     private _bezeichnung: string;

@@ -11,9 +11,12 @@ import {SteuerveranlagungGemeinsamComponent} from './steuerveranlagung-gemeinsam
 describe('SteuerveranlagungGemeinsamComponent', () => {
     let component: SteuerveranlagungGemeinsamComponent;
     let fixture: ComponentFixture<SteuerveranlagungGemeinsamComponent>;
-    const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isOneOfRoles']);
+    const gesuchModelManagerSpy =
+        SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -23,9 +26,7 @@ describe('SteuerveranlagungGemeinsamComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: NgForm, useValue: new NgForm([], [])}
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

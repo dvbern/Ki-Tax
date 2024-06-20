@@ -21,13 +21,15 @@ import {
     InstitutionListPO,
     RemoveDialogPO,
     TagesschuleModulDialogPO,
-    TagesschuleModulImportDialogPO,
+    TagesschuleModulImportDialogPO
 } from '@dv-e2e/page-objects';
 import {getUser, TestInstitution} from '@dv-e2e/types';
 
 describe('Kibon - generate Tagesschule Institutionen', () => {
     const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
-    const gemeindeAdministator = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
+    const gemeindeAdministator = getUser(
+        '[6-P-Admin-Gemeinde] Gerlinde Hofstetter'
+    );
 
     const tagesschuleToImportFrom: TestInstitution = 'Tagesschule Paris';
 
@@ -35,7 +37,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
     });
 
-    it('should create a Tagesschule with Dynamische Module',  () => {
+    it('should create a Tagesschule with Dynamische Module', () => {
         cy.login(gemeindeAdministator);
         cy.visit('/#/institution/list');
 
@@ -47,7 +49,9 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
         cy.getByData('institution.edit.submit').click();
         // Module 1
-        EditTagesschulePO.getGesuchsperiodeTab(1).find('.dv-accordion-tab-title').click();
+        EditTagesschulePO.getGesuchsperiodeTab(1)
+            .find('.dv-accordion-tab-title')
+            .click();
         EditTagesschulePO.getAddModuleButton(1).click();
         TagesschuleModulDialogPO.getBezeichnungDe().type('Dynamo');
         TagesschuleModulDialogPO.getBezeichnungFr().type('Dynamique');
@@ -63,7 +67,9 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         // Module 2
         EditTagesschulePO.getAddModuleButton(1).click();
         TagesschuleModulDialogPO.getBezeichnungDe().type('Dynamo Nachmittag');
-        TagesschuleModulDialogPO.getBezeichnungFr().type('Après-midi dynamique');
+        TagesschuleModulDialogPO.getBezeichnungFr().type(
+            'Après-midi dynamique'
+        );
         TagesschuleModulDialogPO.getZeitVon().type('13:00');
         TagesschuleModulDialogPO.getZeitBis().type('17:00');
         TagesschuleModulDialogPO.getVerpflegungskosten().type('3');
@@ -72,16 +78,24 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         TagesschuleModulDialogPO.getFreitag().click();
         TagesschuleModulDialogPO.getWirdPaedagogischBetreut().click();
         TagesschuleModulDialogPO.getIntervall().click();
-        TagesschuleModulDialogPO.getIntervallOption('WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN').click();
+        TagesschuleModulDialogPO.getIntervallOption(
+            'WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN'
+        ).click();
         TagesschuleModulDialogPO.getOkButton().click();
 
         // Check Result: header + 2 Module
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').its('length').should('eq', 3);
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .its('length')
+            .should('eq', 3);
         cy.waitForRequest('PUT', '**/institutionen/**', () => {
             EditTagesschulePO.getEditSaveButton().click();
         });
         // header + 2 Module
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').its('length').should('eq', 3);
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .its('length')
+            .should('eq', 3);
     });
 
     it('should create a Tagesschule with imported Module', () => {
@@ -96,69 +110,164 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
         // import Module from previously created Tagesschule
         EditTagesschulePO.getEditSaveButton().click();
-        EditTagesschulePO.getGesuchsperiodeTab(1).find('.dv-accordion-tab-title').click();
+        EditTagesschulePO.getGesuchsperiodeTab(1)
+            .find('.dv-accordion-tab-title')
+            .click();
 
         cy.waitForRequest('GET', '**/institutionstammdaten/**', () => {
             EditTagesschulePO.getAddImportModuleButton(1).click();
         });
-        TagesschuleModulImportDialogPO.getInstitution().select(tagesschuleToImportFrom);
+        TagesschuleModulImportDialogPO.getInstitution().select(
+            tagesschuleToImportFrom
+        );
         TagesschuleModulImportDialogPO.getGesuchsperiode().select(0);
         TagesschuleModulImportDialogPO.getImportButton().click();
         TagesschuleModulImportDialogPO.getImportButton().should('not.exist');
 
         // Check Result: header + 2 Module
         cy.waitForRequest('PUT', '**/institutionen/**', () => {
-        EditTagesschulePO.getEditSaveButton().click();
+            EditTagesschulePO.getEditSaveButton().click();
         });
         // header + 2 Module
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').its('length').should('eq', 3);
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .its('length')
+            .should('eq', 3);
         // check imported modules values
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(0).get('span').should('contain', 'Morgen / Matin');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(1).should('contain', '8:00 - 12:00');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(2).should('contain', '3');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(3).should('contain', 'Mo, Di, Mi, Do, Fr');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(4).should('contain', 'Ja');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(1).find('td').eq(5).should('contain', 'Wöchentlich');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(0).get('span').should('contain', 'Nachmittag / Après-midi');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(1).should('contain', '13:00 - 17:00');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(2).should('contain', '2');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(3).should('contain', 'Mo, Di, Mi, Do, Fr');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(4).should('contain', 'Ja');
-        EditTagesschulePO.getGesuchsperiodeModulTable(1).find('tr').eq(2).find('td').eq(5).should('contain', 'Wöchentlich');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(0)
+            .get('span')
+            .should('contain', 'Morgen / Matin');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(1)
+            .should('contain', '8:00 - 12:00');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(2)
+            .should('contain', '3');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Mo, Di, Mi, Do, Fr');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(4)
+            .should('contain', 'Ja');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(1)
+            .find('td')
+            .eq(5)
+            .should('contain', 'Wöchentlich');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(0)
+            .get('span')
+            .should('contain', 'Nachmittag / Après-midi');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(1)
+            .should('contain', '13:00 - 17:00');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(2)
+            .should('contain', '2');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Mo, Di, Mi, Do, Fr');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(4)
+            .should('contain', 'Ja');
+        EditTagesschulePO.getGesuchsperiodeModulTable(1)
+            .find('tr')
+            .eq(2)
+            .find('td')
+            .eq(5)
+            .should('contain', 'Wöchentlich');
     });
 
     it('should delete created Tagesschule', () => {
         cy.login(superAdmin);
         cy.visit('/#/institution/list');
         InstitutionListPO.getSearchField().type('-cy-');
-        InstitutionListPO.getAllListItemNames()
-            .each($el => cy.wrap($el).should('include.text', '-cy-'));
-        InstitutionListPO.getAllInstitutionLoeschenButtons().its('length').then(length => {
-            for (let i = length - 1; i >= 0; i--) {
-                InstitutionListPO.getAllInstitutionLoeschenButtons().eq(i).click();
-                cy.waitForRequest('GET', '**/institutionen/editable/currentuser/listdto', () => {
-                    RemoveDialogPO.getRemoveOkButton().click();
-                });
-            }
-        });
+        InstitutionListPO.getAllListItemNames().each($el =>
+            cy.wrap($el).should('include.text', '-cy-')
+        );
+        InstitutionListPO.getAllInstitutionLoeschenButtons()
+            .its('length')
+            .then(length => {
+                for (let i = length - 1; i >= 0; i--) {
+                    InstitutionListPO.getAllInstitutionLoeschenButtons()
+                        .eq(i)
+                        .click();
+                    cy.waitForRequest(
+                        'GET',
+                        '**/institutionen/editable/currentuser/listdto',
+                        () => {
+                            RemoveDialogPO.getRemoveOkButton().click();
+                        }
+                    );
+                }
+            });
         InstitutionListPO.getSearchField().clear().type('-cy-');
         InstitutionListPO.getAllListItemNames().should('have.length', 0);
-    })
+    });
 });
 
 function controllEditTagesschuleForm(
     tagesschuleArt: 'dynamisch' | 'scolaris' | 'import',
-    dataset: keyof typeof FixtureTagesschule,
+    dataset: keyof typeof FixtureTagesschule
 ) {
     FixtureTagesschule[dataset](data => {
         EditTagesschulePO.getEditSaveButton().click();
-        EditTagesschulePO.getAnschrift().should('have.value', data[tagesschuleArt].anschrift);
-        EditTagesschulePO.getStrasse().should('have.value', data[tagesschuleArt].strasse);
-        EditTagesschulePO.getHausnummer().should('have.value', data[tagesschuleArt].hausnummer);
-        EditTagesschulePO.getPlz().should('have.value', data[tagesschuleArt].plz);
-        EditTagesschulePO.getOrt().should('have.value', data[tagesschuleArt].ort);
-        EditTagesschulePO.getGueltigAb().should('have.value', data[tagesschuleArt].gueltigAb);
+        EditTagesschulePO.getAnschrift().should(
+            'have.value',
+            data[tagesschuleArt].anschrift
+        );
+        EditTagesschulePO.getStrasse().should(
+            'have.value',
+            data[tagesschuleArt].strasse
+        );
+        EditTagesschulePO.getHausnummer().should(
+            'have.value',
+            data[tagesschuleArt].hausnummer
+        );
+        EditTagesschulePO.getPlz().should(
+            'have.value',
+            data[tagesschuleArt].plz
+        );
+        EditTagesschulePO.getOrt().should(
+            'have.value',
+            data[tagesschuleArt].ort
+        );
+        EditTagesschulePO.getGueltigAb().should(
+            'have.value',
+            data[tagesschuleArt].gueltigAb
+        );
         EditTagesschulePO.getCancelButton().click();
     });
 }
-

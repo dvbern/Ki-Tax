@@ -39,8 +39,8 @@ import {ResultatComponent} from '../resultat/resultat.component';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
-
-    @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
+    @ViewChild(ResultatComponent)
+    private readonly resultatComponent: ResultatComponent;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -50,17 +50,32 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         protected readonly translate: TranslateService,
         protected readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        super(gesuchModelManager, wizardStepManager, 1, finSitLuService, authServiceRS, translate, applicationPropertyRS);
+        super(
+            gesuchModelManager,
+            wizardStepManager,
+            1,
+            finSitLuService,
+            authServiceRS,
+            translate,
+            applicationPropertyRS
+        );
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
     }
 
     public isGemeinsam(): boolean {
         // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
         // or only for the single antragsteller
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return (
+            !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(
+                this.gesuchModelManager
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+            )
+        );
     }
 
     public getAntragstellerNummer(): number {
@@ -80,7 +95,9 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
-    public prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => any
+    ): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -92,17 +109,22 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.gesuchModelManager.getFamiliensituation();
     }
 
-    public isNotSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger);
-    }
 
-    protected save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
+    protected save(
+        onResult: (arg: any) => any
+    ): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituationStart()
+        return this.gesuchModelManager
+            .saveFinanzielleSituationStart()
             .then((gesuch: TSGesuch) => {
                 this.model.copyFinSitDataFromGesuch(gesuch);
-                const isSozialhilfeBezueger = gesuch.extractFamiliensituation().sozialhilfeBezueger;
-                if (this.isGemeinsam() || this.gesuchModelManager.isLastGesuchsteller() || isSozialhilfeBezueger) {
+                const isSozialhilfeBezueger =
+                    gesuch.extractFamiliensituation().sozialhilfeBezueger;
+                if (
+                    this.isGemeinsam() ||
+                    this.gesuchModelManager.isLastGesuchsteller() ||
+                    isSozialhilfeBezueger
+                ) {
                     this.updateWizardStepStatus();
                 }
                 if (isSozialhilfeBezueger) {
@@ -112,7 +134,13 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
                 onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
                 return gesuch.gesuchsteller1.finanzielleSituationContainer;
             }).catch(error => {
-                throw (error);
+                throw error;
             });
+    }
+
+    public isNotSozialhilfeBezueger(): boolean {
+        return EbeguUtil.isNotNullAndFalse(
+            this.model.familienSituation.sozialhilfeBezueger
+        );
     }
 }

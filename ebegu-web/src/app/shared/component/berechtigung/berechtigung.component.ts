@@ -42,7 +42,6 @@ let nextId = 0;
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BerechtigungComponent {
-
     @Input() public berechtigung: TSBerechtigung;
     @Input() public disabled: boolean = false;
     @Input() public readonly excludedRoles: TSRole[] = [];
@@ -68,12 +67,13 @@ export class BerechtigungComponent {
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly authServiceRS: AuthServiceRS
     ) {
-        this.rolleId = `rolle-${  this.inputId}`;
-        this.institutionId = `institution-${  this.inputId}`;
-        this.traegerschaftId = `treagerschaft-${  this.inputId}`;
-        this.sozialdienstId = `sozialdienst-${  this.inputId}`;
+        this.rolleId = `rolle-${this.inputId}`;
+        this.institutionId = `institution-${this.inputId}`;
+        this.traegerschaftId = `treagerschaft-${this.inputId}`;
+        this.sozialdienstId = `sozialdienst-${this.inputId}`;
 
-        this.institutionen$ = this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
+        this.institutionen$ = this.institutionRS
+            .getInstitutionenEditableForCurrentBenutzer()
             .pipe(map(BerechtigungComponent.sortByName));
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();
@@ -88,48 +88,47 @@ export class BerechtigungComponent {
     }
 
     private traegerschaftenForPrincipal$(): Observable<TSTraegerschaft[]> {
-        return this.authServiceRS.principal$
-            .pipe(
-                switchMap(principal => {
-                    if (!principal) {
-                        return of([]);
-                    }
-
-                    if (principal.currentBerechtigung.isSuperadmin()) {
-                        return from(this.traegerschaftenRS.getAllTraegerschaften());
-                    }
-
-                    if (principal.currentBerechtigung.traegerschaft) {
-                        return of([principal.currentBerechtigung.traegerschaft]);
-                    }
-
+        return this.authServiceRS.principal$.pipe(
+            switchMap(principal => {
+                if (!principal) {
                     return of([]);
-                }),
-                map(BerechtigungComponent.sortByName)
-            );
+                }
+
+                if (principal.currentBerechtigung.isSuperadmin()) {
+                    return from(this.traegerschaftenRS.getAllTraegerschaften());
+                }
+
+                if (principal.currentBerechtigung.traegerschaft) {
+                    return of([principal.currentBerechtigung.traegerschaft]);
+                }
+
+                return of([]);
+            }),
+            map(BerechtigungComponent.sortByName)
+        );
     }
 
     private sozialdienstenForPrincipal$(): Observable<TSSozialdienst[]> {
-        return this.authServiceRS.principal$
-            .pipe(
-                switchMap(principal => {
-                    if (!principal) {
-                        return of([]);
-                    }
-
-                    if (principal.currentBerechtigung.isSuperadmin()) {
-                        return from(this.sozialdienstRS.getSozialdienstList())
-                            .pipe(map(BerechtigungComponent.sortByName));
-                    }
-
-                    if (principal.currentBerechtigung.sozialdienst) {
-                        return of([principal.currentBerechtigung.sozialdienst]);
-                    }
-
+        return this.authServiceRS.principal$.pipe(
+            switchMap(principal => {
+                if (!principal) {
                     return of([]);
-                }),
-                map(BerechtigungComponent.sortByName)
-            );
+                }
+
+                if (principal.currentBerechtigung.isSuperadmin()) {
+                    return from(this.sozialdienstRS.getSozialdienstList()).pipe(
+                        map(BerechtigungComponent.sortByName)
+                    );
+                }
+
+                if (principal.currentBerechtigung.sozialdienst) {
+                    return of([principal.currentBerechtigung.sozialdienst]);
+                }
+
+                return of([]);
+            }),
+            map(BerechtigungComponent.sortByName)
+        );
     }
 
     public translationKeyForRole(role: TSRole): string {

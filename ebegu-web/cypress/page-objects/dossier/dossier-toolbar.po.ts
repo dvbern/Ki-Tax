@@ -16,11 +16,11 @@
  */
 
 const getAllAntraegeInDropdown = () => {
-	return cy.get('[data-test^="antrag#');
+    return cy.get('[data-test^="antrag#');
 };
 
 const getAntrag = (antragIndex: number) => {
-	return cy.getByData('antrag#' + antragIndex);
+    return cy.getByData('antrag#' + antragIndex);
 };
 
 const getAntraegeTrigger = () => {
@@ -28,15 +28,15 @@ const getAntraegeTrigger = () => {
 };
 
 const getAntragMutieren = () => {
-	return cy.getByData('toolbar.antrag-mutieren');
+    return cy.getByData('toolbar.antrag-mutieren');
 };
 
 const getAntragLoeschen = () => {
-	return cy.getByData('toolbar.antrag-loeschen');
+    return cy.getByData('toolbar.antrag-loeschen');
 };
 
 const getMitteilungen = () => {
-	return cy.getByData('toolbar-mitteilungen');
+    return cy.getByData('toolbar-mitteilungen');
 };
 
 export const DossierToolbarPO = {
@@ -45,5 +45,5 @@ export const DossierToolbarPO = {
     getAntraegeTrigger,
     getAntragLoeschen,
     getAntragMutieren,
-    getMitteilungen,
+    getMitteilungen
 };

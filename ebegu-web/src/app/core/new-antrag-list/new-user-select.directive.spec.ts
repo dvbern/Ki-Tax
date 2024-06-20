@@ -28,21 +28,22 @@ import {bootstrap, html} from './test_helpers';
 
 @Component({
     selector: 'ng2',
-    template: `
-        <div dvNewUserSelect></div>`
+    template: ` <div dvNewUserSelect></div>`
 })
-class TestComponent {
-}
+class TestComponent {}
 
-const benutzerRSSpy =
-    jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
-const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['loginRequest']);
+const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, [
+    'getBenutzerBgOrGemeindeForGemeinde',
+    'getAllBenutzerBgOrGemeinde'
+]);
+const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'loginRequest'
+]);
 
 benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.returnValue(Promise.resolve([]));
 authRSSpy.principal$ = of(null);
 
 describe('NewUserSelectDirective', () => {
-
     let element: Element;
 
     beforeEach(destroyPlatform);
@@ -50,25 +51,37 @@ describe('NewUserSelectDirective', () => {
 
     describe('', () => {
         it('should create an instance', () => {
-            const ng1Module = angular.module('ng1Module', [])
+            const ng1Module = angular
+                .module('ng1Module', [])
                 .component('dvUserselect', new DvUserSelectConfig())
                 .factory('BenutzerRS', () => benutzerRSSpy)
                 .factory('AuthServiceRS', () => authRSSpy)
-                .directive('ng2', downgradeComponent({component: TestComponent}));
+                .directive(
+                    'ng2',
+                    downgradeComponent({component: TestComponent})
+                );
 
             @NgModule({
-    declarations: [NewUserSelectDirective, TestComponent],
-    imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
-})
+                declarations: [NewUserSelectDirective, TestComponent],
+                imports: [
+                    BrowserModule,
+                    UpgradeModule,
+                    TranslateModule.forRoot()
+                ]
+            })
             class Ng2Module implements DoBootstrap {
-                public ngDoBootstrap(): void {
-                }
+                // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+                public ngDoBootstrap(): void {}
             }
 
             element = html(`<ng2></ng2>`);
 
-            // eslint-disable-next-line
-            bootstrap(platformBrowserDynamic(), Ng2Module, element, ng1Module).then(upgrade => {
+            bootstrap(
+                platformBrowserDynamic(),
+                Ng2Module,
+                element,
+                ng1Module
+            ).then(() => {
                 expect(element).toBeTruthy();
             });
         });

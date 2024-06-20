@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
@@ -30,7 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
@@ -72,6 +74,9 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	@Mock
 	private EinstellungService einstellungService;
 
+	@Mock
+	private Validator validator;
+
 	private PensumMapperFactory factory;
 
 	@BeforeEach
@@ -79,7 +84,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 		// EinstellungMock is initialized too late when trying to do field initializers instead.
 		factory = new PensumMapperFactory(
 			new PensumValueMapperFactory(einstellungService),
-			new EingewoehnungPauschaleMapperFactory(einstellungService)
+			new EingewoehnungMapperFactory(einstellungService, validator)
 		);
 	}
 
@@ -127,7 +132,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void defaultMapperIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		PensumMapper<BetreuungsmitteilungPensum> pensumMapper =
 			factory.createPensumMapper(initProcessingContext(z, betreuungEinstellungen()));
@@ -140,7 +145,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void platzbestaetigungIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		var forPlatzbestaetigung = factory.createForPlatzbestaetigung(initProcessingContext(z, betreuungEinstellungen()));
 		Betreuungspensum actual = convert(forPlatzbestaetigung, z, Betreuungspensum::new);
@@ -152,7 +157,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 	void betreuungsmitteilungIntegrationTest() {
 		ZeitabschnittDTO z = createZeitabschnitt();
 
-		mockEinstellungen();
+		permissiveMocks();
 		replayAll();
 		var pensumMapper = factory.createForBetreuungsmitteilung(initProcessingContext(z, betreuungEinstellungen()));
 		BetreuungsmitteilungPensum actual = convert(pensumMapper, z, BetreuungsmitteilungPensum::new);
@@ -202,9 +207,9 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			.where(AbstractBetreuungsPensum::getPensum, comparesEqualTo(z.getBetreuungspensum()))
 			.where(AbstractBetreuungsPensum::getUnitForDisplay, is(PensumUnits.valueOf(z.getPensumUnit().name())))
 			.where(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten, comparesEqualTo(z.getBetreuungskosten()))
-			.where(AbstractBetreuungsPensum::getEingewoehnungPauschale, pojo(EingewoehnungPauschale.class)
-				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(z.getEingewoehnung().getKosten()))
-				.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
+			.where(AbstractBetreuungsPensum::getEingewoehnung, pojo(Eingewoehnung.class)
+				.where(Eingewoehnung::getKosten, comparesEqualTo(z.getEingewoehnung().getKosten()))
+				.where(Eingewoehnung::getGueltigkeit, pojo(DateRange.class)
 					.where(DateRange::getGueltigAb, is(z.getEingewoehnung().getVon()))
 					.where(DateRange::getGueltigBis, is(z.getEingewoehnung().getBis()))
 				))
@@ -215,7 +220,7 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 			.where(AbstractBetreuungsPensum::getBetreuungInFerienzeit, comparesEqualTo(z.getBetreuungInFerienzeit()));
 	}
 
-	private void mockEinstellungen() {
+	private void permissiveMocks() {
 		expect(einstellungService.getEinstellungAsBigDecimal(eq(EinstellungKey.OEFFNUNGSTAGE_KITA), anyObject()))
 			.andReturn(BigDecimal.valueOf(240))
 			.anyTimes();
@@ -230,6 +235,10 @@ class PensumMapperFactoryTest extends EasyMockSupport {
 
 		expect(einstellungService.findEinstellung(eq(EINGEWOEHNUNG_TYP), anyObject()))
 			.andReturn(new Einstellung(EINGEWOEHNUNG_TYP, EingewoehnungTyp.PAUSCHALE.name(), mock(Gesuchsperiode.class)))
+			.anyTimes();
+
+		expect(validator.validate(anyObject()))
+			.andReturn(Set.of())
 			.anyTimes();
 	}
 }

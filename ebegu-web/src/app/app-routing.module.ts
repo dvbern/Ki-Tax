@@ -12,10 +12,7 @@ import {NgModule} from '@angular/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forRoot({states: []})
-    ],
+    imports: [UIRouterUpgradeModule.forRoot({states: []})],
     exports: [UIRouterUpgradeModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

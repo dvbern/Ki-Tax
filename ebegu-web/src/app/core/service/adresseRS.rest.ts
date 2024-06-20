@@ -21,8 +21,11 @@ export class AdresseRS {
 
     public serviceURL: string;
 
-    public constructor(public http: IHttpService, REST_API: string) {
-        this.serviceURL = `${REST_API  }adressen`;
+    public constructor(
+        public http: IHttpService,
+        REST_API: string
+    ) {
+        this.serviceURL = `${REST_API}adressen`;
     }
 
     public create(adresse: TSAdresseContainer): IHttpPromise<any> {

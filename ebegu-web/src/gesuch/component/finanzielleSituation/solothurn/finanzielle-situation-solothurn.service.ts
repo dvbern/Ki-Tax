@@ -26,19 +26,31 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
     providedIn: 'root'
 })
 export class FinanzielleSituationSolothurnService {
+    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> =
+        new ReplaySubject(1);
 
-    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
+    public constructor(
+        private readonly berechnungsManager: BerechnungsManager
+    ) {}
 
-    public constructor(private readonly berechnungsManager: BerechnungsManager) {
+    public static finSitIsGemeinsam(
+        gesuchModelManager: GesuchModelManager
+    ): boolean {
+        return gesuchModelManager
+            .getFamiliensituation()
+            .hasSecondGesuchsteller(
+                gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit
+                    .gueltigBis
+            );
     }
 
-    public static finSitIsGemeinsam(gesuchModelManager: GesuchModelManager): boolean {
-        return gesuchModelManager.getFamiliensituation()
-            .hasSecondGesuchsteller(gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis);
-    }
-
-    public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
-        return this.finSitIsGemeinsam(gesuchModelManager) && gesuchModelManager.getFamiliensituation().verguenstigungGewuenscht;
+    public static finSitNeedsTwoAntragsteller(
+        gesuchModelManager: GesuchModelManager
+    ): boolean {
+        return (
+            this.finSitIsGemeinsam(gesuchModelManager) &&
+            gesuchModelManager.getFamiliensituation().verguenstigungGewuenscht
+        );
     }
 
     public massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
@@ -46,7 +58,8 @@ export class FinanzielleSituationSolothurnService {
     }
 
     public calculateMassgebendesEinkommen(model: TSFinanzModel): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(model)
+        this.berechnungsManager
+            .calculateFinanzielleSituationTemp(model)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 }
