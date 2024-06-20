@@ -36,7 +36,7 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {
-    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen,
+    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA,
     isAnyStatusOfVerfuegt,
     isVerfuegtOrSTV,
     TSAntragStatus,
@@ -1550,7 +1550,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public canRoleEditBedarfsstufe() {
         this.canEditBedarfsstufen = (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles()))
-            && !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.getGesuch()?.status);
+            && !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(this.getGesuch()?.status);
     }
 
     public isBedarfsstufeEmpty() {
