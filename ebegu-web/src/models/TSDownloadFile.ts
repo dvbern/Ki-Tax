@@ -16,7 +16,6 @@
 import {TSFile} from './TSFile';
 
 export class TSDownloadFile extends TSFile {
-
     private _accessToken: string;
 
     public get accessToken(): string {

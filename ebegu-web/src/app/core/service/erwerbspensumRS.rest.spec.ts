@@ -24,7 +24,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {ErwerbspensumRS} from './erwerbspensumRS.rest';
 
 describe('ErwerbspensumRS', () => {
-
     let erwerbspensumRS: ErwerbspensumRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -41,21 +40,28 @@ describe('ErwerbspensumRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        erwerbspensumRS = $injector.get('ErwerbspensumRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        wizardStepManager = $injector.get('WizardStepManager');
-        $q = $injector.get('$q');
-        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            erwerbspensumRS = $injector.get('ErwerbspensumRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+            wizardStepManager = $injector.get('WizardStepManager');
+            $q = $injector.get('$q');
+            spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                $q.resolve()
+            );
+        })
+    );
 
     beforeEach(() => {
         mockErwerbspensum = TestDataUtil.createErwerbspensumContainer();
         mockErwerbspensum.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         gesuchstellerId = '2afc9d9a-957e-4550-9a22-97624a1d8fe1';
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a1d8fe2';
-        mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
+        mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject(
+            {},
+            mockErwerbspensum
+        );
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
@@ -67,28 +73,34 @@ describe('ErwerbspensumRS', () => {
                 $httpBackend.expectGET(url).respond(mockErwerbspensumRS);
 
                 let ewpContainer: TSErwerbspensumContainer;
-                erwerbspensumRS.findErwerbspensum(mockErwerbspensum.id).then(result => {
-                    ewpContainer = result;
-                });
+                erwerbspensumRS
+                    .findErwerbspensum(mockErwerbspensum.id)
+                    .then(result => {
+                        ewpContainer = result;
+                    });
                 $httpBackend.flush();
                 checkFieldValues(ewpContainer);
             });
-
         });
     });
     describe('createErwerbspensumContainer', () => {
         it('should create a ErwerbspensumContainer', () => {
             let createdEWPContainer: TSErwerbspensumContainer;
             const url = `${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`;
-            $httpBackend.expectPUT(url, mockErwerbspensumRS).respond(mockErwerbspensumRS);
+            $httpBackend
+                .expectPUT(url, mockErwerbspensumRS)
+                .respond(mockErwerbspensumRS);
 
-            erwerbspensumRS.saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
+            erwerbspensumRS
+                .saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
                 .then(result => {
                     createdEWPContainer = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
+                gesuchId
+            );
             checkFieldValues(createdEWPContainer);
         });
     });
@@ -99,19 +111,30 @@ describe('ErwerbspensumRS', () => {
             const pensum = 50;
             changedEwp.pensum = pensum;
             mockErwerbspensum.erwerbspensumJA = changedEwp;
-            mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
+            mockErwerbspensumRS =
+                ebeguRestUtil.erwerbspensumContainerToRestObject(
+                    {},
+                    mockErwerbspensum
+                );
 
-            $httpBackend.expectPUT(`${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`,
-                mockErwerbspensumRS).respond(mockErwerbspensumRS);
+            $httpBackend
+                .expectPUT(
+                    `${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`,
+                    mockErwerbspensumRS
+                )
+                .respond(mockErwerbspensumRS);
 
             let updatedErwerbspensumContainerContainer: TSErwerbspensumContainer;
-            erwerbspensumRS.saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
+            erwerbspensumRS
+                .saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
                 .then(result => {
                     updatedErwerbspensumContainerContainer = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
+                gesuchId
+            );
             checkFieldValues(updatedErwerbspensumContainerContainer);
         });
     });
@@ -119,18 +142,25 @@ describe('ErwerbspensumRS', () => {
     describe('removeErwerbspensumContainer', () => {
         it('should remove a ErwerbspensumContainer', () => {
             const httpOk = 200;
-            $httpBackend.expectDELETE(`${erwerbspensumRS.serviceURL}/gesuchId/${gesuchId}/erwPenId/${encodeURIComponent(
-                mockErwerbspensum.id)}`)
+            $httpBackend
+                .expectDELETE(
+                    `${erwerbspensumRS.serviceURL}/gesuchId/${gesuchId}/erwPenId/${encodeURIComponent(
+                        mockErwerbspensum.id
+                    )}`
+                )
                 .respond(httpOk);
 
             let deleteResult: any;
-            erwerbspensumRS.removeErwerbspensum(mockErwerbspensum.id, gesuchId)
+            erwerbspensumRS
+                .removeErwerbspensum(mockErwerbspensum.id, gesuchId)
                 .then(result => {
                     deleteResult = result;
                 });
             $httpBackend.flush();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
+
+            expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(
+                gesuchId
+            );
             expect(deleteResult).toBeDefined();
             expect(deleteResult.status).toEqual(httpOk);
         });
@@ -139,11 +169,22 @@ describe('ErwerbspensumRS', () => {
     function checkFieldValues(foundEWPCont: TSErwerbspensumContainer): void {
         expect(foundEWPCont).toBeDefined();
         expect(foundEWPCont.erwerbspensumJA).toBeDefined();
-        TestDataUtil.checkGueltigkeitAndSetIfSame(foundEWPCont.erwerbspensumJA, mockErwerbspensum.erwerbspensumJA);
-        TestDataUtil.compareDefinedProperties(foundEWPCont.erwerbspensumJA, mockErwerbspensum.erwerbspensumJA);
+        TestDataUtil.checkGueltigkeitAndSetIfSame(
+            foundEWPCont.erwerbspensumJA,
+            mockErwerbspensum.erwerbspensumJA
+        );
+        TestDataUtil.compareDefinedProperties(
+            foundEWPCont.erwerbspensumJA,
+            mockErwerbspensum.erwerbspensumJA
+        );
         expect(foundEWPCont.erwerbspensumGS).toBeDefined();
-        TestDataUtil.checkGueltigkeitAndSetIfSame(foundEWPCont.erwerbspensumGS, mockErwerbspensum.erwerbspensumGS);
-        TestDataUtil.compareDefinedProperties(foundEWPCont.erwerbspensumGS, mockErwerbspensum.erwerbspensumGS);
+        TestDataUtil.checkGueltigkeitAndSetIfSame(
+            foundEWPCont.erwerbspensumGS,
+            mockErwerbspensum.erwerbspensumGS
+        );
+        TestDataUtil.compareDefinedProperties(
+            foundEWPCont.erwerbspensumGS,
+            mockErwerbspensum.erwerbspensumGS
+        );
     }
-
 });

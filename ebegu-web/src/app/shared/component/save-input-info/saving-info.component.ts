@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit
+} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {LogFactory} from '../../../core/logging/LogFactory';
 
@@ -28,7 +34,6 @@ const LOG = LogFactory.createLog('SavingInfo');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SavingInfoComponent implements OnInit {
-
     private static readonly HIDE_SAVED_AFTER_MS = 3000;
 
     @Input() private readonly saving$: Observable<boolean>;
@@ -36,20 +41,20 @@ export class SavingInfoComponent implements OnInit {
     public showSaved: boolean;
     private subscription: Subscription;
 
-    public constructor(
-        private readonly ref: ChangeDetectorRef
-    ) {
-    }
+    public constructor(private readonly ref: ChangeDetectorRef) {}
 
     public ngOnInit(): void {
-        this.subscription = this.saving$.subscribe(saving => {
-            if (saving) {
-                this.showSavingInfo();
-            } else {
-                this.hideSavingInfo();
-            }
-            this.ref.markForCheck();
-        }, error => LOG.error(error));
+        this.subscription = this.saving$.subscribe(
+            saving => {
+                if (saving) {
+                    this.showSavingInfo();
+                } else {
+                    this.hideSavingInfo();
+                }
+                this.ref.markForCheck();
+            },
+            error => LOG.error(error)
+        );
     }
 
     private showSavingInfo(): void {

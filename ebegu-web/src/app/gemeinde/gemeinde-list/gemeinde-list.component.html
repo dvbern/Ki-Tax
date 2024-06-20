@@ -16,27 +16,28 @@
  -->
 
 <div class="gemeinde-list admin-modul" flex="auto">
-
     <div class="col-md-8 col-md-offset-2">
-
         <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
         <div class="view-title">
             <h2 translate>GEMEINDEN</h2>
-            <hr class="header">
+            <hr class="header" />
         </div>
 
-        <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
-                        [data$]="antragList$"
-                        (openEvent)="openGemeinde($event)"
-                        [statusPrefix]="'GEMEINDE_STATUS'"
-                        [columnName]="'GEMEINDE'"
+        <dv-search-list
+            [hiddenColumns]="hiddenDVTableColumns"
+            [data$]="antragList$"
+            (openEvent)="openGemeinde($event)"
+            [statusPrefix]="'GEMEINDE_STATUS'"
+            [columnName]="'GEMEINDE'"
         ></dv-search-list>
 
         <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->
-        <div *ngIf="hatBerechtigungHinzufuegen()"
-             class="margin-top-50 row">
+        <div *ngIf="hatBerechtigungHinzufuegen()" class="margin-top-50 row">
             <div class="col-md-3">
-                <dv-loading-button (buttonClick)="addGemeinde();" data-test="container.gemeinde-hinzufuegen">
+                <dv-loading-button
+                    (buttonClick)="addGemeinde()"
+                    data-test="container.gemeinde-hinzufuegen"
+                >
                     <span translate>GEMEINDE_HINZUFUEGEN</span>
                 </dv-loading-button>
             </div>

@@ -53,7 +53,12 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
     gesuchsperiode: TSGesuchsperiode
 ): Array<TSBetreuungsangebotTyp> {
     const angebote: Array<TSBetreuungsangebotTyp> = [];
-    if (gemeinde.angebotBG && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.betreuungsgutscheineStartdatum)) {
+    if (
+        gemeinde.angebotBG &&
+        gesuchsperiode.gueltigkeit.gueltigBis.isAfter(
+            gemeinde.betreuungsgutscheineStartdatum
+        )
+    ) {
         angebote.push(TSBetreuungsangebotTyp.KITA);
         if (tagesfamilieEnabledForMandantAndGemeinde) {
             angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
@@ -62,12 +67,24 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
             angebote.push(TSBetreuungsangebotTyp.MITTAGSTISCH);
         }
     }
-    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS && !gemeinde.nurLats
-        && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum)) {
+    if (
+        tagesschuleEnabledForMandant &&
+        tagesschuleAnmeldungenConfigured &&
+        gemeinde.angebotTS &&
+        !gemeinde.nurLats &&
+        gesuchsperiode.gueltigkeit.gueltigBis.isAfter(
+            gemeinde.tagesschulanmeldungenStartdatum
+        )
+    ) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (tagesschuleEnabledForMandant && gemeinde.angebotFI
-        && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum)) {
+    if (
+        tagesschuleEnabledForMandant &&
+        gemeinde.angebotFI &&
+        gesuchsperiode.gueltigkeit.gueltigBis.isAfter(
+            gemeinde.ferieninselanmeldungenStartdatum
+        )
+    ) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;
@@ -81,7 +98,9 @@ export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangeb
 }
 
 export function getBgInstitutionenAndTsBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
-    return getBgInstitutionenBetreuungsangebote().concat([TSBetreuungsangebotTyp.TAGESSCHULE]);
+    return getBgInstitutionenBetreuungsangebote().concat([
+        TSBetreuungsangebotTyp.TAGESSCHULE
+    ]);
 }
 
 export function getBgInstitutionenBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
@@ -92,12 +111,20 @@ export function getBgInstitutionenBetreuungsangebote(): ReadonlyArray<TSBetreuun
     ];
 }
 
-export function isBgInstitutionenBetreuungsangebot(angebotTyp: TSBetreuungsangebotTyp): boolean {
-    return EbeguUtil.isNotNullOrUndefined(angebotTyp) && getBgInstitutionenBetreuungsangebote().includes(angebotTyp);
+export function isBgInstitutionenBetreuungsangebot(
+    angebotTyp: TSBetreuungsangebotTyp
+): boolean {
+    return (
+        EbeguUtil.isNotNullOrUndefined(angebotTyp) &&
+        getBgInstitutionenBetreuungsangebote().includes(angebotTyp)
+    );
 }
 
 export function isSchulamt(status: TSBetreuungsangebotTyp): boolean {
-    return status === TSBetreuungsangebotTyp.TAGESSCHULE || status === TSBetreuungsangebotTyp.FERIENINSEL;
+    return (
+        status === TSBetreuungsangebotTyp.TAGESSCHULE ||
+        status === TSBetreuungsangebotTyp.FERIENINSEL
+    );
 }
 
 export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {

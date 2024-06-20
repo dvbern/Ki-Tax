@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
+import {
+    IComponentOptions,
+    IPromise,
+    IQService,
+    IScope,
+    ITimeoutService
+} from 'angular';
 import {map} from 'rxjs/operators';
 import {MANDANTS} from '../../../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
@@ -38,7 +44,9 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('SozialhilfeZeitraumViewController');
 
-export class SozialhilfeZeitraumViewComponentConfig implements IComponentOptions {
+export class SozialhilfeZeitraumViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public bindings = {};
     public template = require('./sozialhilfeZeitraumView.html');
@@ -47,7 +55,6 @@ export class SozialhilfeZeitraumViewComponentConfig implements IComponentOptions
 }
 
 export class SozialhilfeZeitraumViewController extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer> {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -80,28 +87,41 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS,
         private readonly mandantService: MandantService
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
-            $timeout);
+            $timeout
+        );
 
-        this.familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer;
-        // eslint-disable-next-line
+        this.familiensituation =
+            this.gesuchModelManager.getGesuch().familiensituationContainer;
+
         if (this.familiensituation) {
             if ($stateParams.sozialhilfeZeitraumNum) {
-                const ewpNum = parseInt($stateParams.sozialhilfeZeitraumNum, 10) || 0;
-                this.model = angular.copy(this.familiensituation.sozialhilfeZeitraumContainers[ewpNum]);
+                const ewpNum =
+                    parseInt($stateParams.sozialhilfeZeitraumNum, 10) || 0;
+                this.model = angular.copy(
+                    this.familiensituation.sozialhilfeZeitraumContainers[ewpNum]
+                );
             } else {
                 this.model = this.initEmptyShZContainer();
             }
         } else {
-            errorService.addMesageAsError('Unerwarteter Zustand: Familiensituation unbekannt');
+            errorService.addMesageAsError(
+                'Unerwarteter Zustand: Familiensituation unbekannt'
+            );
         }
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        }, err => LOG.error(err));
+        this.mandantService.mandant$
+            .pipe(map(mandant => mandant === MANDANTS.LUZERN))
+            .subscribe(
+                isLuzern => {
+                    this.isLuzern = isLuzern;
+                },
+                err => LOG.error(err)
+            );
     }
 
     public save(): IPromise<any> {
@@ -123,21 +143,33 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer
     ): IPromise<TSSozialhilfeZeitraumContainer> {
         if (sozialhilfeZeitraum.id) {
-            return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
+            return this.sozialhilfeZeitraumRS
+                .saveSozialhilfeZeitraum(
+                    sozialhilfeZeitraum,
+                    familiensituation.id
+                )
                 .then((response: TSSozialhilfeZeitraumContainer) => {
-                    const i =
-                        EbeguUtil.getIndexOfElementwithID(sozialhilfeZeitraum, familiensituation.sozialhilfeZeitraumContainers);
+                    const i = EbeguUtil.getIndexOfElementwithID(
+                        sozialhilfeZeitraum,
+                        familiensituation.sozialhilfeZeitraumContainers
+                    );
                     if (i >= 0) {
-                        familiensituation.sozialhilfeZeitraumContainers[i] = sozialhilfeZeitraum;
+                        familiensituation.sozialhilfeZeitraumContainers[i] =
+                            sozialhilfeZeitraum;
                     }
                     return response;
                 });
         }
-        return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
-            .then((storedSozialhilfeZeitraum: TSSozialhilfeZeitraumContainer) => {
-                familiensituation.sozialhilfeZeitraumContainers.push(storedSozialhilfeZeitraum);
-                return storedSozialhilfeZeitraum;
-            });
+        return this.sozialhilfeZeitraumRS
+            .saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
+            .then(
+                (storedSozialhilfeZeitraum: TSSozialhilfeZeitraumContainer) => {
+                    familiensituation.sozialhilfeZeitraumContainers.push(
+                        storedSozialhilfeZeitraum
+                    );
+                    return storedSozialhilfeZeitraum;
+                }
+            );
     }
 
     public cancel(): void {
@@ -149,14 +181,17 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         const shzContainer = new TSSozialhilfeZeitraumContainer();
         shzContainer.sozialhilfeZeitraumJA = shz;
         return shzContainer;
-
     }
 
     public sozialhilfeZeitraumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
         if (this.model && this.model.sozialhilfeZeitraumJA) {
-            return this.model.sozialhilfeZeitraumJA.vorgaengerId
-                && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+            return (
+                this.model.sozialhilfeZeitraumJA.vorgaengerId &&
+                !this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getAdministratorOrAmtRole()
+                )
+            );
         }
         return false;
     }

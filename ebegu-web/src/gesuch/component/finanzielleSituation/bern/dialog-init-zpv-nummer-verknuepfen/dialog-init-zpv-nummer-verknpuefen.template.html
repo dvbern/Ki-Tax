@@ -25,12 +25,14 @@
                 <div class="col-sm-12 dv-input-container-medium margin-top-20">
                     <div class="form-group">
                         <label translate for="email">EMAIL</label>
-                        <input id="email"
-                               type="text"
-                               name="email"
-                               [pattern]="CONSTANTS.PATTERN_EMAIL"
-                               [(ngModel)]="email"
-                               class="form-control">
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            [(ngModel)]="email"
+                            class="form-control"
+                            email
+                        />
                     </div>
                 </div>
             </div>
@@ -38,12 +40,17 @@
 
         <mat-dialog-actions>
             <div class="dv-dialog-actions">
-                <button class="dv-btn" (click)="save(mailForm)" [textContent]="'SEND_MAIL' | translate"></button>
-                <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+                <button
+                    class="dv-btn"
+                    (click)="save(mailForm)"
+                    [textContent]="'SEND_MAIL' | translate"
+                ></button>
+                <button
+                    class="dv-btn cancel-button"
+                    (click)="close()"
+                    [textContent]="'CANCEL' | translate"
+                ></button>
             </div>
         </mat-dialog-actions>
     </form>
-
 </mat-dialog-content>
-
-

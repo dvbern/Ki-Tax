@@ -15,17 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
-import {TSAbstractEntity} from '../models/TSAbstractEntity';
-import {TSFall} from '../models/TSFall';
-import {TSGemeinde} from '../models/TSGemeinde';
-import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
-import {TSDateRange} from '../models/types/TSDateRange';
-import {EbeguUtil} from './EbeguUtil';
 import {MathUtil} from './MathUtil';
-import {TestDataUtil} from './TestDataUtil.spec';
-import IProvideService = angular.auto.IProvideService;
 
 /* eslint-disable no-magic-numbers */
 describe('MathUtil', () => {
@@ -35,87 +25,100 @@ describe('MathUtil', () => {
 
     describe('subtractFloatPrecisionSafe', () => {
         it('should subtract two non-binary representable values with precision 0', () => {
-            expect(MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 0)).toBe(129992);
+            expect(
+                MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 0)
+            ).toBe(129992);
         });
         it('should subtract two non-binary representable values with precision 1', () => {
-            expect(MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 1)).toBe(129992.0);
+            expect(
+                MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 1)
+            ).toBe(129992.0);
         });
         it('should subtract two non-binary representable values with precision 2', () => {
-            expect(MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 2)).toBe(129992.00);
+            expect(
+                MathUtil.subtractFloatPrecisionSafe(baseValue, toSubtract, 2)
+            ).toBe(129992.0);
         });
 
         it('should be chainable', () => {
             const result = MathUtil.subtractFloatPrecisionSafe(
                 MathUtil.subtractFloatPrecisionSafe(192526.95, 0.5),
-                62534.45,
+                62534.45
             );
-            expect(result).toBe(129992.00);
+            expect(result).toBe(129992.0);
         });
     });
 
     describe('subtractArrayFloatPrecisionSafe', () => {
         it('should subtract array of 1 value with precision 0', () => {
-            expect(MathUtil.subtractArrayFloatPrecisionSafe(
-                baseValue,
-                [toSubtract],
-                0,
-            )).toBe(129992);
+            expect(
+                MathUtil.subtractArrayFloatPrecisionSafe(
+                    baseValue,
+                    [toSubtract],
+                    0
+                )
+            ).toBe(129992);
         });
         it('should subtract array of 1 value with precision 1', () => {
-            expect(MathUtil.subtractArrayFloatPrecisionSafe(
-                baseValue,
-                [toSubtract],
-                0,
-            )).toBe(129992.0);
+            expect(
+                MathUtil.subtractArrayFloatPrecisionSafe(
+                    baseValue,
+                    [toSubtract],
+                    0
+                )
+            ).toBe(129992.0);
         });
         it('should subtract array of 2 values with default precision 2', () => {
-            expect(MathUtil.subtractArrayFloatPrecisionSafe(
-                baseValue,
-                [0.5, 62534.45]
-            )).toBe(129992.00);
+            expect(
+                MathUtil.subtractArrayFloatPrecisionSafe(
+                    baseValue,
+                    [0.5, 62534.45]
+                )
+            ).toBe(129992.0);
         });
     });
 
     describe('addFloatPrecisionSafe', () => {
         it('should add two non-binary representable values with precision 0', () => {
-            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 0)).toBe(192528);
+            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 0)).toBe(
+                192528
+            );
         });
         it('should add two non-binary representable values with precision 1', () => {
-            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 1)).toBe(192527.9);
+            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 1)).toBe(
+                192527.9
+            );
         });
         it('should add two non-binary representable values with precision 2', () => {
-            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 2)).toBe(192527.90);
+            expect(MathUtil.addFloatPrecisionSafe(baseValue, toAdd, 2)).toBe(
+                192527.9
+            );
         });
 
         it('should be chainable', () => {
             const result = MathUtil.addFloatPrecisionSafe(
                 MathUtil.addFloatPrecisionSafe(baseValue, 0.5),
-                0.45,
+                0.45
             );
-            expect(result).toBe(192527.90);
+            expect(result).toBe(192527.9);
         });
     });
 
     describe('addArrayFloatPrecisionSafe', () => {
         it('should add array of 1 value with precision 0', () => {
-            expect(MathUtil.addArrayFloatPrecisionSafe(
-                baseValue,
-                [toAdd],
-                0,
-            )).toBe(192528);
+            expect(
+                MathUtil.addArrayFloatPrecisionSafe(baseValue, [toAdd], 0)
+            ).toBe(192528);
         });
         it('should add array of 1 value with precision 1', () => {
-            expect(MathUtil.addArrayFloatPrecisionSafe(
-                baseValue,
-                [toAdd],
-                0,
-            )).toBe(192528);
+            expect(
+                MathUtil.addArrayFloatPrecisionSafe(baseValue, [toAdd], 0)
+            ).toBe(192528);
         });
         it('should add array of 2 values with default precision 2', () => {
-            expect(MathUtil.addArrayFloatPrecisionSafe(
-                baseValue,
-                [0.50, 0.45]
-            )).toBe(192527.90);
+            expect(
+                MathUtil.addArrayFloatPrecisionSafe(baseValue, [0.5, 0.45])
+            ).toBe(192527.9);
         });
     });
 });

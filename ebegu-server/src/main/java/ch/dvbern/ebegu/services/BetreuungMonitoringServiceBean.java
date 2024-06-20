@@ -53,14 +53,14 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nonnull
 	public Collection<BetreuungMonitoring> getAllBetreuungMonitoringBeiCriteria(
-		@Nullable String refNummer,
+		@Nullable String referenzNummer,
 		@Nullable String benutzer){
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BetreuungMonitoring> query = cb.createQuery(BetreuungMonitoring.class);
 		Root<BetreuungMonitoring> root = query.from(BetreuungMonitoring.class);
 		List<Predicate> predicates = new ArrayList<>();
-		if(!StringUtils.isEmpty(refNummer)) {
-			Predicate refNummerPredicate = cb.equal(root.get(BetreuungMonitoring_.refNummer), refNummer);
+		if(!StringUtils.isEmpty(referenzNummer)) {
+			Predicate refNummerPredicate = cb.equal(root.get(BetreuungMonitoring_.refNummer), referenzNummer);
 			predicates.add(refNummerPredicate);
 		}
 		if(!StringUtils.isEmpty(benutzer)) {
@@ -69,10 +69,10 @@ public class BetreuungMonitoringServiceBean extends AbstractBaseService implemen
 			predicates.add(benutzendePredicate);
 		}
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-		if (predicates.size() > 0) {
+		if (!predicates.isEmpty()) {
 			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			TypedQuery<BetreuungMonitoring> typedQuery = persistence.getEntityManager().createQuery(query);
-			// we only want no restriction if the referenznummer is given, it can be a lot of result by benutzer
+			// we only want no restriction if the referenzNummer is given, it can be a lot of result by benutzer
 			if (!StringUtils.isEmpty(benutzer)) {
 				typedQuery.setMaxResults(200);
 			}

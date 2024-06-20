@@ -36,7 +36,6 @@ import {EKVViewUtil} from '../../EKVViewUtil';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
-
     public ekvViewUtil = EKVViewUtil;
 
     public constructor(
@@ -45,25 +44,46 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         protected finSitLuService: FinanzielleSituationLuzernService,
         private readonly $transition$: Transition
     ) {
-        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
-        const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
-        const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
+        super(
+            gesuchModelManager,
+            wizardStepManager,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN
+        );
+        const parsedGesuchstelllerNum = parseInt(
+            this.$transition$.params().gesuchstellerNumber,
+            10
+        );
+        const parsedBasisJahrPlusNum = parseInt(
+            this.$transition$.params().basisjahrPlus,
+            10
+        );
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
 
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
+            parsedGesuchstelllerNum,
+            parsedBasisJahrPlusNum
+        );
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
+        this.model.initEinkommensverschlechterungContainer(
+            parsedBasisJahrPlusNum,
+            parsedGesuchstelllerNum
+        );
 
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
     }
 
-    public save(onResult: (arg: any) => void): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(
+        onResult: (arg: any) => void
+    ): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -76,16 +96,24 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             return Promise.resolve(this.model.getEkvContToWorkWith());
         }
         this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(ekv => {
-            onResult(ekv);
-            return ekv;
-        });
+        return this.gesuchModelManager
+            .saveEinkommensverschlechterungContainer()
+            .then(ekv => {
+                onResult(ekv);
+                return ekv;
+            });
     }
 
     public isGemeinsam(): boolean {
         // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
         // or only for the single antragsteller
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return (
+            !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(
+                this.gesuchModelManager
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+            )
+        );
     }
 }

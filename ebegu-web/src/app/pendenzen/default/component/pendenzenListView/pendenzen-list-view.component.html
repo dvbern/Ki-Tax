@@ -19,31 +19,34 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12 table-responsive">
-
                 <!-- Warnung, falls noch Gemeinden im Status EINGELADEN -->
-                <div class="well well-status-abgewiesen" *ngIf="hasGemeindenInStatusAngemeldet">
+                <div
+                    class="well well-status-abgewiesen"
+                    *ngIf="hasGemeindenInStatusAngemeldet"
+                >
                     <span translate>WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG</span>
                     <p>
                         <a uiSref="gemeinde.list" translate>ZUR_LISTE</a>
                     </p>
                 </div>
 
-                <dv-new-antrag-list *ngIf="initialFilter.verantwortlicherGemeinde"
-                                    [data$]="data$"
-                                    [stateStoreId]="'pendenzen-list-view'"
-                                    [title]="'PENDENZEN_LIST' | translate"
-                                    [initialFilter]="initialFilter"
-                                    [page]="calculatePage()"
-                                    [totalItems]="pagination.totalItemCount"
-                                    [pendenz]="true"
-                                    [hiddenColumns]="['verantwortlicherGemeindeantraege']"
-                                    (sortChange)="onSort($event)"
-                                    (filterChange)="onFilterChange($event)"
-                                    (paginationEvent)="onPagination($event)"
-                                    (rowClicked)="editpendenzJA($event.antrag, $event.event)">
+                <dv-new-antrag-list
+                    *ngIf="initialFilter.verantwortlicherGemeinde"
+                    [data$]="data$"
+                    [stateStoreId]="'pendenzen-list-view'"
+                    [title]="'PENDENZEN_LIST' | translate"
+                    [initialFilter]="initialFilter"
+                    [page]="calculatePage()"
+                    [totalItems]="pagination.totalItemCount"
+                    [pendenz]="true"
+                    [hiddenColumns]="['verantwortlicherGemeindeantraege']"
+                    (sortChange)="onSort($event)"
+                    (filterChange)="onFilterChange($event)"
+                    (paginationEvent)="onPagination($event)"
+                    (rowClicked)="editpendenzJA($event.antrag, $event.event)"
+                >
                 </dv-new-antrag-list>
             </div>
-
         </div>
     </div>
 </div>

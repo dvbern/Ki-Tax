@@ -37,19 +37,39 @@ describe('RueckforderungFormularComponent', () => {
     let component: RueckforderungFormularComponent;
     let fixture: ComponentFixture<RueckforderungFormularComponent>;
 
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['findRueckforderungFormular']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const downloadRSSpy =  jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['prepareDownloadWindow']);
-    const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, ['uploadRueckforderungsDokumente']);
-    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getNotverordnungDefaultEinreichefristPrivat', 'getNotverordnungDefaultEinreichefristOeffentlich']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params',
+        'from'
+    ]);
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, [
+        'findRueckforderungFormular'
+    ]);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'prepareDownloadWindow'
+    ]);
+    const uploadRSSpy = jasmine.createSpyObj<UploadRS>(UploadRS.name, [
+        'uploadRueckforderungsDokumente'
+    ]);
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            [
+                'getNotverordnungDefaultEinreichefristPrivat',
+                'getNotverordnungDefaultEinreichefristOeffentlich'
+            ]
+        );
 
     beforeEach(waitForAsync(() => {
-        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and
-            .returnValue(of('2020-08-01').toPromise());
-        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and
-            .returnValue(of('2020-08-01').toPromise());
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristPrivat.and.returnValue(
+            of('2020-08-01').toPromise()
+        );
+        applicationPropertyRSSpy.getNotverordnungDefaultEinreichefristOeffentlich.and.returnValue(
+            of('2020-08-01').toPromise()
+        );
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
@@ -66,11 +86,15 @@ describe('RueckforderungFormularComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: UploadRS, useValue: uploadRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
             declarations: []
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));

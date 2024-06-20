@@ -15,73 +15,88 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-
 <div class="filter">
-    <input class="filter"
-           matInput
-           type="text"
-           (keyup)="doFilter($event.target.value)"
-           data-test="list-search-field"
-           placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
+    <input
+        class="filter"
+        matInput
+        type="text"
+        (keyup)="doFilter($event.target.value)"
+        data-test="list-search-field"
+        placeholder="{{ 'SUCHBEGRIFF_EINGEBEN' | translate }}"
+    />
 </div>
 
 <!--Tabelle zum anzeigen der berechtigten Entitaet -->
 <div class="table-responsive gemeinden-table">
     <mat-table #table [dataSource]="dataSource" matSort>
-
         <!-- Column Name -->
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{columnName | translate}}
+                {{ columnName | translate }}
             </mat-header-cell>
-            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
-                      data-test="item-name"
-                      (click)="open(item.id)">
-                {{item.name}}
+            <mat-cell
+                class="mat-cell-clickable"
+                *matCellDef="let item"
+                data-test="item-name"
+                (click)="open(item.id)"
+            >
+                {{ item.name }}
             </mat-cell>
         </ng-container>
 
         <!-- Institution Count -->
         <ng-container matColumnDef="institutionCount">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{'INSTITUTIONEN' | translate}}
+                {{ 'INSTITUTIONEN' | translate }}
             </mat-header-cell>
-            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
-                      (click)="open(item.id)">
-                {{item.institutionCount}}
+            <mat-cell
+                class="mat-cell-clickable"
+                *matCellDef="let item"
+                (click)="open(item.id)"
+            >
+                {{ item.institutionCount }}
             </mat-cell>
         </ng-container>
 
         <!-- Column Type -->
         <ng-container matColumnDef="type">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{'TYP' | translate}}
+                {{ 'TYP' | translate }}
             </mat-header-cell>
-            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
-                      (click)="open(item.id)">
-                {{item.type.toString() | translate}}
+            <mat-cell
+                class="mat-cell-clickable"
+                *matCellDef="let item"
+                (click)="open(item.id)"
+            >
+                {{ item.type.toString() | translate }}
             </mat-cell>
         </ng-container>
 
         <!-- Column Status -->
         <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{'STATUS' | translate}}
+                {{ 'STATUS' | translate }}
             </mat-header-cell>
-            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
-                      (click)="open(item.id)">
-                {{statusPrefix + '_' + item.status | translate}}
+            <mat-cell
+                class="mat-cell-clickable"
+                *matCellDef="let item"
+                (click)="open(item.id)"
+            >
+                {{ statusPrefix + '_' + item.status | translate }}
             </mat-cell>
         </ng-container>
 
         <!-- Column Status -->
         <ng-container matColumnDef="gemeinde">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{'GEMEINDE' | translate}}
+                {{ 'GEMEINDE' | translate }}
             </mat-header-cell>
-            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
-                      (click)="open(item.id)">
-                {{item.gemeinde}}
+            <mat-cell
+                class="mat-cell-clickable"
+                *matCellDef="let item"
+                (click)="open(item.id)"
+            >
+                {{ item.gemeinde }}
             </mat-cell>
         </ng-container>
 
@@ -89,32 +104,43 @@
         <ng-container matColumnDef="detail">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button class="dv-btn dv-btn-sm"
-                        (click)="open(item.id)"
-                        *ngIf="item.canEdit">
+                <button
+                    class="dv-btn dv-btn-sm"
+                    (click)="open(item.id)"
+                    *ngIf="item.canEdit"
+                >
                     <i class="fa fa-eye"></i>
                 </button>
             </mat-cell>
         </ng-container>
 
         <!-- Column remove -->
-        <ng-container matColumnDef="remove" >
+        <ng-container matColumnDef="remove">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <dv-loading-button buttonClass="dv-btn-sm"
-                                   data-test="remove-entry"
-                                   (buttonClick)="remove(item.id)" *ngIf="item.canRemove">
+                <dv-loading-button
+                    buttonClass="dv-btn-sm"
+                    data-test="remove-entry"
+                    (buttonClick)="remove(item.id)"
+                    *ngIf="item.canRemove"
+                >
                     <i class="fa fa-trash"></i>
                 </dv-loading-button>
             </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; let idx = index; columns: displayedColumns;" (click)="open(row.id)" [attr.data-test]="'search-list-item.' + idx" class="pointer-cursor"></mat-row>
+        <mat-row
+            *matRowDef="let row; let idx = index; columns: displayedColumns"
+            (click)="open(row.id)"
+            [attr.data-test]="'search-list-item.' + idx"
+            class="pointer-cursor"
+        ></mat-row>
     </mat-table>
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
-    <div class="mat-row" *ngIf="showNoContentMessage()"
-         [textContent]="columnName + '_NOCH_KEINE' | translate">
-
-    </div>
+    <div
+        class="mat-row"
+        *ngIf="showNoContentMessage()"
+        [textContent]="columnName + '_NOCH_KEINE' | translate"
+    ></div>
 </div>

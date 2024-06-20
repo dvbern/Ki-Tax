@@ -15,24 +15,24 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
     selector: '[dvEnableElement]'
 })
 export class EnableElementDirective implements OnChanges {
-
-    @Input() public allowedRoles: ReadonlyArray<TSRole> = TSRoleUtil.getAllRoles();
+    @Input() public allowedRoles: ReadonlyArray<TSRole> =
+        TSRoleUtil.getAllRoles();
     @Input() public enableExpression: boolean = true;
 
     public constructor(
         private readonly el: ElementRef,
         private readonly authService: AuthServiceRS,
         @Optional() @Self() public ngControl: NgControl
-    ) {
-    }
+    ) {}
 
     private setElementDisabled(): void {
         this.ngControl?.valueAccessor.setDisabledState(
-            !this.authService.isOneOfRoles(this.allowedRoles) || !this.enableExpression);
+            !this.authService.isOneOfRoles(this.allowedRoles) ||
+                !this.enableExpression
+        );
     }
 
     public ngOnChanges(): void {
         this.setElementDisabled();
     }
-
 }

@@ -3691,7 +3691,7 @@ public class JaxBConverter extends AbstractConverter {
 				.getGesuchsperiode()));
 		}
 		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
-		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
+		jaxBetreuung.setReferenzNummer(betreuungFromServer.getReferenzNummer());
 		jaxBetreuung.setFinSitRueckwirkendKorrigiertInThisMutation(betreuungFromServer.isFinSitRueckwirkendKorrigiertInThisMutation());
 		return jaxBetreuung;
 	}
@@ -3994,6 +3994,7 @@ public class JaxBConverter extends AbstractConverter {
 			.getVerguenstigungMahlzeitenTotal());
 		jaxZeitabschn.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern());
 		jaxZeitabschn.setBeitragshoeheProzent(zeitabschnitt.getBeitraghoheProzent());
+		jaxZeitabschn.setZusaetzlicherGutscheinGemeindeBetrag(zeitabschnitt.getRelevantBgCalculationResult().getZusaetzlicherGutscheinGemeindeBetrag());
 		return jaxZeitabschn;
 	}
 

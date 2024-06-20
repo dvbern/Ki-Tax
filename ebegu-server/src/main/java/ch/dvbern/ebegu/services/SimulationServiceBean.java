@@ -67,8 +67,8 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 	private static void logDifference(StringBuilder log, Betreuung b, BigDecimal sumNew, BigDecimal sumOld) {
 		log
-			.append("BG-Nummer: ")
-			.append(b.getBGNummer())
+			.append("RefNr: ")
+			.append(b.getReferenzNummer())
 			.append("; Gemeinde: ")
 			.append(b.getKind().getGesuch().getDossier().getGemeinde().getName())
 			.append("; Betreuung mit id ")

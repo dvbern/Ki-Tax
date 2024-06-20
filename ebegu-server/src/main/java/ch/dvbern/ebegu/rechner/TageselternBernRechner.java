@@ -64,7 +64,7 @@ public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 	@Override
 	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
+		boolean unter12Monate,
 		@Nullable EinschulungTyp einschulungTyp) {
 		boolean eingeschultKindergarten = einschulungTyp != null && einschulungTyp.isEingeschult();
 		boolean eingeschultSchulstufe = einschulungTyp != null &&
@@ -86,7 +86,7 @@ public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 	@Override
 	protected BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean besonderebeduerfnisse) {
+		boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProStd() : BigDecimal.ZERO;
 	}

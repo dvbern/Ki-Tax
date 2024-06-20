@@ -73,7 +73,7 @@ public class ExportServiceBean implements ExportService {
 		VerfuegungenExportDTO verfuegungenExportDTO = convertBetreuungToExport(betreuung);
 
 		byte[] bytes = convertToJson(verfuegungenExportDTO);
-		String filename = "export_" + betreuung.getBGNummer() + ".json";
+		String filename = "export_" + betreuung.getReferenzNummer() + ".json";
 		String gesuchId = betreuung.extractGesuch().getId();
 
 		return this.fileSaverService.save(bytes, filename, gesuchId, getContentTypeForExport());

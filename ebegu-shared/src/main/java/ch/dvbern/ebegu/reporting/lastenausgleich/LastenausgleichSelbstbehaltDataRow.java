@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
  */
 public class LastenausgleichSelbstbehaltDataRow {
 
-	private String bgNummer;
+	private String referenzNummer;
 	private String kindName;
 	private String kindVorname;
 	private LocalDate kindGeburtsdatum;
@@ -45,12 +45,12 @@ public class LastenausgleichSelbstbehaltDataRow {
 	private BigDecimal gutschein;
 	private @Nullable Boolean keinSelbstbehaltDurchGemeinde;
 
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenzNummer() {
+		return referenzNummer;
 	}
 
-	public void setBgNummer(String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenzNummer(String referenzNummer) {
+		this.referenzNummer = referenzNummer;
 	}
 
 	public String getKindName() {

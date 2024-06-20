@@ -29,32 +29,42 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {InternePendenzenComponent} from './interne-pendenzen.component';
 import {InternePendenzenRS} from './internePendenzenRS.rest';
 
-const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(InternePendenzenRS.name,
-    ['findInternePendenzenForGesuch']);
-const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-    ['getGesuch']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-const applicationPropertyRSSpy = jasmine
-    .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getActivatedDemoFeatures']);
+const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(
+    InternePendenzenRS.name,
+    ['findInternePendenzenForGesuch']
+);
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name,
+    ['getGesuch']
+);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsInfo'
+]);
+const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
+    ApplicationPropertyRS.name,
+    ['getActivatedDemoFeatures']
+);
 
 describe('InternePendenzenComponent', () => {
     let component: InternePendenzenComponent;
     let fixture: ComponentFixture<InternePendenzenComponent>;
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
-    applicationPropertyRSSpy.getActivatedDemoFeatures.and.returnValue($q.when(''));
+    applicationPropertyRSSpy.getActivatedDemoFeatures.and.returnValue(
+        $q.when('')
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                HttpClientModule
-            ],
+            imports: [SharedModule, HttpClientModule],
             declarations: [InternePendenzenComponent],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: InternePendenzenRS, useValue: internePendenzenRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -64,7 +74,9 @@ describe('InternePendenzenComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(InternePendenzenComponent);
         component = fixture.componentInstance;
-        internePendenzenRSSpy.findInternePendenzenForGesuch.and.returnValue(of([]));
+        internePendenzenRSSpy.findInternePendenzenForGesuch.and.returnValue(
+            of([])
+        );
         fixture.detectChanges();
     });
 

@@ -26,20 +26,23 @@ const getEingangsdatum = () => {
 };
 
 const getAlternativdatum = () => {
-	return cy.getByData('fall-creation-alternativDatum');
+    return cy.getByData('fall-creation-alternativDatum');
 };
 
 // TODO: this should probably be on a toolbar po
 const getVerantwortlicher = () => {
-	return cy.getByData('verantwortlicher');
+    return cy.getByData('verantwortlicher');
 };
 
 const getUserOption = (user: User, schulamt: boolean) => {
-	return cy.getByData(`container.${schulamt? 'schul' : ''}verantwortlicher`,`option.${normalizeUser(user)}`);
+    return cy.getByData(
+        `container.${schulamt ? 'schul' : ''}verantwortlicher`,
+        `option.${normalizeUser(user)}`
+    );
 };
 
 const getPageTitle = () => {
-	return cy.getByData('page-title');
+    return cy.getByData('page-title');
 };
 
 export const AntragCreationPO = {
@@ -48,5 +51,5 @@ export const AntragCreationPO = {
     getEingangsdatum,
     getVerantwortlicher,
     getUserOption,
-    getPageTitle,
+    getPageTitle
 };

@@ -25,14 +25,16 @@ import {Transition} from '@uirouter/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginInfoComponent {
-
-    public constructor(public transition: Transition) {
-    }
+    public constructor(public transition: Transition) {}
 
     public goToLoginWithReturnToState(): void {
         const params = this.transition.params();
         const options = this.transition.options();
 
-        this.transition.router.stateService.go('einladung.abschliessen', params, options);
+        this.transition.router.stateService.go(
+            'einladung.abschliessen',
+            params,
+            options
+        );
     }
 }

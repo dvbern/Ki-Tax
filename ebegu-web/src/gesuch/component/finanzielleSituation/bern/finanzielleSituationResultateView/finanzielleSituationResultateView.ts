@@ -27,9 +27,7 @@ import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituati
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {
-    FinanzielleSituationAufteilungDialogController
-} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {GesuchRS} from '../../../../service/gesuchRS.rest';
@@ -40,7 +38,9 @@ import ITimeoutService = angular.ITimeoutService;
 
 const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
-export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
+export class FinanzielleSituationResultateViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./finanzielleSituationResultateView.html');
     public controller = FinanzielleSituationResultateViewController;
@@ -51,7 +51,6 @@ export class FinanzielleSituationResultateViewComponentConfig implements ICompon
  * Controller fuer die Finanzielle Situation
  */
 export class FinanzielleSituationResultateViewController extends AbstractGesuchViewController<TSFinanzModel> {
-
     public static $inject: string[] = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -75,21 +74,27 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         private readonly gesuchRS: GesuchRS,
         private readonly demoFeatureRS: DemoFeatureRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
-            $timeout);
+            $timeout
+        );
 
         this.initModelAndCalculate();
     }
 
     private initModelAndCalculate(): void {
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            null);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            null
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
 
         this.calculate();
         this.initFinSitVorMutation();
@@ -100,7 +105,10 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             return;
         }
-        const gesuchVorMutation = await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId);
+        const gesuchVorMutation =
+            await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(
+                this.getGesuch().vorgaengerId
+            );
         this.model.initFinSitVorMutation(gesuchVorMutation);
     }
 
@@ -129,27 +137,32 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
         if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
-            return this.gesuchModelManager.saveFinanzielleSituation().then(() => {
-                this.gesuchModelManager.setGesuchstellerNumber(2);
-                return this.saveFinanzielleSituation();
-            });
+            return this.gesuchModelManager
+                .saveFinanzielleSituation()
+                .then(() => {
+                    this.gesuchModelManager.setGesuchstellerNumber(2);
+                    return this.saveFinanzielleSituation();
+                });
         }
         return this.saveFinanzielleSituation();
     }
 
     private saveFinanzielleSituation(): IPromise<void> {
-        return this.gesuchModelManager.saveFinanzielleSituation().then(() => this.updateWizardStepStatus());
+        return this.gesuchModelManager
+            .saveFinanzielleSituation()
+            .then(() => this.updateWizardStepStatus());
     }
 
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     private updateWizardStepStatus(): IPromise<void> {
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION,
-                TSWizardStepStatus.OK);
+        return this.gesuchModelManager.getGesuch().isMutation()
+            ? this.wizardStepManager.updateCurrentWizardStepStatusMutiert()
+            : this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                  TSWizardStepName.FINANZIELLE_SITUATION,
+                  TSWizardStepStatus.OK
+              );
     }
 
     public calculate(): void {
@@ -160,7 +173,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
 
     public getFinanzielleSituationGS1(): TSFinanzielleSituationContainer {
         return this.model.finanzielleSituationContainerGS1;
-
     }
 
     public getFinanzielleSituationGS2(): TSFinanzielleSituationContainer {
@@ -172,19 +184,37 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     }
 
     public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff) &&
-            (isSteuerdatenAnfrageStatusErfolgreich(
-                this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus));
+        return (
+            EbeguUtil.isNotNullAndTrue(
+                this.getFinanzielleSituationGS1().finanzielleSituationJA
+                    .steuerdatenZugriff
+            ) &&
+            isSteuerdatenAnfrageStatusErfolgreich(
+                this.getFinanzielleSituationGS1().finanzielleSituationJA
+                    .steuerdatenAbfrageStatus
+            )
+        );
     }
 
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff) &&
-            (isSteuerdatenAnfrageStatusErfolgreich(
-                this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus));
+        return (
+            EbeguUtil.isNotNullAndTrue(
+                this.getFinanzielleSituationGS2().finanzielleSituationJA
+                    .steuerdatenZugriff
+            ) &&
+            isSteuerdatenAnfrageStatusErfolgreich(
+                this.getFinanzielleSituationGS2().finanzielleSituationJA
+                    .steuerdatenAbfrageStatus
+            )
+        );
     }
 
     public startAufteilung(): void {
-        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+        this.dvDialog
+            .showDialogFullscreen(
+                aufteilungDialogTemplate,
+                FinanzielleSituationAufteilungDialogController
+            )
             .then(() => {
                 this.initModelAndCalculate();
             });
@@ -195,8 +225,11 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     wenn wir prüfen, ob die Steuerabfrage für gs1 erfolgrech war
      */
     public showAufteilung(): boolean {
-        return this.hasGS1SteuerDatenErfolgreichAbgefragt()
-            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
+        return (
+            this.hasGS1SteuerDatenErfolgreichAbgefragt() &&
+            this.gesuchModelManager.getGesuch().familiensituationContainer
+                .familiensituationJA.gemeinsameSteuererklaerung
+        );
     }
 
     public getBruttovermoegenTooltipLabel(): string {
@@ -206,7 +239,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP';
     }
 
-    public getFinanzielleSituationVorMutationGS1(): TSFinanzielleSituation | object {
+    public getFinanzielleSituationVorMutationGS1():
+        | TSFinanzielleSituation
+        | object {
         if (this.model.finanzielleSituationVorMutationGS1) {
             return this.model.finanzielleSituationVorMutationGS1;
         }
@@ -214,7 +249,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         return {};
     }
 
-    public getFinanzielleSituationVorMutationGS2(): TSFinanzielleSituation | object {
+    public getFinanzielleSituationVorMutationGS2():
+        | TSFinanzielleSituation
+        | object {
         if (this.model.finanzielleSituationVorMutationGS2) {
             return this.model.finanzielleSituationVorMutationGS2;
         }

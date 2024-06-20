@@ -15,142 +15,262 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.dossier.fall.id" [dossier-id]="vm.dossier.id" hide-xs hide-sm>
+<dv-fall-toolbar
+    [fall-id]="vm.dossier.fall.id"
+    [dossier-id]="vm.dossier.id"
+    hide-xs
+    hide-sm
+>
 </dv-fall-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow"
-                               class="dossier-toolbar-gesuchsteller"
-                               dossier-id="{{vm.dossier.id}}"
-                               is-dashboard-screen="{{true}}">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    dossier-id="{{ vm.dossier.id }}"
+    is-dashboard-screen="{{ true }}"
+>
 </dossier-toolbar-gesuchsteller>
 
 <div class="gesuchsteller-dashboard-view" flex="auto">
     <h1 class="access-for-all-title" data-translate="AFA_DASHBOARD"></h1>
-    <div class="dashboard-header mobile-center-center" layout="row" layout-margin
-         layout-xs="column"
-         layout-align-xs="space-between center">
-
-        <div class="gdashboard-panel"
-             ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
-             ng-attr-data-test="container.periode.{{periode.gesuchsperiodeString}}"
-             ng-if="vm.activeGesuchsperiodenList.length > 0">
-
+    <div
+        class="dashboard-header mobile-center-center"
+        layout="row"
+        layout-margin
+        layout-xs="column"
+        layout-align-xs="space-between center"
+    >
+        <div
+            class="gdashboard-panel"
+            ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
+            ng-attr-data-test="container.periode.{{
+                periode.gesuchsperiodeString
+            }}"
+            ng-if="vm.activeGesuchsperiodenList.length > 0"
+        >
             <span class="gdashboard-panel-gesuchstring">
                 <span data-translate="PERIODE"></span>
-                <span>{{periode.gesuchsperiodeString}}</span>
+                <span>{{ periode.gesuchsperiodeString }}</span>
             </span>
             <span class="gdashboard-panel-gesuchrange" flex="nogrow">
-                <span>{{periode.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YY'}} – {{periode.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YY'}}</span>
+                <span
+                    >{{
+                        periode.gueltigkeit.gueltigAb | amDateFormat: 'DD.MM.YY'
+                    }}
+                    –
+                    {{
+                        periode.gueltigkeit.gueltigBis
+                            | amDateFormat: 'DD.MM.YY'
+                    }}</span
+                >
             </span>
 
-            <dv-loading-button class="gdashboard-panel-button--ansehen"
-                               ng-if="vm.displayAnsehenButton(periode)"
-                               type="button"
-                               button-click="vm.openAntrag(periode, true)"
-                               button-class="dvb-loading-button gdashboard-panel-button"
-                               data-test="container.antrag-oeffnen" >
-                {{'GS_ANSEHEN' | translate}}
+            <dv-loading-button
+                class="gdashboard-panel-button--ansehen"
+                ng-if="vm.displayAnsehenButton(periode)"
+                type="button"
+                button-click="vm.openAntrag(periode, true)"
+                button-class="dvb-loading-button gdashboard-panel-button"
+                data-test="container.antrag-oeffnen"
+            >
+                {{ 'GS_ANSEHEN' | translate }}
             </dv-loading-button>
 
-            <dv-loading-button class="gdashboard-panel-button--margin"
-                               ng-if="vm.getButtonText(periode)" type="button"
-                               button-click="vm.openAntrag(periode)"
-                               button-class="dvb-loading-button gdashboard-panel-button"
-                               data-test="container.antrag-bearbeiten">
-                {{vm.getButtonText(periode)}}
+            <dv-loading-button
+                class="gdashboard-panel-button--margin"
+                ng-if="vm.getButtonText(periode)"
+                type="button"
+                button-click="vm.openAntrag(periode)"
+                button-class="dvb-loading-button gdashboard-panel-button"
+                data-test="container.antrag-bearbeiten"
+            >
+                {{ vm.getButtonText(periode) }}
             </dv-loading-button>
 
-
-            <dv-loading-button type="button"
-                               ng-if="vm.showAnmeldungFerieninselCreate(periode)"
-                               button-click="vm.createFerieninsel(periode)"
-                               button-class="dvb-loading-button gdashboard-panel-button">
-
-                {{'FERIENINSEL_ANMELDEN' | translate}}
+            <dv-loading-button
+                type="button"
+                ng-if="vm.showAnmeldungFerieninselCreate(periode)"
+                button-click="vm.createFerieninsel(periode)"
+                button-class="dvb-loading-button gdashboard-panel-button"
+            >
+                {{ 'FERIENINSEL_ANMELDEN' | translate }}
             </dv-loading-button>
 
-            <dv-loading-button type="button"
-                               ng-if="vm.showAnmeldungTagesschuleCreate(periode) && !vm.hasOnlyFerieninsel(periode)"
-                               button-click="vm.createTagesschule(periode)"
-                               title="{{'TAGESSCHULE_ANMELDEN_LONGTEXT' | translate}}"
-                               button-class="dvb-loading-button gdashboard-panel-button">
-                {{'TAGESSCHULE_ANMELDEN' | translate}}
+            <dv-loading-button
+                type="button"
+                ng-if="
+                    vm.showAnmeldungTagesschuleCreate(periode) &&
+                    !vm.hasOnlyFerieninsel(periode)
+                "
+                button-click="vm.createTagesschule(periode)"
+                title="{{ 'TAGESSCHULE_ANMELDEN_LONGTEXT' | translate }}"
+                button-class="dvb-loading-button gdashboard-panel-button"
+            >
+                {{ 'TAGESSCHULE_ANMELDEN' | translate }}
             </dv-loading-button>
-
         </div>
-        <div class="dashboard-error"
-             ng-if="vm.activeGesuchsperiodenList.length == 0">
+        <div
+            class="dashboard-error"
+            ng-if="vm.activeGesuchsperiodenList.length == 0"
+        >
             <span>
-                <b data-translate="GSDASHBOARD_KEINE_PERIODEN"
-                   data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
-                   data-translate-value-periodenjahre="{{vm.periodYear}}">
+                <b
+                    data-translate="GSDASHBOARD_KEINE_PERIODEN"
+                    data-translate-value-gemeinde="{{
+                        vm.dossier.gemeinde.name
+                    }}"
+                    data-translate-value-periodenjahre="{{ vm.periodYear }}"
+                >
                 </b>
             </span>
-
         </div>
-
     </div>
 
-    <div ng-if="vm.activeGesuchsperiodenList.length > 0" class="col-md-8 col-md-offset-2">
-
+    <div
+        ng-if="vm.activeGesuchsperiodenList.length > 0"
+        class="col-md-8 col-md-offset-2"
+    >
         <h2 data-translate="GSDASHBOARD_ANTRAEGE"></h2>
 
-        <table st-table="displayedCollection" st-safe-src="vm.getAntragList()"
-               st-delay="20"
-               class="table fixedtable ebegu-table">
+        <table
+            st-table="displayedCollection"
+            st-safe-src="vm.getAntragList()"
+            st-delay="20"
+            class="table fixedtable ebegu-table"
+        >
             <thead>
-            <tr>
-
-                <th st-sort="antragTyp" class="sortable uppercase" data-translate="TYP"></th>
-                <th st-sort="gesuchsperiodeString" class="sortable uppercase" data-translate="PERIODE" hide-sm hide-xs></th>
-                <th st-sort="eingangsdatum" st-sort-default="true" class="sortable uppercase"
-                    data-translate="EINGANG"></th>
-                <th st-sort="status" class="sortable uppercase" data-translate="STATUS"></th>
-                <th st-sort="verantwortlicher" class="sortable uppercase" data-translate="VERANTWORTLICH" hide-sm
-                    hide-xs></th>
-                <th hide-sm hide-xs width="5%"></th>
-            </tr>
+                <tr>
+                    <th
+                        st-sort="antragTyp"
+                        class="sortable uppercase"
+                        data-translate="TYP"
+                    ></th>
+                    <th
+                        st-sort="gesuchsperiodeString"
+                        class="sortable uppercase"
+                        data-translate="PERIODE"
+                        hide-sm
+                        hide-xs
+                    ></th>
+                    <th
+                        st-sort="eingangsdatum"
+                        st-sort-default="true"
+                        class="sortable uppercase"
+                        data-translate="EINGANG"
+                    ></th>
+                    <th
+                        st-sort="status"
+                        class="sortable uppercase"
+                        data-translate="STATUS"
+                    ></th>
+                    <th
+                        st-sort="verantwortlicher"
+                        class="sortable uppercase"
+                        data-translate="VERANTWORTLICH"
+                        hide-sm
+                        hide-xs
+                    ></th>
+                    <th hide-sm hide-xs width="5%"></th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
-                ng-click="vm.editAntrag(row)" role="row" role="row" tabindex="-1">
-                <td class="ellipsis" title="{{row.antragTyp | translate}}"
-                    ng-bind="row.antragTyp | translate"></td>
-                <td class="ellipsis"
-                    title="{{row.gesuchsperiodeString}}"
-                    ng-bind="row.gesuchsperiodeString" hide-sm hide-xs></td>
-                <td class="ellipsis"
-                    title="{{row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'}}"
-                    ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"></td>
-                <td class="ellipsis" title="{{vm.translate(row.status)}}"
-                    ng-bind="vm.translateStatus(row)"></td>
-                <td class="ellipsis" title="{{vm.getHauptVerantwortlicherFullName(row)}}"
-                    ng-bind="vm.getHauptVerantwortlicherFullName(row)" hide-sm hide-xs></td>
-                <td class="ellipsis" role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%" hide-sm
-                    hide-xs>
-                    <dv-loading-button type="button" button-click="vm.editAntrag(row)"
-                                       button-class="dv-btn-operation dv-btn-operation--white dv-btn-row"
-                                       title="{{'TABLE_EDIT'|translate}}"
-                                       aria-label="{{'TABLE_EDIT'|translate}}">
-                        <i class="fa fa-lg fa-arrow-right" aria-label="{{'TABLE_EDIT'|translate}}">
-                        </i>
-                    </dv-loading-button>
-                </td>
-            </tr>
-            <tr ng-if="vm.getAntragList().length === 0">
-                <td colspan="3" class="empty-table" data-translate="ANTRAG_NOCH_KEINE" hide-gt-sm></td>
-                <td colspan="6" class="empty-table" data-translate="ANTRAG_NOCH_KEINE" hide-sm hide-xs></td>
-            </tr>
+                <tr
+                    ng-repeat="row in displayedCollection"
+                    st-select-row="row"
+                    st-select-mode="single"
+                    ng-click="vm.editAntrag(row)"
+                    role="row"
+                    role="row"
+                    tabindex="-1"
+                >
+                    <td
+                        class="ellipsis"
+                        title="{{ row.antragTyp | translate }}"
+                        ng-bind="row.antragTyp | translate"
+                    ></td>
+                    <td
+                        class="ellipsis"
+                        title="{{ row.gesuchsperiodeString }}"
+                        ng-bind="row.gesuchsperiodeString"
+                        hide-sm
+                        hide-xs
+                    ></td>
+                    <td
+                        class="ellipsis"
+                        title="{{
+                            row.eingangsdatum | amDateFormat: 'DD.MM.YYYY'
+                        }}"
+                        ng-bind="row.eingangsdatum | amDateFormat : 'DD.MM.YYYY'"
+                    ></td>
+                    <td
+                        class="ellipsis"
+                        title="{{ vm.translate(row.status) }}"
+                        ng-bind="vm.translateStatus(row)"
+                    ></td>
+                    <td
+                        class="ellipsis"
+                        title="{{ vm.getHauptVerantwortlicherFullName(row) }}"
+                        ng-bind="vm.getHauptVerantwortlicherFullName(row)"
+                        hide-sm
+                        hide-xs
+                    ></td>
+                    <td
+                        class="ellipsis"
+                        role="cell"
+                        tabindex="-1"
+                        ng-click="$event.stopPropagation()"
+                        width="5%"
+                        hide-sm
+                        hide-xs
+                    >
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.editAntrag(row)"
+                            button-class="dv-btn-operation dv-btn-operation--white dv-btn-row"
+                            title="{{ 'TABLE_EDIT' | translate }}"
+                            aria-label="{{ 'TABLE_EDIT' | translate }}"
+                        >
+                            <i
+                                class="fa fa-lg fa-arrow-right"
+                                aria-label="{{ 'TABLE_EDIT' | translate }}"
+                            >
+                            </i>
+                        </dv-loading-button>
+                    </td>
+                </tr>
+                <tr ng-if="vm.getAntragList().length === 0">
+                    <td
+                        colspan="3"
+                        class="empty-table"
+                        data-translate="ANTRAG_NOCH_KEINE"
+                        hide-gt-sm
+                    ></td>
+                    <td
+                        colspan="6"
+                        class="empty-table"
+                        data-translate="ANTRAG_NOCH_KEINE"
+                        hide-sm
+                        hide-xs
+                    ></td>
+                </tr>
             </tbody>
             <tfoot>
-            <tr>
-                <td colspan="6" class="text-center" hide-sm hide-xs>
-                    <div st-pagination="" st-items-by-page="10" st-displayed-pages="5"></div>
-                </td>
-                <td colspan="3" class="text-center" hide-gt-sm>
-                    <div st-pagination="" st-items-by-page="10" st-displayed-pages="5"></div>
-                </td>
-            </tr>
+                <tr>
+                    <td colspan="6" class="text-center" hide-sm hide-xs>
+                        <div
+                            st-pagination=""
+                            st-items-by-page="10"
+                            st-displayed-pages="5"
+                        ></div>
+                    </td>
+                    <td colspan="3" class="text-center" hide-gt-sm>
+                        <div
+                            st-pagination=""
+                            st-items-by-page="10"
+                            st-displayed-pages="5"
+                        ></div>
+                    </td>
+                </tr>
             </tfoot>
         </table>
     </div>

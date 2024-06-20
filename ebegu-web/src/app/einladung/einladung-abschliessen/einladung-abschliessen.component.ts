@@ -28,19 +28,19 @@ import {getEntityTargetState} from '../einladung-routing/einladung-helpers';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinladungAbschliessenComponent {
-
     @Input() public principal: TSBenutzer;
 
-    public constructor(
-        private readonly transition: Transition
-    ) {
-    }
+    public constructor(private readonly transition: Transition) {}
 
     public next(): void {
         const target = this.setParamIsRegistering(
             getEntityTargetState(this.transition)
         );
-        this.transition.router.stateService.go(target.state(), target.params(), target.options());
+        this.transition.router.stateService.go(
+            target.state(),
+            target.params(),
+            target.options()
+        );
     }
 
     /**
@@ -49,7 +49,10 @@ export class EinladungAbschliessenComponent {
      */
     private setParamIsRegistering(target: TargetState): TargetState {
         const typ = this.transition.params().typ;
-        if (typ === TSEinladungTyp.GEMEINDE || typ === TSEinladungTyp.INSTITUTION) {
+        if (
+            typ === TSEinladungTyp.GEMEINDE ||
+            typ === TSEinladungTyp.INSTITUTION
+        ) {
             return target.withParams({
                 isRegistering: true
             });

@@ -18,40 +18,65 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2 ng-bind="vm.gesuchsteller.extractFullName()"></h2>
-            <dv-bisher gs="vm.model.erwerbspensumGS"
-                       ja="vm.model.erwerbspensumJA"
-                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
-                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
+            <dv-bisher
+                gs="vm.model.erwerbspensumGS"
+                ja="vm.model.erwerbspensumJA"
+                specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                show-specific-bisher-text-if-bisher-none="true"
+            ></dv-bisher>
 
-            <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="!vm.isLuzern"></p>
+            <hr class="header" />
+            <p
+                class="inline-hint"
+                data-translate="PFLICHTFELDER_HINT"
+                ng-if="!vm.isLuzern"
+            ></p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" novalidate
-                  unsaved-warning-form ng-if="vm.model">
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+                ng-if="vm.model"
+            >
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
-
                     <!--Bezeichnung-->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="TAETIGKEIT" for="bezeichnung"></label>
-                                <input id="bezeichnung" type="text" name="bezeichnung"
-                                       data-test="bezeichnung"
-                                       ng-model="vm.model.erwerbspensumJA.bezeichnung"
-                                       dv-max-length class="form-control"
-                                       ng-disabled="vm.erwerbspensumDisabled()"
-                                       aria-describedby="bezeichnung-error"
-                                       ng-attr-placeholder="{{'TAETIGKEIT_PLACEHOLDER' | translate}}"
-                                       ng-required="vm.isLuzern"
-                                >
-                                <dv-bisher gs="vm.model.erwerbspensumGS.bezeichnung"
-                                           ja="vm.model.erwerbspensumJA.bezeichnung"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages input-id="bezeichnung"
-                                                   for="vm.form.bezeichnung.$error"></dv-error-messages>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="TAETIGKEIT"
+                                    for="bezeichnung"
+                                ></label>
+                                <input
+                                    id="bezeichnung"
+                                    type="text"
+                                    name="bezeichnung"
+                                    data-test="bezeichnung"
+                                    ng-model="vm.model.erwerbspensumJA.bezeichnung"
+                                    dv-max-length
+                                    class="form-control"
+                                    ng-disabled="vm.erwerbspensumDisabled()"
+                                    aria-describedby="bezeichnung-error"
+                                    ng-attr-placeholder="{{
+                                        'TAETIGKEIT_PLACEHOLDER' | translate
+                                    }}"
+                                    ng-required="vm.isLuzern"
+                                />
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.bezeichnung"
+                                    ja="vm.model.erwerbspensumJA.bezeichnung"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="bezeichnung"
+                                    for="vm.form.bezeichnung.$error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -60,73 +85,130 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float required" for="taetigkeit">
-                                    <span data-translate="TAETIGKEIT_WAEHLEN"></span>
-                                    <dv-tooltip ng-if="!vm.gesuchModelManager.isGemeindeBern() && !vm.gesuchModelManager.isFKJVTexte" input-id="taetigkeit"
-                                                text="'TAETIGKEIT_WAEHLEN_HELP' | translate"></dv-tooltip>
-                                    <dv-tooltip ng-if="!vm.gesuchModelManager.isGemeindeBern() && vm.gesuchModelManager.isFKJVTexte" input-id="taetigkeit"
-                                                text="'TAETIGKEIT_WAEHLEN_HELP_FKJV' | translate"></dv-tooltip>
-                                    <dv-tooltip ng-if="vm.gesuchModelManager.isGemeindeBern() && !vm.gesuchModelManager.isFKJVTexte" input-id="taetigkeit"
-                                                text="'TAETIGKEIT_WAEHLEN_HELP_BERN' | translate"></dv-tooltip>
-                                    <dv-tooltip ng-if="vm.gesuchModelManager.isGemeindeBern() && vm.gesuchModelManager.isFKJVTexte" input-id="taetigkeit"
-                                                text="'TAETIGKEIT_WAEHLEN_HELP_BERN_FKJV' | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float required"
+                                    for="taetigkeit"
+                                >
+                                    <span
+                                        data-translate="TAETIGKEIT_WAEHLEN"
+                                    ></span>
+                                    <dv-tooltip
+                                        ng-if="
+                                            !vm.gesuchModelManager.isGemeindeBern() &&
+                                            !vm.gesuchModelManager.isFKJVTexte
+                                        "
+                                        input-id="taetigkeit"
+                                        text="'TAETIGKEIT_WAEHLEN_HELP' | translate"
+                                    ></dv-tooltip>
+                                    <dv-tooltip
+                                        ng-if="
+                                            !vm.gesuchModelManager.isGemeindeBern() &&
+                                            vm.gesuchModelManager.isFKJVTexte
+                                        "
+                                        input-id="taetigkeit"
+                                        text="'TAETIGKEIT_WAEHLEN_HELP_FKJV' | translate"
+                                    ></dv-tooltip>
+                                    <dv-tooltip
+                                        ng-if="
+                                            vm.gesuchModelManager.isGemeindeBern() &&
+                                            !vm.gesuchModelManager.isFKJVTexte
+                                        "
+                                        input-id="taetigkeit"
+                                        text="'TAETIGKEIT_WAEHLEN_HELP_BERN' | translate"
+                                    ></dv-tooltip>
+                                    <dv-tooltip
+                                        ng-if="
+                                            vm.gesuchModelManager.isGemeindeBern() &&
+                                            vm.gesuchModelManager.isFKJVTexte
+                                        "
+                                        input-id="taetigkeit"
+                                        text="'TAETIGKEIT_WAEHLEN_HELP_BERN_FKJV' | translate"
+                                    ></dv-tooltip>
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="taetigkeit-error"
-                                            data-test="taetigkeit"
-                                            name="taetigkeit" id="taetigkeit"
-                                            ng-model="vm.model.erwerbspensumJA.taetigkeit"
-                                            class="form-control"
-                                            ng-options="(taetigkeit| translate) for taetigkeit in vm.getTaetigkeitenList() "
-                                            ng-required="true" ng-change="vm.taetigkeitChanged()"
-                                            ng-disabled="vm.erwerbspensumDisabled()">
-                                    </select>
+                                    <select
+                                        aria-describedby="taetigkeit-error"
+                                        data-test="taetigkeit"
+                                        name="taetigkeit"
+                                        id="taetigkeit"
+                                        ng-model="vm.model.erwerbspensumJA.taetigkeit"
+                                        class="form-control"
+                                        ng-options="(taetigkeit| translate) for taetigkeit in vm.getTaetigkeitenList() "
+                                        ng-required="true"
+                                        ng-change="vm.taetigkeitChanged()"
+                                        ng-disabled="vm.erwerbspensumDisabled()"
+                                    ></select>
 
-                                    <dv-bisher gs="vm.model.erwerbspensumGS.taetigkeit"
-                                               ja="vm.model.erwerbspensumJA.taetigkeit"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                    <dv-error-messages input-id="taetigkeit"
-                                                       for="vm.form.taetigkeit.$error"
-                                                       class="error"></dv-error-messages>
+                                    <dv-bisher
+                                        gs="vm.model.erwerbspensumGS.taetigkeit"
+                                        ja="vm.model.erwerbspensumJA.taetigkeit"
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                    ></dv-bisher>
+                                    <dv-error-messages
+                                        input-id="taetigkeit"
+                                        for="vm.form.taetigkeit.$error"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!--Arbeitgeber. Ausbildungsintitution oder Beschäftigungsinstitution -->
-                    <div class="row" ng-if="vm.isErwerbspensumInstitutionRequired()">
+                    <div
+                        class="row"
+                        ng-if="vm.isErwerbspensumInstitutionRequired()"
+                    >
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float required" ng-if="vm.isAngestellt()" for="taetigkeit">
+                                <label
+                                    class="md-no-float required"
+                                    ng-if="vm.isAngestellt()"
+                                    for="taetigkeit"
+                                >
                                     <span data-translate="ARBEITGEBER"></span>
                                 </label>
-                                <label class="md-no-float required"
-                                       ng-if="vm.isInAusildungWeiterbildung()"
-                                       for="taetigkeit">
-                                    <span data-translate="AUSBILDUNGSINSTITUTION"></span>
-                                </label>
-                                <label class="md-no-float required"
-                                       ng-if="vm.isInIntegrationBeschaeftigung()"
-                                       for="taetigkeit">
-                                    <span data-translate="BESCHAEFTIGUNGSINSTITUTION"></span>
-                                </label>
-                                <input id="erwerbspensumInstitution"
-                                       data-test="erwerbspensum-institution"
-                                       type="text"
-                                       required
-                                       name="erwerbspensumInstitution"
-                                       ng-model="vm.model.erwerbspensumJA.erwerbspensumInstitution"
-                                       dv-max-length class="form-control"
-                                       ng-disabled="vm.erwerbspensumDisabled()"
-                                       aria-describedby="erwerbspensumInstitution-error"
+                                <label
+                                    class="md-no-float required"
+                                    ng-if="vm.isInAusildungWeiterbildung()"
+                                    for="taetigkeit"
                                 >
+                                    <span
+                                        data-translate="AUSBILDUNGSINSTITUTION"
+                                    ></span>
+                                </label>
+                                <label
+                                    class="md-no-float required"
+                                    ng-if="vm.isInIntegrationBeschaeftigung()"
+                                    for="taetigkeit"
+                                >
+                                    <span
+                                        data-translate="BESCHAEFTIGUNGSINSTITUTION"
+                                    ></span>
+                                </label>
+                                <input
+                                    id="erwerbspensumInstitution"
+                                    data-test="erwerbspensum-institution"
+                                    type="text"
+                                    required
+                                    name="erwerbspensumInstitution"
+                                    ng-model="vm.model.erwerbspensumJA.erwerbspensumInstitution"
+                                    dv-max-length
+                                    class="form-control"
+                                    ng-disabled="vm.erwerbspensumDisabled()"
+                                    aria-describedby="erwerbspensumInstitution-error"
+                                />
 
-                                <dv-bisher gs="vm.model.erwerbspensumGS.erwerbspensumInstitution"
-                                           ja="vm.model.erwerbspensumJA.erwerbspensumInstitution"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages input-id="erwerbspensumInstitution"
-                                                   for="vm.form.erwerbspensumInstitution.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.erwerbspensumInstitution"
+                                    ja="vm.model.erwerbspensumJA.erwerbspensumInstitution"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="erwerbspensumInstitution"
+                                    for="vm.form.erwerbspensumInstitution.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -135,39 +217,70 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="PENSUM" for="taetigkeitPensum"></label>
-                                <input aria-describedby="taetigkeitPensum-error"
-                                       data-test="taetigkeit-pensum"
-                                       id="taetigkeitPensum" type="number" name="taetigkeitPensum"
-                                       ng-model="vm.model.erwerbspensumJA.pensum"
-                                       dv-max-length class="form-control" max="100"
-                                       ng-required="true" ng-pattern="vm.patternPercentage"
-                                       ng-disabled="vm.erwerbspensumDisabled()"
-                                       ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
-                                <dv-bisher gs="vm.model.erwerbspensumGS.pensum"
-                                           ja="vm.model.erwerbspensumJA.pensum"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages input-id="taetigkeitPensum" for="vm.form.taetigkeitPensum.$error"
-                                                   class="error"></dv-error-messages>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="PENSUM"
+                                    for="taetigkeitPensum"
+                                ></label>
+                                <input
+                                    aria-describedby="taetigkeitPensum-error"
+                                    data-test="taetigkeit-pensum"
+                                    id="taetigkeitPensum"
+                                    type="number"
+                                    name="taetigkeitPensum"
+                                    ng-model="vm.model.erwerbspensumJA.pensum"
+                                    dv-max-length
+                                    class="form-control"
+                                    max="100"
+                                    ng-required="true"
+                                    ng-pattern="vm.patternPercentage"
+                                    ng-disabled="vm.erwerbspensumDisabled()"
+                                    ng-attr-placeholder="{{
+                                        'PERCENTAGE_PLACEHOLDER' | translate
+                                    }}"
+                                />
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.pensum"
+                                    ja="vm.model.erwerbspensumJA.pensum"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="taetigkeitPensum"
+                                    for="vm.form.taetigkeitPensum.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
-                        <div class="col-sm-12 dv-input-container-small" ng-if="vm.wegzeitRequiredEinstellung">
+                        <div
+                            class="col-sm-12 dv-input-container-small"
+                            ng-if="vm.wegzeitRequiredEinstellung"
+                        >
                             <dv-input-container class="form-group">
                                 <label class="md-no-float">
-                                    <span data-translate="WEGZEIT" for="wegzeit"></span>
-                                    <dv-tooltip input-id="wegzeit" text="'WEGZEIT_INFO' | translate"></dv-tooltip>
+                                    <span
+                                        data-translate="WEGZEIT"
+                                        for="wegzeit"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="wegzeit"
+                                        text="'WEGZEIT_INFO' | translate"
+                                    ></dv-tooltip>
                                 </label>
-                                <textarea id="wegzeit"
-                                          ng-model="vm.model.erwerbspensumJA.wegzeit"
-                                          name="wegzeit"
-                                          data-test="wegzeit"
-                                          class="form-control"
-                                          maxlength="200"
-                                          rows="2">
+                                <textarea
+                                    id="wegzeit"
+                                    ng-model="vm.model.erwerbspensumJA.wegzeit"
+                                    name="wegzeit"
+                                    data-test="wegzeit"
+                                    class="form-control"
+                                    maxlength="200"
+                                    rows="2"
+                                >
                                 </textarea>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.wegzeit"
-                                           ja="vm.model.erwerbspensumJA.wegzeit"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.wegzeit"
+                                    ja="vm.model.erwerbspensumJA.wegzeit"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
                             </dv-input-container>
                         </div>
                     </div>
@@ -176,37 +289,68 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="AB" for="taetigkeitAbID">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="AB"
+                                    for="taetigkeitAbID"
+                                >
                                 </label>
-                                <dv-datepicker input-id="taetigkeitAbID" name="taetigkeitAb"
-                                               data-test="taetigkeit-ab"
-                                               ng-model="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
-                                               ng-required="true" class="input-element" placeholder=""
-                                               ng-disabled="vm.erwerbspensumDisabled()"
-                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                <dv-datepicker
+                                    input-id="taetigkeitAbID"
+                                    name="taetigkeitAb"
+                                    data-test="taetigkeit-ab"
+                                    ng-model="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
+                                    ng-required="true"
+                                    class="input-element"
+                                    placeholder=""
+                                    ng-disabled="vm.erwerbspensumDisabled()"
+                                    ng-attr-placeholder="{{
+                                        'DATE_PLACEHOLDER' | translate
+                                    }}"
+                                >
                                 </dv-datepicker>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigAb"
-                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages input-id="taetigkeitAbID" for="vm.form.taetigkeitAb.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigAb"
+                                    ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="taetigkeitAbID"
+                                    for="vm.form.taetigkeitAb.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="BIS" for="taetigkeitBisID">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="BIS"
+                                    for="taetigkeitBisID"
+                                >
                                 </label>
-                                <dv-datepicker input-id="taetigkeitBisID" name="taetigkeitBis"
-                                               data-test="taetigkeit-bis"
-                                               ng-model="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
-                                               ng-required="false" class="input-element"
-                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                <dv-datepicker
+                                    input-id="taetigkeitBisID"
+                                    name="taetigkeitBis"
+                                    data-test="taetigkeit-bis"
+                                    ng-model="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
+                                    ng-required="false"
+                                    class="input-element"
+                                    ng-attr-placeholder="{{
+                                        'DATE_PLACEHOLDER' | translate
+                                    }}"
+                                >
                                 </dv-datepicker>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigBis"
-                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages input-id="taetigkeitBisID" for="vm.form.taetigkeitBis.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigBis"
+                                    ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="taetigkeitBisID"
+                                    for="vm.form.taetigkeitBis.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -215,22 +359,39 @@
                     <div class="row" ng-if="vm.isUnbezahlterUrlaubVisible()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
-                                             data-test="has-unbezahlter-urlaub"
-                                             name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
-                                             aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
-                                             ng-disabled="vm.isUnbezahlterUrlaubDisabled()"
-                                             ng-change="vm.unbezahlterUrlaubClicked()">
-                                    <span data-translate="UNBEZAHLTER_URLAUB"></span>
+                                <md-checkbox
+                                    ng-model="vm.hasUnbezahlterUrlaub"
+                                    data-test="has-unbezahlter-urlaub"
+                                    name="showUnbezahlterUrlaub"
+                                    id="showUnbezahlterUrlaub"
+                                    aria-label="{{
+                                        'UNBEZAHLTER_URLAUB' | translate
+                                    }}"
+                                    ng-disabled="vm.isUnbezahlterUrlaubDisabled()"
+                                    ng-change="vm.unbezahlterUrlaubClicked()"
+                                >
+                                    <span
+                                        data-translate="UNBEZAHLTER_URLAUB"
+                                    ></span>
                                 </md-checkbox>
-                                <div ng-if="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)">
-									<dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
-											   ja="vm.hasUnbezahlterUrlaub"
-											   specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
-											   show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                <div
+                                    ng-if="
+                                        vm.isNotNullOrUndefined(
+                                            vm.model.erwerbspensumGS
+                                        )
+                                    "
+                                >
+                                    <dv-bisher
+                                        gs="vm.hasUnbezahlterUrlaubGS"
+                                        ja="vm.hasUnbezahlterUrlaub"
+                                        specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                    ></dv-bisher>
                                 </div>
-                                <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-error-messages
+                                    for="vm.form.showUnbezahlterUrlaub.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -238,40 +399,68 @@
                     <div class="row" ng-if="vm.hasUnbezahlterUrlaub">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="VON" for="urlaubDatumAb"></label>
-                                <dv-datepicker input-id="urlaubDatumAb" name="urlaubDatumAb"
-                                               data-test="urlaub-datum-ab"
-                                               class="input-element"
-                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
-                                               ng-required="vm.hasUnbezahlterUrlaub"
-                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                               ng-disabled="vm.isUnbezahlterUrlaubDisabled()">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="VON"
+                                    for="urlaubDatumAb"
+                                ></label>
+                                <dv-datepicker
+                                    input-id="urlaubDatumAb"
+                                    name="urlaubDatumAb"
+                                    data-test="urlaub-datum-ab"
+                                    class="input-element"
+                                    ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                    ng-required="vm.hasUnbezahlterUrlaub"
+                                    ng-attr-placeholder="{{
+                                        'DATE_PLACEHOLDER' | translate
+                                    }}"
+                                    ng-disabled="vm.isUnbezahlterUrlaubDisabled()"
+                                >
                                 </dv-datepicker>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigAb"
-                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
-                                           show-if-bisher-none="false"
-                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
-                                <dv-error-messages input-id="urlaubDatumAb" class="error"
-                                                   for="vm.form.urlaubDatumAb.$error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                    ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                    show-if-bisher-none="false"
+                                    block-existed="vm.hasUnbezahlterUrlaubGS === true"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="urlaubDatumAb"
+                                    class="error"
+                                    for="vm.form.urlaubDatumAb.$error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="BIS" for="urlaubDatumBis"></label>
-                                <dv-datepicker input-id="urlaubDatumBis" name="urlaubDatumBis"
-                                               data-test="urlaub-datum-bis"
-                                               class="input-element"
-                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
-                                               ng-required="false"
-                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                               ng-disabled="vm.isUnbezahlterUrlaubDisabled()">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="BIS"
+                                    for="urlaubDatumBis"
+                                ></label>
+                                <dv-datepicker
+                                    input-id="urlaubDatumBis"
+                                    name="urlaubDatumBis"
+                                    data-test="urlaub-datum-bis"
+                                    class="input-element"
+                                    ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                    ng-required="false"
+                                    ng-attr-placeholder="{{
+                                        'DATE_PLACEHOLDER' | translate
+                                    }}"
+                                    ng-disabled="vm.isUnbezahlterUrlaubDisabled()"
+                                >
                                 </dv-datepicker>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigBis"
-                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
-                                           show-if-bisher-none="false"
-                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
-                                <dv-error-messages input-id="urlaubDatumBis" class="error"
-                                                   for="vm.form.urlaubDatumBis.$error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                    ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                    show-if-bisher-none="false"
+                                    block-existed="vm.hasUnbezahlterUrlaubGS === true"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="urlaubDatumBis"
+                                    class="error"
+                                    for="vm.form.urlaubDatumBis.$error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -279,37 +468,50 @@
                     <div class="row" ng-if="vm.isLuzern">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten" name="unregelmaessigeArbeitszeiten" id="unregelmaessigeArbeitszeiten"
-                                             data-test="has-unregelmaessige-arbeitszeiten"
-                                             aria-label="{{'UNREGELMAESSIGE_ARBEITSZEITEN'|translate}}"
-                                             ng-disabled="vm.isGesuchReadonly()">
-                                    <span data-translate="UNREGELMAESSIGE_ARBEITSZEITEN"></span>
+                                <md-checkbox
+                                    ng-model="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
+                                    name="unregelmaessigeArbeitszeiten"
+                                    id="unregelmaessigeArbeitszeiten"
+                                    data-test="has-unregelmaessige-arbeitszeiten"
+                                    aria-label="{{
+                                        'UNREGELMAESSIGE_ARBEITSZEITEN'
+                                            | translate
+                                    }}"
+                                    ng-disabled="vm.isGesuchReadonly()"
+                                >
+                                    <span
+                                        data-translate="UNREGELMAESSIGE_ARBEITSZEITEN"
+                                    ></span>
                                 </md-checkbox>
-                                <dv-tooltip text="'UNREGELMAESSIGE_ARBEITSZEITEN_HINT' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.unregelmaessigeArbeitszeiten"
-                                           ja="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
-                                <dv-error-messages for="vm.form.unregelmaessigeArbeitszeiten.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-tooltip
+                                    text="'UNREGELMAESSIGE_ARBEITSZEITEN_HINT' | translate"
+                                ></dv-tooltip>
+                                <dv-bisher
+                                    gs="vm.model.erwerbspensumGS.unregelmaessigeArbeitszeiten"
+                                    ja="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    for="vm.form.unregelmaessigeArbeitszeiten.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
-
                 </fieldset>
 
                 <!--Buttons-->
-                <dv-navigation dv-cancel="vm.cancel()"
-                               dv-save="vm.save()"
-                               dv-next="!vm.isGesuchReadonly()"
-                               dv-sub-step="2"
-                               dv-translate-next="{{'SPEICHERN'}}">
+                <dv-navigation
+                    dv-cancel="vm.cancel()"
+                    dv-save="vm.save()"
+                    dv-next="!vm.isGesuchReadonly()"
+                    dv-sub-step="2"
+                    dv-translate-next="{{ 'SPEICHERN' }}"
+                >
                 </dv-navigation>
-
             </form>
 
             <p ng-if="!vm.model" data-translate="NO_ERWERBSPENSUM_DATA"></p>
-
         </div>
     </div>
 </div>
-

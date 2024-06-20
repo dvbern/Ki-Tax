@@ -14,25 +14,39 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div style="display: inline-block; max-width:100%;">
-	<div class="onboarding-welcome">
-		<p translate *ngIf="isZpvNummerErfolgreichVerknuepft" >ZPV_GS2_SUCCESS</p>
-		<p translate *ngIf="!isZpvNummerErfolgreichVerknuepft" class="well well-status-abgewiesen">ZPV_GS_NICHT_VERKNUEPFT</p>
-	</div>
+<div style="display: inline-block; max-width: 100%">
+    <div class="onboarding-welcome">
+        <p translate *ngIf="isZpvNummerErfolgreichVerknuepft">
+            ZPV_GS2_SUCCESS
+        </p>
+        <p
+            translate
+            *ngIf="!isZpvNummerErfolgreichVerknuepft"
+            class="well well-status-abgewiesen"
+        >
+            ZPV_GS_NICHT_VERKNUEPFT
+        </p>
+    </div>
 
-	<div class="onboarding-login">
-		<div class="onboarding-login-buttons">
-			<button *ngIf="!isAuthenticated" uiSref="authentication.login" [uiOptions]="{location: false}"
-					class="dv-btn onboarding-red-border-button onboarding-login-button-width">
-				<span translate>ONBOARDING_ANMELDEN</span>
-			</button>
-			<button *ngIf="isAuthenticated"
-					uiSref="gesuch.finanzielleSituation"
-					[uiParams]="getParams()"
-					[uiOptions]="{location: false}"
-					class="dv-btn onboarding-red-border-button onboarding-login-button-width">
-				<span translate>ONBOARDING_TO_FIN_SIT</span>
-			</button>
-		</div>
-	</div>
+    <div class="onboarding-login">
+        <div class="onboarding-login-buttons">
+            <button
+                *ngIf="!isAuthenticated"
+                uiSref="authentication.login"
+                [uiOptions]="{location: false}"
+                class="dv-btn onboarding-red-border-button onboarding-login-button-width"
+            >
+                <span translate>ONBOARDING_ANMELDEN</span>
+            </button>
+            <button
+                *ngIf="isAuthenticated"
+                uiSref="gesuch.finanzielleSituation"
+                [uiParams]="getParams()"
+                [uiOptions]="{location: false}"
+                class="dv-btn onboarding-red-border-button onboarding-login-button-width"
+            >
+                <span translate>ONBOARDING_TO_FIN_SIT</span>
+            </button>
+        </div>
+    </div>
 </div>

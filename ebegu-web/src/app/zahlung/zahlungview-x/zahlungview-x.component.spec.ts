@@ -1,7 +1,7 @@
 import {CurrencyPipe} from '@angular/common';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -24,16 +24,36 @@ describe('ZahlungviewXComponent', () => {
     let component: ZahlungviewXComponent;
     let fixture: ComponentFixture<ZahlungviewXComponent>;
 
-    const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, ['getAllZahlungsauftraege']);
+    const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, [
+        'getAllZahlungsauftraege'
+    ]);
     const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
-    const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, ['getAccessTokenDokument']);
-    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['getZahlungReportExcel']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
-    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+    const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, [
+        'getAccessTokenDokument'
+    ]);
+    const reportRSSpy = jasmine.createSpyObj(ReportRS.name, [
+        'getZahlungReportExcel'
+    ]);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['principal$', 'isOneOfRoles']
+    );
+    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+        UIRouterGlobals.name,
+        ['params']
+    );
     const currencySpy = jasmine.createSpyObj(CurrencyPipe.name, ['transform']);
-    const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);
-    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, ['clearAll']);
-    const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
+    const transitionSpy = jasmine.createSpyObj<TransitionService>(
+        TransitionService.name,
+        ['onStart']
+    );
+    const errorServiceSpy = jasmine.createSpyObj(ErrorService.name, [
+        'clearAll'
+    ]);
+    const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(
+        StateStoreService.name,
+        ['get', 'has']
+    );
 
     authServiceSpy.principal$ = of(new TSBenutzer());
 
@@ -62,7 +82,7 @@ describe('ZahlungviewXComponent', () => {
                 {provide: StateStoreService, useValue: stateStoreSpy}
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
+        })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

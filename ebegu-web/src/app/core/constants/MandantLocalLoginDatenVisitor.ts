@@ -19,8 +19,9 @@ import {LOCALLOGIN_DATA, LocalLoginDaten} from './LOCALLOGIN_DATA';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class MandantLocalLoginDatenVisitor implements MandantVisitor<LocalLoginDaten> {
-
+export class MandantLocalLoginDatenVisitor
+    implements MandantVisitor<LocalLoginDaten>
+{
     public process(mandant: KiBonMandant): LocalLoginDaten {
         return mandant.accept(this);
     }
@@ -44,5 +45,4 @@ export class MandantLocalLoginDatenVisitor implements MandantVisitor<LocalLoginD
     public visitSchwyz(): LocalLoginDaten {
         return LOCALLOGIN_DATA.SZ;
     }
-
 }

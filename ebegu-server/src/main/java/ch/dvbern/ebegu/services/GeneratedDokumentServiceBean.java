@@ -15,10 +15,60 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.FileMetadata_;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GeneratedDokument;
+import ch.dvbern.ebegu.entities.GeneratedDokument_;
+import ch.dvbern.ebegu.entities.GeneratedGeneralDokument;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
+import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Pain001Dokument;
+import ch.dvbern.ebegu.entities.Pain001Dokument_;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.WriteProtectedDokument;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -39,26 +89,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.*;
 
 /**
  * Service fuer GeneratedDokument
@@ -376,13 +406,14 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			// Verfuegt
 			if (betreuung.getBetreuungsstatus() == Betreuungsstatus.VERFUEGT) {
-				byte[] verfuegung = readFileIfExists(GeneratedDokumentTyp.VERFUEGUNG, betreuung.getBGNummer(), gesuch);
+				byte[] verfuegung = readFileIfExists(GeneratedDokumentTyp.VERFUEGUNG,
+					betreuung.getReferenzNummer(), gesuch);
 				if (verfuegung.length > 0) {
 					docsToMerge.add(new ByteArrayInputStream(verfuegung));
 				}
 			} else if (betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 				byte[] nichtEintreten =
-					readFileIfExists(GeneratedDokumentTyp.NICHTEINTRETEN, betreuung.getBGNummer(), gesuch);
+					readFileIfExists(GeneratedDokumentTyp.NICHTEINTRETEN, betreuung.getReferenzNummer(), gesuch);
 				if (nichtEintreten.length > 0) {
 					docsToMerge.add(new ByteArrayInputStream(nichtEintreten));
 				}
@@ -620,9 +651,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	) throws MimeTypeParseException, MergeDocException {
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-		String bgNummer = betreuung.getBGNummer();
-		String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG, bgNummer, sprache.getLocale(), gesuch.extractMandant());
+		String referenzNummer = betreuung.getReferenzNummer();
+		String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
+			GeneratedDokumentTyp.VERFUEGUNG,
+			referenzNummer,
+			sprache.getLocale(),
+			gesuch.extractMandant());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
@@ -640,7 +674,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					"Das Dokument vom Typ: {} fuer Betreuungsnummer {} konnte unter dem Pfad {} " +
 						"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!",
 					GeneratedDokumentTyp.VERFUEGUNG.name(),
-					bgNummer,
+					referenzNummer,
 					expectedFilepath);
 			}
 		}
@@ -671,7 +705,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 				final String fileNameForDocTyp =
 					DokumenteUtil.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG,
-						matchedBetreuung.getBGNummer(), sprache.getLocale(), gesuch.extractMandant());
+						matchedBetreuung.getReferenzNummer(), sprache.getLocale(), gesuch.extractMandant());
 
 				// Wenn die Betreuung im Zustand Verfügt ist, soll das Dokument als schreibgeschützt gespeichert
 				// werden.
@@ -754,7 +788,11 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(dokumentTyp, betreuung.getBGNummer(), sprache.getLocale(), gesuch.extractMandant());
+			.getFileNameForGeneratedDokumentTyp(
+				dokumentTyp,
+				betreuung.getReferenzNummer(),
+				sprache.getLocale(),
+				gesuch.extractMandant());
 
 		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
@@ -928,15 +966,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	) throws MimeTypeParseException, MergeDocException {
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-		String bgNummer = abstractAnmeldung.getBGNummer();
+		String referenzNummer = abstractAnmeldung.getReferenzNummer();
 		String fileNameForGeneratedDokumentTyp = "";
 		if(mitTarif) {
 			fileNameForGeneratedDokumentTyp = DokumenteUtil
-				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, bgNummer, sprache.getLocale(), gesuch.extractMandant());
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, referenzNummer, sprache.getLocale(), gesuch.extractMandant());
 		}
 		else {
 			fileNameForGeneratedDokumentTyp = DokumenteUtil
-				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, bgNummer,
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, referenzNummer,
 					sprache.getLocale(), gesuch.extractMandant());
 		}
 
@@ -961,7 +999,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 						"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!",
 					 mitTarif ? GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF.name() :
 						 GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF.name(),
-					bgNummer,
+					referenzNummer,
 					expectedFilepath);
 			}
 		}

@@ -31,21 +31,31 @@ describe('EditSozialdienstComponent', () => {
     let component: EditSozialdienstComponent;
     let fixture: ComponentFixture<EditSozialdienstComponent>;
 
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-        ['getSozialdienstStammdaten']);
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params',
+        'from'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(
+        SozialdienstRS.name,
+        ['getSozialdienstStammdaten']
+    );
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [EditSozialdienstComponent],
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 WindowRef,
                 {provide: Transition, useValue: transitionSpy},

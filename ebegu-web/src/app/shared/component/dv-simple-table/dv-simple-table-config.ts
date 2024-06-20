@@ -36,7 +36,7 @@ export class DvSimpleTableConfig {
         initialSortDirection: SortDirection = 'asc',
         cursorPointer: boolean = true,
         paginate?: number
-        ) {
+    ) {
         this._initialSortColumn = initialSortColumn;
         this._initialSortDirection = initialSortDirection;
         this._cursorPointer = cursorPointer;

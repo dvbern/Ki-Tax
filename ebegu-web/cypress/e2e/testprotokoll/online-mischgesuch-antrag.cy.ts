@@ -17,11 +17,16 @@
 
 import {getUser, User} from '@dv-e2e/types';
 import {
-    AntragBetreuungPO, AntragCreationPO, ConfirmDialogPO,
+    AntragBetreuungPO,
+    AntragCreationPO,
+    ConfirmDialogPO,
     FaelleListePO,
-    FallToolbarPO, FreigabePO,
+    FallToolbarPO,
+    FreigabePO,
     NavigationPO,
-    TestFaellePO, VerfuegenPO, VerfuegungPO,
+    TestFaellePO,
+    VerfuegenPO,
+    VerfuegungPO
 } from '@dv-e2e/page-objects';
 import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 
@@ -29,8 +34,12 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGS: User = '[5-GS] Emma Gerber';
     const userTS = getUser('[3-SB-TS-Paris] Charlotte Gainsbourg');
-    const userGemeindeBGTS = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
-    const userTraegerschaft = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
+    const userGemeindeBGTS = getUser(
+        '[6-P-Admin-Gemeinde] Gerlinde Hofstetter'
+    );
+    const userTraegerschaft = getUser(
+        '[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause'
+    );
     let gesuchUrl: string;
     let fallnummer: string;
 
@@ -47,7 +56,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
             betreuungsstatus: 'warten'
         });
 
-        cy.url().then((url) => {
+        cy.url().then(url => {
             const parts = new URL(url);
             gesuchUrl = `/${parts.hash}`;
         });
@@ -85,7 +94,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         createTsAnmeldungFuerKind2();
 
         // Gesuch ist verfügt und wir übernehmen nun statt zu akzeptieren
-        tsUebernehmenAsUserTs(1,0);
+        tsUebernehmenAsUserTs(1, 0);
         //TODO Überprüfen, ob ein weiteres Email versendet wurde (Anmeldung zweites Kind mit Tarif)
 
         loginAndGoToGesuch(userGemeindeBGTS);
@@ -99,7 +108,6 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
-
     };
 
     const createTsAnmeldungFuerKind2 = () => {
@@ -123,7 +131,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.getPlatzBestaetigenButton().click();
     };
 
-    const tsAkzeptierenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
+    const tsAkzeptierenAsUserTs = (
+        kindIndex: number,
+        betreuungsIndex: number
+    ) => {
         loginAsTSAndOpenBetreuung(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
             AntragBetreuungPO.getPlatzAkzeptierenButton().click();
@@ -131,7 +142,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const tsUebernehmenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
+    const tsUebernehmenAsUserTs = (
+        kindIndex: number,
+        betreuungsIndex: number
+    ) => {
         loginAsTSAndOpenBetreuung(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
             AntragBetreuungPO.getPlatzAkzeptierenButton().click();
@@ -139,13 +153,15 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const loginAsTSAndOpenBetreuung = (kindIndex: number, betreuungsIndex: number) => {
+    const loginAsTSAndOpenBetreuung = (
+        kindIndex: number,
+        betreuungsIndex: number
+    ) => {
         cy.login(userTS);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
         AntragBetreuungPO.getBetreuung(kindIndex, betreuungsIndex).click();
     };
-
 
     const gesuchFreigeben = () => {
         SidenavPO.goTo('DOKUMENTE');
@@ -166,7 +182,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
 
         SidenavPO.goTo('GESUCH_ERSTELLEN');
-        AntragCreationPO.getEingangsdatum().find('input').clear().type('31.07.2023');
+        AntragCreationPO.getEingangsdatum()
+            .find('input')
+            .clear()
+            .type('31.07.2023');
 
         cy.waitForRequest('PUT', '**/gesuche', () => {
             NavigationPO.saveAndGoNext();
@@ -187,9 +206,13 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const betreuungVerfuegen = (kindIndex: number, betreuungIndex: number) => {
         SidenavPO.goTo('VERFUEGEN');
 
-        cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-            VerfuegenPO.getVerfuegung(kindIndex, betreuungIndex).click();
-        });
+        cy.waitForRequest(
+            'GET',
+            '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**',
+            () => {
+                VerfuegenPO.getVerfuegung(kindIndex, betreuungIndex).click();
+            }
+        );
 
         VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
 
@@ -202,16 +225,19 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const checkBetreuungsstatus = () => {
         SidenavPO.goTo('VERFUEGEN');
         VerfuegenPO.getBetreuungsstatus(0, 0).should('include.text', 'Verfügt');
-        VerfuegenPO.getBetreuungsstatus(0, 1).should('include.text', 'Anmeldung übernommen');
+        VerfuegenPO.getBetreuungsstatus(0, 1).should(
+            'include.text',
+            'Anmeldung übernommen'
+        );
         VerfuegenPO.getBetreuungsstatus(1, 0).should('include.text', 'Verfügt');
-        VerfuegenPO.getBetreuungsstatus(1, 1).should('include.text', 'Anmeldung übernommen');
+        VerfuegenPO.getBetreuungsstatus(1, 1).should(
+            'include.text',
+            'Anmeldung übernommen'
+        );
     };
 
     const loginAndGoToGesuch = (user: User) => {
         cy.login(user);
         cy.visit(gesuchUrl);
     };
-
 });
-
-

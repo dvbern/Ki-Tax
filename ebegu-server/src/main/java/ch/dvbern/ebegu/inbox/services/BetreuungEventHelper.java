@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -38,8 +37,6 @@ import ch.dvbern.ebegu.inbox.handler.Processing;
 import ch.dvbern.ebegu.inbox.util.TechnicalUserConfigurationVisitor;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.util.BetreuungUtil;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -47,7 +44,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Stateless
 public class BetreuungEventHelper {
 
-	static final TechnicalUserConfigurationVisitor technicalUserConfigVisitor = new TechnicalUserConfigurationVisitor();
+	private static final TechnicalUserConfigurationVisitor USER_CONFIG_VISITOR = new TechnicalUserConfigurationVisitor();
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -55,21 +52,10 @@ public class BetreuungEventHelper {
 	@Inject
 	private ExternalClientService externalClientService;
 
-	@Inject
-	private GemeindeService gemeindeService;
-
-	@Nonnull
-	public Optional<Mandant> getMandantFromBgNummer(@Nonnull String refnr) {
-		int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
-
-		return gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer)
-			.map(Gemeinde::getMandant);
-	}
-
 	@Nonnull
 	public Benutzer getMutationsmeldungBenutzer(Betreuung betreuung) {
 		Mandant mandant = betreuung.extractGesuch().extractMandant();
-		String technicalUserID = technicalUserConfigVisitor.process(mandant.getMandantIdentifier()).getBetreuungMitteilungUser();
+		String technicalUserID = USER_CONFIG_VISITOR.process(mandant.getMandantIdentifier()).getBetreuungMitteilungUser();
 		return benutzerService.findBenutzerById(technicalUserID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, technicalUserID));
 	}

@@ -30,7 +30,8 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'alleVerfuegungen.view',
-        template: '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
+        template:
+            '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/alleVerfuegungen/:dossierId',
         data: {
             roles: TSRoleUtil.getAllRolesForMenuAlleVerfuegungen()

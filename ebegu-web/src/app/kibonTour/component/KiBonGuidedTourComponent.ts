@@ -17,22 +17,27 @@
 import {DOCUMENT} from '@angular/common';
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {GuidedTourComponent, GuidedTourService, WindowRefService} from 'ngx-guided-tour';
+import {
+    GuidedTourComponent,
+    GuidedTourService,
+    WindowRefService
+} from 'ngx-guided-tour';
 
 @Component({
     selector: 'kibon-guided-tour',
     templateUrl: './kibon-guided-tour.component.html',
-    styleUrls: ['./kibon-guided-tour.component.scss']
+    styleUrls: ['./kibon-guided-tour.component.less']
 })
 export class KiBonGuidedTourComponent extends GuidedTourComponent {
-
     public tourStepWidth = 500;
     /* eslint-disable */
-    public constructor(private readonly translate: TranslateService,
-                       public readonly guidedTourService: GuidedTourService,
-                       private readonly changeDetectorRef: ChangeDetectorRef,
-                       private readonly window: WindowRefService,
-                       @Inject(DOCUMENT) private readonly domEl: any) {
+    public constructor(
+        private readonly translate: TranslateService,
+        public readonly guidedTourService: GuidedTourService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly window: WindowRefService,
+        @Inject(DOCUMENT) private readonly domEl: any
+    ) {
         super(guidedTourService, window, domEl);
     }
 

@@ -23,7 +23,6 @@ import {TSEWKBeziehung} from './TSEWKBeziehung';
  * DTO für eine Person aus dem EWK
  */
 export class TSEWKPerson extends TSAbstractMutableEntity {
-
     private _personID: string;
     private _nachname: string;
     private _vorname: string;
@@ -38,7 +37,7 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
     private _gesuchsteller: boolean;
     private _beziehungen: Array<TSEWKBeziehung>;
     private _nichtGefunden: boolean;
-    private  _haushalt: boolean;
+    private _haushalt: boolean;
 
     public constructor(
         personID?: string,
@@ -195,16 +194,15 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._nichtGefunden = value;
     }
 
-    public getShortDescription(): string {
-        let description: string;
-        description = `${this.vorname  } `;
-        description += `${this.nachname  }, `;
-        if(this.geburtsdatum) {
-            description += `${this.geburtsdatum.format('DD.MM.YYYY')}, `;
-        }
-        if (this.adresse) {
-            description += this.adresse.ort;
-        }
-        return description;
+    public get gefunden() {
+        return !this.nichtGefunden;
+    }
+
+    public isMaennlich(): boolean {
+        return this.geschlecht === TSGeschlecht.MAENNLICH;
+    }
+
+    public isWeiblich(): boolean {
+        return this.geschlecht === TSGeschlecht.WEIBLICH;
     }
 }

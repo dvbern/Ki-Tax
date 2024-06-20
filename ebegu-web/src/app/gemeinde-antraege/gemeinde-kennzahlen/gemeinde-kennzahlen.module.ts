@@ -25,7 +25,10 @@ import {GemeindeKennzahlenRoutingModule} from './gemeinde-kennzahlen-routing/gem
 import {GemeindeKennzahlenUiComponent} from './gemeinde-kennzahlen-ui/gemeinde-kennzahlen-ui.component';
 
 @NgModule({
-    declarations: [GemeindeKennzahlenFormularComponent, GemeindeKennzahlenUiComponent],
+    declarations: [
+        GemeindeKennzahlenFormularComponent,
+        GemeindeKennzahlenUiComponent
+    ],
     imports: [
         CommonModule,
         TranslateModule,
@@ -35,5 +38,4 @@ import {GemeindeKennzahlenUiComponent} from './gemeinde-kennzahlen-ui/gemeinde-k
         ReactiveFormsModule
     ]
 })
-export class GemeindeKennzahlenModule {
-}
+export class GemeindeKennzahlenModule {}

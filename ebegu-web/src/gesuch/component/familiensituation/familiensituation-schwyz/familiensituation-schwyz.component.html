@@ -3,43 +3,68 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_TITLE</span>
+                <span *ngIf="isMutation()" translate
+                    >MUTATION_FAMSITUATION_TITLE</span
+                >
                 <span *ngIf="!isMutation()" translate>FAMILIENSITUATION</span>
             </h2>
-            <hr class="header"/>
-            <p *ngIf="showError()" role="alert" translate
-               class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
+            <hr class="header" />
+            <p
+                *ngIf="showError()"
+                role="alert"
+                translate
+                class="dv-error-messages"
+            >
+                ERROR_DATUM_GESETZT_BEI_MUTATION
+            </p>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-
-            <form role="form" name="form" class="" novalidate unsaved-warning-form>
-
+            <form
+                role="form"
+                name="form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
                 <!--Aenderung per-->
                 <div class="row" *ngIf="isMutation()">
                     <div class="col-md-12">
-                        <dv-input-container class="form-group">
-
+                        <dv-input-container-x class="form-group">
                             <div class="row">
                                 <div class="col-xs-12 dv-input-container-small">
-                                    <label class="md-no-float"
-                                           translate=""
-                                           for="aenderungPer_ID">AENDERUNG_PER</label>
-                                    <dv-date-picker-x [inputId]="'aenderungPer_ID'"
-                                                      class="input-element"
-                                                      [(date)]="getFamiliensituation().aenderungPer"
-                                                      (dateChange)="onDatumBlur()"
-                                                      [datePickerEnabled]="false"
-                                                      [disabled]="isGesuchReadonly()">
+                                    <label
+                                        class="md-no-float"
+                                        translate=""
+                                        for="aenderungPer_ID"
+                                        >AENDERUNG_PER</label
+                                    >
+                                    <dv-date-picker-x
+                                        [inputId]="'aenderungPer_ID'"
+                                        class="input-element"
+                                        [(date)]="
+                                            getFamiliensituation().aenderungPer
+                                        "
+                                        (dateChange)="onDatumBlur()"
+                                        [datePickerEnabled]="false"
+                                        [disabled]="isGesuchReadonly()"
+                                    >
                                     </dv-date-picker-x>
-                                    <dv-bisher-x [showBisher]="showBisher()"
-                                                 [deklaration]="getFamiliensituationGS()?.aenderungPer"
-                                                 [korrektur]="getFamiliensituation()?.aenderungPer"></dv-bisher-x>
+                                    <dv-bisher-x
+                                        [showBisher]="showBisher()"
+                                        [deklaration]="
+                                            getFamiliensituationGS()
+                                                ?.aenderungPer
+                                        "
+                                        [korrektur]="
+                                            getFamiliensituation()?.aenderungPer
+                                        "
+                                    ></dv-bisher-x>
                                 </div>
                             </div>
-                        </dv-input-container>
+                        </dv-input-container-x>
                     </div>
                 </div>
 
@@ -47,45 +72,95 @@
                 <div class="row">
                     <div class="col-xs-12 dv-input-container-question">
                         <div class="form-group">
-                                <span class="ebegu-h1 required">
-                                    <span translate>FAMILIENSITUATION_FRAGE_2</span>
-                                </span>
+                            <span class="ebegu-h1 required">
+                                <span translate>FAMILIENSITUATION_FRAGE_2</span>
+                            </span>
                             <dv-radio-container-x>
-                                <mat-radio-group [(ngModel)]="getFamiliensituation().gesuchstellerKardinalitaet"
-                                                 [required]="true"
-                                                 #gesuchstellerKardinalitaet="ngModel"
-                                                 name="gesuchstellerKardinalitaet"
-                                                 data-test="container.gesuchsteller-kardnalitaet"
-                                                 class="input-element sp" items="gesuchstellerKardinalitaetValues"
-                                                 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
-                                                 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
-                                                 aria-described-by="gesuchstellerKardinalitaet-error">
-                                    <mat-radio-button [value]="TSGesuchstellerKardinalitaet.ZU_ZWEIT">{{'LABEL_JA' | translate}}</mat-radio-button>
-                                    <mat-radio-button [value]="TSGesuchstellerKardinalitaet.ALLEINE">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                <mat-radio-group
+                                    [(ngModel)]="
+                                        getFamiliensituation()
+                                            .gesuchstellerKardinalitaet
+                                    "
+                                    [required]="true"
+                                    #gesuchstellerKardinalitaet="ngModel"
+                                    name="gesuchstellerKardinalitaet"
+                                    data-test="container.gesuchsteller-kardnalitaet"
+                                    class="input-element sp"
+                                    [disabled]="
+                                        !(
+                                            isFamiliensituationEnabled() &&
+                                            isOneOfRoles(allowedRoles)
+                                        )
+                                    "
+                                    [attr.aria-label]="
+                                        'FAMILIENSITUATION_FRAGE_2' | translate
+                                    "
+                                    aria-describedby="gesuchstellerKardinalitaet-error"
+                                >
+                                    <mat-radio-button
+                                        [value]="
+                                            TSGesuchstellerKardinalitaet.ZU_ZWEIT
+                                        "
+                                        >{{
+                                            'LABEL_JA' | translate
+                                        }}</mat-radio-button
+                                    >
+                                    <mat-radio-button
+                                        [value]="
+                                            TSGesuchstellerKardinalitaet.ALLEINE
+                                        "
+                                        >{{
+                                            'LABEL_NEIN' | translate
+                                        }}</mat-radio-button
+                                    >
                                 </mat-radio-group>
                             </dv-radio-container-x>
-                            <dv-error-messages *ngIf="savedClicked || gesuchstellerKardinalitaet.touched"
-                                               [inputId]="'gesuchstellerKardinalitaet'"
-                                               class="error"></dv-error-messages>
-                            <dv-bisher-x [showBisher]="showBisher()"
-                                         [specificBisherText]="getBisherText()"
-                                         [deklaration]="getFamiliensituationGS()?.gesuchstellerKardinalitaet"
-                                         [korrektur]="getFamiliensituation()?.gesuchstellerKardinalitaet"></dv-bisher-x>
+                            <dv-error-messages
+                                *ngIf="
+                                    savedClicked ||
+                                    gesuchstellerKardinalitaet.touched
+                                "
+                                [inputId]="'gesuchstellerKardinalitaet'"
+                                class="error"
+                            ></dv-error-messages>
+                            <dv-bisher-x
+                                [showBisher]="showBisher()"
+                                [specificBisherText]="getBisherText()"
+                                [deklaration]="
+                                    getFamiliensituationGS()
+                                        ?.gesuchstellerKardinalitaet
+                                "
+                                [korrektur]="
+                                    getFamiliensituation()
+                                        ?.gesuchstellerKardinalitaet
+                                "
+                            ></dv-bisher-x>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <dv-navigation-x *dvNgShowElement="true; roles: getAllRolesButTraegerschaftInstitutionSteueramt()"
-                                         [dvPrevious]="true" [dvNext]="true" (dvSave)="confirmAndSave($event.onResult)">
+                        <dv-navigation-x
+                            *dvNgShowElement="
+                                true;
+                                roles: getAllRolesButTraegerschaftInstitutionSteueramt()
+                            "
+                            [dvPrevious]="true"
+                            [dvNext]="true"
+                            (dvSave)="confirmAndSave($event.onResult)"
+                        >
                         </dv-navigation-x>
-                        <dv-navigation-x *dvNgShowElement="true; roles: getTraegerschaftInstitutionSteueramtOnlyRoles()"
-                                         [dvNext]="true">
+                        <dv-navigation-x
+                            *dvNgShowElement="
+                                true;
+                                roles: getTraegerschaftInstitutionSteueramtOnlyRoles()
+                            "
+                            [dvNext]="true"
+                        >
                         </dv-navigation-x>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>

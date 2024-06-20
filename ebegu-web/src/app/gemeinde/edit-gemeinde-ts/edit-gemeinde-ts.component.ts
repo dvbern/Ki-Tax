@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Moment} from 'moment';
@@ -41,7 +48,6 @@ const LOG = LogFactory.createLog('EditGemeidneComponentTS');
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class EditGemeindeTSComponent implements OnInit {
-
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
@@ -52,10 +58,13 @@ export class EditGemeindeTSComponent implements OnInit {
     @Input() public isSuperAdmin: boolean;
     @Input() public usernameScolaris: string;
 
-    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
-    @Output() public readonly usernameScolarisChange: EventEmitter<string> = new EventEmitter();
+    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> =
+        new EventEmitter();
+    @Output() public readonly usernameScolarisChange: EventEmitter<string> =
+        new EventEmitter();
     @Input() public altLogoImageUrl: string;
-    @Output() public readonly altLogoImageChange: EventEmitter<File> = new EventEmitter();
+    @Output() public readonly altLogoImageChange: EventEmitter<File> =
+        new EventEmitter();
 
     public readonly CONSTANTS = CONSTANTS;
     private _tagesschulen: TSInstitutionListDTO[];
@@ -66,9 +75,8 @@ export class EditGemeindeTSComponent implements OnInit {
     public constructor(
         private readonly $state: StateService,
         private readonly institutionRS: InstitutionRS,
-        private readonly gemeindeRS: GemeindeRS,
-    ) {
-    }
+        private readonly gemeindeRS: GemeindeRS
+    ) {}
 
     public ngOnInit(): void {
         if (!this.gemeindeId) {
@@ -95,12 +103,17 @@ export class EditGemeindeTSComponent implements OnInit {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).subscribe(
-            result => {
-                this._tagesschulen = result;
-                this._tagesschulen.sort((a, b) => a.name.localeCompare(b.name));
-            }, error => LOG.error(error)
-        );
+        this.institutionRS
+            .getInstitutionenForGemeinde(this.gemeindeId)
+            .subscribe(
+                result => {
+                    this._tagesschulen = result;
+                    this._tagesschulen.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    );
+                },
+                error => LOG.error(error)
+            );
     }
 
     public get tagesschulen(): TSInstitutionListDTO[] {
@@ -116,25 +129,30 @@ export class EditGemeindeTSComponent implements OnInit {
     }
 
     public isNotNurLats(): Observable<boolean> {
-        return this.stammdaten$.pipe(map(stammdaten => stammdaten.gemeinde.nurLats));
+        return this.stammdaten$.pipe(
+            map(stammdaten => stammdaten.gemeinde.nurLats)
+        );
     }
 
     public srcChange(files: FileList): void {
         this.fileToUpload = files[0];
-        this.gemeindeRS.isSupportedImage(this.fileToUpload).then(() => {
-            const tmpFileReader = new FileReader();
-            tmpFileReader.readAsDataURL(this.fileToUpload);
-            tmpFileReader.onload = (event: any): void => {
-                const result: string = event.target.result;
-                this.altLogoImageUrl$ = of(result);
+        this.gemeindeRS
+            .isSupportedImage(this.fileToUpload)
+            .then(() => {
+                const tmpFileReader = new FileReader();
+                tmpFileReader.readAsDataURL(this.fileToUpload);
+                tmpFileReader.onload = (event: any): void => {
+                    const result: string = event.target.result;
+                    this.altLogoImageUrl$ = of(result);
+                    this.emitLogoChange();
+                };
+            })
+            .catch(() => {
+                this.fileToUpload = null;
+                this.altLogoImageUrl$ = null;
+                this.altLogoImageUrl = null;
                 this.emitLogoChange();
-            };
-        }).catch(() => {
-            this.fileToUpload = null;
-            this.altLogoImageUrl$ = null;
-            this.altLogoImageUrl = null;
-            this.emitLogoChange();
-        });
+            });
     }
 
     private emitLogoChange(): void {

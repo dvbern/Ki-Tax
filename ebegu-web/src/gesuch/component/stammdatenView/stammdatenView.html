@@ -17,43 +17,70 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-                <h2 data-test="gesuchformular-title">
-                    <span data-translate="GESUCHSTELLERIN"></span>
-                    {{vm.getFamilienSituationDisplayValue()}}
-                </h2>
-            <dv-bisher gs="vm.getModel().gesuchstellerGS"
-                       ja="vm.getModel().gesuchstellerJA"
-                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
-                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
-            <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="vm.showHintMandatoryFields()"></p>
-
+            <h2 data-test="gesuchformular-title">
+                <span data-translate="GESUCHSTELLERIN"></span>
+                {{ vm.getFamilienSituationDisplayValue() }}
+            </h2>
+            <dv-bisher
+                gs="vm.getModel().gesuchstellerGS"
+                ja="vm.getModel().gesuchstellerJA"
+                specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                show-specific-bisher-text-if-bisher-none="true"
+            ></dv-bisher>
+            <hr class="header" />
+            <p
+                class="inline-hint"
+                data-translate="PFLICHTFELDER_HINT"
+                ng-if="vm.showHintMandatoryFields()"
+            ></p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
-                <fieldset dv-enable-element
-                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                          dv-enable-expression="!vm.isGesuchReadonly()">
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
+                <fieldset
+                    dv-enable-element
+                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-enable-expression="!vm.isGesuchReadonly()"
+                >
                     <!--Geschlecht-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-small">
                             <div class="form-group">
-                                <label class="md-no-float required" id="geschlecht" data-translate="GESCHLECHT"></label>
-                                <dv-radio-container name="geschlecht" class="input-element"
-                                                    ng-required="true" items="vm.geschlechter"
-                                                    ng-model="vm.getModelJA().geschlecht" dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly()"
-                                                    aria-label="{{ 'GESCHLECHT' |translate}}"
-                                                    aria-described-by="geschlecht-error">
+                                <label
+                                    class="md-no-float required"
+                                    id="geschlecht"
+                                    data-translate="GESCHLECHT"
+                                ></label>
+                                <dv-radio-container
+                                    name="geschlecht"
+                                    class="input-element"
+                                    ng-required="true"
+                                    items="vm.geschlechter"
+                                    ng-model="vm.getModelJA().geschlecht"
+                                    dv-enable-element
+                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                    dv-enable-expression="!vm.isGesuchReadonly()"
+                                    aria-label="{{ 'GESCHLECHT' | translate }}"
+                                    aria-described-by="geschlecht-error"
+                                >
                                 </dv-radio-container>
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.geschlecht"
-                                           ja="vm.getModel().gesuchstellerJA.geschlecht"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="geschlecht" for="vm.form.geschlecht.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.geschlecht"
+                                    ja="vm.getModel().gesuchstellerJA.geschlecht"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="geschlecht"
+                                    for="vm.form.geschlecht.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -62,43 +89,64 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="VORNAME" for="vorname_ID"></label>
-                                <input id="vorname_ID"
-                                       type="text"
-                                       name="vorname"
-                                       data-test="vorname"
-                                       ng-model="vm.getModelJA().vorname"
-                                       dv-max-length
-                                       class="form-control input-dv"
-                                       required
-                                       aria-describedby="vorname_ID-error"
-                                       autocomplete="given-name">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.vorname"
-                                           ja="vm.getModel().gesuchstellerJA.vorname"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages for="vm.form.vorname.$error"
-                                                   input-id="vorname_ID"
-                                                   class="error"></dv-error-messages>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="VORNAME"
+                                    for="vorname_ID"
+                                ></label>
+                                <input
+                                    id="vorname_ID"
+                                    type="text"
+                                    name="vorname"
+                                    data-test="vorname"
+                                    ng-model="vm.getModelJA().vorname"
+                                    dv-max-length
+                                    class="form-control input-dv"
+                                    required
+                                    aria-describedby="vorname_ID-error"
+                                    autocomplete="given-name"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.vorname"
+                                    ja="vm.getModel().gesuchstellerJA.vorname"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    for="vm.form.vorname.$error"
+                                    input-id="vorname_ID"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group secondColumn">
-                                <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
-                                <input aria-describedby="name_ID-error"
-                                       id="name_ID"
-                                       type="text"
-                                       name="name"
-                                       data-test="nachname"
-                                       ng-model="vm.getModelJA().nachname"
-                                       dv-max-length
-                                       class="form-control"
-                                       required
-                                       autocomplete="family-name">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.nachname"
-                                           ja="vm.getModel().gesuchstellerJA.nachname"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
-                                                   class="error"></dv-error-messages>
+                                <label
+                                    class="md-no-float"
+                                    data-translate="NAME"
+                                    for="name_ID"
+                                ></label>
+                                <input
+                                    aria-describedby="name_ID-error"
+                                    id="name_ID"
+                                    type="text"
+                                    name="name"
+                                    data-test="nachname"
+                                    ng-model="vm.getModelJA().nachname"
+                                    dv-max-length
+                                    class="form-control"
+                                    required
+                                    autocomplete="family-name"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.nachname"
+                                    ja="vm.getModel().gesuchstellerJA.nachname"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="name_ID"
+                                    for="vm.form.name.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -107,144 +155,228 @@
                         <!--Geburtsdatum-->
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="GEBURTSDATUM" for="geburtsdatum_ID">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="GEBURTSDATUM"
+                                    for="geburtsdatum_ID"
+                                >
                                 </label>
-                                <dv-datepicker no-future="true"
-                                               data-test="geburtsdatum"
-                                               input-id="geburtsdatum_ID" name="geburtsdatum"
-                                               ng-model="vm.getModelJA().geburtsdatum" ng-required="true"
-                                               class="input-element">
+                                <dv-datepicker
+                                    no-future="true"
+                                    data-test="geburtsdatum"
+                                    input-id="geburtsdatum_ID"
+                                    name="geburtsdatum"
+                                    ng-model="vm.getModelJA().geburtsdatum"
+                                    ng-required="true"
+                                    class="input-element"
+                                >
                                 </dv-datepicker>
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.geburtsdatum"
-                                           ja="vm.getModel().gesuchstellerJA.geburtsdatum"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="geburtsdatum_ID" for="vm.form.geburtsdatum.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.geburtsdatum"
+                                    ja="vm.getModel().gesuchstellerJA.geburtsdatum"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="geburtsdatum_ID"
+                                    for="vm.form.geburtsdatum.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <!-- Korrespondenz-Sprache -->
-                        <div class="col-sm-12 dv-input-container-medium"
-                             ng-if="vm.showKorrespondenzsprache()">
+                        <div
+                            class="col-sm-12 dv-input-container-medium"
+                            ng-if="vm.showKorrespondenzsprache()"
+                        >
                             <div class="form-group">
                                 <label class="md-no-float required">
-                                       <span data-translate="KORRESPONDENZSPRACHE"
-                                             for="korrespondenzSprache"></span>
-                                        <dv-tooltip input-id="korrespondenzSprache"
-                                                    text="'KORRESPONDENZSPRACHE_HELP' | translate"></dv-tooltip>
+                                    <span
+                                        data-translate="KORRESPONDENZSPRACHE"
+                                        for="korrespondenzSprache"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="korrespondenzSprache"
+                                        text="'KORRESPONDENZSPRACHE_HELP' | translate"
+                                    ></dv-tooltip>
                                 </label>
-                                <div class="dv-select-style dv-input-container-medium-select">
-                                    <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
-                                            data-test="korrespondenzSprache"
-                                            aria-describedby="korrespondenzSprache-error"
-                                            ng-model="vm.getModelJA().korrespondenzSprache"
-                                            ng-options="lang | translate for lang in vm.getSprachen()"
-                                            ng-required="true">
-                                    </select>
-                                    <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
-                                               ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                    <dv-error-messages for="vm.form.korrespondenzSprache.$error"
-                                                       input-id="korrespondenzSprache"
-                                                       class="error"></dv-error-messages>
+                                <div
+                                    class="dv-select-style dv-input-container-medium-select"
+                                >
+                                    <select
+                                        name="korrespondenzSprache"
+                                        id="korrespondenzSprache"
+                                        class="form-control"
+                                        data-test="korrespondenzSprache"
+                                        aria-describedby="korrespondenzSprache-error"
+                                        ng-model="vm.getModelJA().korrespondenzSprache"
+                                        ng-options="lang | translate for lang in vm.getSprachen()"
+                                        ng-required="true"
+                                    ></select>
+                                    <dv-bisher
+                                        gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
+                                        ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                    ></dv-bisher>
+                                    <dv-error-messages
+                                        for="vm.form.korrespondenzSprache.$error"
+                                        input-id="korrespondenzSprache"
+                                        class="error"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row margin-bottom-3rem" ng-if="vm.sozialversicherungsnummerRequiredEinstellung">
+                    <div
+                        class="row margin-bottom-3rem"
+                        ng-if="vm.sozialversicherungsnummerRequiredEinstellung"
+                    >
                         <!--Sozialversicherungsnummer-->
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float required">
-                                    <span data-translate="SOZIALVERSICHERUNGSNUMMER" for="sozialversicherungsnummer_ID"></span>
-                                    <dv-tooltip input-id="sozialversicherungsnummer_ID" text="'SOZIALVERSICHERUNGSNUMMER_HELP' | translate"></dv-tooltip>
+                                    <span
+                                        data-translate="SOZIALVERSICHERUNGSNUMMER"
+                                        for="sozialversicherungsnummer_ID"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="sozialversicherungsnummer_ID"
+                                        text="'SOZIALVERSICHERUNGSNUMMER_HELP' | translate"
+                                    ></dv-tooltip>
                                 </label>
-                                <input id="sozialversicherungsnummer_ID"
-                                       type="text"
-                                       ng-required="true"
-                                       ng-model="vm.getModelJA().sozialversicherungsnummer"
-                                       name="sozialversicherungsnummer"
-                                       data-test="sozialversicherungsnummer"
-                                       dv-max-length
-                                       dv-ahv-check
-                                       dv-ahv-gesuchsteller-check
-                                       class="form-control"
-                                       required>
-                                <dv-error-messages input-id="sozialversicherungsnummer_ID" for="vm.form.sozialversicherungsnummer.$error"
-                                                   class="error"></dv-error-messages>
+                                <input
+                                    id="sozialversicherungsnummer_ID"
+                                    type="text"
+                                    ng-required="true"
+                                    ng-model="vm.getModelJA().sozialversicherungsnummer"
+                                    name="sozialversicherungsnummer"
+                                    data-test="sozialversicherungsnummer"
+                                    dv-max-length
+                                    dv-ahv-check
+                                    dv-ahv-gesuchsteller-check
+                                    class="form-control"
+                                    required
+                                />
+                                <dv-error-messages
+                                    input-id="sozialversicherungsnummer_ID"
+                                    for="vm.form.sozialversicherungsnummer.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
                 </fieldset>
-                    <div class="row" ng-if="vm.isAusweisNachweisRequired()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <p class="inline-hint margin-bottom-20 margin-top-20" translate>AUSWEIS_NACHWEIS_DESCRIPTION</p>
-                            <dv-input-container class="form-group margin-bottom-50">
-                                <dv-multiple-file-upload
-                                    (download)="vm.downloadAusweisDokument($event[0],$event[1])"
-                                    [title]="'AUSWEIS_NACHWEIS'"
-                                    [tooltip-text]="'AUSWEIS_NACHWEIS_TOOLTIP' | translate"
-                                    (delete)="vm.onDeleteFile($event)"
-                                    (upload-file)="vm.onUpload($event)"
-                                    [files]="vm.dokumentGrund.dokumente"
-                                    [read-only]="vm.isGesuchReadonly()"
-                                    [read-only-delete]="vm.isGesuchReadonly()"
-                                >
-                                </dv-multiple-file-upload>
-                                <dv-error-messages input-id="ausweis_nachweis" for="vm.dvFileUploadError" class="error file-upload-error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
+                <div class="row" ng-if="vm.isAusweisNachweisRequired()">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <p
+                            class="inline-hint margin-bottom-20 margin-top-20"
+                            translate
+                        >
+                            AUSWEIS_NACHWEIS_DESCRIPTION
+                        </p>
+                        <dv-input-container class="form-group margin-bottom-50">
+                            <dv-multiple-file-upload
+                                (download)="
+                                    vm.downloadAusweisDokument(
+                                        $event[0],
+                                        $event[1]
+                                    )
+                                "
+                                [title]="'AUSWEIS_NACHWEIS'"
+                                [tooltip-text]="
+                                    'AUSWEIS_NACHWEIS_TOOLTIP' | translate
+                                "
+                                (delete)="vm.onDeleteFile($event)"
+                                (upload-file)="vm.onUpload($event)"
+                                [files]="vm.dokumentGrund.dokumente"
+                                [read-only]="vm.isGesuchReadonly()"
+                                [read-only-delete]="vm.isGesuchReadonly()"
+                            >
+                            </dv-multiple-file-upload>
+                            <dv-error-messages
+                                input-id="ausweis_nachweis"
+                                for="vm.dvFileUploadError"
+                                class="error file-upload-error"
+                            ></dv-error-messages>
+                        </dv-input-container>
                     </div>
+                </div>
 
-                <fieldset dv-enable-element
-                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                          dv-enable-expression="!vm.isGesuchReadonly()">
-
+                <fieldset
+                    dv-enable-element
+                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-enable-expression="!vm.isGesuchReadonly()"
+                >
                     <!-- Adresse. Bei Mutationen nicht editierbar-->
-                    <fieldset ng-if="vm.showWohnadresse()" ng-disabled="vm.disableWohnadresseFor2GS()" class="dv-adresse__fieldset">
+                    <fieldset
+                        ng-if="vm.showWohnadresse()"
+                        ng-disabled="vm.disableWohnadresseFor2GS()"
+                        class="dv-adresse__fieldset"
+                    >
                         <!-- Dieses disabled wird vom obigen disabled ueberschrieben wenn VERFUEGT -->
-                        <dv-adresse adresse="vm.getModel().getWohnAdresse()"
-                                    show-nicht-in-gemeinde="true"
-                                    prefix="wohn"
-                                    gemeinde="vm.gesuchModelManager.getDossier().gemeinde"></dv-adresse>
+                        <dv-adresse
+                            adresse="vm.getModel().getWohnAdresse()"
+                            show-nicht-in-gemeinde="true"
+                            prefix="wohn"
+                            gemeinde="vm.gesuchModelManager.getDossier().gemeinde"
+                        ></dv-adresse>
                     </fieldset>
 
                     <!-- Diplomatenstatus -->
                     <div class="row" ng-if="!vm.diplomatenStatusDisabled">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class=" checkbox">
-                                <md-checkbox ng-model="vm.getModelJA().diplomatenstatus" name="diplomatenstatus"
-                                             data-test="diplomatenstatus"
-                                             id="diplomatenstatus"
-                                             aria-label="{{'GESUCHSTELLER_DIPLOMATENSTATUS'|translate}}"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                             dv-enable-expression="!vm.isGesuchReadonly()">
-                                    <span data-translate="GESUCHSTELLER_DIPLOMATENSTATUS"></span>
+                            <div class="checkbox">
+                                <md-checkbox
+                                    ng-model="vm.getModelJA().diplomatenstatus"
+                                    name="diplomatenstatus"
+                                    data-test="diplomatenstatus"
+                                    id="diplomatenstatus"
+                                    aria-label="{{
+                                        'GESUCHSTELLER_DIPLOMATENSTATUS'
+                                            | translate
+                                    }}"
+                                    dv-enable-element
+                                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                    dv-enable-expression="!vm.isGesuchReadonly()"
+                                >
+                                    <span
+                                        data-translate="GESUCHSTELLER_DIPLOMATENSTATUS"
+                                    ></span>
                                 </md-checkbox>
-                                <dv-tooltip input-id="diplomatenstatus"
-                                            text="'GESUCHSTELLER_DIPLOMATENSTATUS_HINT' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.diplomatenstatus"
-                                           ja="vm.getModel().gesuchstellerJA.diplomatenstatus"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
+                                <dv-tooltip
+                                    input-id="diplomatenstatus"
+                                    text="'GESUCHSTELLER_DIPLOMATENSTATUS_HINT' | translate"
+                                ></dv-tooltip>
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.diplomatenstatus"
+                                    ja="vm.getModel().gesuchstellerJA.diplomatenstatus"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
                             </div>
                         </div>
                     </div>
 
                     <!--Umzug checkbox. Bei Mutationen nicht angezeigt-->
-                    <div class="row" ng-if="!vm.isMutation() && vm.showWohnadresse()">
+                    <div
+                        class="row"
+                        ng-if="!vm.isMutation() && vm.showWohnadresse()"
+                    >
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox no-tooltip">
-                                <md-checkbox ng-model="vm.getModel().showUmzug"
-                                             name="umzug"
-                                             data-test="umzug"
-                                             aria-label="{{'UMZUG'|translate}}"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                             dv-enable-expression="!vm.isGesuchReadonly() && !vm.isThereAnyUmzug() && !vm.isKorrekturModusJugendamt()">
+                                <md-checkbox
+                                    ng-model="vm.getModel().showUmzug"
+                                    name="umzug"
+                                    data-test="umzug"
+                                    aria-label="{{ 'UMZUG' | translate }}"
+                                    dv-enable-element
+                                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isThereAnyUmzug() && !vm.isKorrekturModusJugendamt()"
+                                >
                                     <span data-translate="UMZUG"></span>
                                 </md-checkbox>
-                                <dv-error-messages for="vm.form.umzug.$error"
-                                                   class="error"></dv-error-messages>
+                                <dv-error-messages
+                                    for="vm.form.umzug.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
@@ -252,95 +384,144 @@
                     <!--Korrenspondenzadr Checkbox (aka Zustelladresse)-->
                     <div class="row" ng-if="vm.showWohnadresse()">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class=" checkbox">
-                                <md-checkbox ng-model="vm.showKorrespondadr"
-                                             name="korrespondenzAdr"
-                                             data-test="korrespondenzAdr"
-                                             id="korrespondenzAdr"
-                                             aria-label="{{'KORRESPONDENZADR'|translate}}"
-                                             ng-change="vm.korrespondenzAdrClicked()"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                             dv-enable-expression="!vm.isGesuchReadonly()">
-                                    <span data-translate="KORRESPONDENZADR"></span>
+                            <div class="checkbox">
+                                <md-checkbox
+                                    ng-model="vm.showKorrespondadr"
+                                    name="korrespondenzAdr"
+                                    data-test="korrespondenzAdr"
+                                    id="korrespondenzAdr"
+                                    aria-label="{{
+                                        'KORRESPONDENZADR' | translate
+                                    }}"
+                                    ng-change="vm.korrespondenzAdrClicked()"
+                                    dv-enable-element
+                                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                    dv-enable-expression="!vm.isGesuchReadonly()"
+                                >
+                                    <span
+                                        data-translate="KORRESPONDENZADR"
+                                    ></span>
                                 </md-checkbox>
-                                <dv-tooltip input-id="korrespondenzAdr"
-                                            text="'KORRESPONDENZADR_HELP' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.showKorrespondadrGS" class="dv-bisher-break"
-                                           ja="vm.showKorrespondadr"
-                                           specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().korrespondenzAdresse)"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages for="vm.form.korrespondenzAdr.$error"
-                                                   class="error" style=""></dv-error-messages>
+                                <dv-tooltip
+                                    input-id="korrespondenzAdr"
+                                    text="'KORRESPONDENZADR_HELP' | translate"
+                                ></dv-tooltip>
+                                <dv-bisher
+                                    gs="vm.showKorrespondadrGS"
+                                    class="dv-bisher-break"
+                                    ja="vm.showKorrespondadr"
+                                    specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().korrespondenzAdresse)"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    for="vm.form.korrespondenzAdr.$error"
+                                    class="error"
+                                    style=""
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
 
-
-                    <dv-adresse adresse="vm.getModel().korrespondenzAdresse" ng-if="vm.showKorrespondadr"
-                                prefix="korrespondenz" show-if-bisher-none="false"
-                                organisation="true"></dv-adresse>
+                    <dv-adresse
+                        adresse="vm.getModel().korrespondenzAdresse"
+                        ng-if="vm.showKorrespondadr"
+                        prefix="korrespondenz"
+                        show-if-bisher-none="false"
+                        organisation="true"
+                    ></dv-adresse>
 
                     <!--Rechnungsadresse Checkbox-->
                     <div class="row" ng-if="vm.showRechnungsadresseCheckbox()">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class=" checkbox">
-                                <md-checkbox ng-model="vm.showRechnungsadr"
-                                             name="rechnungsAdr"
-                                             data-test="rechnungsAdr"
-                                             id="rechnungsAdr"
-                                             aria-label="{{'RECHNUNGSADR'|translate}}"
-                                             ng-change="vm.rechnungsAdrClicked()"
-                                             dv-enable-element
-                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                             dv-enable-expression="!vm.isGesuchReadonly()">
+                            <div class="checkbox">
+                                <md-checkbox
+                                    ng-model="vm.showRechnungsadr"
+                                    name="rechnungsAdr"
+                                    data-test="rechnungsAdr"
+                                    id="rechnungsAdr"
+                                    aria-label="{{
+                                        'RECHNUNGSADR' | translate
+                                    }}"
+                                    ng-change="vm.rechnungsAdrClicked()"
+                                    dv-enable-element
+                                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                    dv-enable-expression="!vm.isGesuchReadonly()"
+                                >
                                     <span data-translate="RECHNUNGSADR"></span>
                                 </md-checkbox>
-                                <dv-tooltip input-id="rechnungsAdr"
-                                            text="'RECHNUNGSADR_HELP' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.showRechnungsadrGS" class="dv-bisher-break"
-                                           ja="vm.showRechnungsadr"
-                                           specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().rechnungsAdresse)"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages for="vm.form.rechnungsAdr.$error"
-                                                   class="error" style=""></dv-error-messages>
+                                <dv-tooltip
+                                    input-id="rechnungsAdr"
+                                    text="'RECHNUNGSADR_HELP' | translate"
+                                ></dv-tooltip>
+                                <dv-bisher
+                                    gs="vm.showRechnungsadrGS"
+                                    class="dv-bisher-break"
+                                    ja="vm.showRechnungsadr"
+                                    specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().rechnungsAdresse)"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    for="vm.form.rechnungsAdr.$error"
+                                    class="error"
+                                    style=""
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
 
-                    <dv-adresse adresse="vm.getModel().rechnungsAdresse" ng-if="vm.showRechnungsadr"
-                                prefix="rechnung" organisation="true" show-if-bisher-none="false"></dv-adresse>
+                    <dv-adresse
+                        adresse="vm.getModel().rechnungsAdresse"
+                        ng-if="vm.showRechnungsadr"
+                        prefix="rechnung"
+                        organisation="true"
+                        show-if-bisher-none="false"
+                    ></dv-adresse>
                 </fieldset>
-                <fieldset dv-enable-element
-                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                          dv-enable-expression="vm.areEmailTelefonEditable()">
+                <fieldset
+                    dv-enable-element
+                    dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                    dv-enable-expression="vm.areEmailTelefonEditable()"
+                >
                     <!--Email-->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" ng-class="vm.getMailRequiredCssClass()">
-                                       <span data-translate="EMAIL"
-                                             for="email_ID"></span>
-                                       <dv-tooltip input-id="email_ID"
-                                                   text="'EMAIL_HELP' | translate"></dv-tooltip>
+                                <label
+                                    class="md-no-float"
+                                    ng-class="vm.getMailRequiredCssClass()"
+                                >
+                                    <span
+                                        data-translate="EMAIL"
+                                        for="email_ID"
+                                    ></span>
+                                    <dv-tooltip
+                                        input-id="email_ID"
+                                        text="'EMAIL_HELP' | translate"
+                                    ></dv-tooltip>
                                 </label>
-                                <input aria-describedby="email_ID-error"
-                                       id="email_ID"
-                                       type="email"
-                                       name="email"
-                                       data-test="email"
-                                       ng-model="vm.getModelJA().mail"
-                                       dv-max-length
-                                       class="form-control"
-                                       ng-required="vm.isMailRequired()"
-                                       placeholder="hans.muster@example.com"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_EMAIL"
-                                       autocomplete="email">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.mail"
-                                           ja="vm.getModel().gesuchstellerJA.mail"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="email_ID" for="vm.form.email.$error"
-                                                   class="error"></dv-error-messages>
+                                <input
+                                    aria-describedby="email_ID-error"
+                                    id="email_ID"
+                                    type="email"
+                                    name="email"
+                                    data-test="email"
+                                    ng-model="vm.getModelJA().mail"
+                                    dv-max-length
+                                    class="form-control"
+                                    ng-required="vm.isMailRequired()"
+                                    placeholder="hans.muster@example.com"
+                                    autocomplete="email"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.mail"
+                                    ja="vm.getModel().gesuchstellerJA.mail"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="email_ID"
+                                    for="vm.form.email.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -349,46 +530,68 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="MOBILE" for="mobile_ID">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="MOBILE"
+                                    for="mobile_ID"
+                                >
                                 </label>
-                                <input aria-describedby="mobile_ID-error"
-                                       id="mobile_ID"
-                                       type="text"
-                                       name="mobile"
-                                       data-test="mobile"
-                                       ng-model="vm.getModelJA().mobile"
-                                       dv-max-length
-                                       class="form-control"
-                                       placeholder="e.g: 079 123 44 55"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_MOBILE"
-                                       autocomplete="mobile">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.mobile"
-                                           ja="vm.getModel().gesuchstellerJA.mobile"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="mobile_ID" for="vm.form.mobile.$error"
-                                                   class="error"></dv-error-messages>
+                                <input
+                                    aria-describedby="mobile_ID-error"
+                                    id="mobile_ID"
+                                    type="text"
+                                    name="mobile"
+                                    data-test="mobile"
+                                    ng-model="vm.getModelJA().mobile"
+                                    dv-max-length
+                                    class="form-control"
+                                    placeholder="e.g: 079 123 44 55"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_MOBILE"
+                                    autocomplete="mobile"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.mobile"
+                                    ja="vm.getModel().gesuchstellerJA.mobile"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="mobile_ID"
+                                    for="vm.form.mobile.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group secondColumn">
-                                <label class="md-no-float" data-translate="TELEFON" for="tel_ID">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="TELEFON"
+                                    for="tel_ID"
+                                >
                                 </label>
-                                <input aria-describedby="tel_ID-error"
-                                       id="tel_ID"
-                                       type="text"
-                                       name="telefon"
-                                       data-test="telefon"
-                                       ng-model="vm.getModelJA().telefon"
-                                       dv-max-length
-                                       class="form-control"
-                                       placeholder="e.g: 033 123 45 67"
-                                       ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
-                                       autocomplete="home tel">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.telefon"
-                                           ja="vm.getModel().gesuchstellerJA.telefon"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="tel_ID" for="vm.form.telefon.$error"
-                                                   class="error"></dv-error-messages>
+                                <input
+                                    aria-describedby="tel_ID-error"
+                                    id="tel_ID"
+                                    type="text"
+                                    name="telefon"
+                                    data-test="telefon"
+                                    ng-model="vm.getModelJA().telefon"
+                                    dv-max-length
+                                    class="form-control"
+                                    placeholder="e.g: 033 123 45 67"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
+                                    autocomplete="home tel"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.telefon"
+                                    ja="vm.getModel().gesuchstellerJA.telefon"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="tel_ID"
+                                    for="vm.form.telefon.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -397,17 +600,33 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="TELEFON_AUSLAND" for="ausl_tel">
+                                <label
+                                    class="md-no-float"
+                                    data-translate="TELEFON_AUSLAND"
+                                    for="ausl_tel"
+                                >
                                 </label>
-                                <input aria-describedby="ausl_tel-error" id="ausl_tel" type="text" name="telefonAusland"
-                                       data-test="telefonAusland"
-                                       ng-model="vm.getModelJA().telefonAusland" autocomplete="tel"
-                                       dv-max-length class="form-control">
-                                <dv-bisher gs="vm.getModel().gesuchstellerGS.telefonAusland"
-                                           ja="vm.getModel().gesuchstellerJA.telefonAusland"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
-                                <dv-error-messages input-id="ausl_tel" for="vm.form.telefonAusland.$error"
-                                                   class="error"></dv-error-messages>
+                                <input
+                                    aria-describedby="ausl_tel-error"
+                                    id="ausl_tel"
+                                    type="text"
+                                    name="telefonAusland"
+                                    data-test="telefonAusland"
+                                    ng-model="vm.getModelJA().telefonAusland"
+                                    autocomplete="tel"
+                                    dv-max-length
+                                    class="form-control"
+                                />
+                                <dv-bisher
+                                    gs="vm.getModel().gesuchstellerGS.telefonAusland"
+                                    ja="vm.getModel().gesuchstellerJA.telefonAusland"
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"
+                                ></dv-bisher>
+                                <dv-error-messages
+                                    input-id="ausl_tel"
+                                    for="vm.form.telefonAusland.$error"
+                                    class="error"
+                                ></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
@@ -416,21 +635,24 @@
                 <!--Buttons-->
                 <div class="row">
                     <div class="col-md-12">
-                        <dv-navigation dv-show-element
-                                       dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                       dv-previous="true"
-                                       dv-next="!vm.isLastStepOfSteueramt()"
-                                       dv-saving-possible="vm.areEmailTelefonEditable()"
-                                       dv-save="vm.preSave()">
+                        <dv-navigation
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                            dv-previous="true"
+                            dv-next="!vm.isLastStepOfSteueramt()"
+                            dv-saving-possible="vm.areEmailTelefonEditable()"
+                            dv-save="vm.preSave()"
+                        >
                         </dv-navigation>
-                        <dv-navigation dv-show-element
-                                       dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
-                                       dv-previous="true"
-                                       dv-next="true">
+                        <dv-navigation
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
+                            dv-previous="true"
+                            dv-next="true"
+                        >
                         </dv-navigation>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>

@@ -14,7 +14,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * This component shows a Dialog with a title and an OK-Button. Nothing is returned and nothing is executed
@@ -24,14 +24,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './dv-ng-ok-dialog.template.html'
 })
 export class DvNgOkDialogComponent {
-
     public title: string = '';
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgOkDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
-
         if (data) {
             this.title = data.title;
         }

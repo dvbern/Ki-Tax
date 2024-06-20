@@ -23,6 +23,11 @@ export enum TSKinderabzugTyp {
     SCHWYZ = 'SCHWYZ'
 }
 
-export function isKinderabzugTypFKJV(kinderabzugTyp: TSKinderabzugTyp): boolean {
-    return kinderabzugTyp === TSKinderabzugTyp.FKJV || kinderabzugTyp === TSKinderabzugTyp.FKJV_2;
+export function isKinderabzugTypFKJV(
+    kinderabzugTyp: TSKinderabzugTyp
+): boolean {
+    return (
+        kinderabzugTyp === TSKinderabzugTyp.FKJV ||
+        kinderabzugTyp === TSKinderabzugTyp.FKJV_2
+    );
 }

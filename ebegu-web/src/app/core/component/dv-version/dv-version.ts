@@ -37,7 +37,6 @@ export class DVVersionComponentConfig implements IComponentOptions {
 }
 
 export class DVVersionController implements IController {
-
     public static $inject = [
         '$rootScope',
         'HttpVersionInterceptor',
@@ -61,42 +60,54 @@ export class DVVersionController implements IController {
     private alreadyHandledVersionMismatchByAnyAngular = false;
 
     public constructor(
-            private readonly $rootScope: IRootScopeService,
-            private readonly httpVersionInterceptor: HttpVersionInterceptor,
-            private readonly $window: IWindowService,
-            private readonly applicationPropertyRS: ApplicationPropertyRS,
-            private readonly $translate: ITranslateService,
-            private readonly authServiceRS: AuthServiceRS,
-            private readonly versionService: VersionService
-    ) {
-
-    }
+        private readonly $rootScope: IRootScopeService,
+        private readonly httpVersionInterceptor: HttpVersionInterceptor,
+        private readonly $window: IWindowService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly versionService: VersionService
+    ) {}
 
     public $onInit(): void {
         // AngularJS Version Mismatch
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
-        this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
-            this.httpVersionInterceptor.eventCaptured = true;
-            this.saveVersionAndHandleMismatch(this.httpVersionInterceptor.backendVersion);
-        });
+        this.$rootScope.$on(
+            TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH],
+            () => {
+                this.httpVersionInterceptor.eventCaptured = true;
+                this.saveVersionAndHandleMismatch(
+                    this.httpVersionInterceptor.backendVersion
+                );
+            }
+        );
         // Anular X Version Mismatch
-        this.versionService.$backendVersionChange.subscribe(version => {
-            this.backendVersion = version;
-        }, error => LOG.error(error));
-        this.versionService.$versionMismatch.subscribe(backendVersion => {
-            this.saveVersionAndHandleMismatch(backendVersion);
-            this.versionService.versionMismatchHandled();
-        }, error => LOG.error(error));
+        this.versionService.$backendVersionChange.subscribe(
+            version => {
+                this.backendVersion = version;
+            },
+            error => LOG.error(error)
+        );
+        this.versionService.$versionMismatch.subscribe(
+            backendVersion => {
+                this.saveVersionAndHandleMismatch(backendVersion);
+                this.versionService.versionMismatchHandled();
+            },
+            error => LOG.error(error)
+        );
 
         this.currentYear = DateUtil.currentYear();
 
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
         this.applicationPropertyRS.getBackgroundColorFromServer();
-        this.applicationPropertyRS.getPublicPropertiesCached()
-                .then(value => this.currentNode = value.currentNode);
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(value => (this.currentNode = value.currentNode));
         // Den Blog für Gesuchsteller nicht anzeigen (Wird nur bei Reload angepasst,
         // sollte aber für unsere Zwecke genügen)
-        this.showBlog = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller());
+        this.showBlog = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAllRolesButGesuchsteller()
+        );
     }
 
     private saveVersionAndHandleMismatch(backendVersion: string): void {
@@ -105,17 +116,17 @@ export class DVVersionController implements IController {
             return;
         }
         this.updateDisplayVersion();
-        const msg = this.$translate.instant(
-                'VERSION_ERROR_TEXT',
-                {
-                    frontendVersion: this.frontendVersion,
-                    backendVersion: this.backendVersion
-                });
+        const msg = this.$translate.instant('VERSION_ERROR_TEXT', {
+            frontendVersion: this.frontendVersion,
+            backendVersion: this.backendVersion
+        });
         this.$window.alert(msg);
         this.alreadyHandledVersionMismatchByAnyAngular = true;
     }
 
     private updateDisplayVersion(): void {
-        this.showSingleVersion = this.frontendVersion === this.backendVersion || this.backendVersion === null;
+        this.showSingleVersion =
+            this.frontendVersion === this.backendVersion ||
+            this.backendVersion === null;
     }
 }

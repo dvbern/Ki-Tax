@@ -203,6 +203,10 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal hoehererBeitrag;
 
 	@Enumerated(EnumType.STRING)
@@ -262,6 +266,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
 		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
+		this.zusaetzlicherGutscheinGemeindeBetrag = toCopy.zusaetzlicherGutscheinGemeindeBetrag;
 		this.hoehererBeitrag = toCopy.hoehererBeitrag;
 	}
 
@@ -328,6 +333,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
+		this.zusaetzlicherGutscheinGemeindeBetrag = roundToFrankenRappen(zusaetzlicherGutscheinGemeindeBetrag);
 		this.hoehererBeitrag = roundToFrankenRappen(hoehererBeitrag);
 		return this;
 	}
@@ -362,6 +368,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
 			.add("eingewoehnungAnteil", gutscheinEingewoehnung)
+			.add("zusaetzlicherGutscheinGemeindeBetrag", zusaetzlicherGutscheinGemeindeBetrag)
 			.add("hoehererBeitrag", hoehererBeitrag)
 			.toString();
 	}
@@ -395,6 +402,7 @@ public class BGCalculationResult extends AbstractEntity {
 			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
 			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert &&
 			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung) &&
+			MathUtil.isSame(zusaetzlicherGutscheinGemeindeBetrag, otherResult.zusaetzlicherGutscheinGemeindeBetrag) &&
 			MathUtil.isSame(hoehererBeitrag, otherResult.hoehererBeitrag) &&
 			bedarfsstufe == otherResult.bedarfsstufe;
 	}
@@ -424,8 +432,9 @@ public class BGCalculationResult extends AbstractEntity {
 					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung) &&
 				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
-				thisEntity.babyTarif == otherEntity.babyTarif &&
+					thisEntity.babyTarif == otherEntity.babyTarif &&
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
+					MathUtil.isSame(thisEntity.zusaetzlicherGutscheinGemeindeBetrag, otherEntity.zusaetzlicherGutscheinGemeindeBetrag) &&
 				MathUtil.isSame(thisEntity.hoehererBeitrag, otherEntity.hoehererBeitrag)
 		));
 	}
@@ -833,6 +842,15 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setGutscheinEingewoehnung(@Nullable BigDecimal gutscheinEingewoehnung) {
 		this.gutscheinEingewoehnung = gutscheinEingewoehnung;
+	}
+
+	@Nullable
+	public BigDecimal getZusaetzlicherGutscheinGemeindeBetrag() {
+		return zusaetzlicherGutscheinGemeindeBetrag;
+	}
+
+	public void setZusaetzlicherGutscheinGemeindeBetrag(@Nullable BigDecimal zusaetzlicherGutscheinGemeindeBetrag) {
+		this.zusaetzlicherGutscheinGemeindeBetrag = zusaetzlicherGutscheinGemeindeBetrag;
 	}
 
 	@Nullable

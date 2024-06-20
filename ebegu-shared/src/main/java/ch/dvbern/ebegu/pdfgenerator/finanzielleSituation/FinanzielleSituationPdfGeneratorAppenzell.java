@@ -513,7 +513,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	@Override
 	protected PdfPTable createIntroBasisjahr() {
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		introBasisjahr.add(new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
 	}
 }

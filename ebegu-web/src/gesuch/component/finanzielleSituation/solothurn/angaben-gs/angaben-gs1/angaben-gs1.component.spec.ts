@@ -13,21 +13,25 @@ import {AngabenGs1Component} from './angaben-gs1.component';
 describe('AngabenGs1Component', () => {
     let component: AngabenGs1Component;
     let fixture: ComponentFixture<AngabenGs1Component>;
-    const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
-    const finSitSolothurnServiceMock = SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
-    finSitSolothurnServiceMock.massgebendesEinkommenStore.and.returnValue(of(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy =
+        SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+    const finSitSolothurnServiceMock =
+        SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
+    finSitSolothurnServiceMock.massgebendesEinkommenStore.and.returnValue(
+        of(new TSFinanzielleSituationResultateDTO())
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NgGesuchModule
-            ],
+            imports: [SharedModule, NgGesuchModule],
             declarations: [AngabenGs1Component],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptGesuchModelManager(),
-                {provide: FinanzielleSituationSolothurnService, useValue: finSitSolothurnServiceMock},
+                {
+                    provide: FinanzielleSituationSolothurnService,
+                    useValue: finSitSolothurnServiceMock
+                },
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
             ]
         })
@@ -36,7 +40,9 @@ describe('AngabenGs1Component', () => {
     });
 
     beforeEach(() => {
-        gesuchModelManagerSpy.getGesuch.and.returnValue(SolothurnFinSitTestHelpers.createGesuch());
+        gesuchModelManagerSpy.getGesuch.and.returnValue(
+            SolothurnFinSitTestHelpers.createGesuch()
+        );
         fixture = TestBed.createComponent(AngabenGs1Component);
         component = fixture.componentInstance;
         fixture.detectChanges();

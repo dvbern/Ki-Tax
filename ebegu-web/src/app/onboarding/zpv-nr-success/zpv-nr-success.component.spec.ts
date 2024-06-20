@@ -7,24 +7,27 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirectiv
 import {SharedModule} from '../../shared/shared.module';
 
 import {ZpvNrSuccessComponent} from './zpv-nr-success.component';
-import {of} from 'rxjs';
 
 describe('ZpvNrSuccessComponent', () => {
     let component: ZpvNrSuccessComponent;
     let fixture: ComponentFixture<ZpvNrSuccessComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
-    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
-        ['findGesuchOfGesuchsteller', 'zpvNummerErfolgreichVerknuepft']);
-    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-        ['params']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipal']
+    );
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, [
+        'findGesuchOfGesuchsteller',
+        'zpvNummerErfolgreichVerknuepft'
+    ]);
+    const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+        UIRouterGlobals.name,
+        ['params']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule],
             declarations: [ZpvNrSuccessComponent],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceSpy},
@@ -36,7 +39,9 @@ describe('ZpvNrSuccessComponent', () => {
             .compileComponents();
     });
 
-    gesuchRSSpy.zpvNummerErfolgreichVerknuepft.and.returnValue(Promise.resolve(false));
+    gesuchRSSpy.zpvNummerErfolgreichVerknuepft.and.returnValue(
+        Promise.resolve(false)
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ZpvNrSuccessComponent);

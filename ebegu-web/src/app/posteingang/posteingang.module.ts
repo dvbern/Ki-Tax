@@ -19,13 +19,7 @@ import {PosteingangViewComponent} from './component/posteingang-view.component';
 import {PosteingangRoutingModule} from './posteingang.route';
 
 @NgModule({
-    declarations: [
-        PosteingangViewComponent
-    ],
-    imports: [
-        SharedModule,
-        PosteingangRoutingModule
-    ]
+    declarations: [PosteingangViewComponent],
+    imports: [SharedModule, PosteingangRoutingModule]
 })
-export class PosteingangModule {
-}
+export class PosteingangModule {}

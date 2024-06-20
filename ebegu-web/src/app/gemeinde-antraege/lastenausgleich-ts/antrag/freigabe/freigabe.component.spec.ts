@@ -31,16 +31,29 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 
 import {FreigabeComponent} from './freigabe.component';
 
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const translateServiceSpy = jasmine.createSpyObj<TranslateService>(ErrorService.name, ['instant']);
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['getPrincipal', 'isOneOfRoles']);
-const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
-    ['updateSteps']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const translateServiceSpy = jasmine.createSpyObj<TranslateService>(
+    ErrorService.name,
+    ['instant']
+);
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        ['getLATSAngabenGemeindeContainer']
+    );
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'getPrincipal',
+    'isOneOfRoles'
+]);
+const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(
+    WizardStepXRS.name,
+    ['updateSteps']
+);
 
 authServiceSpy.principal$ = of(new TSBenutzer());
 
@@ -59,7 +72,10 @@ describe('FreigabeComponent', () => {
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TranslateService, useValue: translateServiceSpy},
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                },
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: WizardStepXRS, useValue: wizardStepXRSSpy}

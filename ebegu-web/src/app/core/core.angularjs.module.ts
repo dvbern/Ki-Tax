@@ -33,10 +33,7 @@ import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'angular-utf8-base64';
 import 'ng-file-upload';
-import 'raven-js';
-import 'raven-js/plugins/angular';
 import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.rest';
-// tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../admin/service/ferieninselStammdatenRS.rest';
@@ -73,9 +70,7 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
-import {
-    DvDemoFeatureWrapperComponent
-} from '../shared/component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
+import {DvDemoFeatureWrapperComponent} from '../shared/component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {ColorService} from '../shared/services/color.service';
 import {HttpPendingService} from '../shared/services/http-pending.service';
 import {MandantService} from '../shared/services/mandant.service';
@@ -194,10 +189,9 @@ const dependencies = [
 ];
 
 const dynamicDependencies = (): string[] => {
-
     // hier kommen plugins die wir fuer dev disablen wollen
     if (environment.sentryDSN) {
-        return ['ngRaven'];
+        return ['ngSentry'];
     }
     return [];
 };
@@ -214,7 +208,7 @@ export const CORE_JS_MODULE = angular
     .constant('CONSTANTS', CONSTANTS)
     .factory('LOCALE_ID', downgradeInjectable(LOCALE_ID))
     .service('ApplicationPropertyRS', ApplicationPropertyRS)
-    .service('EbeguRestUtil', EbeguRestUtil)
+    .service('EbeguRestUtil', downgradeInjectable(EbeguRestUtil))
     .service('EbeguUtil', EbeguUtil)
     .service('GesuchstellerRS', GesuchstellerRS)
     .service('AdresseRS', AdresseRS)
@@ -223,8 +217,14 @@ export const CORE_JS_MODULE = angular
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
-    .service('EinkommensverschlechterungContainerRS', EinkommensverschlechterungContainerRS)
-    .service('EinkommensverschlechterungInfoRS', EinkommensverschlechterungInfoRS)
+    .service(
+        'EinkommensverschlechterungContainerRS',
+        EinkommensverschlechterungContainerRS
+    )
+    .service(
+        'EinkommensverschlechterungInfoRS',
+        EinkommensverschlechterungInfoRS
+    )
     .service('TraegerschaftRS', TraegerschaftRS)
     .service('InstitutionStammdatenRS', InstitutionStammdatenRS)
     .service('ErwerbspensumRS', ErwerbspensumRS)
@@ -244,17 +244,29 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('NotrechtRS', NotrechtRS)
-    .factory('FamiliensituationRS', downgradeInjectable(FamiliensituationRS) as any)
+    .factory(
+        'FamiliensituationRS',
+        downgradeInjectable(FamiliensituationRS) as any
+    )
     .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
     .factory('InstitutionRS', downgradeInjectable(InstitutionRS) as any)
-    .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
-    .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
+    .factory(
+        'PosteingangService',
+        downgradeInjectable(PosteingangService) as any
+    )
+    .factory(
+        'AuthLifeCycleService',
+        downgradeInjectable(AuthLifeCycleService) as any
+    )
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
     .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .factory('SozialdienstRS', downgradeInjectable(SozialdienstRS) as any)
-    .factory('InternePendenzenRS', downgradeInjectable(InternePendenzenRS) as any)
+    .factory(
+        'InternePendenzenRS',
+        downgradeInjectable(InternePendenzenRS) as any
+    )
     .factory('VersionService', downgradeInjectable(VersionService) as any)
     .factory('BroadcastService', downgradeInjectable(BroadcastService) as any)
     .factory('BenutzerRS', downgradeInjectable(BenutzerRSX) as any)
@@ -262,12 +274,25 @@ export const CORE_JS_MODULE = angular
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
-    .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
-    .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
-    .factory('KinderabzugExchangeService', downgradeInjectable(KinderabzugExchangeService) as any)
+    .factory(
+        'HttpPendingService',
+        downgradeInjectable(HttpPendingService) as any
+    )
+    .factory(
+        'FerieninselStammdatenRS',
+        downgradeInjectable(FerieninselStammdatenRS) as any
+    )
+    .factory(
+        'KinderabzugExchangeService',
+        downgradeInjectable(KinderabzugExchangeService) as any
+    )
     .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
-    .factory('CustomTranslationLoader',
-        ['$http', 'MandantService', '$q', customTranslateLoader])
+    .factory('CustomTranslationLoader', [
+        '$http',
+        'MandantService',
+        '$q',
+        customTranslateLoader
+    ])
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvIsNotQrIban', DvIsNotQrIban.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
@@ -284,7 +309,10 @@ export const CORE_JS_MODULE = angular
     .directive('dvEnableElement', DVEnableElement.factory())
     .directive('dvBarcodeListener', DVBarcodeListener.factory())
     .directive('dvTrimEmpty', DVTrimEmpty.factory())
-    .directive('dvSuppressFormSubmitOnEnter', DVSuppressFormSubmitOnEnter.factory())
+    .directive(
+        'dvSuppressFormSubmitOnEnter',
+        DVSuppressFormSubmitOnEnter.factory()
+    )
     .directive('dvAhvCheck', DvAhvCheck.factory())
     .directive('dvAhvGesuchstellerCheck', DvAhvGesuchstellerCheck.factory())
     .service('FachstelleRS', FachstelleRS)
@@ -304,7 +332,10 @@ export const CORE_JS_MODULE = angular
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
     .component('dvRadioContainer', new DvRadioContainerComponentConfig())
     .component('dvTooltip', new DvTooltipComponentConfig())
-    .component('dvMobileNavigationToggle', new DvMobileNavigationToggleComponentConfig())
+    .component(
+        'dvMobileNavigationToggle',
+        new DvMobileNavigationToggleComponentConfig()
+    )
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
     .component('dvCountdown', new DvCountdownComponentConfig())
@@ -321,18 +352,39 @@ export const CORE_JS_MODULE = angular
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
     .component('dvInputContainer', new DvInputContainerComponentConfig())
-    .directive('dvNewAntragList', downgradeComponent({component: NewAntragListComponent}))
-    .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
-    .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
-    .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntryComponent}))
+    .directive(
+        'dvNewAntragList',
+        downgradeComponent({component: NewAntragListComponent})
+    )
+    .directive(
+        'dvHelpmenu',
+        downgradeComponent({component: DvHelpmenuComponent})
+    )
+    .directive(
+        'dvMitteilungDelegation',
+        downgradeComponent({component: DvMitteilungDelegationComponent})
+    )
+    .directive(
+        'dvBenutzerEntry',
+        downgradeComponent({component: DvBenutzerEntryComponent})
+    )
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
-    .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
-    .directive('dvDemoFeatureWrapper', downgradeComponent({component: DvDemoFeatureWrapperComponent}))
-    .directive('dvPulldownUserMenu', downgradeComponent({component: PulldownUserMenuComponent}))
+    .directive(
+        'dvSearchList',
+        downgradeComponent({component: DvSearchListComponent})
+    )
+    .directive(
+        'dvDemoFeatureWrapper',
+        downgradeComponent({component: DvDemoFeatureWrapperComponent})
+    )
+    .directive(
+        'dvPulldownUserMenu',
+        downgradeComponent({component: PulldownUserMenuComponent})
+    )
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
-    .service('EwkRS', EwkRS)
+    .service('EwkRS', downgradeInjectable(EwkRS))
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)
     .filter('arrayToString', () => arrayToString)

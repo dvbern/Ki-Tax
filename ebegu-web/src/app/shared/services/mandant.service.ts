@@ -19,10 +19,11 @@ const LOG = LogFactory.createLog('MandantService');
     providedIn: 'root'
 })
 export class MandantService {
+    private readonly _mandant$: ReplaySubject<KiBonMandant> =
+        new ReplaySubject<KiBonMandant>(1);
 
-    private readonly _mandant$: ReplaySubject<KiBonMandant> = new ReplaySubject<KiBonMandant>(1);
-
-    private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+    private readonly _multimandantActive$: ReplaySubject<boolean> =
+        new ReplaySubject<boolean>();
 
     private readonly restUtil = new EbeguRestUtil();
 
@@ -37,7 +38,6 @@ export class MandantService {
     ) {
         // Workaround, we somehow get a cyclic dependency when we try to inject this directly
         // TODO: reenable once ApplicationPropertyRS is migrated
-        // eslint-disable-next-line
         // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
         //     this._multimandantActive$.next(properties.mulitmandantAktiv);
         // });
@@ -95,10 +95,15 @@ export class MandantService {
         if (MandantService.isLegacyBeCookie(this.getDecodeMandantCookie())) {
             await this.setMandantCookie(MANDANTS.BERN);
         }
-        const mandantFromCookie = MandantService.cookieToMandant(this.getDecodeMandantCookie());
+        const mandantFromCookie = MandantService.cookieToMandant(
+            this.getDecodeMandantCookie()
+        );
         const mandantFromUrl = this.parseHostnameForMandant();
 
-        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !==MANDANTS.NONE) {
+        if (
+            mandantFromCookie !== mandantFromUrl &&
+            mandantFromUrl !== MANDANTS.NONE
+        ) {
             await this.setMandantCookie(mandantFromUrl);
             this._mandant$.next(mandantFromUrl);
         } else {
@@ -107,31 +112,46 @@ export class MandantService {
     }
 
     public async initMandantRedirectCookie(): Promise<void> {
-        const mandantFromCookie = MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
+        const mandantFromCookie = MandantService.cookieToMandant(
+            this.getDecodedMandantRedirectCookie()
+        );
         const mandantFromUrl = this.parseHostnameForMandant();
 
-        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !==MANDANTS.NONE) {
+        if (
+            mandantFromCookie !== mandantFromUrl &&
+            mandantFromUrl !== MANDANTS.NONE
+        ) {
             await this.setMandantRedirectCookie(mandantFromUrl);
         }
     }
 
     private getDecodeMandantCookie(): string {
-        return MandantService.decodeMandantCookie(this.cookieService.get('mandant'));
+        return MandantService.decodeMandantCookie(
+            this.cookieService.get('mandant')
+        );
     }
 
     private getDecodedMandantRedirectCookie(): string {
-        return MandantService.decodeMandantCookie(this.cookieService.get('mandantRedirect'));
+        return MandantService.decodeMandantCookie(
+            this.cookieService.get('mandantRedirect')
+        );
     }
 
     private initMultimandantActivated(): Promise<void> {
-        return this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).toPromise().then(res => {
-            const props = this.restUtil.parsePublicAppConfig(res);
-            this._multimandantActive$.next(props.mulitmandantAktiv);
-            // overwrite cookie if not active
-            if (!props.mulitmandantAktiv) {
-                this._mandant$.next(MANDANTS.NONE);
-            }
-        }, err => LOG.error(err));
+        return this.http
+            .get(`${CONSTANTS.REST_API}application-properties/public/all`)
+            .toPromise()
+            .then(
+                res => {
+                    const props = this.restUtil.parsePublicAppConfig(res);
+                    this._multimandantActive$.next(props.mulitmandantAktiv);
+                    // overwrite cookie if not active
+                    if (!props.mulitmandantAktiv) {
+                        this._mandant$.next(MANDANTS.NONE);
+                    }
+                },
+                err => LOG.error(err)
+            );
     }
 
     public isMultimandantActive$(): Observable<boolean> {
@@ -140,7 +160,9 @@ export class MandantService {
 
     public parseHostnameForMandant(): KiBonMandant {
         const regex = /(be|so|ar|stadtluzern|sz)(?=.(dvbern|kibon))/g;
-        const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
+        const matches = regex.exec(
+            this.windowRef.nativeWindow.location.hostname
+        );
         if (matches === null) {
             return MANDANTS.NONE;
         }
@@ -148,7 +170,9 @@ export class MandantService {
     }
 
     public selectMandant(mandant: KiBonMandant, url: string): void {
-        const parsedMandant = MandantService.hostnameToMandant(mandant.hostname);
+        const parsedMandant = MandantService.hostnameToMandant(
+            mandant.hostname
+        );
 
         if (parsedMandant !== MANDANTS.NONE) {
             this.redirectToMandantSubdomain(parsedMandant, url);
@@ -157,23 +181,36 @@ export class MandantService {
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
-        return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant`,
-            {name: mandant.fullName}).toPromise() as Promise<any>;
+        return this.http
+            .post(`${CONSTANTS.REST_API}auth/set-mandant`, {
+                name: mandant.fullName
+            })
+            .toPromise() as Promise<any>;
     }
 
     public setMandantRedirectCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
-        return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant-redirect`,
-            {name: mandant.fullName}).toPromise() as Promise<any>;
+        return this.http
+            .post(`${CONSTANTS.REST_API}auth/set-mandant-redirect`, {
+                name: mandant.fullName
+            })
+            .toPromise() as Promise<any>;
     }
 
-    public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
+    public redirectToMandantSubdomain(
+        mandant: KiBonMandant,
+        url: string
+    ): void {
         const host = this.removeMandantEnvironmentFromCompleteHost();
         const environment = this.getEnvironmentFromCompleteHost();
-        const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant.hostname}` : mandant.hostname;
+        const environmentWithMandant =
+            environment.length > 0
+                ? `${environment}-${mandant.hostname}`
+                : mandant.hostname;
         this.windowRef.nativeWindow.open(
             `${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
-            '_self');
+            '_self'
+        );
     }
 
     public removeMandantEnvironmentFromCompleteHost(): string {
@@ -187,8 +224,11 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /(local|preview|e2e|dev|uat|iat|demo|schulung|replica)?(-\w*)?/;
-        const matches = this.windowRef.nativeWindow.location.host.split('kibon.ch')[0].match(environmentRegex);
+        const environmentRegex =
+            /(local|preview|e2e|dev|uat|iat|demo|schulung|replica)?(-\w*)?/;
+        const matches = this.windowRef.nativeWindow.location.host
+            .split('kibon.ch')[0]
+            .match(environmentRegex);
         if (EbeguUtil.isNullOrUndefined(matches[1])) {
             return '';
         }
@@ -196,7 +236,9 @@ export class MandantService {
     }
 
     public getMandantRedirect(): KiBonMandant {
-        return MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
+        return MandantService.cookieToMandant(
+            this.getDecodedMandantRedirectCookie()
+        );
     }
 
     public getMandantLoginState(mandant: KiBonMandant): string {
@@ -220,9 +262,14 @@ export class MandantService {
     }
 
     public getAll(): Observable<TSMandant[]> {
-        return this.http.get<any[]>(`${CONSTANTS.REST_API}mandanten/all`)
+        return this.http
+            .get<any[]>(`${CONSTANTS.REST_API}mandanten/all`)
             .pipe(
-                map(results => results.map(restMandant => this.restUtil.parseMandant(new TSMandant(), restMandant)))
+                map(results =>
+                    results.map(restMandant =>
+                        this.restUtil.parseMandant(new TSMandant(), restMandant)
+                    )
+                )
             );
     }
 

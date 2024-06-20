@@ -21,7 +21,6 @@ import {TSGesuchsperiode} from './TSGesuchsperiode';
 import {TSModulTagesschuleGroup} from './TSModulTagesschuleGroup';
 
 export class TSEinstellungenTagesschule extends TSAbstractEntity {
-
     public gesuchsperiode: TSGesuchsperiode;
     public modulTagesschuleTyp: TSModulTagesschuleTyp;
     public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;

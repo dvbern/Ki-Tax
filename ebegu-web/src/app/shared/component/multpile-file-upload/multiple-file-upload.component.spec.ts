@@ -17,7 +17,6 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {TSFile} from '../../../../models/TSFile';
@@ -33,24 +32,28 @@ describe('FileUploadComponent', () => {
     let fixture: ComponentFixture<MultipleFileUploadComponent<TSFile>>;
 
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getAllowedMimetypes']
+        );
 
     beforeEach(waitForAsync(() => {
-        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(of('').toPromise());
+        applicationPropertyRSSpy.getAllowedMimetypes.and.returnValue(
+            of('').toPromise()
+        );
 
         TestBed.configureTestingModule({
-                imports: [
-                    SharedModule,
-                    MaterialModule
-                ],
-                schemas: [CUSTOM_ELEMENTS_SCHEMA],
-                providers: [
-                    WindowRef,
-                    {provide: NgForm, useValue: new NgForm([], [])},
-                    {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
-                ]
-            }
-        )
+            imports: [SharedModule, MaterialModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [
+                WindowRef,
+                {provide: NgForm, useValue: new NgForm([], [])},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
+            ]
+        })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));

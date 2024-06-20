@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
+import {
+    Directive,
+    EventEmitter,
+    Injectable,
+    Input,
+    Output
+} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {MANDANTS, KiBonMandant} from '../app/core/constants/MANDANTS';
 import {NewUserSelectDirective} from '../app/core/new-antrag-list/new-user-select.directive';
@@ -33,7 +39,6 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
     selector: 'dv-loading-button'
 })
 export class MockDvLoadingButtonDirective {
-
     @Input() public type: string;
     @Input() public delay: string;
     @Input() public buttonClass: string;
@@ -42,17 +47,16 @@ export class MockDvLoadingButtonDirective {
     @Input() public ariaLabel: string;
     @Input() public inputId: string;
 
-    @Output() public readonly buttonClick: EventEmitter<void> = new EventEmitter<void>();
+    @Output() public readonly buttonClick: EventEmitter<void> =
+        new EventEmitter<void>();
 }
 
 @Directive({
     selector: 'dv-tooltip'
 })
 export class MockTooltipDirective {
-
     @Input() public inputId: string;
     @Input() public text: string;
-
 }
 
 @Directive({
@@ -81,12 +85,12 @@ export class MockNewUserSelectDirective {
     public useDefaultUserLists: boolean = true;
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     @Output()
-    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
+    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> =
+        new EventEmitter<{user: TSBenutzerNoDetails}>();
 }
 
 @Injectable()
 class MockMandantService {
-
     public async initMandantCookie(): Promise<void> {
         return Promise.resolve();
     }
@@ -98,13 +102,29 @@ class MockMandantService {
 
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
-        declarations: [LoadingButtonDirective, TooltipDirective, NewUserSelectDirective],
-        exports: [LoadingButtonDirective, TooltipDirective, NewUserSelectDirective],
+        declarations: [
+            LoadingButtonDirective,
+            TooltipDirective,
+            NewUserSelectDirective
+        ],
+        exports: [
+            LoadingButtonDirective,
+            TooltipDirective,
+            NewUserSelectDirective
+        ],
         providers: [MandantService]
     },
     add: {
-        declarations: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
-        exports: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
+        declarations: [
+            MockDvLoadingButtonDirective,
+            MockTooltipDirective,
+            MockNewUserSelectDirective
+        ],
+        exports: [
+            MockDvLoadingButtonDirective,
+            MockTooltipDirective,
+            MockNewUserSelectDirective
+        ],
         providers: [
             WindowRef,
             {

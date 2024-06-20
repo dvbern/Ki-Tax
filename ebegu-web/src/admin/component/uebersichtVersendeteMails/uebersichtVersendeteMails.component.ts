@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortable} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -24,20 +30,25 @@ import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 @Component({
     selector: 'dv-uebersicht-Versendete-Mails',
     templateUrl: './uebersichtVersendeteMails.component.html',
-    styleUrls: ['./uebersichtVersendeteMails.component.less'],
+    styleUrls: ['./uebersichtVersendeteMails.component.less']
 })
-
-export class UebersichtVersendeteMailsComponent {
-    public displayedColumns: string[] = ['zeitpunktVersand', 'empfaengerAdresse', 'betreff'];
+export class UebersichtVersendeteMailsComponent
+    implements OnInit, AfterViewInit
+{
+    public displayedColumns: string[] = [
+        'zeitpunktVersand',
+        'empfaengerAdresse',
+        'betreff'
+    ];
 
     public dataSource: MatTableDataSource<TableUebersichtVersendeteMails>;
-    @ViewChild(MatSort, {static:true}) public sort: MatSort;
+    @ViewChild(MatSort, {static: true}) public sort: MatSort;
     @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
+
     public constructor(
         private readonly uebersichtVersendeteMailsRS: UebersichtVersendeteMailsRS,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-    ) {
-    }
+        private readonly changeDetectorRef: ChangeDetectorRef
+    ) {}
 
     public ngOnInit(): void {
         this.passFilterToServer();
@@ -51,41 +62,51 @@ export class UebersichtVersendeteMailsComponent {
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
-    private assignResultToDataSource(result: TSVersendeteMail[]): void {
-        this.dataSource.data = result.map(
-            item => ({
-                zeitpunktVersand: this.parseMomentToString(item.zeitpunktVersand),
-                empfaengerAdresse: item.empfaengerAdresse,
-                betreff: item.betreff,
-            } as TableUebersichtVersendeteMails),
-        );
-        this.dataSource.paginator = this.paginator;
-    }
 
-    private passFilterToServer(): void {
-        this.dataSource = new MatTableDataSource<TableUebersichtVersendeteMails>([]);
-        this.uebersichtVersendeteMailsRS.getAllMails()
-            .subscribe((result: TSVersendeteMail[]) => {
-                    this.assignResultToDataSource(result);
-                    this.changeDetectorRef.markForCheck();
-                },
-                () => {
-                });
+    public doFilter(value: string): void {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 
     protected parseMomentToString(versand: moment.Moment): string {
         return versand.format('DD.MM.YYYY HH:mm:ss');
     }
 
-    public doFilter(value: string): void {
-        this.dataSource.filter = value.trim().toLocaleLowerCase();
+    private assignResultToDataSource(result: TSVersendeteMail[]): void {
+        this.dataSource.data = result.map(
+            item =>
+                ({
+                    zeitpunktVersand: this.parseMomentToString(
+                        item.zeitpunktVersand
+                    ),
+                    empfaengerAdresse: item.empfaengerAdresse,
+                    betreff: item.betreff
+                }) as TableUebersichtVersendeteMails
+        );
+        this.dataSource.paginator = this.paginator;
+    }
+
+    private passFilterToServer(): void {
+        this.dataSource =
+            new MatTableDataSource<TableUebersichtVersendeteMails>([]);
+        this.uebersichtVersendeteMailsRS.getAllMails().subscribe(
+            (result: TSVersendeteMail[]) => {
+                this.assignResultToDataSource(result);
+                this.changeDetectorRef.markForCheck();
+            },
+            () => {}
+        );
     }
 
     private sortTable(): void {
-        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: any) => {
+        this.dataSource.sortingDataAccessor = (
+            data: any,
+            sortHeaderId: any
+        ) => {
             if (typeof data[sortHeaderId] === 'string') {
                 if (sortHeaderId === 'zeitpunktVersand') {
-                    return moment(data.zeitpunktVersand, 'DD.MM.YYYY HH:mm:ss').toDate().getTime();
+                    return moment(data.zeitpunktVersand, 'DD.MM.YYYY HH:mm:ss')
+                        .toDate()
+                        .getTime();
                 }
                 return data[sortHeaderId].toLocaleLowerCase();
             }
@@ -99,4 +120,3 @@ interface TableUebersichtVersendeteMails {
     empfaengerAdresse: string;
     betreff: string;
 }
-

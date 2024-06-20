@@ -24,5 +24,6 @@ public interface FinanzielleSituationTypVisitor<T> {
 	T visitFinSitLuzern();
 	T visitFinSitSolothurn();
 	T visitFinSitAppenzell();
+	T visitFinSitAppenzellFolgemonat();
 	T visitFinSitSchwyz();
 }

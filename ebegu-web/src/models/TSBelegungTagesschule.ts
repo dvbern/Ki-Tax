@@ -20,7 +20,6 @@ import {TSBelegungTagesschuleModul} from './TSBelegungTagesschuleModul';
 import {TSFleischOption} from './enums/TSFleischOption';
 
 export class TSBelegungTagesschule extends TSAbstractMutableEntity {
-
     public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
     public eintrittsdatum: moment.Moment;
     public planKlasse: string;
@@ -31,5 +30,4 @@ export class TSBelegungTagesschule extends TSAbstractMutableEntity {
     public bemerkung: string;
     public abweichungZweitesSemester: boolean;
     public keineKesbPlatzierung: boolean;
-
 }

@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 
 /**
@@ -30,7 +30,6 @@ import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
     templateUrl: './dv-ng-sozialdienst-dialog.template.html'
 })
 export class DvNgSozialdienstDialogComponent {
-
     public selectedSozialdienst: TSSozialdienst;
     public sozialdienstList: TSSozialdienst[];
 
@@ -38,12 +37,13 @@ export class DvNgSozialdienstDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgSozialdienstDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
-
         this.sozialdienstList = data.sozialdienstList;
     }
 
     public save(): void {
-        this.dialogRef.close(this.selectedSozialdienst ? this.selectedSozialdienst.id : undefined);
+        this.dialogRef.close(
+            this.selectedSozialdienst ? this.selectedSozialdienst.id : undefined
+        );
     }
 
     public close(): void {

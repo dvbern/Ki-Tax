@@ -30,20 +30,28 @@ export enum TSBetreuungsstatus {
     SCHULAMT_FALSCHE_INSTITUTION = 'SCHULAMT_FALSCHE_INSTITUTION',
     SCHULAMT_MODULE_AKZEPTIERT = 'SCHULAMT_MODULE_AKZEPTIERT',
     SCHULAMT_ANMELDUNG_STORNIERT = 'SCHULAMT_ANMELDUNG_STORNIERT',
-    SCHULAMT_MUTATION_IGNORIERT = 'SCHULAMT_MUTATION_IGNORIERT',
+    SCHULAMT_MUTATION_IGNORIERT = 'SCHULAMT_MUTATION_IGNORIERT'
 }
 
-export function isBetreuungsstatusTSAusgeloest(status: TSBetreuungsstatus): boolean {
-    return status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
-        || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT
-        || status === TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
-        || status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-        || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
-        || status === TSBetreuungsstatus.STORNIERT
-        || status === TSBetreuungsstatus.SCHULAMT_MUTATION_IGNORIERT;
+export function isBetreuungsstatusTSAusgeloest(
+    status: TSBetreuungsstatus
+): boolean {
+    return (
+        status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST ||
+        status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT ||
+        status === TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT ||
+        status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN ||
+        status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION ||
+        status === TSBetreuungsstatus.STORNIERT ||
+        status === TSBetreuungsstatus.SCHULAMT_MUTATION_IGNORIERT
+    );
 }
 
-export function isBetreuungsstatusStorniert(status: TSBetreuungsstatus): boolean  {
-    return status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT
-        || status === TSBetreuungsstatus.STORNIERT;
+export function isBetreuungsstatusStorniert(
+    status: TSBetreuungsstatus
+): boolean {
+    return (
+        status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT ||
+        status === TSBetreuungsstatus.STORNIERT
+    );
 }

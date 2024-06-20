@@ -18,31 +18,44 @@ import {ApplicationPropertyRS} from './core/rest-services/applicationPropertyRS.
 import {ColorService} from './shared/services/color.service';
 
 export class AppAngularjsComponent implements IController {
-
-    public static $inject: string[] = ['$element', 'ApplicationPropertyRS', 'ColorService'];
+    public static $inject: string[] = [
+        '$element',
+        'ApplicationPropertyRS',
+        'ColorService'
+    ];
 
     public constructor(
         private readonly $element: IAugmentedJQuery,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $postLink(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then(response => {
-                this.$element.find('#Intro')
+                this.$element
+                    .find('#Intro')
                     .css('background-color', response.backgroundColor);
-                this.$element.find('.environment')
+                this.$element
+                    .find('.environment')
                     .css('display', response.devmode ? 'inline' : 'none');
-                this.$element.find('.logo-bern')
-                    .css('background-image', this.getBackgroundImage(response.logoFileName));
+                this.$element
+                    .find('.logo-bern')
+                    .css(
+                        'background-image',
+                        this.getBackgroundImage(response.logoFileName)
+                    );
                 // Beim Ablösen bitte mit ngIf ersetzen, das hier ist ein Workaround, weil das Template hier nicht
                 // auf den Controller zugreifen konnte
                 if (!response.frenchEnabled) {
-                    this.$element.find('#language-selector').css('display', 'none');
+                    this.$element
+                        .find('#language-selector')
+                        .css('display', 'none');
                 }
                 if (response.devmode) {
-                    document.querySelector('meta[name="robots"]').setAttribute('content', 'noindex,nofollow');
+                    document
+                        .querySelector('meta[name="robots"]')
+                        .setAttribute('content', 'noindex,nofollow');
                 }
                 ColorService.changeColors(response);
             });

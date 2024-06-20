@@ -24,7 +24,6 @@ import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../pendenzenBetreuungen.module';
 import {PendenzBetreuungenRS} from './PendenzBetreuungenRS.rest';
 
 describe('pendenzBetreuungenRS', () => {
-
     let pendenzBetreuungenRS: PendenzBetreuungenRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -37,14 +36,17 @@ describe('pendenzBetreuungenRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
-        mockPendenzBetreuungen = new TSPendenzBetreuung('123.12.12',
+        mockPendenzBetreuungen = new TSPendenzBetreuung(
+            '123.12.12',
             '123',
             '123',
             '123',
@@ -56,8 +58,13 @@ describe('pendenzBetreuungenRS', () => {
             undefined,
             undefined,
             TSBetreuungsangebotTyp.KITA,
-            undefined);
-        mockPendenzBetreuungenRest = ebeguRestUtil.pendenzBetreuungenToRestObject({}, mockPendenzBetreuungen);
+            undefined
+        );
+        mockPendenzBetreuungenRest =
+            ebeguRestUtil.pendenzBetreuungenToRestObject(
+                {},
+                mockPendenzBetreuungen
+            );
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
@@ -66,12 +73,16 @@ describe('pendenzBetreuungenRS', () => {
         describe('findBetreuung', () => {
             it('should return all pending Betreuungen', () => {
                 const arrayResult = [mockPendenzBetreuungenRest];
-                $httpBackend.expectGET(pendenzBetreuungenRS.serviceURL).respond(arrayResult);
+                $httpBackend
+                    .expectGET(pendenzBetreuungenRS.serviceURL)
+                    .respond(arrayResult);
 
                 let foundPendenzen: Array<TSPendenzBetreuung>;
-                pendenzBetreuungenRS.getPendenzenBetreuungenList().then(result => {
-                    foundPendenzen = result;
-                });
+                pendenzBetreuungenRS
+                    .getPendenzenBetreuungenList()
+                    .then(result => {
+                        foundPendenzen = result;
+                    });
                 $httpBackend.flush();
                 expect(foundPendenzen).toBeDefined();
                 expect(foundPendenzen.length).toBe(1);

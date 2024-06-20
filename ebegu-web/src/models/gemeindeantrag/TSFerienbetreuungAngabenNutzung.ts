@@ -18,7 +18,6 @@
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
 export class TSFerienbetreuungAngabenNutzung extends TSFerienbetreuungAbstractAngaben {
-
     private _anzahlBetreuungstageKinderBern: number;
     private _betreuungstageKinderDieserGemeinde: number;
     private _betreuungstageKinderDieserGemeindeSonderschueler: number;
@@ -66,7 +65,9 @@ export class TSFerienbetreuungAngabenNutzung extends TSFerienbetreuungAbstractAn
         return this._davonBetreuungstageKinderAndererGemeindenSonderschueler;
     }
 
-    public set davonBetreuungstageKinderAndererGemeindenSonderschueler(value: number) {
+    public set davonBetreuungstageKinderAndererGemeindenSonderschueler(
+        value: number
+    ) {
         this._davonBetreuungstageKinderAndererGemeindenSonderschueler = value;
     }
 

@@ -201,9 +201,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				getLocale());
 		}
 
-		// Information, ob die Zahlung an die Eltern oder Institution ausbezahlt wird übernehmen.
-		zeitabschnitt.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
-
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
 
 		// hier kind hoehereBeitraegeWegenBeeintraechtigungBeantragen pruefen

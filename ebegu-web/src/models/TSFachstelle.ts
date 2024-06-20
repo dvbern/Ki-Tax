@@ -17,7 +17,6 @@ import {TSFachstelleName} from './enums/TSFachstelleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSFachstelle extends TSAbstractMutableEntity {
-
     private _name: TSFachstelleName;
     private _fachstelleAnspruch: boolean;
     private _fachstelleErweiterteBetreuung: boolean;

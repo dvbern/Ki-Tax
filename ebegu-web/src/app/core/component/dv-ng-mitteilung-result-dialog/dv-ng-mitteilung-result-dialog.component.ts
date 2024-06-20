@@ -40,7 +40,6 @@ const LOG = LogFactory.createLog('DvNgMitteilungResultDialogComponent');
     styleUrls: ['./dv-ng-mitteilung-result-dialog.template.less']
 })
 export class DvNgMitteilungResultDialogComponent implements OnInit {
-
     public verarbeitung?: TSMitteilungVerarbeitungResult;
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMitteilungResultDialogComponent>,
@@ -48,50 +47,53 @@ export class DvNgMitteilungResultDialogComponent implements OnInit {
         private readonly ebeguUtil: EbeguUtil,
         private readonly mitteilungRS: MitteilungRS,
         private readonly errorService: ErrorServiceX,
-        @Inject(MAT_DIALOG_DATA) private readonly mitteilungenToProcess: TSBetreuungsmitteilung[]
-    ) {
-    }
+        @Inject(MAT_DIALOG_DATA)
+        private readonly mitteilungenToProcess: TSBetreuungsmitteilung[]
+    ) {}
 
     public ngOnInit(): void {
         if (EbeguUtil.isEmptyArrayNullOrUndefined(this.mitteilungenToProcess)) {
             LOG.warn('No Mitteilungen to process were provided');
             return;
         }
-        this.mitteilungRS.applyAlleBetreuungsmitteilungen(this.mitteilungenToProcess).subscribe(verarbeitungResult => {
-            this.verarbeitung = verarbeitungResult;
-        }, error =>  {
-            LOG.error(error);
-        });
+        this.mitteilungRS
+            .applyAlleBetreuungsmitteilungen(this.mitteilungenToProcess)
+            .subscribe(
+                verarbeitungResult => {
+                    this.verarbeitung = verarbeitungResult;
+                },
+                error => {
+                    LOG.error(error);
+                }
+            );
     }
 
     public getVerfuegtSuccessItems(): TSBetreuungsmitteilung[] {
         if (EbeguUtil.isNullOrUndefined(this.verarbeitung)) {
             return [];
         }
-        return this.verarbeitung.successItems.filter(mitteilung =>
-            mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT
-            && mitteilung.betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT);
+        return this.verarbeitung.successItems.filter(
+            mitteilung =>
+                mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT &&
+                mitteilung.betreuung.betreuungsstatus ===
+                    TSBetreuungsstatus.VERFUEGT
+        );
     }
 
     public getNotVerfuegtSuccessItems(): TSBetreuungsmitteilung[] {
         if (EbeguUtil.isNullOrUndefined(this.verarbeitung)) {
             return [];
         }
-        return this.verarbeitung.successItems.filter(mitteilung =>
-            mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT
-            && mitteilung.betreuung.betreuungsstatus !== TSBetreuungsstatus.VERFUEGT);
+        return this.verarbeitung.successItems.filter(
+            mitteilung =>
+                mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT &&
+                mitteilung.betreuung.betreuungsstatus !==
+                    TSBetreuungsstatus.VERFUEGT
+        );
     }
 
     public ok(): void {
         this.dialogRef.close(true);
-    }
-
-    public getRererenceNummer(mitteilung: TSBetreuungsmitteilung): string {
-        return this.ebeguUtil.calculateBetreuungsId(mitteilung.betreuung.gesuchsperiode,
-            mitteilung.dossier.fall,
-            mitteilung.dossier.gemeinde,
-            mitteilung.betreuung.kindNummer,
-            mitteilung.betreuung.betreuungNummer);
     }
 
     public getBetreuungUrl(mitteilung: TSMitteilung): string {

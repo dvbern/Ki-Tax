@@ -21,7 +21,6 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
  * Class to store cache Global
  */
 export class GlobalCacheService {
-
     public static $inject = ['$cacheFactory'];
 
     public constructor(private readonly $cacheFactory: ICacheFactoryService) {
@@ -31,5 +30,4 @@ export class GlobalCacheService {
     public getCache(cacheType: TSCacheTyp): ICacheObject {
         return this.$cacheFactory.get(cacheType);
     }
-
 }

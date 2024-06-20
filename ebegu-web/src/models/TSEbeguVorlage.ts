@@ -19,7 +19,6 @@ import {TSVorlage} from './TSVorlage';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSEbeguVorlage extends TSAbstractDateRangedEntity {
-
     private _name: TSEbeguVorlageKey;
     private _vorlage: TSVorlage;
 

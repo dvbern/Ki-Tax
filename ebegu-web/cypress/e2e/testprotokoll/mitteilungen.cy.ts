@@ -5,9 +5,9 @@ import {
     MitteilungenPO,
     NavbarPO,
     PosteingangPO,
-    TestFaellePO,
+    TestFaellePO
 } from '@dv-e2e/page-objects';
-import { getUser } from '@dv-e2e/types';
+import {getUser} from '@dv-e2e/types';
 
 describe('Kibon - Test Mitteilungen', () => {
     const userSuperAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -22,7 +22,7 @@ describe('Kibon - Test Mitteilungen', () => {
 
     before(() => {
         cy.resetViewport();
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(userSuperAdmin);
         cy.visit('/#/faelle');
 
@@ -34,11 +34,13 @@ describe('Kibon - Test Mitteilungen', () => {
             gemeinde: 'London'
         });
 
-        AntragCreationPO.getEingangsdatum().find('input').should('have.value', '15.2.2016');
+        AntragCreationPO.getEingangsdatum()
+            .find('input')
+            .should('have.value', '15.2.2016');
         AntragCreationPO.getVerantwortlicher().click();
         AntragCreationPO.getUserOption(userSB, false).click();
 
-        cy.url().then((url) => {
+        cy.url().then(url => {
             const parts = new URL(url);
             gesuchUrl = `/${parts.hash}`;
         });
@@ -48,9 +50,14 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.viewport('iphone-8');
         cy.login(userGS);
 
-        cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/**', () => {
-            cy.visit(gesuchUrl);
-        }, {waitOptions: {timeout: 17500}});
+        cy.waitForRequest(
+            'GET',
+            '**/gesuchsperioden/gemeinde/**',
+            () => {
+                cy.visit(gesuchUrl);
+            },
+            {waitOptions: {timeout: 17500}}
+        );
 
         MainNavigationPO.getMobileMenuButton().click();
         DossierToolbarGesuchstellendePO.getMitteilungen().click();
@@ -67,8 +74,12 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.login(userSB);
 
         // TODO: add support for intercepting multiple requests in custom command
-        cy.intercept('GET', '**/mitteilungen/amountnewforuser/**').as('mitteilungCount');
-        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadySB');
+        cy.intercept('GET', '**/mitteilungen/amountnewforuser/**').as(
+            'mitteilungCount'
+        );
+        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as(
+            'untilReadySB'
+        );
         cy.visit(gesuchUrl);
         cy.wait('@untilReadySB', {timeout: 17500});
         cy.wait('@mitteilungCount');
@@ -78,9 +89,15 @@ describe('Kibon - Test Mitteilungen', () => {
 
         PosteingangPO.getMitteilung(0).click();
 
-        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectGS);
+        MitteilungenPO.getSubjectOfMitteilung(0).should(
+            'include.text',
+            subjectGS
+        );
         MitteilungenPO.getMitteilung(0).click();
-        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltGS);
+        MitteilungenPO.getInhaltOfMitteilung(0).should(
+            'include.text',
+            inhaltGS
+        );
 
         MitteilungenPO.getEmpfangendeInput().select('Antragsteller/in');
         MitteilungenPO.getSubjectInput().type(subjectSB);
@@ -99,12 +116,21 @@ describe('Kibon - Test Mitteilungen', () => {
         });
 
         MainNavigationPO.getMobileMenuButton().click();
-        DossierToolbarGesuchstellendePO.getMitteilungen().should('include.text', '(1)');
+        DossierToolbarGesuchstellendePO.getMitteilungen().should(
+            'include.text',
+            '(1)'
+        );
         DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
-        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectSB);
+        MitteilungenPO.getSubjectOfMitteilung(0).should(
+            'include.text',
+            subjectSB
+        );
         MitteilungenPO.getMitteilung(0).click();
-        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltSB);
+        MitteilungenPO.getInhaltOfMitteilung(0).should(
+            'include.text',
+            inhaltSB
+        );
         cy.resetViewport();
     });
 });

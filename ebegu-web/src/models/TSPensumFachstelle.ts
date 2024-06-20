@@ -21,7 +21,6 @@ import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
 
 export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
-
     private _fachstelle: TSFachstelle;
     private _integrationTyp: TSIntegrationTyp;
     private _gruendeZusatzleistung: TSGruendeZusatzleistung;
@@ -56,19 +55,25 @@ export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     public isComplete(fachstellenTyp: TSFachstellenTyp): boolean {
         if (fachstellenTyp === TSFachstellenTyp.LUZERN) {
-            return EbeguUtil.isNotNullOrUndefined(this.integrationTyp)
-                && EbeguUtil.isNotNullOrUndefined(this.gueltigkeit.gueltigAb);
+            return (
+                EbeguUtil.isNotNullOrUndefined(this.integrationTyp) &&
+                EbeguUtil.isNotNullOrUndefined(this.gueltigkeit.gueltigAb)
+            );
         }
 
-        if (this.integrationTyp
-            === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
-            && EbeguUtil.isNullOrUndefined(this.gruendeZusatzleistung)) {
+        if (
+            this.integrationTyp ===
+                TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION &&
+            EbeguUtil.isNullOrUndefined(this.gruendeZusatzleistung)
+        ) {
             return false;
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.fachstelle)
-            && EbeguUtil.isNotNullOrUndefined(this.integrationTyp)
-            && EbeguUtil.isNotNullOrUndefined(this.gueltigkeit.gueltigAb)
-            && EbeguUtil.isNotNullOrUndefined(this.pensum);
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.fachstelle) &&
+            EbeguUtil.isNotNullOrUndefined(this.integrationTyp) &&
+            EbeguUtil.isNotNullOrUndefined(this.gueltigkeit.gueltigAb) &&
+            EbeguUtil.isNotNullOrUndefined(this.pensum)
+        );
     }
 }

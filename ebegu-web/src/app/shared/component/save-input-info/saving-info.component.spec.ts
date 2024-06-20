@@ -28,8 +28,7 @@ describe('SaveInputInfoComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [SavingInfoComponent, TestHostComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {
@@ -43,13 +42,17 @@ describe('SaveInputInfoComponent', () => {
     });
 
     it('should show saving', () => {
-        expect(fixture.nativeElement.querySelector('span').innerText).toEqual('SAVE');
+        expect(fixture.nativeElement.querySelector('span').innerText).toEqual(
+            'SAVE'
+        );
     });
 
     it('should show saved', () => {
         component.input.next(false);
         fixture.changeDetectorRef.detectChanges();
-        expect(fixture.nativeElement.querySelector('span').innerText).toEqual('SAVED');
+        expect(fixture.nativeElement.querySelector('span').innerText).toEqual(
+            'SAVED'
+        );
     });
 
     @Component({

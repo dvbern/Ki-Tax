@@ -21,9 +21,6 @@ export class TSDurchschnittKinderProTag {
     private _nachmittagsbetreuung1: number;
     private _nachmittagsbetreuung2: number;
 
-    public constructor() {
-    }
-
     public get fruehbetreuung(): number {
         return this._fruehbetreuung;
     }

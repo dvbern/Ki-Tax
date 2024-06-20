@@ -29,14 +29,10 @@ import {EbeguUtil} from '../../utils/EbeguUtil';
     providedIn: 'root'
 })
 export class BetreuungMonitoringRS {
-
     public readonly serviceURL: string = `${CONSTANTS.REST_API}betreuungMonitoring`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        public readonly $http: HttpClient
-    ) {
-    }
+    public constructor(public readonly $http: HttpClient) {}
 
     public getServiceName(): string {
         return 'BetreuungMonitoringRS';
@@ -47,17 +43,33 @@ export class BetreuungMonitoringRS {
         benutzer: string
     ): Observable<TSBetreuungMonitoring[]> {
         let params = new HttpParams();
-        params = params.append('refNummer', EbeguUtil.isNotNullOrUndefined(refNummer) ? refNummer : '');
-        params = params.append('benutzer', EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : '');
+        params = params.append(
+            'refNummer',
+            EbeguUtil.isNotNullOrUndefined(refNummer) ? refNummer : ''
+        );
+        params = params.append(
+            'benutzer',
+            EbeguUtil.isNotNullOrUndefined(benutzer) ? benutzer : ''
+        );
 
-        return this.$http.get<any[]>(`${this.serviceURL}`,
-            {
+        return this.$http
+            .get<any[]>(`${this.serviceURL}`, {
                 params
-            }).pipe(map(response => this.ebeguRestUtil.parseTSBetreuungMonitoringList(response)));
+            })
+            .pipe(
+                map(response =>
+                    this.ebeguRestUtil.parseTSBetreuungMonitoringList(response)
+                )
+            );
     }
 
     public getAllExternalClient(): Observable<TSExternalClient[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`)
-            .pipe(map(response => this.ebeguRestUtil.parseExternalClientList(response)));
+        return this.$http
+            .get<any[]>(`${this.serviceURL}/allExternalClient`)
+            .pipe(
+                map(response =>
+                    this.ebeguRestUtil.parseExternalClientList(response)
+                )
+            );
     }
 }

@@ -19,18 +19,31 @@
         <div class="col-md-12">
             <h2>
                 <span data-translate="ERWERBSPENSEN_LIST_TITLE"></span>
-                <dv-tooltip ng-if="vm.gesuchModelManager.isGemeindeBern()" input-id="erwerbspensenListTitleId"
-                            text="'ERWERBSPENSEN_LIST_TITLE_HELP' | translate"></dv-tooltip>
+                <dv-tooltip
+                    ng-if="vm.gesuchModelManager.isGemeindeBern()"
+                    input-id="erwerbspensenListTitleId"
+                    text="'ERWERBSPENSEN_LIST_TITLE_HELP' | translate"
+                ></dv-tooltip>
             </h2>
-            <hr class="header"/>
-            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation() && !vm.isGesuchReadonly()" class="inline-hint"
-               data-translate="ERWERBSPENSUM_HINT"></p>
-            <p ng-if="vm.gesuchModelManager.getGesuch().isMutation()" class="inline-hint"
-               data-translate="ERWERBSPENSEN_LIST_HINT">
-            </p>
-            <p ng-if="vm.anspruchUnabhaengingVomBeschaeftigungspensum()" class="inline-hint"
-               data-translate="BESCHAEFTIGUNGSPENSUM_OPTIONAL_HINT">
-            </p>
+            <hr class="header" />
+            <p
+                ng-if="
+                    vm.gesuchModelManager.getGesuch().isMutation() &&
+                    !vm.isGesuchReadonly()
+                "
+                class="inline-hint"
+                data-translate="ERWERBSPENSUM_HINT"
+            ></p>
+            <p
+                ng-if="vm.gesuchModelManager.getGesuch().isMutation()"
+                class="inline-hint"
+                data-translate="ERWERBSPENSEN_LIST_HINT"
+            ></p>
+            <p
+                ng-if="vm.anspruchUnabhaengingVomBeschaeftigungspensum()"
+                class="inline-hint"
+                data-translate="BESCHAEFTIGUNGSPENSUM_OPTIONAL_HINT"
+            ></p>
             <div class="row margin-top-20" ng-if="vm.erwerbspensumNotAllowed">
                 <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
@@ -41,54 +54,81 @@
         </div>
     </div>
 
-
     <!--Erwerbspensen von Gesuchsteller 1-->
-    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1" class="margin-bottom-80" data-test="erwerbspensen-gs1">
+    <div
+        ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1"
+        class="margin-bottom-80"
+        data-test="erwerbspensen-gs1"
+    >
         <h3 class="ebegu-h2">
-            <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()"></span>
+            <span
+                ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()"
+            ></span>
         </h3>
-        <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS1()" table-id="erwerbspensenGS1"
-                               add-button-text="{{'ADD_TAETIGKEIT' | translate}}"
-                               add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
-                               input-id="removeEWPButton1_"
-                               on-add="vm.createErwerbspensum(1)"
-                               on-edit="vm.editPensum(pensum, 1)"
-                               on-remove="vm.removePensum(pensum, 1, 'removeEWPButton1_',index)"></dv-erwerbspensum-list>
-
+        <dv-erwerbspensum-list
+            erwerbspensen="vm.getErwerbspensenListGS1()"
+            table-id="erwerbspensenGS1"
+            add-button-text="{{ 'ADD_TAETIGKEIT' | translate }}"
+            add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
+            input-id="removeEWPButton1_"
+            on-add="vm.createErwerbspensum(1)"
+            on-edit="vm.editPensum(pensum, 1)"
+            on-remove="vm.removePensum(pensum, 1, 'removeEWPButton1_', index)"
+        ></dv-erwerbspensum-list>
     </div>
     <!--Erwerbspensen von Gesuchsteller 2-->
     <div ng-if="vm.showErwerbspensumGS2()" data-test="erwerbspensen-gs2">
         <h3 class="ebegu-h2">
             <span ng-bind="vm.getGS2FullName()"></span>
         </h3>
-        <dv-erwerbspensum-list erwerbspensen="vm.getErwerbspensenListGS2()" table-id="erwerbspensenGS2"
-                               add-button-text="{{'ADD_TAETIGKEIT' | translate}}"
-                               add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
-                               input-id="removeEWPButton2_"
-                               on-add="vm.createErwerbspensum(2)"
-                               on-edit="vm.editPensum(pensum, 2)"
-                               on-remove="vm.removePensum(pensum, 2, 'removeEWPButton2_')"></dv-erwerbspensum-list>
+        <dv-erwerbspensum-list
+            erwerbspensen="vm.getErwerbspensenListGS2()"
+            table-id="erwerbspensenGS2"
+            add-button-text="{{ 'ADD_TAETIGKEIT' | translate }}"
+            add-button-visible="!vm.isGesuchReadonly() && !vm.erwerbspensumNotAllowed"
+            input-id="removeEWPButton2_"
+            on-add="vm.createErwerbspensum(2)"
+            on-edit="vm.editPensum(pensum, 2)"
+            on-remove="vm.removePensum(pensum, 2, 'removeEWPButton2_')"
+        ></dv-erwerbspensum-list>
     </div>
 
-    <div ng-if="vm.isErwerbspensumGS2Required() && !vm.showErwerbspensumGS2()" data-test="warnung-gs2-ausfuellen" class="well well-status-warten">
+    <div
+        ng-if="vm.isErwerbspensumGS2Required() && !vm.showErwerbspensumGS2()"
+        data-test="warnung-gs2-ausfuellen"
+        class="well well-status-warten"
+    >
         <span data-translate="WARNUNG_GS2_AUSFUELLEN"></span>
     </div>
 
     <!-- Information zu Ausserordentlichem Anspruch -->
-    <div class="well well-status-warten margin-top-20"
-         ng-if="vm.showInfoAusserordentlichenAnspruch">
-        <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"
-              data-translate-value-telefon="{{vm.gemeindeTelefon}}"
-              data-translate-value-email="{{vm.gemeindeEmail}}"></span>
-        <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH_FKJV"
-              data-translate-value-telefon="{{vm.gemeindeTelefon}}"
-              data-translate-value-email="{{vm.gemeindeEmail}}"></span>
+    <div
+        class="well well-status-warten margin-top-20"
+        ng-if="vm.showInfoAusserordentlichenAnspruch"
+    >
+        <span
+            ng-if="!vm.gesuchModelManager.isFKJVTexte"
+            data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"
+            data-translate-value-telefon="{{ vm.gemeindeTelefon }}"
+            data-translate-value-email="{{ vm.gemeindeEmail }}"
+        ></span>
+        <span
+            ng-if="vm.gesuchModelManager.isFKJVTexte"
+            data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH_FKJV"
+            data-translate-value-telefon="{{ vm.gemeindeTelefon }}"
+            data-translate-value-email="{{ vm.gemeindeEmail }}"
+        ></span>
     </div>
 
     <div class="row">
         <div class="col-md-12">
             <!--Buttons-->
-            <dv-navigation dv-previous="true" dv-next="true" dv-next-disabled="vm.isSaveDisabled()" dv-sub-step="1">
+            <dv-navigation
+                dv-previous="true"
+                dv-next="true"
+                dv-next-disabled="vm.isSaveDisabled()"
+                dv-sub-step="1"
+            >
             </dv-navigation>
         </div>
     </div>

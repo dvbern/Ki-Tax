@@ -1,8 +1,13 @@
 <div class="gesuch-modul">
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
 
-    <ng-container *ngIf="isNotNullOrUndefined(gesuchsteller); then gsPresent else gsNotPresent"></ng-container>
-
+    <ng-container
+        *ngIf="
+            isNotNullOrUndefined(gesuchsteller);
+            then gsPresent;
+            else gsNotPresent
+        "
+    ></ng-container>
 </div>
 <ng-template #gsNotPresent>
     <div data-test="warnung-gs2-ausfuellen" class="well well-status-warten">
@@ -13,23 +18,32 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span translate
-                      [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: ''}">FINANZIELLE_SITUATION</span>
+                <span
+                    translate
+                    [translateParams]="{
+                        gesuchsteller: getAntragstellerNameForCurrentStep(),
+                        basisjahr: ''
+                    }"
+                    >FINANZIELLE_SITUATION</span
+                >
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
     <form #form="ngForm">
-        <dv-finanzielle-situation-single-gs-schwyz [readonly]="gesuchmodelManager.isGesuchReadonly()"
-                                            (valueChanged)="recalculateMassgebendesEinkommen()"
-                                            [finanzModel]="model">
+        <dv-finanzielle-situation-single-gs-schwyz
+            [readonly]="gesuchmodelManager.isGesuchReadonly()"
+            (valueChanged)="recalculateMassgebendesEinkommen()"
+            [finanzModel]="model"
+        >
         </dv-finanzielle-situation-single-gs-schwyz>
     </form>
 
-    <dv-navigation-x (dvSave)="prepareSave($event.onResult)"
-                     [dvNext]="true"
-                     [dvPrevious]="true"
-                     [dvSubStep]="gesuchmodelManager.gesuchstellerNumber"
-                     [dvSubStepName]="getSubStepName()"></dv-navigation-x>
-
+    <dv-navigation-x
+        (dvSave)="prepareSave($event.onResult)"
+        [dvNext]="true"
+        [dvPrevious]="true"
+        [dvSubStep]="gesuchmodelManager.gesuchstellerNumber"
+        [dvSubStepName]="getSubStepName()"
+    ></dv-navigation-x>
 </ng-template>

@@ -17,25 +17,15 @@
 
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
-import ch.dvbern.ebegu.services.MitteilungService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@ApplicationScoped
-@NoArgsConstructor
-@AllArgsConstructor
+@UtilityClass
 public class BetreuungInFerienzeitMapperFactory {
 
-	@Inject
-	private MitteilungService mitteilungService;
-
 	public PensumMapper<AbstractBetreuungsPensum> createForBetreuungInFerienzeit(ProcessingContext ctx) {
-		return mitteilungService.showSchulergaenzendeBetreuung(ctx.getBetreuung()) ?
+		return ctx.getEinstellungen().isSchulergaenzendeBetreuungEnabled() ?
 			new BetreuungInFerienzeitMapper(ctx) :
 			PensumMapper.nop();
 	}

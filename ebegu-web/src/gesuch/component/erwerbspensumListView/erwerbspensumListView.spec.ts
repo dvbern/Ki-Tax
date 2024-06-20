@@ -14,7 +14,11 @@
  */
 
 import * as angular from 'angular';
-import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
+import {
+    IComponentControllerService,
+    IHttpBackendService,
+    IScope
+} from 'angular';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -24,7 +28,6 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
-import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -32,7 +35,6 @@ import {ErwerbspensumListViewController} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
 
 describe('erwerbspensumListView', () => {
-
     const gemeindeTelefon = '915445152';
     const gemeindeMail = 'mail@mail.com';
     const gemeindeStammdaten = new TSGemeindeStammdatenLite();
@@ -53,33 +55,45 @@ describe('erwerbspensumListView', () => {
     let dossier: TSDossier;
     let gesuchsperiode: TSGesuchsperiode;
     let $httpBackend: IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
     let einstellungRS: EinstellungRS;
 
-    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
-        prepareDossier();
-        prepareGesuchsperiode();
-        const einstellung = new TSEinstellung();
-        einstellung.key = TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
-        einstellung.value = 'SCHWYZ';
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        $componentController = $injector.get('$componentController');
-        $q = $injector.get('$q');
-        scope = $injector.get('$rootScope').$new();
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-        einstellungRS = $injector.get('EinstellungRS');
+    beforeEach(
+        angular.mock.inject(($injector: IInjectorService) => {
+            prepareDossier();
+            prepareGesuchsperiode();
+            const einstellung = new TSEinstellung();
+            einstellung.key =
+                TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+            einstellung.value = 'SCHWYZ';
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            $componentController = $injector.get('$componentController');
+            $q = $injector.get('$q');
+            scope = $injector.get('$rootScope').$new();
+            $httpBackend = $injector.get('$httpBackend');
+            einstellungRS = $injector.get('EinstellungRS');
 
-        spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
-        spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([einstellung]));
-        gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
-        gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
+            spyOn(
+                gesuchModelManager,
+                'showInfoAusserordentlichenAnspruch'
+            ).and.returnValue($q.when(false));
+            spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+            spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                gesuchsperiode
+            );
+            spyOn(
+                einstellungRS,
+                'getAllEinstellungenBySystemCached'
+            ).and.returnValue(of([einstellung]));
+            gesuchModelManager.gemeindeKonfiguration =
+                TestDataUtil.createGemeindeKonfiguration();
+            gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-        $httpBackend.when('GET', '/ebegu/api/v1/erwerbspensen/required/').respond({});
-    }));
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+            $httpBackend
+                .when('GET', '/ebegu/api/v1/erwerbspensen/required/')
+                .respond({});
+        })
+    );
 
     beforeEach(() => {
         /*
@@ -87,7 +101,11 @@ describe('erwerbspensumListView', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('erwerbspensumListView', {$scope: scope}, bindings);
+        component = $componentController(
+            'erwerbspensumListView',
+            {$scope: scope},
+            bindings
+        );
         scope.$apply();
     });
 

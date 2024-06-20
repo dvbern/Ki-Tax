@@ -15,22 +15,31 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-
-<div *ngIf="allowedMap$ | async as allowedGemeinden" [ngClass]="{'form-group': true, 'ie-workaround': isIE()}">
+<div
+    *ngIf="allowedMap$ | async as allowedGemeinden"
+    [ngClass]="{'form-group': true, 'ie-workaround': isIE()}"
+>
     <label *ngIf="showLabel" [for]="inputId" translate>GEMEINDEN</label>
-    <mat-select class="form-control"
-                [ngModel]="selected"
-                [name]="inputId"
-                [disabled]="disabled"
-                [id]="inputId"
-                [required]="required"
-                [multiple]="true">
-        <mat-option *ngFor="let item of allowedGemeinden | keyvalue"
-                    (onSelectionChange)="onSelectionChange($event)"
-                    [value]="item.key">
-            {{item.key.name}}
+    <mat-select
+        class="form-control"
+        [ngModel]="selected"
+        [name]="inputId"
+        [disabled]="disabled"
+        [id]="inputId"
+        [required]="required"
+        [multiple]="true"
+    >
+        <mat-option
+            *ngFor="let item of allowedGemeinden | keyvalue"
+            (onSelectionChange)="onSelectionChange($event)"
+            [value]="item.key"
+        >
+            {{ item.key.name }}
         </mat-option>
     </mat-select>
-    <dv-error-messages [inputId]="inputId" [errorObject]="form.controls[inputId]?.errors">
+    <dv-error-messages
+        [inputId]="inputId"
+        [errorObject]="form.controls[inputId]?.errors"
+    >
     </dv-error-messages>
 </div>

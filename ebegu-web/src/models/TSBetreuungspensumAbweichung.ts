@@ -19,7 +19,6 @@ import {TSBetreuungspensumAbweichungStatus} from './enums/betreuung/TSBetreuungs
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
 export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
-
     private _status: TSBetreuungspensumAbweichungStatus;
     private _vertraglichesPensum: number;
     private _vertraglicheKosten: number;

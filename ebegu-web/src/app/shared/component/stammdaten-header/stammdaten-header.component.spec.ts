@@ -23,29 +23,33 @@ import {StammdatenHeaderComponent} from './stammdaten-header.component';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 
 describe('StammdatenHeaderComponent', () => {
-
     const url = 'http://logo.png';
     let component: StammdatenHeaderComponent;
     let fixture: ComponentFixture<StammdatenHeaderComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['isSupportedImage']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+        GemeindeRS.name,
+        ['isSupportedImage']
+    );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-            ],
+            imports: [],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy}
             ],
-            declarations: [
-                StammdatenHeaderComponent
-            ]
+            declarations: [StammdatenHeaderComponent]
         }).compileComponents();
     }));
 
@@ -59,5 +63,4 @@ describe('StammdatenHeaderComponent', () => {
     it('should create', waitForAsync(() => {
         expect(component).toBeTruthy();
     }));
-
 });

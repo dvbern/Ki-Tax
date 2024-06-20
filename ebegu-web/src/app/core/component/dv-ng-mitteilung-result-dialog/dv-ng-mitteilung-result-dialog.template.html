@@ -17,48 +17,100 @@
 
 <mat-dialog-content>
     <div class="verarbeitete-mitteilungen-container">
-        <span *ngIf="!verarbeitung" translate>KEINE_MELDUNGEN_ZU_VERARBEITEN</span>
+        <span *ngIf="!verarbeitung" translate
+            >KEINE_MELDUNGEN_ZU_VERARBEITEN</span
+        >
         <div *ngIf="verarbeitung">
             <div class="progress-counter">
-                <i *ngIf="verarbeitung.count !== verarbeitung.total" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-                {{verarbeitung.count}}/{{verarbeitung.total}} {{'VERARBEITET' | translate}}
+                <i
+                    *ngIf="verarbeitung.count !== verarbeitung.total"
+                    class="fa fa-circle-o-notch fa-spin fa-fw"
+                ></i>
+                {{ verarbeitung.count }}/{{ verarbeitung.total }}
+                {{ 'VERARBEITET' | translate }}
             </div>
             <ul data-test="container.automatisch-verfuegte-mitteilungen">
-                <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate}}</span>
-                <li class="applied" *ngFor="let betreuungsmitteilung of getVerfuegtSuccessItems()">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" [attr.data-test]="'verfuegt#' + betreuungsmitteilung.dossier.fall.fallNummer" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
-                        betreuungsmitteilung)}}</a>
+                <span>{{
+                    'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate
+                }}</span>
+                <li
+                    class="applied"
+                    *ngFor="
+                        let betreuungsmitteilung of getVerfuegtSuccessItems()
+                    "
+                >
+                    <a
+                        href="{{ getBetreuungUrl(betreuungsmitteilung) }}"
+                        [attr.data-test]="
+                            'verfuegt#' +
+                            betreuungsmitteilung.dossier.fall.fallNummer
+                        "
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{ betreuungsmitteilung.betreuung.referenzNummer }}</a
+                    >
                 </li>
-                <span *ngIf="getVerfuegtSuccessItems().length === 0"><br>-</span>
+                <span *ngIf="getVerfuegtSuccessItems().length === 0"
+                    ><br />-</span
+                >
             </ul>
             <ul data-test="automatisch-nicht-verfuegte-mitteilungen">
-                <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT' | translate}}</span>
-                <li class="applied" *ngFor="let betreuungsmitteilung of getNotVerfuegtSuccessItems()">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
-                        betreuungsmitteilung)}}</a>
+                <span>{{
+                    'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT'
+                        | translate
+                }}</span>
+                <li
+                    class="applied"
+                    *ngFor="
+                        let betreuungsmitteilung of getNotVerfuegtSuccessItems()
+                    "
+                >
+                    <a
+                        href="{{ getBetreuungUrl(betreuungsmitteilung) }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{ betreuungsmitteilung.betreuung.referenzNummer }}</a
+                    >
                 </li>
-                <span *ngIf="getNotVerfuegtSuccessItems().length === 0"><br>-</span>
+                <span *ngIf="getNotVerfuegtSuccessItems().length === 0"
+                    ><br />-</span
+                >
             </ul>
             <ul data-test="automatisch-nicht-bearbeitete-mitteilungen">
-                <p>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</p>
-                <li class="nonapplied" *ngFor="let betreuungsmitteilung of verarbeitung.failedItems">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
-                        betreuungsmitteilung)}}</a>:
-                    <i>{{betreuungsmitteilung.errorMessage}}</i>
+                <p>{{ 'NICHT_BEARBEITETE_MITTEILUNGEN' | translate }}</p>
+                <li
+                    class="nonapplied"
+                    *ngFor="
+                        let betreuungsmitteilung of verarbeitung.failedItems
+                    "
+                >
+                    <a
+                        href="{{ getBetreuungUrl(betreuungsmitteilung) }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{ betreuungsmitteilung.betreuung.referenzNummer }}</a
+                    >:
+                    <i>{{ betreuungsmitteilung.errorMessage }}</i>
                 </li>
                 <span *ngIf="verarbeitung.failedItems.length === 0">-</span>
             </ul>
             <ul data-test="automatisch-error-in-bearbeiung-mitteilungen">
-                <span>{{'FEHLER_BEI_MITTEILUNG_BEARBEITUNG' | translate}}</span>
+                <span>{{
+                    'FEHLER_BEI_MITTEILUNG_BEARBEITUNG' | translate
+                }}</span>
                 <li class="errors" *ngFor="let error of verarbeitung.errors">
-                    <a href="{{getBetreuungUrl(error.mitteilung)}}"
-                       target="_blank" rel="noopener noreferrer">{{getRererenceNummer(error.mitteilung)}}</a>:
+                    <a
+                        href="{{ getBetreuungUrl(error.mitteilung) }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{ error.mitteilung.betreuung.referenzNummer }}</a
+                    >:
                     <span *ngFor="let exceptionReport of error.errors">
-                        <i translate>{{exceptionReport.msgKey}}</i>
-                        <br>
+                        <i translate>{{ exceptionReport.msgKey }}</i>
+                        <br />
                     </span>
                 </li>
-                <span *ngIf="verarbeitung.errors.length === 0"><br>-</span>
+                <span *ngIf="verarbeitung.errors.length === 0"><br />-</span>
             </ul>
         </div>
     </div>
@@ -66,7 +118,10 @@
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="ok()" [textContent]="'LABEL_OK' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="ok()"
+            [textContent]="'LABEL_OK' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>
-

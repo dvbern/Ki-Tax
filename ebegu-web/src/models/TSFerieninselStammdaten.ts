@@ -21,14 +21,15 @@ import {TSFerieninselZeitraum} from './TSFerieninselZeitraum';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
-
     private _ferienname: TSFerienname;
     private _zeitraumList: TSFerieninselZeitraum[] = [];
     private _anmeldeschluss: moment.Moment;
     private _gesuchsperiode: TSGesuchsperiode;
     private _ferienActive: boolean;
-    private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] = [];
-    private _potenzielleFerieninselTageFuerBelegungMorgenmodul: TSBelegungFerieninselTag[] = [];
+    private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] =
+        [];
+    private _potenzielleFerieninselTageFuerBelegungMorgenmodul: TSBelegungFerieninselTag[] =
+        [];
 
     public constructor() {
         super();
@@ -70,7 +71,9 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
         return this._potenzielleFerieninselTageFuerBelegung;
     }
 
-    public set potenzielleFerieninselTageFuerBelegung(value: TSBelegungFerieninselTag[]) {
+    public set potenzielleFerieninselTageFuerBelegung(
+        value: TSBelegungFerieninselTag[]
+    ) {
         this._potenzielleFerieninselTageFuerBelegung = value;
     }
 
@@ -78,7 +81,9 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
         return this._potenzielleFerieninselTageFuerBelegungMorgenmodul;
     }
 
-    public set potenzielleFerieninselTageFuerBelegungMorgenmodul(value: TSBelegungFerieninselTag[]) {
+    public set potenzielleFerieninselTageFuerBelegungMorgenmodul(
+        value: TSBelegungFerieninselTag[]
+    ) {
         this._potenzielleFerieninselTageFuerBelegungMorgenmodul = value;
     }
 

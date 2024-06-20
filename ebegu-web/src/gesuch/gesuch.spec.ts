@@ -24,7 +24,6 @@ import {GesuchRouteController} from './gesuch';
 import {GesuchModelManager} from './service/gesuchModelManager';
 
 describe('gesuch', () => {
-
     let gesuchRouteController: GesuchRouteController;
     let gesuchModelManager: GesuchModelManager;
     let gesuch: TSGesuch;
@@ -35,33 +34,35 @@ describe('gesuch', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        gesuchRouteController = new GesuchRouteController(
-            gesuchModelManager,
-            $injector.get('WizardStepManager'),
-            $injector.get('EbeguUtil'),
-            $injector.get('ErrorService'),
-            $injector.get(
-                'AntragStatusHistoryRS'),
-            $injector.get('$translate'),
-            $injector.get('AuthServiceRS'),
-            $injector.get('$mdSidenav'),
-            undefined,
-            undefined,
-            $injector.get('EinstellungRS')
-        );
-        gesuch = new TSGesuch();
-        gesuch.typ = TSAntragTyp.ERSTGESUCH;
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                $injector.get('$httpBackend')
+            );
+            gesuchRouteController = new GesuchRouteController(
+                gesuchModelManager,
+                $injector.get('WizardStepManager'),
+                $injector.get('EbeguUtil'),
+                $injector.get('AntragStatusHistoryRS'),
+                $injector.get('$translate'),
+                $injector.get('AuthServiceRS'),
+                $injector.get('$mdSidenav'),
+                $injector.get('EinstellungRS')
+            );
+            gesuch = new TSGesuch();
+            gesuch.typ = TSAntragTyp.ERSTGESUCH;
+        })
+    );
 
     describe('getGesuchErstellenStepTitle', () => {
         it('should return Art der Mutation', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstellen einer Mutation');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe(
+                'Erstellen einer Mutation'
+            );
         });
         it('should return Art der Mutation', () => {
             const g = new TSGesuch();
@@ -69,7 +70,9 @@ describe('gesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(g);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Mutation vom 01.07.2016');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe(
+                'Mutation vom 01.07.2016'
+            );
         });
         it('should return Erstgesuch der Periode', () => {
             const g = new TSGesuch();
@@ -77,13 +80,17 @@ describe('gesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(g);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Antrag vom 01.07.2016');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe(
+                'Antrag vom 01.07.2016'
+            );
         });
         it('should return Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Antrag');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe(
+                'Antrag'
+            );
         });
     });
 });

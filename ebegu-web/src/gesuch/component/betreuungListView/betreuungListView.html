@@ -20,159 +20,281 @@
             <h2 data-test="page-title">
                 <span data-translate="KINDER_MIT_BETREUUNG"></span>
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
 
     <!--Fuer jedes Kind Tabelle anzeigen-->
     <div class="row">
         <div class="col-md-12">
-            <div ng-repeat="kind in vm.getKinderWithBetreuungList()" class="margin-bottom-80">
+            <div
+                ng-repeat="kind in vm.getKinderWithBetreuungList()"
+                class="margin-bottom-80"
+            >
                 <div class="row">
                     <div class="col-md-12">
                         <h3 class="ebegu-h2">
-                            <span>{{kind.kindJA.getFullName()}}</span>
+                            <span>{{ kind.kindJA.getFullName() }}</span>
                         </h3>
                     </div>
                 </div>
                 <!--Tabelle mit Betreuungen-->
-                <div class="row" data-test="container.kind#{{$index}}">
+                <div class="row" data-test="container.kind#{{ $index }}">
                     <div class="col-md-12 table-responsive">
-
-                        <table st-table="displayedCollection" st-safe-src="kind.betreuungen"
-                               class="table table-hover">
+                        <table
+                            st-table="displayedCollection"
+                            st-safe-src="kind.betreuungen"
+                            class="table table-hover"
+                        >
                             <thead>
-                            <tr>
-                                <th data-translate="BETREUUNG"></th>
-                                <th data-translate="STATUS"></th>
-                                <th data-translate="DETAIL"></th>
-                                <th data-translate="BGNUMMER"></th>
-                                <th data-translate="MITTEILUNG" ng-if="vm.showMitteilung()"></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th data-translate="BETREUUNG"></th>
+                                    <th data-translate="STATUS"></th>
+                                    <th data-translate="DETAIL"></th>
+                                    <th data-translate="REFERENZ_NUMMER"></th>
+                                    <th
+                                        data-translate="MITTEILUNG"
+                                        ng-if="vm.showMitteilung()"
+                                    ></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="betreuung in displayedCollection" st-select-row="betreuung"
-                                st-select-mode="single"
-                                ng-attr-data-test="container.betreuung#{{$index}}"
-                                ng-click="vm.editBetreuung(kind, betreuung)" role="row" tabindex="-1">
-                                <td ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
-                                    class="betreuung-table-header"></td>
-                                <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
-                                    <div ng-bind="betreuung.betreuungsstatus | translate" data-test="betreuungs-status"></div>
-                                    <span class="betreuung-bar"></span>
-                                </td>
-                                <td ng-bind="vm.getBetreuungDetails(betreuung) | translate"
-                                    class="betreuung-table-header">
-                                </td>
-                                <td ng-bind="betreuung.bgNummer"></td>
-                                <td ng-if="vm.showMitteilung()" width="5%">
-                                    <dv-loading-button type="button" button-click="vm.gotoMitteilung(betreuung)"
-                                                       button-class="dv-btn-operation centered-btn">
-                                        <i class="fa fa-lg fa-envelope-o"></i>
-                                    </dv-loading-button>
-                                </td>
-                                <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
-                                    <dv-loading-button type="button" button-click="vm.editBetreuung(kind, betreuung);"
-                                                       data-test="container.edit"
-                                                       button-class="dv-btn-operation dv-btn-row"
-                                                       title="{{'TABLE_EDIT'|translate}}"
-                                                       aria-label="{{'TABLE_EDIT'|translate}}">
-                                        <i class="fa fa-lg fa-arrow-right" aria-label="{{'TABLE_EDIT'|translate}}">
-                                        </i>
-                                    </dv-loading-button>
-                                </td>
-                                <td dv-show-element
-                                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                    dv-show-expression="vm.canRemoveBetreuung(betreuung)"
-                                    role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
-                                    <dv-loading-button aria-label="{{'BETREUUNG_DELETE' | translate}}" type="button"
-                                                       data-test="container.delete"
-                                                       title="{{'BETREUUNG_DELETE' | translate}}"
-                                                       button-click="vm.removeBetreuung(kind, betreuung,$index)"
-                                                       button-disabled="vm.isNotAllowedToRemove(betreuung)"
-                                                       input-id="{{'removeBetreuungButton' + kind.kindNummer + '_' + $index}}"
-                                                       delay="0"
-                                                       button-class="dv-btn-operation">
-                                        <i class="fa fa-lg fa-trash-o" aria-label="{{'BETREUUNG_DELETE' | translate}}">
-                                        </i>
-                                    </dv-loading-button>
-                                </td>
-                                <td dv-show-element
-                                    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                                    dv-show-expression="!vm.canRemoveBetreuung(betreuung)">
-                                    <!-- Fuer Alle ausser Institutionen, wenn der Status ist verfuegt oder Verfuegen oder bei Mutation-->
-                                </td>
-                                <td dv-show-element
-                                    dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()">
-                                    <!--Fuer Institutionen und Traegerschaft wird der Button Loeschen nicht angezeigt -->
-                                </td>
-                            </tr>
-                            <tr ng-if="(!kind.betreuungen) || (kind.betreuungen.length === 0)">
-                                <td colspan="6" class="empty-table" data-translate="BETREUUNGEN_NOCH_KEINE"></td>
-                            </tr>
+                                <tr
+                                    ng-repeat="betreuung in displayedCollection"
+                                    st-select-row="betreuung"
+                                    st-select-mode="single"
+                                    ng-attr-data-test="container.betreuung#{{
+                                        $index
+                                    }}"
+                                    ng-click="vm.editBetreuung(kind, betreuung)"
+                                    role="row"
+                                    tabindex="-1"
+                                >
+                                    <td
+                                        ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
+                                        class="betreuung-table-header"
+                                    ></td>
+                                    <td
+                                        class="betreuung-status ng-class:betreuung.betreuungsstatus;"
+                                    >
+                                        <div
+                                            ng-bind="betreuung.betreuungsstatus | translate"
+                                            data-test="betreuungs-status"
+                                        ></div>
+                                        <span class="betreuung-bar"></span>
+                                    </td>
+                                    <td
+                                        ng-bind="vm.getBetreuungDetails(betreuung) | translate"
+                                        class="betreuung-table-header"
+                                    ></td>
+                                    <td ng-bind="betreuung.referenzNummer"></td>
+                                    <td ng-if="vm.showMitteilung()" width="5%">
+                                        <dv-loading-button
+                                            type="button"
+                                            button-click="vm.gotoMitteilung(betreuung)"
+                                            button-class="dv-btn-operation centered-btn"
+                                        >
+                                            <i
+                                                class="fa fa-lg fa-envelope-o"
+                                            ></i>
+                                        </dv-loading-button>
+                                    </td>
+                                    <td
+                                        role="cell"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()"
+                                        width="5%"
+                                    >
+                                        <dv-loading-button
+                                            type="button"
+                                            button-click="vm.editBetreuung(kind, betreuung);"
+                                            data-test="container.edit"
+                                            button-class="dv-btn-operation dv-btn-row"
+                                            title="{{
+                                                'TABLE_EDIT' | translate
+                                            }}"
+                                            aria-label="{{
+                                                'TABLE_EDIT' | translate
+                                            }}"
+                                        >
+                                            <i
+                                                class="fa fa-lg fa-arrow-right"
+                                                aria-label="{{
+                                                    'TABLE_EDIT' | translate
+                                                }}"
+                                            >
+                                            </i>
+                                        </dv-loading-button>
+                                    </td>
+                                    <td
+                                        dv-show-element
+                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                        dv-show-expression="vm.canRemoveBetreuung(betreuung)"
+                                        role="cell"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()"
+                                        width="5%"
+                                    >
+                                        <dv-loading-button
+                                            aria-label="{{
+                                                'BETREUUNG_DELETE' | translate
+                                            }}"
+                                            type="button"
+                                            data-test="container.delete"
+                                            title="{{
+                                                'BETREUUNG_DELETE' | translate
+                                            }}"
+                                            button-click="vm.removeBetreuung(kind, betreuung,$index)"
+                                            button-disabled="vm.isNotAllowedToRemove(betreuung)"
+                                            input-id="{{
+                                                'removeBetreuungButton' +
+                                                    kind.kindNummer +
+                                                    '_' +
+                                                    $index
+                                            }}"
+                                            delay="0"
+                                            button-class="dv-btn-operation"
+                                        >
+                                            <i
+                                                class="fa fa-lg fa-trash-o"
+                                                aria-label="{{
+                                                    'BETREUUNG_DELETE'
+                                                        | translate
+                                                }}"
+                                            >
+                                            </i>
+                                        </dv-loading-button>
+                                    </td>
+                                    <td
+                                        dv-show-element
+                                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                        dv-show-expression="!vm.canRemoveBetreuung(betreuung)"
+                                    >
+                                        <!-- Fuer Alle ausser Institutionen, wenn der Status ist verfuegt oder Verfuegen oder bei Mutation-->
+                                    </td>
+                                    <td
+                                        dv-show-element
+                                        dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
+                                    >
+                                        <!--Fuer Institutionen und Traegerschaft wird der Button Loeschen nicht angezeigt -->
+                                    </td>
+                                </tr>
+                                <tr
+                                    ng-if="
+                                        !kind.betreuungen ||
+                                        kind.betreuungen.length === 0
+                                    "
+                                >
+                                    <td
+                                        colspan="6"
+                                        class="empty-table"
+                                        data-translate="BETREUUNGEN_NOCH_KEINE"
+                                    ></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <!-- Betreuung hinzufuegen - Normalfall alle Typen, nicht verfuegt -->
-                    <div class="col-md-12" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                         dv-show-expression="!vm.isGesuchReadonly() && vm.isNeueBetreuungErlaubtForFI()">
-                        <dv-loading-button type="button" button-click="vm.createBetreuung(kind)"
-                                           data-test="container.create-betreuung"
-                                           button-class="dv-btn-operation">
+                    <div
+                        class="col-md-12"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                        dv-show-expression="!vm.isGesuchReadonly() && vm.isNeueBetreuungErlaubtForFI()"
+                    >
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.createBetreuung(kind)"
+                            data-test="container.create-betreuung"
+                            button-class="dv-btn-operation"
+                        >
                             <i class="fa fa-lg fa-plus-circle"></i>
                             <span data-translate="BETREUUNG_HINZUFUEGEN"></span>
                         </dv-loading-button>
                     </div>
                     <!-- Ferieninsel Anmeldung hinzufuegen, auch wenn verfuegt -->
-                    <div class="col-md-12" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                         dv-show-expression="vm.showButtonAnmeldungFerieninsel()">
-                        <dv-loading-button type="button" button-click="vm.createAnmeldungFerieninsel(kind)"
-                                           data-test="container.create-ferieninsel"
-                                           button-class="dv-btn-operation">
+                    <div
+                        class="col-md-12"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                        dv-show-expression="vm.showButtonAnmeldungFerieninsel()"
+                    >
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.createAnmeldungFerieninsel(kind)"
+                            data-test="container.create-ferieninsel"
+                            button-class="dv-btn-operation"
+                        >
                             <i class="fa fa-lg fa-plus-circle"></i>
-                            <span data-translate="BETREUUNG_FERIENINSEL_HINZUFUEGEN"></span>
+                            <span
+                                data-translate="BETREUUNG_FERIENINSEL_HINZUFUEGEN"
+                            ></span>
                         </dv-loading-button>
                     </div>
                     <!-- Tagesschule Anmeldung hinzufuegen, auch wenn verfuegt -->
-                    <div class="col-md-12" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                         dv-show-expression="vm.showButtonAnmeldungTagesschule() && vm.isNeueBetreuungErlaubtForFI()">
-                        <dv-loading-button type="button" button-click="vm.createAnmeldungTagesschule(kind)"
-                                           data-test="container.create-tagesschule"
-                                           button-class="dv-btn-operation">
+                    <div
+                        class="col-md-12"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                        dv-show-expression="vm.showButtonAnmeldungTagesschule() && vm.isNeueBetreuungErlaubtForFI()"
+                    >
+                        <dv-loading-button
+                            type="button"
+                            button-click="vm.createAnmeldungTagesschule(kind)"
+                            data-test="container.create-tagesschule"
+                            button-class="dv-btn-operation"
+                        >
                             <i class="fa fa-lg fa-plus-circle"></i>
-                            <span data-translate="BETREUUNG_TAGESSCHULE_HINZUFUEGEN"></span>
+                            <span
+                                data-translate="BETREUUNG_TAGESSCHULE_HINZUFUEGEN"
+                            ></span>
                         </dv-loading-button>
                     </div>
 
-                    <div class="col-md-12 margin-top-40" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
-                         dv-show-expression="(vm.showButtonAnmeldungTagesschule() || !vm.isGesuchReadonly()) && !vm.isNeueBetreuungErlaubtForFI()">
+                    <div
+                        class="col-md-12 margin-top-40"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                        dv-show-expression="(vm.showButtonAnmeldungTagesschule() || !vm.isGesuchReadonly()) && !vm.isNeueBetreuungErlaubtForFI()"
+                    >
                         <span data-translate="MUTATION_NOETIG"></span>
                     </div>
 
                     <!-- Neue Anmeldungen hinzufuegen disabled-->
-                    <div class="col-md-12"
-                         ng-if="vm.showAnmeldungenImMomentNichtMoeglichMessage()">
-                        <p><span data-translate="BETREUUNG_HINZUFUEGEN_FORBIDDEN"></span></p>
+                    <div
+                        class="col-md-12"
+                        ng-if="vm.showAnmeldungenImMomentNichtMoeglichMessage()"
+                    >
+                        <p>
+                            <span
+                                data-translate="BETREUUNG_HINZUFUEGEN_FORBIDDEN"
+                            ></span>
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="row margin-top-20" ng-show="vm.hasBetreuungInStatusWarten()" dv-show-element
-                 dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+            <div
+                class="row margin-top-20"
+                ng-show="vm.hasBetreuungInStatusWarten()"
+                dv-show-element
+                dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+            >
                 <div class="col-md-12">
                     <div class="well well-status-warten">
                         <i class="fa fa-hourglass" aria-hidden="true"></i>
-                        <span data-translate="BETREUUNG_IN_STATUS_WARTEN"></span>
+                        <span
+                            data-translate="BETREUUNG_IN_STATUS_WARTEN"
+                        ></span>
                     </div>
                 </div>
             </div>
-            <div class="row margin-top-20" ng-show="vm.hasProvisorischeBetreuungen()" dv-show-element
-                 dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+            <div
+                class="row margin-top-20"
+                ng-show="vm.hasProvisorischeBetreuungen()"
+                dv-show-element
+                dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+            >
                 <div class="col-md-12">
                     <div class="well well-status-warten">
                         <i class="fa fa-hourglass" aria-hidden="true"></i>
@@ -186,4 +308,3 @@
         </div>
     </div>
 </div>
-

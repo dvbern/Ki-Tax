@@ -20,7 +20,6 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
-import ch.dvbern.ebegu.api.resource.authentication.VerfuegungDownloadAuthenticatorVisitor;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.*;
@@ -125,6 +124,9 @@ public class DownloadResource {
 
 	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
@@ -431,8 +433,11 @@ public class DownloadResource {
 	}
 
 	private boolean isUserAllowedToDownloadVerfuegungPdf() {
-		return new VerfuegungDownloadAuthenticatorVisitor(principalBean.getBenutzer().getRole())
-			.isUserAllowed(principalBean.getMandant());
+		var isAuszahlungAnElternActive = applicationPropertyService.isAuszahlungAnElternAktiviert(principalBean.getMandant());
+		if (Boolean.TRUE.equals(isAuszahlungAnElternActive)) {
+			return !principalBean.getBenutzer().getRole().isInstitutionRole();
+		}
+		return true;
 	}
 
 	@ApiOperation("Erstellt ein Token f&uuml;r den Download des Mahnungsbriefs f&uuml;r die " +

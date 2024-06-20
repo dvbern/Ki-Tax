@@ -19,6 +19,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeFBTestdatenDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeLATSTestdatenDTO;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -26,7 +27,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.SchulungService;
 import ch.dvbern.ebegu.services.TestfaelleService;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +38,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -253,7 +253,7 @@ public class TestfaelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response testAllMails(
-		@PathParam("mailadresse") @Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}") String mailadresse) {
+		@PathParam("mailadresse") @Email String mailadresse) {
 
 		assertTestfaelleAccessAllowed();
 
@@ -268,14 +268,14 @@ public class TestfaelleResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createTestdatenLATS(
 		@Nonnull @NotNull @Valid JaxGemeindeAntraegeLATSTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
-
+		assertTestfaelleAccessAllowed();
 		final String gemeindeId = jaxGemeindeAntraegeTestdatenDTO.getGemeinde() != null ? jaxGemeindeAntraegeTestdatenDTO.getGemeinde().getId() : null;
 		final Collection<LastenausgleichTagesschuleAngabenGemeindeContainer> latsContainers =
 			testfaelleService.createAndSaveLATSTestdaten(
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),
 				gemeindeId,
 				jaxGemeindeAntraegeTestdatenDTO.getStatus());
-		return Response.ok(latsContainers.stream().map(container -> container.getId()).collect(Collectors.joining(","))).build();
+		return Response.ok(latsContainers.stream().map(AbstractEntity::getId).collect(Collectors.joining(","))).build();
 	}
 
 	@ApiOperation(value = "Erstellt FB testdaten", response = String.class)
@@ -285,7 +285,7 @@ public class TestfaelleResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createTestdatenFerienbetreuung(
 		@Nonnull @NotNull @Valid JaxGemeindeAntraegeFBTestdatenDTO jaxGemeindeAntraegeTestdatenDTO) {
-
+		assertTestfaelleAccessAllowed();
 		final FerienbetreuungAngabenContainer ferienbetreuungContainer =
 			testfaelleService.createAndSaveFerienbetreuungTestdaten(
 				Objects.requireNonNull(jaxGemeindeAntraegeTestdatenDTO.getGesuchsperiode().getId()),

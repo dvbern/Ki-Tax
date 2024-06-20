@@ -22,10 +22,10 @@ export enum LogLevel {
     WARN = 'WARN',
     INFO = 'INFO',
     DEBUG = 'DEBUG',
-    NONE = 'NONE',
+    NONE = 'NONE'
 }
 
-export const LEVELS: { [k in LogLevel]: LogLevelEntry } = {
+export const LEVELS: {[k in LogLevel]: LogLevelEntry} = {
     ERROR: {level: 4},
     WARN: {level: 3},
     INFO: {level: 2},

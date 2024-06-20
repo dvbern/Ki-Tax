@@ -47,27 +47,46 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager, wizardStepManager, stepName);
-        const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        const parsedBasisJahrPlusNum = parseInt(
+            this.$transition$.params().basisjahrPlus,
+            10
+        );
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             null,
-            parsedBasisJahrPlusNum);
+            parsedBasisJahrPlusNum
+        );
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
         this.calculate();
         this.resultatBasisjahr = null;
         this.calculateResultateVorjahr();
 
-        if(EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
-            this.einstellungRS.getAllEinstellungenBySystemCached(
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).pipe(take(1)).subscribe((response: TSEinstellung[]) => {
-                response.filter(r => r.key === TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG)
-                    .forEach(value => {
-                        this.grenze = Number(value.value);
-                    });
-            });
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuchsperiode()
+            )
+        ) {
+            this.einstellungRS
+                .getAllEinstellungenBySystemCached(
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .pipe(take(1))
+                .subscribe((response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG
+                        )
+                        .forEach(value => {
+                            this.grenze = Number(value.value);
+                        });
+                });
         }
     }
 
@@ -76,7 +95,11 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
             console.log('No gesuch and Basisjahr to calculate');
             return;
         }
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus())
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(
+                this.model,
+                this.model.getBasisJahrPlus()
+            )
             .then(() => {
                 this.resultatProzent = this.calculateVeraenderung();
             });
@@ -86,8 +109,11 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         if (EbeguUtil.isNotNullOrUndefined(this.resultatBasisjahr)) {
             const resultatJahrPlus1 = this.getResultate();
             if (EbeguUtil.isNotNullOrUndefined(resultatJahrPlus1)) {
-                this.berechnungsManager.calculateProzentualeDifferenz(
-                    this.resultatBasisjahr.massgebendesEinkVorAbzFamGr, resultatJahrPlus1.massgebendesEinkVorAbzFamGr)
+                this.berechnungsManager
+                    .calculateProzentualeDifferenz(
+                        this.resultatBasisjahr.massgebendesEinkVorAbzFamGr,
+                        resultatJahrPlus1.massgebendesEinkVorAbzFamGr
+                    )
                     .then(abweichungInProzentZumVorjahr => {
                         this.resultatProzent = abweichungInProzentZumVorjahr;
                         this.ref.markForCheck();
@@ -99,22 +125,27 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
     }
 
     public calculateResultateVorjahr(): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultatVorjahr => {
-            this.resultatBasisjahr = resultatVorjahr;
-            this.resultatProzent = this.calculateVeraenderung();
-            this.ref.markForCheck();
-        });
+        this.berechnungsManager
+            .calculateFinanzielleSituationTemp(this.model)
+            .then(resultatVorjahr => {
+                this.resultatBasisjahr = resultatVorjahr;
+                this.resultatProzent = this.calculateVeraenderung();
+                this.ref.markForCheck();
+            });
     }
 
     public getResultate(): TSFinanzielleSituationResultateDTO {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
-            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.berechnungsManager.einkommensverschlechterungResultateBjP2
+            : this.berechnungsManager.einkommensverschlechterungResultateBjP1;
     }
 
     public ekvAkzeptiert(): boolean {
-        if (EbeguUtil.isNotNullOrUndefined(this.resultatProzent) && (Number(this.resultatProzent) >= this.grenze ||
-            Number(this.resultatProzent) <= -this.grenze)) {
+        if (
+            EbeguUtil.isNotNullOrUndefined(this.resultatProzent) &&
+            (Number(this.resultatProzent) >= this.grenze ||
+                Number(this.resultatProzent) <= -this.grenze)
+        ) {
             return true;
         }
         return false;
@@ -125,7 +156,9 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
     }
 
     public hasSecondAntragstellende(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.gesuchModelManager.getGesuch().gesuchsteller2
+        );
     }
 
     public getGemeinsameFullname(): string {
@@ -147,17 +180,24 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
     public updateStatus(changes: boolean): IPromise<any> {
         if (this.isLastEinkVersStep()) {
             if (this.gesuchModelManager.getGesuch().isMutation()) {
-                if (this.wizardStepManager.getCurrentStep().wizardStepStatus === TSWizardStepStatus.NOK || changes) {
+                if (
+                    this.wizardStepManager.getCurrentStep().wizardStepStatus ===
+                        TSWizardStepStatus.NOK ||
+                    changes
+                ) {
                     this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
                 }
             } else {
                 return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                     this.wizardStepManager.getCurrentStepName(),
-                    TSWizardStepStatus.OK);
+                    TSWizardStepStatus.OK
+                );
             }
         }
         // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
-        return Promise.resolve(this.gesuchModelManager.getStammdatenToWorkWith());
+        return Promise.resolve(
+            this.gesuchModelManager.getStammdatenToWorkWith()
+        );
     }
 
     /**
@@ -165,9 +205,15 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
      */
     private isLastEinkVersStep(): boolean {
         // Letztes Jahr haengt von den eingegebenen Daten ab
-        const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
+        const info = this.gesuchModelManager
+            .getGesuch()
+            .extractEinkommensverschlechterungInfo();
 
-        return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
-            || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
+        return (
+            (info.ekvFuerBasisJahrPlus2 &&
+                this.gesuchModelManager.basisJahrPlusNumber === 2) ||
+            (!info.ekvFuerBasisJahrPlus2 &&
+                this.gesuchModelManager.basisJahrPlusNumber === 1)
+        );
     }
 }

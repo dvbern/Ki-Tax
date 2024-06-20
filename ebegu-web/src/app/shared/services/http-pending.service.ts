@@ -5,13 +5,11 @@ import {Injectable} from '@angular/core';
     providedIn: 'root'
 })
 export class HttpPendingService {
-
     private readonly set = new Set<number>();
-    private readonly REQUEST_CONTEXT_ID = new HttpContextToken<string>(() => null);
+    private readonly REQUEST_CONTEXT_ID = new HttpContextToken<string>(
+        () => null
+    );
     private maxID = 0;
-
-    public constructor() {
-    }
 
     public pending(request: HttpRequest<unknown>): void {
         const id = this.maxID++;

@@ -26,24 +26,44 @@ const getPageTitle = () => {
 };
 
 const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
-    return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex);
+    return cy.getByData(
+        'container.kind#' + kindIndex,
+        'container.betreuung#' + betreuungsIndex
+    );
 };
 
-const getBetreuungLoeschenButton = (kindIndex: number, betreuungsIndex: number) => {
-    return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex)
+const getBetreuungLoeschenButton = (
+    kindIndex: number,
+    betreuungsIndex: number
+) => {
+    return cy
+        .getByData(
+            'container.kind#' + kindIndex,
+            'container.betreuung#' + betreuungsIndex
+        )
         .findByData('container.delete', 'navigation-button');
 };
 
 const getBetreuungErstellenButton = (kindIndex: number) => {
-	return cy.getByData('container.kind#' + kindIndex, 'container.create-betreuung', 'navigation-button');
+    return cy.getByData(
+        'container.kind#' + kindIndex,
+        'container.create-betreuung',
+        'navigation-button'
+    );
 };
 
 const getAnmeldungErstellenButton = (kindIndex: number) => {
-	return cy.getByData('container.kind#' + kindIndex, 'container.create-tagesschule', 'navigation-button');
+    return cy.getByData(
+        'container.kind#' + kindIndex,
+        'container.create-tagesschule',
+        'navigation-button'
+    );
 };
 
 const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
-	return getBetreuung(kindIndex, betreuungsIndex).findByData('betreuungs-status');
+    return getBetreuung(kindIndex, betreuungsIndex).findByData(
+        'betreuungs-status'
+    );
 };
 
 const getBetreuungspensum = (betreuungspensumIndex: number) => {
@@ -75,19 +95,22 @@ const getKorrekteKostenBestaetigung = () => {
 };
 
 const getSaveButton = () => {
-	return cy.getByData('container.save','navigation-button');
+    return cy.getByData('container.save', 'navigation-button');
 };
 
 const getPlatzbestaetigungAnfordernButton = () => {
-	return cy.getByData('container.platzbestaetigung-anfordern', 'navigation-button');
+    return cy.getByData(
+        'container.platzbestaetigung-anfordern',
+        'navigation-button'
+    );
 };
 
 const getPlatzBestaetigenButton = () => {
-	return cy.getByData('container.platz-bestaetigen', 'navigation-button');
+    return cy.getByData('container.platz-bestaetigen', 'navigation-button');
 };
 
 const getPlatzAbweisenButton = () => {
-	return cy.getByData('container.platz-abweisen', 'navigation-button');
+    return cy.getByData('container.platz-abweisen', 'navigation-button');
 };
 
 const getPlatzAkzeptierenButton = () => {
@@ -95,43 +118,43 @@ const getPlatzAkzeptierenButton = () => {
 };
 
 const getMutationsmeldungErstellenButton = () => {
-	return cy.getByData('mutationsmeldung-erstellen');
+    return cy.getByData('mutationsmeldung-erstellen');
 };
 
 const getMutationsmeldungSendenButton = () => {
-	return cy.getByData('mutationsmeldung-senden');
+    return cy.getByData('mutationsmeldung-senden');
 };
 
 const getBetreuungsangebot = () => {
-	return cy.getByData('betreuungsangebot');
+    return cy.getByData('betreuungsangebot');
 };
 
 const getInstitution = () => {
-	return cy.getByData('institution');
+    return cy.getByData('institution');
 };
 
 const getInstitutionMobile = () => {
-	return cy.getByData('institution-mobile');
+    return cy.getByData('institution-mobile');
 };
 
 const getInstitutionSuchtext = () => {
-	return cy.getByData('instutions-suchtext');
+    return cy.getByData('instutions-suchtext');
 };
 
 const getHasVertrag = (answer: string) => {
-	return cy.getByData('container.vertrag', 'radio-value.' + answer);
+    return cy.getByData('container.vertrag', 'radio-value.' + answer);
 };
 
 const getKesbPlatzierung = (answer: string) => {
-	return cy.getByData('keineKesbPlatzierung.radio-value.' + answer);
+    return cy.getByData('keineKesbPlatzierung.radio-value.' + answer);
 };
 
 const getXthTagesschulModulOfDay = (index: number, day: TSDayOfWeek) => {
-	return cy.get(`[data-test^="modul-"][data-test$="-${day}"]`).eq(index);
+    return cy.get(`[data-test^="modul-"][data-test$="-${day}"]`).eq(index);
 };
 
 const getAGBTSAkzeptiert = () => {
-	return cy.getByData('agb-tsakzeptiert');
+    return cy.getByData('agb-tsakzeptiert');
 };
 
 const getHasErweiterteBeduerfnisse = (answer: string) => {
@@ -139,92 +162,130 @@ const getHasErweiterteBeduerfnisse = (answer: string) => {
 };
 
 const getFachstelle = () => {
-	return cy.getByData('fachstelle');
+    return cy.getByData('fachstelle');
 };
 
 const getEingewoehnung = () => {
-	return cy.getByData('eingewoehnung');
+    return cy.getByData('eingewoehnung');
 };
 
 const getAbweichungenMeldenButton = () => {
-	return cy.getByData('abweichungen-melden', 'navigation-button');
+    return cy.getByData('abweichungen-melden', 'navigation-button');
 };
 
 const getGrundAblehnung = () => {
-	return cy.getByData('grund-ablehnung');
+    return cy.getByData('grund-ablehnung');
 };
 
 const getErweiterteBeduerfnisseBestaetigt = () => {
-	return cy.getByData('erweiterte-beduerfnisse-bestaetigt');
+    return cy.getByData('erweiterte-beduerfnisse-bestaetigt');
 };
 
 // !! -- PAGE ACTIONS -- !!
 const createNewBetreuung = (kindIndex: number = 0) => {
-    cy.waitForRequest('GET', '**/institutionstammdaten/gesuchsperiode/gemeinde/*', () => {
-        getBetreuungErstellenButton(kindIndex).click();
-    });
+    cy.waitForRequest(
+        'GET',
+        '**/institutionstammdaten/gesuchsperiode/gemeinde/*',
+        () => {
+            getBetreuungErstellenButton(kindIndex).click();
+        }
+    );
 };
 
 const createNewTagesschulAnmeldung = () => {
     cy.getByData('container.create-tagesschule', 'navigation-button').click();
 };
 
-const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillKitaBetreuungsForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall
+) => {
+    FixtureBetreuung[dataset](data => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
-        getInstitution().find('input').type(kita.institution, { delay: 30 });
+        getInstitution().find('input').type(kita.institution, {delay: 30});
         getInstitutionSuchtext().click();
         getInstitution().find('input').should('have.value', kita.institution);
     });
 };
 
-const fillMittagstischBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillMittagstischBetreuungsForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall
+) => {
+    FixtureBetreuung[dataset](data => {
         const mittagstisch = data[gemeinde].mittagstisch;
         getBetreuungsangebot().select('Mittagstisch');
         getHasVertrag('ja').click();
         getInstitution().find('input').type(mittagstisch.institution);
         getInstitutionSuchtext().click();
-        getInstitution().find('input').should('have.value', mittagstisch.institution);
+        getInstitution()
+            .find('input')
+            .should('have.value', mittagstisch.institution);
         getKesbPlatzierung('nein').click();
         getHasErweiterteBeduerfnisse('nein').click();
     });
 };
 
-const fillMittagstischBetreuungspensumForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillMittagstischBetreuungspensumForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall
+) => {
+    FixtureBetreuung[dataset](data => {
         const pensen = data[gemeinde].mittagstisch.betreuungspensen;
         pensen.forEach((pensum, index: number) => {
             if (index > 0) {
-                AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click()
+                AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
-            AntragBetreuungPO.getBetreuungspensum(index).type(pensum.anzahlMittagessenProMonat);
-            AntragBetreuungPO.getKostenProMahlzeit(index).type(pensum.kostenProMittagessen);
-            AntragBetreuungPO.getBetreuungspensumBis(0).find('input').type(pensum.bis);
-            AntragBetreuungPO.getBetreuungspensumAb(0).find('input').type(pensum.von);
+            AntragBetreuungPO.getBetreuungspensum(index).type(
+                pensum.anzahlMittagessenProMonat
+            );
+            AntragBetreuungPO.getKostenProMahlzeit(index).type(
+                pensum.kostenProMittagessen
+            );
+            AntragBetreuungPO.getBetreuungspensumBis(0)
+                .find('input')
+                .type(pensum.bis);
+            AntragBetreuungPO.getBetreuungspensumAb(0)
+                .find('input')
+                .type(pensum.von);
         });
     });
 };
 
-const fillKitaBetreuungspensumForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+const fillKitaBetreuungspensumForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall
+) => {
     cy.wait(2000);
-    FixtureBetreuung[dataset]((data) => {
-       const pensen = data[gemeinde].kita.betreuungspensen;
-       pensen.forEach((pensum, index) => {
-           if (index > 0) {
-               AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click()
-           }
-           AntragBetreuungPO.getBetreuungspensum(index).type(pensum.monatlichesBetreuungspensum);
-           AntragBetreuungPO.getMonatlicheBetreuungskosten(index).type(pensum.monatlicheBetreuungskosten);
-           AntragBetreuungPO.getBetreuungspensumAb(index).find('input').type(pensum.von);
-           AntragBetreuungPO.getBetreuungspensumBis(index).find('input').type(pensum.bis);
-       });
+    FixtureBetreuung[dataset](data => {
+        const pensen = data[gemeinde].kita.betreuungspensen;
+        pensen.forEach((pensum, index) => {
+            if (index > 0) {
+                AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
+            }
+            AntragBetreuungPO.getBetreuungspensum(index).type(
+                pensum.monatlichesBetreuungspensum
+            );
+            AntragBetreuungPO.getMonatlicheBetreuungskosten(index).type(
+                pensum.monatlicheBetreuungskosten
+            );
+            AntragBetreuungPO.getBetreuungspensumAb(index)
+                .find('input')
+                .type(pensum.von);
+            AntragBetreuungPO.getBetreuungspensumBis(index)
+                .find('input')
+                .type(pensum.bis);
+        });
     });
 };
 
-const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillOnlineKitaBetreuungsForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall,
+    opts?: {mobile: boolean}
+) => {
+    FixtureBetreuung[dataset](data => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -233,13 +294,19 @@ const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, ge
         } else {
             getInstitution().find('input').type(kita.institution);
             getInstitutionSuchtext().click();
-            getInstitution().find('input').should('have.value', kita.institution);
+            getInstitution()
+                .find('input')
+                .should('have.value', kita.institution);
         }
     });
 };
 
-const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillOnlineTfoBetreuungsForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall,
+    opts?: {mobile: boolean}
+) => {
+    FixtureBetreuung[dataset](data => {
         const tfo = data[gemeinde].tfo;
         getBetreuungsangebot().select(tfo.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -248,7 +315,9 @@ const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gem
         } else {
             getInstitution().find('input').type(tfo.institution);
             getInstitutionSuchtext().click();
-            getInstitution().find('input').should('have.value', tfo.institution);
+            getInstitution()
+                .find('input')
+                .should('have.value', tfo.institution);
         }
     });
 };
@@ -257,12 +326,18 @@ const selectTagesschulBetreuung = () => {
     getBetreuungsangebot().select('Tagesschule');
 };
 
-const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
-    FixtureBetreuung[dataset]((data) => {
+const fillTagesschulBetreuungsForm = (
+    dataset: keyof typeof FixtureBetreuung,
+    gemeinde: GemeindeTestFall
+) => {
+    FixtureBetreuung[dataset](data => {
         const tagesschule = data[gemeinde].tagesschule.institution;
         getHasVertrag('nein').should('not.exist');
         cy.wait(1000);
-        getInstitution().find('input').focus().type(tagesschule, { force: true, delay: 30 });
+        getInstitution()
+            .find('input')
+            .focus()
+            .type(tagesschule, {force: true, delay: 30});
         getInstitutionSuchtext().first().click();
         getInstitution().find('input').should('have.value', tagesschule);
         getKesbPlatzierung('nein').click();
@@ -288,13 +363,12 @@ const fillEingewoehnung = () => {
 const platzBestaetigungAnfordern = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/false', () => {
         getPlatzbestaetigungAnfordernButton().click();
-
-    })
+    });
 };
 
 const saveBetreuung = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
-        cy.getByData('container.save','navigation-button').click();
+        cy.getByData('container.save', 'navigation-button').click();
     });
 };
 
@@ -306,9 +380,9 @@ const saveAndConfirmBetreuung = () => {
 };
 
 const platzBestaetigen = () => {
-    getKorrekteKostenBestaetigung().click();;
+    getKorrekteKostenBestaetigung().click();
     cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
-        getPlatzBestaetigenButton().click()
+        getPlatzBestaetigenButton().click();
     });
 };
 
@@ -329,7 +403,6 @@ const platzAkzeptieren = () => {
     });
     getPageTitle().should('contain.text', 'Betreuung');
 };
-
 
 export const AntragBetreuungPO = {
     // page objects
@@ -385,5 +458,5 @@ export const AntragBetreuungPO = {
     fillKitaBetreuungspensumForm,
     platzBestaetigen,
     platzAbweisen,
-    platzAkzeptieren,
+    platzAkzeptieren
 };

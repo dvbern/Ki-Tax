@@ -18,7 +18,6 @@
 import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 
 export class TSAbstractMahlzeitenPensum extends TSAbstractDecimalPensumEntity {
-
     private _monatlicheHauptmahlzeiten: number;
     private _monatlicheNebenmahlzeiten: number;
     private _tarifProHauptmahlzeit: number;

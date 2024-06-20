@@ -194,6 +194,10 @@ public class BetreuungsgutscheinConfigurator {
 				new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, ruleParameterUtil);
 
+		AuszahlungAnAbschnittRule auszahlungAnAbschnittRule =
+			new AuszahlungAnAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(auszahlungAnAbschnittRule, ruleParameterUtil);
+
 		// Eingewoehnung Pauschale
 		EingewoehnungPauschaleAbschnittRule eingewoehnungPauschaleAbschnittRule =
 				new EingewoehnungPauschaleAbschnittRule(defaultGueltigkeit, locale);

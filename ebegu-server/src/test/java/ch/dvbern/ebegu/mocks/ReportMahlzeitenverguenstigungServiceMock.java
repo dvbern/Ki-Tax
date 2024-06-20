@@ -39,18 +39,18 @@ public class ReportMahlzeitenverguenstigungServiceMock extends ReportMahlzeitenS
 		@Nonnull Gemeinde gemeinde) {
 
 		List<MahlzeitenverguenstigungDataRow> dataRows = new ArrayList<>();
-		dataRows.add(createDataRow("John", "20.007569.002.1.1", 7569L, BetreuungsangebotTyp.KITA));
-		dataRows.add(createDataRow("John", "20.007569.002.1.2", 7569L, BetreuungsangebotTyp.TAGESSCHULE));
-		dataRows.add(createDataRow("Jade", "20.007569.002.2.1", 7569L, BetreuungsangebotTyp.KITA));
-		dataRows.add(createDataRow("Petra", "20.007569.002.3.1", 7569L, BetreuungsangebotTyp.KITA));
+		dataRows.add(createDataRow("John", "20.007569.002.1.1", BetreuungsangebotTyp.KITA));
+		dataRows.add(createDataRow("John", "20.007569.002.1.2", BetreuungsangebotTyp.TAGESSCHULE));
+		dataRows.add(createDataRow("Jade", "20.007569.002.2.1", BetreuungsangebotTyp.KITA));
+		dataRows.add(createDataRow("Petra", "20.007569.002.3.1", BetreuungsangebotTyp.KITA));
 		return dataRows;
 	}
 
 	private MahlzeitenverguenstigungDataRow createDataRow(
 		String kindVorname,
-		String bgNummer,
-		Long fallNummer,
+		String referenzNummer,
 		BetreuungsangebotTyp betreuungsangebotTyp) {
+
 		MahlzeitenverguenstigungDataRow mahlzeitenverguenstigungDataRow = new MahlzeitenverguenstigungDataRow();
 		mahlzeitenverguenstigungDataRow.setKostenNebenmahlzeiten(new BigDecimal(10));
 		mahlzeitenverguenstigungDataRow.setKostenHauptmahlzeiten(new BigDecimal(30));
@@ -59,8 +59,8 @@ public class ReportMahlzeitenverguenstigungServiceMock extends ReportMahlzeitenS
 		mahlzeitenverguenstigungDataRow.setTraegerschaft("Bern Traegerschaft");
 		mahlzeitenverguenstigungDataRow.setBerechneteMahlzeitenverguenstigung(new BigDecimal(25));
 		mahlzeitenverguenstigungDataRow.setBetreuungsTyp(betreuungsangebotTyp);
-		mahlzeitenverguenstigungDataRow.setBgNummer(bgNummer);
-		mahlzeitenverguenstigungDataRow.setFallNummer(fallNummer);
+		mahlzeitenverguenstigungDataRow.setReferenzNummer(referenzNummer);
+		mahlzeitenverguenstigungDataRow.setFallNummer(7569L);
 		mahlzeitenverguenstigungDataRow.setGs1Name("Thompson");
 		mahlzeitenverguenstigungDataRow.setGs1Vorname("Jack");
 		mahlzeitenverguenstigungDataRow.setGs2Name("Thompson");

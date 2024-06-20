@@ -18,221 +18,624 @@
 <div class="row">
     <div class="col-sm-12">
         <dv-accordion class="konfigurationList" allow-multiple-sections="true">
-            <ng-container *ngFor="let konf of konfigurationsListe; let i = index">
-                <dv-accordion-tab [tabid]="i" (click)="reload()"
-                                  id="accordion-tab-{{konfigurationsListe[i].gesuchsperiode.id}}"
-                                  *ngIf="konfigurationsListe[i].gesuchsperiode.gueltigkeit.gueltigBis.isAfter(tsAnmeldungenStartDatum)">
+            <ng-container
+                *ngFor="let konf of konfigurationsListe; let i = index"
+            >
+                <dv-accordion-tab
+                    [tabid]="i"
+                    (click)="reload()"
+                    id="accordion-tab-{{
+                        konfigurationsListe[i].gesuchsperiode.id
+                    }}"
+                    *ngIf="
+                        konfigurationsListe[
+                            i
+                        ].gesuchsperiode.gueltigkeit.gueltigBis.isAfter(
+                            tsAnmeldungenStartDatum
+                        )
+                    "
+                >
                     <tab-title>
                         <div class="message-header">
                             <p class="fa fa-angle-right"></p>
-                            <span translate
-                                  [translateParams]="{fromTo: konf.gesuchsperiodeName, status: konf.gesuchsperiodeStatusName}">
+                            <span
+                                translate
+                                [translateParams]="{
+                                    fromTo: konf.gesuchsperiodeName,
+                                    status: konf.gesuchsperiodeStatusName
+                                }"
+                            >
                                 GEMEINDE_TAB_TS_GP_TITLE
-                        </span>
+                            </span>
                         </div>
                     </tab-title>
                     <tab-body>
                         <div class="row">
                             <!-- readonly -->
-                            <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div
+                                *ngIf="
+                                    !isKonfigurationEditable(
+                                        konfigurationsListe[i]
+                                    )
+                                "
+                                class="col-sm-6"
+                            >
                                 <div class="form-group">
-                                    <p *ngIf="!konfigurationsListe[i].konfigTagesschuleTagisEnabled && isSuperAdmin()"
-                                       class="line-through">{{getKonfigTagesschuleTagisEnabledString()}}</p>
-                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled">{{getKonfigTagesschuleTagisEnabledString()}}</p>
-                                    <p *ngIf="!konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung && isSuperAdmin()"
-                                        class="line-through">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}
-                                        <dv-tooltip input-id="planKlasse"
-                                                    [text]="'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG' | translate"></dv-tooltip></p>
-                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}</p>
+                                    <p
+                                        *ngIf="
+                                            !konfigurationsListe[i]
+                                                .konfigTagesschuleTagisEnabled &&
+                                            isSuperAdmin()
+                                        "
+                                        class="line-through"
+                                    >
+                                        {{
+                                            getKonfigTagesschuleTagisEnabledString()
+                                        }}
+                                    </p>
+                                    <p
+                                        *ngIf="
+                                            konfigurationsListe[i]
+                                                .konfigTagesschuleTagisEnabled
+                                        "
+                                    >
+                                        {{
+                                            getKonfigTagesschuleTagisEnabledString()
+                                        }}
+                                    </p>
+                                    <p
+                                        *ngIf="
+                                            !konfigurationsListe[i]
+                                                .konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung &&
+                                            isSuperAdmin()
+                                        "
+                                        class="line-through"
+                                    >
+                                        {{
+                                            getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()
+                                        }}
+                                        <dv-tooltip
+                                            input-id="planKlasse"
+                                            [text]="
+                                                'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG'
+                                                    | translate
+                                            "
+                                        ></dv-tooltip>
+                                    </p>
+                                    <p
+                                        *ngIf="
+                                            konfigurationsListe[i]
+                                                .konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung
+                                        "
+                                    >
+                                        {{
+                                            getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()
+                                        }}
+                                    </p>
                                     <!-- Datum Aktivierung Tagesschulen -->
-                                    <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;
-                                        <strong>{{getTagesschuleAktivierungsdatumAsString(konfigurationsListe[i])}}</strong>
+                                    <label
+                                        >{{
+                                            'TAGESSCHULE_AKTIVIERUNGSDATUM'
+                                                | translate
+                                        }}&nbsp;
+                                        <strong>{{
+                                            getTagesschuleAktivierungsdatumAsString(
+                                                konfigurationsListe[i]
+                                            )
+                                        }}</strong>
                                     </label>
                                     <!-- Erster Schultag -->
-                                    <label>{{'TAGESSCHULE_ERSTER_SCHULTAG'|translate}}&nbsp;
-                                        <strong>{{getTagesschuleErsterSchultagAsString(konfigurationsListe[i])}}</strong></label>
+                                    <label
+                                        >{{
+                                            'TAGESSCHULE_ERSTER_SCHULTAG'
+                                                | translate
+                                        }}&nbsp;
+                                        <strong>{{
+                                            getTagesschuleErsterSchultagAsString(
+                                                konfigurationsListe[i]
+                                            )
+                                        }}</strong></label
+                                    >
                                 </div>
                             </div>
                             <!-- editable -->
-                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div
+                                *ngIf="
+                                    isKonfigurationEditable(
+                                        konfigurationsListe[i]
+                                    )
+                                "
+                                class="col-sm-6"
+                            >
                                 <!-- Datum Aktivierung Tagesschulen -->
                                 <div class="form-group">
+                                    <p
+                                        *ngIf="
+                                            konfigurationsListe[i]
+                                                .konfigTagesschuleTagisEnabled &&
+                                            !isSuperAdmin()
+                                        "
+                                    >
+                                        {{
+                                            getKonfigTagesschuleTagisEnabledString()
+                                        }}
+                                    </p>
 
-                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled && !isSuperAdmin()">{{getKonfigTagesschuleTagisEnabledString()}}</p>
-
-                                    <div class="form-group" *ngIf="isSuperAdmin()">
-                                        <mat-checkbox id="tagesschule_tagis_enabled_id_{{i}}"
-                                                      name="tagesschule_tagis_enabled_id_{{i}}"
-                                                      [(ngModel)]="konfigurationsListe[i].konfigTagesschuleTagisEnabled"
-                                                      (change)="changeKonfigTagesschuleTagisEnabled(konfigurationsListe[i])">
-                                            {{'TAGESSCHULE_TAGIS_ENABLED'|translate}}</mat-checkbox>
+                                    <div
+                                        class="form-group"
+                                        *ngIf="isSuperAdmin()"
+                                    >
+                                        <mat-checkbox
+                                            id="tagesschule_tagis_enabled_id_{{
+                                                i
+                                            }}"
+                                            name="tagesschule_tagis_enabled_id_{{
+                                                i
+                                            }}"
+                                            [(ngModel)]="
+                                                konfigurationsListe[i]
+                                                    .konfigTagesschuleTagisEnabled
+                                            "
+                                            (change)="
+                                                changeKonfigTagesschuleTagisEnabled(
+                                                    konfigurationsListe[i]
+                                                )
+                                            "
+                                        >
+                                            {{
+                                                'TAGESSCHULE_TAGIS_ENABLED'
+                                                    | translate
+                                            }}</mat-checkbox
+                                        >
                                     </div>
 
                                     <div class="form-group">
-                                        <mat-checkbox id="tagesschule_zusaetzliche_angaben_{{i}}"
-                                                      name="tagesschule_zusaetzliche_angaben_{{i}}"
-                                                      [(ngModel)]="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung"
-                                                      (change)="changeKonfigTagesschuleZusaetzlicheAngaben(konfigurationsListe[i])">
-                                            {{'TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG'|translate}}
-                                            <dv-tooltip input-id="planKlasse"
-                                                        [text]="'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG' | translate"></dv-tooltip>
+                                        <mat-checkbox
+                                            id="tagesschule_zusaetzliche_angaben_{{
+                                                i
+                                            }}"
+                                            name="tagesschule_zusaetzliche_angaben_{{
+                                                i
+                                            }}"
+                                            [(ngModel)]="
+                                                konfigurationsListe[i]
+                                                    .konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung
+                                            "
+                                            (change)="
+                                                changeKonfigTagesschuleZusaetzlicheAngaben(
+                                                    konfigurationsListe[i]
+                                                )
+                                            "
+                                        >
+                                            {{
+                                                'TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG'
+                                                    | translate
+                                            }}
+                                            <dv-tooltip
+                                                input-id="planKlasse"
+                                                [text]="
+                                                    'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG'
+                                                        | translate
+                                                "
+                                            ></dv-tooltip>
                                         </mat-checkbox>
                                     </div>
 
-                                    <label class="required" translate for="tsAktivierungsdatum_{{i}}">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
-                                    <input class="dv-mat-datepicker" type="text"
-                                           name="tsAktivierungsdatum" id="tsAktivierungsdatum_{{i}}"
-                                           [(ngModel)]="konfigurationsListe[i].konfigTagesschuleAktivierungsdatum"
-                                           [matDatepicker]="tsAktivierungsdatum"
-                                           (dateChange)="tagesschuleAktivierungsdatumChanged(konfigurationsListe[i])"
-                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                           required>
-                                    <mat-datepicker-toggle matSuffix
-                                                           [for]="tsAktivierungsdatum"></mat-datepicker-toggle>
-                                    <mat-datepicker #tsAktivierungsdatum></mat-datepicker>
+                                    <label
+                                        class="required"
+                                        translate
+                                        for="tsAktivierungsdatum_{{ i }}"
+                                        >TAGESSCHULE_AKTIVIERUNGSDATUM</label
+                                    >
+                                    <input
+                                        class="dv-mat-datepicker"
+                                        type="text"
+                                        name="tsAktivierungsdatum"
+                                        id="tsAktivierungsdatum_{{ i }}"
+                                        [(ngModel)]="
+                                            konfigurationsListe[i]
+                                                .konfigTagesschuleAktivierungsdatum
+                                        "
+                                        [matDatepicker]="tsAktivierungsdatum"
+                                        (dateChange)="
+                                            tagesschuleAktivierungsdatumChanged(
+                                                konfigurationsListe[i]
+                                            )
+                                        "
+                                        placeholder="{{
+                                            'DATE_PLACEHOLDER' | translate
+                                        }}"
+                                        required
+                                    />
+                                    <mat-datepicker-toggle
+                                        matSuffix
+                                        [for]="tsAktivierungsdatum"
+                                    ></mat-datepicker-toggle>
+                                    <mat-datepicker
+                                        #tsAktivierungsdatum
+                                    ></mat-datepicker>
                                 </div>
                                 <!-- Erster Schultag -->
                                 <div class="form-group">
-                                    <label class="required" translate
-                                           for="tsErsterSchultag_{{i}}">TAGESSCHULE_ERSTER_SCHULTAG</label>
-                                    <input class="dv-mat-datepicker" type="text"
-                                           name="tsErsterSchultag" id="tsErsterSchultag_{{i}}"
-                                           [(ngModel)]="konfigurationsListe[i].konfigTagesschuleErsterSchultag"
-                                           [matDatepicker]="tsErsterSchultag"
-                                           (dateChange)="tagesschuleErsterSchultagChanged(konfigurationsListe[i])"
-                                           placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                           required>
-                                    <mat-datepicker-toggle matSuffix [for]="tsErsterSchultag"></mat-datepicker-toggle>
-                                    <mat-datepicker #tsErsterSchultag></mat-datepicker>
+                                    <label
+                                        class="required"
+                                        translate
+                                        for="tsErsterSchultag_{{ i }}"
+                                        >TAGESSCHULE_ERSTER_SCHULTAG</label
+                                    >
+                                    <input
+                                        class="dv-mat-datepicker"
+                                        type="text"
+                                        name="tsErsterSchultag"
+                                        id="tsErsterSchultag_{{ i }}"
+                                        [(ngModel)]="
+                                            konfigurationsListe[i]
+                                                .konfigTagesschuleErsterSchultag
+                                        "
+                                        [matDatepicker]="tsErsterSchultag"
+                                        (dateChange)="
+                                            tagesschuleErsterSchultagChanged(
+                                                konfigurationsListe[i]
+                                            )
+                                        "
+                                        placeholder="{{
+                                            'DATE_PLACEHOLDER' | translate
+                                        }}"
+                                        required
+                                    />
+                                    <mat-datepicker-toggle
+                                        matSuffix
+                                        [for]="tsErsterSchultag"
+                                    ></mat-datepicker-toggle>
+                                    <mat-datepicker
+                                        #tsErsterSchultag
+                                    ></mat-datepicker>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <h1>
-                                        <span translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN"></span>
-                                        <dv-tooltip id="merkblatt-anmeldung-ts-tooltip" [text]="'MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN_HELP'|translate"></dv-tooltip>
+                                        <span
+                                            translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN"
+                                        ></span>
+                                        <dv-tooltip
+                                            id="merkblatt-anmeldung-ts-tooltip"
+                                            [text]="
+                                                'MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN_HELP'
+                                                    | translate
+                                            "
+                                        ></dv-tooltip>
                                     </h1>
-                                    <hr class="header"/>
+                                    <hr class="header" />
                                     <table class="table" width="100%">
                                         <thead></thead>
                                         <tbody>
-                                        <tr *ngIf="korrespondenzspracheDe">
-                                            <td
-                                                translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"></td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1"
-                                                ng-click="$event.stopPropagation()">
-                                                <input type="file" style="display: none"
-													   #fileInput
-                                                       accept="application/pdf"
-                                                       (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
-                                                <button
+                                            <tr *ngIf="korrespondenzspracheDe">
+                                                <td
+                                                    translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"
+                                                ></td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                    ng-click="$event.stopPropagation()"
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        style="display: none"
+                                                        #fileInput
+                                                        accept="application/pdf"
+                                                        (change)="
+                                                            uploadGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                $event,
+                                                                sprache.DEUTSCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                    />
+                                                    <button
                                                         type="button"
-                                                        (click)="fileInput.click()"
+                                                        (click)="
+                                                            fileInput.click()
+                                                        "
                                                         class="dv-btn fa fa-upload dv-btn-operation"
-                                                        title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                                        [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
-                                                        tabindex="0">
-                                                </button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button type="button"
-                                                        (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                                        [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                        title="{{
+                                                            'GS_DOKUMENT_HOCHLADEN'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'GS_DOKUMENT_HOCHLADEN'
+                                                                | translate
+                                                        "
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            downloadGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.DEUTSCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !merkblattAnmeldungTSDE[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
                                                         class="dv-btn fa fa-eye dv-btn-operation"
-                                                        title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                                        [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                                        title="{{
+                                                            'DOKUMENT_DOWNLOAD'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'DOKUMENT_DOWNLOAD'
+                                                                | translate
+                                                        "
                                                         aria-hidden="true"
-                                                        tabindex="0"></button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button type="button"
-                                                        (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                                        [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
-                                                        class="dv-btn fa fa-trash dv-btn-operation"
-                                                        title="{{'DOKUMENT_DELETE' | translate}}"
-                                                        [attr.aria-label]="'DOKUMENT_DELETE' | translate"
-                                                        aria-hidden="true"
-                                                        tabindex="0"></button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button type="button"
-                                                        (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
-                                                        [disabled]="!vorlageMerkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
-                                                        class="dv-btn fa fa-file-word-o dv-btn-operation"
-                                                        title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                                        [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
-                                                        aria-hidden="true"
-                                                        tabindex="0"></button>
-                                            </td>
-                                        </tr>
-                                        <tr *ngIf="korrespondenzspracheFr">
-                                            <td
-                                                translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1"
-                                                ng-click="$event.stopPropagation()">
-                                                <input type="file" style="display: none"
-													   #fileInput
-                                                       accept="application/pdf"
-                                                       (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
-                                                <button
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
                                                         type="button"
-                                                        (click)="fileInput.click()"
+                                                        (click)="
+                                                            removeGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.DEUTSCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !merkblattAnmeldungTSDE[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
+                                                        class="dv-btn fa fa-trash dv-btn-operation"
+                                                        title="{{
+                                                            'DOKUMENT_DELETE'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'DOKUMENT_DELETE'
+                                                                | translate
+                                                        "
+                                                        aria-hidden="true"
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            downloadGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.DEUTSCH,
+                                                                dokumentTyp.VORLAGE_MERKBLATT_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !vorlageMerkblattAnmeldungTSDE[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
+                                                        class="dv-btn fa fa-file-word-o dv-btn-operation"
+                                                        title="{{
+                                                            'DOKUMENT_DOWNLOAD'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'DOKUMENT_DOWNLOAD'
+                                                                | translate
+                                                        "
+                                                        aria-hidden="true"
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                            </tr>
+                                            <tr *ngIf="korrespondenzspracheFr">
+                                                <td
+                                                    translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"
+                                                ></td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                    ng-click="$event.stopPropagation()"
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        style="display: none"
+                                                        #fileInput
+                                                        accept="application/pdf"
+                                                        (change)="
+                                                            uploadGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                $event,
+                                                                sprache.FRANZOESISCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            fileInput.click()
+                                                        "
                                                         class="dv-btn fa fa-upload dv-btn-operation"
-                                                        title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                                        [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
-                                                        tabindex="0">
-                                                </button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button
-                                                    type="button"
-                                                    (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                                    [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
-                                                    class="dv-btn fa fa-eye dv-btn-operation"
-                                                    title="{{'VORLAGE_DOWNLOAD' | translate}}"
-                                                    [attr.aria-label]="'VORLAGE_DOWNLOAD' | translate"
-                                                    aria-hidden="true"
-                                                    tabindex="0"></button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button
-                                                    type="button"
-                                                    (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
-                                                    [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
-                                                    class="dv-btn fa fa-trash dv-btn-operation"
-                                                    title="{{'DOKUMENT_DELETE' | translate}}"
-                                                    [attr.aria-label]="'DOKUMENT_DELETE' | translate"
-                                                    aria-hidden="true"
-                                                    tabindex="0"></button>
-                                            </td>
-                                            <td width="2%"
-                                                class="symbol"
-                                                tabindex="-1">
-                                                <button
-                                                    type="button"
-                                                    (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
-                                                    [disabled]="!vorlageMerkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
-                                                    class="dv-btn fa fa-file-word-o dv-btn-operation"
-                                                    title="{{'VORLAGE_DOWNLOAD' | translate}}"
-                                                    [attr.aria-label]="'VORLAGE_DOWNLOAD' | translate"
-                                                    aria-hidden="true"
-                                                    tabindex="0"></button>
-                                            </td>
-                                        </tr>
+                                                        title="{{
+                                                            'GS_DOKUMENT_HOCHLADEN'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'GS_DOKUMENT_HOCHLADEN'
+                                                                | translate
+                                                        "
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            downloadGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.FRANZOESISCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !merkblattAnmeldungTSFR[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
+                                                        class="dv-btn fa fa-eye dv-btn-operation"
+                                                        title="{{
+                                                            'VORLAGE_DOWNLOAD'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'VORLAGE_DOWNLOAD'
+                                                                | translate
+                                                        "
+                                                        aria-hidden="true"
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            removeGemeindeGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.FRANZOESISCH,
+                                                                dokumentTyp.MERKBLATT_ANMELDUNG_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !merkblattAnmeldungTSFR[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
+                                                        class="dv-btn fa fa-trash dv-btn-operation"
+                                                        title="{{
+                                                            'DOKUMENT_DELETE'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'DOKUMENT_DELETE'
+                                                                | translate
+                                                        "
+                                                        aria-hidden="true"
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                                <td
+                                                    width="2%"
+                                                    class="symbol"
+                                                    tabindex="-1"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        (click)="
+                                                            downloadGesuchsperiodeDokument(
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id,
+                                                                sprache.FRANZOESISCH,
+                                                                dokumentTyp.VORLAGE_MERKBLATT_TS
+                                                            );
+                                                            $event.stopPropagation()
+                                                        "
+                                                        [disabled]="
+                                                            !vorlageMerkblattAnmeldungTSFR[
+                                                                konfigurationsListe[
+                                                                    i
+                                                                ].gesuchsperiode
+                                                                    .id
+                                                            ]
+                                                        "
+                                                        class="dv-btn fa fa-file-word-o dv-btn-operation"
+                                                        title="{{
+                                                            'VORLAGE_DOWNLOAD'
+                                                                | translate
+                                                        }}"
+                                                        [attr.aria-label]="
+                                                            'VORLAGE_DOWNLOAD'
+                                                                | translate
+                                                        "
+                                                        aria-hidden="true"
+                                                        tabindex="0"
+                                                    ></button>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

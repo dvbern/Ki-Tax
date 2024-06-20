@@ -23,6 +23,7 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
+import {UnknownMittagstischIdVisitor} from '../../../app/core/constants/UnknownMittagstischIdVisitor';
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -34,14 +35,22 @@ import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA,
+    isAnyStatusOfVerfuegt,
+    isVerfuegtOrSTV,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/betreuung/TSBetreuungsstatus';
-import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
+import {
+    stringEingewoehnungTyp,
+    TSEingewoehnungTyp
+} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
@@ -77,6 +86,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {createTSBetreuungspensum} from './betreuungView.util';
+import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -99,7 +109,6 @@ const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
-
     public static $inject = [
         '$state',
         'GesuchModelManager',
@@ -119,7 +128,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         '$translate',
         'ApplicationPropertyRS',
         'MandantService',
-        'EbeguRestUtil',
+        'EbeguRestUtil'
+    ];
+    public bedarfsstufe: TSBedarfsstufe = null;
+    public bedarfsstufeValues: TSBedarfsstufe[] = [
+        TSBedarfsstufe.KEINE,
+        TSBedarfsstufe.BEDARFSSTUFE_1,
+        TSBedarfsstufe.BEDARFSSTUFE_2,
+        TSBedarfsstufe.BEDARFSSTUFE_3
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -150,26 +166,28 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
+    public minPensumSprachlicheIndikation: number;
+    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
+    public provMonatlicheBetreuungskosten: number;
+    public abweichungenAktiviert: boolean;
+    public auszahlungAnEltern: boolean;
+    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    public hoehereBeitraegeWegenBeeintraechtigungBeantragt: boolean = false;
+    public isHoehereBeitraegeEinstellungAktiviert: boolean = false;
+    public canEditBedarfsstufen: boolean = false;
+    protected minEintrittsdatum: moment.Moment;
     private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
-    protected minEintrittsdatum: moment.Moment;
     private betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
-    public isTFOKostenBerechnungStuendlich: boolean = false;
-
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
     private oeffnungsstundenTFO: number;
     private kitastundenprotag: number;
-
     private multiplierKita: number;
     private multiplierTFO: number;
-
-    public minPensumSprachlicheIndikation: number;
-
-    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
-    public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
     private mandant: KiBonMandant;
     private angebotTS: boolean;
@@ -179,12 +197,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
     private schulergaenzendeBetreuungAktiv: boolean = false;
-
     private erweitereBeduerfnisseAktiv: boolean = false;
-    public abweichungenAktiviert: boolean;
-
-    public auszahlungAnEltern: boolean;
-    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
     private isAnwesenheitstageProMonatAktiviert: boolean = false;
 
     public constructor(
@@ -206,41 +219,69 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.BETREUUNG,
+            $timeout
+        );
         this.dvDialog = dvDialog;
         this.$translate = $translate;
-        this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
-            this.mandant = mandant;
-            this.isLuzern = mandant === MANDANTS.LUZERN;
-        }, err => LOG.error(err));
+        this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(
+            mandant => {
+                this.mandant = mandant;
+                this.isLuzern = mandant === MANDANTS.LUZERN;
+            },
+            err => LOG.error(err)
+        );
     }
 
-    // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
         this.initAngebotTypenFromEinstellungen()
             .then(() => {
-                const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
-                return this.einstellungRS.getAllEinstellungenBySystemCached(
-                    gesuchsperiodeId,
-                ).toPromise().then((response: TSEinstellung[]) => {
-                    response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
-                        .forEach(einstellung => {
-                            this.loadPensumAnzeigeTyp(einstellung);
-                        });
-                    response.filter(r => r.key === TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION)
-                        .forEach(value => {
-                            this.minPensumSprachlicheIndikation = Number(value.value);
-                        });
-                }, error => LOG.error(error));
+                const gesuchsperiodeId: string =
+                    this.gesuchModelManager.getGesuchsperiode().id;
+                return this.einstellungRS
+                    .getAllEinstellungenBySystemCached(gesuchsperiodeId)
+                    .toPromise()
+                    .then(
+                        (response: TSEinstellung[]) => {
+                            response
+                                .filter(
+                                    r =>
+                                        r.key ===
+                                        TSEinstellungKey.PENSUM_ANZEIGE_TYP
+                                )
+                                .forEach(einstellung => {
+                                    this.loadPensumAnzeigeTyp(einstellung);
+                                });
+                            response
+                                .filter(
+                                    r =>
+                                        r.key ===
+                                        TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION
+                                )
+                                .forEach(value => {
+                                    this.minPensumSprachlicheIndikation =
+                                        Number(value.value);
+                                });
+                        },
+                        error => LOG.error(error)
+                    );
             })
             .then(() => {
                 this.mutationsmeldungModel = undefined;
                 this.isMutationsmeldungStatus = false;
                 const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
-                const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+                const kindIndex =
+                    this.gesuchModelManager.convertKindNumberToKindIndex(
+                        kindNumber
+                    );
 
                 if (this.mandant === MANDANTS.LUZERN) {
                     this.isTFOKostenBerechnungStuendlich = true;
@@ -248,24 +289,43 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
-                    if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
-                        const betreuungNumber = parseInt(this.$stateParams.betreuungNumber, 10);
+                    if (
+                        this.$stateParams.betreuungNumber &&
+                        this.$stateParams.betreuungNumber.length > 0
+                    ) {
+                        const betreuungNumber = parseInt(
+                            this.$stateParams.betreuungNumber,
+                            10
+                        );
                         this.betreuungIndex =
-                            this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(betreuungNumber);
-                        this.model =
-                            angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
-                        this.initialBetreuung =
-                            angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
+                            this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(
+                                betreuungNumber
+                            );
+                        this.model = angular.copy(
+                            this.gesuchModelManager.getKindToWorkWith()
+                                .betreuungen[this.betreuungIndex]
+                        );
+                        this.initialBetreuung = angular.copy(
+                            this.gesuchModelManager.getKindToWorkWith()
+                                .betreuungen[this.betreuungIndex]
+                        );
 
-                        this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
+                        this.gesuchModelManager.setBetreuungIndex(
+                            this.betreuungIndex
+                        );
                     } else {
                         // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
                         this.model = this.initEmptyBetreuung();
                         this.initialBetreuung = angular.copy(this.model);
-                        this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
-                            ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
-                            : 0;
-                        this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
+                        this.betreuungIndex =
+                            this.gesuchModelManager.getKindToWorkWith()
+                                .betreuungen
+                                ? this.gesuchModelManager.getKindToWorkWith()
+                                      .betreuungen.length
+                                : 0;
+                        this.gesuchModelManager.setBetreuungIndex(
+                            this.betreuungIndex
+                        );
                     }
 
                     this.setBetreuungsangebotTypValues();
@@ -273,134 +333,77 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     this.initBetreuungsangebotTyp();
                     this.initViewModel();
 
-                    if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
-                        this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+                    if (
+                        this.getErweiterteBetreuungJA() &&
+                        this.getErweiterteBetreuungJA().fachstelle
+                    ) {
+                        this.fachstelleId =
+                            this.getErweiterteBetreuungJA().fachstelle.id;
                     }
 
                     this.provisorischeBetreuung = false;
 
-                    if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
-                        && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
+                    if (
+                        EbeguUtil.isNotNullOrUndefined(
+                            this.getBetreuungModel()
+                        ) &&
+                        this.getBetreuungModel().betreuungsstatus ===
+                            TSBetreuungsstatus.UNBEKANNTE_INSTITUTION
+                    ) {
                         this.provisorischeBetreuung = true;
                     }
 
                     // just to read!
-                    this.kindModel = this.gesuchModelManager.getKindToWorkWith();
+                    this.kindModel =
+                        this.gesuchModelManager.getKindToWorkWith();
+                    this.canRoleEditBedarfsstufe();
+
+                    this.hoehereBeitraegeWegenBeeintraechtigungBeantragt =
+                        this.hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(
+                            this.kindModel
+                        );
                 } else {
-                    this.$log.error(`There is no kind available with kind-number:${this.$stateParams.kindNumber}`);
+                    this.$log.error(
+                        `There is no kind available with kind-number:${this.$stateParams.kindNumber}`
+                    );
                 }
-                this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
+                this.isNewestGesuch =
+                    this.gesuchModelManager.isNeuestesGesuch();
 
                 if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())) {
-                    if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
-                        || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+                    if (
+                        this.getBetreuungModel().getAngebotTyp() ===
+                            TSBetreuungsangebotTyp.KITA ||
+                        this.getBetreuungModel().getAngebotTyp() ===
+                            TSBetreuungsangebotTyp.TAGESFAMILIEN
+                    ) {
                         // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
                         this.findExistingBetreuungsmitteilung();
                     }
 
-                    const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
+                    const anmeldungMutationZustand =
+                        this.getBetreuungModel().anmeldungMutationZustand;
                     if (anmeldungMutationZustand) {
-                        if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+                        if (
+                            anmeldungMutationZustand ===
+                            TSAnmeldungMutationZustand.MUTIERT
+                        ) {
                             this.aktuellGueltig = false;
-                        } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+                        } else if (
+                            anmeldungMutationZustand ===
+                            TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN
+                        ) {
                             this.aktuellGueltig = false;
                         }
                     }
                 }
-                this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
-                    this.abweichungenAktiviert = res.abweichungenEnabled;
-                });
+                this.applicationPropertyRS
+                    .getPublicPropertiesCached()
+                    .then(res => {
+                        this.abweichungenAktiviert = res.abweichungenEnabled;
+                    });
                 this.initEinstellungen();
             });
-
-    }
-
-    private initEinstellungen(): void {
-        this.loadAuszahlungAnEltern();
-        const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            gesuchsperiodeId,
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP)
-                .forEach(value => {
-                    this.eingewoehnungTyp = stringEingewoehnungTyp(value.value);
-                });
-            response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
-                .forEach(value => {
-                    this.kitaPlusZuschlagAktiviert = value.getValueAsBoolean();
-                });
-            response.filter(r => r.key === TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN)
-                .forEach(value => {
-                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
-                        this.isKesbPlatzierung = false;
-                        this.changeKeineKesbPlatzierung();
-                    }
-                    this.hideKesbPlatzierung = value.getValueAsBoolean();
-                });
-            response.filter(r => r.key === TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN)
-                .forEach(value => {
-                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
-                        this.besondereBeduerfnisseAufwandKonfigurierbar = true;
-                    }
-                });
-            response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
-                .forEach(einstellung => {
-                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
-                });
-
-            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA)
-                .forEach(einstellung => {
-                    this.oeffnungstageKita = parseInt(einstellung.value, 10);
-                });
-            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO)
-                .forEach(einstellung => {
-                    this.oeffnungstageTFO = parseInt(einstellung.value, 10);
-                });
-            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
-                .forEach(einstellung => {
-                    this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
-                });
-            response.filter(r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG)
-                .forEach(einstellung => {
-                    this.kitastundenprotag = parseInt(einstellung.value, 10);
-                });
-            response.filter(r => r.key === TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
-                .forEach(einstellung => {
-                    this.sprachfoerderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
-                });
-            response.filter(r => r.key === TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN)
-                .forEach(value => {
-                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
-                        this.schulergaenzendeBetreuungAktiv = true;
-                    }
-                });
-            response.filter(r => r.key === TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV)
-                .forEach(value => {
-                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
-                        this.erweitereBeduerfnisseAktiv = true;
-                    }
-                });
-            response.filter(r => r.key === TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT)
-                .forEach(value => {
-                   this.isAnwesenheitstageProMonatAktiviert = EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean());
-                });
-        }, error => LOG.error(error));
-
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
-            this.gesuchModelManager.getGemeinde().id,
-            gesuchsperiodeId,
-        ).subscribe(res => {
-            this.zuschlagBehinderungProTag = Number(res.value);
-        }, error => LOG.error(error));
-
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
-            this.gesuchModelManager.getGemeinde().id,
-            gesuchsperiodeId,
-        ).subscribe(res => {
-            this.zuschlagBehinderungProStd = Number(res.value);
-        }, error => LOG.error(error));
     }
 
     private loadAuszahlungAnEltern(): void {
@@ -409,7 +412,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
                 this.auszahlungAnEltern = response.auszahlungAnEltern;
             });
@@ -418,9 +422,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private initBetreuungsangebotTyp() {
         if (this.$stateParams.betreuungsangebotTyp) {
             for (const obj of this.betreuungsangebotValues) {
-                // eslint-disable-next-line
-                if (obj.key === this.$stateParams.betreuungsangebotTyp
-                    && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                if (
+                    obj.key === this.$stateParams.betreuungsangebotTyp &&
+                    obj.value !==
+                        this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
                 ) {
                     // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
                     // -> wir nehmen alle anderen Angebote aus der Liste raus
@@ -435,18 +440,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.betreuungsangebot = undefined;
         }
 
-        if (!this.hasMandantZusaetzlichesBereuungsangebot() &&
-            this.betreuungsangebotValues.length === 1) {
+        if (
+            !this.hasMandantZusaetzlichesBereuungsangebot() &&
+            this.betreuungsangebotValues.length === 1
+        ) {
             this.betreuungsangebot = this.betreuungsangebotValues[0];
         }
     }
 
     private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
-        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
-            .parsePensumAnzeigeTyp(einstellung);
+        const einstellungPensumAnzeigeTyp =
+            this.ebeguRestUtil.parsePensumAnzeigeTyp(einstellung);
 
-        this.betreuungspensumAnzeigeTypEinstellung = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
-            einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+        this.betreuungspensumAnzeigeTypEinstellung =
+            EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp)
+                ? einstellungPensumAnzeigeTyp
+                : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     public getBetreuungspensumAnzeigeTyp(): TSPensumAnzeigeTyp {
@@ -455,6 +464,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return this.betreuungspensumAnzeigeTypEinstellung;
+    }
+
+    public changedBedarfsstufe() {
+        return this.getBetreuungModel().bedarfsstufe;
     }
 
     /**
@@ -469,15 +482,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.isGesuchstellerSozialdienst()) {
             tsBetreuung.vertrag = true;
         }
-        tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
-        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
+        tsBetreuung.erweiterteBetreuungContainer =
+            new TSErweiterteBetreuungContainer();
+        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA =
+            new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
-        tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        tsBetreuung.gesuchsperiode =
+            this.gesuchModelManager.getGesuchsperiode();
 
         // sollte defaultmässig true sein, falls AuszahlungAnEltern aktiviert
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
                 tsBetreuung.auszahlungAnEltern = response.auszahlungAnEltern;
                 this.auszahlungAnEltern = response.auszahlungAnEltern;
@@ -491,23 +508,36 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.flagErrorVertrag = false;
         if (this.getInstitutionSD()) {
             this.instStamm = this.getInstitutionSD();
-            this.betreuungsangebot = this.getBetreuungsangebotFromInstitutionList();
+            this.betreuungsangebot =
+                this.getBetreuungsangebotFromInstitutionList();
         }
         this.startEmptyListOfBetreuungspensen();
         // institutionen lazy laden
-        if (!this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
-            || this.gesuchModelManager.getActiveInstitutionenForGemeindeList().length <= 0) {
+        if (
+            !this.gesuchModelManager.getActiveInstitutionenForGemeindeList() ||
+            this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
+                .length <= 0
+        ) {
             this.gesuchModelManager.updateActiveInstitutionenForGemeindeList();
         }
-        if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+        if (
+            this.getErweiterteBetreuungJA() &&
+            this.getErweiterteBetreuungJA().fachstelle
+        ) {
             this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
         }
         this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
-        if (this.getErweiterteBetreuungJA()
-            && EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().keineKesbPlatzierung)) {
-            this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
+        if (
+            this.getErweiterteBetreuungJA() &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.getErweiterteBetreuungJA().keineKesbPlatzierung
+            )
+        ) {
+            this.isKesbPlatzierung =
+                !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
         }
-        this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
+        this.allowedRoles =
+            this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
     }
 
     /**
@@ -515,8 +545,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * wenn nicht wir die Liste dann mit einem leeren initiallisiert
      */
     private startEmptyListOfBetreuungspensen(): void {
-        if ((!this.getBetreuungspensen() || this.getBetreuungspensen().length === 0)
-            && (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+        if (
+            (!this.getBetreuungspensen() ||
+                this.getBetreuungspensen().length === 0) &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             // nur fuer Institutionen wird ein Betreuungspensum by default erstellt
             this.createBetreuungspensum();
         }
@@ -527,19 +562,28 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private getBetreuungsangebotFromInstitutionList(): any {
-        return $.grep(this.betreuungsangebotValues,
-            (value: any) => value.key === this.getInstitutionSD().betreuungsangebotTyp)[0];
+        return $.grep(
+            this.betreuungsangebotValues,
+            (value: any) =>
+                value.key === this.getInstitutionSD().betreuungsangebotTyp
+        )[0];
     }
 
     public getKindModel(): TSKindContainer {
         return this.kindModel;
     }
 
+    public hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(
+        kindModel: TSKindContainer
+    ): boolean {
+        return kindModel.kindJA
+            ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+    }
+
     public getBetreuungModel(): TSBetreuung {
         if (this.isMutationsmeldungStatus && this.mutationsmeldungModel) {
             return this.mutationsmeldungModel;
         }
-
         return this.model;
     }
 
@@ -547,7 +591,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.form.$dirty && this.isMutationsmeldungStatus;
     }
 
-    // eslint-disable-next-line
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
             return;
@@ -557,13 +600,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Fuer saemliche Schulamt-Angebote gilt der Vertrag immer als akzeptiert
             this.getBetreuungModel().vertrag = true;
             this.onChangeVertrag();
-            if (this.isTagesschule() && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                && this.isTageschulenAnmeldungAktiv()) {
-                this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+            if (
+                this.isTagesschule() &&
+                this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
+                this.isTageschulenAnmeldungAktiv()
+            ) {
+                this.getBetreuungModel().betreuungsstatus =
+                    TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
                 this.setErsterSchultag();
             }
         } else {
-            this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+            this.getBetreuungModel().betreuungsstatus =
+                TSBetreuungsstatus.AUSSTEHEND;
             if (this.isProvisorischeBetreuung()) {
                 this.createProvisorischeBetreuung();
             }
@@ -574,19 +622,29 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setErsterSchultag(): void {
-        // eslint-disable-next-line
-        if (this.minEintrittsdatum && !this.getBetreuungModel().keineDetailinformationen
+        if (
+            this.minEintrittsdatum &&
+            !this.getBetreuungModel().keineDetailinformationen
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
-                this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
+                this.getBetreuungModel().belegungTagesschule =
+                    new TSBelegungTagesschule();
             }
-            if (this.getBetreuungModel().belegungTagesschule.eintrittsdatum === undefined) {
-                this.getBetreuungModel().belegungTagesschule.eintrittsdatum = this.minEintrittsdatum;
+            if (
+                this.getBetreuungModel().belegungTagesschule.eintrittsdatum ===
+                undefined
+            ) {
+                this.getBetreuungModel().belegungTagesschule.eintrittsdatum =
+                    this.minEintrittsdatum;
             }
         }
     }
 
-    private save(newStatus: TSBetreuungsstatus, nextStep?: string, params?: any): void {
+    private save(
+        newStatus: TSBetreuungsstatus,
+        nextStep?: string,
+        params?: any
+    ): void {
         this.isSavingData = true;
         const oldStatus = this.model.betreuungsstatus;
         if (this.getBetreuungModel() && this.isSchulamt()) {
@@ -595,34 +653,52 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.errorService.clearAll();
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
-            this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
-            if (!this.model.isAngebotSchulamt()) {
-                this.gesuchModelManager.updateVerguenstigungGewuenschtFlag();
-            }
-            this.isSavingData = false;
-            this.form.$setPristine();
-            if (nextStep) {
-                this.$state.go(nextStep, params);
-            }
-
-        }).catch((exception: TSExceptionReport[]) => {
-            // starting over
-            this.$log.error('there was an error saving the betreuung ', this.model, exception);
-            if (exception[0].errorCodeEnum === 'ERROR_DUPLICATE_BETREUUNG') {
-                this.isDuplicated = true;
-                this.model.betreuungsstatus = oldStatus;
-            } else {
+        if (
+            this.getBetreuungModel().institutionStammdaten
+                .betreuungsangebotTyp !== this.betreuungsangebot.key
+        ) {
+            this.errorService.addMesageAsError(
+                this.$translate.instant('ERROR_FALSCHE_ANGEBOT')
+            );
+            return;
+        }
+        this.gesuchModelManager
+            .saveBetreuung(this.model, newStatus, false)
+            .then(() => {
+                this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
+                if (!this.model.isAngebotSchulamt()) {
+                    this.gesuchModelManager.updateVerguenstigungGewuenschtFlag();
+                }
                 this.isSavingData = false;
-                this.model.betreuungsstatus = oldStatus;
-                this.startEmptyListOfBetreuungspensen();
-                this.form.$setUntouched();
                 this.form.$setPristine();
-                this.model.institutionStammdaten = this.initialBetreuung.institutionStammdaten;
-            }
+                if (nextStep) {
+                    this.$state.go(nextStep, params);
+                }
+            })
+            .catch((exception: TSExceptionReport[]) => {
+                // starting over
+                this.$log.error(
+                    'there was an error saving the betreuung ',
+                    this.model,
+                    exception
+                );
+                if (
+                    exception[0].errorCodeEnum === 'ERROR_DUPLICATE_BETREUUNG'
+                ) {
+                    this.isDuplicated = true;
+                    this.model.betreuungsstatus = oldStatus;
+                } else {
+                    this.isSavingData = false;
+                    this.model.betreuungsstatus = oldStatus;
+                    this.startEmptyListOfBetreuungspensen();
+                    this.form.$setUntouched();
+                    this.form.$setPristine();
+                    this.model.institutionStammdaten =
+                        this.initialBetreuung.institutionStammdaten;
+                }
 
-            return undefined;
-        });
+                return undefined;
+            });
     }
 
     /**
@@ -634,11 +710,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         if (this.erneutePlatzbestaetigungErforderlich) {
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT',
-            }).then(() => {
-                this.platzAnfordern();
-            });
+            this.dvDialog
+                .showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                    title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT'
+                })
+                .then(() => {
+                    this.platzAnfordern();
+                });
             return;
         }
         this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
@@ -646,91 +724,143 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public anmeldenSchulamt(): void {
         if (this.direktAnmeldenSchulamt()) {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
                 GESUCH_BETREUUNGEN,
-                {gesuchId: this.getGesuchId()});
+                {gesuchId: this.getGesuchId()}
+            );
         } else {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
                 GESUCH_BETREUUNGEN,
-                {gesuchId: this.getGesuchId()});
+                {gesuchId: this.getGesuchId()}
+            );
         }
     }
 
     public direktAnmeldenSchulamt(): boolean {
         // Eigentlich immer ausser in Bearbeitung GS
-        return !(this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
-            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
-            || this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG));
+        return !(
+            this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS) ||
+            this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) ||
+            this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG)
+        );
     }
 
     public enableBetreuungsangebotsTyp(): boolean {
-        return this.model
-            && this.model.isNew()
-            && !this.gesuchModelManager.isGesuchReadonly()
-            && this.hasMandantZusaetzlichesBereuungsangebot();
+        return (
+            this.model &&
+            this.model.isNew() &&
+            !this.gesuchModelManager.isGesuchReadonly() &&
+            this.hasMandantZusaetzlichesBereuungsangebot()
+        );
     }
 
     public showInstitutionenList(): boolean {
-        return this.getBetreuungModel()
-            && ((
-                this.isTageschulenAnmeldungAktiv()
-                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
-                || !this.isTageschulenAnmeldungAktiv() && (this.isEnabled() && !this.isTagesschule())
-            ) || (
-                this.isFerieninselAnmeldungAktiv()
-                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
-                || !this.isFerieninselAnmeldungAktiv() && (this.isEnabled() && !this.isFerieninsel())
-            ))
-            && !this.getBetreuungModel().keineDetailinformationen;
+        return (
+            this.getBetreuungModel() &&
+            ((this.isTageschulenAnmeldungAktiv() &&
+                (this.isEnabled() ||
+                    this.isBetreuungsstatus(
+                        TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+                    ))) ||
+                (!this.isTageschulenAnmeldungAktiv() &&
+                    this.isEnabled() &&
+                    !this.isTagesschule()) ||
+                (this.isFerieninselAnmeldungAktiv() &&
+                    (this.isEnabled() ||
+                        this.isBetreuungsstatus(
+                            TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+                        ))) ||
+                (!this.isFerieninselAnmeldungAktiv() &&
+                    this.isEnabled() &&
+                    !this.isFerieninsel())) &&
+            !this.getBetreuungModel().keineDetailinformationen
+        );
     }
 
     public showInstitutionenAsText(): boolean {
-        return !this.showInstitutionenList() && !this.model.keineDetailinformationen;
+        return (
+            !this.showInstitutionenList() &&
+            !this.model.keineDetailinformationen
+        );
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+        return (
+            this.gesuchModelManager.gemeindeKonfiguration &&
+            this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv()
+        );
     }
 
     public isFerieninselAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv();
+        return (
+            this.gesuchModelManager.gemeindeKonfiguration &&
+            this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv()
+        );
     }
 
     public isFalscheInstitutionAndUserInRole(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles())
-            && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)
-            && this.aktuellGueltig;
+        return (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+            ) &&
+            this.isBetreuungsstatus(
+                TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+            ) &&
+            this.aktuellGueltig
+        );
     }
 
-    public anmeldungSchulamtUebernehmen(isScolaris: { isScolaris: boolean }): void {
+    public anmeldungSchulamtUebernehmen(isScolaris: {
+        isScolaris: boolean;
+    }): void {
         this.gesuchModelManager.reloadGesuch().then(() => {
             this.copyBGNumberLToClipboard();
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
-            }).then(() => {
-                let betreuungsstatus: TSBetreuungsstatus;
+            this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'CONFIRM_UEBERNAHME_SCHULAMT',
+                        deleteText: isScolaris
+                            ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT'
+                            : ''
+                    }
+                )
+                .then(() => {
+                    let betreuungsstatus: TSBetreuungsstatus;
 
-                if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
-                    betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
-                        ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                        : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
-                } else {
-                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
-                }
+                    if (
+                        this.getBetreuungModel().getAngebotTyp() ===
+                        TSBetreuungsangebotTyp.TAGESSCHULE
+                    ) {
+                        betreuungsstatus =
+                            this.anmeldungTagesschuleDirektUebernehmen()
+                                ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                                : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+                    } else {
+                        betreuungsstatus =
+                            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+                    }
 
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.save(betreuungsstatus,
-                        PENDENZEN_BETREUUNG,
-                        undefined);
-                } else {
-                    this.save(betreuungsstatus,
-                        GESUCH_BETREUUNGEN,
-                        {gesuchId: this.getGesuchId()});
-                }
-            });
+                    if (
+                        this.authServiceRS.isOneOfRoles(
+                            TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+                        )
+                    ) {
+                        this.save(
+                            betreuungsstatus,
+                            PENDENZEN_BETREUUNG,
+                            undefined
+                        );
+                    } else {
+                        this.save(betreuungsstatus, GESUCH_BETREUUNGEN, {
+                            gesuchId: this.getGesuchId()
+                        });
+                    }
+                });
         });
     }
 
@@ -738,41 +868,84 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // Falls das Gesuch im Status Verfuegen oder einem Verfuegt-Status ist, soll die Anmeldung
         // beim akzeptieren direkt auf uebernommen gesetzt werden
         // Dasselbe gilt im Falle von KEIN_KONTINTENT, da die Tagesschule-Anmeldungen sonst blockiert sind!
-        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-            this.gesuchModelManager.getGesuch().status === TSAntragStatus.KEIN_KONTINGENT ||
-            isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
+        return (
+            this.gesuchModelManager.getGesuch().status ===
+                TSAntragStatus.VERFUEGEN ||
+            this.gesuchModelManager.getGesuch().status ===
+                TSAntragStatus.KEIN_KONTINGENT ||
+            isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
+        );
     }
 
     public anmeldungSchulamtAblehnen(): void {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT, PENDENZEN_BETREUUNG, undefined);
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT,
+                PENDENZEN_BETREUUNG,
+                undefined
+            );
         } else {
             const params = {gesuchId: this.getGesuchId()};
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT, GESUCH_BETREUUNGEN, params);
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT,
+                GESUCH_BETREUUNGEN,
+                params
+            );
         }
     }
 
     public anmeldungSchulamtFalscheInstitution(): void {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            this.save(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION, PENDENZEN_BETREUUNG, undefined);
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION,
+                PENDENZEN_BETREUUNG,
+                undefined
+            );
         } else {
             const params = {gesuchId: this.getGesuchId()};
-            this.save(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION, GESUCH_BETREUUNGEN, params);
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION,
+                GESUCH_BETREUUNGEN,
+                params
+            );
         }
     }
 
     public anmeldungSchulamtStornieren(): void {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, PENDENZEN_BETREUUNG, undefined);
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT,
+                PENDENZEN_BETREUUNG,
+                undefined
+            );
         } else {
             const params = {gesuchId: this.getGesuchId()};
-            this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT, GESUCH_BETREUUNGEN, params);
+            this.save(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT,
+                GESUCH_BETREUUNGEN,
+                params
+            );
         }
     }
 
     private copyBGNumberLToClipboard(): void {
-        const bgNumber = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(this.gesuchModelManager.getFall(),
-            this.gesuchModelManager.getDossier().gemeinde, this.getBetreuungModel());
+        const bgNumber = this.ebeguUtil.calculateBetreuungsIdFromBetreuung(
+            this.gesuchModelManager.getFall(),
+            this.gesuchModelManager.getDossier().gemeinde,
+            this.getBetreuungModel()
+        );
         const $temp = $('<input>');
         $('body').append($temp);
         $temp.val(bgNumber).select();
@@ -788,15 +961,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.angebotMittagstisch,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
-                this.gesuchModelManager.getGesuchsperiode());
+                this.gesuchModelManager.getGesuchsperiode()
+            );
 
-        this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+        this.betreuungsangebotValues = this.ebeguUtil.translateStringList(
+            betreuungsangebotTypValues
+        );
         if (!this.gesuchModelManager.isTagesschuleTagisEnabled()) {
             return;
         }
         this.betreuungsangebotValues.push({
             key: TSBetreuungsangebotTyp.TAGESSCHULE,
-            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE),
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
         });
     }
 
@@ -810,46 +986,55 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.removeBetreuungFromKind(); // wenn model existiert und nicht neu ist wegnehmen, sonst resetten
     }
 
-    private removeBetreuungFromKind(): void {
-        if (this.model && !this.model.timestampErstellt) {
-            // wenn die Betreeung noch nicht erstellt wurde, loeschen wir die Betreuung vom Array
-            this.gesuchModelManager.removeBetreuungFromKind();
-        }
-    }
-
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
         if (!this.betreuungsangebot) {
             return [];
         }
 
-        let institutionenSDList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
-            .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
+        let institutionenSDList = this.gesuchModelManager
+            .getActiveInstitutionenForGemeindeList()
+            .filter(
+                instStamm =>
+                    instStamm.betreuungsangebotTyp ===
+                    this.betreuungsangebot.key
+            );
 
         if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            institutionenSDList =
-                institutionenSDList.filter(instStamm => instStamm.institution.status !== TSInstitutionStatus.NUR_LATS);
+            institutionenSDList = institutionenSDList.filter(
+                instStamm =>
+                    instStamm.institution.status !==
+                    TSInstitutionStatus.NUR_LATS
+            );
 
-            if (this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
-                institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+            if (
+                this.betreuungsangebot.value ===
+                this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+            ) {
+                institutionenSDList =
+                    this.filterTagisTagesschule(institutionenSDList);
             }
         }
 
         return institutionenSDList;
     }
 
-    private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
+    private filterTagisTagesschule(
+        institutionenList: Array<TSInstitutionStammdaten>
+    ): Array<TSInstitutionStammdaten> {
         return institutionenList.filter(instStamm => {
-                let isTagi = false;
-                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
-                    einstellungTagesschule => {
-                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
-                            isTagi = einstellungTagesschule.tagi;
-                        }
-                    },
-                );
-                return isTagi;
-            },
-        );
+            let isTagi = false;
+            instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
+                einstellungTagesschule => {
+                    if (
+                        einstellungTagesschule.gesuchsperiode.id ===
+                        this.getBetreuungModel().gesuchsperiode.id
+                    ) {
+                        isTagi = einstellungTagesschule.tagi;
+                    }
+                }
+            );
+            return isTagi;
+        });
     }
 
     public getInstitutionSD(): TSInstitutionStammdatenSummary {
@@ -861,15 +1046,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBetreuungJA(): TSErweiterteBetreuung {
-        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
-            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA;
+        if (
+            this.getBetreuungModel() &&
+            this.getBetreuungModel().erweiterteBetreuungContainer
+        ) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer
+                .erweiterteBetreuungJA;
         }
         return undefined;
     }
 
     public getErweiterteBetreuungGS(): TSErweiterteBetreuung {
-        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
-            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungGS;
+        if (
+            this.getBetreuungModel() &&
+            this.getBetreuungModel().erweiterteBetreuungContainer
+        ) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer
+                .erweiterteBetreuungGS;
         }
 
         return undefined;
@@ -884,7 +1077,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getBetreuungspensum(index: number): TSBetreuungspensumContainer {
-        if (this.getBetreuungspensen() && index >= 0 && index < this.getBetreuungspensen().length) {
+        if (
+            this.getBetreuungspensen() &&
+            index >= 0 &&
+            index < this.getBetreuungspensen().length
+        ) {
             return this.getBetreuungspensen()[index];
         }
 
@@ -892,28 +1089,42 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public createBetreuungspensum(): void {
-        if (this.getBetreuungModel()
-            && (this.getBetreuungspensen() === undefined || this.getBetreuungspensen() === null)) {
+        if (
+            this.getBetreuungModel() &&
+            (this.getBetreuungspensen() === undefined ||
+                this.getBetreuungspensen() === null)
+        ) {
             this.getBetreuungModel().betreuungspensumContainers = [];
         }
         const betreuungsangebotTyp = this.getBetreuungsangebot();
         if (!this.getBetreuungModel() || !betreuungsangebotTyp) {
-            this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
+            this.errorService.addMesageAsError(
+                'Betreuungsmodel ist nicht initialisiert.'
+            );
         }
-        const tsBetreuungspensum: TSBetreuungspensum = createTSBetreuungspensum({
-            anzeigeEinstellung: this.betreuungspensumAnzeigeTypEinstellung,
-            betreuungsangebotTyp,
-            instStammdaten: this.instStamm,
-            isTFOKostenBerechnungStuendlich: this.isTFOKostenBerechnungStuendlich,
-            mahlzeitenverguenstigungActive: this.isMahlzeitenverguenstigungActive(),
-        });
+        const tsBetreuungspensum: TSBetreuungspensum = createTSBetreuungspensum(
+            {
+                anzeigeEinstellung: this.betreuungspensumAnzeigeTypEinstellung,
+                betreuungsangebotTyp,
+                instStammdaten: this.instStamm,
+                isTFOKostenBerechnungStuendlich:
+                    this.isTFOKostenBerechnungStuendlich,
+                mahlzeitenverguenstigungActive:
+                    this.isMahlzeitenverguenstigungActive()
+            }
+        );
 
-        this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            tsBetreuungspensum));
+        this.getBetreuungspensen().push(
+            new TSBetreuungspensumContainer(undefined, tsBetreuungspensum)
+        );
     }
 
-    public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
-        const position = this.getBetreuungspensen().indexOf(betreuungspensumToDelete);
+    public removeBetreuungspensum(
+        betreuungspensumToDelete: TSBetreuungspensumContainer
+    ): void {
+        const position = this.getBetreuungspensen().indexOf(
+            betreuungspensumToDelete
+        );
         if (position > -1) {
             this.getBetreuungspensen().splice(position, 1);
         }
@@ -927,8 +1138,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.instStamm) {
             return;
         }
-        const instStamList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList();
-        const found = instStamList.find(i => i.id === this.extractInstStammId());
+        const instStamList =
+            this.gesuchModelManager.getActiveInstitutionenForGemeindeList();
+        const found = instStamList.find(
+            i => i.id === this.extractInstStammId()
+        );
         if (found) {
             this.model.institutionStammdaten = found;
         } else {
@@ -939,30 +1153,51 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public angabenKorrigieren(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-            title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
-            deleteText: '',
-            cancelText: 'LABEL_NEIN',
-            confirmText: 'LABEL_JA',
-        }).then(() => {
-            this.platzAnfordern();
-        });
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                undefined,
+                RemoveDialogController,
+                {
+                    title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
+                    deleteText: '',
+                    cancelText: 'LABEL_NEIN',
+                    confirmText: 'LABEL_JA'
+                }
+            )
+            .then(() => {
+                this.platzAnfordern();
+            });
     }
 
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
             if (this.getErweiterteBetreuungJA().keineKesbPlatzierung) {
-                this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+                this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {
+                    gesuchId: this.getGesuchId()
+                });
             } else {
-                this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-                    deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-                    cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
-                })
-                    .then(() => {   // User confirmed removal
-                        this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+                this.dvDialog
+                    .showRemoveDialog(
+                        removeDialogTemplate,
+                        undefined,
+                        RemoveDialogController,
+                        {
+                            title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                            deleteText:
+                                'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                            cancelText: 'LABEL_ABBRECHEN',
+                            confirmText: 'LABEL_SPEICHERN'
+                        }
+                    )
+                    .then(() => {
+                        // User confirmed removal
+                        this.save(
+                            TSBetreuungsstatus.WARTEN,
+                            GESUCH_BETREUUNGEN,
+                            {gesuchId: this.getGesuchId()}
+                        );
                     });
             }
         } else if (!this.getBetreuungModel().vertrag) {
@@ -979,20 +1214,33 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         if (this.getErweiterteBetreuungJA().keineKesbPlatzierung) {
-            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            this.save(
+                TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
+                GESUCH_BETREUUNGEN,
+                {gesuchId: this.getGesuchId()}
+            );
             return;
         }
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-            title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-            deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-            cancelText: 'LABEL_ABBRECHEN',
-            confirmText: 'LABEL_SPEICHERN',
-        })
-            .then(() => {   // User confirmed removal
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                undefined,
+                RemoveDialogController,
+                {
+                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    deleteText:
+                        'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN'
+                }
+            )
+            .then(() => {
+                // User confirmed removal
                 this.save(
                     TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
                     GESUCH_BETREUUNGEN,
-                    {gesuchId: this.getGesuchId()});
+                    {gesuchId: this.getGesuchId()}
+                );
             });
     }
 
@@ -1002,26 +1250,42 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        if (this.isBetreuungInGemeindeRequired() && !this.getErweiterteBetreuungJA().betreuungInGemeinde) {
+        if (
+            this.isBetreuungInGemeindeRequired() &&
+            !this.getErweiterteBetreuungJA().betreuungInGemeinde
+        ) {
             try {
-                await this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                    title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
-                    deleteText: 'WOLLEN_SIE_FORTFAHREN',
-                    cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
-                });
+                await this.dvDialog.showRemoveDialog(
+                    removeDialogTemplate,
+                    undefined,
+                    RemoveDialogController,
+                    {
+                        title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
+                        deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                        cancelText: 'LABEL_ABBRECHEN',
+                        confirmText: 'LABEL_SPEICHERN'
+                    }
+                );
             } catch {
                 return;
             }
         }
-        if (this.getErweiterteBetreuungJA().kitaPlusZuschlag && !this.getErweiterteBetreuungJA().kitaPlusZuschlagBestaetigt) {
+        if (
+            this.getErweiterteBetreuungJA().kitaPlusZuschlag &&
+            !this.getErweiterteBetreuungJA().kitaPlusZuschlagBestaetigt
+        ) {
             try {
-                await this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                    title: 'KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT',
-                    deleteText: 'WOLLEN_SIE_FORTFAHREN',
-                    cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
-                });
+                await this.dvDialog.showRemoveDialog(
+                    removeDialogTemplate,
+                    undefined,
+                    RemoveDialogController,
+                    {
+                        title: 'KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT',
+                        deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                        cancelText: 'LABEL_ABBRECHEN',
+                        confirmText: 'LABEL_SPEICHERN'
+                    }
+                );
             } catch {
                 return;
             }
@@ -1030,16 +1294,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public checkErweiterteBetreuungAndSaveBestaetigung(): void {
-        // eslint-disable-next-line
-        if (this.getErweiterteBetreuungJA()
-            && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
-            && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
-                deleteText: 'WOLLEN_SIE_FORTFAHREN',
-                cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
-            })
+        if (
+            this.getErweiterteBetreuungJA() &&
+            this.getErweiterteBetreuungJA().erweiterteBeduerfnisse &&
+            !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt
+        ) {
+            this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    undefined,
+                    RemoveDialogController,
+                    {
+                        title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
+                        deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                        cancelText: 'LABEL_ABBRECHEN',
+                        confirmText: 'LABEL_SPEICHERN'
+                    }
+                )
                 .then(() => {
                     this.savePlatzBestaetigung();
                 });
@@ -1049,7 +1320,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showPensumUnterschrittenCheckBox(): boolean {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN)
+            )
+        ) {
             return false;
         }
 
@@ -1061,29 +1336,43 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return false;
         }
 
-        return this.getBetreuungspensen()
-            .filter(pensum => pensum.betreuungspensumJA?.pensum < this.minPensumSprachlicheIndikation)
-            .length > 0;
+        return (
+            this.getBetreuungspensen().filter(
+                pensum =>
+                    pensum.betreuungspensumJA?.pensum <
+                    this.minPensumSprachlicheIndikation
+            ).length > 0
+        );
     }
 
     public showSprachfoerderungBestaetigenCheckBox(): boolean {
         if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {
             return false;
         }
-        if (EbeguUtil.isNotNullAndFalse(this.sprachfoerderungBestaetigenAktiviert)) {
+        if (
+            EbeguUtil.isNotNullAndFalse(
+                this.sprachfoerderungBestaetigenAktiviert
+            )
+        ) {
             return false;
         }
         if (this.isBetreuungsstatusAusstehend()) {
             return false;
         }
         if (this.isBetreuungsstatusWarten()) {
-            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getRolesForBetreuungenView());
+            return this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getRolesForBetreuungenView()
+            );
         }
         return true;
     }
 
     public isSprachfoerderungBestaetigenEnabled(): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerOnlyRoles()
+            )
+        ) {
             return false;
         }
 
@@ -1095,22 +1384,33 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isSchulergaezendeBetreuungEnabled(): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerOnlyRoles()
+            )
+        ) {
             return false;
         }
         return this.isPensumEditable();
     }
 
     public resetAnspruchFachstelleWennPensumUnterschritten() {
-        const unterschritten = this.getErweiterteBetreuungJA()?.anspruchFachstelleWennPensumUnterschritten;
+        const unterschritten =
+            this.getErweiterteBetreuungJA()
+                ?.anspruchFachstelleWennPensumUnterschritten;
         if (!EbeguUtil.isNullOrUndefined(unterschritten) && unterschritten) {
-            this.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten = false;
+            this.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten =
+                false;
         }
     }
 
     private savePlatzBestaetigung(): void {
         this.getBetreuungModel().datumBestaetigung = DateUtil.today();
-        this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+        this.save(
+            TSBetreuungsstatus.BESTAETIGT,
+            PENDENZEN_BETREUUNG,
+            undefined
+        );
         this.isBestaetigenClicked = false;
     }
 
@@ -1122,11 +1422,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public platzAbweisen(): void {
         // copy values modified by the Institution in initialBetreuung
-        this.initialBetreuung.grundAblehnung = this.getBetreuungModel().grundAblehnung;
+        this.initialBetreuung.grundAblehnung =
+            this.getBetreuungModel().grundAblehnung;
         // restore initialBetreuung
         this.model = angular.copy(this.initialBetreuung);
         this.model.datumAblehnung = DateUtil.today();
-        this.save(TSBetreuungsstatus.ABGEWIESEN, PENDENZEN_BETREUUNG, undefined);
+        this.save(
+            TSBetreuungsstatus.ABGEWIESEN,
+            PENDENZEN_BETREUUNG,
+            undefined
+        );
     }
 
     public stornieren(): void {
@@ -1137,7 +1442,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungModel().datumBestaetigung = DateUtil.today();
         for (let i = 0; i < this.getBetreuungspensen().length; i++) {
             this.getBetreuungspensum(i).betreuungspensumJA.pensum = 0;
-            this.getBetreuungspensum(i).betreuungspensumJA.nichtEingetreten = true;
+            this.getBetreuungspensum(i).betreuungspensumJA.nichtEingetreten =
+                true;
         }
 
         this.save(TSBetreuungsstatus.STORNIERT, PENDENZEN_BETREUUNG, undefined);
@@ -1152,30 +1458,45 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return true;
         }
 
-        if (this.isProvisorischeBetreuung() ||
-            this.isBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION)) {
+        if (
+            this.isProvisorischeBetreuung() ||
+            this.isBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION)
+        ) {
             return true;
         }
 
-        if (this.getBetreuungModel() && this.getBetreuungModel().betreuungsstatus) {
-            return !this.getBetreuungModel().hasVorgaenger()
-                && (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND)
-                    || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST))
-                && !this.isFreigabequittungAusstehend();
+        if (
+            this.getBetreuungModel() &&
+            this.getBetreuungModel().betreuungsstatus
+        ) {
+            return (
+                !this.getBetreuungModel().hasVorgaenger() &&
+                (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND) ||
+                    this.isBetreuungsstatus(
+                        TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+                    )) &&
+                !this.isFreigabequittungAusstehend()
+            );
         }
 
         return true;
     }
 
     public isPensumEditable(): boolean {
-        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
+        return (
+            (this.isBetreuungsstatusWarten() && !this.isSavingData) ||
+            this.isMutationsmeldungStatus
+        );
     }
 
     /**
      * Returns true when the Gesuch must be readonly
      */
     public isGesuchReadonly(): boolean {
-        if (!this.getBetreuungModel() || !this.getBetreuungModel().isAngebotSchulamt()) {
+        if (
+            !this.getBetreuungModel() ||
+            !this.getBetreuungModel().isAngebotSchulamt()
+        ) {
             return super.isGesuchReadonly();
         }
         return !this.getBetreuungModel().isEnabled();
@@ -1194,8 +1515,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isBetreuungsstatusBestaetigtOrVerfuegt(): boolean {
-        return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
-            || this.isBetreuungsstatus(TSBetreuungsstatus.VERFUEGT);
+        return (
+            this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT) ||
+            this.isBetreuungsstatus(TSBetreuungsstatus.VERFUEGT)
+        );
     }
 
     public isBetreuungsstatusAusstehend(): boolean {
@@ -1211,8 +1534,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isBetreuungsstatusAusstehendOrUnbekannteInstitution(): boolean {
-        return this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND) ||
-            this.isBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+        return (
+            this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND) ||
+            this.isBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION)
+        );
     }
 
     public isBetreuungsstatusStorniert(): boolean {
@@ -1245,7 +1570,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private isBetreuungsangebottyp(betAngTyp: TSBetreuungsangebotTyp): boolean {
         if (this.betreuungsangebot) {
-            return this.betreuungsangebot.key === TSBetreuungsangebotTyp[betAngTyp];
+            return (
+                this.betreuungsangebot.key === TSBetreuungsangebotTyp[betAngTyp]
+            );
         }
 
         return false;
@@ -1256,11 +1583,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
-       const showErweiterteBeduerfnisse = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-           || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles())
-           || (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA
-               && this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse);
-       return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
+        const showErweiterteBeduerfnisse =
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionRoles()
+            ) ||
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()
+            ) ||
+            (this.getBetreuungModel().erweiterteBetreuungContainer
+                .erweiterteBetreuungJA &&
+                this.getBetreuungModel().erweiterteBetreuungContainer
+                    .erweiterteBetreuungJA.erweiterteBeduerfnisse);
+        return showErweiterteBeduerfnisse && this.erweitereBeduerfnisseAktiv;
     }
 
     public showKitaPlusZuschlag(): boolean {
@@ -1268,26 +1602,37 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showFalscheAngaben(): boolean {
-        return (this.isBetreuungsstatusBestaetigt() || this.isBetreuungsstatusAbgewiesen())
-            && !this.isGesuchReadonly() && !this.isFromMutation();
+        return (
+            (this.isBetreuungsstatusBestaetigt() ||
+                this.isBetreuungsstatusAbgewiesen()) &&
+            !this.isGesuchReadonly() &&
+            !this.isFromMutation()
+        );
     }
 
     public showAngabenKorrigieren(): boolean {
         return (
-                this.isBetreuungsstatusBestaetigt()
-                || this.isBetreuungsstatusAbgewiesen()
-                || this.isBetreuungsstatusStorniert()
-            )
-            && !this.isGesuchReadonly() && this.isFromMutation();
+            (this.isBetreuungsstatusBestaetigt() ||
+                this.isBetreuungsstatusAbgewiesen() ||
+                this.isBetreuungsstatusStorniert()) &&
+            !this.isGesuchReadonly() &&
+            this.isFromMutation()
+        );
     }
 
     public isFromMutation(): boolean {
-        return this.getBetreuungModel() && !!this.getBetreuungModel().vorgaengerId;
+        return (
+            this.getBetreuungModel() && !!this.getBetreuungModel().vorgaengerId
+        );
     }
 
     public showAngabeKorrigieren(): boolean {
-        return (this.isBetreuungsstatusBestaetigt() || this.isBetreuungsstatusAbgewiesen())
-            && !this.isGesuchReadonly() && this.isFromMutation();
+        return (
+            (this.isBetreuungsstatusBestaetigt() ||
+                this.isBetreuungsstatusAbgewiesen()) &&
+            !this.isGesuchReadonly() &&
+            this.isFromMutation()
+        );
     }
 
     public mutationsmeldungErstellen(): void {
@@ -1301,7 +1646,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * verfuegt wurden bzw. ein vorgaengerId haben. Ausserdem muss es sich um das letzte bzw. neueste Gesuch handeln
      */
     public isMutationsmeldungAllowed(): boolean {
-        return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
+        return super.isMutationsmeldungAllowed(
+            this.getBetreuungModel(),
+            this.isNewestGesuch
+        );
     }
 
     public preMutationsmeldungSenden(): void {
@@ -1311,49 +1659,81 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         if (this.showExistingBetreuungsmitteilungInfoBox()) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
-                deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
-                parentController: undefined,
-                elementID: undefined,
-            }).then(() => {   // User confirmed removal
-                this.mutationsmeldungSenden();
-            });
+            this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
+                        deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
+                        parentController: undefined,
+                        elementID: undefined
+                    }
+                )
+                .then(() => {
+                    // User confirmed removal
+                    this.mutationsmeldungSenden();
+                });
         } else {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'MUTATIONSMELDUNG_CONFIRMATION',
-                deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
-                parentController: undefined,
-                elementID: undefined,
-            }).then(() => {
-                this.mutationsmeldungSenden();
-            });
+            this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    this.form,
+                    RemoveDialogController,
+                    {
+                        title: 'MUTATIONSMELDUNG_CONFIRMATION',
+                        deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
+                        parentController: undefined,
+                        elementID: undefined
+                    }
+                )
+                .then(() => {
+                    this.mutationsmeldungSenden();
+                });
         }
     }
 
     public mutationsmeldungSenden(): void {
-        this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-            this.mutationsmeldungModel).then(() => {
+        this.mitteilungRS
+            .sendbetreuungsmitteilung(
+                this.gesuchModelManager.getDossier(),
+                this.mutationsmeldungModel
+            )
+            .then(() => {
+                this.form.$setUntouched();
+                this.form.$setPristine();
+                // reset values. is needed??????
+                this.isMutationsmeldungStatus = false;
+                this.mutationsmeldungModel = undefined;
+                this.$state.go(GESUCH_BETREUUNGEN, {
+                    gesuchId: this.getGesuchId()
+                });
+            })
+            .catch(err => {
+                const outsideInstiGueltigkeitError = err.find(
+                    (error: any) =>
+                        error._argumentList
+                            .toLowerCase()
+                            .includes('institution') &&
+                        (error._argumentList.includes('liegen ausserhalb') ||
+                            error._argumentList.includes(
+                                'Les dates de prise en charge ne sont pas comprises'
+                            ))
+                );
 
-            this.form.$setUntouched();
-            this.form.$setPristine();
-            // reset values. is needed??????
-            this.isMutationsmeldungStatus = false;
-            this.mutationsmeldungModel = undefined;
-            this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        }).catch(err => {
-            const outsideInstiGueltigkeitError = err.find((error: any) => error._argumentList.toLowerCase()
-                .includes('institution') && (error._argumentList.includes('liegen ausserhalb') || error._argumentList.includes(
-                'Les dates de prise en charge ne sont pas comprises')));
-
-            if (outsideInstiGueltigkeitError) {
-                this.errorService.addMesageAsError(outsideInstiGueltigkeitError._argumentList);
-            } else {
-                // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a
-                // general message
-                this.errorService.addMesageAsError(this.$translate.instant('ERROR_COULD_NOT_SAVE'));
-            }
-        });
+                if (outsideInstiGueltigkeitError) {
+                    this.errorService.addMesageAsError(
+                        outsideInstiGueltigkeitError._argumentList
+                    );
+                } else {
+                    // We don't know exactly the cause, because it gets lost in the httpinterceptor. We have to use a
+                    // general message
+                    this.errorService.addMesageAsError(
+                        this.$translate.instant('ERROR_COULD_NOT_SAVE')
+                    );
+                }
+            });
     }
 
     /**
@@ -1362,14 +1742,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Ausserdem muss die Meldung nicht applied sein und nicht den Status ERLEDIGT haben
      */
     public showExistingBetreuungsmitteilungInfoBox(): boolean {
-        return this.existingMutationsMeldung !== undefined && this.existingMutationsMeldung !== null
-            && this.existingMutationsMeldung.sentDatum !== undefined && this.existingMutationsMeldung.sentDatum !== null
-            && !this.existingMutationsMeldung.applied && !this.existingMutationsMeldung.isErledigt();
+        return (
+            this.existingMutationsMeldung !== undefined &&
+            this.existingMutationsMeldung !== null &&
+            this.existingMutationsMeldung.sentDatum !== undefined &&
+            this.existingMutationsMeldung.sentDatum !== null &&
+            !this.existingMutationsMeldung.applied &&
+            !this.existingMutationsMeldung.isErledigt()
+        );
     }
 
     public getDatumLastBetreuungsmitteilung(): string {
         if (this.showExistingBetreuungsmitteilungInfoBox()) {
-            return DateUtil.momentToLocalDateFormat(this.existingMutationsMeldung.sentDatum, 'DD.MM.YYYY');
+            return DateUtil.momentToLocalDateFormat(
+                this.existingMutationsMeldung.sentDatum,
+                'DD.MM.YYYY'
+            );
         }
 
         return '';
@@ -1377,7 +1765,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public getTimeLastBetreuungsmitteilung(): string {
         if (this.showExistingBetreuungsmitteilungInfoBox()) {
-            return DateUtil.momentToLocalDateTimeFormat(this.existingMutationsMeldung.sentDatum, 'HH:mm');
+            return DateUtil.momentToLocalDateTimeFormat(
+                this.existingMutationsMeldung.sentDatum,
+                'HH:mm'
+            );
         }
 
         return '';
@@ -1388,7 +1779,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
-            mitteilungId: this.existingMutationsMeldung.id,
+            mitteilungId: this.existingMutationsMeldung.id
         });
     }
 
@@ -1397,15 +1788,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (EbeguUtil.isNullOrUndefined(this.getBetreuungModel())
-            || EbeguUtil.isNullOrUndefined(isJugendamt(this.getBetreuungModel().getAngebotTyp()))) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.getBetreuungModel()) ||
+            EbeguUtil.isNullOrUndefined(
+                isJugendamt(this.getBetreuungModel().getAngebotTyp())
+            )
+        ) {
             return;
         }
-        if (!(!this.getBetreuungModel().isNew() &&
-            (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())))) {
+        if (
+            !(
+                !this.getBetreuungModel().isNew() &&
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getTraegerschaftInstitutionRoles()
+                )
+            )
+        ) {
             return;
         }
-        this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
+        this.mitteilungRS
+            .getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
             .then((response: TSBetreuungsmitteilung) => {
                 this.existingMutationsMeldung = response;
             });
@@ -1413,10 +1815,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public tageschuleSaveDisabled(): boolean {
         if (this.getBetreuungModel().isNew()) {
-            return (this.isTagesschule()
-                && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                && !this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv()
-                || this.isFerieninsel() && !this.getBetreuungModel().isEnabled());
+            return (
+                (this.isTagesschule() &&
+                    this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
+                    !this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv()) ||
+                (this.isFerieninsel() && !this.getBetreuungModel().isEnabled())
+            );
         }
         return true;
     }
@@ -1426,8 +1830,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Tagesschulangebot die Periode keine Tagesschuleanmeldung definiert hat.
      */
     public displayGlobalNavigationButtons(): boolean {
-        return !this.isSchulamt() ||
-            (this.isTagesschule() && !this.checkIfGemeindeOrBetreuungHasTSAnmeldung());
+        return (
+            !this.isSchulamt() ||
+            (this.isTagesschule() &&
+                !this.checkIfGemeindeOrBetreuungHasTSAnmeldung())
+        );
     }
 
     /**
@@ -1435,7 +1842,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * das letzte um die alten Betreuungen zu unterstuetzen.
      */
     public displayModuleTagesschule(): boolean {
-        return this.isTagesschule() && this.checkIfGemeindeOrBetreuungHasTSAnmeldung();
+        return (
+            this.isTagesschule() &&
+            this.checkIfGemeindeOrBetreuungHasTSAnmeldung()
+        );
     }
 
     public showEingewoehnungPeriode(): boolean {
@@ -1465,7 +1875,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return false;
         }
         if (this.isBetreuungsstatusWarten()) {
-            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+            return this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionRoles()
+            );
         }
         return true;
     }
@@ -1480,8 +1892,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
             // bei FKJV darf nur die Institution die Checkbox bearbeiten
-            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-                && this.isBetreuungsstatusWarten();
+            return (
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getTraegerschaftInstitutionRoles()
+                ) && this.isBetreuungsstatusWarten()
+            );
         }
         if (this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN) {
             // bei luzern immer editierbar, falls das Gesuch nicht readonly ist.
@@ -1495,11 +1910,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return false;
         }
 
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getTraegerschaftInstitutionRoles()
+        );
     }
 
     public onEingewoehnungPauschaleChange(betreuungspensumIndex: number): void {
-        const pensumToUse = this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA;
+        const pensumToUse = this.getBetreuungspensum(
+            betreuungspensumIndex
+        ).betreuungspensumJA;
 
         if (pensumToUse.hasEingewoehnungsPauschale) {
             pensumToUse.eingewoehnungPauschale = new TSEingewoehnungPauschale();
@@ -1509,12 +1928,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
-        const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
-        const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const isNew = this.getBetreuungModel() && this.getBetreuungModel().isNew();
+        const gemeindeKonfiguration =
+            this.gesuchModelManager.gemeindeKonfiguration;
+        const gmdeHasTS = gemeindeKonfiguration
+            ? gemeindeKonfiguration.hasTagesschulenAnmeldung()
+            : false;
+        const isNew =
+            this.getBetreuungModel() && this.getBetreuungModel().isNew();
         if (!isNew) {
             const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
-            const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
+            const betreuungIsTS = betreuung
+                ? betreuung.isAngebotTagesschule()
+                : false;
             return gmdeHasTS || betreuungIsTS;
         }
         return gmdeHasTS;
@@ -1548,12 +1973,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.gesuchModelManager.getGesuch() || this.isGesuchReadonly()) {
             return false;
         }
-        const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        const gemeindeUser = this.authServiceRS
-            .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
-        return !this.isSavingData
-            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
-            && (gesuchsteller || gemeindeUser);
+        const gesuchsteller = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerOnlyRoles()
+        );
+        const gemeindeUser = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()
+        );
+        return (
+            !this.isSavingData &&
+            this.gesuchModelManager.getGesuch() &&
+            !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status) &&
+            (gesuchsteller || gemeindeUser)
+        );
     }
 
     /**
@@ -1562,8 +1993,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * werden. Deshalb braucht es diese Funktion.
      */
     public isFreigabequittungAusstehend(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
-            return this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().status
+        ) {
+            return (
+                this.gesuchModelManager.getGesuch().status ===
+                TSAntragStatus.FREIGABEQUITTUNG
+            );
         }
 
         return false;
@@ -1579,7 +2016,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStamm = new TSInstitutionStammdatenSummary();
-            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
+            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(
+                this.mandant
+            );
             this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
@@ -1590,24 +2029,31 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungModel().institutionStammdaten = undefined;
             // Im Falle von "nicht mehr keine Detailinfos" muss die Belegung wieder initialisiert werden
             if (this.isTagesschule()) {
-                this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
+                this.getBetreuungModel().belegungTagesschule =
+                    new TSBelegungTagesschule();
             }
         }
     }
 
     public isFachstelleRequired(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
-            && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)
-            && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA()) &&
+            EbeguUtil.isNotNullAndTrue(
+                this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
+            ) &&
+            EbeguUtil.isNotNullAndTrue(
+                this.getBetreuungModel().isAngebotBetreuungsgutschein()
+            )
+        );
     }
 
     public isKitaPlus(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
-            && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().kitaPlusZuschlag);
-    }
-
-    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
-        return this.besondereBeduerfnisseAufwandKonfigurierbar;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA()) &&
+            EbeguUtil.isNotNullAndTrue(
+                this.getErweiterteBetreuungJA().kitaPlusZuschlag
+            )
+        );
     }
 
     public isBesondereBeduerfnisseAufwandVisible(): boolean {
@@ -1616,16 +2062,29 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         // für Institutionen und Trägerschaften ist der Betrag readonly. Deshalb soll er erst sichtbar sein,
         // wenn er durch die Gemeinde ausgefüllt wurde
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-            return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag);
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
+            return EbeguUtil.isNotNullOrUndefined(
+                this.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag
+            );
         }
         return true;
     }
 
+    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+        return this.besondereBeduerfnisseAufwandKonfigurierbar;
+    }
+
     public isBetreuungInGemeindeRequired(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
-            && !this.isSchulamt()
-            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA()) &&
+            !this.isSchulamt() &&
+            this.gesuchModelManager.gemeindeKonfiguration
+                .konfigZusaetzlicherGutscheinEnabled
+        );
     }
 
     public setSelectedFachsstelle(): void {
@@ -1641,9 +2100,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getTextFachstelleKorrekturJA(): string {
-        if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
-            && (this.getErweiterteBetreuungJA() && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
-            return this.$translate.instant(this.getErweiterteBetreuungGS().fachstelle.name.toLocaleString());
+        if (
+            this.getErweiterteBetreuungGS() &&
+            this.getErweiterteBetreuungGS().erweiterteBeduerfnisse &&
+            this.getErweiterteBetreuungJA() &&
+            !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
+        ) {
+            return this.$translate.instant(
+                this.getErweiterteBetreuungGS().fachstelle.name.toLocaleString()
+            );
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
@@ -1653,7 +2118,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungModel().betreuungspensumContainers = [];
         // Die unbekannte Institution ermitteln und lesen
         this.setUnbekannteInstitutionAccordingToAngebot();
-        this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStamm.id)
+        this.gesuchModelManager
+            .getUnknownInstitutionStammdaten(this.instStamm.id)
             .then((stammdaten: TSInstitutionStammdaten) => {
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
@@ -1664,19 +2130,42 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.provisorischeBetreuung ||
-            (this.getBetreuungModel() && this.getBetreuungModel().keineDetailinformationen);
+        return (
+            this.provisorischeBetreuung ||
+            (this.getBetreuungModel() &&
+                this.getBetreuungModel().keineDetailinformationen)
+        );
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
         /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
-        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
-        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
-        } else {
-            this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
+        switch (this.betreuungsangebot?.key) {
+            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                this.instStamm.id = new UnknownTFOIdVisitor().process(
+                    this.mandant
+                );
+                break;
+            case TSBetreuungsangebotTyp.TAGESSCHULE:
+                this.instStamm.id = new UnknownTagesschuleIdVisitor().process(
+                    this.mandant
+                );
+                break;
+            case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                this.instStamm.id = new UnknownMittagstischIdVisitor().process(
+                    this.mandant
+                );
+                break;
+            case TSBetreuungsangebotTyp.KITA:
+                this.instStamm.id = new UnknownKitaIdVisitor().process(
+                    this.mandant
+                );
+                break;
+            default:
+                throw new Error(
+                    'Unbekannte Institution nicht implementiert für Angebottyp ' +
+                        this.betreuungsangebot.key
+                );
         }
     }
 
@@ -1695,44 +2184,69 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isGesuchstellerSozialdienst(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle().concat(TSRole.GESUCHSTELLER));
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getSozialdienstRolle().concat(TSRole.GESUCHSTELLER)
+        );
     }
 
     public getBetreuungInGemeindeLabel(): string {
-        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())
+        ) {
             return '';
         }
-        return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
-            {gemeinde: this.gesuchModelManager.getGemeinde().name});
+        return this.$translate.instant('BETREUUNG_IN_GEMEINDE', {
+            gemeinde: this.gesuchModelManager.getGemeinde().name
+        });
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
-
         if (this.besondereBeduerfnisseAufwandKonfigurierbar) {
-            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITHOUT_BETRAG');
+            return this.$translate.instant(
+                'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITHOUT_BETRAG'
+            );
         }
 
-        if (this.getBetreuungModel()
-            && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
-                {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});
+        if (
+            this.getBetreuungModel() &&
+            this.getBetreuungModel().getAngebotTyp() ===
+                TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
+            return this.$translate.instant(
+                'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
+                {
+                    betrag: this.zuschlagBehinderungProStd,
+                    einheit: this.$translate.instant('STUNDE')
+                }
+            );
         }
 
-        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
-            {betrag: this.zuschlagBehinderungProTag, einheit: this.$translate.instant('TAG')});
+        return this.$translate.instant(
+            'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
+            {
+                betrag: this.zuschlagBehinderungProTag,
+                einheit: this.$translate.instant('TAG')
+            }
+        );
     }
 
     public isBestaetigungBesondereBeduerfnisseEnabled(): boolean {
-        return this.isBetreuungsstatusWarten() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+        return (
+            this.isBetreuungsstatusWarten() &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionRoles()
+            )
+        );
     }
 
     public changedBesondereBeduerfnisse(): void {
         const betreuung = this.getBetreuungModel();
         const erweiterteBetreuung = this.getErweiterteBetreuungJA();
 
-        this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT
-            && erweiterteBetreuung.erweiterteBeduerfnisse
-            && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+        this.erneutePlatzbestaetigungErforderlich =
+            betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT &&
+            erweiterteBetreuung.erweiterteBeduerfnisse &&
+            !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
 
         // reset erweiterteBeduerfnisseBetrag on change from true to false
         if (!erweiterteBetreuung.erweiterteBeduerfnisse) {
@@ -1744,7 +2258,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
@@ -1753,72 +2267,112 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.getInstitutionenSDList();
         }
         const searchString = query.toLocaleLowerCase();
-        return this.getInstitutionenSDList().filter(item => {
-            return (item.institution.name.toLocaleLowerCase().indexOf(searchString) > -1)
-                || (item.adresse.ort.toLocaleLowerCase().indexOf(searchString) > -1)
-                || (item.adresse.plz.toLocaleLowerCase().indexOf(searchString) > -1)
-                || (item.adresse.strasse.toLocaleLowerCase().indexOf(searchString) > -1);
-        });
+        return this.getInstitutionenSDList().filter(
+            item =>
+                item.institution.name
+                    .toLocaleLowerCase()
+                    .indexOf(searchString) > -1 ||
+                item.adresse.ort.toLocaleLowerCase().indexOf(searchString) >
+                    -1 ||
+                item.adresse.plz.toLocaleLowerCase().indexOf(searchString) >
+                    -1 ||
+                item.adresse.strasse.toLocaleLowerCase().indexOf(searchString) >
+                    -1
+        );
     }
 
     public isAnmeldungTSEditable(): boolean {
-        return !this.isFreigabequittungAusstehend()
-            && (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) ||
-                ((this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
-                        || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
-                    && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
+        return (
+            !this.isFreigabequittungAusstehend() &&
+            (this.getBetreuungModel().isBetreuungsstatus(
+                TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+            ) ||
+                ((this.getBetreuungModel().isBetreuungsstatus(
+                    TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+                ) ||
+                    this.getBetreuungModel().isBetreuungsstatus(
+                        TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
+                    )) &&
+                    this.authServiceRS.isOneOfRoles(
+                        TSRoleUtil.getSchulamtInstitutionRoles()
+                    )))
+        );
     }
 
     public isMahlzeitenverguenstigungActive(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+        return this.gesuchModelManager.gemeindeKonfiguration
+            .konfigMahlzeitenverguenstigungEnabled;
     }
 
     // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
     // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
     // ausserdem soll die Meldung nicht gezeigt werden, wenn ein neues Betreuungspensum hinzugefügt wird
     public showOverrideWarning(betreuungspensum: TSBetreuungspensum): boolean {
-        return !betreuungspensum.isNew() &&
-            (this.isMutationsmeldungStatus || this.isMutation());
+        return (
+            !betreuungspensum.isNew() &&
+            (this.isMutationsmeldungStatus || this.isMutation())
+        );
     }
 
     public isInstitutionMobileSelection(): boolean {
-        return 'none' === document.getElementById('institution_search').style.display;
+        return (
+            'none' ===
+            document.getElementById('institution_search').style.display
+        );
     }
 
     public anmeldungSchulamtFalscheAngaben(): void {
         // Wir muessen sicher sein dass es keine offene und noch nicht freigegebene Mutation fuer dieser Gesuch gibt
         this.gesuchModelManager.checkIfGesuchIsNeustes().then(response => {
             if (!response) {
-                this.errorService.addMesageAsError(this.$translate.instant('ERROR_DATA_CHANGED'));
+                this.errorService.addMesageAsError(
+                    this.$translate.instant('ERROR_DATA_CHANGED')
+                );
                 return;
             }
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
-                deleteText: '',
-                cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
-            }).then(() => {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-            });
+            this.dvDialog
+                .showRemoveDialog(
+                    removeDialogTemplate,
+                    undefined,
+                    RemoveDialogController,
+                    {
+                        title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
+                        deleteText: '',
+                        cancelText: 'LABEL_ABBRECHEN',
+                        confirmText: 'LABEL_SPEICHERN'
+                    }
+                )
+                .then(() => {
+                    this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+                });
         });
     }
 
     public isStammdatenAusgefuellt(): boolean {
-        return this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN;
+        return (
+            this.instStamm.institution.status !== TSInstitutionStatus.EINGELADEN
+        );
     }
 
     public showWarningStammdaten(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            && !this.isStammdatenAusgefuellt();
+        return (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionRoles()
+            ) && !this.isStammdatenAusgefuellt()
+        );
     }
 
     public changeKeineKesbPlatzierung(): void {
-        this.getErweiterteBetreuungJA().keineKesbPlatzierung = !this.isKesbPlatzierung;
+        this.getErweiterteBetreuungJA().keineKesbPlatzierung =
+            !this.isKesbPlatzierung;
     }
 
     public showAbrechnungGutscheine(): boolean {
-        return !this.isSavingData &&
-            (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
+        return (
+            !this.isSavingData &&
+            (this.isBetreuungsstatusWarten() ||
+                this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND))
+        );
     }
 
     public isFachstellenTypLuzern(): boolean {
@@ -1842,8 +2396,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private calculateMuliplyerKita(): void {
-        if (this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN) {
-            this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
+        if (
+            this.betreuungspensumAnzeigeTypEinstellung ===
+            TSPensumAnzeigeTyp.NUR_STUNDEN
+        ) {
+            this.multiplierKita =
+                (this.oeffnungstageKita * this.kitastundenprotag) / 12 / 100;
             return;
         }
         // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
@@ -1853,7 +2411,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private calculateMultiplierTFO(): void {
         // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
         // 100% = 220 stunden => 1% = 2.2 stunden
-        this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+        this.multiplierTFO =
+            (this.oeffnungstageTFO * this.oeffnungsstundenTFO) / 12 / 100;
     }
 
     public showBetreuungsPensumInput(): boolean {
@@ -1869,9 +2428,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showBetreuungsKostenInput(): boolean {
-        if (this.isBetreuungsangebotMittagstisch()) {
-            return false;
-        }
         return this.showBetreuungsPensumInput();
     }
 
@@ -1884,11 +2440,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private isBetreuungsangebotTagesfamilie(): boolean {
-        return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+        return (
+            this.getBetreuungsangebot() === TSBetreuungsangebotTyp.TAGESFAMILIEN
+        );
     }
 
-    private isBetreuungsangebotMittagstisch(): boolean {
-        return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.MITTAGSTISCH;
+    public isBetreuungsangebotMittagstisch(): boolean {
+        return (
+            this.getBetreuungsangebot() === TSBetreuungsangebotTyp.MITTAGSTISCH
+        );
     }
 
     private getBetreuungsangebot(): TSBetreuungsangebotTyp | undefined {
@@ -1896,12 +2456,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintUntermonatlich(): boolean {
-        return this.getBetreuungspensen()?.length > 0 && this.mandant !== MANDANTS.LUZERN;
+        return (
+            this.getBetreuungspensen()?.length > 0 &&
+            this.mandant !== MANDANTS.LUZERN
+        );
     }
 
     private showHintEingewoehnung(): boolean {
-        return this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN
-            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
+        return (
+            this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN &&
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerSozialdienstRolle()
+            )
+        );
     }
 
     public showAuszahlungAnInstituion(): boolean {
@@ -1917,19 +2484,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private initAngebotTypenFromEinstellungen(): IPromise<void> {
-        return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
-            this.angebotTS = res.angebotTSActivated;
-            this.angebotFI = res.angebotFIActivated;
-            this.angebotMittagstisch = res.angebotMittagstischActivated;
-            //wenn TFO aktiv on mandant then check if tfo is activ on gemeinde
-            if (res.angebotTFOActivated) {
-                this.angebotTFO = this.gesuchModelManager.getGemeinde().angebotBGTFO;
-            }
-        })
+        return this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(res => {
+                this.angebotTS = res.angebotTSActivated;
+                this.angebotFI = res.angebotFIActivated;
+                this.angebotMittagstisch = res.angebotMittagstischActivated;
+                //wenn TFO aktiv on mandant then check if tfo is activ on gemeinde
+                if (res.angebotTFOActivated) {
+                    this.angebotTFO =
+                        this.gesuchModelManager.getGemeinde().angebotBGTFO;
+                }
+            });
     }
 
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
-        return this.angebotTS || this.angebotFI || this.angebotTFO || this.angebotMittagstisch;
+        return (
+            this.angebotTS ||
+            this.angebotFI ||
+            this.angebotTFO ||
+            this.angebotMittagstisch
+        );
     }
 
     public getEingewoehnungLabel(): string {
@@ -1940,17 +2515,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showSchulergaezendeBetreuungFrage(): boolean {
-        return this.schulergaenzendeBetreuungAktiv && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER
-            && this.isBetreuungsangebotTypForShulergaezendeBetreuung();
+        return (
+            this.schulergaenzendeBetreuungAktiv &&
+            this.kindModel.kindJA.einschulungTyp !==
+                TSEinschulungTyp.VORSCHULALTER &&
+            this.isBetreuungsangebotTypForShulergaezendeBetreuung()
+        );
     }
 
     private isBetreuungsangebotTypForShulergaezendeBetreuung(): boolean {
-        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN) ||
-            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.KITA);
+        return (
+            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN) ||
+            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.KITA)
+        );
     }
 
     public showAnwesenheitstageProMonatInput(): boolean {
-        return this.isBetreuungsangebotTagesfamilie() && this.isAnwesenheitstageProMonatAktiviert;
+        return (
+            this.isBetreuungsangebotTagesfamilie() &&
+            this.isAnwesenheitstageProMonatAktiviert
+        );
     }
 
     public getMonatlicheBetreuungkostenKey(): string {
@@ -1967,4 +2551,235 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return 'MONATLICHE_BETREUUNGSKOSTEN_HELP';
     }
 
+    public canRoleEditBedarfsstufe() {
+        this.canEditBedarfsstufen =
+            (this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            ) ||
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getSuperAdminRoles()
+                )) &&
+            !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(
+                this.getGesuch()?.status
+            );
+    }
+
+    public isBedarfsstufeEmpty() {
+        return !this.bedarfsstufe;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+
+    private initEinstellungen(): void {
+        this.loadAuszahlungAnEltern();
+        const gesuchsperiodeId: string =
+            this.gesuchModelManager.getGesuchsperiode().id;
+        const gemeindeId: string = this.gesuchModelManager.getGemeinde().id;
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(gesuchsperiodeId)
+            .subscribe(
+                (response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP
+                        )
+                        .forEach(value => {
+                            this.eingewoehnungTyp = stringEingewoehnungTyp(
+                                value.value
+                            );
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT
+                        )
+                        .forEach(value => {
+                            this.kitaPlusZuschlagAktiviert =
+                                value.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.isKesbPlatzierung = false;
+                                this.changeKeineKesbPlatzierung();
+                            }
+                            this.hideKesbPlatzierung =
+                                value.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.besondereBeduerfnisseAufwandKonfigurierbar =
+                                    true;
+                            }
+                        });
+                    response
+                        .filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
+                        .forEach(einstellung => {
+                            this.fachstellenTyp =
+                                this.ebeguRestUtil.parseFachstellenTyp(
+                                    einstellung.value
+                                );
+                        });
+
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungstageKita = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungstageTFO = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungsstundenTFO = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG
+                        )
+                        .forEach(einstellung => {
+                            this.kitastundenprotag = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN
+                        )
+                        .forEach(einstellung => {
+                            this.sprachfoerderungBestaetigenAktiviert =
+                                einstellung.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.schulergaenzendeBetreuungAktiv = true;
+                            }
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.erweitereBeduerfnisseAktiv = true;
+                            }
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT
+                        )
+                        .forEach(value => {
+                            this.isAnwesenheitstageProMonatAktiviert =
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                );
+                        });
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(
+                res => {
+                    this.zuschlagBehinderungProTag = Number(res.value);
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(
+                res => {
+                    this.zuschlagBehinderungProStd = Number(res.value);
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(res => {
+                this.isHoehereBeitraegeEinstellungAktiviert =
+                    EbeguUtil.getBoolean(res.value);
+            });
+    }
+
+    private removeBetreuungFromKind(): void {
+        if (this.model && !this.model.timestampErstellt) {
+            // wenn die Betreeung noch nicht erstellt wurde, loeschen wir die Betreuung vom Array
+            this.gesuchModelManager.removeBetreuungFromKind();
+        }
+    }
 }

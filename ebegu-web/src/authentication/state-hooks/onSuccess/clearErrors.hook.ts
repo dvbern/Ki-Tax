@@ -19,7 +19,11 @@ import {TransitionService} from '@uirouter/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ErrorServiceX} from '../../../app/core/errors/service/ErrorServiceX';
 
-clearErrorsHookRunBlock.$inject = ['$transitions', 'ErrorService', 'ErrorServiceX'];
+clearErrorsHookRunBlock.$inject = [
+    '$transitions',
+    'ErrorService',
+    'ErrorServiceX'
+];
 
 export function clearErrorsHookRunBlock(
     $transitions: TransitionService,

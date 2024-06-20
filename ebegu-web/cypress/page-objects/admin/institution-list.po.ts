@@ -16,20 +16,19 @@
  */
 
 const getSearchField = () => {
-	return cy.getByData('list-search-field');
+    return cy.getByData('list-search-field');
 };
 
 const getAllListItemNames = () => {
-	return cy.getByData('item-name');
+    return cy.getByData('item-name');
 };
 
 const getAllInstitutionLoeschenButtons = () => {
-	return cy.getByData('remove-entry');
+    return cy.getByData('remove-entry');
 };
 
 export const InstitutionListPO = {
     getSearchField,
     getAllListItemNames,
-    getAllInstitutionLoeschenButtons,
+    getAllInstitutionLoeschenButtons
 };
-
