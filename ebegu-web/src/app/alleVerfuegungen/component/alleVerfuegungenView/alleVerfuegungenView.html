@@ -13,17 +13,31 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.dossierId" hide-xs hide-sm>
+<dv-fall-toolbar
+    [fall-id]="vm.getFallId()"
+    [dossier-id]="vm.dossierId"
+    hide-xs
+    hide-sm
+>
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow" dossier-id="{{vm.dossier.id}}"
-                 hide-action-buttons="{{true}}"
-                 dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()">
+<dossier-toolbar
+    flex="nogrow"
+    dossier-id="{{ vm.dossier.id }}"
+    hide-action-buttons="{{ true }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+>
 </dossier-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow" class="dossier-toolbar-gesuchsteller" dossier-id="{{vm.dossier.id}}"
-                               hide-action-buttons="{{true}}"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    dossier-id="{{ vm.dossier.id }}"
+    hide-action-buttons="{{ true }}"
+    dv-show-element
+    dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+>
 </dossier-toolbar-gesuchsteller>
 
 <div class="alle-verfuegungen-view overflow-auto" flex="auto">
@@ -34,81 +48,180 @@
             </h1>
         </span>
         <span aria-hidden class="col-md-1 text-right ebegu-h1">
-            <span ng-bind="vm.getAlleVerfuegungen() ? vm.getAlleVerfuegungen().length : 0"></span>
+            <span
+                ng-bind="vm.getAlleVerfuegungen() ? vm.getAlleVerfuegungen().length : 0"
+            ></span>
         </span>
     </div>
     <div class="row">
         <div class="col-md-12 table-responsive">
-            <div ng-if="vm.getAlleVerfuegungen().length == 0" data-translate="VERFUEGUNGEN_NOCH_KEINE"></div>
-            <table st-table="displayedCollection" st-safe-src="vm.getAlleVerfuegungen()"
-                   st-delay="20"
-                   class="table table-striped ebegu-table" ng-if="vm.getAlleVerfuegungen().length > 0">
+            <div
+                ng-if="vm.getAlleVerfuegungen().length == 0"
+                data-translate="VERFUEGUNGEN_NOCH_KEINE"
+            ></div>
+            <table
+                st-table="displayedCollection"
+                st-safe-src="vm.getAlleVerfuegungen()"
+                st-delay="20"
+                class="table table-striped ebegu-table"
+                ng-if="vm.getAlleVerfuegungen().length > 0"
+            >
                 <thead>
-                <tr>
-                    <th st-sort="kindFullname" class="sortable text-uppercase" data-translate="KIND"></th>
-                    <th st-sort="institutionStammdaten.institution.name" class="sortable text-uppercase"
-                        data-translate="BETREUUNG"></th>
-                    <th data-translate="ID"></th>
-                    <th st-sort="verfuegung.timestampErstellt" class="sortable text-uppercase"
-                        data-translate="VERFUEGUNGS_DATUM"></th>
-                    <th st-sort="gesuchsperiode.gesuchsperiodeString" class="sortable text-uppercase"
-                        data-translate="GESUCHSPERIODEN"></th>
-                    <th width="5%"></th>
-                    <th width="5%"></th>
-
-                </tr>
+                    <tr>
+                        <th
+                            st-sort="kindFullname"
+                            class="sortable text-uppercase"
+                            data-translate="KIND"
+                        ></th>
+                        <th
+                            st-sort="institutionStammdaten.institution.name"
+                            class="sortable text-uppercase"
+                            data-translate="BETREUUNG"
+                        ></th>
+                        <th data-translate="ID"></th>
+                        <th
+                            st-sort="verfuegung.timestampErstellt"
+                            class="sortable text-uppercase"
+                            data-translate="VERFUEGUNGS_DATUM"
+                        ></th>
+                        <th
+                            st-sort="gesuchsperiode.gesuchsperiodeString"
+                            class="sortable text-uppercase"
+                            data-translate="GESUCHSPERIODEN"
+                        ></th>
+                        <th width="5%"></th>
+                        <th width="5%"></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
-                    ng-click="vm.openVerfuegung(row.betreuungNummer, row.kindNummer, row.gesuchId)" role="row"
-                    tabindex="-1">
-                    <td class="ellipsis" title="{{row.kindFullname}}" ng-bind="row.kindFullname"></td>
-                    <td class="ellipsis" title="{{row.institutionStammdaten.institution.name}}"
-                        ng-bind="row.institutionStammdaten.institution.name"></td>
-                    <td ng-bind="row.referenzNummer"></td>
-                    <td class="ellipsis" title="{{row.timestampErstellt  | amDateFormat : 'DD.MM.YYYY'}}"
-                        ng-bind="row.verfuegung.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>
-                    <td class="ellipsis" title="{{row.gesuchsperiode.gesuchsperiodeString}}"
-                        ng-bind="row.gesuchsperiode.gesuchsperiodeString"></td>
-                    <td class="ellipsis" role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%"
-                        hide-sm
-                        hide-xs>
-                        <dv-loading-button type="button"
-                                           button-click="vm.openVerfuegung(row.betreuungNummer, row.kindNummer, row.gesuchId);"
-                                           button-class="dv-btn-operation" aria-label="{{'TABLE_EDIT'|translate}}"
-                                           title="{{'TABLE_EDIT'|translate}}">
-                            <i class="fa fa-lg fa-arrow-right" aria-label="{{'TABLE_EDIT'|translate}}"></i>
-                        </dv-loading-button>
-                    </td>
-                    <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()"
-                        class="symbol" ng-if="vm.showVerfuegungPdfLink(row)">
-                        <dv-loading-button type="button" button-click="vm.openVerfuegungPDF(row);"
-                                           button-class="dv-btn-operation" title="{{'OPEN_VERFUEGUNG_PDF' | translate}}"
-                                           aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}">
-                            <i class="fa fa-eye" aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}"></i>
-                        </dv-loading-button>
-                    </td>
-                    <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()"
-                        class="symbol" ng-if="vm.showNichtEintretenVerfuegungPdfLink(row)">
-                        <dv-loading-button type="button" button-click="vm.openNichteintretenPDF(row);"
-                                           button-class="dv-btn-operation" title="{{'OPEN_VERFUEGUNG_PDF' | translate}}"
-                                           aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}">
-                            <i class="fa fa-eye" aria-label="{{'OPEN_VERFUEGUNG_PDF' | translate}}"></i>
-                        </dv-loading-button>
-                    </td>
-                    <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()"
-                        class="symbol"
-                        ng-if="!vm.showVerfuegungPdfLink(row) && !vm.showNichtEintretenVerfuegungPdfLink(row)">
-                    </td>
-                </tr>
-
+                    <tr
+                        ng-repeat="row in displayedCollection"
+                        st-select-row="row"
+                        st-select-mode="single"
+                        ng-click="vm.openVerfuegung(row.betreuungNummer, row.kindNummer, row.gesuchId)"
+                        role="row"
+                        tabindex="-1"
+                    >
+                        <td
+                            class="ellipsis"
+                            title="{{ row.kindFullname }}"
+                            ng-bind="row.kindFullname"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.institutionStammdaten.institution.name
+                            }}"
+                            ng-bind="row.institutionStammdaten.institution.name"
+                        ></td>
+                        <td ng-bind="row.referenzNummer"></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.timestampErstellt
+                                    | amDateFormat: 'DD.MM.YYYY'
+                            }}"
+                            ng-bind="row.verfuegung.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            title="{{
+                                row.gesuchsperiode.gesuchsperiodeString
+                            }}"
+                            ng-bind="row.gesuchsperiode.gesuchsperiodeString"
+                        ></td>
+                        <td
+                            class="ellipsis"
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            width="5%"
+                            hide-sm
+                            hide-xs
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.openVerfuegung(row.betreuungNummer, row.kindNummer, row.gesuchId);"
+                                button-class="dv-btn-operation"
+                                aria-label="{{ 'TABLE_EDIT' | translate }}"
+                                title="{{ 'TABLE_EDIT' | translate }}"
+                            >
+                                <i
+                                    class="fa fa-lg fa-arrow-right"
+                                    aria-label="{{ 'TABLE_EDIT' | translate }}"
+                                ></i>
+                            </dv-loading-button>
+                        </td>
+                        <td
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            class="symbol"
+                            ng-if="vm.showVerfuegungPdfLink(row)"
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.openVerfuegungPDF(row);"
+                                button-class="dv-btn-operation"
+                                title="{{ 'OPEN_VERFUEGUNG_PDF' | translate }}"
+                                aria-label="{{
+                                    'OPEN_VERFUEGUNG_PDF' | translate
+                                }}"
+                            >
+                                <i
+                                    class="fa fa-eye"
+                                    aria-label="{{
+                                        'OPEN_VERFUEGUNG_PDF' | translate
+                                    }}"
+                                ></i>
+                            </dv-loading-button>
+                        </td>
+                        <td
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            class="symbol"
+                            ng-if="vm.showNichtEintretenVerfuegungPdfLink(row)"
+                        >
+                            <dv-loading-button
+                                type="button"
+                                button-click="vm.openNichteintretenPDF(row);"
+                                button-class="dv-btn-operation"
+                                title="{{ 'OPEN_VERFUEGUNG_PDF' | translate }}"
+                                aria-label="{{
+                                    'OPEN_VERFUEGUNG_PDF' | translate
+                                }}"
+                            >
+                                <i
+                                    class="fa fa-eye"
+                                    aria-label="{{
+                                        'OPEN_VERFUEGUNG_PDF' | translate
+                                    }}"
+                                ></i>
+                            </dv-loading-button>
+                        </td>
+                        <td
+                            role="cell"
+                            tabindex="-1"
+                            ng-click="$event.stopPropagation()"
+                            class="symbol"
+                            ng-if="
+                                !vm.showVerfuegungPdfLink(row) &&
+                                !vm.showNichtEintretenVerfuegungPdfLink(row)
+                            "
+                        ></td>
+                    </tr>
                 </tbody>
                 <tfoot>
-                <tr>
-                    <td colspan="9" class="text-center">
-                        <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            <div
+                                st-pagination=""
+                                st-items-by-page="vm.itemsByPage"
+                                st-displayed-pages="5"
+                            ></div>
+                        </td>
+                    </tr>
                 </tfoot>
             </table>
         </div>

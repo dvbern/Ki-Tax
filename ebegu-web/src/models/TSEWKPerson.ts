@@ -23,7 +23,6 @@ import {TSEWKBeziehung} from './TSEWKBeziehung';
  * DTO für eine Person aus dem EWK
  */
 export class TSEWKPerson extends TSAbstractMutableEntity {
-
     private _personID: string;
     private _nachname: string;
     private _vorname: string;
@@ -38,7 +37,7 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
     private _gesuchsteller: boolean;
     private _beziehungen: Array<TSEWKBeziehung>;
     private _nichtGefunden: boolean;
-    private  _haushalt: boolean;
+    private _haushalt: boolean;
 
     public constructor(
         personID?: string,

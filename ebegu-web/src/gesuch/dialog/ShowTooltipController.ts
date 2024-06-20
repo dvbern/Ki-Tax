@@ -19,8 +19,13 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ShowTooltipController {
-
-    public static $inject = ['$mdDialog', '$translate', 'title', 'text', 'parentController'];
+    public static $inject = [
+        '$mdDialog',
+        '$translate',
+        'title',
+        'text',
+        'parentController'
+    ];
 
     public title: string;
     public text: string;
@@ -32,8 +37,10 @@ export class ShowTooltipController {
         text: string,
         private readonly parentController: IDVFocusableController
     ) {
-
-        this.text = text !== undefined && text !== null ? $translate.instant(text) : 'test';
+        this.text =
+            text !== undefined && text !== null
+                ? $translate.instant(text)
+                : 'test';
     }
 
     public hide(): IPromise<any> {

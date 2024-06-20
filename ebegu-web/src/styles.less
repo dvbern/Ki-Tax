@@ -74,7 +74,8 @@ html {
     margin-right: auto;
 }
 
-dv-bisher, .dv-bisher {
+dv-bisher,
+.dv-bisher {
     //display: none;
 }
 
@@ -90,7 +91,8 @@ mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
     color: rgba(0, 0, 0, 0.87);
 }
 
-[mat-dialog-title] + mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
+[mat-dialog-title]
+    + mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
     padding: 0 24px;
 }
 
@@ -161,7 +163,8 @@ body {
     overflow-y: auto;
 }
 
-.dv-progressbar, .mat-progress-bar {
+.dv-progressbar,
+.mat-progress-bar {
     height: 0.5rem !important;
     position: fixed !important;
     top: 5rem;
@@ -176,26 +179,33 @@ body {
             height: 0.5rem;
         }
     }
-
 }
 
 .mat-progress-bar-fill:after {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     height: 0.5rem;
 }
 
-.mat-progress-bar-secondary.mat-progress-bar-fill:after, .mat-progress-bar-buffer, .mat-progress-bar-background {
+.mat-progress-bar-secondary.mat-progress-bar-fill:after,
+.mat-progress-bar-buffer,
+.mat-progress-bar-background {
     background-color: rgba(0, 0, 0, 0) !important;
     fill: rgba(0, 0, 0, 0) !important;
 }
 
-.mat-progress-bar[mode=indeterminate], .mat-progress-bar[mode=query] {
-    .mat-progress-bar-primary, .mat-progress-bar-primary:after {
+.mat-progress-bar[mode='indeterminate'],
+.mat-progress-bar[mode='query'] {
+    .mat-progress-bar-primary,
+    .mat-progress-bar-primary:after {
         animation: mat-progress-bar-primary-indeterminate-translate1 4s infinite !important;
     }
 
-    .mat-progress-bar-secondary, .mat-progress-bar-secondary:after {
-        animation: mat-progress-bar-secondary-indeterminate-translate1 4s infinite, mat-progress-bar-secondary-indeterminate-scale-translate1 4s infinite !important;
+    .mat-progress-bar-secondary,
+    .mat-progress-bar-secondary:after {
+        animation:
+            mat-progress-bar-secondary-indeterminate-translate1 4s infinite,
+            mat-progress-bar-secondary-indeterminate-scale-translate1 4s
+                infinite !important;
     }
 }
 
@@ -207,14 +217,29 @@ body {
         transform: scaleX(0.3);
     }
     2% {
-        -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.5,
+            0,
+            0.70173,
+            0.49582
+        );
         animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582);
         left: -15.16667%;
         transform: scaleX(0.3);
     }
     69.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635);
-        animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.30244,
+            0.38135,
+            0.55,
+            0.95635
+        );
+        animation-timing-function: cubic-bezier(
+            0.30244,
+            0.38135,
+            0.55,
+            0.95635
+        );
         left: 21.5%;
         transform: scaleX(0.83);
     }
@@ -232,14 +257,29 @@ body {
         transform: scaleX(0.3);
     }
     2% {
-        -webkit-animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.5,
+            0,
+            0.70173,
+            0.49582
+        );
         animation-timing-function: cubic-bezier(0.5, 0, 0.70173, 0.49582);
         left: -15.16667%;
         transform: scaleX(0.3);
     }
     69.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635);
-        animation-timing-function: cubic-bezier(0.30244, 0.38135, 0.55, 0.95635);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.30244,
+            0.38135,
+            0.55,
+            0.95635
+        );
+        animation-timing-function: cubic-bezier(
+            0.30244,
+            0.38135,
+            0.55,
+            0.95635
+        );
         left: 21.5%;
         transform: scaleX(0.83);
     }
@@ -251,20 +291,50 @@ body {
 
 @-webkit-keyframes mat-progress-bar-secondary-indeterminate-scale-translate1 {
     0% {
-        -webkit-animation-timing-function: cubic-bezier(0.20503, 0.05705, 0.57661, 0.45397);
-        animation-timing-function: cubic-bezier(0.20503, 0.05705, 0.57661, 0.45397);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.20503,
+            0.05705,
+            0.57661,
+            0.45397
+        );
+        animation-timing-function: cubic-bezier(
+            0.20503,
+            0.05705,
+            0.57661,
+            0.45397
+        );
         -webkit-transform: scaleX(0.1);
         transform: scaleX(0.1);
     }
     19.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.15231, 0.19643, 0.64837, 1.00432);
-        animation-timing-function: cubic-bezier(0.15231, 0.19643, 0.64837, 1.00432);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.15231,
+            0.19643,
+            0.64837,
+            1.00432
+        );
+        animation-timing-function: cubic-bezier(
+            0.15231,
+            0.19643,
+            0.64837,
+            1.00432
+        );
         -webkit-transform: scaleX(0.57);
         transform: scaleX(0.57);
     }
     44.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.25776, -0.00316, 0.21176, 1.38179);
-        animation-timing-function: cubic-bezier(0.25776, -0.00316, 0.21176, 1.38179);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.25776,
+            -0.00316,
+            0.21176,
+            1.38179
+        );
+        animation-timing-function: cubic-bezier(
+            0.25776,
+            -0.00316,
+            0.21176,
+            1.38179
+        );
         -webkit-transform: scaleX(0.91);
         transform: scaleX(0.91);
     }
@@ -276,20 +346,50 @@ body {
 
 @keyframes mat-progress-bar-secondary-indeterminate-scale-translate1 {
     0% {
-        -webkit-animation-timing-function: cubic-bezier(0.20503, 0.05705, 0.57661, 0.45397);
-        animation-timing-function: cubic-bezier(0.20503, 0.05705, 0.57661, 0.45397);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.20503,
+            0.05705,
+            0.57661,
+            0.45397
+        );
+        animation-timing-function: cubic-bezier(
+            0.20503,
+            0.05705,
+            0.57661,
+            0.45397
+        );
         -webkit-transform: scaleX(0.1);
         transform: scaleX(0.1);
     }
     19.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.15231, 0.19643, 0.64837, 1.00432);
-        animation-timing-function: cubic-bezier(0.15231, 0.19643, 0.64837, 1.00432);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.15231,
+            0.19643,
+            0.64837,
+            1.00432
+        );
+        animation-timing-function: cubic-bezier(
+            0.15231,
+            0.19643,
+            0.64837,
+            1.00432
+        );
         -webkit-transform: scaleX(0.57);
         transform: scaleX(0.57);
     }
     44.15% {
-        -webkit-animation-timing-function: cubic-bezier(0.25776, -0.00316, 0.21176, 1.38179);
-        animation-timing-function: cubic-bezier(0.25776, -0.00316, 0.21176, 1.38179);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.25776,
+            -0.00316,
+            0.21176,
+            1.38179
+        );
+        animation-timing-function: cubic-bezier(
+            0.25776,
+            -0.00316,
+            0.21176,
+            1.38179
+        );
         -webkit-transform: scaleX(0.91);
         transform: scaleX(0.91);
     }
@@ -301,17 +401,32 @@ body {
 
 @-webkit-keyframes mat-progress-bar-secondary-indeterminate-translate1 {
     0% {
-        -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40968);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.15,
+            0,
+            0.51506,
+            0.40968
+        );
         animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40968);
         left: -54.88889%;
     }
     25% {
-        -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73372);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.31033,
+            0.28406,
+            0.8,
+            0.73372
+        );
         animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73372);
         left: -17.25%;
     }
     48.35% {
-        -webkit-animation-timing-function: cubic-bezier(0.4, 0.62703, 0.6, 0.90203);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.4,
+            0.62703,
+            0.6,
+            0.90203
+        );
         animation-timing-function: cubic-bezier(0.4, 0.62703, 0.6, 0.90203);
         left: 29.5%;
     }
@@ -322,17 +437,32 @@ body {
 
 @keyframes mat-progress-bar-secondary-indeterminate-translate1 {
     0% {
-        -webkit-animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40968);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.15,
+            0,
+            0.51506,
+            0.40968
+        );
         animation-timing-function: cubic-bezier(0.15, 0, 0.51506, 0.40968);
         left: -54.88889%;
     }
     25% {
-        -webkit-animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73372);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.31033,
+            0.28406,
+            0.8,
+            0.73372
+        );
         animation-timing-function: cubic-bezier(0.31033, 0.28406, 0.8, 0.73372);
         left: -17.25%;
     }
     48.35% {
-        -webkit-animation-timing-function: cubic-bezier(0.4, 0.62703, 0.6, 0.90203);
+        -webkit-animation-timing-function: cubic-bezier(
+            0.4,
+            0.62703,
+            0.6,
+            0.90203
+        );
         animation-timing-function: cubic-bezier(0.4, 0.62703, 0.6, 0.90203);
         left: 29.5%;
     }
@@ -353,7 +483,9 @@ body {
     z-index: (@z-index-error+1);
 }
 
-dv-home-icon, dv-countdown, dv-downloadmenu {
+dv-home-icon,
+dv-countdown,
+dv-downloadmenu {
     align-content: center;
     display: flex;
     justify-content: center;
@@ -371,7 +503,8 @@ dv-home-icon, dv-countdown, dv-downloadmenu {
     background-size: Auto @navbar-height;
 }
 
-.logo-house, .dv-countdown-countdown {
+.logo-house,
+.dv-countdown-countdown {
     height: @navbar-height;
     line-height: @navbar-height;
     padding: 0;
@@ -383,7 +516,8 @@ dv-home-icon, dv-countdown, dv-downloadmenu {
     vertical-align: middle;
     width: @navbar-height;
 
-    &:hover, &:focus:hover {
+    &:hover,
+    &:focus:hover {
         background: @contrast;
         -webkit-box-shadow: none;
         box-shadow: none;
@@ -436,7 +570,11 @@ dv-home-icon, dv-countdown, dv-downloadmenu {
 //roter hintergund bei den feldern die invalid sind
 form {
     &.ng-submitted {
-        input, textarea, .form-control, .input-element, md-radio-group {
+        input,
+        textarea,
+        .form-control,
+        .input-element,
+        md-radio-group {
             &.ng-invalid {
                 .ErrorInput();
             }
@@ -480,11 +618,11 @@ form {
 }
 
 md-backdrop.md-dialog-backdrop {
-
     z-index: @z-index-dialog;
 }
 
-md-dialog.md-default-theme, md-dialog {
+md-dialog.md-default-theme,
+md-dialog {
     border-radius: 0;
 
     .md-dialog-content {
@@ -506,7 +644,8 @@ md-dialog.md-default-theme, md-dialog {
     z-index: @z-index-mobile-toolbar;
 }
 
-.md-autocomplete-suggestions-container.md-default-theme, .md-autocomplete-suggestions-container {
+.md-autocomplete-suggestions-container.md-default-theme,
+.md-autocomplete-suggestions-container {
     background: @secondary;
 }
 
@@ -523,7 +662,8 @@ md-dialog.md-default-theme, md-dialog {
         color: @contrast-lightest;
     }
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
         background: @secondary-dark;
     }
 }
@@ -535,7 +675,8 @@ dv-quicksearchbox {
     min-width: 43rem;
     text-align: center;
 
-    md-autocomplete, md-autocomplete input:not(.md-input) {
+    md-autocomplete,
+    md-autocomplete input:not(.md-input) {
         background: @contrast-light;
         height: @navbar-height;
 
@@ -573,16 +714,17 @@ dv-quicksearchbox {
                 opacity: 1 !important;
                 text-align: right;
             }
-
         }
     }
 
     md-autocomplete {
-        md-progress-linear.md-default-theme .md-bar, md-progress-linear .md-bar {
+        md-progress-linear.md-default-theme .md-bar,
+        md-progress-linear .md-bar {
             background-color: @secondary;
         }
 
-        md-progress-linear.md-default-theme .md-container, md-progress-linear .md-container {
+        md-progress-linear.md-default-theme .md-container,
+        md-progress-linear .md-container {
             background-color: @contrast-light;
         }
     }
@@ -591,7 +733,9 @@ dv-quicksearchbox {
         box-shadow: none;
     }
 
-    button:hover, button:focus, button:active {
+    button:hover,
+    button:focus,
+    button:active {
         background: none;
 
         &:after {
@@ -664,7 +808,6 @@ dv-quicksearchbox {
     background-color: @lgrey !important;
 }
 
-
 .institution-autocomplete,
 .antrag-list-autocomplete {
     background-color: @white;
@@ -734,14 +877,13 @@ dv-quicksearchbox {
             width: auto;
         }
     }
-
 }
 
-.row-button-th, .row-button-td {
+.row-button-th,
+.row-button-td {
     margin: 0 !important;
     padding: 0 !important;
     width: 0;
-
 }
 
 .row-button-button {
@@ -812,7 +954,6 @@ mat-dialog-content.dv-dialog-content.mat-mdc-dialog-content {
 
 @media all and (-ms-high-contrast: none) {
     .dv-dialog-actions {
-
         .dv-btn {
             flex-basis: 200px;
         }
@@ -831,7 +972,8 @@ html.cdk-global-scrollblock {
 // IE11 hack for vertically centering table contents
 // no other fix available due to (yet?) buggy implementation of flexbox
 /*stylelint-disable*/
-_:-ms-fullscreen, .mat-cell {
+_:-ms-fullscreen,
+.mat-cell {
     padding-top: 15px;
 }
 
@@ -882,7 +1024,10 @@ _:-ms-fullscreen, .mat-cell {
     }
 }
 
-.dv-mat-dialog-send-notrecht-mitteilung, .dv-mat-dialog-ts, .interne-pendenzen-dialog, .steuerdaten-email-dialog {
+.dv-mat-dialog-send-notrecht-mitteilung,
+.dv-mat-dialog-ts,
+.interne-pendenzen-dialog,
+.steuerdaten-email-dialog {
     .mat-mdc-dialog-container .mdc-dialog__surface {
         background-color: @lgrey;
     }

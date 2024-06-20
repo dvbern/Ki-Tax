@@ -36,11 +36,9 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
     public template = require('./dv-radio-container.html');
     public controller = DvRadioContainerController;
     public controllerAs = 'vm';
-
 }
 
 export class DvRadioContainerController implements IController {
-
     public static $inject: ReadonlyArray<string> = [];
 
     public ngModelCtrl: INgModelController;

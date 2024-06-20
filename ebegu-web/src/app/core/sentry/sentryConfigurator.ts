@@ -22,19 +22,23 @@ import {VERSION} from '../../../environments/version';
 import {Angular as AngularIntegration} from '@sentry/integrations';
 
 export function configureSentry(): void {
-  const sentryDSN = environment.sentryDSN;
-  if (!sentryDSN) {
-    console.log('Sentry is disabled because there is no sentryDSN');
-    return;
-  }
-  Sentry.init({release: VERSION, dsn: sentryDSN, integrations: [new AngularIntegration()]});
+    const sentryDSN = environment.sentryDSN;
+    if (!sentryDSN) {
+        console.log('Sentry is disabled because there is no sentryDSN');
+        return;
+    }
+    Sentry.init({
+        release: VERSION,
+        dsn: sentryDSN,
+        integrations: [new AngularIntegration()]
+    });
 }
 
 export class SentryErrorHandler extends ErrorHandler {
-  public handleError(err: any): void {
-    if (environment.sentryDSN) {
-      Sentry.captureException(err);
+    public handleError(err: any): void {
+        if (environment.sentryDSN) {
+            Sentry.captureException(err);
+        }
+        super.handleError(err);
     }
-    super.handleError(err);
-  }
 }

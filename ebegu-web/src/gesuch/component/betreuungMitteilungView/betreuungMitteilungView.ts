@@ -25,7 +25,9 @@ import IFormController = angular.IFormController;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-export class BetreuungMitteilungViewComponentConfig implements IComponentOptions {
+export class BetreuungMitteilungViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./betreuungMitteilungView.html');
     public controller = BetreuungMitteilungViewController;
@@ -33,7 +35,6 @@ export class BetreuungMitteilungViewComponentConfig implements IComponentOptions
 }
 
 export class BetreuungMitteilungViewController extends AbstractGesuchViewController<TSBetreuung> {
-
     public static $inject = [
         '$state',
         'GesuchModelManager',
@@ -53,7 +54,14 @@ export class BetreuungMitteilungViewController extends AbstractGesuchViewControl
         wizardStepManager: WizardStepManager,
         $timeout: ITimeoutService
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.BETREUUNG,
+            $timeout
+        );
     }
 
     public cancel(): void {

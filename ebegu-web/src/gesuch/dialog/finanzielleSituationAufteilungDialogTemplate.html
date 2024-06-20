@@ -13,9 +13,13 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" aria-label="Erweiterte Informationen"
-           class="md-default-theme md-transition-in dv-tooltip-dialog" tabindex="-1">
-
-    <dv-finanzielle-situation-aufteilung (close-event)="vm.hide()"></dv-finanzielle-situation-aufteilung>
-
+<md-dialog
+    md-theme="default"
+    aria-label="Erweiterte Informationen"
+    class="md-default-theme md-transition-in dv-tooltip-dialog"
+    tabindex="-1"
+>
+    <dv-finanzielle-situation-aufteilung
+        (close-event)="vm.hide()"
+    ></dv-finanzielle-situation-aufteilung>
 </md-dialog>

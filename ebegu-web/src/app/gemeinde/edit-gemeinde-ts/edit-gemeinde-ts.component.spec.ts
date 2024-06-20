@@ -30,32 +30,44 @@ import {SharedModule} from '../../shared/shared.module';
 import {EditGemeindeTSComponent} from './edit-gemeinde-ts.component';
 
 describe('EditGemeindeTSComponent', () => {
-
     let component: EditGemeindeTSComponent;
     let fixture: ComponentFixture<EditGemeindeTSComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForGemeinde']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, ['isSupportedImage']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['getInstitutionenForGemeinde']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, [
+        'isSupportedImage'
+    ]);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations:
-                [EditGemeindeTSComponent],
-            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
-            schemas:
-                [CUSTOM_ELEMENTS_SCHEMA],
-            providers:
-                [
-                    {provide: InstitutionRS, useValue: insitutionSpy},
-                    {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                    {provide: StateService, useValue: stateServiceSpy},
-                    {provide: GemeindeRS, useValue: gemeindeRSSpy}
-                ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+            declarations: [EditGemeindeTSComponent],
+            imports: [
+                MaterialModule,
+                TranslateModule.forRoot(),
+                UpgradeModule,
+                BrowserAnimationsModule
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [
+                {provide: InstitutionRS, useValue: insitutionSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy}
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {

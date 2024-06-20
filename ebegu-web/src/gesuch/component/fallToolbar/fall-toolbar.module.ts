@@ -21,16 +21,8 @@ import {SharedModule} from '../../../app/shared/shared.module';
 import {FallToolbarComponent} from './fallToolbar.component';
 
 @NgModule({
-    declarations: [
-        FallToolbarComponent
-    ],
-    imports: [
-        CommonModule,
-        SharedModule
-    ],
-    exports: [
-        FallToolbarComponent
-    ]
+    declarations: [FallToolbarComponent],
+    imports: [CommonModule, SharedModule],
+    exports: [FallToolbarComponent]
 })
-export class FallToolbarModule {
-}
+export class FallToolbarModule {}

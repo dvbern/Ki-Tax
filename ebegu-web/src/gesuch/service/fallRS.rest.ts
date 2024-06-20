@@ -13,14 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
+import {
+    IHttpPromise,
+    IHttpResponse,
+    IHttpService,
+    ILogService,
+    IPromise
+} from 'angular';
 import {TSSprache} from '../../models/enums/TSSprache';
 import {TSSozialdienstFallDokument} from '../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSFall} from '../../models/TSFall';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class FallRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -30,7 +35,7 @@ export class FallRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService
     ) {
-        this.serviceURL = `${REST_API  }falle`;
+        this.serviceURL = `${REST_API}falle`;
     }
 
     public createFall(fall: TSFall): IPromise<any> {
@@ -45,32 +50,57 @@ export class FallRS {
         let fallObject = {};
         fallObject = this.ebeguRestUtil.fallToRestObject(fallObject, fall);
 
-        return this.$http.put(this.serviceURL, fallObject, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            this.$log.debug('PARSING fall REST object ', response.data);
-            this.$log.debug('PARSed fall REST object ', this.ebeguRestUtil.parseFall(new TSFall(), response.data));
-            return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
-        });
-    }
-
-    public findFall(fallID: string): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(fallID)}`)
+        return this.$http
+            .put(this.serviceURL, fallObject, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .then((response: any) => {
                 this.$log.debug('PARSING fall REST object ', response.data);
-                return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
+                this.$log.debug(
+                    'PARSed fall REST object ',
+                    this.ebeguRestUtil.parseFall(new TSFall(), response.data)
+                );
+                return this.ebeguRestUtil.parseFall(
+                    new TSFall(),
+                    response.data
+                );
             });
     }
 
-    public removeVollmachtDokument(sozialdienstFallDokumentId: string): IHttpPromise<TSFall> {
-        return this.$http.delete(`${this.serviceURL}/vollmachtDokument/${encodeURIComponent(sozialdienstFallDokumentId)}`);
+    public findFall(fallID: string): IPromise<any> {
+        return this.$http
+            .get(`${this.serviceURL}/id/${encodeURIComponent(fallID)}`)
+            .then((response: any) => {
+                this.$log.debug('PARSING fall REST object ', response.data);
+                return this.ebeguRestUtil.parseFall(
+                    new TSFall(),
+                    response.data
+                );
+            });
     }
 
-    public getAllVollmachtDokumente(sozialdienstFallId: string): IPromise<TSSozialdienstFallDokument[]> {
-        return this.$http.get(`${this.serviceURL}/vollmachtDokumente/${encodeURIComponent(sozialdienstFallId)}`)
-            .then(restDokumente => this.ebeguRestUtil.parseSozialdienstFallDokumente(restDokumente.data));
+    public removeVollmachtDokument(
+        sozialdienstFallDokumentId: string
+    ): IHttpPromise<TSFall> {
+        return this.$http.delete(
+            `${this.serviceURL}/vollmachtDokument/${encodeURIComponent(sozialdienstFallDokumentId)}`
+        );
+    }
+
+    public getAllVollmachtDokumente(
+        sozialdienstFallId: string
+    ): IPromise<TSSozialdienstFallDokument[]> {
+        return this.$http
+            .get(
+                `${this.serviceURL}/vollmachtDokumente/${encodeURIComponent(sozialdienstFallId)}`
+            )
+            .then(restDokumente =>
+                this.ebeguRestUtil.parseSozialdienstFallDokumente(
+                    restDokumente.data
+                )
+            );
     }
 
     public getServiceName(): string {
@@ -81,16 +111,26 @@ export class FallRS {
         fallId: string,
         sprache: TSSprache
     ): angular.IPromise<BlobPart> {
-        return this.$http.get(`${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}/${sprache}`,
-            {responseType: 'blob'})
+        return this.$http
+            .get(
+                `${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}/${sprache}`,
+                {responseType: 'blob'}
+            )
             .then((response: any) => response.data);
     }
 
     public sozialdienstFallEntziehen(fallId: string): IPromise<TSFall> {
-        return this.$http.put(`${this.serviceURL}/sozialdienstFallEntziehen/${encodeURIComponent(fallId)}`, {})
+        return this.$http
+            .put(
+                `${this.serviceURL}/sozialdienstFallEntziehen/${encodeURIComponent(fallId)}`,
+                {}
+            )
             .then((response: IHttpResponse<TSFall>) => {
                 this.$log.debug('PARSING gesuch REST object ', response.data);
-                return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
+                return this.ebeguRestUtil.parseFall(
+                    new TSFall(),
+                    response.data
+                );
             });
     }
 }

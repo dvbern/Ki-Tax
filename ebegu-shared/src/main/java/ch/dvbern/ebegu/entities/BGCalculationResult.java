@@ -182,6 +182,10 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal gutscheinEingewoehnung;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag;
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -232,6 +236,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
 		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
+		this.zusaetzlicherGutscheinGemeindeBetrag = toCopy.zusaetzlicherGutscheinGemeindeBetrag;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -286,6 +291,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
+		this.zusaetzlicherGutscheinGemeindeBetrag = roundToFrankenRappen(zusaetzlicherGutscheinGemeindeBetrag);
 		return this;
 	}
 
@@ -319,6 +325,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
 			.add("eingewoehnungAnteil", gutscheinEingewoehnung)
+			.add("zusaetzlicherGutscheinGemeindeBetrag", zusaetzlicherGutscheinGemeindeBetrag)
 			.toString();
 	}
 
@@ -350,7 +357,8 @@ public class BGCalculationResult extends AbstractEntity {
 			babyTarif == otherResult.babyTarif &&
 			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
 			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert &&
-			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung);
+			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung) &&
+			MathUtil.isSame(zusaetzlicherGutscheinGemeindeBetrag, otherResult.zusaetzlicherGutscheinGemeindeBetrag);
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -377,7 +385,8 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
 					thisEntity.babyTarif == otherEntity.babyTarif &&
-				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
+					MathUtil.isSame(thisEntity.zusaetzlicherGutscheinGemeindeBetrag, otherEntity.zusaetzlicherGutscheinGemeindeBetrag)
 		));
 	}
 
@@ -777,6 +786,15 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setGutscheinEingewoehnung(@Nullable BigDecimal gutscheinEingewoehnung) {
 		this.gutscheinEingewoehnung = gutscheinEingewoehnung;
+	}
+
+	@Nullable
+	public BigDecimal getZusaetzlicherGutscheinGemeindeBetrag() {
+		return zusaetzlicherGutscheinGemeindeBetrag;
+	}
+
+	public void setZusaetzlicherGutscheinGemeindeBetrag(@Nullable BigDecimal zusaetzlicherGutscheinGemeindeBetrag) {
+		this.zusaetzlicherGutscheinGemeindeBetrag = zusaetzlicherGutscheinGemeindeBetrag;
 	}
 
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes

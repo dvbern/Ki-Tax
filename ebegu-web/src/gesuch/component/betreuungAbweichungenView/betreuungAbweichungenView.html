@@ -21,195 +21,278 @@
     <div class="row view-title">
         <div class="col-md-8">
             <h2>
-                <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span
-                data-translate="ABWEICHUNGEN_MELDEN"></span>
+                <span>{{ vm.getKindModel().kindJA.getFullName() }} / </span
+                ><span data-translate="ABWEICHUNGEN_MELDEN"></span>
             </h2>
-            <dv-bisher gs="vm.getKindModel().kindGS"
-                       ja="vm.getKindModel().kindJA"
-                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
-                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
+            <dv-bisher
+                gs="vm.getKindModel().kindGS"
+                ja="vm.getKindModel().kindJA"
+                specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                show-specific-bisher-text-if-bisher-none="true"
+            ></dv-bisher>
         </div>
         <div class="col-md-4 text-right">
             <h2 class="ebegu-h2" aria-hidden>
-                {{vm.model.referenzNummer}}
+                {{ vm.model.referenzNummer }}
             </h2>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
 
     <div class="row margin-top-40">
         <div class="col-md-12">
-            <span> {{vm.getHelpText()}}</span>
+            <span> {{ vm.getHelpText() }}</span>
         </div>
     </div>
 
-    <form role="form" name="vm.form" class="" novalidate
-          unsaved-warning-form>
-
+    <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
         <div class="row margin-top-40">
-            <div class="col-md-12 table-responsive" ng-switch="vm.getBetreuungsangebotTyp()">
+            <div
+                class="col-md-12 table-responsive"
+                ng-switch="vm.getBetreuungsangebotTyp()"
+            >
                 <table class="table" ng-switch-when="MITTAGSTISCH">
                     <thead>
-                    <tr>
-                        <th data-translate="MONTH"></th>
-                        <th data-translate="PENSUM_MAHLZEITEN"></th>
-                        <th data-translate="KOSTEN_PRO_MAHLZEIT"></th>
-                        <th>
-                            <span data-translate="STATUS"></span>
-                            <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
-                        </th>
-                    </tr>
+                        <tr>
+                            <th data-translate="MONTH"></th>
+                            <th data-translate="PENSUM_MAHLZEITEN"></th>
+                            <th data-translate="KOSTEN_PRO_MAHLZEIT"></th>
+                            <th>
+                                <span data-translate="STATUS"></span>
+                                <dv-tooltip
+                                    text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"
+                                ></dv-tooltip>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
-                        ng-attr-data-test="abweichung-{{$index}}"
-                        st-select-mode="single" role="row" tabindex="-1">
-                        <td>{{ vm.getFormattedDate(betreuung) }}</td>
-                        <td>
-                            <input aria-describedby="pensum-{{$index}}-error"
-                                   id="pensum-{{$index}}" type="number"
-                                   name="pensum-{{$index}}"
-                                   data-test="pensum"
-                                   min="0"
-                                   step="0.01"
-                                   ng-change="vm.updateStatusMittagstisch(betreuung)"
-                                   ng-model="betreuung.monatlicheHauptmahlzeiten"
-                                   class="form-control  dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   ng-required="betreuung.tarifProHauptmahlzeit > 0"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   ng-attr-placeholder="{{betreuung.vertraglicheHauptmahlzeiten}}">
-                        </td>
-                        <td>
-                            <input aria-describedby="kosten-{{$index}}-error"
-                                   id="kosten-{{$index}}" type="number"
-                                   name="kosten-{{$index}}"
-                                   data-test="kosten"
-                                   ng-change="vm.updateStatusMittagstisch(betreuung)"
-                                   ng-model="betreuung.tarifProHauptmahlzeit"
-                                   dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   ng-required="betreuung.monatlicheHauptmahlzeiten > 0"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   min="0"
-                                   ng-attr-placeholder="{{betreuung.vertraglicherTarifHaupt}}">
-                        </td>
-                        <td>
-                            <span class="fa {{vm.getIcon(betreuung)}}"
-                                  aria-hidden="true"
-                                  title="{{vm.getIconTooltip(betreuung)}}"></span>
-                        </td>
+                        <tr
+                            ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                            ng-attr-data-test="abweichung-{{ $index }}"
+                            st-select-mode="single"
+                            role="row"
+                            tabindex="-1"
+                        >
+                            <td>{{ vm.getFormattedDate(betreuung) }}</td>
+                            <td>
+                                <input
+                                    aria-describedby="pensum-{{ $index }}-error"
+                                    id="pensum-{{ $index }}"
+                                    type="number"
+                                    name="pensum-{{ $index }}"
+                                    data-test="pensum"
+                                    min="0"
+                                    step="0.01"
+                                    ng-change="vm.updateStatusMittagstisch(betreuung)"
+                                    ng-model="betreuung.monatlicheHauptmahlzeiten"
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    ng-required="betreuung.tarifProHauptmahlzeit > 0"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglicheHauptmahlzeiten
+                                    }}"
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    aria-describedby="kosten-{{ $index }}-error"
+                                    id="kosten-{{ $index }}"
+                                    type="number"
+                                    name="kosten-{{ $index }}"
+                                    data-test="kosten"
+                                    ng-change="vm.updateStatusMittagstisch(betreuung)"
+                                    ng-model="betreuung.tarifProHauptmahlzeit"
+                                    dv-max-length
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    ng-required="betreuung.monatlicheHauptmahlzeiten > 0"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                    min="0"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglicherTarifHaupt
+                                    }}"
+                                />
+                            </td>
+                            <td>
+                                <span
+                                    class="fa {{ vm.getIcon(betreuung) }}"
+                                    aria-hidden="true"
+                                    title="{{ vm.getIconTooltip(betreuung) }}"
+                                ></span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <table class="table" ng-switch-default>
                     <thead>
-                    <tr>
-                        <th data-translate="MONTH"></th>
-                        <th>{{vm.getInputFormatTitle()}}</th>
-                        <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
-                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
-                            data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
-                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
-                            data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
-                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
-                            data-translate="MONATLICHE_MAHLZEITEN_KOSTEN"></th>
-                        <th>
-                            <span data-translate="STATUS"></span>
-                            <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
-                        </th>
-                    </tr>
+                        <tr>
+                            <th data-translate="MONTH"></th>
+                            <th>{{ vm.getInputFormatTitle() }}</th>
+                            <th
+                                data-translate="MONATLICHE_BETREUUNGSKOSTEN"
+                            ></th>
+                            <th
+                                ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                                data-translate="MONATLICHE_HAUPTMAHLZEITEN"
+                            ></th>
+                            <th
+                                ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                                data-translate="MONATLICHE_NEBENMAHLZEITEN"
+                            ></th>
+                            <th
+                                ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                                data-translate="MONATLICHE_MAHLZEITEN_KOSTEN"
+                            ></th>
+                            <th>
+                                <span data-translate="STATUS"></span>
+                                <dv-tooltip
+                                    text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"
+                                ></dv-tooltip>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
-                        ng-attr-data-test="abweichung-{{$index}}"
-                        st-select-mode="single" role="row" tabindex="-1">
-                        <td>{{vm.getFormattedDate(betreuung)}}</td>
-                        <td>
-                            <input aria-describedby="pensum-{{$index}}-error"
-                                   id="pensum-{{$index}}" type="number"
-                                   name="pensum-{{$index}}"
-                                   data-test="pensum"
-                                   ng-change="vm.updateStatus(betreuung)"
-                                   ng-model="betreuung.pensum"
-                                   class="form-control  dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   ng-required="vm.isRowRequired(betreuung)"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   step="vm.getStepSize()"
-                                   ng-attr-placeholder="{{betreuung.vertraglichesPensum}}">
-                        </td>
-                        <td>
-                            <input aria-describedby="kosten-{{$index}}-error"
-                                   id="kosten-{{$index}}" type="number"
-                                   name="kosten-{{$index}}"
-                                   data-test="kosten"
-                                   ng-change="vm.updateStatus(betreuung)"
-                                   ng-model="betreuung.monatlicheBetreuungskosten"
-                                   dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   ng-required="vm.isRowRequired(betreuung)"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   ng-attr-placeholder="{{betreuung.vertraglicheKosten}}">
-                        </td>
-                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
-                            <input aria-describedby="hauptmahlzeiten-{{$index}}-error"
-                                   id="hauptmahlzeiten-{{$index}}" type="number"
-                                   name="hauptmahlzeiten-{{$index}}"
-                                   ng-change="vm.updateStatus(betreuung)"
-                                   ng-model="betreuung.monatlicheHauptmahlzeiten"
-                                   dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   step="0.01"
-                                   ng-required="vm.isRowRequired(betreuung)"
-                                   ng-attr-placeholder="{{betreuung.vertraglicheHauptmahlzeiten}}">
-                        </td>
-                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
-                            <input aria-describedby="nebenmahlzeiten-{{$index}}-error"
-                                   id="nebenmahlzeiten-{{$index}}" type="number"
-                                   name="nebenmahlzeiten-{{$index}}"
-                                   ng-change="vm.updateStatus(betreuung)"
-                                   ng-model="betreuung.monatlicheNebenmahlzeiten"
-                                   dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="vm.isDisabled(betreuung)"
-                                   step="0.01"
-                                   ng-required="vm.isRowRequired(betreuung)"
-                                   ng-attr-placeholder="{{betreuung.vertraglicheNebenmahlzeiten}}">
-                        </td>
-                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
-                            {{vm.getMonthlyMahlzeitenKosten(betreuung)}}
-                        </td>
-                        <td>
-                            <span class="fa {{vm.getIcon(betreuung)}}" aria-hidden="true" title="{{vm.getIconTooltip(betreuung)}}"></span>
-                        </td>
+                        <tr
+                            ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                            ng-attr-data-test="abweichung-{{ $index }}"
+                            st-select-mode="single"
+                            role="row"
+                            tabindex="-1"
+                        >
+                            <td>{{ vm.getFormattedDate(betreuung) }}</td>
+                            <td>
+                                <input
+                                    aria-describedby="pensum-{{ $index }}-error"
+                                    id="pensum-{{ $index }}"
+                                    type="number"
+                                    name="pensum-{{ $index }}"
+                                    data-test="pensum"
+                                    ng-change="vm.updateStatus(betreuung)"
+                                    ng-model="betreuung.pensum"
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    ng-required="vm.isRowRequired(betreuung)"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                    step="vm.getStepSize()"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglichesPensum
+                                    }}"
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    aria-describedby="kosten-{{ $index }}-error"
+                                    id="kosten-{{ $index }}"
+                                    type="number"
+                                    name="kosten-{{ $index }}"
+                                    data-test="kosten"
+                                    ng-change="vm.updateStatus(betreuung)"
+                                    ng-model="betreuung.monatlicheBetreuungskosten"
+                                    dv-max-length
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    ng-required="vm.isRowRequired(betreuung)"
+                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglicheKosten
+                                    }}"
+                                />
+                            </td>
+                            <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                                <input
+                                    aria-describedby="hauptmahlzeiten-{{
+                                        $index
+                                    }}-error"
+                                    id="hauptmahlzeiten-{{ $index }}"
+                                    type="number"
+                                    name="hauptmahlzeiten-{{ $index }}"
+                                    ng-change="vm.updateStatus(betreuung)"
+                                    ng-model="betreuung.monatlicheHauptmahlzeiten"
+                                    dv-max-length
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    step="0.01"
+                                    ng-required="vm.isRowRequired(betreuung)"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglicheHauptmahlzeiten
+                                    }}"
+                                />
+                            </td>
+                            <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                                <input
+                                    aria-describedby="nebenmahlzeiten-{{
+                                        $index
+                                    }}-error"
+                                    id="nebenmahlzeiten-{{ $index }}"
+                                    type="number"
+                                    name="nebenmahlzeiten-{{ $index }}"
+                                    ng-change="vm.updateStatus(betreuung)"
+                                    ng-model="betreuung.monatlicheNebenmahlzeiten"
+                                    dv-max-length
+                                    class="form-control dv-input-container-medium"
+                                    ng-disabled="vm.isDisabled(betreuung)"
+                                    step="0.01"
+                                    ng-required="vm.isRowRequired(betreuung)"
+                                    ng-attr-placeholder="{{
+                                        betreuung.vertraglicheNebenmahlzeiten
+                                    }}"
+                                />
+                            </td>
+                            <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                                {{ vm.getMonthlyMahlzeitenKosten(betreuung) }}
+                            </td>
+                            <td>
+                                <span
+                                    class="fa {{ vm.getIcon(betreuung) }}"
+                                    aria-hidden="true"
+                                    title="{{ vm.getIconTooltip(betreuung) }}"
+                                ></span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </form>
     <div class="dv-navigation dv-navigation-flex">
-        <span dv-show-element
-              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-              dv-show-expression="vm.isFreigabeAllowed()">
-            <dv-loading-button button-click="vm.preFreigeben()" type="submit" data-test="container.freigeben">
+        <span
+            dv-show-element
+            dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+            dv-show-expression="vm.isFreigabeAllowed()"
+        >
+            <dv-loading-button
+                button-click="vm.preFreigeben()"
+                type="submit"
+                data-test="container.freigeben"
+            >
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>
         </span>
-        <span dv-show-element
-              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-              dv-show-expression="vm.isAbweichungAllowed()">
-            <dv-loading-button button-click="vm.save()" type="submit" data-test="container.save">
+        <span
+            dv-show-element
+            dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+            dv-show-expression="vm.isAbweichungAllowed()"
+        >
+            <dv-loading-button
+                button-click="vm.save()"
+                type="submit"
+                data-test="container.save"
+            >
                 <span class="uppercase" data-translate="SPEICHERN"></span>
             </dv-loading-button>
         </span>
-        <dv-loading-button class="dv-navigation-item"
-                           button-click="vm.cancel()"
-                           button-class="cancel-button uppercase"
-                           type="reset"
-                           aria-label="{{'CANCEL' | translate}}">
+        <dv-loading-button
+            class="dv-navigation-item"
+            button-click="vm.cancel()"
+            button-class="cancel-button uppercase"
+            type="reset"
+            aria-label="{{ 'CANCEL' | translate }}"
+        >
             <span data-translate="ABBRECHEN"></span>
         </dv-loading-button>
     </div>

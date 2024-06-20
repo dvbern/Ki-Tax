@@ -28,24 +28,34 @@ import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
 import {EbeguUtil} from './EbeguUtil';
 
 export class TagesschuleUtil {
-
     public static initModuleTagesschule(
         betreuung: TSBetreuung,
         gesuchsPeriode: TSGesuchsperiode,
         verfuegungView: boolean
     ): TSBelegungTagesschuleModulGroup[] {
-        if (!(betreuung.institutionStammdaten
-            && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
+        if (
+            !(
+                betreuung.institutionStammdaten &&
+                betreuung.institutionStammdaten.institutionStammdatenTagesschule
+            )
         ) {
             return [];
         }
-        const moduleAngemeldet =
-        (betreuung.belegungTagesschule?.belegungTagesschuleModule)
+        const moduleAngemeldet = betreuung.belegungTagesschule
+            ?.belegungTagesschuleModule
             ? betreuung.belegungTagesschule.belegungTagesschuleModule
             : [];
-        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(betreuung, gesuchsPeriode);
+        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(
+            betreuung,
+            gesuchsPeriode
+        );
 
-        return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView, false);
+        return TagesschuleUtil.initModulGroups(
+            moduleAngemeldet,
+            moduleAngeboten,
+            verfuegungView,
+            false
+        );
     }
 
     public static initModuleTagesschuleAfterInstitutionChange(
@@ -54,18 +64,34 @@ export class TagesschuleUtil {
         gesuchsPeriode: TSGesuchsperiode,
         verfuegungView: boolean
     ): TSBelegungTagesschuleModulGroup[] {
-        if (!(betreuung.institutionStammdaten
-            && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
+        if (
+            !(
+                betreuung.institutionStammdaten &&
+                betreuung.institutionStammdaten.institutionStammdatenTagesschule
+            )
         ) {
             return [];
         }
-        const moduleAngemeldet = betreuung.belegungTagesschule.belegungTagesschuleModule;
+        const moduleAngemeldet =
+            betreuung.belegungTagesschule.belegungTagesschuleModule;
         // hier wir setzen die ModuleGroupName um wieder finden zu koennen welche mussen auf der neue Institution
         // pre-selektiert werden
-        this.setModuleGroupNameAndBezeichnungForAngemeldeteModule(moduleAngemeldet, oldInstitutionStammdaten, gesuchsPeriode);
-        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(betreuung, gesuchsPeriode);
+        this.setModuleGroupNameAndBezeichnungForAngemeldeteModule(
+            moduleAngemeldet,
+            oldInstitutionStammdaten,
+            gesuchsPeriode
+        );
+        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(
+            betreuung,
+            gesuchsPeriode
+        );
 
-        return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView, true);
+        return TagesschuleUtil.initModulGroups(
+            moduleAngemeldet,
+            moduleAngeboten,
+            verfuegungView,
+            true
+        );
     }
 
     private static initModulGroups(
@@ -75,7 +101,8 @@ export class TagesschuleUtil {
         copyFromOtherInstitution: boolean
     ): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
-        const moduleAngebotenSorted = this.sortModulTagesschuleGroups(moduleAngeboten);
+        const moduleAngebotenSorted =
+            this.sortModulTagesschuleGroups(moduleAngeboten);
         for (const groupTagesschule of moduleAngebotenSorted) {
             TagesschuleUtil.initializeGroup(groupTagesschule);
             const moduleOfGroup = groupTagesschule.getModuleOrdered();
@@ -84,15 +111,24 @@ export class TagesschuleUtil {
             let groupFoundInAngemeldete = false;
             for (const modulOfGroup of moduleOfGroup) {
                 const foundInAngemeldete = copyFromOtherInstitution
-                    ? TagesschuleUtil.copyAlreadyAngemeldetModule(group, moduleAngemeldet,
-                        groupTagesschule, modulOfGroup)
-                    : TagesschuleUtil.setAlreadyAngemeldetModule(group, moduleAngemeldet, modulOfGroup.id);
+                    ? TagesschuleUtil.copyAlreadyAngemeldetModule(
+                          group,
+                          moduleAngemeldet,
+                          groupTagesschule,
+                          modulOfGroup
+                      )
+                    : TagesschuleUtil.setAlreadyAngemeldetModule(
+                          group,
+                          moduleAngemeldet,
+                          modulOfGroup.id
+                      );
                 if (foundInAngemeldete) {
                     groupFoundInAngemeldete = true;
                     continue;
                 }
                 // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
-                const tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
+                const tsBelegungTagesschuleModul =
+                    new TSBelegungTagesschuleModul();
                 modulOfGroup.angemeldet = false;
                 tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
                 group.module.push(tsBelegungTagesschuleModul);
@@ -130,9 +166,14 @@ export class TagesschuleUtil {
     ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
-            if (angMod.modulTagesschule.wochentag !== moduleOfGroup.wochentag ||
-                !this.isModuleGroupSimilar(angMod.modulTagesschule, newTagesschuleGroup)  ||
-                !moduleOfGroup.angeboten) {
+            if (
+                angMod.modulTagesschule.wochentag !== moduleOfGroup.wochentag ||
+                !this.isModuleGroupSimilar(
+                    angMod.modulTagesschule,
+                    newTagesschuleGroup
+                ) ||
+                !moduleOfGroup.angeboten
+            ) {
                 continue;
             }
             angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
@@ -146,18 +187,31 @@ export class TagesschuleUtil {
 
     private static isModuleGroupSimilar(
         module: TSModulTagesschule,
-        group: TSModulTagesschuleGroup): boolean {
+        group: TSModulTagesschuleGroup
+    ): boolean {
         // SCOLARIS Module
-        if (EbeguUtil.isNotNullOrUndefined(module.moduleGroupName) &&
+        if (
+            EbeguUtil.isNotNullOrUndefined(module.moduleGroupName) &&
             EbeguUtil.isNotNullOrUndefined(group.modulTagesschuleName) &&
-            group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
+            group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH
+        ) {
             return module.moduleGroupName === group.modulTagesschuleName;
         }
         // Dynamische Module
-        if (EbeguUtil.isNotNullOrUndefined(module.moduleGroupBezeichnung) &&
-            EbeguUtil.isNotNullOrUndefined(group.bezeichnung)) {
-            return this.similarString(module.moduleGroupBezeichnung.textDeutsch, group.bezeichnung.textDeutsch) &&
-                this.similarString(module.moduleGroupBezeichnung.textFranzoesisch, group.bezeichnung.textFranzoesisch);
+        if (
+            EbeguUtil.isNotNullOrUndefined(module.moduleGroupBezeichnung) &&
+            EbeguUtil.isNotNullOrUndefined(group.bezeichnung)
+        ) {
+            return (
+                this.similarString(
+                    module.moduleGroupBezeichnung.textDeutsch,
+                    group.bezeichnung.textDeutsch
+                ) &&
+                this.similarString(
+                    module.moduleGroupBezeichnung.textFranzoesisch,
+                    group.bezeichnung.textFranzoesisch
+                )
+            );
         }
         return false;
     }
@@ -172,8 +226,10 @@ export class TagesschuleUtil {
     ): TSModulTagesschuleGroup[] {
         const tsEinstellungenTagesschule =
             betreuung.institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
-                .filter((einstellung: TSEinstellungenTagesschule) =>
-                    einstellung.gesuchsperiode.id === gesuchsPeriode.id)
+                .filter(
+                    (einstellung: TSEinstellungenTagesschule) =>
+                        einstellung.gesuchsperiode.id === gesuchsPeriode.id
+                )
                 .pop();
         if (!tsEinstellungenTagesschule) {
             return [];
@@ -188,8 +244,10 @@ export class TagesschuleUtil {
     ): void {
         const tsEinstellungenTagesschule =
             oldInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
-                .filter((einstellung: TSEinstellungenTagesschule) =>
-                    einstellung.gesuchsperiode.id === gesuchsPeriode.id)
+                .filter(
+                    (einstellung: TSEinstellungenTagesschule) =>
+                        einstellung.gesuchsperiode.id === gesuchsPeriode.id
+                )
                 .pop();
         if (!tsEinstellungenTagesschule) {
             return;
@@ -197,14 +255,14 @@ export class TagesschuleUtil {
         for (const angMod of moduleAngemeldet) {
             tsEinstellungenTagesschule.modulTagesschuleGroups.forEach(
                 moduleTagesschuleGroup => {
-                    moduleTagesschuleGroup.module.forEach(
-                        module => {
-                            if (module.id === angMod.modulTagesschule.id) {
-                                angMod.modulTagesschule.moduleGroupName = moduleTagesschuleGroup.modulTagesschuleName;
-                                angMod.modulTagesschule.moduleGroupBezeichnung = moduleTagesschuleGroup.bezeichnung;
-                            }
+                    moduleTagesschuleGroup.module.forEach(module => {
+                        if (module.id === angMod.modulTagesschule.id) {
+                            angMod.modulTagesschule.moduleGroupName =
+                                moduleTagesschuleGroup.modulTagesschuleName;
+                            angMod.modulTagesschule.moduleGroupBezeichnung =
+                                moduleTagesschuleGroup.bezeichnung;
                         }
-                    );
+                    });
                 }
             );
         }
@@ -222,7 +280,10 @@ export class TagesschuleUtil {
         }
     }
 
-    public static getModulForDay(group: TSModulTagesschuleGroup, day: TSDayOfWeek): TSModulTagesschule {
+    public static getModulForDay(
+        group: TSModulTagesschuleGroup,
+        day: TSDayOfWeek
+    ): TSModulTagesschule {
         for (const modul of group.module) {
             if (day !== modul.wochentag) {
                 continue;
@@ -242,52 +303,69 @@ export class TagesschuleUtil {
         return '';
     }
 
-    public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
-        TSModulTagesschuleGroup[] {
-        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) &&
-            modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
-            return this.sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups);
+    public static sortModulTagesschuleGroups(
+        modulTagesschuleGroups: TSModulTagesschuleGroup[]
+    ): TSModulTagesschuleGroup[] {
+        if (
+            EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) &&
+            modulTagesschuleGroups[0].modulTagesschuleName.startsWith(
+                'SCOLARIS_'
+            )
+        ) {
+            return this.sortModulTagesschuleGroupsScolaris(
+                modulTagesschuleGroups
+            );
         }
-        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
-            const referenzeDatum = '01/01/2011 ';
-            const vonA = Date.parse(referenzeDatum + a.zeitVon);
-            const vonB = Date.parse(referenzeDatum + b.zeitVon);
-            const vergleicheVon = vonA.valueOf() - vonB.valueOf();
-            if (vergleicheVon !== 0) {
-                return vergleicheVon;
+        return modulTagesschuleGroups.sort(
+            (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
+                const referenzeDatum = '01/01/2011 ';
+                const vonA = Date.parse(referenzeDatum + a.zeitVon);
+                const vonB = Date.parse(referenzeDatum + b.zeitVon);
+                const vergleicheVon = vonA.valueOf() - vonB.valueOf();
+                if (vergleicheVon !== 0) {
+                    return vergleicheVon;
+                }
+                const bisA = Date.parse(referenzeDatum + a.zeitBis);
+                const bisB = Date.parse(referenzeDatum + b.zeitBis);
+                const vergleicheBis = bisA.valueOf() - bisB.valueOf();
+                if (vergleicheBis !== 0) {
+                    return vergleicheBis;
+                }
+                // Falls es einen Bezeichnung gibt
+                if (a.bezeichnung.textDeutsch && b.bezeichnung.textDeutsch) {
+                    return a.bezeichnung.textDeutsch.localeCompare(
+                        b.bezeichnung.textDeutsch
+                    );
+                }
+                return a.modulTagesschuleName.localeCompare(
+                    b.modulTagesschuleName
+                );
             }
-            const bisA = Date.parse(referenzeDatum + a.zeitBis);
-            const bisB = Date.parse(referenzeDatum + b.zeitBis);
-            const vergleicheBis = bisA.valueOf() - bisB.valueOf();
-            if (vergleicheBis !== 0) {
-                return vergleicheBis;
-            }
-            // Falls es einen Bezeichnung gibt
-            if (a.bezeichnung.textDeutsch && b.bezeichnung.textDeutsch) {
-                return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
-            }
-            return a.modulTagesschuleName.localeCompare(b.modulTagesschuleName);
-        });
+        );
     }
 
     public static sortModulTagesschuleGroupsScolaris(
         modulTagesschuleGroups: TSModulTagesschuleGroup[]
     ): TSModulTagesschuleGroup[] {
-        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) =>
-            a.modulTagesschuleName.localeCompare(b.modulTagesschuleName));
+        return modulTagesschuleGroups.sort(
+            (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) =>
+                a.modulTagesschuleName.localeCompare(b.modulTagesschuleName)
+        );
     }
 
     /**
      * Sortiert Tagesschuleinstellungen absteigend nach Periode
      */
-    public static sortEinstellungenTagesschuleByPeriod(einstellungen: TSEinstellungenTagesschule[]):
-        TSEinstellungenTagesschule[] {
+    public static sortEinstellungenTagesschuleByPeriod(
+        einstellungen: TSEinstellungenTagesschule[]
+    ): TSEinstellungenTagesschule[] {
         return einstellungen.sort((a, b) => {
             if (a.gesuchsperiode && b.gesuchsperiode) {
-                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(
+                    a.gesuchsperiode.gesuchsperiodeString
+                );
             }
             return -1;
         });
     }
-
 }

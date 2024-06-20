@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 /**
  * This Dialog should be used to display all key/values of an object in a dev environment
@@ -26,7 +26,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './dv-ng-display-object-dialog.template.html'
 })
 export class DvNgDisplayObjectDialogComponent {
-
     public object = {};
 
     public constructor(

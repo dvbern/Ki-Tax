@@ -19,7 +19,6 @@ import {TSGesuchsperiode} from './TSGesuchsperiode';
 import {TSInstitution} from './TSInstitution';
 
 export class TSPendenzBetreuung {
-
     private _betreuungsNummer: string;
     private _betreuungsId: string;
     private _gesuchId: string;

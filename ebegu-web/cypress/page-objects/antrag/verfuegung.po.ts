@@ -19,13 +19,18 @@
 import {ConfirmDialogPO} from '../dialogs';
 
 const getBetreuungspensumProzent = (zeitabschnittIndex: number) => {
-	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'betreuungspensumProzent');
+    return cy.getByData(
+        'container.zeitabschnitt#' + zeitabschnittIndex,
+        'betreuungspensumProzent'
+    );
 };
 
 const getVerfuegterTarif = (zeitabschnittIndex: number) => {
-    return cy.getByData('tagesschul-anmeldung-tarife',
+    return cy.getByData(
+        'tagesschul-anmeldung-tarife',
         `tagesschul-anmeldung-zeitabschnitt#${zeitabschnittIndex}`,
-        'tagesschul-anmeldung-zeitabschnitt-tarif');
+        'tagesschul-anmeldung-zeitabschnitt-tarif'
+    );
 };
 
 const getProvisorischerTarifTitel = () => {
@@ -33,31 +38,44 @@ const getProvisorischerTarifTitel = () => {
 };
 
 const getAllTarife = () => {
-    return cy.getByData('tagesschul-anmeldung-tarife', 'tagesschul-anmeldung-zeitabschnitt-tarif');
+    return cy.getByData(
+        'tagesschul-anmeldung-tarife',
+        'tagesschul-anmeldung-zeitabschnitt-tarif'
+    );
 };
 
-const getVerguenstigungOhneBeruecksichtigungVollkosten = (zeitabschnittIndex: number) => {
-    return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'verguenstigungOhneBeruecksichtigungVollkosten');
+const getVerguenstigungOhneBeruecksichtigungVollkosten = (
+    zeitabschnittIndex: number
+) => {
+    return cy.getByData(
+        'container.zeitabschnitt#' + zeitabschnittIndex,
+        'verguenstigungOhneBeruecksichtigungVollkosten'
+    );
 };
 
 const getVerfuegungsBemerkungenKontrolliert = () => {
-	return cy.getByData('verfuegungs-bemerkungen-kontrolliert');
+    return cy.getByData('verfuegungs-bemerkungen-kontrolliert');
 };
 
-const getAnspruchberechtigtesBetreuungspensum = (zeitabschnittIndex: number) => {
-	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'anspruchberechtigtesPensum');
+const getAnspruchberechtigtesBetreuungspensum = (
+    zeitabschnittIndex: number
+) => {
+    return cy.getByData(
+        'container.zeitabschnitt#' + zeitabschnittIndex,
+        'anspruchberechtigtesPensum'
+    );
 };
 
 const getVerfuegenButton = () => {
-	return cy.getByData('container.verfuegen', 'navigation-button');
+    return cy.getByData('container.verfuegen', 'navigation-button');
 };
 
 const getVerfuegenVerzichtenButton = () => {
-	return cy.getByData('container.verfuegen-verzichten', 'navigation-button');
+    return cy.getByData('container.verfuegen-verzichten', 'navigation-button');
 };
 
 const getNichtEintretenButton = () => {
-	return cy.getByData('container.nicht-eintreten', 'navigation-button');
+    return cy.getByData('container.nicht-eintreten', 'navigation-button');
 };
 
 // !! -- PAGE ACTIONS -- !!
@@ -69,7 +87,7 @@ const nichtEintretenVerfuegen = () => {
 };
 
 const betreuungKontrollierenAndVerfuegen = () => {
-	cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
+    cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
         getVerfuegungsBemerkungenKontrolliert().click();
         getVerfuegenButton().click();
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
@@ -78,7 +96,7 @@ const betreuungKontrollierenAndVerfuegen = () => {
 
 // In der Mutation müssen wir die VerfügungsBemerkung Checkbox nicht mehr setzen
 const betreuungVerfuegen = () => {
-	cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
+    cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
         getVerfuegungsBemerkungenKontrolliert().click();
         getVerfuegenButton().click();
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
@@ -99,5 +117,5 @@ export const VerfuegungPO = {
     getAnspruchberechtigtesBetreuungspensum,
     // PAGE ACTIONS
     nichtEintretenVerfuegen,
-    betreuungKontrollierenAndVerfuegen,
+    betreuungKontrollierenAndVerfuegen
 };

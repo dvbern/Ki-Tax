@@ -14,7 +14,14 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IController, IFormController, ILogService, IPromise, IQService} from 'angular';
+import {
+    IComponentOptions,
+    IController,
+    IFormController,
+    ILogService,
+    IPromise,
+    IQService
+} from 'angular';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -59,7 +66,6 @@ export class KommentarViewComponentConfig implements IComponentOptions {
  * Controller fuer den Kommentare
  */
 export class KommentarViewController implements IController {
-
     public static $inject: string[] = [
         '$log',
         'GesuchModelManager',
@@ -101,16 +107,15 @@ export class KommentarViewController implements IController {
         private readonly $q: IQService,
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
         }
         Promise.all([
             this.applicationPropertyRS.isPersonensucheDisabledForSystem(),
             this.applicationPropertyRS.getGeresEnabledForMandant()
-        ])
-        .then(([geresSytemWideDisabled, geresEnabledForMandant]) => {
-            this.isPersonensucheDisabled = geresSytemWideDisabled || !geresEnabledForMandant;
+        ]).then(([geresSytemWideDisabled, geresEnabledForMandant]) => {
+            this.isPersonensucheDisabled =
+                geresSytemWideDisabled || !geresEnabledForMandant;
         });
     }
 
@@ -118,18 +123,22 @@ export class KommentarViewController implements IController {
         if (!this.getGesuch()) {
             return this.$q.resolve(undefined);
         }
-        return this.dokumenteRS.getDokumenteByTypeCached(
-            this.getGesuch(),
-            TSDokumentGrundTyp.PAPIERGESUCH,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT))
+        return this.dokumenteRS
+            .getDokumenteByTypeCached(
+                this.getGesuch(),
+                TSDokumentGrundTyp.PAPIERGESUCH,
+                this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT)
+            )
             .then((promiseValue: TSDokumenteDTO) => {
                 // it could also has no Papiergesuch at all
                 if (promiseValue.dokumentGruende.length === 1) {
-                    this.dokumentePapiergesuch = promiseValue.dokumentGruende[0];
+                    this.dokumentePapiergesuch =
+                        promiseValue.dokumentGruende[0];
                 } else if (promiseValue.dokumentGruende.length > 1) {
                     this.$log.error(
                         `Falsche anzahl Dokumente beim Laden vom Papiergesuch. Es sollte 1 sein, ist aber
-                        ${promiseValue.dokumentGruende.length}`);
+                        ${promiseValue.dokumentGruende.length}`
+                    );
                 }
                 return promiseValue;
             });
@@ -160,14 +169,20 @@ export class KommentarViewController implements IController {
     public saveBemerkungZurVerfuegung(): void {
         if (!this.isGesuchUnsaved()) {
             // Bemerkungen auf dem Gesuch werden nur gespeichert, wenn das gesuch schon persisted ist!
-            this.gesuchRS.updateBemerkung(this.getGesuch().id, this.getGesuch().bemerkungen);
+            this.gesuchRS.updateBemerkung(
+                this.getGesuch().id,
+                this.getGesuch().bemerkungen
+            );
         }
     }
 
     public saveBemerkungPruefungSTV(): void {
         if (!this.isGesuchUnsaved()) {
             // Bemerkungen auf dem Gesuch werden nur gespeichert, wenn das gesuch schon persisted ist!
-            this.gesuchRS.updateBemerkungPruefungSTV(this.getGesuch().id, this.getGesuch().bemerkungenPruefungSTV);
+            this.gesuchRS.updateBemerkungPruefungSTV(
+                this.getGesuch().id,
+                this.getGesuch().bemerkungenPruefungSTV
+            );
         }
     }
 
@@ -178,14 +193,18 @@ export class KommentarViewController implements IController {
     }
 
     public isPapiergesuch(): boolean {
-        return this.getGesuch() ? this.getGesuch().eingangsart === TSEingangsart.PAPIER : false;
+        return this.getGesuch()
+            ? this.getGesuch().eingangsart === TSEingangsart.PAPIER
+            : false;
     }
 
     public hasPapiergesuch(): boolean {
-        return !!(this.dokumentePapiergesuch
-            && this.dokumentePapiergesuch.dokumente
-            && this.dokumentePapiergesuch.dokumente.length !== 0
-            && this.dokumentePapiergesuch.dokumente[0].filename);
+        return !!(
+            this.dokumentePapiergesuch &&
+            this.dokumentePapiergesuch.dokumente &&
+            this.dokumentePapiergesuch.dokumente.length !== 0 &&
+            this.dokumentePapiergesuch.dokumente[0].filename
+        );
     }
 
     public download(): void {
@@ -197,10 +216,16 @@ export class KommentarViewController implements IController {
             }
 
             const newest = this.getNewest(this.dokumentePapiergesuch.dokumente);
-            this.downloadRS.getAccessTokenDokument(newest.id)
+            this.downloadRS
+                .getAccessTokenDokument(newest.id)
                 .then(response => {
                     const tempDokument = angular.copy(response);
-                    this.downloadRS.startDownload(tempDokument.accessToken, newest.filename, false, win);
+                    this.downloadRS.startDownload(
+                        tempDokument.accessToken,
+                        newest.filename,
+                        false,
+                        win
+                    );
                 })
                 .catch(ex => EbeguUtil.handleDownloadError(win, ex));
         });
@@ -210,12 +235,13 @@ export class KommentarViewController implements IController {
         let newest = dokumente[0];
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
-            if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
+            if (
+                dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)
+            ) {
                 newest = dokumente[i];
             }
         }
         return newest;
-
     }
 
     public upload(files: any[]): void {
@@ -225,11 +251,11 @@ export class KommentarViewController implements IController {
                 return;
             }
             const gesuchID = this.getGesuch().id;
-            console.log(`Uploading files on gesuch ${  gesuchID}`);
+            console.log(`Uploading files on gesuch ${gesuchID}`);
 
             const filesTooBig: any[] = [];
             const filesOk: any[] = [];
-            this.$log.debug(`Uploading files on gesuch ${  gesuchID}`);
+            this.$log.debug(`Uploading files on gesuch ${gesuchID}`);
             for (const file of files) {
                 this.$log.debug(`File: ${file.name} size: ${file.size}`);
                 if (file.size > MAX_FILE_SIZE) {
@@ -241,7 +267,7 @@ export class KommentarViewController implements IController {
 
             if (filesTooBig.length > 0) {
                 // DialogBox anzeigen für Files, welche zu gross sind!
-                let returnString = `${this.$translate.instant('FILE_ZU_GROSS')  }<br/><br/>`;
+                let returnString = `${this.$translate.instant('FILE_ZU_GROSS')}<br/><br/>`;
                 returnString += '<ul>';
                 for (const file of filesTooBig) {
                     returnString += '<li>';
@@ -250,19 +276,27 @@ export class KommentarViewController implements IController {
                 }
                 returnString += '</ul>';
 
-                this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                    title: returnString
-                });
+                this.dvDialog.showDialog(
+                    okHtmlDialogTempl,
+                    OkHtmlDialogController,
+                    {
+                        title: returnString
+                    }
+                );
             }
 
             if (filesOk.length <= 0) {
                 return;
             }
 
-            this.uploadRS.uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID).then(response => {
-                this.dokumentePapiergesuch = angular.copy(response);
-                this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
-            });
+            this.uploadRS
+                .uploadFile(filesOk, this.dokumentePapiergesuch, gesuchID)
+                .then(response => {
+                    this.dokumentePapiergesuch = angular.copy(response);
+                    this.globalCacheService
+                        .getCache(TSCacheTyp.EBEGU_DOCUMENT)
+                        .removeAll();
+                });
         });
     }
 
@@ -279,27 +313,42 @@ export class KommentarViewController implements IController {
     }
 
     public isInBearbeitungSTV(): boolean {
-        return this.getGesuch() ? (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV) : false;
+        return this.getGesuch()
+            ? this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
+            : false;
     }
 
     public freigebenSTV(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'ZURUECK_AN_GEMEINDE_TITLE',
-            deleteText: 'ZURUECK_AN_GEMEINDE_GEBEN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                this.$state.go('pendenzenSteueramt.list-view');
-            }));
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'ZURUECK_AN_GEMEINDE_TITLE',
+                    deleteText: 'ZURUECK_AN_GEMEINDE_GEBEN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .gesuchBySTVFreigeben(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        this.$state.go('pendenzenSteueramt.list-view');
+                    })
+            );
     }
 
     public showBemerkungenPruefungSTV(): boolean {
-        return this.getGesuch() && (
-            this.getGesuch().geprueftSTV
-            || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV
-            || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
-            || this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV);
+        return (
+            this.getGesuch() &&
+            (this.getGesuch().geprueftSTV ||
+                this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV ||
+                this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV ||
+                this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV)
+        );
     }
 
     public getFreigabeName(): string {
@@ -307,15 +356,22 @@ export class KommentarViewController implements IController {
     }
 
     public showGeresAbfrage(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.isPersonensucheDisabled)
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier()) &&
-            !this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
+        return (
+            EbeguUtil.isNotNullAndFalse(this.isPersonensucheDisabled) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getDossier()
+            ) &&
+            !this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule
+        );
     }
 
     public getRolesForInternePendenzen(): TSRole[] {
-        return TSRoleUtil.getGemeindeRoles().filter(role => role !== TSRole.REVISOR
-            && role !== TSRole.JURIST
-            && role !== TSRole.STEUERAMT);
+        return TSRoleUtil.getGemeindeRoles().filter(
+            role =>
+                role !== TSRole.REVISOR &&
+                role !== TSRole.JURIST &&
+                role !== TSRole.STEUERAMT
+        );
     }
 
     public getDossier(): TSDossier {
@@ -323,6 +379,9 @@ export class KommentarViewController implements IController {
     }
 
     public saveBemerkungen(): void {
-        this.dossierRS.updateBemerkungen(this.getDossier().id, this.getDossier().bemerkungen);
+        this.dossierRS.updateBemerkungen(
+            this.getDossier().id,
+            this.getDossier().bemerkungen
+        );
     }
 }

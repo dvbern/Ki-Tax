@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 
 export class DVMaxLength implements IDirective {
     public static $inject = ['CONSTANTS'];
@@ -25,13 +31,18 @@ export class DVMaxLength implements IDirective {
 
     public constructor(CONSTANTS: any) {
         this.length = CONSTANTS.MAX_LENGTH;
-        this.link = (_scope: IScope, _element: IAugmentedJQuery, _attrs, ctrl: any) => {
+        this.link = (
+            _scope: IScope,
+            _element: IAugmentedJQuery,
+            _attrs,
+            ctrl: any
+        ) => {
             if (!ctrl) {
                 return;
             }
 
             ctrl.$validators.dvMaxLength = (_modelValue: any, viewValue: any) =>
-                ctrl.$isEmpty(viewValue) || (viewValue.length <= this.length);
+                ctrl.$isEmpty(viewValue) || viewValue.length <= this.length;
         };
     }
 

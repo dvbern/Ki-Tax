@@ -18,13 +18,19 @@ export class InitZpvNrComponent implements OnInit {
         private readonly $state: StateService,
         private readonly windowRef: WindowRef,
         private readonly uiRouterGlobals: UIRouterGlobals
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.authService.burnPortalTimeout().finally(() => {
             const target = this.$state.target('onboarding.zpvgssuccess');
-            this.authService.initConnectGSZPV(this.$state.href(target.$state(), this.uiRouterGlobals.params, {absolute: true}))
+            this.authService
+                .initConnectGSZPV(
+                    this.$state.href(
+                        target.$state(),
+                        this.uiRouterGlobals.params,
+                        {absolute: true}
+                    )
+                )
                 .then(url => {
                     this.redirectionHref = url;
 

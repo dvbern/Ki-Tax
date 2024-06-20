@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit
+} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -30,7 +36,6 @@ const LOG = LogFactory.createLog('ResultatComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResultatComponent implements OnInit {
-
     @Input()
     public isGemeinsam: boolean;
 
@@ -46,26 +51,31 @@ export class ResultatComponent implements OnInit {
         protected ref: ChangeDetectorRef,
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.setupCalculation();
     }
 
     public setupCalculation(): void {
-        this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
+        this.finSitLuService.massgebendesEinkommenStore.subscribe(
+            resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error)
+            },
+            error => LOG.error(error)
         );
     }
 
     public getAntragsteller1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller1.extractFullName();
     }
 
     public getAntragsteller2Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller2.extractFullName();
     }
 }

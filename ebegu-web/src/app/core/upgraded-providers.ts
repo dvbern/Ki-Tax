@@ -50,69 +50,81 @@ import IInjectorService = angular.auto.IInjectorService;
 /* eslint-disable */
 
 // AuthServiceRS
-export function authServiceRSServiceFactory(i: IInjectorService): AuthServiceRS {
+export function authServiceRSServiceFactory(
+    i: IInjectorService
+): AuthServiceRS {
     return i.get('AuthServiceRS');
 }
 
 export const authServiceRSProvider = {
     provide: AuthServiceRS,
     useFactory: authServiceRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // ApplicationPropertyRS
-export function applicationPropertyRSServiceFactory(i: IInjectorService): ApplicationPropertyRS {
+export function applicationPropertyRSServiceFactory(
+    i: IInjectorService
+): ApplicationPropertyRS {
     return i.get('ApplicationPropertyRS');
 }
 
 export const applicationPropertyRSProvider = {
     provide: ApplicationPropertyRS,
     useFactory: applicationPropertyRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // TraegerschaftRS
-export function traegerschaftRSProviderServiceFactory(i: IInjectorService): TraegerschaftRS {
+export function traegerschaftRSProviderServiceFactory(
+    i: IInjectorService
+): TraegerschaftRS {
     return i.get('TraegerschaftRS');
 }
 
 export const traegerschaftRSProvider = {
     provide: TraegerschaftRS,
     useFactory: traegerschaftRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // ErrorService
-export function errorServiceProviderServiceFactory(i: IInjectorService): ErrorService {
+export function errorServiceProviderServiceFactory(
+    i: IInjectorService
+): ErrorService {
     return i.get('ErrorService');
 }
 
 export const errorServiceProvider = {
     provide: ErrorService,
     useFactory: errorServiceProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // GesuchsperiodeRS
-export function gesuchsperiodeRSProviderServiceFactory(i: IInjectorService): GesuchsperiodeRS {
+export function gesuchsperiodeRSProviderServiceFactory(
+    i: IInjectorService
+): GesuchsperiodeRS {
     return i.get('GesuchsperiodeRS');
 }
 
 export const gesuchsperiodeRSProvider = {
     provide: GesuchsperiodeRS,
     useFactory: gesuchsperiodeRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // DatabaseMigrationRS
-export function databaseMigrationRSProviderServiceFactory(i: IInjectorService): DatabaseMigrationRS {
+export function databaseMigrationRSProviderServiceFactory(
+    i: IInjectorService
+): DatabaseMigrationRS {
     return i.get('DatabaseMigrationRS');
 }
 
 export const databaseMigrationRSProvider = {
     provide: DatabaseMigrationRS,
     useFactory: databaseMigrationRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // GesuchRS
@@ -123,18 +135,20 @@ export function gesuchRSProviderServiceFactory(i: IInjectorService): GesuchRS {
 export const gesuchRSProvider = {
     provide: GesuchRS,
     useFactory: gesuchRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // GemeindeRS
-export function gemeindeRSProviderServiceFactory(i: IInjectorService): GemeindeRS {
+export function gemeindeRSProviderServiceFactory(
+    i: IInjectorService
+): GemeindeRS {
     return i.get('GemeindeRS');
 }
 
 export const gemeindeRSProvider = {
     provide: GemeindeRS,
     useFactory: gemeindeRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // MitteilungRS
@@ -145,7 +159,7 @@ export function mitteilungRSServiceFactory(i: IInjectorService): MitteilungRS {
 export const mitteilungRSProvider = {
     provide: MitteilungRS,
     useFactory: mitteilungRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // DownloadRS
@@ -156,7 +170,7 @@ export function downloadRSServiceFactory(i: IInjectorService): DownloadRS {
 export const downloadRSProvider = {
     provide: DownloadRS,
     useFactory: downloadRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // DossierRS
@@ -167,40 +181,46 @@ export function dossierRSServiceFactory(i: IInjectorService): DossierRS {
 export const dossierRSProvider = {
     provide: DossierRS,
     useFactory: dossierRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // AntragStatusHistoryRS
-export function antragStatusHistoryRSServiceFactory(i: IInjectorService): AntragStatusHistoryRS {
+export function antragStatusHistoryRSServiceFactory(
+    i: IInjectorService
+): AntragStatusHistoryRS {
     return i.get('AntragStatusHistoryRS');
 }
 
 export const antragStatusHistoryRSProvider = {
     provide: AntragStatusHistoryRS,
     useFactory: antragStatusHistoryRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // WizardStepManager
-export function wizardStepManagerServiceFactory(i: IInjectorService): WizardStepManager {
+export function wizardStepManagerServiceFactory(
+    i: IInjectorService
+): WizardStepManager {
     return i.get('WizardStepManager');
 }
 
 export const wizardStepManagerProvider = {
     provide: WizardStepManager,
     useFactory: wizardStepManagerServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // WizardSubStepManager
-export function wizardSubStepManagerServiceFactory(i: IInjectorService): FinanzielleSituationSubStepManager {
+export function wizardSubStepManagerServiceFactory(
+    i: IInjectorService
+): FinanzielleSituationSubStepManager {
     return i.get('WizardSubStepManager');
 }
 
 export const wizardSubStepManagerProvider = {
     provide: FinanzielleSituationSubStepManager,
     useFactory: wizardSubStepManagerServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // FallRS
@@ -211,18 +231,20 @@ export function fallRSServiceFactory(i: IInjectorService): FallRS {
 export const fallRSProvider = {
     provide: FallRS,
     useFactory: fallRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // InstitutionStammdatenRS
-export function institutionStammdatenRSFactory(i: IInjectorService): InstitutionStammdatenRS {
+export function institutionStammdatenRSFactory(
+    i: IInjectorService
+): InstitutionStammdatenRS {
     return i.get('InstitutionStammdatenRS');
 }
 
 export const institutionStammdatenRSProvider = {
     provide: InstitutionStammdatenRS,
     useFactory: institutionStammdatenRSFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // SupportRS
@@ -233,18 +255,20 @@ export function supportRSServiceFactory(i: IInjectorService): SupportRS {
 export const supportRSProvider = {
     provide: SupportRS,
     useFactory: supportRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // NotrechtRS
-export function notrechtRSProviderServiceFactory(i: IInjectorService): NotrechtRS {
+export function notrechtRSProviderServiceFactory(
+    i: IInjectorService
+): NotrechtRS {
     return i.get('NotrechtRS');
 }
 
 export const notrechtRSProvider = {
     provide: NotrechtRS,
     useFactory: notrechtRSProviderServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // UploadRS
@@ -255,17 +279,19 @@ export function uploadRSServiceFactory(i: IInjectorService): UploadRS {
 export const uploadRSProvider = {
     provide: UploadRS,
     useFactory: uploadRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 // GesuchModelManager
-export function gesuchModelManagerFactory(i: IInjectorService): GesuchModelManager {
+export function gesuchModelManagerFactory(
+    i: IInjectorService
+): GesuchModelManager {
     return i.get('GesuchModelManager');
 }
 
 export const gesuchModelManagerProvider = {
     provide: GesuchModelManager,
     useFactory: gesuchModelManagerFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // ExportRS
@@ -276,7 +302,7 @@ export function reportRSFactory(i: IInjectorService): ReportRS {
 export const reportRSProvider = {
     provide: ReportRS,
     useFactory: reportRSFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // EbeguUtil
@@ -287,29 +313,33 @@ export function ebeguUtilFactory(i: IInjectorService): EbeguUtil {
 export const ebeguUtilProvider = {
     provide: EbeguUtil,
     useFactory: ebeguUtilFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // FinanzielleSituationRS
-export function finanzielleSituationRSServiceFactory(i: IInjectorService): FinanzielleSituationRS {
+export function finanzielleSituationRSServiceFactory(
+    i: IInjectorService
+): FinanzielleSituationRS {
     return i.get('FinanzielleSituationRS');
 }
 
 export const finanzielleSituationRSProvider = {
     provide: FinanzielleSituationRS,
     useFactory: finanzielleSituationRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // BerechnungsManager
-export function berechnungsManagerFactory(i: IInjectorService): BerechnungsManager {
+export function berechnungsManagerFactory(
+    i: IInjectorService
+): BerechnungsManager {
     return i.get('BerechnungsManager');
 }
 
 export const berechnungsManagerProvider = {
     provide: BerechnungsManager,
     useFactory: berechnungsManagerFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // BerechnungsManager
@@ -320,7 +350,7 @@ export function listResourceRSFactory(i: IInjectorService): ListResourceRS {
 export const listResourceRSProvider = {
     provide: ListResourceRS,
     useFactory: listResourceRSFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // BerechnungsManager
@@ -331,43 +361,47 @@ export function gesuchstellerRSFactory(i: IInjectorService): GesuchstellerRS {
 export const gesuchstellerRSProvider = {
     provide: GesuchstellerRS,
     useFactory: gesuchstellerRSFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // Global Cache Service
-export function globalCacheServiceFactory(i: IInjectorService): GlobalCacheService {
+export function globalCacheServiceFactory(
+    i: IInjectorService
+): GlobalCacheService {
     return i.get('GlobalCacheService');
 }
 
 export const globalCacheServiceProvider = {
     provide: GlobalCacheService,
     useFactory: globalCacheServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
 // EKV Container RS
-export function ekvContainerRSServiceFactory(i: IInjectorService): EinkommensverschlechterungContainerRS {
+export function ekvContainerRSServiceFactory(
+    i: IInjectorService
+): EinkommensverschlechterungContainerRS {
     return i.get('EinkommensverschlechterungContainerRS');
 }
 
 export const ekvContainerRSServiceProvider = {
     provide: EinkommensverschlechterungContainerRS,
     useFactory: ekvContainerRSServiceFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
 
-
 // EKV Info RS
-export function ekvInfoRSFactory(i: IInjectorService): EinkommensverschlechterungInfoRS {
+export function ekvInfoRSFactory(
+    i: IInjectorService
+): EinkommensverschlechterungInfoRS {
     return i.get('EinkommensverschlechterungInfoRS');
 }
 
 export const ekvInfoRSProvider = {
     provide: EinkommensverschlechterungInfoRS,
     useFactory: ekvInfoRSFactory,
-    deps: ['$injector'],
+    deps: ['$injector']
 };
-
 
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,

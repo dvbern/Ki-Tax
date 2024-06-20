@@ -19,7 +19,6 @@ import {DvRadioContainerComponentConfig} from './dv-radio-container';
 import IInjectorService = angular.auto.IInjectorService;
 
 describe('dvRadioContainer', () => {
-
     beforeEach(angular.mock.module('ebeguWeb.core'));
 
     beforeEach(angular.mock.module(ngServicesMock));
@@ -28,10 +27,12 @@ describe('dvRadioContainer', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
-        $componentController = $injector.get('$componentController');
-        scope = $injector.get('$rootScope').$new();
-    }));
+    beforeEach(
+        angular.mock.inject(($injector: IInjectorService) => {
+            $componentController = $injector.get('$componentController');
+            scope = $injector.get('$rootScope').$new();
+        })
+    );
 
     it('should be defined', () => {
         /*
@@ -39,7 +40,11 @@ describe('dvRadioContainer', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('dvRadioContainer', {$scope: scope}, bindings);
+        component = $componentController(
+            'dvRadioContainer',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
 });

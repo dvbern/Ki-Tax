@@ -32,19 +32,26 @@ describe('FinanzielleSituationAufteilungComponent', () => {
     let component: FinanzielleSituationAufteilungComponent;
     let fixture: ComponentFixture<FinanzielleSituationAufteilungComponent>;
 
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch']
+    );
     const finanzielleSituationRSSpy =
-        jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['updateFromAufteilung']);
+        jasmine.createSpyObj<FinanzielleSituationRS>(
+            FinanzielleSituationRS.name,
+            ['updateFromAufteilung']
+        );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             declarations: [FinanzielleSituationAufteilungComponent],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: NgForm, useValue: new NgForm([], [])}
             ]
         })
@@ -55,7 +62,9 @@ describe('FinanzielleSituationAufteilungComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(FinanzielleSituationAufteilungComponent);
+        fixture = TestBed.createComponent(
+            FinanzielleSituationAufteilungComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

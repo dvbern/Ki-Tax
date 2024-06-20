@@ -12,8 +12,10 @@ import {FinanzielleSituationStartSolothurnComponent} from './finanzielle-situati
 describe('FinanzielleSituationStartSolothurnComponent', () => {
     let component: FinanzielleSituationStartSolothurnComponent;
     let fixture: ComponentFixture<FinanzielleSituationStartSolothurnComponent>;
-    const gesuchModelManagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
-    const finSitSolothurnServiceMock = SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
+    const gesuchModelManagerSpy =
+        SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+    const finSitSolothurnServiceMock =
+        SolothurnFinSitTestHelpers.createFinSitSolothurnServiceMock();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -21,23 +23,28 @@ describe('FinanzielleSituationStartSolothurnComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptGesuchModelManager(),
-                {provide: FinanzielleSituationSolothurnService, useValue: finSitSolothurnServiceMock},
+                {
+                    provide: FinanzielleSituationSolothurnService,
+                    useValue: finSitSolothurnServiceMock
+                },
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
-        gesuchModelManagerSpy.getGesuch.and.returnValue(SolothurnFinSitTestHelpers.createGesuch());
+        gesuchModelManagerSpy.getGesuch.and.returnValue(
+            SolothurnFinSitTestHelpers.createGesuch()
+        );
         const famSit = new TSFamiliensituation();
         famSit.familienstatus = TSFamilienstatus.VERHEIRATET;
         gesuchModelManagerSpy.getFamiliensituation.and.returnValue(famSit);
-        fixture = TestBed.createComponent(FinanzielleSituationStartSolothurnComponent);
+        fixture = TestBed.createComponent(
+            FinanzielleSituationStartSolothurnComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

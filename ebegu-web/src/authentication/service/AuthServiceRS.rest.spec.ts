@@ -25,10 +25,9 @@ import {TSBerechtigung} from '../../models/TSBerechtigung';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import {AuthServiceRS} from './AuthServiceRS.rest';
-import { Buffer } from 'buffer';
+import {Buffer} from 'buffer';
 
 describe('AuthServiceRS', () => {
-
     let authServiceRS: AuthServiceRS;
     let $http: angular.IHttpService;
     let $httpBackend: angular.IHttpBackendService;
@@ -46,20 +45,24 @@ describe('AuthServiceRS', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        authServiceRS = $injector.get('AuthServiceRS');
-        $http = $injector.get('$http');
-        $httpBackend = $injector.get('$httpBackend');
-        $rootScope = $injector.get('$rootScope');
-        $q = $injector.get('$q');
-        $timeout = $injector.get('$timeout');
-        $cookies = $injector.get('$cookies');
-        benutzerRS = $injector.get('BenutzerRS');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
+    beforeEach(
+        angular.mock.inject($injector => {
+            authServiceRS = $injector.get('AuthServiceRS');
+            $http = $injector.get('$http');
+            $httpBackend = $injector.get('$httpBackend');
+            $rootScope = $injector.get('$rootScope');
+            $q = $injector.get('$q');
+            $timeout = $injector.get('$timeout');
+            $cookies = $injector.get('$cookies');
+            benutzerRS = $injector.get('BenutzerRS');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(
+                TestDataUtil.createGesuchsperiode20162017()
+            );
 
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-    }));
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+        })
+    );
 
     describe('API usage', () => {
         beforeEach(() => {
@@ -67,20 +70,25 @@ describe('AuthServiceRS', () => {
         });
         it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect($http.post).not.toHaveBeenCalled();
         });
         it('receives a loginRequest and handles the incoming cookie', () => {
             // Der Inhalt der Cookie muss nicht unbedingt ein TSBenutzer sein. Deswegen machen wir hier ein Objekt mit
             // dem Inhalt, den die Cookie braucht
-            const benutzer = new TSBenutzer('Emma',
+            const benutzer = new TSBenutzer(
+                'Emma',
                 'Gerber',
                 'geem',
                 'password5',
                 'emma.gerber@example.com',
                 undefined,
-                TSRole.GESUCHSTELLER);
-            benutzer.currentBerechtigung = new TSBerechtigung(undefined, TSRole.GESUCHSTELLER);
+                TSRole.GESUCHSTELLER
+            );
+            benutzer.currentBerechtigung = new TSBerechtigung(
+                undefined,
+                TSRole.GESUCHSTELLER
+            );
             const cookieContent: any = {
                 vorname: 'Emma',
                 nachname: 'Gerber',
@@ -88,10 +96,16 @@ describe('AuthServiceRS', () => {
                 email: 'emma.gerber@example.com',
                 role: 'GESUCHSTELLER'
             };
-            const encodedUser = Buffer.from(JSON.stringify(cookieContent).split('_').join('')).toString('base64');
+            const encodedUser = Buffer.from(
+                JSON.stringify(cookieContent).split('_').join('')
+            ).toString('base64');
             spyOn($cookies, 'get').and.returnValue(encodedUser);
-            $httpBackend.when('GET', '/ebegu/api/v1/auth/authenticated-user').respond(benutzer);
-            spyOn(benutzerRS, 'findBenutzerById').and.returnValue($q.when(benutzer) as Promise<TSBenutzer>);
+            $httpBackend
+                .when('GET', '/ebegu/api/v1/auth/authenticated-user')
+                .respond(benutzer);
+            spyOn(benutzerRS, 'findBenutzerById').and.returnValue(
+                $q.when(benutzer) as Promise<TSBenutzer>
+            );
 
             let cookieUser: TSBenutzer;
             // if we can decode the cookie the client application assumes the user is logged in for ui purposes
@@ -103,21 +117,24 @@ describe('AuthServiceRS', () => {
             $timeout.flush();
             $httpBackend.flush();
 
-            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($http.post).toHaveBeenCalled();
             expect(cookieUser.vorname).toEqual(benutzer.vorname);
             expect(cookieUser.nachname).toEqual(benutzer.nachname);
             expect(cookieUser.password).toEqual(benutzer.password);
             expect(cookieUser.email).toEqual(benutzer.email);
-            expect(cookieUser.currentBerechtigung.role).toEqual(benutzer.currentBerechtigung.role);
+            expect(cookieUser.currentBerechtigung.role).toEqual(
+                benutzer.currentBerechtigung.role
+            );
         });
         it('sends a logrequest to server', () => {
             authServiceRS.logoutRequest();
             $rootScope.$apply();
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect($http.post).toHaveBeenCalledWith('/ebegu/api/v1/auth/logout', null);
+
+            expect($http.post).toHaveBeenCalledWith(
+                '/ebegu/api/v1/auth/logout',
+                null
+            );
             expect(authServiceRS.getPrincipal()).toBeUndefined();
         });
     });
-
 });

@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {FerienbetreuungAbschlussComponent} from '../ferienbetreuung-abschluss/ferienbetreuung-abschluss.component';
@@ -40,8 +43,7 @@ const states: NgHybridStateDeclaration[] = [
             {
                 token: 'ferienbetreuungId',
                 deps: [Transition],
-                resolveFn: (trans: Transition) =>
-                    (trans.params().id)
+                resolveFn: (trans: Transition) => trans.params().id
             }
         ]
     },
@@ -78,12 +80,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class FerienbetreuungRoutingModule {
-}
+export class FerienbetreuungRoutingModule {}

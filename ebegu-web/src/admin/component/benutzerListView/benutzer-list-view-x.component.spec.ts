@@ -26,12 +26,17 @@ describe('BenutzerListViewXComponent', () => {
     let component: BenutzerListViewXComponent;
     let fixture: ComponentFixture<BenutzerListViewXComponent>;
 
-    const benutzerRSSpy = jasmine.createSpyObj(BenutzerRSX.name, ['searchUsers']);
+    const benutzerRSSpy = jasmine.createSpyObj(BenutzerRSX.name, [
+        'searchUsers'
+    ]);
     const authServiceRSSpy = jasmine.createSpyObj(AuthServiceRS.name, [
         'isOneOfRoles',
         'getVisibleRolesForPrincipal'
     ]);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -41,8 +46,7 @@ describe('BenutzerListViewXComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy}
             ],
             declarations: [BenutzerListViewXComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

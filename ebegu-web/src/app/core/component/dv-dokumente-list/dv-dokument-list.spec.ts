@@ -26,7 +26,6 @@ import {DVDokumenteListController} from './dv-dokumente-list';
 
 /* eslint-disable */
 describe('dvDokumenteList', () => {
-
     let controller: DVDokumenteListController;
     let gesuchModelManager: GesuchModelManager;
 
@@ -34,21 +33,24 @@ describe('dvDokumenteList', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
+    beforeEach(
+        angular.mock.inject($injector => {
+            gesuchModelManager = $injector.get('GesuchModelManager');
 
-        controller = new DVDokumenteListController(undefined,
-            gesuchModelManager,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-                undefined);
-
-    }));
+            controller = new DVDokumenteListController(
+                undefined,
+                gesuchModelManager,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined
+            );
+        })
+    );
 
     describe('extractFullName', () => {
         it('should return the fullName of GS1 for GESUCHSTELLER and personNumber=1', () => {
@@ -57,7 +59,9 @@ describe('dvDokumenteList', () => {
             dokumentGrund.personNumber = 1;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
             mockGesuch();
-            expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Primero');
+            expect(controller.extractFullName(dokumentGrund)).toBe(
+                'Leonardo Primero'
+            );
         });
         it('should return empty string for GESUCHSTELLER and personNumber=null', () => {
             const dokumentGrund = new TSDokumentGrund();
@@ -73,7 +77,9 @@ describe('dvDokumenteList', () => {
             dokumentGrund.personNumber = 2;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
             mockGesuch();
-            expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Segundo');
+            expect(controller.extractFullName(dokumentGrund)).toBe(
+                'Leonardo Segundo'
+            );
         });
         it('should return the fullName of KIND3 for KIND and personNumber=3', () => {
             const dokumentGrund = new TSDokumentGrund();
@@ -81,7 +87,9 @@ describe('dvDokumenteList', () => {
             dokumentGrund.personNumber = 3;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
             mockGesuch();
-            expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Hijo');
+            expect(controller.extractFullName(dokumentGrund)).toBe(
+                'Leonardo Hijo'
+            );
         });
         it('should return emptz string for a not existing KIND', () => {
             const dokumentGrund = new TSDokumentGrund();
@@ -96,9 +104,13 @@ describe('dvDokumenteList', () => {
     function mockGesuch(): void {
         const gesuch = new TSGesuch();
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
-        spyOn(gesuch.gesuchsteller1, 'extractFullName').and.returnValue('Leonardo Primero');
+        spyOn(gesuch.gesuchsteller1, 'extractFullName').and.returnValue(
+            'Leonardo Primero'
+        );
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
-        spyOn(gesuch.gesuchsteller2, 'extractFullName').and.returnValue('Leonardo Segundo');
+        spyOn(gesuch.gesuchsteller2, 'extractFullName').and.returnValue(
+            'Leonardo Segundo'
+        );
 
         const kind = new TSKindContainer();
         kind.kindJA = new TSKind();

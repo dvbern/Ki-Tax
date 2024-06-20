@@ -18,7 +18,6 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ThreeButtonsDialogController {
-
     public static $inject = [
         '$mdDialog',
         '$translate',

@@ -16,6 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {NgxIbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
@@ -37,7 +38,8 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         SharedModule,
         GemeindeRoutingModule,
         MaterialModule,
-        NgxIbanModule
+        NgxIbanModule,
+        MatButtonToggleModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -58,5 +60,4 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
     ],
     providers: []
 })
-export class GemeindeModule {
-}
+export class GemeindeModule {}

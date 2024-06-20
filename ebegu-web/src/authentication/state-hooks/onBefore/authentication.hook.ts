@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookMatchCriteria,
+    HookResult,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -36,41 +41,55 @@ const LOG = LogFactory.createLog('authenticationHookRunBlock');
  */
 authenticationHookRunBlock.$inject = ['$transitions', 'MandantService'];
 
-export function authenticationHookRunBlock($transitions: TransitionService, mandantService: MandantService): void {
+export function authenticationHookRunBlock(
+    $transitions: TransitionService,
+    mandantService: MandantService
+): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS)
+        to: state =>
+            state.data &&
+            Array.isArray(state.data.roles) &&
+            !state.data.roles.includes(TSRole.ANONYMOUS)
     };
 
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, transition =>
-        redirectToLogin(transition, mandantService), {priority: OnBeforePriorities.AUTHENTICATION});
+    $transitions.onBefore(
+        requiresAuthCriteria,
+        transition => redirectToLogin(transition, mandantService),
+        {priority: OnBeforePriorities.AUTHENTICATION}
+    );
 }
 
 // Function that returns a redirect for the current transition to the login state
 // if the user is not currently authenticated (according to the AuthService)
-function redirectToLogin(transition: Transition, mandantService: MandantService): HookResult {
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+function redirectToLogin(
+    transition: Transition,
+    mandantService: MandantService
+): HookResult {
+    const authService: AuthServiceRS = transition
+        .injector()
+        .get('AuthServiceRS');
     const $state = transition.router.stateService;
 
-    return combineLatest([
-        authService.principal$,
-        mandantService.mandant$
-    ])
-    .pipe(
-        take(1),
-        map(([principal, mandant]) => {
-            LOG.debug('checking authentication of principal', principal);
+    return combineLatest([authService.principal$, mandantService.mandant$])
+        .pipe(
+            take(1),
+            map(([principal, mandant]) => {
+                LOG.debug('checking authentication of principal', principal);
 
-            if (!principal) {
-                LOG.debug('redirecting to login page');
-                const loginState = mandantService.getMandantLoginState(mandant);
-                return $state.target(loginState, undefined, {location: false});
-            }
+                if (!principal) {
+                    LOG.debug('redirecting to login page');
+                    const loginState =
+                        mandantService.getMandantLoginState(mandant);
+                    return $state.target(loginState, undefined, {
+                        location: false
+                    });
+                }
 
-            // continue the original transition
-            return true;
-        })
-    )
-    .toPromise();
+                // continue the original transition
+                return true;
+            })
+        )
+        .toPromise();
 }

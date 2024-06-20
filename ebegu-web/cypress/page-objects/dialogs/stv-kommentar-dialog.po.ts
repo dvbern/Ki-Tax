@@ -20,10 +20,10 @@ const getSTVKommentar = () => {
 };
 
 const getSTVKommentarAbsendenButton = () => {
-	return cy.getByData('kommentar-absenden');
+    return cy.getByData('kommentar-absenden');
 };
 
 export const STVKommentarDialogPO = {
     getSTVKommentar,
-    getSTVKommentarAbsendenButton,
+    getSTVKommentarAbsendenButton
 };

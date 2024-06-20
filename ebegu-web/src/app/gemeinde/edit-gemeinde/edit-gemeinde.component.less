@@ -32,7 +32,13 @@
     font-weight: 600;
 }
 
-::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__content .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__content .mdc-tab__text-label {
+::ng-deep
+    .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active
+    .mdc-tab__content
+    .mdc-tab__text-label,
+.mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active
+    .mdc-tab__content
+    .mdc-tab__text-label {
     color: @black;
 }
 
@@ -41,7 +47,7 @@
 }
 
 .mat-tab-group,
-.mat-tab-body{
+.mat-tab-body {
     .ebeguFont-family() !important;
 }
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
@@ -59,7 +65,8 @@
 }
 
 ::ng-deep {
-    #alternativekontaktdaten_id, #zusatzTextFreigabequittungTitle_id {
+    #alternativekontaktdaten_id,
+    #zusatzTextFreigabequittungTitle_id {
         min-height: 150px;
     }
 }

@@ -15,6 +15,4 @@
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export class TSFerieninselZeitraum extends TSAbstractDateRangedEntity {
-
-}
+export class TSFerieninselZeitraum extends TSAbstractDateRangedEntity {}

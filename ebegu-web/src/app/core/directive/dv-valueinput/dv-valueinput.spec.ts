@@ -19,27 +19,27 @@ import {ValueinputController} from './dv-valueinput';
 
 /* eslint-disable */
 describe('dvValueinput', () => {
-
     let controller: ValueinputController;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject(($injector: angular.auto.IInjectorService) => {
-
-        controller = new ValueinputController($injector.get('$timeout'));
-        controller.ngModelCtrl = {
-            $modelValue: undefined,
-            // renderCalled: false,
-            $setViewValue(passedValue: any): void {
-                controller.ngModelCtrl.$modelValue = passedValue;
-            },
-            $render: () => {
-                return;
-            },
-        } as any;
-    }));
+    beforeEach(
+        angular.mock.inject(($injector: angular.auto.IInjectorService) => {
+            controller = new ValueinputController($injector.get('$timeout'));
+            controller.ngModelCtrl = {
+                $modelValue: undefined,
+                // renderCalled: false,
+                $setViewValue(passedValue: any): void {
+                    controller.ngModelCtrl.$modelValue = passedValue;
+                },
+                $render: () => {
+                    return;
+                }
+            } as any;
+        })
+    );
 
     describe('removeNotDigits', () => {
         it('should return an empty value from an empty value', () => {
@@ -52,39 +52,38 @@ describe('dvValueinput', () => {
             controller.valueinput = '1234';
             controller.ngModelCtrl.$setViewValue('1234');
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('1\'234');
+            expect(controller.ngModelCtrl.$modelValue).toBe("1'234");
         });
         it('should return a number removing leading zeros', () => {
             controller.valueinput = '00123400';
             controller.ngModelCtrl.$setViewValue('00123400');
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('123\'400');
+            expect(controller.ngModelCtrl.$modelValue).toBe("123'400");
         });
         it('should return a number removing text', () => {
             controller.valueinput = '1r2f3,4.5';
             controller.ngModelCtrl.$setViewValue('1r2f3,4.5');
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('12\'345');
+            expect(controller.ngModelCtrl.$modelValue).toBe("12'345");
         });
         it('should return a number removing whitespaces', () => {
             controller.valueinput = '  1234';
             controller.ngModelCtrl.$setViewValue('  1234');
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('1\'234');
+            expect(controller.ngModelCtrl.$modelValue).toBe("1'234");
         });
         it('should return a negative number when negative allowed', () => {
             controller.valueinput = '-1234';
             controller.ngModelCtrl.$setViewValue('-1234');
             controller.allowNegative = true;
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('-1\'234');
+            expect(controller.ngModelCtrl.$modelValue).toBe("-1'234");
         });
         it('should return a positive number when negative not allowed', () => {
             controller.valueinput = '-1234';
             controller.ngModelCtrl.$setViewValue('-1234');
             controller.removeNotDigits();
-            expect(controller.ngModelCtrl.$modelValue).toBe('1\'234');
+            expect(controller.ngModelCtrl.$modelValue).toBe("1'234");
         });
     });
-
 });

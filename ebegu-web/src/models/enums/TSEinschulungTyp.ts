@@ -32,7 +32,7 @@ export enum TSEinschulungTyp {
     KLASSE6 = 'KLASSE6',
     KLASSE7 = 'KLASSE7',
     KLASSE8 = 'KLASSE8',
-    KLASSE9 = 'KLASSE9',
+    KLASSE9 = 'KLASSE9'
 }
 
 export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {
@@ -62,10 +62,7 @@ export function getTSEinschulungTypValuesLuzern(): Array<TSEinschulungTyp> {
 }
 
 export function getTSEinschulungTypValuesAppenzellAusserrhoden(): Array<TSEinschulungTyp> {
-    return [
-        TSEinschulungTyp.VORSCHULALTER,
-        TSEinschulungTyp.KINDERGARTEN1
-    ];
+    return [TSEinschulungTyp.VORSCHULALTER, TSEinschulungTyp.KINDERGARTEN1];
 }
 
 export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {

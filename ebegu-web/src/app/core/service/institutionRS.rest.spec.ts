@@ -23,7 +23,6 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {InstitutionRS} from './institutionRS.rest';
 
 describe('institutionRS', () => {
-
     let institutionRS: InstitutionRS;
     const ebeguRestUtil = new EbeguRestUtil();
     let mockInstitution: TSInstitution;
@@ -31,7 +30,9 @@ describe('institutionRS', () => {
     let mandant: TSMandant;
     let traegerschaft: TSTraegerschaft;
 
-    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['get']);
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, [
+        'get'
+    ]);
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -45,9 +46,16 @@ describe('institutionRS', () => {
         traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Traegerschaft_Test';
         mandant = new TSMandant('Mandant_Test');
-        mockInstitution = new TSInstitution('InstitutionTest', traegerschaft, mandant);
+        mockInstitution = new TSInstitution(
+            'InstitutionTest',
+            traegerschaft,
+            mandant
+        );
         mockInstitution.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
-        mockInstitutionRest = ebeguRestUtil.institutionToRestObject({}, mockInstitution);
+        mockInstitutionRest = ebeguRestUtil.institutionToRestObject(
+            {},
+            mockInstitution
+        );
     });
 
     describe('Public API', () => {
@@ -62,39 +70,56 @@ describe('institutionRS', () => {
                 mockHttpClient.get.and.returnValue(of(mockInstitutionRest));
 
                 let foundInstitution: TSInstitution;
-                institutionRS.findInstitution(mockInstitution.id).subscribe(result => {
-                    foundInstitution = result;
-                    checkFieldValues(foundInstitution, mockInstitution);
-                }, error => console.error(error));
+                institutionRS.findInstitution(mockInstitution.id).subscribe(
+                    result => {
+                        foundInstitution = result;
+                        checkFieldValues(foundInstitution, mockInstitution);
+                    },
+                    error => console.error(error)
+                );
             });
-
         });
 
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
-                const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];
+                const institutionenRestArray = [
+                    mockInstitutionRest,
+                    mockInstitutionRest
+                ];
                 mockHttpClient.get.and.returnValue(of(institutionenRestArray));
 
                 let returnedInstitution: Array<TSInstitution>;
-                institutionRS.getAllInstitutionen().subscribe(result => {
-                    returnedInstitution = result;
+                institutionRS.getAllInstitutionen().subscribe(
+                    result => {
+                        returnedInstitution = result;
 
-                    expect(returnedInstitution).toBeDefined();
-                    expect(returnedInstitution.length).toEqual(2);
-                    checkFieldValues(returnedInstitution[0], institutionenRestArray[0]);
-                    checkFieldValues(returnedInstitution[1], institutionenRestArray[1]);
-                }, error => console.error(error));
+                        expect(returnedInstitution).toBeDefined();
+                        expect(returnedInstitution.length).toEqual(2);
+                        checkFieldValues(
+                            returnedInstitution[0],
+                            institutionenRestArray[0]
+                        );
+                        checkFieldValues(
+                            returnedInstitution[1],
+                            institutionenRestArray[1]
+                        );
+                    },
+                    error => console.error(error)
+                );
             });
         });
-
     });
 
-    function checkFieldValues(institution1: TSInstitution, institution2: TSInstitution): void {
+    function checkFieldValues(
+        institution1: TSInstitution,
+        institution2: TSInstitution
+    ): void {
         expect(institution1).toBeDefined();
         expect(institution1.name).toEqual(institution2.name);
         expect(institution1.id).toEqual(institution2.id);
         expect(institution1.mandant.name).toEqual(institution2.mandant.name);
-        expect(institution1.traegerschaft.name).toEqual(institution2.traegerschaft.name);
+        expect(institution1.traegerschaft.name).toEqual(
+            institution2.traegerschaft.name
+        );
     }
-
 });

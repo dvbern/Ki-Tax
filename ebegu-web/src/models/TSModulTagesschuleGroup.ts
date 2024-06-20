@@ -25,7 +25,6 @@ import {TSModulTagesschule} from './TSModulTagesschule';
 import {TSTextRessource} from './TSTextRessource';
 
 export class TSModulTagesschuleGroup extends TSAbstractEntity {
-
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;
     public bezeichnung: TSTextRessource = new TSTextRessource();
@@ -106,19 +105,29 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     private initializeTempModuleIfNichtAngeboten(): void {
         if (EbeguUtil.isNullOrUndefined(this.tempModulMonday)) {
-            this.tempModulMonday = TSModulTagesschule.create(TSDayOfWeek.MONDAY);
+            this.tempModulMonday = TSModulTagesschule.create(
+                TSDayOfWeek.MONDAY
+            );
         }
         if (EbeguUtil.isNullOrUndefined(this.tempModulTuesday)) {
-            this.tempModulTuesday = TSModulTagesschule.create(TSDayOfWeek.TUESDAY);
+            this.tempModulTuesday = TSModulTagesschule.create(
+                TSDayOfWeek.TUESDAY
+            );
         }
         if (EbeguUtil.isNullOrUndefined(this.tempModulWednesday)) {
-            this.tempModulWednesday = TSModulTagesschule.create(TSDayOfWeek.WEDNESDAY);
+            this.tempModulWednesday = TSModulTagesschule.create(
+                TSDayOfWeek.WEDNESDAY
+            );
         }
         if (EbeguUtil.isNullOrUndefined(this.tempModulThursday)) {
-            this.tempModulThursday = TSModulTagesschule.create(TSDayOfWeek.THURSDAY);
+            this.tempModulThursday = TSModulTagesschule.create(
+                TSDayOfWeek.THURSDAY
+            );
         }
         if (EbeguUtil.isNullOrUndefined(this.tempModulFriday)) {
-            this.tempModulFriday = TSModulTagesschule.create(TSDayOfWeek.FRIDAY);
+            this.tempModulFriday = TSModulTagesschule.create(
+                TSDayOfWeek.FRIDAY
+            );
         }
     }
 
@@ -138,13 +147,15 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
     }
 
     public isValid(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleName)
-            && EbeguUtil.isNotNullOrUndefined(this.identifier)
-            && EbeguUtil.isNotNullOrUndefined(this.bezeichnung)
-            && EbeguUtil.isNotNullOrUndefined(this.zeitVon)
-            && EbeguUtil.isNotNullOrUndefined(this.zeitBis)
-            && EbeguUtil.isNotNullOrUndefined(this.intervall)
-            && this.module.length > 0;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleName) &&
+            EbeguUtil.isNotNullOrUndefined(this.identifier) &&
+            EbeguUtil.isNotNullOrUndefined(this.bezeichnung) &&
+            EbeguUtil.isNotNullOrUndefined(this.zeitVon) &&
+            EbeguUtil.isNotNullOrUndefined(this.zeitBis) &&
+            EbeguUtil.isNotNullOrUndefined(this.intervall) &&
+            this.module.length > 0
+        );
     }
 
     /**
@@ -165,7 +176,11 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
      * Liefert eine Kopie der Werte dieses Moduls
      */
     public getCopy(): TSModulTagesschuleGroup {
-        const copy = new TSModulTagesschuleGroup(this.modulTagesschuleName, this.zeitVon, this.zeitBis);
+        const copy = new TSModulTagesschuleGroup(
+            this.modulTagesschuleName,
+            this.zeitVon,
+            this.zeitBis
+        );
         copy.bezeichnung = new TSTextRessource();
         copy.bezeichnung.textDeutsch = this.bezeichnung.textDeutsch;
         copy.bezeichnung.textFranzoesisch = this.bezeichnung.textFranzoesisch;
@@ -174,7 +189,9 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         copy.reihenfolge = this.reihenfolge;
         copy.wirdPaedagogischBetreut = this.wirdPaedagogischBetreut;
         copy.fremdId = this.fremdId;
-        copy.module = this.module.map(m => TSModulTagesschule.create(m.wochentag));
+        copy.module = this.module.map(m =>
+            TSModulTagesschule.create(m.wochentag)
+        );
         return copy;
     }
 }

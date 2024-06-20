@@ -19,16 +19,25 @@
 
 <mat-dialog-content *ngIf="text">
     <span [textContent]="text | translate"></span>
-    <br/>&nbsp;
+    <br />&nbsp;
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn-extended dv-btn" (click)="actionOne()"
-                [textContent]="actionOneButtonLabel | translate"></button>
-        <button class="dv-btn-extended dv-btn" (click)="actionTwo()"
-                [textContent]="actionTwoButtonLabel | translate"></button>
-        <button class="dv-btn-extended dv-btn cancel-button" (click)="cancel()" [textContent]="cancelButtonLabel | translate"></button>
+        <button
+            class="dv-btn-extended dv-btn"
+            (click)="actionOne()"
+            [textContent]="actionOneButtonLabel | translate"
+        ></button>
+        <button
+            class="dv-btn-extended dv-btn"
+            (click)="actionTwo()"
+            [textContent]="actionTwoButtonLabel | translate"
+        ></button>
+        <button
+            class="dv-btn-extended dv-btn cancel-button"
+            (click)="cancel()"
+            [textContent]="cancelButtonLabel | translate"
+        ></button>
     </div>
 </mat-dialog-actions>
-

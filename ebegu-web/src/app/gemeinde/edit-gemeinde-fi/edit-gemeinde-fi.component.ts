@@ -25,19 +25,14 @@ import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
     selector: 'dv-edit-gemeinde-fi',
     templateUrl: './edit-gemeinde-fi.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class EditGemeindeFIComponent implements OnInit {
-
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
     @Input() public fiAnmeldungenStartDatum: Moment;
     @Input() public fiAnmeldungenStartStr: string;
-
-    public constructor(
-    ) {
-    }
 
     public ngOnInit(): void {
         if (!this.gemeindeId) {

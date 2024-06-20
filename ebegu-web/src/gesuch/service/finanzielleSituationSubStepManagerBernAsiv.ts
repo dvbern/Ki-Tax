@@ -20,7 +20,6 @@ import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepM
 import {GesuchModelManager} from './gesuchModelManager';
 
 export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSituationSubStepManager {
-
     public constructor(gesuchModelManager: GesuchModelManager) {
         super(gesuchModelManager);
     }
@@ -30,7 +29,9 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.BERN_START === currentSubStep) {
             // (1) Sozialhilfe, sonst keine Details
-            if (this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()) {
+            if (
+                this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()
+            ) {
                 return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
             }
             // (2) Normale FinSit Eingabe
@@ -41,8 +42,10 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
         if (TSFinanzielleSituationSubStepName.BERN_GS1 === currentSubStep) {
-            if (this.gesuchModelManager.getGesuchstellerNumber() === 1
-                && this.gesuchModelManager.isGesuchsteller2Required()) {
+            if (
+                this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
+                this.gesuchModelManager.isGesuchsteller2Required()
+            ) {
                 return TSFinanzielleSituationSubStepName.BERN_GS2;
             }
             return TSFinanzielleSituationSubStepName.BERN_RESULTATE;
@@ -50,13 +53,21 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
         if (TSFinanzielleSituationSubStepName.BERN_GS2 === currentSubStep) {
             return TSFinanzielleSituationSubStepName.BERN_RESULTATE;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_RESULTATE === currentSubStep) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_RESULTATE === currentSubStep
+        ) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE === currentSubStep) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE ===
+            currentSubStep
+        ) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL === currentSubStep) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL ===
+            currentSubStep
+        ) {
             return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
@@ -74,16 +85,24 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
         if (TSFinanzielleSituationSubStepName.BERN_GS2 === currentSubStep) {
             return TSFinanzielleSituationSubStepName.BERN_GS1;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_RESULTATE === currentSubStep) {
-            if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_RESULTATE === currentSubStep
+        ) {
+            if (this.gesuchModelManager.getGesuchstellerNumber() === 2) {
                 return TSFinanzielleSituationSubStepName.BERN_GS2;
             }
             return TSFinanzielleSituationSubStepName.BERN_GS1;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE === currentSubStep) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE ===
+            currentSubStep
+        ) {
             return TSFinanzielleSituationSubStepName.BERN_START;
         }
-        if (TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL === currentSubStep) {
+        if (
+            TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL ===
+            currentSubStep
+        ) {
             return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

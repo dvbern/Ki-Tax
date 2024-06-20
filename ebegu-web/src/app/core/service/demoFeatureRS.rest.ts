@@ -17,25 +17,24 @@
 
 import {Injectable} from '@angular/core';
 import {IPromise} from 'angular';
-import {Observable, ReplaySubject} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
-import {TSWizardStepX} from '../../../models/TSWizardStepX';
 import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
-import {LogFactory} from '../logging/LogFactory';
 import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DemoFeatureRS {
-
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {}
 
-    public isDemoFeatureAllowed(dvDemoFeature: TSDemoFeature): IPromise<boolean> {
-        return this.applicationPropertyRS.getActivatedDemoFeatures()
-            .then(allowedElement => allowedElement.includes(dvDemoFeature.valueOf()));
+    public isDemoFeatureAllowed(
+        dvDemoFeature: TSDemoFeature
+    ): IPromise<boolean> {
+        return this.applicationPropertyRS
+            .getActivatedDemoFeatures()
+            .then(allowedElement =>
+                allowedElement.includes(dvDemoFeature.valueOf())
+            );
     }
 }

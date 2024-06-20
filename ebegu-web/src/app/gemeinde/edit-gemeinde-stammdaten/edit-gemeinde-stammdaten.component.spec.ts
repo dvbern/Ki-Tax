@@ -29,19 +29,24 @@ import {GemeindeModule} from '../gemeinde.module';
 import {EditGemeindeStammdatenComponent} from './edit-gemeinde-stammdaten.component';
 
 describe('EditGemeindeStammdatenComponent', () => {
-
     let component: EditGemeindeStammdatenComponent;
     let fixture: ComponentFixture<EditGemeindeStammdatenComponent>;
 
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['getPublicPropertiesCached']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']
+        );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isRole']
+    );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
@@ -53,18 +58,22 @@ describe('EditGemeindeStammdatenComponent', () => {
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
-            declarations: [
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
-
+            declarations: []
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {
         const properties = new TSPublicAppConfig();
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of(properties).toPromise()
+        );
         fixture = TestBed.createComponent(EditGemeindeStammdatenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -16,14 +16,14 @@
  */
 
 const getFallnummer = () => {
-    return cy.getByData('fall-toolbar','fallnummer');
+    return cy.getByData('fall-toolbar', 'fallnummer');
 };
 
 const getMobileSidenavTrigger = () => {
-	return cy.getByData('mobile-menu');
+    return cy.getByData('mobile-menu');
 };
 
 export const FallToolbarPO = {
     getFallnummer,
-    getMobileSidenavTrigger,
+    getMobileSidenavTrigger
 };

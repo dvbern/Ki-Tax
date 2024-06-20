@@ -18,22 +18,23 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 
 describe('authLifeCycleService', () => {
-
     let authLifeCycleService: AuthLifeCycleService;
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            providers: [
-                AuthLifeCycleService
-            ]
+            providers: [AuthLifeCycleService]
         });
 
-        authLifeCycleService = TestBed.inject<AuthLifeCycleService>(AuthLifeCycleService);
+        authLifeCycleService =
+            TestBed.inject<AuthLifeCycleService>(AuthLifeCycleService);
     }));
 
     describe('changeAuthStatus', () => {
         it('changes the status to undefined', () => {
-            authLifeCycleService.changeAuthStatus(undefined, 'undefined values');
+            authLifeCycleService.changeAuthStatus(
+                undefined,
+                'undefined values'
+            );
             const all$ = authLifeCycleService.get$(undefined);
             all$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
@@ -41,24 +42,37 @@ describe('authLifeCycleService', () => {
         });
 
         it('changes the status to a given value', () => {
-            authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
+            authLifeCycleService.changeAuthStatus(
+                TSAuthEvent.CHANGE_USER,
+                'user has changed'
+            );
 
             const all$ = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
-            all$.subscribe(value => expect(value).toBe(TSAuthEvent.CHANGE_USER), fail);
+            all$.subscribe(
+                value => expect(value).toBe(TSAuthEvent.CHANGE_USER),
+                fail
+            );
         });
     });
     describe('get$', () => {
         it('get$ should just return a value for the thrown event', () => {
-            authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
+            authLifeCycleService.changeAuthStatus(
+                TSAuthEvent.CHANGE_USER,
+                'user has changed'
+            );
 
-            const loginFailed$ = authLifeCycleService.get$(TSAuthEvent.LOGIN_FAILED);
+            const loginFailed$ = authLifeCycleService.get$(
+                TSAuthEvent.LOGIN_FAILED
+            );
             loginFailed$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
             }, fail);
 
-            const changeUser$ = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
+            const changeUser$ = authLifeCycleService.get$(
+                TSAuthEvent.CHANGE_USER
+            );
             changeUser$.subscribe(value => {
-                expect(value).toBe((TSAuthEvent.CHANGE_USER));
+                expect(value).toBe(TSAuthEvent.CHANGE_USER);
             }, fail);
         });
     });

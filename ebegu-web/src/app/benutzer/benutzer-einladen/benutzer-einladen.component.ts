@@ -33,9 +33,10 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerEinladenComponent {
-
     public readonly benutzer = new TSBenutzer();
-    public readonly excludedRoles: ReadonlyArray<TSRole> = [TSRole.GESUCHSTELLER];
+    public readonly excludedRoles: ReadonlyArray<TSRole> = [
+        TSRole.GESUCHSTELLER
+    ];
     public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
@@ -44,8 +45,7 @@ export class BenutzerEinladenComponent {
         private readonly stateService: StateService,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService
-    ) {
-    }
+    ) {}
 
     public onSubmit(form: NgForm): void {
         if (!form.valid) {
@@ -56,17 +56,18 @@ export class BenutzerEinladenComponent {
         this.benutzer.username = this.benutzer.email;
         this.benutzer.mandant = this.authServiceRS.getPrincipal().mandant;
 
-        this.benutzer.berechtigungen.forEach(berechtigung => berechtigung.prepareForSave());
+        this.benutzer.berechtigungen.forEach(berechtigung =>
+            berechtigung.prepareForSave()
+        );
 
-        this.benutzerRS.einladen(this.benutzer)
-            .then(() => {
-                this.stateService.go('admin.benutzerlist').then(() => {
-                    this.errorService.addMesageAsInfo(this.translate.instant(
-                        'BENUTZER_INVITED_MESSAGE',
-                        {fullName: this.benutzer.getFullName()}
-                    ));
-                });
+        this.benutzerRS.einladen(this.benutzer).then(() => {
+            this.stateService.go('admin.benutzerlist').then(() => {
+                this.errorService.addMesageAsInfo(
+                    this.translate.instant('BENUTZER_INVITED_MESSAGE', {
+                        fullName: this.benutzer.getFullName()
+                    })
+                );
             });
+        });
     }
-
 }

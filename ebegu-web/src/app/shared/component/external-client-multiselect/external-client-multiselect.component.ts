@@ -15,9 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnChanges,
+    SimpleChanges
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {TSExternalClient, externalClientComparator} from '../../../../models/TSExternalClient';
+import {
+    TSExternalClient,
+    externalClientComparator
+} from '../../../../models/TSExternalClient';
 import {TSExternalClientAssignment} from '../../../../models/TSExternalClientAssignment';
 
 let nextId = 0;
@@ -29,19 +38,19 @@ let nextId = 0;
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class ExternalClientMultiselectComponent implements OnChanges {
-
     @Input() public externalClients: TSExternalClientAssignment;
 
     public inputId = `external-client-multiselect-${nextId++}`;
     public options: TSExternalClient[] = [];
 
-    public constructor(public readonly form: NgForm
-    ) {
-    }
+    public constructor(public readonly form: NgForm) {}
 
-    private static getOptions(currentValue?: TSExternalClientAssignment): TSExternalClient[] {
+    private static getOptions(
+        currentValue?: TSExternalClientAssignment
+    ): TSExternalClient[] {
         if (currentValue) {
-            return currentValue.assignedClients.concat(currentValue.availableClients)
+            return currentValue.assignedClients
+                .concat(currentValue.availableClients)
                 .sort(externalClientComparator);
         }
 
@@ -49,6 +58,8 @@ export class ExternalClientMultiselectComponent implements OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        this.options = ExternalClientMultiselectComponent.getOptions(changes.externalClients.currentValue);
+        this.options = ExternalClientMultiselectComponent.getOptions(
+            changes.externalClients.currentValue
+        );
     }
 }

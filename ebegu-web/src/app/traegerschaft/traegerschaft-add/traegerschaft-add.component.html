@@ -16,18 +16,20 @@
   -->
 
 <dv-full-height-container>
-    <form role="form"
-          #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          (ngSubmit)="traegerschaftEinladen()"
-          novalidate>
-
+    <form
+        role="form"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        (ngSubmit)="traegerschaftEinladen()"
+        novalidate
+    >
         <div class="dv-content">
-
-            <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
+            <h1 class="access-for-all-title" translate>
+                AFA_TRAEGERSCHAFTVERWALTUNG
+            </h1>
             <div class="view-title">
                 <h2 translate>NEUE_TRAEGERSCHAFT</h2>
-                <hr class="header">
+                <hr class="header" />
             </div>
 
             <fieldset>
@@ -36,23 +38,41 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="name_id">NAME</label>
-                            <input id="name_id" type="text" name="name_id" #name="ngModel"
-                                   [(ngModel)]="traegerschaft.name"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.name_id?.errors"
-                                               inputId="name_id"></dv-error-messages>
+                            <input
+                                id="name_id"
+                                type="text"
+                                name="name_id"
+                                #name="ngModel"
+                                [(ngModel)]="traegerschaft.name"
+                                [maxlength]="255"
+                                class="form-control"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="form.controls.name_id?.errors"
+                                inputId="name_id"
+                            ></dv-error-messages>
                         </div>
                     </div>
                     <!-- E-Mail -->
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="email_id">EMAIL</label>
-                            <input id="email_id" type="email" name="email_id" #name="ngModel"
-                                   [(ngModel)]="traegerschaft.email"
-                                   email
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.email_id?.errors"
-                                               inputId="email_id"></dv-error-messages>
+                            <input
+                                id="email_id"
+                                type="email"
+                                name="email_id"
+                                #name="ngModel"
+                                [(ngModel)]="traegerschaft.email"
+                                email
+                                [maxlength]="255"
+                                class="form-control"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="form.controls.email_id?.errors"
+                                inputId="email_id"
+                            ></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -65,10 +85,12 @@
                 <span translate>EINLADUNG_SENDEN</span>
             </dv-loading-button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                (click)="cancel()"
+                [textContent]="'CANCEL' | translate"
+            ></button>
         </div>
     </form>
 </dv-full-height-container>

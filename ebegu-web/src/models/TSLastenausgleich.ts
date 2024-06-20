@@ -37,5 +37,4 @@ export class TSLastenausgleich extends TSAbstractEntity {
     public set totalAlleGemeinden(value: moment.Moment) {
         this._totalAlleGemeinden = value;
     }
-
 }

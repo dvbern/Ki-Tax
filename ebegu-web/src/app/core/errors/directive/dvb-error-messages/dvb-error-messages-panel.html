@@ -15,25 +15,40 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="dvb-error-messages-panel" uib-collapse="vm.errors.length === 0" ng-class="vm.messageStyle()">
+<div
+    class="dvb-error-messages-panel"
+    uib-collapse="vm.errors.length === 0"
+    ng-class="vm.messageStyle()"
+>
     <div class="container">
-        <i ng-show="vm.errors.length > 0" class="alarm-icon fa fa-exclamation-circle"></i>
+        <i
+            ng-show="vm.errors.length > 0"
+            class="alarm-icon fa fa-exclamation-circle"
+        ></i>
         <div>
             <div ng-repeat="error in vm.errors | orderBy:'severity'">
-                <span data-translate="{{error.msgKey}}" role="alert"></span>
+                <span data-translate="{{ error.msgKey }}" role="alert"></span>
                 &nbsp;
-                <a id="errorCallback" ng-click="vm.executeCallback(error)"
-                   data-translate="{{error.errorMessageCallback.text}}"
-                   dv-show-element
-                   dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()"
-                   dv-show-expression="vm.isMessageCallbackDefined(error)"></a>
-                <div id="action" ng-click="vm.executeAction(error)"
-                     data-translate="{{error.action}}"
-                     dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorRoles()"
-                     dv-show-expression="vm.isActionDefined(error)"></div>
+                <a
+                    id="errorCallback"
+                    ng-click="vm.executeCallback(error)"
+                    data-translate="{{ error.errorMessageCallback.text }}"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()"
+                    dv-show-expression="vm.isMessageCallbackDefined(error)"
+                ></a>
+                <div
+                    id="action"
+                    ng-click="vm.executeAction(error)"
+                    data-translate="{{ error.action }}"
+                    dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorRoles()"
+                    dv-show-expression="vm.isActionDefined(error)"
+                ></div>
             </div>
         </div>
-        <a ng-show="vm.errors.length > 0" ng-click="vm.clear()"><i class="close-icon fa fa-times"></i></a>
+        <a ng-show="vm.errors.length > 0" ng-click="vm.clear()"
+            ><i class="close-icon fa fa-times"></i
+        ></a>
     </div>
 </div>

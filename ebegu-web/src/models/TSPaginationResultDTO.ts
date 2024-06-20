@@ -16,7 +16,6 @@
  */
 
 export class TSPaginationResultDTO<T> {
-
     private _resultList: Array<T>;
     private _totalResultSize: number;
 

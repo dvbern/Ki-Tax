@@ -13,7 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 
@@ -24,20 +29,37 @@ export class DvAhvGesuchstellerCheck {
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager
     ) {
-        this.link = (_scope: IScope, _element: IAugmentedJQuery, _attrs, ctrl: any) => {
-            // @ts-ignore
+        this.link = (
+            _scope: IScope,
+            _element: IAugmentedJQuery,
+            _attrs,
+            ctrl: any
+        ) => {
             ctrl.$validators.dvAhvGesuchstellerCheck = (_modelValue: any) => {
-                if (EbeguUtil.isNullOrUndefined(gesuchModelManager.getGesuch().gesuchsteller2)) {
+                if (
+                    EbeguUtil.isNullOrUndefined(
+                        gesuchModelManager.getGesuch().gesuchsteller2
+                    )
+                ) {
                     return true;
                 }
 
-                if (gesuchModelManager.getGesuchstellerNumber() === 1 &&
-                    gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA.sozialversicherungsnummer !== null) {
-                    return gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA.sozialversicherungsnummer !==
-                        _modelValue;
+                if (
+                    gesuchModelManager.getGesuchstellerNumber() === 1 &&
+                    gesuchModelManager.getGesuch().gesuchsteller2
+                        .gesuchstellerJA.sozialversicherungsnummer !== null
+                ) {
+                    return (
+                        gesuchModelManager.getGesuch().gesuchsteller2
+                            .gesuchstellerJA.sozialversicherungsnummer !==
+                        _modelValue
+                    );
                 } else if (gesuchModelManager.getGesuchstellerNumber() === 2) {
-                    return gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.sozialversicherungsnummer !==
-                        _modelValue;
+                    return (
+                        gesuchModelManager.getGesuch().gesuchsteller1
+                            .gesuchstellerJA.sozialversicherungsnummer !==
+                        _modelValue
+                    );
                 } else {
                     return true;
                 }
@@ -45,7 +67,8 @@ export class DvAhvGesuchstellerCheck {
         };
     }
     public static factory(): IDirectiveFactory {
-        const directive = (gesuchModelManager: GesuchModelManager) => new DvAhvGesuchstellerCheck(gesuchModelManager);
+        const directive = (gesuchModelManager: GesuchModelManager) =>
+            new DvAhvGesuchstellerCheck(gesuchModelManager);
         directive.$inject = ['GesuchModelManager'];
         return directive;
     }

@@ -28,12 +28,25 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 
 import {LastenausgleichTsBerechnungComponent} from './lastenausgleich-ts-berechnung.component';
 
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['principal$', 'isOneOfRoles']);
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer', 'latsDocxErstellen', 'getErwarteteBetreuungsstunden']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+    'openDownload'
+]);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'principal$',
+    'isOneOfRoles'
+]);
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        [
+            'getLATSAngabenGemeindeContainer',
+            'latsDocxErstellen',
+            'getErwarteteBetreuungsstunden'
+        ]
+    );
 
 describe('LastenausgleichTsBerechnungComponent', () => {
     let component: LastenausgleichTsBerechnungComponent;
@@ -47,15 +60,22 @@ describe('LastenausgleichTsBerechnungComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                }
             ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer
-            .and.returnValue(of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()));
+        lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
+            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
+        );
         lastenausgleichTSServiceSpy.latsDocxErstellen.and.returnValue(of(null));
-        lastenausgleichTSServiceSpy.getErwarteteBetreuungsstunden.and.returnValue(of(0));
+        lastenausgleichTSServiceSpy.getErwarteteBetreuungsstunden.and.returnValue(
+            of(0)
+        );
         authServiceSpy.principal$ = of(new TSBenutzer());
     }));
 

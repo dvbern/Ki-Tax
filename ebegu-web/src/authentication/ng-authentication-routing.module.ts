@@ -14,7 +14,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
 import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
@@ -75,17 +78,14 @@ export const TUTORIAL_GEMEINDE_LOGIN_STATE: NgHybridStateDeclaration = {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild(
-            {
-                states: [
-                    LOCALLOGIN_STATE,
-                    TUTORIAL_INSTITUTION_LOGIN_STATE,
-                    TUTORIAL_GEMEINDE_LOGIN_STATE
-                ]
-            }
-        )
+        UIRouterUpgradeModule.forChild({
+            states: [
+                LOCALLOGIN_STATE,
+                TUTORIAL_INSTITUTION_LOGIN_STATE,
+                TUTORIAL_GEMEINDE_LOGIN_STATE
+            ]
+        })
     ],
     exports: []
 })
-export class NgAuthenticationRoutingModule {
-}
+export class NgAuthenticationRoutingModule {}

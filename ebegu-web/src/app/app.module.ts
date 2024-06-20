@@ -44,7 +44,6 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
 
 @NgModule({
     imports: [
-
         BrowserModule,
         BrowserAnimationsModule,
         UpgradeModule,
@@ -77,15 +76,14 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         StatistikModule
     ]
 })
-
 export class AppModule implements DoBootstrap {
-
-    public constructor(private readonly upgrade: UpgradeModule) {
-    }
+    public constructor(private readonly upgrade: UpgradeModule) {}
 
     // noinspection JSUnusedGlobalSymbols
     public ngDoBootstrap(): void {
         // noinspection XHTMLIncompatabilitiesJS
-        this.upgrade.bootstrap(document.body, [APP_JS_MODULE.name], {strictDi: true});
+        this.upgrade.bootstrap(document.body, [APP_JS_MODULE.name], {
+            strictDi: true
+        });
     }
 }

@@ -20,7 +20,11 @@ import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import {AntragStatusHistoryRS} from '../app/core/service/antragStatusHistoryRS.rest';
 import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
-import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../models/enums/TSAntragStatus';
+import {
+    IN_BEARBEITUNG_BASE_NAME,
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus
+} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
@@ -41,7 +45,6 @@ import ITranslateService = angular.translate.ITranslateService;
 const LOG = LogFactory.createLog('GesuchRouteController');
 
 export class GesuchRouteController implements IController {
-
     public static $inject: string[] = [
         'GesuchModelManager',
         'WizardStepManager',
@@ -71,31 +74,42 @@ export class GesuchRouteController implements IController {
         private readonly $mdSidenav: ISidenavService,
         private readonly einstellungRS: EinstellungRS
     ) {
-        this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
+        this.antragStatusHistoryRS
+            .loadLastStatusChange(this.gesuchModelManager.getGesuch())
             .then(() => {
                 this.antragStatusHistoryRS.lastChange$
                     .pipe(takeUntil(this.unsubscribe$))
-                    .subscribe(lastChange => {
-                        this.userFullName = this.antragStatusHistoryRS.getUserFullname(lastChange);
-                    },
-                    err => LOG.error(err));
+                    .subscribe(
+                        lastChange => {
+                            this.userFullName =
+                                this.antragStatusHistoryRS.getUserFullname(
+                                    lastChange
+                                );
+                        },
+                        err => LOG.error(err)
+                    );
             });
 
-        // eslint-disable-next-line
-        if (this.gesuchModelManager.getDossier()
-            && this.gesuchModelManager.getDossier().gemeinde
-            && this.gesuchModelManager.getGesuchsperiode()
+        if (
+            this.gesuchModelManager.getDossier() &&
+            this.gesuchModelManager.getDossier().gemeinde &&
+            this.gesuchModelManager.getGesuchsperiode()
         ) {
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            )
-                .subscribe(response => {
-                    this.kontingentierungEnabled = JSON.parse(response.value);
-                }, error => LOG.error(error));
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.kontingentierungEnabled = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
         }
-
     }
 
     public $onDestroy(): void {
@@ -105,7 +119,10 @@ export class GesuchRouteController implements IController {
 
     public getDateFromGesuch(): string {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
-            return DateUtil.momentToLocalDateFormat(this.gesuchModelManager.getGesuch().eingangsdatum, 'DD.MM.YYYY');
+            return DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.getGesuch().eingangsdatum,
+                'DD.MM.YYYY'
+            );
         }
         return undefined;
     }
@@ -118,7 +135,6 @@ export class GesuchRouteController implements IController {
         this.$mdSidenav(componentId).close();
     }
 
-    // eslint-disable-next-line
     public getIcon(stepName: TSWizardStepName): string {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (!step || !this.getGesuch()) {
@@ -131,10 +147,13 @@ export class GesuchRouteController implements IController {
                 return 'fa-circle green';
             case TSWizardStepStatus.OK:
                 if (this.getGesuch().isMutation()) {
-                    if (step.wizardStepName === TSWizardStepName.FREIGABE
-                        && (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_GS
-                        || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
-                        // eslint-disable-next-line
+                    if (
+                        step.wizardStepName === TSWizardStepName.FREIGABE &&
+                        (this.getGesuch().status ===
+                            TSAntragStatus.IN_BEARBEITUNG_GS ||
+                            this.getGesuch().status ===
+                                TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
+                    ) {
                         return 'fa-pencil black';
                     }
                     if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
@@ -147,18 +166,24 @@ export class GesuchRouteController implements IController {
                 return 'fa-close red';
             case TSWizardStepStatus.IN_BEARBEITUNG:
                 if (this.getGesuch().isMutation()) {
-                    return [TSWizardStepName.DOKUMENTE].includes(step.wizardStepName) ?
-                        '' :
-                        'fa-pencil black';
+                    return [TSWizardStepName.DOKUMENTE].includes(
+                        step.wizardStepName
+                    )
+                        ? ''
+                        : 'fa-pencil black';
                 }
-                return [TSWizardStepName.DOKUMENTE, TSWizardStepName.FREIGABE].includes(step.wizardStepName) ?
-                    '' :
-                    'fa-pencil black';
+                return [
+                    TSWizardStepName.DOKUMENTE,
+                    TSWizardStepName.FREIGABE
+                ].includes(step.wizardStepName)
+                    ? ''
+                    : 'fa-pencil black';
             case TSWizardStepStatus.PLATZBESTAETIGUNG:
             case TSWizardStepStatus.WARTEN:
-                return this.getGesuch().isMutation() && this.isWizardStepDisabled(step.wizardStepName) ?
-                    '' :
-                    'fa-hourglass orange';
+                return this.getGesuch().isMutation() &&
+                    this.isWizardStepDisabled(step.wizardStepName)
+                    ? ''
+                    : 'fa-hourglass orange';
             case TSWizardStepStatus.UNBESUCHT:
                 return '';
             default:
@@ -174,7 +199,10 @@ export class GesuchRouteController implements IController {
     public isWizardStepDisabled(stepName: TSWizardStepName): boolean {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (step) {
-            return !this.wizardStepManager.isStepClickableForCurrentRole(step, this.gesuchModelManager.getGesuch());
+            return !this.wizardStepManager.isStepClickableForCurrentRole(
+                step,
+                this.gesuchModelManager.getGesuch()
+            );
         }
         return true;
     }
@@ -194,25 +222,54 @@ export class GesuchRouteController implements IController {
      * Uebersetzt den Status des Gesuchs und gibt ihn zurueck. Sollte das Gesuch noch keinen Status haben
      * IN_BEARBEITUNG_JA wird zurueckgegeben
      */
-    // eslint-disable-next-line
+
     public getGesuchStatusTranslation(): string {
         let toTranslate = TSAntragStatus.IN_BEARBEITUNG_JA;
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
-            toTranslate = this.gesuchModelManager.calculateNewStatus(this.gesuchModelManager.getGesuch().status);
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().status
+        ) {
+            toTranslate = this.gesuchModelManager.calculateNewStatus(
+                this.gesuchModelManager.getGesuch().status
+            );
         }
-        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        const isUserAmt = this.authServiceRS.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
-        const isUserSTV = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
+        const isUserGesuchsteller = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerOnlyRoles()
+        );
+        const isUserAmt = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getJugendamtAndSchulamtRole()
+        );
+        const isUserSTV = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getSteueramtOnlyRoles()
+        );
 
-        if (toTranslate === TSAntragStatus.IN_BEARBEITUNG_GS && isUserGesuchsteller) {
-            if (TSGesuchBetreuungenStatus.ABGEWIESEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
-                return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
+        if (
+            toTranslate === TSAntragStatus.IN_BEARBEITUNG_GS &&
+            isUserGesuchsteller
+        ) {
+            if (
+                TSGesuchBetreuungenStatus.ABGEWIESEN ===
+                this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus
+            ) {
+                return this.ebeguUtil.translateString(
+                    TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]
+                );
             }
-            if (this.getGesuch() && this.getGesuch().hasProvisorischeBetreuungen()) {
-                return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.IN_BEARBEITUNG_GS]);
+            if (
+                this.getGesuch() &&
+                this.getGesuch().hasProvisorischeBetreuungen()
+            ) {
+                return this.ebeguUtil.translateString(
+                    TSAntragStatus[TSAntragStatus.IN_BEARBEITUNG_GS]
+                );
             }
-            if (TSGesuchBetreuungenStatus.WARTEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
-                return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_WARTEN]);
+            if (
+                TSGesuchBetreuungenStatus.WARTEN ===
+                this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus
+            ) {
+                return this.ebeguUtil.translateString(
+                    TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_WARTEN]
+                );
             }
         }
         if (toTranslate === TSAntragStatus.IN_BEARBEITUNG_JA && isUserAmt) {
@@ -228,11 +285,12 @@ export class GesuchRouteController implements IController {
                 break;
             default:
                 break;
-
         }
 
-        if ((toTranslate === TSAntragStatus.NUR_SCHULAMT)
-            && isUserGesuchsteller) {
+        if (
+            toTranslate === TSAntragStatus.NUR_SCHULAMT &&
+            isUserGesuchsteller
+        ) {
             return this.ebeguUtil.translateString('ABGESCHLOSSEN');
         }
 
@@ -254,7 +312,9 @@ export class GesuchRouteController implements IController {
     }
 
     public getFall(): TSFall {
-        return this.gesuchModelManager.getFall() ? this.gesuchModelManager.getFall() : undefined;
+        return this.gesuchModelManager.getFall()
+            ? this.gesuchModelManager.getFall()
+            : undefined;
     }
 
     public getFallId(): string {
@@ -266,38 +326,53 @@ export class GesuchRouteController implements IController {
     }
 
     public getDossierId(): string {
-        return (this.getGesuch() && this.getGesuch().dossier) ? this.getGesuch().dossier.id : '';
+        return this.getGesuch() && this.getGesuch().dossier
+            ? this.getGesuch().dossier.id
+            : '';
     }
 
     public getGesuchsperiodeId(): string {
-        return this.gesuchModelManager.getGesuchsperiode() ? this.gesuchModelManager.getGesuchsperiode().id : '';
+        return this.gesuchModelManager.getGesuchsperiode()
+            ? this.gesuchModelManager.getGesuchsperiode().id
+            : '';
     }
 
     public getGemeindeId(): string {
-        return (this.getGesuch() && this.getGesuch().dossier) ? this.getGesuch().dossier.gemeinde.id : '';
+        return this.getGesuch() && this.getGesuch().dossier
+            ? this.getGesuch().dossier.gemeinde.id
+            : '';
     }
 
     public getGesuchErstellenStepTitle(): string {
         const dateFromGesuch = this.getDateFromGesuch();
 
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.isGesuch()
+        ) {
             if (dateFromGesuch) {
-                const k = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-                    'MENU_ERNEUERUNGSGESUCH_VOM' :
-                    'MENU_ERSTGESUCH_VOM';
+                const k =
+                    this.gesuchModelManager.getGesuch().typ ===
+                    TSAntragTyp.ERNEUERUNGSGESUCH
+                        ? 'MENU_ERNEUERUNGSGESUCH_VOM'
+                        : 'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(k, {
                     date: dateFromGesuch
                 });
             }
-            const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-                'MENU_ERNEUERUNGSGESUCH' :
-                'MENU_ERSTGESUCH';
+            const key =
+                this.gesuchModelManager.getGesuch().typ ===
+                TSAntragTyp.ERNEUERUNGSGESUCH
+                    ? 'MENU_ERNEUERUNGSGESUCH'
+                    : 'MENU_ERSTGESUCH';
             return this.$translate.instant(key);
         }
 
-        return dateFromGesuch ?
-            this.$translate.instant('MENU_MUTATION_VOM', {date: dateFromGesuch}) :
-            this.$translate.instant('MENU_MUTATION');
+        return dateFromGesuch
+            ? this.$translate.instant('MENU_MUTATION_VOM', {
+                  date: dateFromGesuch
+              })
+            : this.$translate.instant('MENU_MUTATION');
     }
 
     public getGesuchName(): string {
@@ -309,7 +384,10 @@ export class GesuchRouteController implements IController {
     }
 
     public isGesuchstller1New(): boolean {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1) {
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().gesuchsteller1
+        ) {
             return this.gesuchModelManager.getGesuch().gesuchsteller1.isNew();
         }
         return true;
@@ -331,11 +409,13 @@ export class GesuchRouteController implements IController {
     }
 
     public getVerfuegenText(): string {
-
-        if (this.gesuchModelManager.getGesuch()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle())
-            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
-
+        if (
+            this.gesuchModelManager.getGesuch() &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerSozialdienstRolle()
+            ) &&
+            !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
+        ) {
             return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
         }
         return this.$translate.instant('MENU_VERFUEGEN');
@@ -346,7 +426,9 @@ export class GesuchRouteController implements IController {
     }
 
     public isSozialdienstFall(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier().fall.sozialdienstFall);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.gesuchModelManager.getDossier().fall.sozialdienstFall
+        );
     }
 
     public extractNachnameGS1(): string {

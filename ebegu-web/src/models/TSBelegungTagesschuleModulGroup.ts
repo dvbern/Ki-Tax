@@ -23,8 +23,6 @@ import {TSModulTagesschuleGroup} from './TSModulTagesschuleGroup';
  * Dieses Objekt wird nur client-seitig gebraucht für die Darstellung des Stundenplans für die Tagesschule Anmeldung.
  */
 export class TSBelegungTagesschuleModulGroup extends TSAbstractEntity {
-
     public group: TSModulTagesschuleGroup;
     public module: Array<TSBelegungTagesschuleModul> = [];
-
 }

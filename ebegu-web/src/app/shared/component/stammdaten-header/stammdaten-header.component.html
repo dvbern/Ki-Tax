@@ -17,11 +17,11 @@
 
 <div class="stammdaten-header row">
     <div class="col-md-12">
-        {{preTitel}}
+        {{ preTitel }}
         <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
         <div class="view-title">
-            <h2>{{titel}}</h2>
-            <hr class="header">
+            <h2>{{ titel }}</h2>
+            <hr class="header" />
         </div>
 
         <fieldset>
@@ -29,27 +29,37 @@
                 <div class="col-sm-6" *ngIf="areMitarbeiterVisible()">
                     <div class="form-group">
                         <p><strong translate>ADMINISTRATOREN</strong></p>
-                        <p class="margin-bottom-10">{{administratoren}}</p>
+                        <p class="margin-bottom-10">{{ administratoren }}</p>
                         <p><strong translate>SACHBEARBEITER</strong></p>
-                        <p>{{sachbearbeiter}}</p>
+                        <p>{{ sachbearbeiter }}</p>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
-                                (click)="mitarbeiterBearbeiten()"
-                                translate>BENUTZER_EDIT
+                        <button
+                            type="button"
+                            class="dv-btn mitarbeiter-bearbeiten-button"
+                            (click)="mitarbeiterBearbeiten()"
+                            translate
+                        >
+                            BENUTZER_EDIT
                         </button>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group" *ngIf="logoImageUrl">
                         <div>
-                            <img [src]="logoImageUrl$ | async"
-                                 class="gemeinde-profil-image">
+                            <img
+                                [src]="logoImageUrl$ | async"
+                                class="gemeinde-profil-image"
+                            />
                         </div>
                         <div *ngIf="editMode">
-                            <input #fileInput type="file" accept='image/png,image/jpeg'
-                                   (change)="srcChange(fileInput.files)"
-                                   class="gemeinde-profil-fileinput">
+                            <input
+                                #fileInput
+                                type="file"
+                                accept="image/png,image/jpeg"
+                                (change)="srcChange(fileInput.files)"
+                                class="gemeinde-profil-fileinput"
+                            />
                         </div>
                     </div>
                 </div>

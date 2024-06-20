@@ -75,14 +75,27 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
      * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
      */
     public getDefaultBenutzerWithRoleBG(): TSBenutzer {
-        if (this.defaultBenutzerBG && this.defaultBenutzerBG.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+        if (
+            this.defaultBenutzerBG &&
+            this.defaultBenutzerBG.hasOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            )
+        ) {
             return this.defaultBenutzerBG;
         }
-        if (this.defaultBenutzer && this.defaultBenutzer.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+        if (
+            this.defaultBenutzer &&
+            this.defaultBenutzer.hasOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            )
+        ) {
             return this.defaultBenutzer;
         }
         // Es gibt keinen gesetzten Defaultbenutzer mit der gewuenschten Rolle
-        console.error('kein defaultbenutzer BG fuer gemeinde', this.gemeinde.name);
+        console.error(
+            'kein defaultbenutzer BG fuer gemeinde',
+            this.gemeinde.name
+        );
         if (this.benutzerListeBG && this.benutzerListeBG.length > 0) {
             return this.benutzerListeBG[0];
         }
@@ -98,14 +111,27 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
      * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
      */
     public getDefaultBenutzerWithRoleTS(): TSBenutzer {
-        if (this.defaultBenutzerTS && this.defaultBenutzerTS.hasOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
+        if (
+            this.defaultBenutzerTS &&
+            this.defaultBenutzerTS.hasOneOfRoles(
+                TSRoleUtil.getGemeindeOrTSRoles()
+            )
+        ) {
             return this.defaultBenutzerTS;
         }
-        if (this.defaultBenutzer && this.defaultBenutzer.hasOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
+        if (
+            this.defaultBenutzer &&
+            this.defaultBenutzer.hasOneOfRoles(
+                TSRoleUtil.getGemeindeOrTSRoles()
+            )
+        ) {
             return this.defaultBenutzer;
         }
         // Es gibt keinen gesetzten Defaultbenutzer mit der gewuenschten Rolle
-        console.error('kein defaultbenutzer TS fuer gemeinde', this.gemeinde.name);
+        console.error(
+            'kein defaultbenutzer TS fuer gemeinde',
+            this.gemeinde.name
+        );
         if (this.benutzerListeTS && this.benutzerListeTS.length > 0) {
             return this.benutzerListeTS[0];
         }

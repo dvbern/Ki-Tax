@@ -37,7 +37,10 @@
             </div>
             <div class="row margin-top-20" *ngIf="isSuperadmin()">
                 <div class="col-md-12">
-                    <dv-loading-button type="button" (buttonClick)="createGesuchsperiode()">
+                    <dv-loading-button
+                        type="button"
+                        (buttonClick)="createGesuchsperiode()"
+                    >
                         <i class="glyphicon glyphicon-plus"></i>&nbsp;
                         <span translate>GESUCHSPERIODE_HINZUFUEGEN</span>
                     </dv-loading-button>
@@ -46,4 +49,3 @@
         </div>
     </div>
 </div>
-

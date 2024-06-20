@@ -27,8 +27,10 @@ export class DvHomeIconComponentConfig implements IComponentOptions {
 }
 
 export class DvHomeIconController {
-
-    public static $inject: ReadonlyArray<string> = ['$state', 'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = [
+        '$state',
+        'GesuchModelManager'
+    ];
 
     public readonly TSRoleUtil = TSRoleUtil;
     private readonly stateDashboard = 'gesuchsteller.dashboard';
@@ -36,8 +38,8 @@ export class DvHomeIconController {
     public constructor(
         private readonly $state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly routerGlobals: UIRouterGlobals) {
-    }
+        private readonly routerGlobals: UIRouterGlobals
+    ) {}
 
     public goBackHome(): void {
         const dossier = this.gesuchModelManager.getDossier();
@@ -49,6 +51,9 @@ export class DvHomeIconController {
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.routerGlobals?.current && this.routerGlobals.current.name === this.stateDashboard);
+        return (
+            this.routerGlobals?.current &&
+            this.routerGlobals.current.name === this.stateDashboard
+        );
     }
 }

@@ -22,13 +22,19 @@ import {SharedModule} from './shared.module';
 
 describe('SharedModule', () => {
     let sharedModule: SharedModule;
-    const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
-        ['setDefaultLang', 'use']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const translateServiceSpy = jasmine.createSpyObj<TranslateService>(
+        TranslateService.name,
+        ['setDefaultLang', 'use']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(() => {
-        i18nServiceSpy.extractPreferredLanguage.and.returnValue(TSBrowserLanguage.DE);
+        i18nServiceSpy.extractPreferredLanguage.and.returnValue(
+            TSBrowserLanguage.DE
+        );
 
         sharedModule = new SharedModule(translateServiceSpy, i18nServiceSpy);
     });
@@ -39,7 +45,9 @@ describe('SharedModule', () => {
 
     it('should initialise the TranslateService', () => {
         const defaultLanguage = TSBrowserLanguage.DE;
-        expect(translateServiceSpy.setDefaultLang).toHaveBeenCalledWith(defaultLanguage);
+        expect(translateServiceSpy.setDefaultLang).toHaveBeenCalledWith(
+            defaultLanguage
+        );
         expect(translateServiceSpy.use).toHaveBeenCalledWith(defaultLanguage);
     });
 });

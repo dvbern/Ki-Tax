@@ -24,7 +24,11 @@ export class TSBenutzerTableFilterDTO {
     private _sort: MatSort;
     private _search: BenutzerListFilter;
 
-    public constructor(pagination: TSPagination, sort: MatSort, search: BenutzerListFilter) {
+    public constructor(
+        pagination: TSPagination,
+        sort: MatSort,
+        search: BenutzerListFilter
+    ) {
         this._pagination = pagination;
         this._sort = sort;
         this._search = search;

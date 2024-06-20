@@ -24,7 +24,9 @@ import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 
-export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {
+export class PendenzenSteueramtListViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./pendenzenSteueramtListView.html');
     public controller = PendenzenSteueramtListViewController;
@@ -32,8 +34,12 @@ export class PendenzenSteueramtListViewComponentConfig implements IComponentOpti
 }
 
 export class PendenzenSteueramtListViewController implements IController {
-
-    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        '$state',
+        '$log',
+        'SearchRS'
+    ];
 
     public totalResultCount: string = '0';
     public readonly TSRoleUtil = TSRoleUtil;
@@ -43,22 +49,32 @@ export class PendenzenSteueramtListViewController implements IController {
         private readonly $state: StateService,
         private readonly $log: ILogService,
         private readonly searchRS: SearchRS
-    ) {
-    }
+    ) {}
 
     public editpendenzSteueramt(pendenz: TSAntragDTO, event: any): void {
         if (pendenz) {
-            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = event && event.ctrlKey;
             this.openPendenz(pendenz, isCtrlKeyPressed);
         }
     }
 
-    public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
-        this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        this.searchRS.countAntraege(tableFilterState).toPromise().then((response: any) => {
-            this.totalResultCount = response ? response.toString() : '0';
-        });
-        return this.searchRS.searchAntraege(tableFilterState).toPromise().then((response: TSAntragSearchresultDTO) => response);
+    public passFilterToServer = (
+        tableFilterState: any
+    ): IPromise<TSAntragSearchresultDTO> => {
+        this.$log.debug(
+            'Triggering ServerFiltering with Filter Object',
+            tableFilterState
+        );
+        this.searchRS
+            .countAntraege(tableFilterState)
+            .toPromise()
+            .then((response: any) => {
+                this.totalResultCount = response ? response.toString() : '0';
+            });
+        return this.searchRS
+            .searchAntraege(tableFilterState)
+            .toPromise()
+            .then((response: TSAntragSearchresultDTO) => response);
     };
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {

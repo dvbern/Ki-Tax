@@ -26,10 +26,12 @@ describe('ZahlungsstatusIconComponent', () => {
     let fixture: ComponentFixture<ZahlungsstatusIconComponent>;
 
     const translateSpy = jasmine.createSpyObj<TranslateService>(
-        TranslateService.name, ['instant']
+        TranslateService.name,
+        ['instant']
     );
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
-        AuthServiceRS.name, ['isRole']
+        AuthServiceRS.name,
+        ['isRole']
     );
 
     beforeEach(async () => {
@@ -39,8 +41,7 @@ describe('ZahlungsstatusIconComponent', () => {
                 {provide: TranslateService, useValue: translateSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy}
             ]
-        })
-            .compileComponents();
+        }).compileComponents();
     });
 
     beforeEach(() => {

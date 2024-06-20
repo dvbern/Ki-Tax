@@ -59,7 +59,7 @@ public class KitaBernRechner extends AbstractGemeindeBernRechner {
 	@Override
 	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
+		boolean unter12Monate,
 		@Nullable EinschulungTyp einschulungTyp) {
 		boolean eingeschultKindergarten = einschulungTyp != null && einschulungTyp.isEingeschult();
 		if (unter12Monate) {
@@ -75,7 +75,7 @@ public class KitaBernRechner extends AbstractGemeindeBernRechner {
 	@Override
 	protected BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean besonderebeduerfnisse) {
+		boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProTg() : BigDecimal.ZERO;
 	}

@@ -33,7 +33,6 @@ export interface DvMultiSelectDialogItem {
     styleUrls: ['./dv-ng-multi-select-dialog.component.less']
 })
 export class DvNgMultiSelectDialogComponent {
-
     public title: string = '';
     public text: string = '';
     public selectOptions: DvMultiSelectDialogItem[];
@@ -69,14 +68,21 @@ export class DvNgMultiSelectDialogComponent {
     }
 
     public updateCheckedFlags(): void {
-        this.allChecked =
-            EbeguUtil.isNullOrUndefined(
-                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected)));
+        this.allChecked = EbeguUtil.isNullOrUndefined(
+            this.selectOptions.find(option =>
+                EbeguUtil.isNotNullAndFalse(option.selected)
+            )
+        );
         this.someChecked =
             EbeguUtil.isNotNullOrUndefined(
-                this.selectOptions.find(option => EbeguUtil.isNotNullAndTrue(option.selected))) &&
+                this.selectOptions.find(option =>
+                    EbeguUtil.isNotNullAndTrue(option.selected)
+                )
+            ) &&
             EbeguUtil.isNotNullOrUndefined(
-                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected))
+                this.selectOptions.find(option =>
+                    EbeguUtil.isNotNullAndFalse(option.selected)
+                )
             );
     }
 }

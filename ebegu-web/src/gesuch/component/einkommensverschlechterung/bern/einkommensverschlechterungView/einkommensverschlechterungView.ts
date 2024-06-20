@@ -33,7 +33,9 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
-export class EinkommensverschlechterungViewComponentConfig implements IComponentOptions {
+export class EinkommensverschlechterungViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./einkommensverschlechterungView.html');
     public controller = EinkommensverschlechterungViewController;
@@ -41,7 +43,6 @@ export class EinkommensverschlechterungViewComponentConfig implements IComponent
 }
 
 export class EinkommensverschlechterungViewController extends AbstractGesuchViewController<TSFinanzModel> {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -53,7 +54,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         '$scope',
         '$translate',
         '$timeout',
-        'EinstellungRS',
+        'EinstellungRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -81,27 +82,40 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         $scope: IScope,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-            $timeout);
-        const parsedGesuchstelllerNum = parseInt($stateParams.gesuchstellerNumber, 10);
+            $timeout
+        );
+        const parsedGesuchstelllerNum = parseInt(
+            $stateParams.gesuchstellerNumber,
+            10
+        );
         const parsedBasisJahrPlusNum = parseInt($stateParams.basisjahrPlus, 10);
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             parsedGesuchstelllerNum,
-            parsedBasisJahrPlusNum);
+            parsedBasisJahrPlusNum
+        );
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-        this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
+        this.model.initEinkommensverschlechterungContainer(
+            parsedBasisJahrPlusNum,
+            parsedGesuchstelllerNum
+        );
         this.initialModel = angular.copy(this.model);
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.initViewModel();
         this.calculate();
     }
@@ -111,34 +125,57 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         this.initEinstellungen();
         const fiSiConToWorkWith = this.model.getFiSiConToWorkWith();
 
-        this.showSelbstaendig = fiSiConToWorkWith.finanzielleSituationJA.isSelbstaendig()
-            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr);
+        this.showSelbstaendig =
+            fiSiConToWorkWith.finanzielleSituationJA.isSelbstaendig() ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr
+            );
 
         this.showErsatzeinkommenSelbststaendigkeit =
-            fiSiConToWorkWith.finanzielleSituationJA.hasErsatzeinkommenSelbststaendigkeit()
-            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr);
+            fiSiConToWorkWith.finanzielleSituationJA.hasErsatzeinkommenSelbststaendigkeit() ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getEkvToWorkWith()
+                    .ersatzeinkommenSelbststaendigkeitBasisjahr
+            );
 
-        if (!fiSiConToWorkWith.finanzielleSituationGS || !this.model.getEkvToWorkWith_GS()) {
+        if (
+            !fiSiConToWorkWith.finanzielleSituationGS ||
+            !this.model.getEkvToWorkWith_GS()
+        ) {
             return;
         }
 
-        this.showSelbstaendigGS = fiSiConToWorkWith.finanzielleSituationGS.isSelbstaendig()
-            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr);
+        this.showSelbstaendigGS =
+            fiSiConToWorkWith.finanzielleSituationGS.isSelbstaendig() ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr
+            );
 
-        this.showErsatzeinkommenSelbststaendigkeitGS = fiSiConToWorkWith.finanzielleSituationGS.isSelbstaendig()
-            || EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr);
+        this.showErsatzeinkommenSelbststaendigkeitGS =
+            fiSiConToWorkWith.finanzielleSituationGS.isSelbstaendig() ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr
+            );
     }
 
     private initEinstellungen(): Promise<void> {
-        return this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id).toPromise()
+        return this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .toPromise()
             .then(einstellungen => {
-                const showErsatzeinkommen = einstellungen.find(einstellung => einstellung.key
-                    === TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN);
+                const showErsatzeinkommen = einstellungen.find(
+                    einstellung =>
+                        einstellung.key ===
+                        TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN
+                );
                 if (showErsatzeinkommen === undefined) {
                     this.ersatzeinkommenSelbststaendigkeitActivated = false;
                     return;
                 }
-                this.ersatzeinkommenSelbststaendigkeitActivated = showErsatzeinkommen.getValueAsBoolean();
+                this.ersatzeinkommenSelbststaendigkeitActivated =
+                    showErsatzeinkommen.getValueAsBoolean();
             });
     }
 
@@ -164,23 +201,33 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     private resetErsatzeinkommenSelbststaendigkeitFields(): void {
-        this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr = undefined;
-        if (!this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1
-            && this.model.getBasisJahrPlus() === 2) {
-            this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr = undefined;
+        this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr =
+            undefined;
+        if (
+            !this.model.einkommensverschlechterungInfoContainer
+                .einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 &&
+            this.model.getBasisJahrPlus() === 2
+        ) {
+            this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr =
+                undefined;
         }
         this.calculate();
     }
 
     public hasGeschaeftsgewinn(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr
+        );
     }
 
     public save(): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             return undefined;
         }
-        if (!this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() || !this.isErsatzeinkommenValid()) {
+        if (
+            !this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() ||
+            !this.isErsatzeinkommenValid()
+        ) {
             this.scrollToErsatzeinkommenSelbststaendigkeit();
             return undefined;
         }
@@ -196,7 +243,10 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public calculate(): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus());
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(
+            this.model,
+            this.model.getBasisJahrPlus()
+        );
     }
 
     public getEinkommensverschlechterung(): TSEinkommensverschlechterung {
@@ -204,13 +254,16 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public getResultate(): TSFinanzielleSituationResultateDTO {
-        return this.berechnungsManager.getEinkommensverschlechterungResultate(this.model.getBasisJahrPlus());
+        return this.berechnungsManager.getEinkommensverschlechterungResultate(
+            this.model.getBasisJahrPlus()
+        );
     }
 
-    // eslint-disable-next-line
     public initGeschaeftsgewinnUndErsatzeinkommensFromFS(): void {
-        if (!this.model.getFiSiConToWorkWith()
-            || !this.model.getFiSiConToWorkWith().finanzielleSituationJA) {
+        if (
+            !this.model.getFiSiConToWorkWith() ||
+            !this.model.getFiSiConToWorkWith().finanzielleSituationJA
+        ) {
             this.$log.error('Fehler: FinSit muss existieren');
             return;
         }
@@ -219,90 +272,139 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         const fsGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS;
         if (this.model.getBasisJahrPlus() === 2) {
             // basisjahr Plus 2
-            const infoContainer = this.model.einkommensverschlechterungInfoContainer;
-            if (infoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1) {
-                const einkommensverschlJABasisjahrPlus1 = this.model.getEkvContToWorkWith().ekvJABasisJahrPlus1;
-                this.geschaeftsgewinnBasisjahrMinus1 = einkommensverschlJABasisjahrPlus1?.geschaeftsgewinnBasisjahr;
+            const infoContainer =
+                this.model.einkommensverschlechterungInfoContainer;
+            if (
+                infoContainer.einkommensverschlechterungInfoJA
+                    .ekvFuerBasisJahrPlus1
+            ) {
+                const einkommensverschlJABasisjahrPlus1 =
+                    this.model.getEkvContToWorkWith().ekvJABasisJahrPlus1;
+                this.geschaeftsgewinnBasisjahrMinus1 =
+                    einkommensverschlJABasisjahrPlus1?.geschaeftsgewinnBasisjahr;
                 this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
                     einkommensverschlJABasisjahrPlus1?.ersatzeinkommenSelbststaendigkeitBasisjahr;
-                const einkommensverschlGSBasisjahrPlus1 = this.model.getEkvContToWorkWith().ekvGSBasisJahrPlus1;
-                this.geschaeftsgewinnBasisjahrMinus1GS = einkommensverschlGSBasisjahrPlus1?.geschaeftsgewinnBasisjahr;
+                const einkommensverschlGSBasisjahrPlus1 =
+                    this.model.getEkvContToWorkWith().ekvGSBasisJahrPlus1;
+                this.geschaeftsgewinnBasisjahrMinus1GS =
+                    einkommensverschlGSBasisjahrPlus1?.geschaeftsgewinnBasisjahr;
                 this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS =
                     einkommensverschlGSBasisjahrPlus1?.ersatzeinkommenSelbststaendigkeitBasisjahr;
             } else {
                 const einkommensverschlGS = this.model.getEkvToWorkWith_GS();
-                this.geschaeftsgewinnBasisjahrMinus1GS = einkommensverschlGS?.geschaeftsgewinnBasisjahrMinus1;
+                this.geschaeftsgewinnBasisjahrMinus1GS =
+                    einkommensverschlGS?.geschaeftsgewinnBasisjahrMinus1;
                 this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS =
                     einkommensverschlGS?.ersatzeinkommenSelbststaendigkeitBasisjahr;
             }
 
             this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahr;
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
+                fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
         } else {
             this.geschaeftsgewinnBasisjahrMinus1 = fs.geschaeftsgewinnBasisjahr;
-            this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahrMinus1;
-            this.geschaeftsgewinnBasisjahrMinus1GS = fsGS?.geschaeftsgewinnBasisjahr;
+            this.geschaeftsgewinnBasisjahrMinus2 =
+                fs.geschaeftsgewinnBasisjahrMinus1;
+            this.geschaeftsgewinnBasisjahrMinus1GS =
+                fsGS?.geschaeftsgewinnBasisjahr;
 
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS = fsGS?.ersatzeinkommenSelbststaendigkeitBasisjahr;
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+                fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
+                fs.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS =
+                fsGS?.ersatzeinkommenSelbststaendigkeitBasisjahr;
         }
     }
 
     public enableBasisjahrMinus1(): boolean {
-        const info = this.model.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
+        const info =
+            this.model.einkommensverschlechterungInfoContainer
+                .einkommensverschlechterungInfoJA;
 
-        return this.model.getBasisJahrPlus() === 2 && !info.ekvFuerBasisJahrPlus1;
+        return (
+            this.model.getBasisJahrPlus() === 2 && !info.ekvFuerBasisJahrPlus1
+        );
     }
 
     public getTextSelbstaendigKorrektur(): any {
         if (this.showSelbstaendigGS && this.model.getEkvToWorkWith_GS()) {
-            const gew1 = this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr;
+            const gew1 =
+                this.model.getEkvToWorkWith_GS().geschaeftsgewinnBasisjahr;
             if (gew1) {
-                const basisjahr = this.gesuchModelManager.getBasisjahrPlus(this.model.getBasisJahrPlus());
-                return this.$translate.instant('JA_KORREKTUR_SELBSTAENDIG_EKV',
-                    {basisjahr, gewinn1: gew1});
+                const basisjahr = this.gesuchModelManager.getBasisjahrPlus(
+                    this.model.getBasisJahrPlus()
+                );
+                return this.$translate.instant(
+                    'JA_KORREKTUR_SELBSTAENDIG_EKV',
+                    {basisjahr, gewinn1: gew1}
+                );
             }
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
     public einkommenInVereinfachtemVerfarenClicked(): void {
-        this.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+        this.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+            null;
     }
 
     public ersatzeinkommenChanged(): void {
-        if (this.model.getEkvToWorkWith().ersatzeinkommen === 0
-            && EbeguUtil.isNotNullOrUndefined(
-                this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr)) {
+        if (
+            this.model.getEkvToWorkWith().ersatzeinkommen === 0 &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getEkvToWorkWith()
+                    .ersatzeinkommenSelbststaendigkeitBasisjahr
+            )
+        ) {
             this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
 
     public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
         const ekv = this.model.getEkvToWorkWith();
-        return !this.showErsatzeinkommenSelbststaendigkeit ||
-            (EbeguUtil.isNotNullOrUndefined(ekv.ersatzeinkommenSelbststaendigkeitBasisjahr)
-                && ekv.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
-            || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
-                && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
-            || (EbeguUtil.isNotNullOrUndefined(ekv.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
-                && ekv.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
-            || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
-                && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
+        return (
+            !this.showErsatzeinkommenSelbststaendigkeit ||
+            (EbeguUtil.isNotNullOrUndefined(
+                ekv.ersatzeinkommenSelbststaendigkeitBasisjahr
+            ) &&
+                ekv.ersatzeinkommenSelbststaendigkeitBasisjahr > 0) ||
+            (EbeguUtil.isNotNullOrUndefined(
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1
+            ) &&
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0) ||
+            (EbeguUtil.isNotNullOrUndefined(
+                ekv.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1
+            ) &&
+                ekv.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0) ||
+            (EbeguUtil.isNotNullOrUndefined(
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2
+            ) &&
+                this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0)
+        );
     }
 
     public isErsatzeinkommenValid(): boolean {
         const ekv: TSEinkommensverschlechterung = this.model.getEkvToWorkWith();
-        return (EbeguUtil.isNullOrUndefined(ekv.ersatzeinkommen)
-                && EbeguUtil.isNullOrUndefined(ekv.ersatzeinkommenSelbststaendigkeitBasisjahr))
-            || (EbeguUtil.isNotNullOrUndefined(ekv.ersatzeinkommen)
-                && EbeguUtil.isNullOrUndefined(ekv.ersatzeinkommenSelbststaendigkeitBasisjahr))
-            || ekv.ersatzeinkommen - ekv.ersatzeinkommenSelbststaendigkeitBasisjahr >= 0;
+        return (
+            (EbeguUtil.isNullOrUndefined(ekv.ersatzeinkommen) &&
+                EbeguUtil.isNullOrUndefined(
+                    ekv.ersatzeinkommenSelbststaendigkeitBasisjahr
+                )) ||
+            (EbeguUtil.isNotNullOrUndefined(ekv.ersatzeinkommen) &&
+                EbeguUtil.isNullOrUndefined(
+                    ekv.ersatzeinkommenSelbststaendigkeitBasisjahr
+                )) ||
+            ekv.ersatzeinkommen -
+                ekv.ersatzeinkommenSelbststaendigkeitBasisjahr >=
+                0
+        );
     }
 
     private scrollToErsatzeinkommenSelbststaendigkeit(): void {
-        const tmp = document.getElementById('ersatzeinkommen-selbststaendigkeit-container');
+        const tmp = document.getElementById(
+            'ersatzeinkommen-selbststaendigkeit-container'
+        );
         if (tmp) {
             tmp.scrollIntoView();
         }

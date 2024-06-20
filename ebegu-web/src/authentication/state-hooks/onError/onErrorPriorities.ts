@@ -19,5 +19,5 @@ export enum OnErrorPriorities {
     ERROR_LOGGER = 1,
     ERROR_RECOVERY = 2,
     ERROR_GS_REGISTRATION_INCOMPLETE = 3,
-    ERROR_AFTER_LOGIN = 10,
+    ERROR_AFTER_LOGIN = 10
 }

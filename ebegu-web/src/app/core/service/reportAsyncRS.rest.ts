@@ -29,13 +29,9 @@ import {CONSTANTS} from '../constants/CONSTANTS';
     providedIn: 'root'
 })
 export class ReportAsyncRS {
-
     private readonly serviceURL = `${CONSTANTS.REST_API}reporting/async`;
 
-    public constructor(
-        public http: HttpClient
-    ) {
-    }
+    public constructor(public http: HttpClient) {}
 
     private static createParamsFromObject(paramsObj: object): HttpParams {
         let params = new HttpParams();
@@ -48,16 +44,18 @@ export class ReportAsyncRS {
         return params;
     }
 
-    public getGesuchStichtagReportExcel(dateTimeStichtag: string, gesuchPeriodeID: string):
-        Observable<{workjobId: string}> {
+    public getGesuchStichtagReportExcel(
+        dateTimeStichtag: string,
+        gesuchPeriodeID: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             dateTimeStichtag,
             gesuchPeriodeID
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchStichtag`,
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/gesuchStichtag`,
             {params: reportParams}
         );
-
     }
 
     public getGesuchZeitraumReportExcel(
@@ -72,8 +70,10 @@ export class ReportAsyncRS {
             gesuchDatumTyp,
             gesuchPeriodeID
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchZeitraum`,
-            {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/gesuchZeitraum`,
+            {params: reportParams}
+        );
     }
 
     public getKantonReportExcel(
@@ -86,36 +86,60 @@ export class ReportAsyncRS {
             auswertungBis,
             kantonSelbstbehalt
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/kanton`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/kanton`,
+            {params: reportParams}
+        );
     }
 
-    public getMitarbeiterinnenReportExcel(auswertungVon: string, auswertungBis: string): Observable<{workjobId: string}> {
+    public getMitarbeiterinnenReportExcel(
+        auswertungVon: string,
+        auswertungBis: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
             auswertungBis
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/mitarbeiterinnen`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/mitarbeiterinnen`,
+            {params: reportParams}
+        );
     }
 
-    public getZahlungsauftragReportExcel(zahlungsauftragID: string): Observable<{workjobId: string}> {
+    public getZahlungsauftragReportExcel(
+        zahlungsauftragID: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             zahlungsauftragID
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlungsauftrag`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/zahlungsauftrag`,
+            {params: reportParams}
+        );
     }
 
-    public getZahlungReportExcel(zahlungID: string): Observable<{workjobId: string}> {
+    public getZahlungReportExcel(
+        zahlungID: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             zahlungID
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlung`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/zahlung`,
+            {params: reportParams}
+        );
     }
 
-    public getZahlungPeriodeReportExcel(gesuchsperiode: string): Observable<{workjobId: string}> {
+    public getZahlungPeriodeReportExcel(
+        gesuchsperiode: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeID: gesuchsperiode
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlungperiode`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/zahlungperiode`,
+            {params: reportParams}
+        );
     }
 
     public getGesuchstellerKinderBetreuungReportExcel(
@@ -130,12 +154,14 @@ export class ReportAsyncRS {
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/gesuchstellerkinderbetreuung`,
-            {params: reportParams
-            });
+            {params: reportParams}
+        );
     }
 
     public getBenutzerReportExcel(): Observable<{workjobId: string}> {
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/benutzer`);
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/benutzer`
+        );
     }
 
     public getKinderReportExcel(
@@ -148,19 +174,33 @@ export class ReportAsyncRS {
             auswertungBis,
             gesuchPeriodeID
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/kinder`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/kinder`,
+            {params: reportParams}
+        );
     }
 
-    public getGesuchstellerReportExcel(stichtag: string): Observable<{workjobId: string}> {
+    public getGesuchstellerReportExcel(
+        stichtag: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             stichtag
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchsteller`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/gesuchsteller`,
+            {params: reportParams}
+        );
     }
 
-    public getMassenversandReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string,
-                                       inklBgGesuche: boolean, inklMischGesuche: boolean, inklTsGesuche: boolean,
-                                       ohneErneuerungsgesuch: boolean, text: string
+    public getMassenversandReportExcel(
+        auswertungVon: string,
+        auswertungBis: string,
+        gesuchPeriodeID: string,
+        inklBgGesuche: boolean,
+        inklMischGesuche: boolean,
+        inklTsGesuche: boolean,
+        ohneErneuerungsgesuch: boolean,
+        text: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
@@ -172,45 +212,68 @@ export class ReportAsyncRS {
             ohneErneuerungsgesuch,
             text
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/massenversand`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/massenversand`,
+            {params: reportParams}
+        );
     }
 
     public getInstitutionenReportExcel(): Observable<{workjobId: string}> {
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/institutionen`);
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/institutionen`
+        );
     }
 
-    public getVerrechnungKibonReportExcel(doSave: boolean, betragProKind: number): Observable<{workjobId: string}> {
+    public getVerrechnungKibonReportExcel(
+        doSave: boolean,
+        betragProKind: number
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             doSave,
             betragProKind
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/verrechnungkibon`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/verrechnungkibon`,
+            {params: reportParams}
+        );
     }
 
-    public getTagesschuleAnmeldungenReportExcel(stammdatenId: string, gesuchsperiodeId: string):
-        Observable<{workjobId: string}> {
+    public getTagesschuleAnmeldungenReportExcel(
+        stammdatenId: string,
+        gesuchsperiodeId: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             stammdatenId,
             gesuchsperiodeId
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/tagesschuleAnmeldungen`,
-            {params: reportParams
-            });
+            {params: reportParams}
+        );
     }
 
-    public getTagesschuleRechnungsstellungReportExcel(gesuchsperiodeId: string): Observable<{workjobId: string}> {
+    public getTagesschuleRechnungsstellungReportExcel(
+        gesuchsperiodeId: string
+    ): Observable<{workjobId: string}> {
         const params = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeId
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/tagesschuleRechnungsstellung`, {params});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/tagesschuleRechnungsstellung`,
+            {params}
+        );
     }
 
-    public getNotrechtReportExcel(zahlungenAusloesen: boolean): Observable<{workjobId: string}> {
+    public getNotrechtReportExcel(
+        zahlungenAusloesen: boolean
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             zahlungenAusloesen
         });
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/notrecht`, {params: reportParams});
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/notrecht`,
+            {params: reportParams}
+        );
     }
 
     public getMahlzeitenverguenstigungReportExcel(
@@ -230,15 +293,20 @@ export class ReportAsyncRS {
     }
 
     public getGemeindenReportExcel(): Observable<{workjobId: string}> {
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gemeinden`);
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/gemeinden`
+        );
     }
 
     public getFerienbetreuungReportExcel(): Observable<{workjobId: string}> {
-        return this.http
-            .get<{workjobId: string}>(`${this.serviceURL}/excel/ferienbetreuung`);
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/ferienbetreuung`
+        );
     }
 
-    public getLastenausgleichTagesschulenReportExcel(gesuchsperiodeId: string): Observable<{workjobId: string}> {
+    public getLastenausgleichTagesschulenReportExcel(
+        gesuchsperiodeId: string
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeId
         });
@@ -248,7 +316,12 @@ export class ReportAsyncRS {
         );
     }
 
-    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number, von: string, bis: string) {
+    public getLastenausgleichBGReportExcel(
+        gemeinde: TSGemeinde,
+        jahr: number,
+        von: string,
+        bis: string
+    ) {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gemeindeId: gemeinde?.id,
             jahr,
@@ -262,14 +335,14 @@ export class ReportAsyncRS {
     }
 
     public getZahlungenReportExcel(
-		gesuchsperiodeId: string,
-		gemeinde: TSGemeinde,
-		institution: TSInstitution
-	): Observable<{workjobId: string}> {
+        gesuchsperiodeId: string,
+        gemeinde: TSGemeinde,
+        institution: TSInstitution
+    ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeId,
-			gemeindeId: gemeinde?.id,
-			institutionId: institution?.id
+            gemeindeId: gemeinde?.id,
+            institutionId: institution?.id
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/zahlungen`,

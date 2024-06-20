@@ -16,11 +16,29 @@
 declare module 'randomcolor' {
     /* eslint-disable  */
     interface RandomColorOptions {
-        hue?: number | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'monochrome' | 'random';
+        hue?:
+            | number
+            | 'red'
+            | 'orange'
+            | 'yellow'
+            | 'green'
+            | 'blue'
+            | 'purple'
+            | 'pink'
+            | 'monochrome'
+            | 'random';
         luminosity?: 'bright' | 'light' | 'dark' | 'random';
         count?: number;
         seed?: number | string;
-        format?: 'hsvArray' | 'hslArray' | 'hsl' | 'hsla' | 'rgbArray' | 'rgb' | 'rgba' | 'hex';
+        format?:
+            | 'hsvArray'
+            | 'hslArray'
+            | 'hsl'
+            | 'hsla'
+            | 'rgbArray'
+            | 'rgb'
+            | 'rgba'
+            | 'hex';
     }
 
     /* eslint-enable */

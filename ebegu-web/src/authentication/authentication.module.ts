@@ -29,19 +29,19 @@ import {errorLoggerHookRunBlock} from './state-hooks/onError/errorLogger.hook';
 import {errorRecoveryHookRunBlock} from './state-hooks/onError/errorRecovery.hook';
 import {clearErrorsHookRunBlock} from './state-hooks/onSuccess/clearErrors.hook';
 
-export const AUTHENTICATION_JS_MODULE =
-    angular.module('dvbAngular.authentication', ['ngCookies'])
-        .run(mandantCheck)
-        .run(authenticationHookRunBlock)
-        .run(authorisationHookRunBlock)
-        .run(dummyLoginHookRunBlock)
-        .run(errorAfterLoginHookRunBlock)
-        .run(erorGSRegistrationIncompleteHookRunBlock)
-        .run(errorLoggerHookRunBlock)
-        .run(errorRecoveryHookRunBlock)
-        .run(clearErrorsHookRunBlock)
-        .run(authenticationRoutes)
-        .service('HttpAuthInterceptor', HttpAuthInterceptor)
-        .service('AuthServiceRS', AuthServiceRS)
-        .component('dvSchulung', SCHULUNG_CONFIG)
-        .component('dvLogin', LoginConfig);
+export const AUTHENTICATION_JS_MODULE = angular
+    .module('dvbAngular.authentication', ['ngCookies'])
+    .run(mandantCheck)
+    .run(authenticationHookRunBlock)
+    .run(authorisationHookRunBlock)
+    .run(dummyLoginHookRunBlock)
+    .run(errorAfterLoginHookRunBlock)
+    .run(erorGSRegistrationIncompleteHookRunBlock)
+    .run(errorLoggerHookRunBlock)
+    .run(errorRecoveryHookRunBlock)
+    .run(clearErrorsHookRunBlock)
+    .run(authenticationRoutes)
+    .service('HttpAuthInterceptor', HttpAuthInterceptor)
+    .service('AuthServiceRS', AuthServiceRS)
+    .component('dvSchulung', SCHULUNG_CONFIG)
+    .component('dvLogin', LoginConfig);

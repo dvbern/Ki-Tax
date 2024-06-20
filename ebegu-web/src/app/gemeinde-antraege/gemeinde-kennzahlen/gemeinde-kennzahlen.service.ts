@@ -30,55 +30,95 @@ const LOG = LogFactory.createLog('GemeindeKennzahlenService');
     providedIn: 'root'
 })
 export class GemeindeKennzahlenService {
-
     private readonly API_URL = `${CONSTANTS.REST_API}gemeindekennzahlen`;
     private readonly restUtil = new EbeguRestUtil();
 
-    private readonly _gemeindeKennzahlenAntragStore$ = new Subject<TSGemeindeKennzahlen>();
+    private readonly _gemeindeKennzahlenAntragStore$ =
+        new Subject<TSGemeindeKennzahlen>();
 
-    public constructor(private readonly http: HttpClient) {
-    }
+    public constructor(private readonly http: HttpClient) {}
 
     public getGemeindeKennzahlenAntrag(): Observable<TSGemeindeKennzahlen> {
         return this._gemeindeKennzahlenAntragStore$.asObservable();
     }
 
     public updateGemeindeKennzahlenAntragStore(id: string): void {
-        this.http.get<TSGemeindeKennzahlen>(`${this.API_URL}/${id}`)
+        this.http
+            .get<TSGemeindeKennzahlen>(`${this.API_URL}/${id}`)
             .pipe(
-                map(antrag => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(), antrag))
+                map(antrag =>
+                    this.restUtil.parseGemeindeKennzahlen(
+                        new TSGemeindeKennzahlen(),
+                        antrag
+                    )
+                )
             )
-            .subscribe(antrag => this._gemeindeKennzahlenAntragStore$.next(antrag),
-                error => LOG.error(error));
-    }
-
-    public saveGemeindeKennzahlen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.post(`${this.API_URL}/${encodeURIComponent(antrag.id)}/save`,
-            this.restUtil.gemeindeKennzahlenToRestObject({}, antrag))
-            .pipe(
-                map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
-                    antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
+            .subscribe(
+                antrag => this._gemeindeKennzahlenAntragStore$.next(antrag),
+                error => LOG.error(error)
             );
     }
 
-    public gemeindeKennzahlenAbschliessen(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.post(`${this.API_URL}/${encodeURIComponent(antrag.id)}/abschliessen`,
-            this.restUtil.gemeindeKennzahlenToRestObject({}, antrag))
+    public saveGemeindeKennzahlen(
+        antrag: TSGemeindeKennzahlen
+    ): Observable<TSGemeindeKennzahlen> {
+        return this.http
+            .post(
+                `${this.API_URL}/${encodeURIComponent(antrag.id)}/save`,
+                this.restUtil.gemeindeKennzahlenToRestObject({}, antrag)
+            )
             .pipe(
-                map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
-                    antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
+                map(antragFromServer =>
+                    this.restUtil.parseGemeindeKennzahlen(
+                        new TSGemeindeKennzahlen(),
+                        antragFromServer
+                    )
+                ),
+                tap(parsedAntrag =>
+                    this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)
+                )
             );
     }
 
-    public gemeindeKennzahlenZurueckAnGemeinde(antrag: TSGemeindeKennzahlen): Observable<TSGemeindeKennzahlen> {
-        return this.http.put(`${this.API_URL}/${encodeURIComponent(antrag.id)}/zurueck-an-gemeinde`,
-            this.restUtil.gemeindeKennzahlenToRestObject({}, antrag))
+    public gemeindeKennzahlenAbschliessen(
+        antrag: TSGemeindeKennzahlen
+    ): Observable<TSGemeindeKennzahlen> {
+        return this.http
+            .post(
+                `${this.API_URL}/${encodeURIComponent(antrag.id)}/abschliessen`,
+                this.restUtil.gemeindeKennzahlenToRestObject({}, antrag)
+            )
             .pipe(
-                map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
-                    antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
+                map(antragFromServer =>
+                    this.restUtil.parseGemeindeKennzahlen(
+                        new TSGemeindeKennzahlen(),
+                        antragFromServer
+                    )
+                ),
+                tap(parsedAntrag =>
+                    this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)
+                )
+            );
+    }
+
+    public gemeindeKennzahlenZurueckAnGemeinde(
+        antrag: TSGemeindeKennzahlen
+    ): Observable<TSGemeindeKennzahlen> {
+        return this.http
+            .put(
+                `${this.API_URL}/${encodeURIComponent(antrag.id)}/zurueck-an-gemeinde`,
+                this.restUtil.gemeindeKennzahlenToRestObject({}, antrag)
+            )
+            .pipe(
+                map(antragFromServer =>
+                    this.restUtil.parseGemeindeKennzahlen(
+                        new TSGemeindeKennzahlen(),
+                        antragFromServer
+                    )
+                ),
+                tap(parsedAntrag =>
+                    this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)
+                )
             );
     }
 }

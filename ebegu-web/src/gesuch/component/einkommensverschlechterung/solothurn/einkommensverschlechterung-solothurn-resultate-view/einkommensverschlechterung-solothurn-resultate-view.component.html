@@ -19,61 +19,102 @@
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
-            </h2>
+            <h2></h2>
             <h2 *ngIf="!hasSecondAntragstellende()">
-                <span translate
-                      [translateParams]="{antragsteller: this.getAntragsteller1Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
+                <span
+                    translate
+                    [translateParams]="{
+                        antragsteller: this.getAntragsteller1Name(),
+                        basisjahr:
+                            this.gesuchModelManager.getBasisjahrToWorkWith()
+                    }"
+                    >EKV_RESULTATE_ANTRAGSTELLENDE</span
+                >
             </h2>
             <h2 *ngIf="hasSecondAntragstellende()">
-                 <span translate
-                       [translateParams]="{antragsteller: this.getGemeinsameFullname(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
+                <span
+                    translate
+                    [translateParams]="{
+                        antragsteller: this.getGemeinsameFullname(),
+                        basisjahr:
+                            this.gesuchModelManager.getBasisjahrToWorkWith()
+                    }"
+                    >EKV_RESULTATE_ANTRAGSTELLENDE</span
+                >
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form"
-                  #form="ngForm"
-                  novalidate>
+            <form role="form" #form="ngForm" novalidate>
                 <div class="row margin-bottom-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
+                            [model]="
+                                resultatBasisjahr?.massgebendesEinkVorAbzFamGr
+                            "
                             [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahr()}"
-                            [inputDisabled]="true">
+                            [labelMessageKeyArgs]="{
+                                basisjahr:
+                                    this.gesuchModelManager.getBasisjahr()
+                            }"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
                 <div class="row" *ngIf="hasSecondAntragstellende()">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS1"
-                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'"
-                            [labelMessageKeyArgs]="{antragsteller: this.getAntragsteller1Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
-                            [inputDisabled]="true">
+                            [model]="
+                                getResultate()?.massgebendesEinkVorAbzFamGrGS1
+                            "
+                            [labelMessageKey]="
+                                'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'
+                            "
+                            [labelMessageKeyArgs]="{
+                                antragsteller: this.getAntragsteller1Name(),
+                                basisjahr:
+                                    this.gesuchModelManager.getBasisjahrToWorkWith()
+                            }"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
                 <div class="row" *ngIf="hasSecondAntragstellende()">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS2"
-                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'"
-                            [labelMessageKeyArgs]="{antragsteller: this.getAntragsteller2Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
-                            [inputDisabled]="true">
+                            [model]="
+                                getResultate()?.massgebendesEinkVorAbzFamGrGS2
+                            "
+                            [labelMessageKey]="
+                                'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'
+                            "
+                            [labelMessageKeyArgs]="{
+                                antragsteller: this.getAntragsteller2Name(),
+                                basisjahr:
+                                    this.gesuchModelManager.getBasisjahrToWorkWith()
+                            }"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
+                            [model]="
+                                getResultate()?.massgebendesEinkVorAbzFamGr
+                            "
                             [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
-                            [inputDisabled]="true">
+                            [labelMessageKeyArgs]="{
+                                basisjahr:
+                                    this.gesuchModelManager.getBasisjahrToWorkWith()
+                            }"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
@@ -83,7 +124,8 @@
                             [model]="resultatProzent"
                             [labelMessageKey]="'EVK_IN_PROZENT'"
                             [labelMessageKeyArgs]=""
-                            [inputDisabled]="true">
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
@@ -91,25 +133,45 @@
                 <div class="row margin-top-20" *ngIf="ekvAkzeptiert()">
                     <div class="col-md-12">
                         <div class="well well-status-bestaetigt">
-                            <span translate
-                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith(), ekvGrenze: ekvGrenzWerte()}">RESULTATE_EKV_AKZEPTIERT</span>
+                            <span
+                                translate
+                                [translateParams]="{
+                                    basisjahr:
+                                        this.gesuchModelManager.getBasisjahr(),
+                                    ekvJahr:
+                                        this.gesuchModelManager.getBasisjahrToWorkWith(),
+                                    ekvGrenze: ekvGrenzWerte()
+                                }"
+                                >RESULTATE_EKV_AKZEPTIERT</span
+                            >
                         </div>
                     </div>
                 </div>
                 <div class="row margin-top-20" *ngIf="!ekvAkzeptiert()">
                     <div class="col-md-12">
                         <div class="well well-status-warten">
-                            <span translate
-                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith(), ekvGrenze: ekvGrenzWerte()}">RESULTATE_EKV_NICHT_AKZEPTIERT</span>
+                            <span
+                                translate
+                                [translateParams]="{
+                                    basisjahr:
+                                        this.gesuchModelManager.getBasisjahr(),
+                                    ekvJahr:
+                                        this.gesuchModelManager.getBasisjahrToWorkWith(),
+                                    ekvGrenze: ekvGrenzWerte()
+                                }"
+                                >RESULTATE_EKV_NICHT_AKZEPTIERT</span
+                            >
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-12">
-
-                    <dv-navigation-x [dvPrevious]="true" [dvNext]="true"
-                                     (dvSave)="save($event.onResult)"
-                                     [dvSubStep]="4"></dv-navigation-x>
+                    <dv-navigation-x
+                        [dvPrevious]="true"
+                        [dvNext]="true"
+                        (dvSave)="save($event.onResult)"
+                        [dvSubStep]="4"
+                    ></dv-navigation-x>
                 </div>
             </form>
         </div>

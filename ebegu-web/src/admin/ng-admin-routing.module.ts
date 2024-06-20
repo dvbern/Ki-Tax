@@ -34,11 +34,15 @@ import {TestdatenViewComponent} from './component/testdatenView/testdatenView.co
 import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersendeteMails/uebersichtVersendeteMails.component';
 
 const applicationPropertiesResolver = [
-    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => applicationPropertyRS.getAllApplicationProperties()
+    'ApplicationPropertyRS',
+    (applicationPropertyRS: ApplicationPropertyRS) =>
+        applicationPropertyRS.getAllApplicationProperties()
 ];
 
 function assertTestfaelleEnabled(transition: Transition): HookResult {
-    const applicationPropertyRS: ApplicationPropertyRS = transition.injector().get('ApplicationPropertyRS');
+    const applicationPropertyRS: ApplicationPropertyRS = transition
+        .injector()
+        .get('ApplicationPropertyRS');
     return applicationPropertyRS.isTestfaelleEnabled();
 }
 assertTestfaelleEnabled.$inject = ['$transition$'];
@@ -136,12 +140,7 @@ const states: Ng2StateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class NgAdminRoutingModule {
-}
+export class NgAdminRoutingModule {}

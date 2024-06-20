@@ -57,5 +57,4 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         WizardstepXModule
     ]
 })
-export class LastenausgleichTSModule {
-}
+export class LastenausgleichTSModule {}

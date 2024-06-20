@@ -18,8 +18,11 @@ import {TSRole} from '../models/enums/TSRole';
 import {TSRoleUtil} from './TSRoleUtil';
 
 export class NavigationUtil {
-
-    public static navigateToStartsiteOfGesuchForRole(role: TSRole, state: StateService, gesuchID: string): void {
+    public static navigateToStartsiteOfGesuchForRole(
+        role: TSRole,
+        state: StateService,
+        gesuchID: string
+    ): void {
         if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role)) {
             state.go('gesuch.betreuungen', {
                 gesuchId: gesuchID
@@ -32,7 +35,10 @@ export class NavigationUtil {
             state.go('gesuch.sozialdienstfallcreation', {
                 gesuchId: gesuchID
             });
-        } else if (role === TSRole.ADMIN_FERIENBETREUUNG || role === TSRole.SACHBEARBEITER_FERIENBETREUUNG) {
+        } else if (
+            role === TSRole.ADMIN_FERIENBETREUUNG ||
+            role === TSRole.SACHBEARBEITER_FERIENBETREUUNG
+        ) {
             state.go('gemeindeantrage.view');
         } else {
             state.go('gesuch.fallcreation', {

@@ -21,7 +21,6 @@ import {TSPensumAusserordentlicherAnspruch} from './TSPensumAusserordentlicherAn
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export class TSKind extends TSAbstractPersonEntity {
-
     private _kinderabzugErstesHalbjahr: TSKinderabzug;
     private _kinderabzugZweitesHalbjahr: TSKinderabzug;
     private _isPflegekind: boolean;
@@ -167,7 +166,9 @@ export class TSKind extends TSAbstractPersonEntity {
         return this._pensumAusserordentlicherAnspruch;
     }
 
-    public set pensumAusserordentlicherAnspruch(value: TSPensumAusserordentlicherAnspruch) {
+    public set pensumAusserordentlicherAnspruch(
+        value: TSPensumAusserordentlicherAnspruch
+    ) {
         this._pensumAusserordentlicherAnspruch = value;
     }
 
@@ -177,7 +178,8 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set zemisNummer(value: string) {
         this._zemisNummer = value;
-        this.zemisNummerStandardFormat = EbeguUtil.zemisNummerToStandardZemisNummer(value);
+        this.zemisNummerStandardFormat =
+            EbeguUtil.zemisNummerToStandardZemisNummer(value);
     }
 
     public get zemisNummerStandardFormat(): string {
@@ -239,7 +241,9 @@ export class TSKind extends TSAbstractPersonEntity {
         return this._hoehereBeitraegeWegenBeeintraechtigungBeantragen;
     }
 
-    public set hoehereBeitraegeWegenBeeintraechtigungBeantragen(value: boolean) {
+    public set hoehereBeitraegeWegenBeeintraechtigungBeantragen(
+        value: boolean
+    ) {
         this._hoehereBeitraegeWegenBeeintraechtigungBeantragen = value;
     }
 }

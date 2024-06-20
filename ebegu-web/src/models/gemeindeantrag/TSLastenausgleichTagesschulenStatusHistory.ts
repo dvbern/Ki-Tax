@@ -21,7 +21,6 @@ import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSBenutzer} from '../TSBenutzer';
 
 export class TSLastenausgleichTagesschulenStatusHistory extends TSAbstractEntity {
-
     private _containerId: string;
     private _benutzer: TSBenutzer;
     private _timestampVon: moment.Moment;

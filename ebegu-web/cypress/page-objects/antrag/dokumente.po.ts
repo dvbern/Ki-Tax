@@ -16,9 +16,9 @@
  */
 
 const getAllFileUploads = () => {
-	return cy.get('input[type="file"][tabindex=0]');
+    return cy.get('input[type="file"][tabindex=0]');
 };
 
 export const DokumentePO = {
-    getAllFileUploads,
+    getAllFileUploads
 };

@@ -36,24 +36,34 @@ describe('FerienbetreuungAbschlussComponent', () => {
     let fixture: ComponentFixture<FerienbetreuungAbschlussComponent>;
     const dummyUser = new TSBenutzer();
 
-    const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
-        FerienbetreuungService.name,
-        ['getFerienbetreuungContainer']
+    const ferienbetreuungServiceSpy =
+        jasmine.createSpyObj<FerienbetreuungService>(
+            FerienbetreuungService.name,
+            ['getFerienbetreuungContainer']
+        );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['addMesageAsError', 'addMesageAsInfo']
     );
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
-        ['addMesageAsError', 'addMesageAsInfo']);
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['principal$', 'isOneOfRoles']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['principal$', 'isOneOfRoles']
+    );
 
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-        ['go']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
 
-    const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
-        ['getPauschalbetraegeFerienbetreuung']);
+    const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(
+        EinstellungRS.name,
+        ['getPauschalbetraegeFerienbetreuung']
+    );
 
-    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
-        ['openDownload']);
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name, [
+        'openDownload'
+    ]);
 
     const container = new TSFerienbetreuungAngabenContainer();
     container.angabenDeklaration = new TSFerienbetreuungAngaben();
@@ -63,7 +73,10 @@ describe('FerienbetreuungAbschlussComponent', () => {
         await TestBed.configureTestingModule({
             imports: [SharedModule],
             providers: [
-                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
+                {
+                    provide: FerienbetreuungService,
+                    useValue: ferienbetreuungServiceSpy
+                },
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
@@ -78,7 +91,9 @@ describe('FerienbetreuungAbschlussComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FerienbetreuungAbschlussComponent);
-        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(
+            of(container)
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

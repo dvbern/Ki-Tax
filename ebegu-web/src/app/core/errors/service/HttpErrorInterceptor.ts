@@ -28,22 +28,23 @@ import IQService = angular.IQService;
  * emaillogin/gui/registration/createmaillogin is the URL of BE-Login used to burn timeout
  */
 export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
-    return response.config
-        && (response.config.url.includes('notokenrefresh')
-            || response.config.url
-                .includes('emaillogin/gui/registration/createmaillogin'));
+    return (
+        response.config &&
+        (response.config.url.includes('notokenrefresh') ||
+            response.config.url.includes(
+                'emaillogin/gui/registration/createmaillogin'
+            ))
+    );
 }
 
 export class HttpErrorInterceptor implements IHttpInterceptor {
-
     public static $inject = ['$q', 'ErrorService', '$log'];
 
     public constructor(
         private readonly $q: IQService,
         private readonly errorService: ErrorService,
-        private readonly $log: ILogService,
-    ) {
-    }
+        private readonly $log: ILogService
+    ) {}
 
     public responseError = (response: any) => {
         const http403 = 403;
@@ -75,10 +76,12 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
     private handleErrorResponse(response: any): Array<TSExceptionReport> {
         const http404 = 404;
         const url = response && response.config ? response.config.url : '';
-        if (response.status === http404 && (
-            url.contains('ebegu.dvbern.ch')
-            || url.contains('ebegu-test.bern.ch')
-            || url.contains('ebegu.bern.ch'))) {
+        if (
+            response.status === http404 &&
+            (url.contains('ebegu.dvbern.ch') ||
+                url.contains('ebegu-test.bern.ch') ||
+                url.contains('ebegu.bern.ch'))
+        ) {
             return [];
         }
         let errors: Array<TSExceptionReport>;
@@ -86,57 +89,79 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         // noinspection IfStatementWithTooManyBranchesJS
         if (this.isDataViolationResponse(response.data)) {
             errors = this.convertViolationReport(response.data);
-
         } else if (this.isDataEbeguExceptionReport(response.data)) {
             errors = this.convertEbeguExceptionReport(response.data);
-
         } else if (isOIDCTokenInitialisationException(response)) {
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_OIDC_TOKEN_INITIALISATION',
-                response.data));
+            errors.push(
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_OIDC_TOKEN_INITIALISATION',
+                    response.data
+                )
+            );
         } else if (this.isFileUploadException(response.data)) {
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_FILE_TOO_LARGE',
-                response.data));
+            errors.push(
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_FILE_TOO_LARGE',
+                    response.data
+                )
+            );
         } else if (this.isOptimisticLockException(response)) {
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_DATA_CHANGED',
-                response.data));
+            errors.push(
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_DATA_CHANGED',
+                    response.data
+                )
+            );
         } else if (this.isUnknownHostException(response)) {
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_UNKNOWN_HOST',
-                response.data));
+            errors.push(
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_UNKNOWN_HOST',
+                    response.data
+                )
+            );
         } else {
             this.$log.error(
-                `${new Date().toLocaleString('de-CH')} ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+                `${new Date().toLocaleString('de-CH')} ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`
+            );
             this.$log.error(`ResponseData:${JSON.stringify(response.data)}`);
             // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
-            errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
-                TSErrorLevel.SEVERE,
-                'ERROR_UNEXPECTED',
-                response.data));
+            errors.push(
+                new TSExceptionReport(
+                    TSErrorType.INTERNAL,
+                    TSErrorLevel.SEVERE,
+                    'ERROR_UNEXPECTED',
+                    response.data
+                )
+            );
         }
         return errors;
     }
 
     private convertViolationReport(data: any): Array<TSExceptionReport> {
-        return [].concat(this.convertToExceptionReport(data.parameterViolations))
+        return []
+            .concat(this.convertToExceptionReport(data.parameterViolations))
             .concat(this.convertToExceptionReport(data.classViolations))
             .concat(this.convertToExceptionReport(data.fieldViolations))
             .concat(this.convertToExceptionReport(data.propertyViolations))
             .concat(this.convertToExceptionReport(data.returnValueViolations));
     }
 
-    private convertToExceptionReport(violations: any): Array<TSExceptionReport> {
+    private convertToExceptionReport(
+        violations: any
+    ): Array<TSExceptionReport> {
         const exceptionReports: Array<TSExceptionReport> = [];
         if (violations) {
             for (const violationEntry of violations) {
@@ -144,20 +169,24 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
                 const message: string = violationEntry.message;
                 const path: string = violationEntry.path;
                 const value: string = violationEntry.value;
-                const report = TSExceptionReport.createFromViolation(constraintType, message, path, value);
+                const report = TSExceptionReport.createFromViolation(
+                    constraintType,
+                    message,
+                    path,
+                    value
+                );
                 exceptionReports.push(report);
             }
         }
         return exceptionReports;
-
     }
 
     private convertEbeguExceptionReport(data: any): Array<TSExceptionReport> {
-        const exceptionReport = TSExceptionReport.createFromExceptionReport(data);
+        const exceptionReport =
+            TSExceptionReport.createFromExceptionReport(data);
         const exceptionReports: Array<TSExceptionReport> = [];
         exceptionReports.push(exceptionReport);
         return exceptionReports;
-
     }
 
     /**
@@ -171,31 +200,54 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         // hier pruefen wir ob wir die Felder von org.jboss.resteasy.api.validation.ViolationReport.ViolationReport()
         // bekommen
         if (data !== null && data !== undefined) {
-            const hasParamViol: boolean = data.hasOwnProperty('parameterViolations');
-            const hasClassViol: boolean = data.hasOwnProperty('classViolations');
-            const hasfieldViol: boolean = data.hasOwnProperty('fieldViolations');
-            const hasPropViol: boolean = data.hasOwnProperty('propertyViolations');
-            const hasRetViol: boolean = data.hasOwnProperty('returnValueViolations');
-            return hasParamViol && hasClassViol && hasfieldViol && hasPropViol && hasRetViol;
+            const hasParamViol: boolean = data.hasOwnProperty(
+                'parameterViolations'
+            );
+            const hasClassViol: boolean =
+                data.hasOwnProperty('classViolations');
+            const hasfieldViol: boolean =
+                data.hasOwnProperty('fieldViolations');
+            const hasPropViol: boolean =
+                data.hasOwnProperty('propertyViolations');
+            const hasRetViol: boolean = data.hasOwnProperty(
+                'returnValueViolations'
+            );
+            return (
+                hasParamViol &&
+                hasClassViol &&
+                hasfieldViol &&
+                hasPropViol &&
+                hasRetViol
+            );
         }
         return false;
-
     }
 
     private isDataEbeguExceptionReport(data: any): boolean {
         if (data !== null && data !== undefined) {
-            const hasErrorCodeEnum: boolean = data.hasOwnProperty('errorCodeEnum');
-            const hasExceptionName: boolean = data.hasOwnProperty('exceptionName');
+            const hasErrorCodeEnum: boolean =
+                data.hasOwnProperty('errorCodeEnum');
+            const hasExceptionName: boolean =
+                data.hasOwnProperty('exceptionName');
             const hasMethodName: boolean = data.hasOwnProperty('methodName');
             const hasStackTrace: boolean = data.hasOwnProperty('stackTrace');
-            const hasTranslatedMessage: boolean = data.hasOwnProperty('translatedMessage');
-            const hasCustomMessage: boolean = data.hasOwnProperty('customMessage');
-            const hasArgumentList: boolean = data.hasOwnProperty('argumentList');
-            return hasErrorCodeEnum && hasExceptionName && hasMethodName && hasStackTrace
-                && hasTranslatedMessage && hasCustomMessage && hasArgumentList;
+            const hasTranslatedMessage: boolean =
+                data.hasOwnProperty('translatedMessage');
+            const hasCustomMessage: boolean =
+                data.hasOwnProperty('customMessage');
+            const hasArgumentList: boolean =
+                data.hasOwnProperty('argumentList');
+            return (
+                hasErrorCodeEnum &&
+                hasExceptionName &&
+                hasMethodName &&
+                hasStackTrace &&
+                hasTranslatedMessage &&
+                hasCustomMessage &&
+                hasArgumentList
+            );
         }
         return false;
-
     }
 
     private isFileUploadException(response: string): boolean {
@@ -203,7 +255,8 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
             return false;
         }
 
-        const msg = 'java.io.IOException: UT000020: Connection terminated as request was larger than ';
+        const msg =
+            'java.io.IOException: UT000020: Connection terminated as request was larger than ';
 
         return response.indexOf(msg) > -1;
     }

@@ -17,7 +17,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {DVQuicksearchListConfig} from './component/dv-quicksearch-list/dv-quicksearch-list';
 import {quicksearchFilter} from './filter/quicksearchFilter';
 
-export const QUICKSEARCH_JS_MODULE =
-    angular.module('ebeguWeb.quicksearch', [CORE_JS_MODULE.name])
-        .filter('quicksearchFilter', quicksearchFilter)
-        .component('dvQuicksearchList', new DVQuicksearchListConfig());
+export const QUICKSEARCH_JS_MODULE = angular
+    .module('ebeguWeb.quicksearch', [CORE_JS_MODULE.name])
+    .filter('quicksearchFilter', quicksearchFilter)
+    .component('dvQuicksearchList', new DVQuicksearchListConfig());

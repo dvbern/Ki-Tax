@@ -28,10 +28,7 @@ import {VerlaufComponent} from './lastenausgleich-ts/verlauf/verlauf.component';
 import {UnsavedChangesService} from './services/unsaved-changes.service';
 
 @NgModule({
-    declarations: [
-        GemeindeAntraegeComponent,
-        VerlaufComponent
-    ],
+    declarations: [GemeindeAntraegeComponent, VerlaufComponent],
     imports: [
         CommonModule,
         LastenausgleichTSModule,
@@ -42,13 +39,7 @@ import {UnsavedChangesService} from './services/unsaved-changes.service';
         FormsModule,
         ReactiveFormsModule
     ],
-    exports: [
-        LastenausgleichTSModule,
-        FerienbetreuungModule
-    ],
-    providers: [
-        UnsavedChangesService
-    ]
+    exports: [LastenausgleichTSModule, FerienbetreuungModule],
+    providers: [UnsavedChangesService]
 })
-export class GemeindeAntraegeModule {
-}
+export class GemeindeAntraegeModule {}

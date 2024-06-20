@@ -31,7 +31,6 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListSozialdienstComponent implements OnInit {
-
     public hiddenDVTableColumns = [
         'institutionCount',
         'type',
@@ -41,10 +40,11 @@ export class ListSozialdienstComponent implements OnInit {
 
     public antragList$: Observable<DVEntitaetListItem[]>;
 
-    public constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
-                       private readonly sozialdienstRS: SozialdienstRS
-    ) {
-    }
+    public constructor(
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly sozialdienstRS: SozialdienstRS
+    ) {}
 
     public ngOnInit(): void {
         this.loadData();
@@ -67,11 +67,13 @@ export class ListSozialdienstComponent implements OnInit {
 
     private loadData(): void {
         // For now only SuperAdmin
-        const editPossible = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesForSozialdienst());
-        this.antragList$ = this.getSozialdienstForPrincipal().pipe(map(sozialdienstList => {
-            const entitaetListItems: DVEntitaetListItem[] = [];
-            sozialdienstList.forEach(
-                sozialdienst => {
+        const editPossible = this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAllRolesForSozialdienst()
+        );
+        this.antragList$ = this.getSozialdienstForPrincipal().pipe(
+            map(sozialdienstList => {
+                const entitaetListItems: DVEntitaetListItem[] = [];
+                sozialdienstList.forEach(sozialdienst => {
                     const dvListItem = {
                         id: sozialdienst.id,
                         name: sozialdienst.name,
@@ -80,16 +82,20 @@ export class ListSozialdienstComponent implements OnInit {
                         canRemove: false
                     };
                     entitaetListItems.push(dvListItem);
-                }
-            );
-            return entitaetListItems;
-        }));
+                });
+                return entitaetListItems;
+            })
+        );
     }
 
     private getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
-            const sozialDienstList =
-                [this.authServiceRS.getPrincipal().currentBerechtigung.sozialdienst];
+        if (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())
+        ) {
+            const sozialDienstList = [
+                this.authServiceRS.getPrincipal().currentBerechtigung
+                    .sozialdienst
+            ];
             return of(sozialDienstList);
         }
         return this.sozialdienstRS.getSozialdienstList();

@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookMatchCriteria,
+    HookResult,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {OnBeforePriorities} from './onBeforePriorities';
 
@@ -33,11 +38,15 @@ export function dummyLoginHookRunBlock($transitions: TransitionService): void {
         to: state => state.data && state.data.requiresDummyLogin
     };
 
-    $transitions.onBefore(requiresDummyLogin, checkDummyLogin, {priority: OnBeforePriorities.CONFIGURATION});
+    $transitions.onBefore(requiresDummyLogin, checkDummyLogin, {
+        priority: OnBeforePriorities.CONFIGURATION
+    });
 }
 
 function checkDummyLogin(transition: Transition): HookResult {
-    const applicationPropertyRS: ApplicationPropertyRS = transition.injector().get('ApplicationPropertyRS');
+    const applicationPropertyRS: ApplicationPropertyRS = transition
+        .injector()
+        .get('ApplicationPropertyRS');
 
     return applicationPropertyRS.isDummyMode() as Promise<boolean>;
 }
