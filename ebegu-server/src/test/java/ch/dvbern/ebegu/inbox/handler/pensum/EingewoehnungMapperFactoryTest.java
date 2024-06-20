@@ -19,13 +19,16 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
@@ -55,14 +58,18 @@ import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(EasyMockExtension.class)
-class EingewoehnungPauschaleMapperFactoryTest extends EasyMockSupport {
+class EingewoehnungMapperFactoryTest extends EasyMockSupport {
 
 	@TestSubject
-	private final EingewoehnungPauschaleMapperFactory factory = new EingewoehnungPauschaleMapperFactory();
+	private final EingewoehnungMapperFactory factory = new EingewoehnungMapperFactory();
+
+	@Mock
+	private Validator validator;
 
 	@Mock
 	private EinstellungService einstellungService;
@@ -76,31 +83,54 @@ class EingewoehnungPauschaleMapperFactoryTest extends EasyMockSupport {
 	class WhenEinstellungEnabled {
 
 		@Test
-		void importEingewoehnungPauschale() {
+		void importEingewoehnung() {
 			ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
 			EingewoehnungDTO eingewoehnung =
 				new EingewoehnungDTO(BigDecimal.valueOf(123.45), LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 31));
 			z.setEingewoehnung(eingewoehnung);
 
 			expectEingewoehnungTyp(EingewoehnungTyp.PAUSCHALE);
+			expect(validator.validate(anyObject())).andReturn(Set.of());
 			BetreuungsmitteilungPensum actual = convert(z);
 
-			assertThat(actual.getEingewoehnungPauschale(), pojo(EingewoehnungPauschale.class)
-				.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(BigDecimal.valueOf(123.45)))
-				.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
+			assertThat(actual.getEingewoehnung(), pojo(Eingewoehnung.class)
+				.where(Eingewoehnung::getKosten, comparesEqualTo(BigDecimal.valueOf(123.45)))
+				.where(Eingewoehnung::getGueltigkeit, pojo(DateRange.class)
 					.where(DateRange::getGueltigAb, comparesEqualTo(LocalDate.of(2024, 1, 1)))
 					.where(DateRange::getGueltigBis, comparesEqualTo(LocalDate.of(2024, 1, 31)))));
 		}
 
 		@Test
-		void importEingewoehnungPauschale_null() {
+		void ignoreInvalidEingewoehnung_requireHumanConfirmation() {
 			ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+			@SuppressWarnings("DataFlowIssue") EingewoehnungDTO eingewoehnung =
+				new EingewoehnungDTO(null, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 31));
+			z.setEingewoehnung(eingewoehnung);
+
+			expectEingewoehnungTyp(EingewoehnungTyp.PAUSCHALE);
+			ConstraintViolation<Eingewoehnung> violation = mock(ConstraintViolation.class);
+			expect(validator.validate(anyObject(Eingewoehnung.class))).andReturn(Set.of(violation));
+			BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+			ProcessingContext ctx = initProcessingContext(z, einstellungen);
+			BetreuungsmitteilungPensum actual = convert(z, ctx);
+
+			assertThat(actual.getEingewoehnung(), is(nullValue()));
+			assertThat(ctx, pojo(ProcessingContext.class)
+				.where(ProcessingContext::getHumanConfirmationMessages, containsString("Die Eingewöhnung-Daten sind ungültig: "))
+				.where(ProcessingContext::isReadyForBestaetigen, is(false))
+			);
+		}
+
+		@Test
+		void importEingewoehnung_null() {
+			ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+			//noinspection DataFlowIssue
 			z.setEingewoehnung(null);
 
 			expectEingewoehnungTyp(EingewoehnungTyp.PAUSCHALE);
 			BetreuungsmitteilungPensum actual = convert(z);
 
-			assertThat(actual.getEingewoehnungPauschale(), is(nullValue()));
+			assertThat(actual.getEingewoehnung(), is(nullValue()));
 		}
 	}
 
@@ -115,16 +145,18 @@ class EingewoehnungPauschaleMapperFactoryTest extends EasyMockSupport {
 		expectEingewoehnungTyp(eingewoehnungTyp);
 		BetreuungsmitteilungPensum actual = convert(z);
 
-		assertThat(actual.getEingewoehnungPauschale(), is(nullValue()));
+		assertThat(actual.getEingewoehnung(), is(nullValue()));
+	}
+
+	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
+		return convert(z, initProcessingContext(z, einstellungen));
 	}
 
 	@Nonnull
-	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z) {
+	private BetreuungsmitteilungPensum convert(ZeitabschnittDTO z, ProcessingContext ctx) {
 		replayAll();
-
-		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder().build();
-		ProcessingContext ctx = initProcessingContext(z, einstellungen);
-		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnungPauschale(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = factory.createForEingewoehnung(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);

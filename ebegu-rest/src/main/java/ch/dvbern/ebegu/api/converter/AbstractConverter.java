@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractPersonDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxEingewoehnungPauschale;
+import ch.dvbern.ebegu.api.dtos.JaxEingewoehnung;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
@@ -51,9 +51,8 @@ import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -246,24 +245,27 @@ public class AbstractConverter {
 		pensumEntity.setPensum(jaxPensum.getPensum());
 		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
 		pensumEntity.setBetreuteTage(jaxPensum.getBetreuteTage());
+		pensumEntity.setMonatlicheHauptmahlzeiten(jaxPensum.getMonatlicheHauptmahlzeiten());
+		jaxPensum.getTarifProHauptmahlzeit()
+			.ifPresent(pensumEntity::setTarifProHauptmahlzeit);
+		pensumEntity.setMonatlicheNebenmahlzeiten(jaxPensum.getMonatlicheNebenmahlzeiten());
+		jaxPensum.getTarifProNebenmahlzeit()
+			.ifPresent(pensumEntity::setTarifProNebenmahlzeit);
 
-		if (jaxPensum.getEingewoehnungPauschale() != null) {
-			EingewoehnungPauschale eingewoehnungPauschale = pensumEntity.getEingewoehnungPauschale() != null ?
-				pensumEntity.getEingewoehnungPauschale() : new EingewoehnungPauschale();
-			pensumEntity.setEingewoehnungPauschale(
-				convertEingewoehnungspauschaleToEntity(jaxPensum.getEingewoehnungPauschale(), eingewoehnungPauschale));
+		if (jaxPensum.getEingewoehnung() != null) {
+			Eingewoehnung eingewoehnung = pensumEntity.getEingewoehnung() != null ?
+				pensumEntity.getEingewoehnung() :
+				new Eingewoehnung();
+			pensumEntity.setEingewoehnung(convertEingewoehnungToEntity(jaxPensum.getEingewoehnung(), eingewoehnung));
 		} else {
-			pensumEntity.setEingewoehnungPauschale(null);
+			pensumEntity.setEingewoehnung(null);
 		}
 	}
 
-	private EingewoehnungPauschale convertEingewoehnungspauschaleToEntity(
-		JaxEingewoehnungPauschale jaxEingewoehnungPauschale,
-		EingewoehnungPauschale eingewoehnungPauschale) {
-
-		convertAbstractDateRangedFieldsToEntity(jaxEingewoehnungPauschale, eingewoehnungPauschale);
-		eingewoehnungPauschale.setPauschale(jaxEingewoehnungPauschale.getPauschale());
-		return eingewoehnungPauschale;
+	private Eingewoehnung convertEingewoehnungToEntity(JaxEingewoehnung jaxEingewoehnung, Eingewoehnung eingewoehnung) {
+		convertAbstractDateRangedFieldsToEntity(jaxEingewoehnung, eingewoehnung);
+		eingewoehnung.setKosten(jaxEingewoehnung.getKosten());
+		return eingewoehnung;
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -272,20 +274,6 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
-	}
-
-	protected void convertAbstractPensumFieldsToJAX(
-		BetreuungsmitteilungPensum pensum,
-		JaxBetreuungsmitteilungPensum jaxPensum) {
-
-		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-
-		jaxPensum.setPensum(pensum.getPensum());
-		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
-		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
-		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-		jaxPensum.setBetreuteTage(pensum.getBetreuteTage());
-		// TODO warum hier keine Eingewöhnungspauschale?
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -298,20 +286,16 @@ public class AbstractConverter {
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 		jaxPensum.setBetreuteTage(pensum.getBetreuteTage());
-		if (pensum.getEingewoehnungPauschale() != null) {
-			jaxPensum.setEingewoehnungPauschale(
-				eingewoehnungPauschaleToJax(pensum.getEingewoehnungPauschale(), new JaxEingewoehnungPauschale()));
+		if (pensum.getEingewoehnung() != null) {
+			jaxPensum.setEingewoehnung(eingewoehnungToJax(pensum.getEingewoehnung(), new JaxEingewoehnung()));
 		}
 	}
 
 	@Nonnull
-	protected JaxEingewoehnungPauschale eingewoehnungPauschaleToJax(
-		EingewoehnungPauschale eingewoehnungPauschale,
-		JaxEingewoehnungPauschale jaxEingewoehnungPauschale) {
-
-		convertAbstractDateRangedFieldsToJAX(eingewoehnungPauschale, jaxEingewoehnungPauschale);
-		jaxEingewoehnungPauschale.setPauschale(eingewoehnungPauschale.getPauschale());
-		return jaxEingewoehnungPauschale;
+	protected JaxEingewoehnung eingewoehnungToJax(Eingewoehnung eingewoehnung, JaxEingewoehnung jaxEingewoehnung) {
+		convertAbstractDateRangedFieldsToJAX(eingewoehnung, jaxEingewoehnung);
+		jaxEingewoehnung.setKosten(eingewoehnung.getKosten());
+		return jaxEingewoehnung;
 	}
 
 	protected JaxFile convertFileToJax(FileMetadata fileMetadata, JaxFile jaxFile) {

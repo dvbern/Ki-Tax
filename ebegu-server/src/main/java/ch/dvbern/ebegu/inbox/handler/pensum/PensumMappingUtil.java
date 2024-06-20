@@ -39,7 +39,7 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.types.DateRange;
@@ -57,9 +57,9 @@ public final class PensumMappingUtil {
 
 	public static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
 
-	public static final Comparator<EingewoehnungPauschale> EINGEWOEHNUNG_PAUSCHALE_COMPARATOR = Comparator
-		.comparing(EingewoehnungPauschale::getPauschale)
-		.thenComparing(EingewoehnungPauschale::getGueltigkeit);
+	public static final Comparator<Eingewoehnung> EINGEWOEHNUNG_COMPARATOR = Comparator
+		.comparing(Eingewoehnung::getKosten)
+		.thenComparing(Eingewoehnung::getGueltigkeit);
 
 	public static final Comparator<AbstractBetreuungsPensum> COMPARATOR = Comparator
 		.comparing(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten)
@@ -68,7 +68,7 @@ public final class PensumMappingUtil {
 		.thenComparing(AbstractBetreuungsPensum::getTarifProNebenmahlzeit)
 		.thenComparing(AbstractBetreuungsPensum::getMonatlicheHauptmahlzeiten)
 		.thenComparing(AbstractBetreuungsPensum::getMonatlicheNebenmahlzeiten)
-		.thenComparing(AbstractBetreuungsPensum::getEingewoehnungPauschale, nullsFirst(EINGEWOEHNUNG_PAUSCHALE_COMPARATOR))
+		.thenComparing(AbstractBetreuungsPensum::getEingewoehnung, nullsFirst(EINGEWOEHNUNG_COMPARATOR))
 		.thenComparing(AbstractBetreuungsPensum::getBetreuungInFerienzeit, nullsFirst(naturalOrder()));
 
 	public static final Comparator<AbstractBetreuungsPensum> COMPARATOR_WITH_GUELTIGKEIT = PensumMappingUtil.COMPARATOR
