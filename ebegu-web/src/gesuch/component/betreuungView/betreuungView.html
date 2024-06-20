@@ -1870,8 +1870,7 @@
                                     </div>
 
                                     <!-- Eingewohnung pro Betreuungspensum -->
-                                    <div ng-if="vm.showEingewoehnungKosten()"
-                                    >
+                                    <div ng-if="vm.showEingewoehnungKosten()">
                                         <div class="row">
                                             <div
                                                 class="col-sm-12 dv-input-container-question"
@@ -1913,8 +1912,8 @@
                                             <div class="row">
                                                 <div
                                                     class="col-sm-12 dv-input-container-small"
-
-                                                >    <dv-input-container
+                                                >
+                                                    <dv-input-container
                                                         class="form-group"
                                                     >
                                                         <label
@@ -1942,8 +1941,8 @@
                                                                 }}-error"
                                                                 id="eingewoehnungKosten-{{
                                                                     $index
-
-                                                                }}"type="number"
+                                                                }}"
+                                                                type="number"
                                                                 min="0"
                                                                 step="0.05"
                                                                 ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
@@ -1957,8 +1956,8 @@
                                                             <dv-error-messages
                                                                 input-id="eingewoehnungKosten-{{
                                                                     $index
-
-                                                                }}"step="0.05"
+                                                                }}"
+                                                                step="0.05"
                                                                 for="vm.form['eingewoehnungKosten-' + $index].$error"
                                                             ></dv-error-messages>
                                                         </div>

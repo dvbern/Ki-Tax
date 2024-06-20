@@ -1472,13 +1472,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public checkErweiterteBetreuungAndSaveBestaetigung(): void {
-
         if (
             this.getErweiterteBetreuungJA() &&
             this.getErweiterteBetreuungJA().erweiterteBeduerfnisse &&
             !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt
-
-        ) {    this.dvDialog
+        ) {
+            this.dvDialog
                 .showRemoveDialog(
                     removeDialogTemplate,
                     undefined,

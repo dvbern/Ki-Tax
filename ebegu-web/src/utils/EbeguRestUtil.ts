@@ -558,9 +558,7 @@ export class EbeguRestUtil {
         eingewoehnungFromServer: any
     ): TSEingewoehnung {
         if (eingewoehnungFromServer) {
-            this.parseDateRangeEntity(
-                eingewoehnungTS, eingewoehnungFromServer
-            );
+            this.parseDateRangeEntity(eingewoehnungTS, eingewoehnungFromServer);
             eingewoehnungTS.kosten = eingewoehnungFromServer.kosten;
             return eingewoehnungTS;
         }
