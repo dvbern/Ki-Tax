@@ -17,7 +17,6 @@ import {IHttpService, IPromise} from 'angular';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class ExportRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -30,13 +29,14 @@ export class ExportRS {
     }
 
     public getJsonSchemaString(): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/meta/jsonschema`).then((response: any) =>
-             JSON.stringify(response.data, undefined, 2)  // prettyprint
+        return this.$http.get(`${this.serviceURL}/meta/jsonschema`).then(
+            (response: any) => JSON.stringify(response.data, undefined, 2) // prettyprint
         );
     }
 
     public getXmlSchemaString(): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/meta/xsd`).then((response: any) => response.data);
+        return this.$http
+            .get(`${this.serviceURL}/meta/xsd`)
+            .then((response: any) => response.data);
     }
-
 }

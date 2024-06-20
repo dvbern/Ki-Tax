@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -8,10 +15,9 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
     selector: 'dv-finanzielle-situation-single-gs-schwyz',
     templateUrl: './finanzielle-situation-single-gs-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class FinanzielleSituationSingleGsSchwyzComponent {
-
     @ViewChild(NgForm) public form: NgForm;
 
     @Input()
@@ -21,7 +27,7 @@ export class FinanzielleSituationSingleGsSchwyzComponent {
     public finanzModel: TSFinanzModel;
 
     @Output()
-    public valueChanged = new EventEmitter<void>();
+    public readonly valueChanged = new EventEmitter<void>();
 
     public onQuellenbesteuertChange(): void {
         if (EbeguUtil.isNullOrUndefined(this.getFinSitJA().quellenbesteuert)) {

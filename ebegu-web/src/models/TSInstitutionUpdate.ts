@@ -19,7 +19,6 @@ import {TSInstitutionExternalClient} from './TSInstitutionExternalClient';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSInstitutionUpdate {
-
     public name: string;
     public traegerschaftId: string;
     public stammdaten: TSInstitutionStammdaten;

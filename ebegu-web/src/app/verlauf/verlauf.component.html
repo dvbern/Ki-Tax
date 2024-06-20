@@ -1,4 +1,3 @@
-
 <!--
   ~ Copyright (C) 2021 DV Bern AG, Switzerland
   ~
@@ -16,18 +15,28 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-fall-toolbar [fallId]="getFallId()" [dossierId]="dossier?.id" [nameGs]="gs1Name" hide-xs hide-sm>
+<dv-fall-toolbar
+    [fallId]="getFallId()"
+    [dossierId]="dossier?.id"
+    [nameGs]="gs1Name"
+    hide-xs
+    hide-sm
+>
 </dv-fall-toolbar>
 
-<dossier-toolbar flex="nogrow"
-                     *ngIf="dossierToolbarVisible()"
-                     dossierId="{{dossier?.id}}">
+<dossier-toolbar
+    flex="nogrow"
+    *ngIf="dossierToolbarVisible()"
+    dossierId="{{ dossier?.id }}"
+>
 </dossier-toolbar>
 
-<dossier-toolbar-gesuchsteller flex="nogrow"
-                                   class="dossier-toolbar-gesuchsteller"
-                                   dossierId="{{dossier?.id}}"
-                                   *ngIf="dossierToolbarGesuchstellerVisible()">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    dossierId="{{ dossier?.id }}"
+    *ngIf="dossierToolbarGesuchstellerVisible()"
+>
 </dossier-toolbar-gesuchsteller>
 
 <div class="dv-view overflow-auto" flex="auto">
@@ -36,15 +45,17 @@
             <h3 translate="VERLAUF_LIST"></h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3>{{tableData?.length || 0}}</h3>
+            <h3>{{ tableData?.length || 0 }}</h3>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <dv-simple-table *ngIf="tableData"
+            <dv-simple-table
+                *ngIf="tableData"
                 [columns]="tableColumns"
                 [data]="tableData"
-                [config]="tableConfig">
+                [config]="tableConfig"
+            >
             </dv-simple-table>
         </div>
     </div>

@@ -19,7 +19,6 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class FachstelleRS {
-
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;
 
@@ -32,16 +31,28 @@ export class FachstelleRS {
         this.serviceURL = `${REST_API}fachstellen`;
     }
 
-    public getAnspruchFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
-        return this.http.get(`${this.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiode.id}`).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data)
-        );
+    public getAnspruchFachstellen(
+        gesuchsperiode: TSGesuchsperiode
+    ): IPromise<TSFachstelle[]> {
+        return this.http
+            .get(
+                `${this.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiode.id}`
+            )
+            .then((response: any) =>
+                this.ebeguRestUtil.parseFachstellen(response.data)
+            );
     }
 
-    public getErweiterteBetreuungFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
-        return this.http.get(`${this.serviceURL}/erweiterteBetreuung?gesuchsperiodeId=${gesuchsperiode.id}`).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data)
-        );
+    public getErweiterteBetreuungFachstellen(
+        gesuchsperiode: TSGesuchsperiode
+    ): IPromise<TSFachstelle[]> {
+        return this.http
+            .get(
+                `${this.serviceURL}/erweiterteBetreuung?gesuchsperiodeId=${gesuchsperiode.id}`
+            )
+            .then((response: any) =>
+                this.ebeguRestUtil.parseFachstellen(response.data)
+            );
     }
 
     public getServiceName(): string {

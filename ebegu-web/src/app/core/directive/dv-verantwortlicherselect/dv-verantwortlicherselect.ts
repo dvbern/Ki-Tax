@@ -36,15 +36,18 @@ export class DvVerantwortlicherselect implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 }
 
 export class VerantwortlicherselectController implements IController {
-
-    public static $inject: string[] = ['BenutzerRS', 'GesuchModelManager', '$translate', 'ApplicationPropertyRS'];
+    public static $inject: string[] = [
+        'BenutzerRS',
+        'GesuchModelManager',
+        '$translate',
+        'ApplicationPropertyRS'
+    ];
 
     public readonly TSRoleUtil = TSRoleUtil;
     public isSchulamt: boolean;
@@ -58,8 +61,7 @@ export class VerantwortlicherselectController implements IController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
@@ -77,7 +79,11 @@ export class VerantwortlicherselectController implements IController {
         if (!this.angebotTS) {
             return this.$translate.instant('VERANTWORTLICHER');
         }
-        return this.$translate.instant(this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT');
+        return this.$translate.instant(
+            this.isSchulamt
+                ? 'VERANTWORTLICHER_SCHULAMT'
+                : 'VERANTWORTLICHER_JUGENDAMT'
+        );
     }
 
     public getGesuch(): TSGesuch {
@@ -86,10 +92,16 @@ export class VerantwortlicherselectController implements IController {
 
     public getVerantwortlicherFullName(): string {
         if (this.getGesuch() && this.getGesuch().dossier) {
-            if (this.isSchulamt && this.getGesuch().dossier.verantwortlicherTS) {
+            if (
+                this.isSchulamt &&
+                this.getGesuch().dossier.verantwortlicherTS
+            ) {
                 return this.getGesuch().dossier.verantwortlicherTS.getFullName();
             }
-            if (!this.isSchulamt && this.getGesuch().dossier.verantwortlicherBG) {
+            if (
+                !this.isSchulamt &&
+                this.getGesuch().dossier.verantwortlicherBG
+            ) {
                 return this.getGesuch().dossier.verantwortlicherBG.getFullName();
             }
         }
@@ -104,11 +116,17 @@ export class VerantwortlicherselectController implements IController {
         this.setUserAsFallVerantwortlicherLocal(verantwortlicher);
     }
 
-    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzerNoDetails): void {
+    private setVerantwortlicherGesuchModelManager(
+        verantwortlicher: TSBenutzerNoDetails
+    ): void {
         if (this.isSchulamt) {
-            this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherTS(
+                verantwortlicher
+            );
         } else {
-            this.gesuchModelManager.setUserAsFallVerantwortlicherBG(verantwortlicher);
+            this.gesuchModelManager.setUserAsFallVerantwortlicherBG(
+                verantwortlicher
+            );
         }
     }
 
@@ -128,13 +146,17 @@ export class VerantwortlicherselectController implements IController {
      * @returns true if the given user is already the verantwortlicherBG of the current fall
      */
     public isCurrentVerantwortlicher(user: TSBenutzer): boolean {
-        return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
+        return (
+            user &&
+            this.getFallVerantwortlicher() &&
+            this.getFallVerantwortlicher().username === user.username
+        );
     }
 
     public getFallVerantwortlicher(): TSBenutzerNoDetails {
-        return this.isSchulamt ?
-            this.gesuchModelManager.getFallVerantwortlicherTS() :
-            this.gesuchModelManager.getFallVerantwortlicherBG();
+        return this.isSchulamt
+            ? this.gesuchModelManager.getFallVerantwortlicherTS()
+            : this.gesuchModelManager.getFallVerantwortlicherBG();
     }
 
     private updateUserList(): void {
@@ -152,26 +174,42 @@ export class VerantwortlicherselectController implements IController {
     }
 
     private updateSchulamtUserList(): void {
-        this.benutzerRS.getBenutzerTsOrGemeindeForGemeinde(this.gemeindeId).then(response => {
-            this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
-        });
+        this.benutzerRS
+            .getBenutzerTsOrGemeindeForGemeinde(this.gemeindeId)
+            .then(response => {
+                this.userList = this.sortUsers(
+                    this.filterUsers(response, this.gemeindeId)
+                );
+            });
     }
 
     private updateJugendAmtUserList(): void {
-        this.benutzerRS.getBenutzerBgOrGemeindeForGemeinde(this.gemeindeId).then(response => {
-            this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
-        });
+        this.benutzerRS
+            .getBenutzerBgOrGemeindeForGemeinde(this.gemeindeId)
+            .then(response => {
+                this.userList = this.sortUsers(
+                    this.filterUsers(response, this.gemeindeId)
+                );
+            });
     }
 
-    private sortUsers(userList: Array<TSBenutzerNoDetails>): Array<TSBenutzerNoDetails> {
-        return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
+    private sortUsers(
+        userList: Array<TSBenutzerNoDetails>
+    ): Array<TSBenutzerNoDetails> {
+        return userList.sort((a, b) =>
+            a.getFullName().localeCompare(b.getFullName())
+        );
     }
 
     /**
      *  Filters out users that have no berechtigung on the current gemeinde
      */
-    private filterUsers(userList: Array<TSBenutzerNoDetails>, gemeindeId: string): Array<TSBenutzerNoDetails> {
-        return userList.filter(user => user.gemeindeIds
-            .some(id => id === gemeindeId));
+    private filterUsers(
+        userList: Array<TSBenutzerNoDetails>,
+        gemeindeId: string
+    ): Array<TSBenutzerNoDetails> {
+        return userList.filter(user =>
+            user.gemeindeIds.some(id => id === gemeindeId)
+        );
     }
 }

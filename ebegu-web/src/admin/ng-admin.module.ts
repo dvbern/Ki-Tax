@@ -30,10 +30,7 @@ import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersende
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        NgAdminRoutingModule
-    ],
+    imports: [SharedModule, NgAdminRoutingModule],
     declarations: [
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
@@ -48,5 +45,4 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
     ],
     providers: []
 })
-export class NgAdminModule {
-}
+export class NgAdminModule {}

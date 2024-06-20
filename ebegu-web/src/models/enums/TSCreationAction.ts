@@ -25,17 +25,21 @@ export enum TSCreationAction {
     CREATE_NEW_DOSSIER = 'CREATE_NEW_DOSSIER',
     CREATE_NEW_GESUCH = 'CREATE_NEW_GESUCH',
     CREATE_NEW_MUTATION = 'CREATE_NEW_MUTATION',
-    CREATE_NEW_FOLGEGESUCH = 'CREATE_NEW_FOLGEGESUCH',
+    CREATE_NEW_FOLGEGESUCH = 'CREATE_NEW_FOLGEGESUCH'
     // Wenn leer: Bestehendes Gesuch oeffnen!
 }
 
 export function isNewDossierNeeded(creationAction: TSCreationAction): boolean {
-    return EbeguUtil.isNotNullOrUndefined(creationAction)
-        && (creationAction === TSCreationAction.CREATE_NEW_DOSSIER
-            || creationAction === TSCreationAction.CREATE_NEW_FALL);
+    return (
+        EbeguUtil.isNotNullOrUndefined(creationAction) &&
+        (creationAction === TSCreationAction.CREATE_NEW_DOSSIER ||
+            creationAction === TSCreationAction.CREATE_NEW_FALL)
+    );
 }
 
 export function isNewFallNeeded(creationAction: TSCreationAction): boolean {
-    return EbeguUtil.isNotNullOrUndefined(creationAction)
-        && creationAction === TSCreationAction.CREATE_NEW_FALL;
+    return (
+        EbeguUtil.isNotNullOrUndefined(creationAction) &&
+        creationAction === TSCreationAction.CREATE_NEW_FALL
+    );
 }

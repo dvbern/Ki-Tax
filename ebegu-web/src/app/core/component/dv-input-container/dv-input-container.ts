@@ -25,6 +25,5 @@ export class DvInputContainerComponentConfig implements IComponentOptions {
 }
 
 export class DvInputContainerController {
-
     public static $inject: ReadonlyArray<string> = [];
 }

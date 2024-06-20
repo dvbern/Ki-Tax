@@ -22,51 +22,109 @@
                 <div *ngIf="showGesucheNachStichtag()">
                     <dv-accordion-tab [tabid]="'gesuch_stichtag'">
                         <tab-title>
-                            <span class="uppercase" translate>GESUCHE_NACH_STICHTAG</span>
-                            <dv-tooltip inputId="gesuch_stichtag_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT' | translate">
+                            <span class="uppercase" translate
+                                >GESUCHE_NACH_STICHTAG</span
+                            >
+                            <dv-tooltip
+                                inputId="gesuch_stichtag_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT'
+                                        | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form #gesuch_stichtag='ngForm'
-                                  [ngClass]="{'ng-submitted': gesuch_stichtag.submitted}"
-                                  role="form"
-                                  (ngSubmit)="generateStatistik(gesuch_stichtag, TSStatistikParameterType.GESUCH_STICHTAG)">
+                            <form
+                                #gesuch_stichtag="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': gesuch_stichtag.submitted
+                                }"
+                                role="form"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        gesuch_stichtag,
+                                        TSStatistikParameterType.GESUCH_STICHTAG
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <dv-date-picker-x label="STICHTAG"
-                                                              [minDate]="minDate"
-                                                              [maxDate]="maxDate"
-                                                              [(date)]="statistikParameter.stichtag"
-                                                              [required]="true"
+                                            <dv-date-picker-x
+                                                label="STICHTAG"
+                                                [minDate]="minDate"
+                                                [maxDate]="maxDate"
+                                                [(date)]="
+                                                    statistikParameter.stichtag
+                                                "
+                                                [required]="true"
                                             ></dv-date-picker-x>
                                         </dv-input-container>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" for="periode_gesuch_stichtag"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float"
+                                                for="periode_gesuch_stichtag"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="periode_gesuch_stichtag" id="periode_gesuch_stichtag"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #periodeGesuchStichtagForm='ngModel'
-                                                        ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in gesuchsperioden | orderBy: 'name'"
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="periode_gesuch_stichtag"
+                                                    id="periode_gesuch_stichtag"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #periodeGesuchStichtagForm="ngModel"
+                                                    ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in gesuchsperioden | orderBy: 'name'"
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="periodeGesuchStichtagForm.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        periodeGesuchStichtagForm.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-xs-offset-3 statistik-button">
-                                        <dv-loading-button [type]="'submit'"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                    <div
+                                        class="col-xs-3 col-xs-offset-3 statistik-button"
+                                    >
+                                        <dv-loading-button
+                                            [type]="'submit'"
+                                            style="
+                                                margin-left: auto;
+                                                margin-right: auto;
+                                                width: 13rem;
+                                            "
+                                        >
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -78,65 +136,142 @@
                 <div *ngIf="showGesucheNachZeitraum()">
                     <dv-accordion-tab [tabid]="'gesuch_zeitraum'">
                         <tab-title>
-                            <span class="uppercase" translate>GESUCHE_NACH_ZEITRAUM</span>
-                            <dv-tooltip inputId="gesuch_zeitraum_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT' | translate">
+                            <span class="uppercase" translate
+                                >GESUCHE_NACH_ZEITRAUM</span
+                            >
+                            <dv-tooltip
+                                inputId="gesuch_zeitraum_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT'
+                                        | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="gesuch_zeitraum" #gesuchZeitraumForm='ngForm'
-                                  (ngSubmit)="generateStatistik(gesuchZeitraumForm, TSStatistikParameterType.GESUCH_ZEITRAUM)"
-                                  [ngClass]="{'ng-submitted': gesuchZeitraumForm.submitted}">
+                            <form
+                                name="gesuch_zeitraum"
+                                #gesuchZeitraumForm="ngForm"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        gesuchZeitraumForm,
+                                        TSStatistikParameterType.GESUCH_ZEITRAUM
+                                    )
+                                "
+                                [ngClass]="{
+                                    'ng-submitted': gesuchZeitraumForm.submitted
+                                }"
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON" [minDate]="minDate" [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
+                                        ></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS" [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate" [(date)]="statistikParameter.bis"
-                                                          [required]="true"></dv-date-picker-x>
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                        ></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" for="periode_gesuch_zeitraum"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float"
+                                                for="periode_gesuch_zeitraum"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="periode_gesuch_zeitraum" id="periode_gesuch_zeitraum"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #gesuchZeitraumGP='ngModel'
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="periode_gesuch_zeitraum"
+                                                    id="periode_gesuch_zeitraum"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #gesuchZeitraumGP="ngModel"
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        gesuchZeitraumGP.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" translate>FILTERNNACH</label>
+                                            <label class="md-no-float" translate
+                                                >FILTERNNACH</label
+                                            >
 
-                                            <mat-radio-group name="creationType"
-                                                             [(ngModel)]="statistikParameter.gesuchZeitraumDatumTyp"
-                                                             required>
-
-                                                <mat-radio-button class="filter-radio-button"
-                                                                  [value]="'VERFUEGUNGSDATUM'">{{'VERFUEGUNGSDATUM'|translate}}</mat-radio-button>
+                                            <mat-radio-group
+                                                name="creationType"
+                                                [(ngModel)]="
+                                                    statistikParameter.gesuchZeitraumDatumTyp
+                                                "
+                                                required
+                                            >
+                                                <mat-radio-button
+                                                    class="filter-radio-button"
+                                                    [value]="'VERFUEGUNGSDATUM'"
+                                                    >{{
+                                                        'VERFUEGUNGSDATUM'
+                                                            | translate
+                                                    }}</mat-radio-button
+                                                >
 
                                                 <mat-radio-button
-                                                    [value]="'EINREICHEDATUM'">{{'EINREICHEDATUM'|translate}}</mat-radio-button>
+                                                    [value]="'EINREICHEDATUM'"
+                                                    >{{
+                                                        'EINREICHEDATUM'
+                                                            | translate
+                                                    }}</mat-radio-button
+                                                >
                                             </mat-radio-group>
                                         </div>
                                     </div>
-                                    <div class="generieren-button statistik-button">
+                                    <div
+                                        class="generieren-button statistik-button"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -148,41 +283,93 @@
                 <div *ngIf="showZahlungenNachPeriode()">
                     <dv-accordion-tab [tabid]="'zahlungen_periode'">
                         <tab-title>
-                            <span class="uppercase" translate>ZAHLUNGEN_NACH_PERIODE</span>
-                            <dv-tooltip inputId="zahlungen_periode_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_ZAHLUNGEN_HINT' | translate">
+                            <span class="uppercase" translate
+                                >ZAHLUNGEN_NACH_PERIODE</span
+                            >
+                            <dv-tooltip
+                                inputId="zahlungen_periode_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIKEN_ZAHLUNGEN_HINT' | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="zahlungen_periode"
-                                  #zahlungenPeriode='ngForm'
-                                  [ngClass]="{'ng-submitted': zahlungenPeriode.submitted}"
-                                  (ngSubmit)="generateStatistik(zahlungenPeriode, TSStatistikParameterType.ZAHLUNGEN_PERIODE)">
+                            <form
+                                name="zahlungen_periode"
+                                #zahlungenPeriode="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': zahlungenPeriode.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        zahlungenPeriode,
+                                        TSStatistikParameterType.ZAHLUNGEN_PERIODE
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float required" for="zahlungen_periode_gp"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float required"
+                                                for="zahlungen_periode_gp"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="zahlungen_periode_gp_name" id="zahlungen_periode_gp"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #gesuchZeitraumGP='ngModel'
-                                                        required
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="zahlungen_periode_gp_name"
+                                                    id="zahlungen_periode_gp"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #gesuchZeitraumGP="ngModel"
+                                                    required
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        gesuchZeitraumGP.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button [type]="'submit'"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        <dv-loading-button
+                                            [type]="'submit'"
+                                            style="
+                                                margin-left: auto;
+                                                margin-right: auto;
+                                                width: 13rem;
+                                            "
+                                        >
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -194,56 +381,112 @@
                 <div *ngIf="showKinderStatistik()">
                     <dv-accordion-tab [tabid]="'kinder'">
                         <tab-title>
-                            <span class="uppercase" translate>STATISTIK_KINDER</span>
-                            <dv-tooltip inputId="kinder_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_KINDER_HINT' | translate">
+                            <span class="uppercase" translate
+                                >STATISTIK_KINDER</span
+                            >
+                            <dv-tooltip
+                                inputId="kinder_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="'STATISTIKEN_KINDER_HINT' | translate"
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="kinder"
-                                  #kinderRef='ngForm'
-                                  [ngClass]="{'ng-submitted': kinderRef.submitted}"
-                                  (ngSubmit)="generateStatistik(kinderRef, TSStatistikParameterType.KINDER)">
+                            <form
+                                name="kinder"
+                                #kinderRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': kinderRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        kinderRef,
+                                        TSStatistikParameterType.KINDER
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true"
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
                                         ></dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS"
-                                                          [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.bis"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" for="kinder_gp_id"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float"
+                                                for="kinder_gp_id"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="kinder_gp_name" id="kinder_gp_id"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #gesuchZeitraumGP='ngModel'
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="kinder_gp_name"
+                                                    id="kinder_gp_id"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #gesuchZeitraumGP="ngModel"
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        gesuchZeitraumGP.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        <dv-loading-button
+                                            type="submit"
+                                            style="
+                                                margin-left: auto;
+                                                margin-right: auto;
+                                                width: 13rem;
+                                            "
+                                        >
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -255,29 +498,52 @@
                 <div *ngIf="showGesuchstellerStatistik()">
                     <dv-accordion-tab [tabid]="'gesuchsteller'">
                         <tab-title>
-                            <span class="uppercase" translate>STATISTIK_GESUCHSTELLER</span>
-                            <dv-tooltip inputId="gesuchsteller_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_GESUCHSTELLER_HINT' | translate">
+                            <span class="uppercase" translate
+                                >STATISTIK_GESUCHSTELLER</span
+                            >
+                            <dv-tooltip
+                                inputId="gesuchsteller_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIKEN_GESUCHSTELLER_HINT' | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="gesuchsteller"
-                                  #gesuchstellerRef='ngForm'
-                                  [ngClass]="{'ng-submitted': gesuchstellerRef.submitted}"
-                                  (ngSubmit)="generateStatistik(gesuchstellerRef, TSStatistikParameterType.GESUCHSTELLER)">
+                            <form
+                                name="gesuchsteller"
+                                #gesuchstellerRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': gesuchstellerRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        gesuchstellerRef,
+                                        TSStatistikParameterType.GESUCHSTELLER
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="STICHTAG"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.stichtag"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="STICHTAG"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="
+                                                statistikParameter.stichtag
+                                            "
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
-                                    <div class="col-xs-3 col-xs-offset-6 statistik-button">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-6 statistik-button"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -289,51 +555,86 @@
                 <div *ngIf="showKantonStatistik">
                     <dv-accordion-tab [tabid]="'kanton'">
                         <tab-title>
-                            <span class="uppercase" translate>ReportType_kanton</span>
-                            <dv-tooltip inputId="kanton_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIKEN_KANTON_HINT' | translate">
+                            <span class="uppercase" translate
+                                >ReportType_kanton</span
+                            >
+                            <dv-tooltip
+                                inputId="kanton_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="'STATISTIKEN_KANTON_HINT' | translate"
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="kanton"
-                                  #kantonRef='ngForm'
-                                  [ngClass]="{'ng-submitted': kantonRef.submitted}"
-                                  (ngSubmit)="generateStatistik(kantonRef, TSStatistikParameterType.KANTON)">
+                            <form
+                                name="kanton"
+                                #kantonRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': kantonRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        kantonRef,
+                                        TSStatistikParameterType.KANTON
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS"
-                                                          [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.bis"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
-                                    <div class="col-xs-3 ">
+                                    <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float"
-                                                   for="kantonSelbstbehalt"
-                                                   translate>LASTENAUSGLEICH_SELBSTBEHALT</label>
-                                            <input aria-describedby="kantonSelbstbehalt-error"
-                                                   id="kantonSelbstbehalt" type="number" name="kantonSelbstbehalt"
-                                                   #kantonSelbstbehaltRef='ngModel'
-                                                   [(ngModel)]="statistikParameter.kantonSelbstbehalt"
-                                                   class="input-element">
-                                            <dv-error-messages [errorObject]="kantonSelbstbehaltRef.errors"
-                                                               class="error"></dv-error-messages>
+                                            <label
+                                                class="md-no-float"
+                                                for="kantonSelbstbehalt"
+                                                translate
+                                                >LASTENAUSGLEICH_SELBSTBEHALT</label
+                                            >
+                                            <input
+                                                aria-describedby="kantonSelbstbehalt-error"
+                                                id="kantonSelbstbehalt"
+                                                type="number"
+                                                name="kantonSelbstbehalt"
+                                                #kantonSelbstbehaltRef="ngModel"
+                                                [(ngModel)]="
+                                                    statistikParameter.kantonSelbstbehalt
+                                                "
+                                                class="input-element"
+                                            />
+                                            <dv-error-messages
+                                                [errorObject]="
+                                                    kantonSelbstbehaltRef.errors
+                                                "
+                                                class="error"
+                                            ></dv-error-messages>
                                         </dv-input-container>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -345,36 +646,64 @@
                 <div *ngIf="showMitarbeiterStatistik()">
                     <dv-accordion-tab [tabid]="'mitarbeiterinnen'">
                         <tab-title>
-                            <span class="uppercase" translate>MITARBEITERINNEN</span>
-                            <dv-tooltip inputId="mitarbeiterinnen_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_MIRABEITERINNEN_HINT' | translate">
+                            <span class="uppercase" translate
+                                >MITARBEITERINNEN</span
+                            >
+                            <dv-tooltip
+                                inputId="mitarbeiterinnen_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIK_MIRABEITERINNEN_HINT' | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="mitarbeiterinnen"
-                                  #mitarbeiterinnenRef='ngForm'
-                                  [ngClass]="{'ng-submitted': mitarbeiterinnenRef.submitted}"
-                                  (ngSubmit)="generateStatistik(mitarbeiterinnenRef, TSStatistikParameterType.MITARBEITERINNEN)">
+                            <form
+                                name="mitarbeiterinnen"
+                                #mitarbeiterinnenRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted':
+                                        mitarbeiterinnenRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        mitarbeiterinnenRef,
+                                        TSStatistikParameterType.MITARBEITERINNEN
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS"
-                                                          [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.bis" [required]="true">
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
-                                    <div class="col-xs-3 col-xs-offset-3 statistik-button">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-3 statistik-button"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -386,21 +715,38 @@
                 <div *ngIf="showBenutzerStatistik()">
                     <dv-accordion-tab [tabid]="'benutzer'">
                         <tab-title>
-                            <span class="uppercase" translate>BENUTZER_STATISTIK</span>
-                            <dv-tooltip inputId="benutzer_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_BENUTZER_HINT' | translate">
+                            <span class="uppercase" translate
+                                >BENUTZER_STATISTIK</span
+                            >
+                            <dv-tooltip
+                                inputId="benutzer_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="'STATISTIK_BENUTZER_HINT' | translate"
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="benutzer"
-                                  #benutzerRef='ngForm'
-                                  [ngClass]="{'ng-submitted': benutzerRef.submitted}"
-                                  (ngSubmit)="generateStatistik(benutzerRef, TSStatistikParameterType.BENUTZER)">
+                            <form
+                                name="benutzer"
+                                #benutzerRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': benutzerRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        benutzerRef,
+                                        TSStatistikParameterType.BENUTZER
+                                    )
+                                "
+                            >
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -410,61 +756,124 @@
                 </div>
 
                 <div *ngIf="showGesuchstellerKinderBetreuungStatistik()">
-                    <dv-accordion-tab [tabid]="'betreuung'" data-test="statistik-gesuchsteller-kinder-betreuung">
+                    <dv-accordion-tab
+                        [tabid]="'betreuung'"
+                        data-test="statistik-gesuchsteller-kinder-betreuung"
+                    >
                         <tab-title>
-                            <span class="uppercase" translate>GESUCHSTELLER_KINDER_BETREUUNG</span>
-                            <dv-tooltip inputId="betreuung_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT' | translate">
+                            <span class="uppercase" translate
+                                >GESUCHSTELLER_KINDER_BETREUUNG</span
+                            >
+                            <dv-tooltip
+                                inputId="betreuung_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT'
+                                        | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="betreuung"
-                                  #betreuungRef='ngForm'
-                                  [ngClass]="{'ng-submitted': betreuungRef.submitted}"
-                                  (ngSubmit)="generateStatistik(betreuungRef, TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG)">
+                            <form
+                                name="betreuung"
+                                #betreuungRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': betreuungRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        betreuungRef,
+                                        TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG
+                                    )
+                                "
+                            >
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true"
-                                                          data-test="statistik-von">
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
+                                            data-test="statistik-von"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS"
-                                                          [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.bis"
-                                                          [required]="true"
-                                                          data-test="statistik-bis">
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                            data-test="statistik-bis"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float" for="betreuung_gp"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float"
+                                                for="betreuung_gp"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="betreuung_gp_name" id="betreuung_gp"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #gesuchZeitraumGP='ngModel'
-                                                        data-test="gesuchsperiode"
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id"
-                                                            [attr.data-test]="'periode' + gesuchsperiode.gesuchsperiodeString">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="betreuung_gp_name"
+                                                    id="betreuung_gp"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #gesuchZeitraumGP="ngModel"
+                                                    data-test="gesuchsperiode"
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                        [attr.data-test]="
+                                                            'periode' +
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        gesuchZeitraumGP.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit" data-test="container.generieren">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        <dv-loading-button
+                                            type="submit"
+                                            data-test="container.generieren"
+                                        >
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -476,58 +885,110 @@
                 <div *ngIf="showStatistikMassenversand()">
                     <dv-accordion-tab [tabid]="'massenversand'">
                         <tab-title>
-                            <span class="uppercase" translate>MASSENVERSAND</span>
-                            <dv-tooltip inputId="massenversand_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_SERIENBRIEFE_HINT' | translate">
+                            <span class="uppercase" translate
+                                >MASSENVERSAND</span
+                            >
+                            <dv-tooltip
+                                inputId="massenversand_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIK_SERIENBRIEFE_HINT' | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="massenversand"
-                                  #massenversandRef='ngForm'
-                                  [ngClass]="{'ng-submitted': massenversandRef.submitted}"
-                                  (ngSubmit)="generateStatistik(massenversandRef, 'MASSENVERSAND')">
-
+                            <form
+                                name="massenversand"
+                                #massenversandRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': massenversandRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        massenversandRef,
+                                        'MASSENVERSAND'
+                                    )
+                                "
+                            >
                                 <!-- Datum von/bis, Gesuchsperiode -->
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="VON"
-                                                          [minDate]="minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.von"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="VON"
+                                            [minDate]="minDate"
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.von"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
-                                        <dv-date-picker-x label="BIS"
-                                                          [minDate]="statistikParameter.von || minDate"
-                                                          [maxDate]="maxDate"
-                                                          [(date)]="statistikParameter.bis"
-                                                          [required]="true">
+                                        <dv-date-picker-x
+                                            label="BIS"
+                                            [minDate]="
+                                                statistikParameter.von ||
+                                                minDate
+                                            "
+                                            [maxDate]="maxDate"
+                                            [(date)]="statistikParameter.bis"
+                                            [required]="true"
+                                        >
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="form-group">
-                                            <label class="md-no-float required" for="massenversand_gp"
-                                                   translate>GESUCHSPERIODEN</label>
+                                            <label
+                                                class="md-no-float required"
+                                                for="massenversand_gp"
+                                                translate
+                                                >GESUCHSPERIODEN</label
+                                            >
                                             <div class="dv-select-style">
-                                                <select name="massenversand_gp_name" id="massenversand_gp"
-                                                        [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                        #gesuchZeitraumGP='ngModel'
-                                                        required
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                <select
+                                                    name="massenversand_gp_name"
+                                                    id="massenversand_gp"
+                                                    [(ngModel)]="
+                                                        statistikParameter.gesuchsperiode
+                                                    "
+                                                    #gesuchZeitraumGP="ngModel"
+                                                    required
+                                                    class="form-control"
+                                                >
+                                                    <option
+                                                        [ngValue]="undefined"
+                                                    >
+                                                        {{
+                                                            'KEINE' | translate
+                                                        }}
+                                                    </option>
+                                                    <option
+                                                        *ngFor="
+                                                            let gesuchsperiode of gesuchsperioden
+                                                        "
+                                                        [value]="
+                                                            gesuchsperiode.id
+                                                        "
+                                                    >
+                                                        {{
+                                                            gesuchsperiode.gesuchsperiodeString
+                                                        }}
+                                                    </option>
                                                 </select>
-                                                <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    [errorObject]="
+                                                        gesuchZeitraumGP.errors
+                                                    "
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -536,47 +997,105 @@
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float">
-                                                <span translate>MASSENVERSAND_GESUCHE</span> *
+                                                <span translate
+                                                    >MASSENVERSAND_GESUCHE</span
+                                                >
+                                                *
                                             </label>
                                             <mat-checkbox
-                                                [(ngModel)]="statistikParameter.bgGesuche"
+                                                [(ngModel)]="
+                                                    statistikParameter.bgGesuche
+                                                "
                                                 name="massenversandBggesuche"
-                                                (ngModelChange)="gesuchTypeClicked()"
-                                                [aria-label]="'MASSENVERSAND_BG_GESUCHE' | translate"
-                                                class="input-element">
-                                                {{'MASSENVERSAND_BG_GESUCHE'|translate}}
+                                                (ngModelChange)="
+                                                    gesuchTypeClicked()
+                                                "
+                                                [aria-label]="
+                                                    'MASSENVERSAND_BG_GESUCHE'
+                                                        | translate
+                                                "
+                                                class="input-element"
+                                            >
+                                                {{
+                                                    'MASSENVERSAND_BG_GESUCHE'
+                                                        | translate
+                                                }}
                                             </mat-checkbox>
                                             <mat-checkbox
-                                                [(ngModel)]="statistikParameter.mischGesuche"
-                                                (ngModelChange)="gesuchTypeClicked()"
+                                                [(ngModel)]="
+                                                    statistikParameter.mischGesuche
+                                                "
+                                                (ngModelChange)="
+                                                    gesuchTypeClicked()
+                                                "
                                                 name="massenversandMischgesuche"
-                                                [aria-label]="'MASSENVERSAND_MISCH_GESUCHE' | translate"
-                                                class="input-element">
-                                                {{'MASSENVERSAND_MISCH_GESUCHE'|translate}}
+                                                [aria-label]="
+                                                    'MASSENVERSAND_MISCH_GESUCHE'
+                                                        | translate
+                                                "
+                                                class="input-element"
+                                            >
+                                                {{
+                                                    'MASSENVERSAND_MISCH_GESUCHE'
+                                                        | translate
+                                                }}
                                             </mat-checkbox>
                                             <mat-checkbox
-                                                [(ngModel)]="statistikParameter.tsGesuche"
-                                                (ngModelChange)="gesuchTypeClicked()"
+                                                [(ngModel)]="
+                                                    statistikParameter.tsGesuche
+                                                "
+                                                (ngModelChange)="
+                                                    gesuchTypeClicked()
+                                                "
                                                 name="massenversandTsgesuche"
-                                                [aria-label]="'MASSENVERSAND_TS_GESUCHE' | translate"
-                                                class="input-element">
-                                                {{'MASSENVERSAND_TS_GESUCHE'|translate}}
+                                                [aria-label]="
+                                                    'MASSENVERSAND_TS_GESUCHE'
+                                                        | translate
+                                                "
+                                                class="input-element"
+                                            >
+                                                {{
+                                                    'MASSENVERSAND_TS_GESUCHE'
+                                                        | translate
+                                                }}
                                             </mat-checkbox>
                                         </dv-input-container>
-                                        <div class="dv-error-messages" id="massenversand-no-selection-err">
-                                            <span *ngIf="flagShowErrorNoGesuchSelected" translate>MASSENVERSAND_ERROR_NICHTS_AUSGEWAEHLT</span>
+                                        <div
+                                            class="dv-error-messages"
+                                            id="massenversand-no-selection-err"
+                                        >
+                                            <span
+                                                *ngIf="
+                                                    flagShowErrorNoGesuchSelected
+                                                "
+                                                translate
+                                                >MASSENVERSAND_ERROR_NICHTS_AUSGEWAEHLT</span
+                                            >
                                         </div>
                                     </div>
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="ohneFolgegesuche"
-                                                   translate>MASSENVERSAND_WEITERE_ANGABEN</label>
-                                            <mat-checkbox id="ohneFolgegesuche"
-                                                          name="ohneFolgegesuche"
-                                                          [(ngModel)]="statistikParameter.ohneFolgegesuche"
-                                                          [aria-label]="'MASSENVERSAND_OHNE_FOLGEGESUCHE' | translate"
-                                                          class="input-element">
-                                                <span translate>MASSENVERSAND_OHNE_FOLGEGESUCHE</span>
+                                            <label
+                                                class="md-no-float"
+                                                for="ohneFolgegesuche"
+                                                translate
+                                                >MASSENVERSAND_WEITERE_ANGABEN</label
+                                            >
+                                            <mat-checkbox
+                                                id="ohneFolgegesuche"
+                                                name="ohneFolgegesuche"
+                                                [(ngModel)]="
+                                                    statistikParameter.ohneFolgegesuche
+                                                "
+                                                [aria-label]="
+                                                    'MASSENVERSAND_OHNE_FOLGEGESUCHE'
+                                                        | translate
+                                                "
+                                                class="input-element"
+                                            >
+                                                <span translate
+                                                    >MASSENVERSAND_OHNE_FOLGEGESUCHE</span
+                                                >
                                             </mat-checkbox>
                                         </dv-input-container>
                                     </div>
@@ -585,21 +1104,43 @@
                                 <div class="row">
                                     <div class="col-xs-9">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float" for="text_massenversand">
-                                                <span translate>MASSENVERSAND_TEXT</span>
-                                                <dv-tooltip inputId="massenversand_info"
-                                                            (click)="$event.stopPropagation()"
-                                                            [text]="'MASSENVERSAND_TEXT_HINT' | translate">
+                                            <label
+                                                class="md-no-float"
+                                                for="text_massenversand"
+                                            >
+                                                <span translate
+                                                    >MASSENVERSAND_TEXT</span
+                                                >
+                                                <dv-tooltip
+                                                    inputId="massenversand_info"
+                                                    (click)="
+                                                        $event.stopPropagation()
+                                                    "
+                                                    [text]="
+                                                        'MASSENVERSAND_TEXT_HINT'
+                                                            | translate
+                                                    "
+                                                >
                                                 </dv-tooltip>
                                             </label>
-                                            <input aria-describedby="text_massenversand-error"
-                                                   id="text_massenversand" type="text" name="text_massenversand"
-                                                   [(ngModel)]="statistikParameter.text"
-                                                   [maxLength]="250"
-                                                   #massenversandText='ngModel'
-                                                   class="form-control">
-                                            <dv-error-messages [errorObject]="massenversandText.errors"
-                                                               class="error"></dv-error-messages>
+                                            <input
+                                                aria-describedby="text_massenversand-error"
+                                                id="text_massenversand"
+                                                type="text"
+                                                name="text_massenversand"
+                                                [(ngModel)]="
+                                                    statistikParameter.text
+                                                "
+                                                [maxLength]="250"
+                                                #massenversandText="ngModel"
+                                                class="form-control"
+                                            />
+                                            <dv-error-messages
+                                                [errorObject]="
+                                                    massenversandText.errors
+                                                "
+                                                class="error"
+                                            ></dv-error-messages>
                                         </dv-input-container>
                                     </div>
                                 </div>
@@ -611,21 +1152,40 @@
                 <div *ngIf="showInstitutionenStatistik()">
                     <dv-accordion-tab [tabid]="'institutionen'">
                         <tab-title>
-                            <span class="uppercase" translate>INSTITUTIONEN_STATISTIK</span>
-                            <dv-tooltip inputId="institutionen_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_INSTITUTIONEN_HINT' | translate">
+                            <span class="uppercase" translate
+                                >INSTITUTIONEN_STATISTIK</span
+                            >
+                            <dv-tooltip
+                                inputId="institutionen_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIK_INSTITUTIONEN_HINT' | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="institutionen"
-                                  #institutionenRef='ngForm'
-                                  [ngClass]="{'ng-submitted': institutionenRef.submitted}"
-                                  (ngSubmit)="generateStatistik(institutionenRef, TSStatistikParameterType.INSTITUTIONEN)">
+                            <form
+                                name="institutionen"
+                                #institutionenRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': institutionenRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        institutionenRef,
+                                        TSStatistikParameterType.INSTITUTIONEN
+                                    )
+                                "
+                            >
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -637,53 +1197,99 @@
                 <div *ngIf="isSuperadmin()">
                     <dv-accordion-tab [tabid]="'verrechnung'">
                         <tab-title>
-                            <span class="uppercase" translate>VERRECHNUNG_KIBON_STATISTIK</span>
-                            <dv-tooltip inputId="verrechnung_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_VERRECHNUNG_KIBON_HINT' | translate">
+                            <span class="uppercase" translate
+                                >VERRECHNUNG_KIBON_STATISTIK</span
+                            >
+                            <dv-tooltip
+                                inputId="verrechnung_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'STATISTIK_VERRECHNUNG_KIBON_HINT'
+                                        | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="verrechnung"
-                                  #verrechnungRef='ngForm'
-                                  [ngClass]="{'ng-submitted': verrechnungRef.submitted}"
-                                  (ngSubmit)="generateStatistik(verrechnungRef, TSStatistikParameterType.VERRECHNUNG_KIBON)">
+                            <form
+                                name="verrechnung"
+                                #verrechnungRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted': verrechnungRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        verrechnungRef,
+                                        TSStatistikParameterType.VERRECHNUNG_KIBON
+                                    )
+                                "
+                            >
                                 <div class="row">
-                                    <div class="col-xs-12 form-group md-no-float statistik-no-fields">
-                                        <span translate>VERRECHNUNG_KIBON_INFO</span>
+                                    <div
+                                        class="col-xs-12 form-group md-no-float statistik-no-fields"
+                                    >
+                                        <span translate
+                                            >VERRECHNUNG_KIBON_INFO</span
+                                        >
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <mat-checkbox name="doSave"
-                                                          [(ngModel)]="statistikParameter.doSave"
-                                                          [aria-label]="'VERRECHNUNG_KIBON_DEFINITIV' | translate"
-                                                          class="input-element">
-                                                <span translate>VERRECHNUNG_KIBON_DEFINITIV</span>
+                                            <mat-checkbox
+                                                name="doSave"
+                                                [(ngModel)]="
+                                                    statistikParameter.doSave
+                                                "
+                                                [aria-label]="
+                                                    'VERRECHNUNG_KIBON_DEFINITIV'
+                                                        | translate
+                                                "
+                                                class="input-element"
+                                            >
+                                                <span translate
+                                                    >VERRECHNUNG_KIBON_DEFINITIV</span
+                                                >
                                             </mat-checkbox>
                                         </dv-input-container>
                                     </div>
-                                    <div class="col-xs-3 ">
+                                    <div class="col-xs-3">
                                         <dv-input-container class="form-group">
-                                            <label class="md-no-float required"
-                                                   for="betragProKind"
-                                                   translate>VERRECHNUNG_KIBON_BETRAG_PRO_KIND</label>
-                                            <input aria-describedby="betragProKind-error"
-                                                   id="betragProKind" type="text" name="betragProKind"
-                                                   [required]="true"
-                                                   #betragProKind='ngModel'
-                                                   [(ngModel)]="statistikParameter.betragProKind"
-                                                   class="input-element">
-                                            <dv-error-messages [errorObject]="betragProKind.errors"
-                                                               class="error"></dv-error-messages>
+                                            <label
+                                                class="md-no-float required"
+                                                for="betragProKind"
+                                                translate
+                                                >VERRECHNUNG_KIBON_BETRAG_PRO_KIND</label
+                                            >
+                                            <input
+                                                aria-describedby="betragProKind-error"
+                                                id="betragProKind"
+                                                type="text"
+                                                name="betragProKind"
+                                                [required]="true"
+                                                #betragProKind="ngModel"
+                                                [(ngModel)]="
+                                                    statistikParameter.betragProKind
+                                                "
+                                                class="input-element"
+                                            />
+                                            <dv-error-messages
+                                                [errorObject]="
+                                                    betragProKind.errors
+                                                "
+                                                class="error"
+                                            ></dv-error-messages>
                                         </dv-input-container>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -696,62 +1302,145 @@
                     <div *ngIf="showTagesschuleAnmeldungenStatistik()">
                         <dv-accordion-tab [tabid]="'tagesschuleAnmeldungen'">
                             <tab-title>
-                                <span class="uppercase" translate>TAGESSCHULE_ANMELDUNGEN_STATISTIK</span>
-                                <dv-tooltip inputId="lastenausgleich_info"
-                                            (click)="$event.stopPropagation()"
-                                            [text]="'TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO' | translate">
+                                <span class="uppercase" translate
+                                    >TAGESSCHULE_ANMELDUNGEN_STATISTIK</span
+                                >
+                                <dv-tooltip
+                                    inputId="lastenausgleich_info"
+                                    (click)="$event.stopPropagation()"
+                                    [text]="
+                                        'TAGESSCHULE_ANMELDUNGEN_STATISTIK_INFO'
+                                            | translate
+                                    "
+                                >
                                 </dv-tooltip>
                             </tab-title>
                             <tab-body>
-                                <form name="tagesschuleAnmeldungen"
-                                      #tagesschuleAnmeldungenRef='ngForm'
-                                      [ngClass]="{'ng-submitted': tagesschuleAnmeldungenRef.submitted}"
-                                      (ngSubmit)="generateStatistik(tagesschuleAnmeldungenRef, TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN)">
+                                <form
+                                    name="tagesschuleAnmeldungen"
+                                    #tagesschuleAnmeldungenRef="ngForm"
+                                    [ngClass]="{
+                                        'ng-submitted':
+                                            tagesschuleAnmeldungenRef.submitted
+                                    }"
+                                    (ngSubmit)="
+                                        generateStatistik(
+                                            tagesschuleAnmeldungenRef,
+                                            TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN
+                                        )
+                                    "
+                                >
                                     <div class="row">
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="tagesschuleAnmeldungenSelect"
-                                                       translate>TAGESSCHULE</label>
+                                                <label
+                                                    class="md-no-float required"
+                                                    for="tagesschuleAnmeldungenSelect"
+                                                    translate
+                                                    >TAGESSCHULE</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="tagesschuleAnmeldungenSelect_name"
-                                                            id="tagesschuleAnmeldungenSelect"
-                                                            [(ngModel)]="statistikParameter.tagesschuleAnmeldungen"
-                                                            #tagesschulen='ngModel'
-                                                            required
-                                                            class="form-control">
+                                                    <select
+                                                        name="tagesschuleAnmeldungenSelect_name"
+                                                        id="tagesschuleAnmeldungenSelect"
+                                                        [(ngModel)]="
+                                                            statistikParameter.tagesschuleAnmeldungen
+                                                        "
+                                                        #tagesschulen="ngModel"
+                                                        required
+                                                        class="form-control"
+                                                    >
                                                         <option
-                                                            *ngFor="let institutionStammdaten of tagesschulenStammdatenList"
-                                                            [ngValue]="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
+                                                            *ngFor="
+                                                                let institutionStammdaten of tagesschulenStammdatenList
+                                                            "
+                                                            [ngValue]="
+                                                                institutionStammdaten
+                                                            "
+                                                        >
+                                                            {{
+                                                                institutionStammdaten
+                                                                    .institution
+                                                                    .name
+                                                            }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="tagesschulen.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            tagesschulen.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3" *ngIf="statistikParameter.tagesschuleAnmeldungen">
+                                        <div
+                                            class="col-xs-3"
+                                            *ngIf="
+                                                statistikParameter.tagesschuleAnmeldungen
+                                            "
+                                        >
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="tagesschuleAnmeldungen_gp"
-                                                       translate>GESUCHSPERIODEN</label>
+                                                <label
+                                                    class="md-no-float required"
+                                                    for="tagesschuleAnmeldungen_gp"
+                                                    translate
+                                                    >GESUCHSPERIODEN</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="tagesschuleAnmeldungen_gp_name"
-                                                            id="tagesschuleAnmeldungen_gp"
-                                                            [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                            #gesuchZeitraumGP='ngModel'
-                                                            required
-                                                            class="form-control">
-                                                        <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
+                                                    <select
+                                                        name="tagesschuleAnmeldungen_gp_name"
+                                                        id="tagesschuleAnmeldungen_gp"
+                                                        [(ngModel)]="
+                                                            statistikParameter.gesuchsperiode
+                                                        "
+                                                        #gesuchZeitraumGP="ngModel"
+                                                        required
+                                                        class="form-control"
+                                                    >
                                                         <option
-                                                            *ngFor="let gesuchsperiode of getGesuchsperiodenForTagesschule(statistikParameter.tagesschuleAnmeldungen)"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                            [ngValue]="
+                                                                undefined
+                                                            "
+                                                        >
+                                                            {{
+                                                                'KEINE'
+                                                                    | translate
+                                                            }}
+                                                        </option>
+                                                        <option
+                                                            *ngFor="
+                                                                let gesuchsperiode of getGesuchsperiodenForTagesschule(
+                                                                    statistikParameter.tagesschuleAnmeldungen
+                                                                )
+                                                            "
+                                                            [value]="
+                                                                gesuchsperiode.id
+                                                            "
+                                                        >
+                                                            {{
+                                                                gesuchsperiode.gesuchsperiodeString
+                                                            }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            gesuchZeitraumGP.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3 statistik-button statistik-no-fields">
+                                        <div
+                                            class="col-xs-3 statistik-button statistik-no-fields"
+                                        >
                                             <dv-loading-button type="submit">
-                                                <span class="uppercase" translate>GENERIEREN</span>
+                                                <span
+                                                    class="uppercase"
+                                                    translate
+                                                    >GENERIEREN</span
+                                                >
                                             </dv-loading-button>
                                         </div>
                                     </div>
@@ -764,39 +1453,81 @@
                 <div *ngIf="showRechnungsstellungStatistik()">
                     <dv-accordion-tab [tabid]="'tagesschuleRechnungsstellung'">
                         <tab-title>
-                            <span class="uppercase" translate>TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK</span>
-                            <dv-tooltip inputId="tagesschuleRechnungsstellung_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT' | translate">
+                            <span class="uppercase" translate
+                                >TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK</span
+                            >
+                            <dv-tooltip
+                                inputId="tagesschuleRechnungsstellung_info"
+                                (click)="$event.stopPropagation()"
+                                [text]="
+                                    'TAGESSCHULE_RECHNUNGSSTELLUNG_STATISTIK_HINT'
+                                        | translate
+                                "
+                            >
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
-                            <form name="tagesschuleRechnungsstellung"
-                                  #tagesschuleRechnungsstellungRef='ngForm'
-                                  [ngClass]="{'ng-submitted': tagesschuleRechnungsstellungRef.submitted}"
-                                  (ngSubmit)="generateStatistik(tagesschuleRechnungsstellungRef, TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG)">
+                            <form
+                                name="tagesschuleRechnungsstellung"
+                                #tagesschuleRechnungsstellungRef="ngForm"
+                                [ngClass]="{
+                                    'ng-submitted':
+                                        tagesschuleRechnungsstellungRef.submitted
+                                }"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        tagesschuleRechnungsstellungRef,
+                                        TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG
+                                    )
+                                "
+                            >
                                 <div class="row">
-                                    <div class="col-xs-offset-6 col-xs-3 form-group">
-                                        <label class="md-no-float required" for="tagesschuleRechnungsstellung_gp"
-                                               translate>GESUCHSPERIODEN</label>
+                                    <div
+                                        class="col-xs-offset-6 col-xs-3 form-group"
+                                    >
+                                        <label
+                                            class="md-no-float required"
+                                            for="tagesschuleRechnungsstellung_gp"
+                                            translate
+                                            >GESUCHSPERIODEN</label
+                                        >
                                         <div class="dv-select-style">
-                                            <select name="tagesschuleRechnungsstellung_gp_name"
-                                                    id="tagesschuleRechnungsstellung_gp"
-                                                    [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                    #gesuchZeitraumTSGP='ngModel'
-                                                    required
-                                                    class="form-control">
+                                            <select
+                                                name="tagesschuleRechnungsstellung_gp_name"
+                                                id="tagesschuleRechnungsstellung_gp"
+                                                [(ngModel)]="
+                                                    statistikParameter.gesuchsperiode
+                                                "
+                                                #gesuchZeitraumTSGP="ngModel"
+                                                required
+                                                class="form-control"
+                                            >
                                                 <option
-                                                    *ngFor="let gesuchsperiode of getActiveGesuchsperioden()"
-                                                    [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                    *ngFor="
+                                                        let gesuchsperiode of getActiveGesuchsperioden()
+                                                    "
+                                                    [value]="gesuchsperiode.id"
+                                                >
+                                                    {{
+                                                        gesuchsperiode.gesuchsperiodeString
+                                                    }}
+                                                </option>
                                             </select>
-                                            <dv-error-messages [errorObject]="gesuchZeitraumTSGP.errors"
-                                                               class="error"></dv-error-messages>
+                                            <dv-error-messages
+                                                [errorObject]="
+                                                    gesuchZeitraumTSGP.errors
+                                                "
+                                                class="error"
+                                            ></dv-error-messages>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -851,56 +1582,116 @@
                     <div>
                         <dv-accordion-tab [tabid]="'mahlzeitenverguenstigung'">
                             <tab-title>
-                                <span class="uppercase" translate>MAHLZEITENVERGUENSTIGUNG</span>
+                                <span class="uppercase" translate
+                                    >MAHLZEITENVERGUENSTIGUNG</span
+                                >
                             </tab-title>
                             <tab-body>
-                                <form name="mahlzeitenverguenstigung"
-                                      #mahlzeitenverguenstigungRef='ngForm'
-                                      [ngClass]="{'ng-submitted': mahlzeitenverguenstigungRef.submitted}"
-                                      (ngSubmit)="generateStatistik(mahlzeitenverguenstigungRef, TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG)">
+                                <form
+                                    name="mahlzeitenverguenstigung"
+                                    #mahlzeitenverguenstigungRef="ngForm"
+                                    [ngClass]="{
+                                        'ng-submitted':
+                                            mahlzeitenverguenstigungRef.submitted
+                                    }"
+                                    (ngSubmit)="
+                                        generateStatistik(
+                                            mahlzeitenverguenstigungRef,
+                                            TSStatistikParameterType.MAHLZEITENVERGUENSTIGUNG
+                                        )
+                                    "
+                                >
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <dv-date-picker-x label="VON"
-                                                              [minDate]="minDate"
-                                                              [maxDate]="maxDate"
-                                                              [(date)]="statistikParameter.von"
-                                                              [required]="true">
+                                            <dv-date-picker-x
+                                                label="VON"
+                                                [minDate]="minDate"
+                                                [maxDate]="maxDate"
+                                                [(date)]="
+                                                    statistikParameter.von
+                                                "
+                                                [required]="true"
+                                            >
                                             </dv-date-picker-x>
                                         </div>
                                         <div class="col-xs-3">
-                                            <dv-date-picker-x label="BIS"
-                                                              [minDate]="statistikParameter.von || minDate"
-                                                              [maxDate]="maxDate"
-                                                              [(date)]="statistikParameter.bis"
-                                                              [required]="true">
+                                            <dv-date-picker-x
+                                                label="BIS"
+                                                [minDate]="
+                                                    statistikParameter.von ||
+                                                    minDate
+                                                "
+                                                [maxDate]="maxDate"
+                                                [(date)]="
+                                                    statistikParameter.bis
+                                                "
+                                                [required]="true"
+                                            >
                                             </dv-date-picker-x>
                                         </div>
-                                        <div class="col-xs-3" ng-if="gemeindenMahlzeitenverguenstigungen.length > 1">
+                                        <div
+                                            class="col-xs-3"
+                                            ng-if="
+                                                gemeindenMahlzeitenverguenstigungen.length >
+                                                1
+                                            "
+                                        >
                                             <div class="form-group">
-                                                <label class="md-no-float required"
-                                                       for="gemeinden_mahlzeitenverguenstigung"
-                                                       translate>GEMEINDE</label>
+                                                <label
+                                                    class="md-no-float required"
+                                                    for="gemeinden_mahlzeitenverguenstigung"
+                                                    translate
+                                                    >GEMEINDE</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="gemeinden_mahlzeitenverguenstigung"
-                                                            id="gemeinden_mahlzeitenverguenstigung"
-                                                            [(ngModel)]="statistikParameter.gemeindeMahlzeitenverguenstigungen"
-                                                            #gemeindeMahlzeitenRef='ngModel'
-                                                            class="form-control"
-                                                            required>
-                                                        <option value="">{{'KEINE' | translate}}</option>
+                                                    <select
+                                                        name="gemeinden_mahlzeitenverguenstigung"
+                                                        id="gemeinden_mahlzeitenverguenstigung"
+                                                        [(ngModel)]="
+                                                            statistikParameter.gemeindeMahlzeitenverguenstigungen
+                                                        "
+                                                        #gemeindeMahlzeitenRef="ngModel"
+                                                        class="form-control"
+                                                        required
+                                                    >
+                                                        <option value="">
+                                                            {{
+                                                                'KEINE'
+                                                                    | translate
+                                                            }}
+                                                        </option>
                                                         <option
-                                                            *ngFor="let gemeinde of gemeindenMahlzeitenverguenstigungen"
-                                                            [ngValue]="gemeinde">{{gemeinde.name}}</option>
+                                                            *ngFor="
+                                                                let gemeinde of gemeindenMahlzeitenverguenstigungen
+                                                            "
+                                                            [ngValue]="gemeinde"
+                                                        >
+                                                            {{ gemeinde.name }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="gemeindeMahlzeitenRef.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            gemeindeMahlzeitenRef.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-3 statistik-button">
-                                            <dv-loading-button type="submit"
-                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
-                                                <span class="uppercase" translate>GENERIEREN</span>
+                                            <dv-loading-button
+                                                type="submit"
+                                                style="
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 13rem;
+                                                "
+                                            >
+                                                <span
+                                                    class="uppercase"
+                                                    translate
+                                                    >GENERIEREN</span
+                                                >
                                             </dv-loading-button>
                                         </div>
                                     </div>
@@ -909,18 +1700,34 @@
                         </dv-accordion-tab>
                     </div>
                 </div>
-                <dv-accordion-tab [tabid]="'gemeinden'" *ngIf="showMandantStatistik()">
+                <dv-accordion-tab
+                    [tabid]="'gemeinden'"
+                    *ngIf="showMandantStatistik()"
+                >
                     <tab-title>
-                        <span class="uppercase" translate>GEMEINDEN_STATISTIK</span>
+                        <span class="uppercase" translate
+                            >GEMEINDEN_STATISTIK</span
+                        >
                     </tab-title>
                     <tab-body>
-                        <form name="gemeinden"
-                              #gemeindenRef='ngForm'
-                              (ngSubmit)="generateStatistik(gemeindenRef, TSStatistikParameterType.GEMEINDEN)">
+                        <form
+                            name="gemeinden"
+                            #gemeindenRef="ngForm"
+                            (ngSubmit)="
+                                generateStatistik(
+                                    gemeindenRef,
+                                    TSStatistikParameterType.GEMEINDEN
+                                )
+                            "
+                        >
                             <div class="row">
-                                <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                <div
+                                    class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields"
+                                >
                                     <dv-loading-button type="submit">
-                                        <span class="uppercase" translate>GENERIEREN</span>
+                                        <span class="uppercase" translate
+                                            >GENERIEREN</span
+                                        >
                                     </dv-loading-button>
                                 </div>
                             </div>
@@ -930,16 +1737,29 @@
                 <div *ngIf="showFerienbetreuungStatistik()">
                     <dv-accordion-tab [tabid]="'ferienbetreuung'">
                         <tab-title>
-                            <span class="uppercase" translate>FERIENBETREUUNG_STATISTIK</span>
+                            <span class="uppercase" translate
+                                >FERIENBETREUUNG_STATISTIK</span
+                            >
                         </tab-title>
                         <tab-body>
-                            <form name="ferienbetreuung"
-                                  #ferienbetreuungRef='ngForm'
-                                  (ngSubmit)="generateStatistik(ferienbetreuungRef, TSStatistikParameterType.FERIENBETREUUNG)">
+                            <form
+                                name="ferienbetreuung"
+                                #ferienbetreuungRef="ngForm"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        ferienbetreuungRef,
+                                        TSStatistikParameterType.FERIENBETREUUNG
+                                    )
+                                "
+                            >
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -950,33 +1770,67 @@
                 <div *ngIf="showLastenausgleichTagesschulenStatistik()">
                     <dv-accordion-tab [tabid]="'lastenausgleichTagesschulen'">
                         <tab-title>
-                            <span class="uppercase" translate>LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK</span>
+                            <span class="uppercase" translate
+                                >LASTENAUSGLEICH_TAGESSCHULEN_STATISTIK</span
+                            >
                         </tab-title>
                         <tab-body>
-                            <form name="lastenausgleichTagesschulen"
-                                  #lastenausgleichTagesschulenRef='ngForm'
-                                  (ngSubmit)="generateStatistik(lastenausgleichTagesschulenRef, TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN)"
-                                  novalidate>
+                            <form
+                                name="lastenausgleichTagesschulen"
+                                #lastenausgleichTagesschulenRef="ngForm"
+                                (ngSubmit)="
+                                    generateStatistik(
+                                        lastenausgleichTagesschulenRef,
+                                        TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN
+                                    )
+                                "
+                                novalidate
+                            >
                                 <div class="row">
                                     <div class="col-xs-offset-6 col-xs-3">
-                                        <label class="md-no-float" for="lats_gp_name"
-                                               translate>GESUCHSPERIODEN</label>
+                                        <label
+                                            class="md-no-float"
+                                            for="lats_gp_name"
+                                            translate
+                                            >GESUCHSPERIODEN</label
+                                        >
                                         <div class="dv-select-style">
-                                            <select name="lats_gp_name" id="lats_gp_name"
-                                                    [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                    #latsGP='ngModel'
-                                                    class="form-control">
-                                                <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                        [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                            <select
+                                                name="lats_gp_name"
+                                                id="lats_gp_name"
+                                                [(ngModel)]="
+                                                    statistikParameter.gesuchsperiode
+                                                "
+                                                #latsGP="ngModel"
+                                                class="form-control"
+                                            >
+                                                <option [ngValue]="undefined">
+                                                    {{ 'KEINE' | translate }}
+                                                </option>
+                                                <option
+                                                    *ngFor="
+                                                        let gesuchsperiode of gesuchsperioden
+                                                    "
+                                                    [value]="gesuchsperiode.id"
+                                                >
+                                                    {{
+                                                        gesuchsperiode.gesuchsperiodeString
+                                                    }}
+                                                </option>
                                             </select>
-                                            <dv-error-messages [errorObject]="latsGP.errors"
-                                                               class="error"></dv-error-messages>
+                                            <dv-error-messages
+                                                [errorObject]="latsGP.errors"
+                                                class="error"
+                                            ></dv-error-messages>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 statistik-button statistik-no-fields">
+                                    <div
+                                        class="col-xs-3 statistik-button statistik-no-fields"
+                                    >
                                         <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
+                                            <span class="uppercase" translate
+                                                >GENERIEREN</span
+                                            >
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -985,78 +1839,170 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length">
+                <div
+                    *ngIf="
+                        showLastenausgleichBGStatistikAllowedForRole() &&
+                        lastenausgleichYears.length
+                    "
+                >
                     <div>
                         <dv-accordion-tab [tabid]="'lastenausgleichBG'">
                             <tab-title>
-                                <span class="uppercase" translate>STATISTIK_LASTENAUSGLEICH_BG</span>
-                                <dv-tooltip (click)="$event.stopPropagation()"
-                                            [text]="'STATISTIK_LASTENAUSGLEICH_BG_HINT' | translate"></dv-tooltip>
+                                <span class="uppercase" translate
+                                    >STATISTIK_LASTENAUSGLEICH_BG</span
+                                >
+                                <dv-tooltip
+                                    (click)="$event.stopPropagation()"
+                                    [text]="
+                                        'STATISTIK_LASTENAUSGLEICH_BG_HINT'
+                                            | translate
+                                    "
+                                ></dv-tooltip>
                             </tab-title>
                             <tab-body>
-                                <form name="lastenausgleichBG"
-                                      #lastenausgleichBGRef='ngForm'
-                                      [ngClass]="{'ng-submitted': lastenausgleichBGRef.submitted}"
-                                      (ngSubmit)="generateStatistik(lastenausgleichBGRef, TSStatistikParameterType.LASTENAUSGLEICH_BG)">
+                                <form
+                                    name="lastenausgleichBG"
+                                    #lastenausgleichBGRef="ngForm"
+                                    [ngClass]="{
+                                        'ng-submitted':
+                                            lastenausgleichBGRef.submitted
+                                    }"
+                                    (ngSubmit)="
+                                        generateStatistik(
+                                            lastenausgleichBGRef,
+                                            TSStatistikParameterType.LASTENAUSGLEICH_BG
+                                        )
+                                    "
+                                >
                                     <div class="row">
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="year_lastenausgleich_bg"
-                                                       translate>PARAMETER_JAHR</label>
+                                                <label
+                                                    class="md-no-float required"
+                                                    for="year_lastenausgleich_bg"
+                                                    translate
+                                                    >PARAMETER_JAHR</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="jahr_lastenausgleich" id="year_lastenausgleich_bg"
-                                                            [(ngModel)]="statistikParameter.jahr"
-                                                            #yearLastenausgleichBG='ngModel'
-                                                            required
-                                                            class="form-control">
-                                                        <option *ngFor="let year of lastenausgleichYears"
-                                                                [value]="year">{{year}}</option>
+                                                    <select
+                                                        name="jahr_lastenausgleich"
+                                                        id="year_lastenausgleich_bg"
+                                                        [(ngModel)]="
+                                                            statistikParameter.jahr
+                                                        "
+                                                        #yearLastenausgleichBG="ngModel"
+                                                        required
+                                                        class="form-control"
+                                                    >
+                                                        <option
+                                                            *ngFor="
+                                                                let year of lastenausgleichYears
+                                                            "
+                                                            [value]="year"
+                                                        >
+                                                            {{ year }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="yearLastenausgleichBG.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            yearLastenausgleichBG.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
-                                            <dv-date-picker-x label="VON"
-                                                              [minDate]="minDate"
-                                                              [maxDate]="maxDate"
-                                                              [(date)]="statistikParameter.von">
+                                        <div
+                                            class="col-xs-3"
+                                            *ngIf="isSuperadmin()"
+                                        >
+                                            <dv-date-picker-x
+                                                label="VON"
+                                                [minDate]="minDate"
+                                                [maxDate]="maxDate"
+                                                [(date)]="
+                                                    statistikParameter.von
+                                                "
+                                            >
                                             </dv-date-picker-x>
                                         </div>
-                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
-                                            <dv-date-picker-x label="BIS"
-                                                              [minDate]="statistikParameter.von || minDate"
-                                                              [maxDate]="maxDate"
-                                                              [(date)]="statistikParameter.bis">
+                                        <div
+                                            class="col-xs-3"
+                                            *ngIf="isSuperadmin()"
+                                        >
+                                            <dv-date-picker-x
+                                                label="BIS"
+                                                [minDate]="
+                                                    statistikParameter.von ||
+                                                    minDate
+                                                "
+                                                [maxDate]="maxDate"
+                                                [(date)]="
+                                                    statistikParameter.bis
+                                                "
+                                            >
                                             </dv-date-picker-x>
                                         </div>
 
                                         <div class="col-xs-3" *ngIf="gemeinden">
                                             <div class="form-group">
-                                                <label class="md-no-float" [class.required]="!isSuperadmin()"
-                                                       for="gemeinden_mahlzeitenverguenstigung"
-                                                       translate>GEMEINDE</label>
+                                                <label
+                                                    class="md-no-float"
+                                                    [class.required]="
+                                                        !isSuperadmin()
+                                                    "
+                                                    for="gemeinden_mahlzeitenverguenstigung"
+                                                    translate
+                                                    >GEMEINDE</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="gemeinden"
-                                                            id="gemeinden"
-                                                            [(ngModel)]="statistikParameter.gemeinde"
-                                                            #gemeindeRef='ngModel'
-                                                            class="form-control"
-                                                            [required]="!isSuperadmin()">
-                                                        <option *ngFor="let gemeinde of gemeinden"
-                                                                [ngValue]="gemeinde">{{gemeinde.name}}</option>
+                                                    <select
+                                                        name="gemeinden"
+                                                        id="gemeinden"
+                                                        [(ngModel)]="
+                                                            statistikParameter.gemeinde
+                                                        "
+                                                        #gemeindeRef="ngModel"
+                                                        class="form-control"
+                                                        [required]="
+                                                            !isSuperadmin()
+                                                        "
+                                                    >
+                                                        <option
+                                                            *ngFor="
+                                                                let gemeinde of gemeinden
+                                                            "
+                                                            [ngValue]="gemeinde"
+                                                        >
+                                                            {{ gemeinde.name }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="gemeindeRef.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            gemeindeRef.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="generieren-button statistik-button">
-                                            <dv-loading-button type="submit"
-                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
-                                                <span class="uppercase" translate>GENERIEREN</span>
+                                        <div
+                                            class="generieren-button statistik-button"
+                                        >
+                                            <dv-loading-button
+                                                type="submit"
+                                                style="
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 13rem;
+                                                "
+                                            >
+                                                <span
+                                                    class="uppercase"
+                                                    translate
+                                                    >GENERIEREN</span
+                                                >
                                             </dv-loading-button>
                                         </div>
                                     </div>
@@ -1067,90 +2013,214 @@
                 </div>
 
                 <!--                betreuungsgutscheine: zahlungen-->
-                <div *ngIf="showZahlungenStatistik()" [dvDemoFeature]="demoFeature">
+                <div
+                    *ngIf="showZahlungenStatistik()"
+                    [dvDemoFeature]="demoFeature"
+                >
                     <div>
                         <dv-accordion-tab [tabid]="'zahlungen'">
                             <tab-title>
-                                <span class="uppercase" translate>STATISTIK_ZAHLUNGEN</span>
-                                <dv-tooltip (click)="$event.stopPropagation()"
-                                            [text]="'STATISTIK_ZAHLUNGEN_HINT' | translate"></dv-tooltip>
+                                <span class="uppercase" translate
+                                    >STATISTIK_ZAHLUNGEN</span
+                                >
+                                <dv-tooltip
+                                    (click)="$event.stopPropagation()"
+                                    [text]="
+                                        'STATISTIK_ZAHLUNGEN_HINT' | translate
+                                    "
+                                ></dv-tooltip>
                             </tab-title>
                             <tab-body>
-                                <form name="zahlungen"
-                                      #zahlungenRef='ngForm'
-                                      [ngClass]="{'ng-submitted': zahlungenRef.submitted}"
-                                      (ngSubmit)="generateStatistik(zahlungenRef, TSStatistikParameterType.ZAHLUNGEN)">
+                                <form
+                                    name="zahlungen"
+                                    #zahlungenRef="ngForm"
+                                    [ngClass]="{
+                                        'ng-submitted': zahlungenRef.submitted
+                                    }"
+                                    (ngSubmit)="
+                                        generateStatistik(
+                                            zahlungenRef,
+                                            TSStatistikParameterType.ZAHLUNGEN
+                                        )
+                                    "
+                                >
                                     <div class="row">
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="periode_gesuch_stichtag"
-                                                       translate>GESUCHSPERIODEN</label>
+                                                <label
+                                                    class="md-no-float required"
+                                                    for="periode_gesuch_stichtag"
+                                                    translate
+                                                    >GESUCHSPERIODEN</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="zahlungen_periode" id="zahlungen_periode"
-                                                            [(ngModel)]="statistikParameter.gesuchsperiode"
-                                                            #periodeGesuchStichtagForm='ngModel'
-                                                            required
-                                                            class="form-control">
-                                                        <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                                [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                    <select
+                                                        name="zahlungen_periode"
+                                                        id="zahlungen_periode"
+                                                        [(ngModel)]="
+                                                            statistikParameter.gesuchsperiode
+                                                        "
+                                                        #periodeGesuchStichtagForm="ngModel"
+                                                        required
+                                                        class="form-control"
+                                                    >
+                                                        <option
+                                                            *ngFor="
+                                                                let gesuchsperiode of gesuchsperioden
+                                                            "
+                                                            [value]="
+                                                                gesuchsperiode.id
+                                                            "
+                                                        >
+                                                            {{
+                                                                gesuchsperiode.gesuchsperiodeString
+                                                            }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="periodeGesuchStichtagForm.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            periodeGesuchStichtagForm.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3" *ngIf="gemeindenVisibleZahlungenStatistik()">
+                                        <div
+                                            class="col-xs-3"
+                                            *ngIf="
+                                                gemeindenVisibleZahlungenStatistik()
+                                            "
+                                        >
                                             <div class="form-group">
                                                 <label
                                                     class="md-no-float"
-                                                    [class.required]="requiredIfAlleInstitutionen()"
+                                                    [class.required]="
+                                                        requiredIfAlleInstitutionen()
+                                                    "
                                                     for="zahlungen_gemeinden"
-                                                    translate>GEMEINDE</label>
+                                                    translate
+                                                    >GEMEINDE</label
+                                                >
 
                                                 <div class="dv-select-style">
-                                                    <select name="zahlungen_gemeinden"
-                                                            id="zahlungen_gemeinden"
-                                                            [(ngModel)]="statistikParameter.gemeinde"
-                                                            #gemeindeRef='ngModel'
-                                                            [required]="requiredIfAlleInstitutionen()"
-                                                            class="form-control">
-                                                        <option [ngValue]="undefined">{{'ALLE' | translate}}</option>
-                                                        <option *ngFor="let gemeinde of gemeinden"
-                                                                [ngValue]="gemeinde">{{gemeinde.name}}</option>
+                                                    <select
+                                                        name="zahlungen_gemeinden"
+                                                        id="zahlungen_gemeinden"
+                                                        [(ngModel)]="
+                                                            statistikParameter.gemeinde
+                                                        "
+                                                        #gemeindeRef="ngModel"
+                                                        [required]="
+                                                            requiredIfAlleInstitutionen()
+                                                        "
+                                                        class="form-control"
+                                                    >
+                                                        <option
+                                                            [ngValue]="
+                                                                undefined
+                                                            "
+                                                        >
+                                                            {{
+                                                                'ALLE'
+                                                                    | translate
+                                                            }}
+                                                        </option>
+                                                        <option
+                                                            *ngFor="
+                                                                let gemeinde of gemeinden
+                                                            "
+                                                            [ngValue]="gemeinde"
+                                                        >
+                                                            {{ gemeinde.name }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="gemeindeRef.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            gemeindeRef.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3" *ngIf="institutionenVisibleZahlungenStatistik()">
+                                        <div
+                                            class="col-xs-3"
+                                            *ngIf="
+                                                institutionenVisibleZahlungenStatistik()
+                                            "
+                                        >
                                             <div class="form-group">
                                                 <label
                                                     class="md-no-float"
-                                                    [class.required]="requiredIfAlleGemeinden()"
+                                                    [class.required]="
+                                                        requiredIfAlleGemeinden()
+                                                    "
                                                     for="zahlungen_institutionen"
-                                                    translate>INSTITUTION</label>
+                                                    translate
+                                                    >INSTITUTION</label
+                                                >
                                                 <div class="dv-select-style">
-                                                    <select name="zahlungen_institutionen"
-                                                            id="zahlungen_institutionen"
-                                                            [(ngModel)]="statistikParameter.institution"
-                                                            #institutionenRef='ngModel'
-                                                            class="form-control"
-                                                            [required]="requiredIfAlleGemeinden()"
+                                                    <select
+                                                        name="zahlungen_institutionen"
+                                                        id="zahlungen_institutionen"
+                                                        [(ngModel)]="
+                                                            statistikParameter.institution
+                                                        "
+                                                        #institutionenRef="ngModel"
+                                                        class="form-control"
+                                                        [required]="
+                                                            requiredIfAlleGemeinden()
+                                                        "
                                                     >
-                                                        <option [ngValue]="undefined">{{'ALLE' | translate}}</option>
-                                                        <option *ngFor="let institution of bgInstitutionen"
-                                                                [ngValue]="institution">{{institution.name}}</option>
+                                                        <option
+                                                            [ngValue]="
+                                                                undefined
+                                                            "
+                                                        >
+                                                            {{
+                                                                'ALLE'
+                                                                    | translate
+                                                            }}
+                                                        </option>
+                                                        <option
+                                                            *ngFor="
+                                                                let institution of bgInstitutionen
+                                                            "
+                                                            [ngValue]="
+                                                                institution
+                                                            "
+                                                        >
+                                                            {{
+                                                                institution.name
+                                                            }}
+                                                        </option>
                                                     </select>
-                                                    <dv-error-messages [errorObject]="institutionenRef.errors"
-                                                                       class="error"></dv-error-messages>
+                                                    <dv-error-messages
+                                                        [errorObject]="
+                                                            institutionenRef.errors
+                                                        "
+                                                        class="error"
+                                                    ></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="generieren-button statistik-button">
-                                            <dv-loading-button type="submit"
-                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
-                                                <span class="uppercase" translate>GENERIEREN</span>
+                                        <div
+                                            class="generieren-button statistik-button"
+                                        >
+                                            <dv-loading-button
+                                                type="submit"
+                                                style="
+                                                    margin-left: auto;
+                                                    margin-right: auto;
+                                                    width: 13rem;
+                                                "
+                                            >
+                                                <span
+                                                    class="uppercase"
+                                                    translate
+                                                    >GENERIEREN</span
+                                                >
                                             </dv-loading-button>
                                         </div>
                                     </div>
@@ -1159,29 +2229,33 @@
                         </dv-accordion-tab>
                     </div>
                 </div>
-
             </dv-accordion>
         </div>
     </div>
 
     <!-- BatchJobs -->
     <div class="row margin-top-40">
-
         <div class="col-md-10 col-md-offset-1">
             <h2>
                 <span translate>LAST_REPORTS</span>
             </h2>
 
-            <div class="dv-table dv-simple-table table-striped" *ngIf="userjobs">
-
+            <div
+                class="dv-table dv-simple-table table-striped"
+                *ngIf="userjobs"
+            >
                 <mat-table [dataSource]="userjobs">
-
                     <ng-container matColumnDef="typ">
                         <th mat-header-cell *matHeaderCellDef class="ellipsis">
                             <span translate>TYP</span>
                         </th>
-                        <td mat-cell [title]="element.requestURI" *matCellDef="let element" class="ellipsis">
-                            {{'ReportType_' + element.params | translate}}
+                        <td
+                            mat-cell
+                            [title]="element.requestURI"
+                            *matCellDef="let element"
+                            class="ellipsis"
+                        >
+                            {{ 'ReportType_' + element.params | translate }}
                         </td>
                     </ng-container>
 
@@ -1190,7 +2264,7 @@
                             <span translate>ERSTELLT</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.timestampErstellt | ebeguDateTime}}
+                            {{ element.timestampErstellt | ebeguDateTime }}
                         </td>
                     </ng-container>
 
@@ -1199,7 +2273,7 @@
                             <span translate>GESTARTET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution?.createTime | ebeguDateTime}}
+                            {{ element.execution?.createTime | ebeguDateTime }}
                         </td>
                     </ng-container>
 
@@ -1208,7 +2282,7 @@
                             <span translate>BEENDET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution?.endTime | ebeguDateTime}}
+                            {{ element.execution?.endTime | ebeguDateTime }}
                         </td>
                     </ng-container>
 
@@ -1216,8 +2290,16 @@
                         <th mat-header-cell *matHeaderCellDef class="ellipsis">
                             <span translate>STATUS</span>
                         </th>
-                        <td mat-cell *matCellDef="let element" class="ellipsis" data-test="job-status">
-                            {{'BatchJobStatus_' + element.batchJobStatus | translate}}
+                        <td
+                            mat-cell
+                            *matCellDef="let element"
+                            class="ellipsis"
+                            data-test="job-status"
+                        >
+                            {{
+                                'BatchJobStatus_' + element.batchJobStatus
+                                    | translate
+                            }}
                         </td>
                     </ng-container>
 
@@ -1226,35 +2308,41 @@
                             <span></span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            <span *ngIf="element.batchJobStatus === 'FINISHED'"
-                                  [title]="'DOKUMENT_DOWNLOAD' | translate" class="fa fa-download"></span>
+                            <span
+                                *ngIf="element.batchJobStatus === 'FINISHED'"
+                                [title]="'DOKUMENT_DOWNLOAD' | translate"
+                                class="fa fa-download"
+                            ></span>
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
-                    <tr mat-row [ngClass]="{'ready': row.batchJobStatus === 'FINISHED'}"
-                        *matRowDef="let row; let index = index; columns: columndefs;" (click)="downloadStatistik(row)"
-                        [attr.data-test]="'statistik#' + index"></tr>
-
+                    <tr
+                        mat-row
+                        [ngClass]="{ready: row.batchJobStatus === 'FINISHED'}"
+                        *matRowDef="
+                            let row;
+                            let index = index;
+                            columns: columndefs
+                        "
+                        (click)="downloadStatistik(row)"
+                        [attr.data-test]="'statistik#' + index"
+                    ></tr>
                 </mat-table>
-
             </div>
         </div>
 
         <div class="col-md-10 col-md-offset-1 margin-top-40">
             <div *ngIf="showAllJobsVisible()">
-
                 <dv-loading-button (buttonClick)="showAllJobs()" type="button">
                     <span class="fa fa-refresh"></span>&nbsp;
                     <span translate>SHOW_JOBS</span>
                 </dv-loading-button>
                 <div *ngIf="allJobs" class="margin-top-20">
                     <p>Batch Jobs from Wildfly Batch Module</p>
-                    <pre>{{allJobs | json}}</pre>
+                    <pre>{{ allJobs | json }}</pre>
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>

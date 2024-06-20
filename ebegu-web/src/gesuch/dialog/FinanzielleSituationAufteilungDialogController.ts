@@ -17,16 +17,12 @@ import {IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
 
 export class FinanzielleSituationAufteilungDialogController {
-
     public static $inject = ['$mdDialog'];
 
     public title: string;
     public bemerkungen: string;
 
-    public constructor(
-        private readonly $mdDialog: IDialogService
-    ) {
-    }
+    public constructor(private readonly $mdDialog: IDialogService) {}
 
     public hide(): IPromise<any> {
         return this.$mdDialog.hide();

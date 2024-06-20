@@ -16,51 +16,86 @@
   -->
 
 <fieldset>
-
     <!-- Gemeinde -->
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group" *ngIf="editMode">
                 <h3 translate for="gemeinde">GEMEINDE</h3>
-                <mat-select [value]="stammdaten.institutionStammdatenTagesschule.gemeinde"
-                            [compareWith]="compareGemeinde"
-                            id="gemeinde" name="gemeinde"
-                            class="form-control"
-                            disabled>
-                    <mat-option *ngFor="let gemeinde of gemeindeList" [value]="gemeinde">{{gemeinde.name}}</mat-option>
+                <mat-select
+                    [value]="
+                        stammdaten.institutionStammdatenTagesschule.gemeinde
+                    "
+                    [compareWith]="compareGemeinde"
+                    id="gemeinde"
+                    name="gemeinde"
+                    class="form-control"
+                    disabled
+                >
+                    <mat-option
+                        *ngFor="let gemeinde of gemeindeList"
+                        [value]="gemeinde"
+                        >{{ gemeinde.name }}</mat-option
+                    >
                 </mat-select>
             </div>
             <div class="form-group" *ngIf="!editMode">
                 <h3 translate for="gemeinde">GEMEINDE</h3>
-                <p>{{stammdaten.institutionStammdatenTagesschule.gemeinde.name}}</p>
+                <p>
+                    {{
+                        stammdaten.institutionStammdatenTagesschule.gemeinde
+                            .name
+                    }}
+                </p>
             </div>
         </div>
     </div>
 
-    <dv-accordion class="gesuchsperioden-list" allow-multiple-sections="true" id="moduleListProEinstellungen">
+    <dv-accordion
+        class="gesuchsperioden-list"
+        allow-multiple-sections="true"
+        id="moduleListProEinstellungen"
+    >
         <ng-container
-            *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule;
-            trackBy: trackById; let i = index">
+            *ngFor="
+                let einstellungGP of stammdaten.institutionStammdatenTagesschule
+                    .einstellungenTagesschule;
+                trackBy: trackById;
+                let i = index
+            "
+        >
             <dv-accordion-tab
                 [tabid]="i"
-                *ngIf="showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)"
+                *ngIf="
+                    showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)
+                "
                 [attr.data-test]="'institution.gesuchsperiode-' + i"
-                >
+            >
                 <tab-title>
-                    <div class="message-header" >
-                        <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
+                    <div class="message-header">
+                        <p class="fa fa-angle-right"></p>
+                        {{ einstellungGP.gesuchsperiode.gesuchsperiodeString }}
                     </div>
                 </tab-title>
                 <tab-body>
                     <div class="row">
-                        <div class="col-xs-12" *ngIf="showTagiCheckbox(einstellungGP)">
-                            <br/>
+                        <div
+                            class="col-xs-12"
+                            *ngIf="showTagiCheckbox(einstellungGP)"
+                        >
+                            <br />
                             <div class="form-group">
-                                <mat-checkbox id="tagisCheckbox_{{einstellungGP?.id}}_id"
-                                              name="tagisCheckbox_{{einstellungGP?.id}}"
-                                              [(ngModel)]="einstellungGP.tagi"
-                                              [disabled]="!canEditTagi()">
-                                    {{'INSTITUTION_TAGESSCHULE_TAGIS'|translate}}
+                                <mat-checkbox
+                                    id="tagisCheckbox_{{
+                                        einstellungGP?.id
+                                    }}_id"
+                                    name="tagisCheckbox_{{ einstellungGP?.id }}"
+                                    [(ngModel)]="einstellungGP.tagi"
+                                    [disabled]="!canEditTagi()"
+                                >
+                                    {{
+                                        'INSTITUTION_TAGESSCHULE_TAGIS'
+                                            | translate
+                                    }}
                                 </mat-checkbox>
                             </div>
                         </div>
@@ -71,136 +106,424 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <table class="table fixedtable table-hover" title="Title" [attr.data-test]="'institution.gesuchsperiode.module.table-' + i">
+                            <table
+                                class="table fixedtable table-hover"
+                                title="Title"
+                                [attr.data-test]="
+                                    'institution.gesuchsperiode.module.table-' +
+                                    i
+                                "
+                            >
                                 <thead>
-                                <tr>
-                                    <th *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" translate>MODUL_NAME</th>
-                                    <th translate>MODUL_BEZEICHNUNG</th>
-                                    <th translate>MODUL_ZEITRAUM</th>
-                                    <th translate>MODUL_VERPFLEGUNG</th>
-                                    <th translate>MODUL_VERFUEGBAR</th>
-                                    <th translate>MODUL_PAEDAGOGISCH_BETREUT_SHORT</th>
-                                    <th translate>MODUL_INTERVALL</th>
-                                    <th *ngIf="editMode || schnittstelleInfosVisible()"></th>
-                                </tr>
+                                    <tr>
+                                        <th
+                                            *ngIf="
+                                                isScolaris(
+                                                    einstellungGP.modulTagesschuleGroups
+                                                )
+                                            "
+                                            translate
+                                        >
+                                            MODUL_NAME
+                                        </th>
+                                        <th translate>MODUL_BEZEICHNUNG</th>
+                                        <th translate>MODUL_ZEITRAUM</th>
+                                        <th translate>MODUL_VERPFLEGUNG</th>
+                                        <th translate>MODUL_VERFUEGBAR</th>
+                                        <th translate>
+                                            MODUL_PAEDAGOGISCH_BETREUT_SHORT
+                                        </th>
+                                        <th translate>MODUL_INTERVALL</th>
+                                        <th
+                                            *ngIf="
+                                                editMode ||
+                                                schnittstelleInfosVisible()
+                                            "
+                                        ></th>
+                                    </tr>
                                 </thead>
-                                <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
-                                <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier; let last = last">
-                                    <td *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" title="{{getModulName(group)}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        <span>{{getModulName(group)}}</span>
-                                    </td>
-                                    <td title="{{getBezeichnung(group)}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        <span>{{getBezeichnung(group)}}</span>
-                                    </td>
-                                    <td title="{{group.getZeitraumString()}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{group.getZeitraumString()}}
-                                    </td>
-                                    <td title="{{group.verpflegungskosten}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{group.verpflegungskosten}}
-                                    </td>
-                                    <td title="{{getWochentageAsString(group)}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{getWochentageAsString(group)}}
-                                    </td>
-                                    <td *ngIf="group.wirdPaedagogischBetreut" [title]="'JA' | translate"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{'LABEL_JA' | translate}}
-                                    </td>
-                                    <td *ngIf="!group.wirdPaedagogischBetreut" [title]="'NEIN' | translate"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{'LABEL_NEIN' | translate}}
-                                    </td>
-                                    <td title="{{group.intervall | translate}}"
-                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        {{group.intervall | translate}}
-                                    </td>
-                                    <td *ngIf="editMode || schnittstelleInfosVisible()">
-                                        <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
-                                                [title]="getEditButtonTooltip(einstellungGP, group)"
-                                                (click)="editModulTagesschuleGroup(einstellungGP, group)"
-                                                [disabled]="!canEditModule(einstellungGP, group)">
-                                            <i class="fa fa-lg fa-edit"></i>
-                                        </button>
-                                        &nbsp;
-                                        <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
-                                                [title]="getDeleteButtonTooltip(einstellungGP, group, last)"
-                                                (click)="removeModulTagesschuleGroup(einstellungGP, group)"
-                                                [disabled]="!canDeleteModule(einstellungGP, group, last)">
-                                            <i class="fa fa-lg fa-trash-o"></i>
-                                        </button>
-                                        &nbsp;
-                                        <button type="button" class="dv-btn dv-btn-operation"
-                                                [title]="'SCHNITTSTELLE_INFO_TOOLTIP' | translate "
-                                                *ngIf="schnittstelleInfosVisible()"
-                                                (click)="showSchnittstelleInfos(group)">
-                                            <i class="fa fa-lg fa-cogs"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <tbody
+                                    *ngIf="
+                                        einstellungGP.modulTagesschuleGroups
+                                            ?.length > 0
+                                    "
+                                >
+                                    <tr
+                                        *ngFor="
+                                            let group of einstellungGP.modulTagesschuleGroups;
+                                            trackBy: trackByIdentifier;
+                                            let last = last
+                                        "
+                                    >
+                                        <td
+                                            *ngIf="
+                                                isScolaris(
+                                                    einstellungGP.modulTagesschuleGroups
+                                                )
+                                            "
+                                            title="{{ getModulName(group) }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            <span>{{
+                                                getModulName(group)
+                                            }}</span>
+                                        </td>
+                                        <td
+                                            title="{{ getBezeichnung(group) }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            <span>{{
+                                                getBezeichnung(group)
+                                            }}</span>
+                                        </td>
+                                        <td
+                                            title="{{
+                                                group.getZeitraumString()
+                                            }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ group.getZeitraumString() }}
+                                        </td>
+                                        <td
+                                            title="{{
+                                                group.verpflegungskosten
+                                            }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ group.verpflegungskosten }}
+                                        </td>
+                                        <td
+                                            title="{{
+                                                getWochentageAsString(group)
+                                            }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ getWochentageAsString(group) }}
+                                        </td>
+                                        <td
+                                            *ngIf="
+                                                group.wirdPaedagogischBetreut
+                                            "
+                                            [title]="'JA' | translate"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ 'LABEL_JA' | translate }}
+                                        </td>
+                                        <td
+                                            *ngIf="
+                                                !group.wirdPaedagogischBetreut
+                                            "
+                                            [title]="'NEIN' | translate"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ 'LABEL_NEIN' | translate }}
+                                        </td>
+                                        <td
+                                            title="{{
+                                                group.intervall | translate
+                                            }}"
+                                            (click)="
+                                                editModulTagesschuleGroup(
+                                                    einstellungGP,
+                                                    group
+                                                )
+                                            "
+                                        >
+                                            {{ group.intervall | translate }}
+                                        </td>
+                                        <td
+                                            *ngIf="
+                                                editMode ||
+                                                schnittstelleInfosVisible()
+                                            "
+                                        >
+                                            <button
+                                                *ngIf="editMode"
+                                                type="button"
+                                                class="dv-btn dv-btn-operation"
+                                                [title]="
+                                                    getEditButtonTooltip(
+                                                        einstellungGP,
+                                                        group
+                                                    )
+                                                "
+                                                (click)="
+                                                    editModulTagesschuleGroup(
+                                                        einstellungGP,
+                                                        group
+                                                    )
+                                                "
+                                                [disabled]="
+                                                    !canEditModule(
+                                                        einstellungGP,
+                                                        group
+                                                    )
+                                                "
+                                            >
+                                                <i class="fa fa-lg fa-edit"></i>
+                                            </button>
+                                            &nbsp;
+                                            <button
+                                                *ngIf="editMode"
+                                                type="button"
+                                                class="dv-btn dv-btn-operation"
+                                                [title]="
+                                                    getDeleteButtonTooltip(
+                                                        einstellungGP,
+                                                        group,
+                                                        last
+                                                    )
+                                                "
+                                                (click)="
+                                                    removeModulTagesschuleGroup(
+                                                        einstellungGP,
+                                                        group
+                                                    )
+                                                "
+                                                [disabled]="
+                                                    !canDeleteModule(
+                                                        einstellungGP,
+                                                        group,
+                                                        last
+                                                    )
+                                                "
+                                            >
+                                                <i
+                                                    class="fa fa-lg fa-trash-o"
+                                                ></i>
+                                            </button>
+                                            &nbsp;
+                                            <button
+                                                type="button"
+                                                class="dv-btn dv-btn-operation"
+                                                [title]="
+                                                    'SCHNITTSTELLE_INFO_TOOLTIP'
+                                                        | translate
+                                                "
+                                                *ngIf="
+                                                    schnittstelleInfosVisible()
+                                                "
+                                                (click)="
+                                                    showSchnittstelleInfos(
+                                                        group
+                                                    )
+                                                "
+                                            >
+                                                <i class="fa fa-lg fa-cogs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
-                                <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length === 0">
-                                <tr>
-                                    <td colspan="6" class="empty-table" translate>KEIN_EINTRAG</td>
-                                </tr>
+                                <tbody
+                                    *ngIf="
+                                        einstellungGP.modulTagesschuleGroups
+                                            .length === 0
+                                    "
+                                >
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="empty-table"
+                                            translate
+                                        >
+                                            KEIN_EINTRAG
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 
                             <div>
                                 <div class="form-group">
-                                    <label class="md-no-float" translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
-                                           for="erlaeuterung_{{einstellungGP?.id}}">
+                                    <label
+                                        class="md-no-float"
+                                        translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                        for="erlaeuterung_{{
+                                            einstellungGP?.id
+                                        }}"
+                                    >
                                     </label>
-                                    <textarea name="erlaeuterung_{{einstellungGP?.id}}"
-                                              class="form-control " rows="3"
-                                              id="erlaeuterung_{{einstellungGP?.id}}"
-                                              [(ngModel)]="einstellungGP.erlaeuterung"
-                                              [disabled]="!editMode"
-                                              [placeholder]="'BETREUUNG_TAGESSCHULE_ERLAUTERUNG_PLACEHOLDER' | translate"
-                                              maxlength="4000">
+                                    <textarea
+                                        name="erlaeuterung_{{
+                                            einstellungGP?.id
+                                        }}"
+                                        class="form-control"
+                                        rows="3"
+                                        id="erlaeuterung_{{
+                                            einstellungGP?.id
+                                        }}"
+                                        [(ngModel)]="einstellungGP.erlaeuterung"
+                                        [disabled]="!editMode"
+                                        [placeholder]="
+                                            'BETREUUNG_TAGESSCHULE_ERLAUTERUNG_PLACEHOLDER'
+                                                | translate
+                                        "
+                                        maxlength="4000"
+                                    >
                                     </textarea>
                                 </div>
                             </div>
-                            <div *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)">
+                            <div
+                                *ngIf="
+                                    editMode &&
+                                    !isModulTagesschuleTypScolaris(
+                                        einstellungGP
+                                    )
+                                "
+                            >
                                 <div>
-                                    <button type="button" (click)="addModulTagesschuleGroup(einstellungGP)"
-                                            class="dv-btn dv-btn-operation add-module-button"
-                                            [attr.data-test]="'institution.gesuchsperiode.add.modul-' + i">
+                                    <button
+                                        type="button"
+                                        (click)="
+                                            addModulTagesschuleGroup(
+                                                einstellungGP
+                                            )
+                                        "
+                                        class="dv-btn dv-btn-operation add-module-button"
+                                        [attr.data-test]="
+                                            'institution.gesuchsperiode.add.modul-' +
+                                            i
+                                        "
+                                    >
                                         <i class="fa fa-lg fa-plus-circle"></i>
                                         <span translate>MODUL_HINZUFUEGEN</span>
                                     </button>
                                 </div>
-                                <div *ngIf="einstellungGP && canEditEinstellungen(einstellungGP)">
-                                    <a class="pointer" (click)="askAndChangeToScolaris(einstellungGP)">
-                                        <span>{{'SCOLARIS' | translate}}</span>
+                                <div
+                                    *ngIf="
+                                        einstellungGP &&
+                                        canEditEinstellungen(einstellungGP)
+                                    "
+                                >
+                                    <a
+                                        class="pointer"
+                                        (click)="
+                                            askAndChangeToScolaris(
+                                                einstellungGP
+                                            )
+                                        "
+                                    >
+                                        <span>{{
+                                            'SCOLARIS' | translate
+                                        }}</span>
                                     </a>
                                 </div>
-                                <div *ngIf="einstellungGP && !canEditEinstellungen(einstellungGP)">
-                                    <a class="disabled strikethrough" [title]="'WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH' |
-                                    translate">
-                                        <span>{{'SCOLARIS' | translate}}</span>
+                                <div
+                                    *ngIf="
+                                        einstellungGP &&
+                                        !canEditEinstellungen(einstellungGP)
+                                    "
+                                >
+                                    <a
+                                        class="disabled strikethrough"
+                                        [title]="
+                                            'WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH'
+                                                | translate
+                                        "
+                                    >
+                                        <span>{{
+                                            'SCOLARIS' | translate
+                                        }}</span>
                                     </a>
                                 </div>
                                 <div>
-                                    <a class="pointer" (click)="importFromOtherInstitution(einstellungGP)"
-                                       [attr.data-test]="'institution.gesuchsperiode.import.modul-' + i">
-                                        <span>{{'IMPORT_FROM_OTHER_INSTITUTION' | translate}}</span>
+                                    <a
+                                        class="pointer"
+                                        (click)="
+                                            importFromOtherInstitution(
+                                                einstellungGP
+                                            )
+                                        "
+                                        [attr.data-test]="
+                                            'institution.gesuchsperiode.import.modul-' +
+                                            i
+                                        "
+                                    >
+                                        <span>{{
+                                            'IMPORT_FROM_OTHER_INSTITUTION'
+                                                | translate
+                                        }}</span>
                                     </a>
                                 </div>
                             </div>
-                            <div *ngIf="editMode && isModulTagesschuleTypScolaris(einstellungGP)">
-                                <div *ngIf="einstellungGP && !isScolarisVollstaendig(einstellungGP)">
-                                    <a class="pointer" (click)="addFehlendeScolarisModule(einstellungGP)">
-                                        <span>{{'ADD_FEHLENDE_SCOLARIS_MODULE' | translate}}</span>
+                            <div
+                                *ngIf="
+                                    editMode &&
+                                    isModulTagesschuleTypScolaris(einstellungGP)
+                                "
+                            >
+                                <div
+                                    *ngIf="
+                                        einstellungGP &&
+                                        !isScolarisVollstaendig(einstellungGP)
+                                    "
+                                >
+                                    <a
+                                        class="pointer"
+                                        (click)="
+                                            addFehlendeScolarisModule(
+                                                einstellungGP
+                                            )
+                                        "
+                                    >
+                                        <span>{{
+                                            'ADD_FEHLENDE_SCOLARIS_MODULE'
+                                                | translate
+                                        }}</span>
                                     </a>
                                 </div>
-                                <p>{{ 'MODULE_FUER_SCOLARIS_ERSTELLT' | translate }}
-                                    <a *ngIf="canEditEinstellungen(einstellungGP)"
-                                       (click)="changeToDynamisch(einstellungGP)" class="pointer">
-                                        {{ 'ZURUECKWECHSELN_ZU_DYNAMISCH' | translate }}
+                                <p>
+                                    {{
+                                        'MODULE_FUER_SCOLARIS_ERSTELLT'
+                                            | translate
+                                    }}
+                                    <a
+                                        *ngIf="
+                                            canEditEinstellungen(einstellungGP)
+                                        "
+                                        (click)="
+                                            changeToDynamisch(einstellungGP)
+                                        "
+                                        class="pointer"
+                                    >
+                                        {{
+                                            'ZURUECKWECHSELN_ZU_DYNAMISCH'
+                                                | translate
+                                        }}
                                     </a>
                                 </p>
                             </div>

@@ -22,25 +22,44 @@
 
     <form class="row">
         <mat-form-field class="col-md-12">
-            <input type="text"
-                   placeholder="{{'AN_COLON' | translate}}"
-                   [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
-                   matInput
-                   [formControl]="myControl"
-                   [matAutocomplete]="auto">
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getBenutzerFullName" (optionSelected)="updateMySelection($event.option.value)">
-                <mat-option *ngFor="let benutzer of this.filteredBenutzerList$  | async" [value]="benutzer">
-                    <dv-benutzer-entry [benutzer]="benutzer"></dv-benutzer-entry>
+            <input
+                type="text"
+                placeholder="{{ 'AN_COLON' | translate }}"
+                [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                matInput
+                [formControl]="myControl"
+                [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+                #auto="matAutocomplete"
+                [displayWith]="getBenutzerFullName"
+                (optionSelected)="updateMySelection($event.option.value)"
+            >
+                <mat-option
+                    *ngFor="let benutzer of this.filteredBenutzerList$ | async"
+                    [value]="benutzer"
+                >
+                    <dv-benutzer-entry
+                        [benutzer]="benutzer"
+                    ></dv-benutzer-entry>
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
     </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="close()" [textContent]="'ABBRECHEN' | translate"></button>
-        <button class="dv-btn"  (click)="save()" [textContent]="'MITTEILUNG_WEITERLEITEN' | translate" [disabled]="selectedBenutzer === null"></button>
+        <button
+            class="dv-btn"
+            (click)="close()"
+            [textContent]="'ABBRECHEN' | translate"
+        ></button>
+        <button
+            class="dv-btn"
+            (click)="save()"
+            [textContent]="'MITTEILUNG_WEITERLEITEN' | translate"
+            [disabled]="selectedBenutzer === null"
+        ></button>
     </div>
 </mat-dialog-actions>

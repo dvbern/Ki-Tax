@@ -22,29 +22,50 @@ import {TSFerieninselZeitraum} from '../../../models/TSFerieninselZeitraum';
 
 @Directive({
     selector: '[appOverlappingZeitraum]',
-    providers: [{provide: NG_VALIDATORS, useExisting: OverlappingZeitraumDirective, multi: true}]
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useExisting: OverlappingZeitraumDirective,
+            multi: true
+        }
+    ]
 })
 export class OverlappingZeitraumDirective implements Validator {
     @Input('appOverlappingZeitraum')
     private readonly fiStammdatenList: TSFerieninselStammdaten[];
 
     public validate(): {[key: string]: any} | null {
-        return this.fiStammdatenList ? overlappingValidator(this.fiStammdatenList) : null;
+        return this.fiStammdatenList
+            ? overlappingValidator(this.fiStammdatenList)
+            : null;
     }
 }
 
-function overlappingValidator(fiStammdatenList: TSFerieninselStammdaten[]): {[key: string]: any} | null {
+function overlappingValidator(
+    fiStammdatenList: TSFerieninselStammdaten[]
+): {[key: string]: any} | null {
     let zeitraeume = extractZeitraeume(fiStammdatenList);
     // nur valide zeiträume betrachten. Ansonsten ist die Konfiguration sowieso invalid
-    zeitraeume = zeitraeume.filter(z => z.gueltigkeit && z.gueltigkeit.gueltigAb && z.gueltigkeit.gueltigBis);
-    zeitraeume.sort((a, b) => a.gueltigkeit.gueltigAb.valueOf() - b.gueltigkeit.gueltigAb.valueOf());
+    zeitraeume = zeitraeume.filter(
+        z =>
+            z.gueltigkeit && z.gueltigkeit.gueltigAb && z.gueltigkeit.gueltigBis
+    );
+    zeitraeume.sort(
+        (a, b) =>
+            a.gueltigkeit.gueltigAb.valueOf() -
+            b.gueltigkeit.gueltigAb.valueOf()
+    );
     let previous;
     for (const zeitraum of zeitraeume) {
         if (!previous) {
             previous = zeitraum;
             continue;
         }
-        if (zeitraum.gueltigkeit.gueltigAb.isSameOrBefore(previous.gueltigkeit.gueltigBis)) {
+        if (
+            zeitraum.gueltigkeit.gueltigAb.isSameOrBefore(
+                previous.gueltigkeit.gueltigBis
+            )
+        ) {
             return {dvOverlappingZeitraum: {value: zeitraum}};
         }
         previous = zeitraum;
@@ -52,7 +73,9 @@ function overlappingValidator(fiStammdatenList: TSFerieninselStammdaten[]): {[ke
     return null;
 }
 
-function extractZeitraeume(stammdatenList: TSFerieninselStammdaten[]): TSFerieninselZeitraum[] {
+function extractZeitraeume(
+    stammdatenList: TSFerieninselStammdaten[]
+): TSFerieninselZeitraum[] {
     let zeitraeume: TSFerieninselZeitraum[] = [];
     for (const stammdaten of stammdatenList) {
         zeitraeume = zeitraeume.concat(stammdaten.zeitraumList);

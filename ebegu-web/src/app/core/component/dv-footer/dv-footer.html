@@ -18,9 +18,17 @@
 <footer>
     <div hide-sm hide-xs class="coypright">&copy; 2020 kiBon</div>
     <div class="info">
-        <button ng-click="vm.showText('RECHTLICHES_TEXT')" data-translate="RECHTLICHES"></button>
+        <button
+            ng-click="vm.showText('RECHTLICHES_TEXT')"
+            data-translate="RECHTLICHES"
+        ></button>
         <span>|</span>
-        <button ng-click="vm.showText('IMPRESSUM_TEXT')" data-translate="IMPRESSUM"></button>
+        <button
+            ng-click="vm.showText('IMPRESSUM_TEXT')"
+            data-translate="IMPRESSUM"
+        ></button>
     </div>
-    <div class="version" hide-sm hide-xs><dv-version ng-show="true"></dv-version></div>
+    <div class="version" hide-sm hide-xs>
+        <dv-version ng-show="true"></dv-version>
+    </div>
 </footer>

@@ -18,7 +18,7 @@
 import {TSRole} from '../../models/enums/TSRole';
 import {Permission} from './Permission';
 
-export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
+export const PERMISSIONS: {[k in Permission]: ReadonlyArray<TSRole>} = {
     [Permission.BENUTZER_EINLADEN]: [
         TSRole.SUPER_ADMIN,
         TSRole.ADMIN_MANDANT,

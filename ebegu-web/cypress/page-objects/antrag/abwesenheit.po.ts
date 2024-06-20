@@ -16,26 +16,24 @@
  */
 
 const getAbwesenheitErfassenButton = () => {
-	return cy.getByData('container.erfassen', 'navigation-button');
+    return cy.getByData('container.erfassen', 'navigation-button');
 };
 
 const getKind = () => {
-	return cy.getByData('kind');
+    return cy.getByData('kind');
 };
 
 const getAbwesenheitAb = () => {
-	return cy.getByData('abwesenheit-von');
+    return cy.getByData('abwesenheit-von');
 };
 
 const getAbwesenheitBis = () => {
-	return cy.getByData('abwesenheit-bis');
+    return cy.getByData('abwesenheit-bis');
 };
-
-
 
 export const AbwesenheitPo = {
     getAbwesenheitErfassenButton,
     getKind,
     getAbwesenheitAb,
-    getAbwesenheitBis,
+    getAbwesenheitBis
 };

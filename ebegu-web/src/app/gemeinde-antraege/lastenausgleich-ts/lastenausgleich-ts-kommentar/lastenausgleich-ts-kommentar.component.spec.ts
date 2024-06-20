@@ -32,12 +32,20 @@ import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 import {LastenausgleichTsKommentarComponent} from './lastenausgleich-ts-kommentar.component';
 
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
-    ['getAllActiveBenutzerMandant']);
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        ['getLATSAngabenGemeindeContainer']
+    );
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsInfo'
+]);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, [
+    'getAllActiveBenutzerMandant'
+]);
 
 describe('LastenausgleichTsKommentarComponent', () => {
     let component: LastenausgleichTsKommentarComponent;
@@ -53,12 +61,13 @@ describe('LastenausgleichTsKommentarComponent', () => {
                 ReactiveFormsModule,
                 TranslateModule.forRoot()
             ],
-            declarations: [
-                LastenausgleichTsKommentarComponent
-            ],
+            declarations: [LastenausgleichTsKommentarComponent],
             providers: [
                 WindowRef,
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                },
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: BenutzerRSX, useValue: benuzerRSSpy}
@@ -72,7 +81,9 @@ describe('LastenausgleichTsKommentarComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
         );
-        benuzerRSSpy.getAllActiveBenutzerMandant.and.returnValue(Promise.resolve([]));
+        benuzerRSSpy.getAllActiveBenutzerMandant.and.returnValue(
+            Promise.resolve([])
+        );
         fixture = TestBed.createComponent(LastenausgleichTsKommentarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -81,5 +92,4 @@ describe('LastenausgleichTsKommentarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
 });

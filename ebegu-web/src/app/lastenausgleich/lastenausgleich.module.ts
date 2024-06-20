@@ -24,18 +24,8 @@ import {LastenausgleichRoutingModule} from './lastenausgleich.route';
 import {LastenausgleichRS} from './services/lastenausgleichRS.rest';
 
 @NgModule({
-    declarations: [
-        LastenausgleichViewXComponent,
-        ZemisDialogComponent
-    ],
-    imports: [
-        CommonModule,
-        LastenausgleichRoutingModule,
-        SharedModule
-    ],
-    providers: [
-        LastenausgleichRS
-    ]
+    declarations: [LastenausgleichViewXComponent, ZemisDialogComponent],
+    imports: [CommonModule, LastenausgleichRoutingModule, SharedModule],
+    providers: [LastenausgleichRS]
 })
-export class LastenausgleichModule {
-}
+export class LastenausgleichModule {}

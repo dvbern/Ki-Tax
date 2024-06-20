@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -36,7 +42,6 @@ const LOG = LogFactory.createLog('FerienbetreuungComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungComponent implements OnInit, OnDestroy {
-
     @Input()
     public ferienbetreuungId: string;
 
@@ -51,17 +56,25 @@ export class FerienbetreuungComponent implements OnInit, OnDestroy {
         private readonly wizardStepXRS: WizardStepXRS,
         private readonly downloadRS: DownloadRS,
         private readonly translate: TranslateService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.ferienbetreuungId);
-        this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
-            .subscribe(container => {
-                this.ferienbetreuungContainer = container;
-                // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
-                this.wizardStepXRS.updateSteps(this.wizardTyp, this.ferienbetreuungId);
-            }, err => LOG.error(err));
+        this.ferienbetreuungService.updateFerienbetreuungContainerStores(
+            this.ferienbetreuungId
+        );
+        this.subscription = this.ferienbetreuungService
+            .getFerienbetreuungContainer()
+            .subscribe(
+                container => {
+                    this.ferienbetreuungContainer = container;
+                    // update wizard steps every time LATSAngabenGemeindeContainer is reloaded
+                    this.wizardStepXRS.updateSteps(
+                        this.wizardTyp,
+                        this.ferienbetreuungId
+                    );
+                },
+                err => LOG.error(err)
+            );
     }
 
     public showKommentare(): boolean {
@@ -74,17 +87,21 @@ export class FerienbetreuungComponent implements OnInit, OnDestroy {
     }
 
     public downloadFerienbetreuungReport(): void {
-        this.ferienbetreuungService.generateFerienbetreuungReport(this.ferienbetreuungContainer)
-            .subscribe(res => this.openDownloadForFile(res), err => LOG.error(err));
+        this.ferienbetreuungService
+            .generateFerienbetreuungReport(this.ferienbetreuungContainer)
+            .subscribe(
+                res => this.openDownloadForFile(res),
+                err => LOG.error(err)
+            );
     }
 
     private openDownloadForFile(response: BlobPart): void {
         const file = new Blob([response], {type: 'application/pdf'});
-        const filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
-            {
-                gemeinde: this.ferienbetreuungContainer.gemeinde.name,
-                gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString
-            });
+        const filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME', {
+            gemeinde: this.ferienbetreuungContainer.gemeinde.name,
+            gp: this.ferienbetreuungContainer.gesuchsperiode
+                .gesuchsperiodeString
+        });
         this.downloadRS.openDownload(file, filename);
     }
 }

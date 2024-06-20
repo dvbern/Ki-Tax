@@ -16,23 +16,38 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p [textContent]="'SOZIALDIENST_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text"></p>
+    <p
+        [textContent]="'SOZIALDIENST_AUSWAEHLEN' | translate"
+        class="dv-dialog-text"
+        id="dv-dialog-text"
+    ></p>
 
     <div class="dv-select-style dv-dialog-select">
-        <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="sozialdienst"
-                id="sozialdienst"
-                [(ngModel)]="selectedSozialdienst"
-                class="form-control"
-                [required]="true">
-
-            <option *ngFor="let sozialdienst of sozialdienstList" [ngValue]="sozialdienst">{{sozialdienst.name}}</option>
+        <select
+            aria-describedby="betreuungsangebot-error"
+            aria-labelledby="dv-dialog-text"
+            name="sozialdienst"
+            id="sozialdienst"
+            [(ngModel)]="selectedSozialdienst"
+            class="form-control"
+            [required]="true"
+        >
+            <option
+                *ngFor="let sozialdienst of sozialdienstList"
+                [ngValue]="sozialdienst"
+            >
+                {{ sozialdienst.name }}
+            </option>
         </select>
     </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="save()" [textContent]="'AUSWAEHLEN' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="save()"
+            [textContent]="'AUSWAEHLEN' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

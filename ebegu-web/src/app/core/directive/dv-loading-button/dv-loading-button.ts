@@ -32,7 +32,10 @@ interface IDVLoadingButtonController {
 
 export class DVLoadingButton implements IComponentOptions {
     public transclude = true;
-    public require = {dvLoadingButtonCtrl: 'dvLoadingButton', formCtrl: '^?form'};
+    public require = {
+        dvLoadingButtonCtrl: 'dvLoadingButton',
+        formCtrl: '^?form'
+    };
     public template = require('./dv-loading-button.html');
     public controller = DVLoadingButtonController;
     public controllerAs = 'vm';
@@ -58,8 +61,14 @@ export class DVLoadingButton implements IComponentOptions {
  *         button-disabled="!vm.isButtonDisabled()"> <i class="glyphicon glyphicon-plus"></i> <span
  *         data-translate="SAVE"></span> </dv-loading-button>
  */
-export class DVLoadingButtonController implements IDVLoadingButtonController, IController {
-    public static $inject: string[] = ['$scope', '$timeout', 'BroadcastService'];
+export class DVLoadingButtonController
+    implements IDVLoadingButtonController, IController
+{
+    public static $inject: string[] = [
+        '$scope',
+        '$timeout',
+        'BroadcastService'
+    ];
 
     public buttonClicked: ($event: any) => void;
     public isDisabled: boolean;
@@ -76,8 +85,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
         private readonly $scope: any,
         private readonly $timeout: ITimeoutService,
         private readonly broadcastService: BroadcastService
-    ) {
-    }
+    ) {}
 
     // wird von angular aufgerufen
     public $onInit(): void {
@@ -102,7 +110,8 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
 
                     return;
                 }
-                if (!this.formCtrl) { // wenn kein form einfach mal disablen fuer delay ms
+                if (!this.formCtrl) {
+                    // wenn kein form einfach mal disablen fuer delay ms
                     this.disableForDelay();
 
                     return;
@@ -112,19 +121,21 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
                     this.disableForDelay();
                 }
             }, 0);
-
         };
 
         this.$scope.$on(TSHTTPEvent.REQUEST_FINISHED, () => {
             this.isDisabled = false;
         });
 
-        this.broadcastService.on$(TSHTTPEvent.REQUEST_FINISHED)
+        this.broadcastService
+            .on$(TSHTTPEvent.REQUEST_FINISHED)
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe(() => {
-            this.isDisabled = false;
-        }, error => LOG.error(error));
-
+            .subscribe(
+                () => {
+                    this.isDisabled = false;
+                },
+                error => LOG.error(error)
+            );
     }
 
     public $onDestroy(): void {
@@ -136,7 +147,6 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
         if (changes.buttonDisabled && !changes.buttonDisabled.isFirstChange()) {
             this.buttonDisabled = changes.buttonDisabled.currentValue;
         }
-
     }
 
     private getDelay(): number {
@@ -148,7 +158,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
         }
 
         // eslint-disable-next-line no-magic-numbers
-        return 4000;   // default delay = 4000 MS
+        return 4000; // default delay = 4000 MS
     }
 
     /**
@@ -159,6 +169,5 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
         this.$timeout(() => {
             this.isDisabled = false;
         }, this.getDelay());
-
     }
 }

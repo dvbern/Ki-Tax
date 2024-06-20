@@ -15,21 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component
+} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
-import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
-import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-resultate-view',
@@ -38,7 +40,6 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
-
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
     public readOnly: boolean = false;
@@ -52,13 +53,15 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         protected readonly $transition$: Transition,
         private readonly errorService: ErrorService
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             wizardStepManager,
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
             einstellungRS,
-            $transition$);
+            $transition$
+        );
         this.readOnly = this.gesuchModelManager.isGesuchReadonly();
     }
 
@@ -71,8 +74,11 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             return true;
         }
 
-        const infoContainer = this.model.einkommensverschlechterungInfoContainer;
-        const ekvFuerBasisJahrPlus = infoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1;
+        const infoContainer =
+            this.model.einkommensverschlechterungInfoContainer;
+        const ekvFuerBasisJahrPlus =
+            infoContainer.einkommensverschlechterungInfoJA
+                .ekvFuerBasisJahrPlus1;
 
         return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus;
     }
@@ -87,9 +93,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             // Update wizardStepStatus also if the form is empty and not dirty
-            return this.updateStatus(false).then(
-                onResult(true)
-            );
+            return this.updateStatus(false).then(onResult(true));
         }
 
         this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
@@ -102,19 +106,20 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
         if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
-            return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
-                this.gesuchModelManager.setGesuchstellerNumber(2);
-                return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => this.updateStatus(true).then(
-                        onResult(true)
-                    ));
-            });
+            return this.gesuchModelManager
+                .saveEinkommensverschlechterungContainer()
+                .then(() => {
+                    this.gesuchModelManager.setGesuchstellerNumber(2);
+                    return this.gesuchModelManager
+                        .saveEinkommensverschlechterungContainer()
+                        .then(() =>
+                            this.updateStatus(true).then(onResult(true))
+                        );
+                });
         }
-        // eslint-disable-next-line
-        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
-            return this.updateStatus(true).then(
-                onResult(true)
-            );
-        });
+        return this.gesuchModelManager
+            .saveEinkommensverschlechterungContainer()
+            .then(() => this.updateStatus(true).then(onResult(true)));
     }
 
     public onValueChangeFunction = (): void => {
@@ -125,36 +130,40 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_GS(): TSEinkommensverschlechterung {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus2 :
-            this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.getEinkommensverschlechterungContainerGS1()
+                  .ekvGSBasisJahrPlus2
+            : this.getEinkommensverschlechterungContainerGS1()
+                  .ekvGSBasisJahrPlus1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_JA(): TSEinkommensverschlechterung {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.getEinkommensverschlechterungContainerGS1().ekvJABasisJahrPlus2 :
-            this.getEinkommensverschlechterungContainerGS1().ekvJABasisJahrPlus1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.getEinkommensverschlechterungContainerGS1()
+                  .ekvJABasisJahrPlus2
+            : this.getEinkommensverschlechterungContainerGS1()
+                  .ekvJABasisJahrPlus1;
     }
 
     public getEinkommensverschlechterungContainerGS2(): TSEinkommensverschlechterungContainer {
         return this.model.einkommensverschlechterungContainerGS2;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_GS(): TSEinkommensverschlechterung {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus2 :
-            this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.getEinkommensverschlechterungContainerGS2()
+                  .ekvGSBasisJahrPlus2
+            : this.getEinkommensverschlechterungContainerGS2()
+                  .ekvGSBasisJahrPlus1;
     }
 
-    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_JA(): TSEinkommensverschlechterung {
-        return this.model.getBasisJahrPlus() === 2 ?
-            this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus2 :
-            this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
+        return this.model.getBasisJahrPlus() === 2
+            ? this.getEinkommensverschlechterungContainerGS2()
+                  .ekvJABasisJahrPlus2
+            : this.getEinkommensverschlechterungContainerGS2()
+                  .ekvJABasisJahrPlus1;
     }
 
     public getBruttovermoegenTooltipLabel(): string {

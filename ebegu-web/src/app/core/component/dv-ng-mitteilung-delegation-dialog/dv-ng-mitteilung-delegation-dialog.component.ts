@@ -17,7 +17,11 @@
 
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogRef
+} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
@@ -35,7 +39,6 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
     templateUrl: './dv-ng-mitteilung-delegation-dialog.component.html'
 })
 export class DvNgMitteilungDelegationDialogComponent {
-
     public benutzerList: TSBenutzer[];
     public filteredBenutzerList$: Observable<TSBenutzer[]>;
     public selectedBenutzer: TSBenutzer;
@@ -51,36 +54,49 @@ export class DvNgMitteilungDelegationDialogComponent {
     ) {
         this.mitteilungId = data.mitteilungId;
         this.selectedBenutzer = null;
-        this.benutzerRS.getBenutzerTsBgOrGemeindeForGemeinde(data.gemeindeId).then((response: any) => {
-            this.benutzerList = response;
-            this.filteredBenutzerList$ = this.myControl.valueChanges
-                .pipe(
+        this.benutzerRS
+            .getBenutzerTsBgOrGemeindeForGemeinde(data.gemeindeId)
+            .then((response: any) => {
+                this.benutzerList = response;
+                this.filteredBenutzerList$ = this.myControl.valueChanges.pipe(
                     startWith(''),
                     map(value => this.filterBenutzer(value))
                 );
-        });
+            });
     }
 
     private filterBenutzer(value: any): TSBenutzer[] {
         if (this.benutzerList) {
-            const filterValue = value instanceof TSBenutzer ?
-                value.getFullName().toLowerCase() : value.toLowerCase();
+            const filterValue =
+                value instanceof TSBenutzer
+                    ? value.getFullName().toLowerCase()
+                    : value.toLowerCase();
             this.unselectBenutzerIfNoLongerSelected(filterValue);
-            return this.benutzerList.filter(benutzer => benutzer.getFullName().toLowerCase().includes(filterValue));
+            return this.benutzerList.filter(benutzer =>
+                benutzer.getFullName().toLowerCase().includes(filterValue)
+            );
         }
         return [];
     }
 
     public unselectBenutzerIfNoLongerSelected(filterValue: string): void {
-        if (this.selectedBenutzer && this.selectedBenutzer.getFullName() !== filterValue) {
-                this.selectedBenutzer = null;
+        if (
+            this.selectedBenutzer &&
+            this.selectedBenutzer.getFullName() !== filterValue
+        ) {
+            this.selectedBenutzer = null;
         }
     }
 
     public save(): void {
-        this.mitteilungRS.mitteilungWeiterleiten(this.mitteilungId, this.selectedBenutzer.username).then(() => {
-            this.dialogRef.close(this.selectedBenutzer.username);
-        });
+        this.mitteilungRS
+            .mitteilungWeiterleiten(
+                this.mitteilungId,
+                this.selectedBenutzer.username
+            )
+            .then(() => {
+                this.dialogRef.close(this.selectedBenutzer.username);
+            });
     }
 
     public close(): void {

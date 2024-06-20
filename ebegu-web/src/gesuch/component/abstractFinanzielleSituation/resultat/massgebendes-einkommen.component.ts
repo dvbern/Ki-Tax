@@ -15,7 +15,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -29,7 +36,6 @@ const LOG = LogFactory.createLog('ResultatComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MassgebendesEinkommenComponent implements OnInit, OnDestroy {
-
     @Input()
     public massgebendesEinkommen$: Observable<TSFinanzielleSituationResultateDTO>;
 
@@ -48,10 +54,7 @@ export class MassgebendesEinkommenComponent implements OnInit, OnDestroy {
     public resultate?: TSFinanzielleSituationResultateDTO;
     private subscription: Subscription;
 
-    public constructor(
-        protected ref: ChangeDetectorRef
-    ) {
-    }
+    public constructor(protected ref: ChangeDetectorRef) {}
 
     public ngOnInit(): void {
         this.setupCalculation();
@@ -62,10 +65,12 @@ export class MassgebendesEinkommenComponent implements OnInit, OnDestroy {
     }
 
     public setupCalculation(): void {
-        this.subscription = this.massgebendesEinkommen$.subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
+        this.subscription = this.massgebendesEinkommen$.subscribe(
+            (resultate: TSFinanzielleSituationResultateDTO) => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error)
+            },
+            error => LOG.error(error)
         );
     }
 }

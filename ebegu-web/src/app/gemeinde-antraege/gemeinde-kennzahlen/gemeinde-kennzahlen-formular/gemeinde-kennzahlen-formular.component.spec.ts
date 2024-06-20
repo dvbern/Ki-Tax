@@ -32,14 +32,25 @@ describe('GemeindeKennzahlenFormularComponent', () => {
     let component: GemeindeKennzahlenFormularComponent;
     let fixture: ComponentFixture<GemeindeKennzahlenFormularComponent>;
 
-    const gemeindeKennzahlenServiceSpy = jasmine.createSpyObj<GemeindeKennzahlenService>(GemeindeKennzahlenService.name,
-        ['getGemeindeKennzahlenAntrag']);
-    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(of(new TSGemeindeKennzahlen()));
+    const gemeindeKennzahlenServiceSpy =
+        jasmine.createSpyObj<GemeindeKennzahlenService>(
+            GemeindeKennzahlenService.name,
+            ['getGemeindeKennzahlenAntrag']
+        );
+    gemeindeKennzahlenServiceSpy.getGemeindeKennzahlenAntrag.and.returnValue(
+        of(new TSGemeindeKennzahlen())
+    );
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['principal$']
+    );
     authServiceSpy.principal$ = of(new TSBenutzer());
 
-    const errorServiceSpy = jasmine.createSpyObj<ErrorServiceX>(ErrorServiceX.name, ['addMesageAsInfo']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorServiceX>(
+        ErrorServiceX.name,
+        ['addMesageAsInfo']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -59,7 +70,8 @@ describe('GemeindeKennzahlenFormularComponent', () => {
                     useValue: errorServiceSpy
                 }
             ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 

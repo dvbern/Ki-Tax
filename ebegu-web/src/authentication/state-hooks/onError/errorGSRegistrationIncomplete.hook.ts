@@ -15,21 +15,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookMatchCriteria, HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookMatchCriteria,
+    HookResult,
+    RejectType,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {DISABLE_RECOVERY_ERROR_MESSAGE} from './errorRecovery.hook';
 import {OnErrorPriorities} from './onErrorPriorities';
 
 erorGSRegistrationIncompleteHookRunBlock.$inject = ['$transitions'];
 
-export function erorGSRegistrationIncompleteHookRunBlock($transitions: TransitionService): void {
+export function erorGSRegistrationIncompleteHookRunBlock(
+    $transitions: TransitionService
+): void {
     const criteria: HookMatchCriteria = {
         to: 'gesuchsteller.dashboard',
-        from: state => state.name !== 'onboarding.gesuchsteller.registration-incomplete'
+        from: state =>
+            state.name !== 'onboarding.gesuchsteller.registration-incomplete'
     };
 
-    $transitions.onError(criteria,
-        onGSRegistrationIncompleteError,
-        {priority: OnErrorPriorities.ERROR_GS_REGISTRATION_INCOMPLETE});
+    $transitions.onError(criteria, onGSRegistrationIncompleteError, {
+        priority: OnErrorPriorities.ERROR_GS_REGISTRATION_INCOMPLETE
+    });
 }
 
 function onGSRegistrationIncompleteError(transition: Transition): HookResult {
@@ -37,6 +46,8 @@ function onGSRegistrationIncompleteError(transition: Transition): HookResult {
         // Not very nice, but could find a good solution: since the original transition errored, all error hooks
         // (matching the criteria) are executed. We might thus recover multiple times (and start multiple transitions).
         transition.error().message = DISABLE_RECOVERY_ERROR_MESSAGE;
-        transition.router.stateService.go('onboarding.gesuchsteller.registration-incomplete');
+        transition.router.stateService.go(
+            'onboarding.gesuchsteller.registration-incomplete'
+        );
     }
 }

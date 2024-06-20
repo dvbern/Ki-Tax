@@ -9,11 +9,17 @@ import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 import {VerlaufComponent} from './verlauf.component';
 
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getVerlauf']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        ['getVerlauf']
+    );
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
 
 describe('VerlaufComponent', () => {
     let component: VerlaufComponent;
@@ -22,13 +28,13 @@ describe('VerlaufComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [VerlaufComponent],
-            imports: [
-                SharedModule,
-                BrowserAnimationsModule
-            ],
+            imports: [SharedModule, BrowserAnimationsModule],
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                },
                 {provide: StateService, useValue: stateServiceSpy}
             ]
         })

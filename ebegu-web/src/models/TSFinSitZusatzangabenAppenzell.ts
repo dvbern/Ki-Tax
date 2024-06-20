@@ -18,7 +18,6 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSFinSitZusatzangabenAppenzell extends TSAbstractMutableEntity {
-
     private _saeule3a: number;
     private _saeule3aNichtBvg: number;
     private _beruflicheVorsorge: number;

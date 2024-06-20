@@ -31,34 +31,44 @@ if (environment.production) {
 
 // Using AngularJS config block, call `deferIntercept()`.
 // This tells UI-Router to delay the initial URL sync (until all bootstrapping is complete)
-APP_JS_MODULE.config(['$urlServiceProvider', ($urlService: UrlService) => $urlService.deferIntercept()]);
+APP_JS_MODULE.config([
+    '$urlServiceProvider',
+    ($urlService: UrlService) => $urlService.deferIntercept()
+]);
 
 // Manually bootstrap the Angular app
-platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
-    // Intialize the Angular Module
-    // get() the UIRouter instance from DI to initialize the router
-    const urlService = platformRef.injector.get(UIRouter).urlService;
+platformBrowserDynamic()
+    .bootstrapModule(AppModule)
+    .then(platformRef => {
+        // Intialize the Angular Module
+        // get() the UIRouter instance from DI to initialize the router
+        const urlService = platformRef.injector.get(UIRouter).urlService;
 
-    const startRouter = () => {
-        // Instruct UIRouter to listen to URL changes
-        urlService.listen();
-        urlService.sync();
-    };
+        const startRouter = () => {
+            // Instruct UIRouter to listen to URL changes
+            urlService.listen();
+            urlService.sync();
+        };
 
-    platformRef.injector.get<NgZone>(NgZone).run(startRouter);
-    // Move to ng-authentication.module once fully migrated in KIBON-2962
-    initHooks(platformRef);
-    injectAngularJSTranslateIntoNgService(platformRef);
-})
+        platformRef.injector.get<NgZone>(NgZone).run(startRouter);
+        // Move to ng-authentication.module once fully migrated in KIBON-2962
+        initHooks(platformRef);
+        injectAngularJSTranslateIntoNgService(platformRef);
+    })
     .catch(err => console.error('App bootstrap error:', err));
 
 // Workaround to avoid 'AngularJS Injector not set' error
 // Could probably be avoided by cleaning up the modules and i18n service, but this is redundant once the
 // angular js migrations is advanced enough
 // Will be removed in KIBON-2962
-function injectAngularJSTranslateIntoNgService(platformRef: NgModuleRef<AppModule>): void {
-    platformRef.injector.get(I18nServiceRSRest)
-        .setAngularJSTranslateService(platformRef.injector.get('$injector').get('$translate'));
+function injectAngularJSTranslateIntoNgService(
+    platformRef: NgModuleRef<AppModule>
+): void {
+    platformRef.injector
+        .get(I18nServiceRSRest)
+        .setAngularJSTranslateService(
+            platformRef.injector.get('$injector').get('$translate')
+        );
 }
 
 // Show ui-router-visualizer

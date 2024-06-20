@@ -21,10 +21,7 @@ export enum TSEingangsart {
 }
 
 export function getTSEingangsartValues(): Array<TSEingangsart> {
-    return [
-        TSEingangsart.ONLINE,
-        TSEingangsart.PAPIER
-    ];
+    return [TSEingangsart.ONLINE, TSEingangsart.PAPIER];
 }
 
 export function getTSEingangsartFromRole(role: TSRole): TSEingangsart {

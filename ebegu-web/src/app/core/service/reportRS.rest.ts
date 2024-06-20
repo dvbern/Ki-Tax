@@ -13,13 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpParamSerializer, IHttpService, ILogService, IPromise} from 'angular';
+import {
+    IHttpParamSerializer,
+    IHttpService,
+    ILogService,
+    IPromise
+} from 'angular';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class ReportRS {
-
-    public static $inject = ['$httpParamSerializer', 'REST_API', '$log', 'EbeguRestUtil', '$http'];
+    public static $inject = [
+        '$httpParamSerializer',
+        'REST_API',
+        '$log',
+        'EbeguRestUtil',
+        '$http'
+    ];
     public serviceURL: string;
     public reportingTimeout: number = 240000;
 
@@ -33,24 +43,39 @@ export class ReportRS {
         this.serviceURL = `${REST_API}reporting`;
     }
 
-    public getZahlungsauftragReportExcel(zahlungsauftragID: string): IPromise<TSDownloadFile> {
-
+    public getZahlungsauftragReportExcel(
+        zahlungsauftragID: string
+    ): IPromise<TSDownloadFile> {
         const reportParams = this.httpParamSerializer({
             zahlungsauftragID
         });
 
-        return this.http.get(`${this.serviceURL}/excel/zahlungsauftrag?${reportParams}`,
-            {timeout: this.reportingTimeout})
-            .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));
+        return this.http
+            .get(`${this.serviceURL}/excel/zahlungsauftrag?${reportParams}`, {
+                timeout: this.reportingTimeout
+            })
+            .then((response: any) =>
+                this.ebeguRestUtil.parseDownloadFile(
+                    new TSDownloadFile(),
+                    response.data
+                )
+            );
     }
 
     public getZahlungReportExcel(zahlungID: string): IPromise<TSDownloadFile> {
-
         const reportParams = this.httpParamSerializer({
             zahlungID
         });
 
-        return this.http.get(`${this.serviceURL}/excel/zahlung?${reportParams}`, {timeout: this.reportingTimeout})
-            .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));
+        return this.http
+            .get(`${this.serviceURL}/excel/zahlung?${reportParams}`, {
+                timeout: this.reportingTimeout
+            })
+            .then((response: any) =>
+                this.ebeguRestUtil.parseDownloadFile(
+                    new TSDownloadFile(),
+                    response.data
+                )
+            );
     }
 }

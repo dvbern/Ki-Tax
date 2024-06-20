@@ -17,7 +17,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import {SearchListViewComponentConfig} from './component/searchListView';
 import {searchRun} from './search.route';
 
-export const SEARCH_JS_MODULE =
-    angular.module('ebeguWeb.search', [CORE_JS_MODULE.name])
-        .run(searchRun)
-        .component('searchListView', new SearchListViewComponentConfig());
+export const SEARCH_JS_MODULE = angular
+    .module('ebeguWeb.search', [CORE_JS_MODULE.name])
+    .run(searchRun)
+    .component('searchListView', new SearchListViewComponentConfig());

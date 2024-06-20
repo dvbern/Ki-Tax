@@ -18,20 +18,24 @@
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 export class EKVViewUtil {
+    protected constructor() {}
 
-    protected constructor() {
-    }
-
-    public static getGemeinsameFullname(gesuchModelManager: GesuchModelManager): string {
+    public static getGemeinsameFullname(
+        gesuchModelManager: GesuchModelManager
+    ): string {
         return `${gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName()}
          + ${gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName()}`;
     }
 
-    public static getAntragsteller1Name(gesuchModelManager: GesuchModelManager): string {
+    public static getAntragsteller1Name(
+        gesuchModelManager: GesuchModelManager
+    ): string {
         return gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
     }
 
-    public static getAntragsteller2Name(gesuchModelManager: GesuchModelManager): string {
+    public static getAntragsteller2Name(
+        gesuchModelManager: GesuchModelManager
+    ): string {
         return gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 }

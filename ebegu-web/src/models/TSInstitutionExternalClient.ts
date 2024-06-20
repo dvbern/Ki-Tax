@@ -19,7 +19,6 @@ import {TSExternalClient} from './TSExternalClient';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSInstitutionExternalClient {
-
     public externalClient: TSExternalClient;
     public gueltigkeit: TSDateRange;
 

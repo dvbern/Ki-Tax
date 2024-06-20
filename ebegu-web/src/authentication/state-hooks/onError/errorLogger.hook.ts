@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
+import {
+    HookResult,
+    RejectType,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {OnErrorPriorities} from './onErrorPriorities';
 
@@ -24,11 +29,16 @@ const LOG = LogFactory.createLog('errorLoggerHookRunBlock');
 errorLoggerHookRunBlock.$inject = ['$transitions'];
 
 export function errorLoggerHookRunBlock($transitions: TransitionService): void {
-    $transitions.onError({}, onError, {priority: OnErrorPriorities.ERROR_LOGGER});
+    $transitions.onError({}, onError, {
+        priority: OnErrorPriorities.ERROR_LOGGER
+    });
 }
 
 function onError(transition: Transition): HookResult {
-    if (transition.error().type !== RejectType.SUPERSEDED && transition.error().type !== RejectType.IGNORED) {
+    if (
+        transition.error().type !== RejectType.SUPERSEDED &&
+        transition.error().type !== RejectType.IGNORED
+    ) {
         LOG.error('Fehler beim Navigieren', transition);
     }
 }

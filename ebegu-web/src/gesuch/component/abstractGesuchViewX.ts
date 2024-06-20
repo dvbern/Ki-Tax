@@ -29,7 +29,6 @@ import {WizardStepManager} from '../service/wizardStepManager';
 
 @Directive()
 export class AbstractGesuchViewX<T> implements AfterViewInit {
-
     private _model: T;
     @ViewChild(NgForm) protected form: NgForm;
 
@@ -77,7 +76,10 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     }
 
     private getBasisjahrPlus(nbr: number): number | undefined {
-        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahrPlus(nbr)) {
+        if (
+            this.gesuchModelManager &&
+            this.gesuchModelManager.getBasisjahrPlus(nbr)
+        ) {
             return this.gesuchModelManager.getBasisjahrPlus(nbr);
         }
         return undefined;
@@ -108,19 +110,28 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     }
 
     public isKorrekturModusJugendamtOrFreigegeben(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            TSEingangsart.ONLINE ===
+                this.gesuchModelManager.getGesuch().eingangsart
+        );
     }
 
     public isFKJV(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getGesuch())
-            && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getGesuch()) &&
+            this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV
+        );
     }
 
-    public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
-        return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
-            && this.isKorrekturModusJugendamtOrFreigegeben();
+    public showBisher(
+        abstractFinanzielleSituation: TSAbstractFinanzielleSituation
+    ): boolean {
+        return (
+            EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation) &&
+            this.isKorrekturModusJugendamtOrFreigegeben()
+        );
     }
 
     public isMutation(): boolean {
@@ -142,7 +153,9 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     public isGesuchValid(): boolean {
         if (!this.form.valid) {
             for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
+                if (
+                    EbeguUtil.isNotNullOrUndefined(this.form.controls[control])
+                ) {
                     this.form.controls[control].markAsTouched({onlySelf: true});
                 }
             }

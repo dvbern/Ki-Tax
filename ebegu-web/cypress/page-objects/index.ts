@@ -21,4 +21,3 @@ export * from './dialogs';
 export * from './dossier';
 export * from './antragverwaltung';
 export * from './navigation';
-

@@ -17,7 +17,7 @@
 
 export enum TSModulTagesschuleIntervall {
     WOECHENTLICH = 'WOECHENTLICH',
-    WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN = 'WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN',
+    WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN = 'WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN'
 }
 
 export function getTSModulTagesschuleIntervallValues(): Array<TSModulTagesschuleIntervall> {

@@ -19,7 +19,6 @@ import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSAdresse extends TSAbstractDateRangedEntity {
-
     private _strasse: string;
     private _hausnummer: string;
     private _zusatzzeile: string;

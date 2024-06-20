@@ -3,13 +3,7 @@
     "compilerOptions": {
         "outDir": "../out-tsc/app",
         "baseUrl": "./",
-        "types": [
-            "webpack-env"
-        ]
+        "types": ["webpack-env"]
     },
-    "exclude": [
-        "test.ts",
-        "**/*.spec.ts",
-        "hybridTools/*.ts"
-    ]
+    "exclude": ["test.ts", "**/*.spec.ts", "hybridTools/*.ts"]
 }

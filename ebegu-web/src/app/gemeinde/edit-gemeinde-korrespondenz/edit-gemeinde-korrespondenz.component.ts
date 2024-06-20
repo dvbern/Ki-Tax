@@ -29,8 +29,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class EditGemeindeKorrespondenzComponent  {
-
+export class EditGemeindeKorrespondenzComponent {
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() public editMode: boolean;
 
@@ -38,16 +37,16 @@ export class EditGemeindeKorrespondenzComponent  {
         public gemeindeRS: GemeindeRS,
         public downloadRS: DownloadRS,
         public $translate: TranslateService
-    ) {
-    }
+    ) {}
 
     public downloadMusterdokument(gemeindeId: string): void {
-        this.gemeindeRS.downloadMusterDokument(gemeindeId).then(
-            response => {
-                const file = new Blob([response], {type: 'application/pdf'});
-                const filename = this.$translate.instant('KORRESPONDENZ_MUSTERDOKUMENT');
-                this.downloadRS.openDownload(file, filename);
-            });
+        this.gemeindeRS.downloadMusterDokument(gemeindeId).then(response => {
+            const file = new Blob([response], {type: 'application/pdf'});
+            const filename = this.$translate.instant(
+                'KORRESPONDENZ_MUSTERDOKUMENT'
+            );
+            this.downloadRS.openDownload(file, filename);
+        });
     }
 
     public escapeSignatur(standardSignatur: string): string {

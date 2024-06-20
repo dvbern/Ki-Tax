@@ -14,18 +14,20 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
-<input id="{{inputId}}"
-       type="text"
-	   [name]="name"
-       #inputField="ngModel"
-	   [ngModelOptions]="{updateOn: 'blur'}"
-       [ngModel]="model | ebeguNumber"
-       (input)="valueHasChange($event)"
-       (blur)="onBlur($event)"
-       [required]="required"
-       [disabled]="disabled"
-       [pattern]="getInputValidationPattern()"
-       class="form-control">
+<input
+    id="{{ inputId }}"
+    type="text"
+    [name]="name"
+    #inputField="ngModel"
+    [ngModelOptions]="{updateOn: 'blur'}"
+    [ngModel]="model | ebeguNumber"
+    (input)="valueHasChange($event)"
+    (blur)="onBlur($event)"
+    [required]="required"
+    [disabled]="disabled"
+    [pattern]="getInputValidationPattern()"
+    class="form-control"
+/>
 <dv-eingabe-hint
     *ngIf="vergleichswert"
     [neuerWert]="neuerWert"
@@ -33,11 +35,11 @@
     [label]="vergleichswertLabel"
 >
 </dv-eingabe-hint>
-<dv-bisher-x [showBisher]="showBisher"
-             [deklaration]="deklaration"
-             [korrektur]="korrektur">
+<dv-bisher-x
+    [showBisher]="showBisher"
+    [deklaration]="deklaration"
+    [korrektur]="korrektur"
+>
 </dv-bisher-x>
-<dv-error-messages
-    inputId="{{inputId}}"
-    [errorObject]="inputField.errors">
+<dv-error-messages inputId="{{ inputId }}" [errorObject]="inputField.errors">
 </dv-error-messages>

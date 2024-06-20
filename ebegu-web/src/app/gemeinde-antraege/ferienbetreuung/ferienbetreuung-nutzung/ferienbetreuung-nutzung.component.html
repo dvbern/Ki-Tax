@@ -16,17 +16,27 @@
   -->
 
 <div class="ferienbetreuung-nutzung">
-    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_NUTZUNG_TITLE</h1>
+    <h1 class="access-for-all-title" translate>
+        FERIENBETREUUNG_NUTZUNG_TITLE
+    </h1>
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
                 {{
-                    "FERIENBETREUUNG_NUTZUNG_TITLE"
+                    'FERIENBETREUUNG_NUTZUNG_TITLE'
                         | translate
                             : {
-                                  periode: container?.gesuchsperiode?.gesuchsperiodeString,
-                                  von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb),
-                                  bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)
+                                  periode:
+                                      container?.gesuchsperiode
+                                          ?.gesuchsperiodeString,
+                                  von: addOneMonthToMoment(
+                                      container?.gesuchsperiode?.gueltigkeit
+                                          .gueltigAb
+                                  ),
+                                  bis: addOneMonthToMoment(
+                                      container?.gesuchsperiode?.gueltigkeit
+                                          .gueltigBis
+                                  )
                               }
                 }}
             </h2>
@@ -42,12 +52,23 @@
                 <label
                     required
                     for="anzahlBetreuungstageKinderBern_id"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuungstageKinderBern.errors }"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls.anzahlBetreuungstageKinderBern
+                                .errors
+                    }"
                 >
-                    {{ "FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN" | translate }}
+                    {{
+                        'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN'
+                            | translate
+                    }}
                     <dv-tooltip
                         inputId="anzahlBetreuungstageKinderBern_id"
-                        [text]="'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -58,16 +79,35 @@
                         formControlName="anzahlBetreuungstageKinderBern"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.required" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuungstageKinderBern
+                                .errors?.required
+                        "
+                        translate
                         >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.isNotHalf" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuungstageKinderBern
+                                .errors?.isNotHalf
+                        "
+                        translate
                         >ERROR_NOT_HALF
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuungstageKinderBern"
-                        [korrektur]="this.form.value.anzahlBetreuungstageKinderBern"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuungstageKinderBern
+                        "
+                        [korrektur]="
+                            this.form.value.anzahlBetreuungstageKinderBern
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -75,13 +115,24 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuungstageKinderBern"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.anzahlBetreuungstageKinderBern
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="custom-errors">
-            <div *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.betreuungstageError">
+            <div
+                *ngIf="
+                    form &&
+                    this.form.controls.anzahlBetreuungstageKinderBern.errors
+                        ?.betreuungstageError
+                "
+            >
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                 <span translate>ERROR_FB_BETREUUNGSTAGE</span>
             </div>
@@ -93,12 +144,23 @@
                     for="betreuungstageKinderDieserGemeinde_id"
                     class="padding-left-20"
                     required
-                    [ngClass]="{ 'label-error': form && this.form.controls.betreuungstageKinderDieserGemeinde.errors }"
-                    [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE' | translate"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls
+                                .betreuungstageKinderDieserGemeinde.errors
+                    }"
+                    [innerHTML]="
+                        'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE'
+                            | translate
+                    "
                 >
                     <dv-tooltip
                         inputId="betreuungstageKinderDieserGemeinde_id"
-                        [text]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -109,16 +171,37 @@
                         formControlName="betreuungstageKinderDieserGemeinde"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeinde.errors?.required" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .betreuungstageKinderDieserGemeinde.errors
+                                ?.required
+                        "
+                        translate
                         >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeinde.errors?.isNotHalf" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .betreuungstageKinderDieserGemeinde.errors
+                                ?.isNotHalf
+                        "
+                        translate
                         >ERROR_NOT_HALF
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.betreuungstageKinderDieserGemeinde"
-                        [korrektur]="this.form.value.betreuungstageKinderDieserGemeinde"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.betreuungstageKinderDieserGemeinde
+                        "
+                        [korrektur]="
+                            this.form.value.betreuungstageKinderDieserGemeinde
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -126,8 +209,13 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.betreuungstageKinderDieserGemeinde"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.betreuungstageKinderDieserGemeinde
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -137,9 +225,16 @@
                     for="betreuungstageKinderDieserGemeindeSonderschueler_id"
                     class="padding-left-50"
                     [ngClass]="{
-                        'label-error': form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors
+                        'label-error':
+                            form &&
+                            this.form.controls
+                                .betreuungstageKinderDieserGemeindeSonderschueler
+                                .errors
                     }"
-                    [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate"
+                    [innerHTML]="
+                        'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER'
+                            | translate
+                    "
                 >
                 </label>
                 <mat-form-field floatLabel="always">
@@ -150,14 +245,27 @@
                         class="form-control dv-input"
                     />
                     <mat-error
-                        *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors?.isNotHalf"
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .betreuungstageKinderDieserGemeindeSonderschueler
+                                .errors?.isNotHalf
+                        "
                         translate
                         >ERROR_NOT_HALF
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.betreuungstageKinderDieserGemeindeSonderschueler"
-                        [korrektur]="this.form.value.betreuungstageKinderDieserGemeindeSonderschueler"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.betreuungstageKinderDieserGemeindeSonderschueler
+                        "
+                        [korrektur]="
+                            this.form.value
+                                .betreuungstageKinderDieserGemeindeSonderschueler
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -165,14 +273,24 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.betreuungstageKinderDieserGemeindeSonderschueler"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.betreuungstageKinderDieserGemeindeSonderschueler
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="custom-errors">
             <div
-                *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors?.sonderschuelerError"
+                *ngIf="
+                    form &&
+                    this.form.controls
+                        .betreuungstageKinderDieserGemeindeSonderschueler.errors
+                        ?.sonderschuelerError
+                "
                 translate
             >
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -186,8 +304,17 @@
                     required
                     class="padding-left-20"
                     for="davonBetreuungstageKinderAndererGemeinden"
-                    [ngClass]="{ 'label-error': form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors }"
-                    [innerHTML]="'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN' | translate"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls
+                                .davonBetreuungstageKinderAndererGemeinden
+                                .errors
+                    }"
+                    [innerHTML]="
+                        'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN'
+                            | translate
+                    "
                 >
                 </label>
                 <mat-form-field floatLabel="always">
@@ -198,19 +325,37 @@
                         class="form-control dv-input"
                     />
                     <mat-error
-                        *ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors?.required"
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .davonBetreuungstageKinderAndererGemeinden
+                                .errors?.required
+                        "
                         translate
                         >ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors?.isNotHalf"
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .davonBetreuungstageKinderAndererGemeinden
+                                .errors?.isNotHalf
+                        "
                         translate
                         >ERROR_NOT_HALF
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.davonBetreuungstageKinderAndererGemeinden"
-                        [korrektur]="this.form.value.davonBetreuungstageKinderAndererGemeinden"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.davonBetreuungstageKinderAndererGemeinden
+                        "
+                        [korrektur]="
+                            this.form.value
+                                .davonBetreuungstageKinderAndererGemeinden
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -218,8 +363,13 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.davonBetreuungstageKinderAndererGemeinden"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.davonBetreuungstageKinderAndererGemeinden
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -229,9 +379,16 @@
                     for="davonBetreuungstageKinderAndererGemeindenSonderschueler_id"
                     class="padding-left-50"
                     [ngClass]="{
-                        'label-error': form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors
+                        'label-error':
+                            form &&
+                            this.form.controls
+                                .davonBetreuungstageKinderAndererGemeindenSonderschueler
+                                .errors
                     }"
-                    [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate"
+                    [innerHTML]="
+                        'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER'
+                            | translate
+                    "
                 >
                 </label>
                 <mat-form-field floatLabel="always">
@@ -243,17 +400,26 @@
                     />
                     <mat-error
                         *ngIf="
-                            form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors?.isNotHalf
+                            form &&
+                            this.form.controls
+                                .davonBetreuungstageKinderAndererGemeindenSonderschueler
+                                .errors?.isNotHalf
                         "
                         translate
                         >ERROR_NOT_HALF
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="
-                            container?.angabenDeklaration?.nutzung?.davonBetreuungstageKinderAndererGemeindenSonderschueler
+                            container?.angabenDeklaration?.nutzung
+                                ?.davonBetreuungstageKinderAndererGemeindenSonderschueler
                         "
-                        [korrektur]="this.form.value.davonBetreuungstageKinderAndererGemeindenSonderschueler"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [korrektur]="
+                            this.form.value
+                                .davonBetreuungstageKinderAndererGemeindenSonderschueler
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -261,14 +427,22 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.davonBetreuungstageKinderAndererGemeindenSonderschueler"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.davonBetreuungstageKinderAndererGemeindenSonderschueler
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
         <div class="custom-errors">
             <div
                 *ngIf="
-                    form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors?.sonderschuelerError
+                    form &&
+                    this.form.controls
+                        .davonBetreuungstageKinderAndererGemeindenSonderschueler
+                        .errors?.sonderschuelerError
                 "
                 translate
             >
@@ -285,12 +459,23 @@
             <dv-input-container-x class="max-width-container-750">
                 <label
                     for="anzahlBetreuteKinder_id"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuteKinder.errors }"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder.errors
+                    }"
                 >
-                    <span [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate
+                        "
+                    ></span>
                     <dv-tooltip
                         inputId="anzahlBetreuteKinder_id"
-                        [text]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -301,13 +486,24 @@
                         formControlName="anzahlBetreuteKinder"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuteKinder.errors?.isNotInteger" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder.errors
+                                ?.isNotInteger
+                        "
+                        translate
                         >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuteKinder
+                        "
                         [korrektur]="this.form.value.anzahlBetreuteKinder"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -315,8 +511,12 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinder"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinder
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -325,8 +525,16 @@
                 <label
                     for="anzahl_betreute_kinder_sonderschueler_id"
                     class="padding-left-20"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuteKinderSonderschueler.errors }"
-                    [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER' | translate"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls
+                                .anzahlBetreuteKinderSonderschueler.errors
+                    }"
+                    [innerHTML]="
+                        'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER'
+                            | translate
+                    "
                 >
                 </label>
                 <mat-form-field floatLabel="always">
@@ -337,14 +545,26 @@
                         class="form-control dv-input"
                     />
                     <mat-error
-                        *ngIf="form && this.form.controls.anzahlBetreuteKinderSonderschueler.errors?.isNotInteger"
+                        *ngIf="
+                            form &&
+                            this.form.controls
+                                .anzahlBetreuteKinderSonderschueler.errors
+                                ?.isNotInteger
+                        "
                         translate
                         >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinderSonderschueler"
-                        [korrektur]="this.form.value.anzahlBetreuteKinderSonderschueler"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuteKinderSonderschueler
+                        "
+                        [korrektur]="
+                            this.form.value.anzahlBetreuteKinderSonderschueler
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -352,8 +572,13 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinderSonderschueler"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.anzahlBetreuteKinderSonderschueler
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -362,12 +587,25 @@
                 <label
                     for="anzahlBetreuteKinder1Zyklus_id"
                     class="padding-left-20"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuteKinder1Zyklus.errors }"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder1Zyklus
+                                .errors
+                    }"
                 >
-                    <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS'
+                                | translate
+                        "
+                    ></span>
                     <dv-tooltip
                         inputId="anzahlBetreuteKinder1Zyklus_id"
-                        [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -378,13 +616,26 @@
                         formControlName="anzahlBetreuteKinder1Zyklus"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuteKinder1Zyklus.errors?.isNotInteger" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder1Zyklus
+                                .errors?.isNotInteger
+                        "
+                        translate
                         >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder1Zyklus"
-                        [korrektur]="this.form.value.anzahlBetreuteKinder1Zyklus"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuteKinder1Zyklus
+                        "
+                        [korrektur]="
+                            this.form.value.anzahlBetreuteKinder1Zyklus
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -392,8 +643,13 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinder1Zyklus"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.anzahlBetreuteKinder1Zyklus
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -402,12 +658,25 @@
                 <label
                     for="anzahlBetreuteKinder2Zyklus_id"
                     class="padding-left-20"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuteKinder2Zyklus.errors }"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder2Zyklus
+                                .errors
+                    }"
                 >
-                    <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS'
+                                | translate
+                        "
+                    ></span>
                     <dv-tooltip
                         inputId="anzahlBetreuteKinder2Zyklus_id"
-                        [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -418,13 +687,26 @@
                         formControlName="anzahlBetreuteKinder2Zyklus"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuteKinder2Zyklus.errors?.isNotInteger" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder2Zyklus
+                                .errors?.isNotInteger
+                        "
+                        translate
                         >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder2Zyklus"
-                        [korrektur]="this.form.value.anzahlBetreuteKinder2Zyklus"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuteKinder2Zyklus
+                        "
+                        [korrektur]="
+                            this.form.value.anzahlBetreuteKinder2Zyklus
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -432,8 +714,13 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinder2Zyklus"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.anzahlBetreuteKinder2Zyklus
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -442,12 +729,25 @@
                 <label
                     for="anzahlBetreuteKinder3Zyklus_id"
                     class="padding-left-20"
-                    [ngClass]="{ 'label-error': form && this.form.controls.anzahlBetreuteKinder3Zyklus.errors }"
+                    [ngClass]="{
+                        'label-error':
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder3Zyklus
+                                .errors
+                    }"
                 >
-                    <span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS'
+                                | translate
+                        "
+                    ></span>
                     <dv-tooltip
                         inputId="anzahlBetreuteKinder3Zyklus_id"
-                        [text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate"
+                        [text]="
+                            'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT'
+                                | translate
+                        "
                     >
                     </dv-tooltip>
                 </label>
@@ -458,13 +758,26 @@
                         formControlName="anzahlBetreuteKinder3Zyklus"
                         class="form-control dv-input"
                     />
-                    <mat-error *ngIf="form && this.form.controls.anzahlBetreuteKinder3Zyklus.errors?.isNotInteger" translate
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            this.form.controls.anzahlBetreuteKinder3Zyklus
+                                .errors?.isNotInteger
+                        "
+                        translate
                         >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder3Zyklus"
-                        [korrektur]="this.form.value.anzahlBetreuteKinder3Zyklus"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="
+                            container?.angabenDeklaration?.nutzung
+                                ?.anzahlBetreuteKinder3Zyklus
+                        "
+                        [korrektur]="
+                            this.form.value.anzahlBetreuteKinder3Zyklus
+                        "
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
                     >
                     </dv-bisher-x>
@@ -472,18 +785,31 @@
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
                 *ngIf="vorgaenger$ | async as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.nutzung?.anzahlBetreuteKinder3Zyklus"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.nutzung
+                        ?.anzahlBetreuteKinder3Zyklus
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div
             class="well well-status-warten"
-            *ngIf="!((allAnzahlFieldsFilledOut() && abweichungenAnzahlKinder === 0) || allAnzahlFieldsEmpty())"
+            *ngIf="
+                !(
+                    (allAnzahlFieldsFilledOut() &&
+                        abweichungenAnzahlKinder === 0) ||
+                    allAnzahlFieldsEmpty()
+                )
+            "
         >
             <i class="fa fa-exclamation" aria-hidden="true"></i>
             <span>
-                <span translate>FERIENBETREUUNG_PLAUSIBILITAET_ANZAHL_BETREUTER_KINDER</span>
+                <span translate
+                    >FERIENBETREUUNG_PLAUSIBILITAET_ANZAHL_BETREUTER_KINDER</span
+                >
             </span>
         </div>
     </form>
@@ -503,9 +829,17 @@
             (click)="save()"
             [textContent]="'SAVE' | translate"
         ></button>
-        <dv-loading-button *ngIf="canSeeAbschliessen | async" type="button" (buttonClick)="onAbschliessen()">
-            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
-            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
+        <dv-loading-button
+            *ngIf="canSeeAbschliessen | async"
+            type="button"
+            (buttonClick)="onAbschliessen()"
+        >
+            <span *ngIf="!container?.isInPruefungKanton()" translate
+                >ABSCHLIESSEN</span
+            >
+            <span *ngIf="container?.isInPruefungKanton()" translate
+                >GEPRUEFT</span
+            >
         </dv-loading-button>
     </div>
 </div>

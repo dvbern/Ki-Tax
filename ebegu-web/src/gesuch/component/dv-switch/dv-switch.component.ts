@@ -39,17 +39,22 @@ import {
     animations: [
         trigger('switchValue', [
             // ...
-            state('0', style({
-                'margin-left': '0'
-            })),
-            state('1', style({
-                'margin-left': '50%'
-            }))
+            state(
+                '0',
+                style({
+                    'margin-left': '0'
+                })
+            ),
+            state(
+                '1',
+                style({
+                    'margin-left': '50%'
+                })
+            )
         ])
     ]
 })
 export class DvSwitchComponent<T> implements OnChanges {
-
     // It is allowed to set any values as switchOption. switchValue will then have the select (<any>) option
     @Input() public switchValue: T;
     @Input() public readonly switchOptionLeft: T;
@@ -59,7 +64,8 @@ export class DvSwitchComponent<T> implements OnChanges {
     @Input() public readonly switchOptionLabelRight: string;
 
     @HostBinding('class.disabled')
-    @Input() public disabled: boolean = false;
+    @Input()
+    public disabled: boolean = false;
 
     @Output()
     public readonly switchValueChange: EventEmitter<T> = new EventEmitter<T>();
@@ -74,13 +80,19 @@ export class DvSwitchComponent<T> implements OnChanges {
             return;
         }
 
-        if (event.key === 'ArrowRight' && this.switchValue !== this.switchOptionRight) {
+        if (
+            event.key === 'ArrowRight' &&
+            this.switchValue !== this.switchOptionRight
+        ) {
             this.emitAndSetValue(this.switchOptionRight);
 
             return;
         }
 
-        if (event.key === 'ArrowLeft' && this.switchValue !== this.switchOptionLeft) {
+        if (
+            event.key === 'ArrowLeft' &&
+            this.switchValue !== this.switchOptionLeft
+        ) {
             this.emitAndSetValue(this.switchOptionLeft);
         }
     }
@@ -92,7 +104,10 @@ export class DvSwitchComponent<T> implements OnChanges {
             return;
         }
 
-        const value = this.switchValue === this.switchOptionLeft ? this.switchOptionRight : this.switchOptionLeft;
+        const value =
+            this.switchValue === this.switchOptionLeft
+                ? this.switchOptionRight
+                : this.switchOptionLeft;
 
         this.emitAndSetValue(value);
     }

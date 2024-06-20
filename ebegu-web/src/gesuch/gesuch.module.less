@@ -81,7 +81,9 @@
             font-size: 1.6rem;
             letter-spacing: 0.15rem;
 
-            &.gesuch-name, &.active-element, &.fa-angle-down {
+            &.gesuch-name,
+            &.active-element,
+            &.fa-angle-down {
                 display: block;
                 max-width: 40%;
                 overflow: hidden;
@@ -94,7 +96,6 @@
                 margin-left: auto;
                 margin-right: 2rem;
                 max-width: 55%;
-
             }
 
             &.fa-angle-down {
@@ -103,7 +104,6 @@
                 max-width: 5%;
                 overflow: visible;
             }
-
         }
     }
 
@@ -123,8 +123,12 @@
         top: 0;
         width: 100%;
 
-        &.active, &:active, &:hover, &:focus,
-        &[disabled], &[disabled]:hover {
+        &.active,
+        &:active,
+        &:hover,
+        &:focus,
+        &[disabled],
+        &[disabled]:hover {
             background: transparent;
             color: @contrast-darkest;
             outline: 0;
@@ -143,7 +147,6 @@
 }
 
 #gesuchContainer {
-
     background: @contrast-light;
     display: block;
     flex: 1 1 auto;
@@ -151,7 +154,8 @@
     overflow-y: scroll;
     position: relative;
 
-    dv-navigation, .dv-navigation {
+    dv-navigation,
+    .dv-navigation {
         bottom: 4rem;
         left: 0;
         margin: 0;
@@ -160,8 +164,8 @@
         right: 0;
         transform: unset;
 
-
-        dv-navigation, .dv-navigation {
+        dv-navigation,
+        .dv-navigation {
             flex: 1;
             padding: 0;
             position: static;
@@ -175,7 +179,6 @@
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
-
     }
 
     .dv-navigation-flex:first-child {
@@ -214,7 +217,9 @@
     .dv-navigation--verfuegen {
         flex-direction: row;
 
-        dv-navigation, .dv-navigation-flex, .dv-navigation {
+        dv-navigation,
+        .dv-navigation-flex,
+        .dv-navigation {
             flex: 0;
         }
 
@@ -244,14 +249,11 @@
         }
     }
 
-    @media only screen
-        and (min-device-width: 320px)
-        and (max-device-width: 700px) {
+    @media only screen and (min-device-width: 320px) and (max-device-width: 700px) {
         .dv-navigation-flex {
             flex-wrap: wrap-reverse;
         }
     }
-
 }
 
 #kommentarContainer {
@@ -284,47 +286,51 @@
     }
 
     // exclude angular-material radio button and checkbox from static position
-    &.static-position div:not(
-    .md-container,
-    .md-off,
-    .md-on,
-    .md-icon,
-    .mat-mdc-radio-group,
-    .mat-mdc-radio-button,
-    .mat-mdc-radio-label,
-    .mat-mdc-radio-container,
-    .mat-mdc-radio-label-content,
-    .mdc-radio__outer-circle,
-    .mdc-form-field,
-    .mdc-checkbox,
-    .mdc-checkbox > *,
-    .mdc-radio,
-    .mat-mdc-radio-touch-target,
-    .mdc-radio__background,
-    .mdc-radio__inner-circle,
-    .mat-ripple,
-    .mat-ripple-element,
-    .mat-checkbox,
-    .mat-checkbox-layout,
-    .mat-checkbox-inner-container,
-    .mat-checkbox-input,
-    .mat-checkbox-background,
-    .mat-checkbox-frame,
-    .mat-ripple
-) {
+    &.static-position
+        div:not(
+            .md-container,
+            .md-off,
+            .md-on,
+            .md-icon,
+            .mat-mdc-radio-group,
+            .mat-mdc-radio-button,
+            .mat-mdc-radio-label,
+            .mat-mdc-radio-container,
+            .mat-mdc-radio-label-content,
+            .mdc-radio__outer-circle,
+            .mdc-form-field,
+            .mdc-checkbox,
+            .mdc-checkbox > *,
+            .mdc-radio,
+            .mat-mdc-radio-touch-target,
+            .mdc-radio__background,
+            .mdc-radio__inner-circle,
+            .mat-ripple,
+            .mat-ripple-element,
+            .mat-checkbox,
+            .mat-checkbox-layout,
+            .mat-checkbox-inner-container,
+            .mat-checkbox-input,
+            .mat-checkbox-background,
+            .mat-checkbox-frame,
+            .mat-ripple
+        ) {
         position: static;
     }
 
     .mat-mdc-radio-group .mat-mdc-radio-button {
-        .mdc-radio__background, .mat-mdc-radio-touch-target, input.mdc-radio__native-control {
+        .mdc-radio__background,
+        .mat-mdc-radio-touch-target,
+        input.mdc-radio__native-control {
             height: 1.5rem !important;
             width: 1.5rem !important;
         }
 
-        .mdc-radio__native-control:checked + .mdc-radio__background .mdc-radio__inner-circle {
+        .mdc-radio__native-control:checked
+            + .mdc-radio__background
+            .mdc-radio__inner-circle {
             transform: scale(0.35);
         }
-
 
         .mdc-radio__inner-circle {
             border-radius: 50%;
@@ -345,17 +351,15 @@
                 line-height: 2.5rem;
             }
 
-            &.mdc-radio--disabled  + label {
+            &.mdc-radio--disabled + label {
                 color: #858585;
             }
         }
-
 
         .mdc-radio__outer-circle {
             border-width: 1px;
         }
     }
-
 }
 
 .betreuung-table-header {
@@ -384,7 +388,6 @@
         left: 0.8rem;
         position: absolute;
         width: 3rem;
-
     }
 
     &.verfuegen-view .betreuung-bar {
@@ -397,11 +400,14 @@
         border-bottom: 1px solid @contrast-darkest;
     }
 
-    &.BESTAETIGT .betreuung-bar, &.SCHULAMT_ANMELDUNG_UEBERNOMMEN .betreuung-bar {
+    &.BESTAETIGT .betreuung-bar,
+    &.SCHULAMT_ANMELDUNG_UEBERNOMMEN .betreuung-bar {
         border-color: @success;
     }
 
-    &.WARTEN .betreuung-bar, &.SCHULAMT_FALSCHE_INSTITUTION .betreuung-bar, &.SCHULAMT_ANMELDUNG_ABGELEHNT .betreuung-bar {
+    &.WARTEN .betreuung-bar,
+    &.SCHULAMT_FALSCHE_INSTITUTION .betreuung-bar,
+    &.SCHULAMT_ANMELDUNG_ABGELEHNT .betreuung-bar {
         border-color: @warning;
     }
 
@@ -432,7 +438,7 @@
 
 /*stylelint-enable*/
 .right-side {
-    background-color: #ECF1F4;
+    background-color: #ecf1f4;
 }
 
 .gesuch-status {
@@ -475,4 +481,3 @@
     flex: 1 1 auto;
     flex-direction: column;
 }
-

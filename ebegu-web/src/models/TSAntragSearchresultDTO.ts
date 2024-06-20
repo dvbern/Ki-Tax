@@ -18,7 +18,6 @@
 import {TSAntragDTO} from './TSAntragDTO';
 
 export class TSAntragSearchresultDTO {
-
     private _antragDTOs: Array<TSAntragDTO>;
 
     public constructor(antragDTOs?: Array<TSAntragDTO>) {

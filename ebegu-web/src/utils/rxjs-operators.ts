@@ -11,10 +11,14 @@
 import {Observable} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
-export function isNotNullOrUndefined<T>(input: null | undefined | T): input is T {
+export function isNotNullOrUndefined<T>(
+    input: null | undefined | T
+): input is T {
     return input !== null && input !== undefined;
 }
 
-export function ignoreNullAndUndefined<T>(): (source$: Observable<T | null | undefined>) => Observable<T> {
+export function ignoreNullAndUndefined<T>(): (
+    source$: Observable<T | null | undefined>
+) => Observable<T> {
     return source$ => source$.pipe(filter(isNotNullOrUndefined));
 }

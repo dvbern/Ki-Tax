@@ -17,7 +17,6 @@ import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSBelegungFerieninselTag extends TSAbstractMutableEntity {
-
     private _tag: moment.Moment;
 
     private _angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true

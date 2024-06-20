@@ -14,7 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
@@ -38,10 +45,13 @@ const LOG = LogFactory.createLog('TagesschulenListComponent');
     encapsulation: ViewEncapsulation.None
 })
 export class TagesschulenListComponent implements OnInit {
-
     @Input() public lastenausgleichId: string;
 
-    public data: { institutionName: string; status: string; kontrollfragenOk: boolean }[];
+    public data: {
+        institutionName: string;
+        status: string;
+        kontrollfragenOk: boolean;
+    }[];
     public tableColumns: DvSimpleTableColumnDefinition[];
 
     public constructor(
@@ -52,16 +62,18 @@ export class TagesschulenListComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly $state: StateService,
         private readonly authService: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     private static areKontrollfragenOk(
         latsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): boolean | null {
-        const latsInstiAngaben = latsInstitutionContainer.isAtLeastInBearbeitungGemeinde() ?
-            latsInstitutionContainer.angabenKorrektur :
-            latsInstitutionContainer.angabenDeklaration;
-        return latsInstiAngaben.areKontrollfragenAnswered() ? latsInstiAngaben.areKontrollfragenOk() : null;
+        const latsInstiAngaben =
+            latsInstitutionContainer.isAtLeastInBearbeitungGemeinde()
+                ? latsInstitutionContainer.angabenKorrektur
+                : latsInstitutionContainer.angabenDeklaration;
+        return latsInstiAngaben.areKontrollfragenAnswered()
+            ? latsInstiAngaben.areKontrollfragenOk()
+            : null;
     }
 
     public ngOnInit(): void {
@@ -70,37 +82,58 @@ export class TagesschulenListComponent implements OnInit {
     }
 
     private getAllVisibleTagesschulenAngabenForTSLastenausgleich(): void {
-        this.gemeindeAntragService.getAllVisibleTagesschulenAngabenForTSLastenausgleich(this.lastenausgleichId)
-            .subscribe(data => {
-                this.data = data.map(latsInstitutionContainer => ({
-                            id: latsInstitutionContainer.id,
-                            institutionName: latsInstitutionContainer.institution.name,
-                            status: `LATS_STATUS_${latsInstitutionContainer.status}`,
-                            kontrollfragenOk: TagesschulenListComponent.areKontrollfragenOk(latsInstitutionContainer)
-                        })
-                );
-                this.cd.markForCheck();
-            }, () => {
-                this.translate.get('DATA_RETRIEVAL_ERROR')
-                    .subscribe(msg => this.errorService.addMesageAsError(msg),
-                        err => console.error('Error loading translation', err));
-            });
+        this.gemeindeAntragService
+            .getAllVisibleTagesschulenAngabenForTSLastenausgleich(
+                this.lastenausgleichId
+            )
+            .subscribe(
+                data => {
+                    this.data = data.map(latsInstitutionContainer => ({
+                        id: latsInstitutionContainer.id,
+                        institutionName:
+                            latsInstitutionContainer.institution.name,
+                        status: `LATS_STATUS_${latsInstitutionContainer.status}`,
+                        kontrollfragenOk:
+                            TagesschulenListComponent.areKontrollfragenOk(
+                                latsInstitutionContainer
+                            )
+                    }));
+                    this.cd.markForCheck();
+                },
+                () => {
+                    this.translate.get('DATA_RETRIEVAL_ERROR').subscribe(
+                        msg => this.errorService.addMesageAsError(msg),
+                        err => console.error('Error loading translation', err)
+                    );
+                }
+            );
     }
 
     public navigate($event: any): void {
-        this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL', {institutionId: $event.element.id});
+        this.$state.go(
+            'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL',
+            {institutionId: $event.element.id}
+        );
     }
 
     public createMissingTagesschuleFormulare(): void {
-        this.lastenausgleichTSService.createMissingTagesschuleFormulare(this.lastenausgleichId)
-            .subscribe(() => {
-                // since we changed institutions of angabenGemeinde Object, we have to reload store
-                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
-                this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
-                this.errorService.addMesageAsInfo('ALL_TAGESSCHULE_FORMULARE_CREATED');
-            }, err => {
-                LOG.error(err);
-            });
+        this.lastenausgleichTSService
+            .createMissingTagesschuleFormulare(this.lastenausgleichId)
+            .subscribe(
+                () => {
+                    // since we changed institutions of angabenGemeinde Object, we have to reload store
+                    this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(
+                        this.lastenausgleichId
+                    );
+                    this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+                    this.errorService.addMesageAsInfo(
+                        'ALL_TAGESSCHULE_FORMULARE_CREATED'
+                    );
+                },
+                err => {
+                    LOG.error(err);
+                }
+            );
     }
 
     public isGemeindeOrSuperadmin(): boolean {
@@ -108,35 +141,52 @@ export class TagesschulenListComponent implements OnInit {
     }
 
     private initTableColumns(): void {
-        this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
-            if (container.isAtLeastInBearbeitungKanton() && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
-                this.tableColumns = [
-                    {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
-                    {displayedName: 'STATUS', attributeName: 'status'},
-                    {
-                        displayedName: 'KONTROLLFRAGEN',
-                        attributeName: 'kontrollfragenOk',
-                        displayFunction: (isOk: boolean) => {
-                            if (EbeguUtil.isNullOrUndefined(isOk)) {
-                                return '';
+        this.lastenausgleichTSService
+            .getLATSAngabenGemeindeContainer()
+            .subscribe(
+                container => {
+                    if (
+                        container.isAtLeastInBearbeitungKanton() &&
+                        this.authService.isOneOfRoles(
+                            TSRoleUtil.getMandantRoles()
+                        )
+                    ) {
+                        this.tableColumns = [
+                            {
+                                displayedName: 'TAGESSCHULE',
+                                attributeName: 'institutionName'
+                            },
+                            {displayedName: 'STATUS', attributeName: 'status'},
+                            {
+                                displayedName: 'KONTROLLFRAGEN',
+                                attributeName: 'kontrollfragenOk',
+                                displayFunction: (isOk: boolean) => {
+                                    if (EbeguUtil.isNullOrUndefined(isOk)) {
+                                        return '';
+                                    }
+                                    return isOk
+                                        ? '<i class="fa fa-check padding-left-60 green"></i>'
+                                        : '<i class="fa fa-close padding-left-60 red"></i>';
+                                }
                             }
-                            return isOk ?
-                                '<i class="fa fa-check padding-left-60 green"></i>' :
-                                '<i class="fa fa-close padding-left-60 red"></i>';
-                        }
+                        ];
+                        return;
                     }
-                ];
-                return;
-            }
-            this.tableColumns = [
-                {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
-                {displayedName: 'STATUS', attributeName: 'status'}
-            ];
-        }, error => console.error(error));
+                    this.tableColumns = [
+                        {
+                            displayedName: 'TAGESSCHULE',
+                            attributeName: 'institutionName'
+                        },
+                        {displayedName: 'STATUS', attributeName: 'status'}
+                    ];
+                },
+                error => console.error(error)
+            );
     }
 
     public isInBearbeitungGemeinde(): Observable<boolean> {
-        return this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+        return this.lastenausgleichTSService
+            .getLATSAngabenGemeindeContainer()
             .pipe(map(container => container.isInBearbeitungGemeinde()));
     }
 }

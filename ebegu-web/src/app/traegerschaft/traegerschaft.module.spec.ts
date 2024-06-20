@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { TraegerschaftModule } from './traegerschaft.module';
+import {TraegerschaftModule} from './traegerschaft.module';
 
 describe('TraegerschaftModule', () => {
-  let traegerschaftModule: TraegerschaftModule;
+    let traegerschaftModule: TraegerschaftModule;
 
-  beforeEach(() => {
-    traegerschaftModule = new TraegerschaftModule();
-  });
+    beforeEach(() => {
+        traegerschaftModule = new TraegerschaftModule();
+    });
 
-  it('should create an instance', () => {
-    expect(traegerschaftModule).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        expect(traegerschaftModule).toBeTruthy();
+    });
 });

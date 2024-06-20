@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.component';
@@ -58,12 +61,7 @@ export const STATES: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states: STATES})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states: STATES})],
+    exports: [UIRouterUpgradeModule]
 })
-export class TraegerschaftRoutingModule {
-}
+export class TraegerschaftRoutingModule {}

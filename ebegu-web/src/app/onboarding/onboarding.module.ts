@@ -29,10 +29,7 @@ import {PortalSelectionComponent} from './portal-selection/portal-selection.comp
 import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        OnboardingRoutingModule
-    ],
+    imports: [SharedModule, OnboardingRoutingModule],
     declarations: [
         OnboardingComponent,
         OnboardingBeLoginComponent,
@@ -47,7 +44,6 @@ import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
         OnboardingHelpDialogComponent
     ]
 })
-class OnboardingModule {
-}
+class OnboardingModule {}
 
 export {OnboardingModule};

@@ -18,17 +18,27 @@
 <div class="row">
     <div class="col-xs-12 margin-bottom-30">
         <mat-divider class="margin-bottom-50"></mat-divider>
-        <h3 class="uppercase ebegu-h1"
-            *ngIf="isGemeinsam">{{'VERANLAGUNG_GEMEINSAM_TITLE' | translate:{
-            gs1: antragsteller1Name(),
-            gs2: antragsteller2Name(),
-            year: year
-        } }}</h3>
-        <h3 class="uppercase ebegu-h1"
-            *ngIf="!isGemeinsam">{{'VERANLAGUNG_ALLEINE_TITLE' | translate:{
-            gs1: antragstellerName(),
-            year: year
-        } }}</h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">
+            {{
+                'VERANLAGUNG_GEMEINSAM_TITLE'
+                    | translate
+                        : {
+                              gs1: antragsteller1Name(),
+                              gs2: antragsteller2Name(),
+                              year: year
+                          }
+            }}
+        </h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">
+            {{
+                'VERANLAGUNG_ALLEINE_TITLE'
+                    | translate
+                        : {
+                              gs1: antragstellerName(),
+                              year: year
+                          }
+            }}
+        </h3>
     </div>
 </div>
 <fieldset>
@@ -38,14 +48,25 @@
                 <div class="form-group">
                     <dv-input-label-field
                         [name]="'steuerbaresEinkommen'"
-                        [(model)]="model.finanzielleSituationJA.steuerbaresEinkommen"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
+                        [(model)]="
+                            model.finanzielleSituationJA.steuerbaresEinkommen
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'
+                        "
                         [inputDisabled]="readOnly"
                         [dvOnBlur]="onValueChangeFunction"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.steuerbaresEinkommen"
-                        [korrektur]="model.finanzielleSituationJA.steuerbaresEinkommen"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.steuerbaresEinkommen
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.steuerbaresEinkommen
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>
@@ -55,14 +76,25 @@
                 <div class="form-group">
                     <dv-input-label-field
                         [name]="'steuerbaresVermoegen'"
-                        [(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+                        [(model)]="
+                            model.finanzielleSituationJA.steuerbaresVermoegen
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'
+                        "
                         [inputDisabled]="readOnly"
                         [dvOnBlur]="onValueChangeFunction"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
-                        [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.steuerbaresVermoegen
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.steuerbaresVermoegen
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>
@@ -72,16 +104,29 @@
                 <div class="form-group">
                     <dv-input-label-field
                         [name]="'abzuegeLiegenschaft'"
-                        [(model)]="model.finanzielleSituationJA.abzuegeLiegenschaft"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'"
-                        [tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'"
+                        [(model)]="
+                            model.finanzielleSituationJA.abzuegeLiegenschaft
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'
+                        "
                         [inputDisabled]="readOnly"
                         [dvOnBlur]="onValueChangeFunction"
                         [inputRequired]="true"
                         [allowNegative]="true"
-                        [deklaration]="model.finanzielleSituationGS?.abzuegeLiegenschaft"
-                        [korrektur]="model.finanzielleSituationJA.abzuegeLiegenschaft"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.abzuegeLiegenschaft
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.abzuegeLiegenschaft
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>
@@ -91,15 +136,28 @@
                 <div class="form-group">
                     <dv-input-label-field
                         [name]="'geschaeftsverlust'"
-                        [(model)]="model.finanzielleSituationJA.geschaeftsverlust"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST'"
-                        [tooltipMessageKey]="'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP'"
+                        [(model)]="
+                            model.finanzielleSituationJA.geschaeftsverlust
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP'
+                        "
                         [inputDisabled]="readOnly"
                         [dvOnBlur]="onValueChangeFunction"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.geschaeftsverlust"
-                        [korrektur]="model.finanzielleSituationJA.geschaeftsverlust"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.geschaeftsverlust
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.geschaeftsverlust
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>
@@ -109,15 +167,28 @@
                 <div class="form-group">
                     <dv-input-label-field
                         [name]="'einkaeufeVorsorge'"
-                        [(model)]="model.finanzielleSituationJA.einkaeufeVorsorge"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'"
-                        [tooltipMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'"
+                        [(model)]="
+                            model.finanzielleSituationJA.einkaeufeVorsorge
+                        "
+                        [labelMessageKey]="
+                            'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'
+                        "
+                        [tooltipMessageKey]="
+                            'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'
+                        "
                         [inputDisabled]="readOnly"
                         [dvOnBlur]="onValueChangeFunction"
                         [inputRequired]="true"
-                        [deklaration]="model.finanzielleSituationGS?.einkaeufeVorsorge"
-                        [korrektur]="model.finanzielleSituationJA.einkaeufeVorsorge"
-                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                        [deklaration]="
+                            model.finanzielleSituationGS?.einkaeufeVorsorge
+                        "
+                        [korrektur]="
+                            model.finanzielleSituationJA.einkaeufeVorsorge
+                        "
+                        [showBisher]="
+                            isNotNullOrUndefined(model.finanzielleSituationGS)
+                        "
+                    >
                     </dv-input-label-field>
                 </div>
             </div>

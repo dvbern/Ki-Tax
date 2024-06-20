@@ -15,32 +15,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {SharedModule} from '../../../shared/shared.module';
 
-import { FerienbetreuungLastYearValueComponent } from './ferienbetreuung-last-year-value.component';
+import {FerienbetreuungLastYearValueComponent} from './ferienbetreuung-last-year-value.component';
 
 describe('FerienbetreuungLastYearValueComponent', () => {
-  let component: FerienbetreuungLastYearValueComponent;
-  let fixture: ComponentFixture<FerienbetreuungLastYearValueComponent>;
+    let component: FerienbetreuungLastYearValueComponent;
+    let fixture: ComponentFixture<FerienbetreuungLastYearValueComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SharedModule],
-      declarations: [ FerienbetreuungLastYearValueComponent ]
-    })
-    .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SharedModule],
+            declarations: [FerienbetreuungLastYearValueComponent]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FerienbetreuungLastYearValueComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(
+            FerienbetreuungLastYearValueComponent
+        );
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

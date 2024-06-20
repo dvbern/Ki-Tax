@@ -18,13 +18,16 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBelegungFerieninselTag} from './TSBelegungFerieninselTag';
 
 export class TSBelegungFerieninsel extends TSAbstractMutableEntity {
-
     private _ferienname: TSFerienname;
     private _tage: Array<TSBelegungFerieninselTag> = [];
     private _tageMorgenmodul: Array<TSBelegungFerieninselTag> = [];
     private _notfallAngaben: string;
 
-    public constructor(ferienname?: TSFerienname, tage?: Array<TSBelegungFerieninselTag>, notfallAngaben?: string) {
+    public constructor(
+        ferienname?: TSFerienname,
+        tage?: Array<TSBelegungFerieninselTag>,
+        notfallAngaben?: string
+    ) {
         super();
         this._ferienname = ferienname;
         this._tage = tage;

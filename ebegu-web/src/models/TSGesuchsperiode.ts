@@ -19,7 +19,6 @@ import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
-
     private _status: TSGesuchsperiodeStatus;
 
     public constructor(
@@ -39,7 +38,11 @@ export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     }
 
     public get gesuchsperiodeString(): string {
-        if (this.gueltigkeit && this.gueltigkeit.gueltigAb && this.gueltigkeit.gueltigBis) {
+        if (
+            this.gueltigkeit &&
+            this.gueltigkeit.gueltigAb &&
+            this.gueltigkeit.gueltigBis
+        ) {
             const currentMillenia = 2000;
 
             return `${this.gueltigkeit.gueltigAb.year()}/${this.gueltigkeit.gueltigBis.year() - currentMillenia}`;

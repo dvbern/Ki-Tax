@@ -13,7 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController, IFilterService, IPromise, IScope, IWindowService} from 'angular';
+import {
+    IComponentOptions,
+    IController,
+    IFilterService,
+    IPromise,
+    IScope,
+    IWindowService
+} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
@@ -24,7 +31,10 @@ import {
     getTSAntragStatusValuesByRole,
     TSAntragStatus
 } from '../../../../models/enums/TSAntragStatus';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
+import {
+    getNormalizedTSAntragTypValues,
+    TSAntragTyp
+} from '../../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
     TSBetreuungsangebotTyp
@@ -66,7 +76,6 @@ export class DVAntragListConfig implements IComponentOptions {
 }
 
 export class DVAntragListController implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         '$filter',
         'InstitutionRS',
@@ -132,8 +141,7 @@ export class DVAntragListController implements IController {
         private readonly $translate: ITranslateService,
         private readonly $scope: IScope,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         // statt diese Listen zu laden koenne man sie auch von aussen setzen
@@ -150,13 +158,18 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-        this.$scope.$watch(() => this.totalResultCount, (newValue, oldValue) => {
-            if (newValue === oldValue) {
-                return;
+        this.$scope.$watch(
+            () => this.totalResultCount,
+            (newValue, oldValue) => {
+                if (newValue === oldValue) {
+                    return;
+                }
+                this.pagination.totalItemCount = this.totalResultCount;
+                this.pagination.numberOfPages = Math.ceil(
+                    this.totalResultCount / this.pagination.number
+                );
             }
-            this.pagination.totalItemCount = this.totalResultCount;
-            this.pagination.numberOfPages = Math.ceil(this.totalResultCount / this.pagination.number);
-        });
+        );
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tagesschulangebotEnabled = res.angebotTSActivated;
             this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
@@ -175,23 +188,32 @@ export class DVAntragListController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
-            this.institutionenList = response;
-        }, error => LOG.error(error));
+        this.institutionRS
+            .getInstitutionenReadableForCurrentBenutzer()
+            .subscribe(
+                response => {
+                    this.institutionenList = response;
+                },
+                error => LOG.error(error)
+            );
     }
 
     public updateGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
             response.forEach(gesuchsperiode => {
-                this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                this.gesuchsperiodenList.push(
+                    gesuchsperiode.gesuchsperiodeString
+                );
             });
         });
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(gemeinden => {
+            .subscribe(
+                gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
                 err => LOG.error(err)
@@ -220,12 +242,14 @@ export class DVAntragListController implements IController {
             return;
         }
 
-        this.onFilterChange({tableState: tableFilterState}).then((result: TSAntragSearchresultDTO) => {
-            if (!result) {
-                return;
+        this.onFilterChange({tableState: tableFilterState}).then(
+            (result: TSAntragSearchresultDTO) => {
+                if (!result) {
+                    return;
+                }
+                this.displayedCollection = [].concat(result.antragDTOs);
             }
-            this.displayedCollection = [].concat(result.antragDTOs);
-        });
+        );
     };
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -236,16 +260,23 @@ export class DVAntragListController implements IController {
      * Alle TSAntragStatus fuer das Filterdropdown
      */
     public getAntragStatus(): Array<TSAntragStatus> {
-        return this.pendenz ?
-            getTSAntragStatusPendenzValues(this.authServiceRS.getPrincipalRole()) :
-            getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+        return this.pendenz
+            ? getTSAntragStatusPendenzValues(
+                  this.authServiceRS.getPrincipalRole()
+              )
+            : getTSAntragStatusValuesByRole(
+                  this.authServiceRS.getPrincipalRole()
+              );
     }
 
     /**
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled(), this.angebotMittagstischEnabled);
+        return getTSBetreuungsangebotTypValuesForMandant(
+            this.isTagesschulangebotEnabled(),
+            this.angebotMittagstischEnabled
+        );
     }
 
     /**
@@ -256,15 +287,26 @@ export class DVAntragListController implements IController {
         return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
-    public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
+    public translateBetreuungsangebotTypList(
+        betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>
+    ): string {
         let result = '';
         if (Array.isArray(betreuungsangebotTypList)) {
             let prefix = '';
-            if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
+            if (
+                betreuungsangebotTypList &&
+                Array.isArray(betreuungsangebotTypList)
+            ) {
                 // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
-                    const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
-                    result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
+                    const tsBetreuungsangebotTyp =
+                        TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
+                    result =
+                        result +
+                        prefix +
+                        this.$filter('translate')(
+                            tsBetreuungsangebotTyp
+                        ).toString();
                     prefix = ', ';
                 }
             }
@@ -292,11 +334,15 @@ export class DVAntragListController implements IController {
 
     public querySearch(query: string): Array<TSInstitution> {
         const searchString = query.toLocaleLowerCase();
-        return this.institutionenList.filter(item => (item.name.toLocaleLowerCase().indexOf(searchString) > -1));
+        return this.institutionenList.filter(
+            item => item.name.toLocaleLowerCase().indexOf(searchString) > -1
+        );
     }
 
     public setSelectedInstitutionName(): void {
-        this.selectedInstitutionName = this.selectedInstitution ? this.selectedInstitution.name : null;
+        this.selectedInstitutionName = this.selectedInstitution
+            ? this.selectedInstitution.name
+            : null;
     }
 
     public getAntragTypBezeichnung(antrag: TSAntragDTO): string {
@@ -308,7 +354,12 @@ export class DVAntragListController implements IController {
     }
 
     public isPendenzGemeindeRolle(): boolean {
-        return this.pendenz && this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGemeindeOnlyRoles());
+        return (
+            this.pendenz &&
+            this.authServiceRS.isOneOfRoles(
+                this.TSRoleUtil.getGemeindeOnlyRoles()
+            )
+        );
     }
 
     public getVerantwortlicheBgAndTs(antrag: TSAntragDTO): string {

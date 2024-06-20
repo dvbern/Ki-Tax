@@ -19,7 +19,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSGesuch} from './TSGesuch';
 
 export class TSMahnung extends TSAbstractMutableEntity {
-
     private _gesuch: TSGesuch;
     private _mahnungTyp: TSMahnungTyp;
     private _datumFristablauf: moment.Moment;

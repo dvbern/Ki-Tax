@@ -17,14 +17,12 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSRole} from '../../../models/enums/TSRole';
 
 export class DVRoleElementController {
-
     public static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
 
     public dvAllowedRoles: Array<TSRole>;
     public dvExpression: boolean;
 
-    public constructor(private readonly authServiceRS: AuthServiceRS) {
-    }
+    public constructor(private readonly authServiceRS: AuthServiceRS) {}
 
     /**
      * Gibt true zurueck wenn die Rolle der Benutzer eraubt ist den Element zu sehen und die zusaetzliche Expression

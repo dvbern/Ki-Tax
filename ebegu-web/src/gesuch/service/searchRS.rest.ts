@@ -26,35 +26,47 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
     providedIn: 'root'
 })
 export class SearchRS {
-
     private readonly serviceURL = `${CONSTANTS.REST_API}search`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        public http: HttpClient
-    ) {}
+    public constructor(public http: HttpClient) {}
 
-    public searchAntraege(antragSearch: any): Observable<TSAntragSearchresultDTO> {
-        return this.http.post(`${this.serviceURL}/search/`, antragSearch)
+    public searchAntraege(
+        antragSearch: any
+    ): Observable<TSAntragSearchresultDTO> {
+        return this.http
+            .post(`${this.serviceURL}/search/`, antragSearch)
             .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
-    public searchAntraegeInAlleFaelleView(antragSearch: any): Observable<TSAntragSearchresultDTO> {
-        return this.http.post(`${this.serviceURL}/alleFaelleView/search`, antragSearch)
+    public searchAntraegeInAlleFaelleView(
+        antragSearch: any
+    ): Observable<TSAntragSearchresultDTO> {
+        return this.http
+            .post(`${this.serviceURL}/alleFaelleView/search`, antragSearch)
             .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
     public countAntraege(antragSearch: any): Observable<number> {
-        return this.http.post<number>(`${this.serviceURL}/search/count`, antragSearch);
+        return this.http.post<number>(
+            `${this.serviceURL}/search/count`,
+            antragSearch
+        );
     }
 
-    public getPendenzenList(antragSearch: any): Observable<TSAntragSearchresultDTO> {
-        return this.http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
+    public getPendenzenList(
+        antragSearch: any
+    ): Observable<TSAntragSearchresultDTO> {
+        return this.http
+            .post(`${this.serviceURL}/jugendamt/`, antragSearch)
             .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
     public countPendenzenList(antragSearch: any): Observable<number> {
-        return this.http.post<number>(`${this.serviceURL}/jugendamt/count`, antragSearch);
+        return this.http.post<number>(
+            `${this.serviceURL}/jugendamt/count`,
+            antragSearch
+        );
     }
 
     public recreateAlleFaelleView(): Observable<any> {
@@ -64,13 +76,24 @@ export class SearchRS {
     }
 
     private toAntragSearchresult(response: any): TSAntragSearchresultDTO {
-        const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.antragDTOs);
+        const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(
+            response.antragDTOs
+        );
 
         return new TSAntragSearchresultDTO(tsAntragDTOS);
     }
 
-    public getAntraegeOfDossier(dossierId: string): Observable<Array<TSAntragDTO>> {
-        return this.http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseAntragDTOs(response)));
+    public getAntraegeOfDossier(
+        dossierId: string
+    ): Observable<Array<TSAntragDTO>> {
+        return this.http
+            .get(
+                `${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`
+            )
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseAntragDTOs(response)
+                )
+            );
     }
 }

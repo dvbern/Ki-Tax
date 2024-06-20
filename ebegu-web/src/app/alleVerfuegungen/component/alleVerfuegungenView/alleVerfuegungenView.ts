@@ -40,7 +40,6 @@ export class AlleVerfuegungenViewComponentConfig implements IComponentOptions {
 }
 
 export class AlleVerfuegungenViewController implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         '$state',
         '$stateParams',
@@ -72,8 +71,7 @@ export class AlleVerfuegungenViewController implements IController {
         private readonly dossierRS: DossierRS,
         private readonly ebeguUtil: EbeguUtil,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.dossierId = this.$stateParams.dossierId;
@@ -82,18 +80,25 @@ export class AlleVerfuegungenViewController implements IController {
             return;
         }
 
-        this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
-            this.dossier = response;
-            if (this.dossier === undefined) {
-                this.cancel();
-            }
-            this.betreuungRS.findAllBetreuungenWithVerfuegungForDossier(this.dossier.id).then(r => {
-                this.alleVerfuegungen = r;
+        this.dossierRS
+            .findDossier(this.dossierId)
+            .then((response: TSDossier) => {
+                this.dossier = response;
+                if (this.dossier === undefined) {
+                    this.cancel();
+                }
+                this.betreuungRS
+                    .findAllBetreuungenWithVerfuegungForDossier(this.dossier.id)
+                    .then(r => {
+                        this.alleVerfuegungen = r;
+                    });
             });
-        });
-        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
-            this.isAuszahlungAnAntragstellerEnabled = properties.auszahlungAnEltern;
-        });
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(properties => {
+                this.isAuszahlungAnAntragstellerEnabled =
+                    properties.auszahlungAnEltern;
+            });
     }
 
     public getFallId(): string {
@@ -107,7 +112,11 @@ export class AlleVerfuegungenViewController implements IController {
         return this.alleVerfuegungen;
     }
 
-    public openVerfuegung(betreuungNummer: string, kindNummer: number, gesuchId: string): void {
+    public openVerfuegung(
+        betreuungNummer: string,
+        kindNummer: number,
+        gesuchId: string
+    ): void {
         if (!betreuungNummer || !kindNummer || !gesuchId) {
             return;
         }
@@ -120,7 +129,11 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public cancel(): void {
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                this.TSRoleUtil.getGesuchstellerOnlyRoles()
+            )
+        ) {
             this.$state.go('gesuchsteller.dashboard');
         } else {
             this.$state.go('pendenzen.list-view');
@@ -128,45 +141,79 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public showVerfuegungPdfLink(betreuung: TSBetreuung): boolean {
-        if (this.isAuszahlungAnAntragstellerEnabled
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+        if (
+            this.isAuszahlungAnAntragstellerEnabled &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             return false;
         }
-        return TSBetreuungsstatus.NICHT_EINGETRETEN !== betreuung.betreuungsstatus;
+        return (
+            TSBetreuungsstatus.NICHT_EINGETRETEN !== betreuung.betreuungsstatus
+        );
     }
 
-    public showNichtEintretenVerfuegungPdfLink(betreuung: TSBetreuung): boolean {
-        if (this.isAuszahlungAnAntragstellerEnabled
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+    public showNichtEintretenVerfuegungPdfLink(
+        betreuung: TSBetreuung
+    ): boolean {
+        if (
+            this.isAuszahlungAnAntragstellerEnabled &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             return false;
         }
-        return TSBetreuungsstatus.NICHT_EINGETRETEN === betreuung.betreuungsstatus;
+        return (
+            TSBetreuungsstatus.NICHT_EINGETRETEN === betreuung.betreuungsstatus
+        );
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(betreuung.gesuchId,
-            betreuung.id, false, '')
+        this.downloadRS
+            .getAccessTokenVerfuegungGeneratedDokument(
+                betreuung.gesuchId,
+                betreuung.id,
+                false,
+                ''
+            )
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug(`accessToken: ${  downloadFile.accessToken}`);
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.$log.debug(`accessToken: ${downloadFile.accessToken}`);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
+                this.$log.error(
+                    'An error occurred downloading the document, closing download window.'
+                );
             });
     }
 
     public openNichteintretenPDF(betreuung: TSBetreuung): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
+        this.downloadRS
+            .getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug(`accessToken: ${  downloadFile.accessToken}`);
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.$log.debug(`accessToken: ${downloadFile.accessToken}`);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
+                this.$log.error(
+                    'An error occurred downloading the document, closing download window.'
+                );
             });
     }
 

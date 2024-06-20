@@ -18,10 +18,8 @@
  * when getting back to it.
  */
 export interface IDVFocusableController {
-
     /**
      * This funktion must be called to set the focus back to the given element.
      */
     setFocusBack(elementID: string): void;
-
 }

@@ -30,12 +30,15 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
     }
 
     public isInBearbeitung(): boolean {
-        return this.status === TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
+        return (
+            this.status ===
+            TSFerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE
+        );
     }
 
     public isAbgeschlossen(): boolean {
-        return [
-            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN
-        ].includes(this.status);
+        return [TSFerienbetreuungFormularStatus.ABGESCHLOSSEN].includes(
+            this.status
+        );
     }
 }

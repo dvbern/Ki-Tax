@@ -13,7 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogService, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    ILogService,
+    IScope
+} from 'angular';
 
 /**
  * This directive is a hack to suppress the enter handler that is defined by angular-material on the md-radio-group.
@@ -29,19 +36,26 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogS
  * @see EBEGU-897
  */
 export class DVSuppressFormSubmitOnEnter implements IDirective {
-
     public restrict = 'A';
     public link: IDirectiveLinkFn;
     public controller = DVSuppressFormSubmitOnEnterController;
-    public require: any = {mdRadioGroupCtrl: 'mdRadioGroup', myCtrl: 'dvSuppressFormSubmitOnEnter'};
+    public require: any = {
+        mdRadioGroupCtrl: 'mdRadioGroup',
+        myCtrl: 'dvSuppressFormSubmitOnEnter'
+    };
 
     public constructor() {
-        this.link = (_scope: IScope, element: IAugmentedJQuery, _attrs, controllers: any) => {
+        this.link = (
+            _scope: IScope,
+            element: IAugmentedJQuery,
+            _attrs,
+            controllers: any
+        ) => {
             controllers.myCtrl.mdRadioGroupCtrl = controllers.mdRadioGroupCtrl;
             element.off('keydown'); // alle keydown listener auf dem element abhaengen
-            element.bind('keydown', event => { // unseren eigenen listener definieren
+            element.bind('keydown', event => {
+                // unseren eigenen listener definieren
                 controllers.myCtrl.keydownListener(event, element);
-
             });
         };
     }
@@ -55,7 +69,6 @@ export class DVSuppressFormSubmitOnEnter implements IDirective {
  * Direktive  die verhindert dass das form submitted wird wenn man enter drueckt auf einem radio-button
  */
 export class DVSuppressFormSubmitOnEnterController {
-
     public static $inject: string[] = ['$mdConstant', '$mdUtil', '$log'];
 
     public mdRadioGroupCtrl: any; // see radioButton.js of angular material: mdRadioGroup
@@ -64,9 +77,7 @@ export class DVSuppressFormSubmitOnEnterController {
         private readonly $mdConstant: any,
         private readonly $mdUtil: any,
         private readonly $log: ILogService
-    ) {
-
-    }
+    ) {}
 
     public keydownListener(ev: any, element: IAugmentedJQuery): void {
         const keyCode = ev.which || ev.keyCode;
@@ -76,8 +87,10 @@ export class DVSuppressFormSubmitOnEnterController {
         // inputs.
 
         /* eslint-disable */
-        if (keyCode != this.$mdConstant.KEY_CODE.ENTER &&
-            ev.currentTarget != ev.target) {
+        if (
+            keyCode != this.$mdConstant.KEY_CODE.ENTER &&
+            ev.currentTarget != ev.target
+        ) {
             return;
         }
         /* eslint-enable */
@@ -96,7 +109,6 @@ export class DVSuppressFormSubmitOnEnterController {
                 this.setFocus(element);
                 return;
             case this.$mdConstant.KEY_CODE.ENTER:
-                // eslint-disable-next-line
                 // event.stopPropagation();    //we do not want to submit the form on enter
                 // event.preventDefault();
                 this.triggerNextButton(element);
@@ -113,17 +125,20 @@ export class DVSuppressFormSubmitOnEnterController {
     }
 
     private triggerNextButton(element: IAugmentedJQuery): void {
-        const formElement: IAugmentedJQuery = angular.element(this.$mdUtil.getClosest(element[0], 'form'));
+        const formElement: IAugmentedJQuery = angular.element(
+            this.$mdUtil.getClosest(element[0], 'form')
+        );
         if (!formElement) {
             return;
         }
 
-        const nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
+        const nextButtons = formElement
+            .children()
+            .find('input[type="submit"], button[type="submit"]');
         if (nextButtons) {
             nextButtons.first().click();
         } else {
             this.$log.debug('no ".next" button found to click on enter');
         }
-
     }
 }

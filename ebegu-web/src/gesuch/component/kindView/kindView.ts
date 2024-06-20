@@ -36,8 +36,14 @@ import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
-import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
-import {isKinderabzugTypFKJV, TSKinderabzugTyp} from '../../../models/enums/TSKinderabzugTyp';
+import {
+    getTSKinderabzugValues,
+    TSKinderabzug
+} from '../../../models/enums/TSKinderabzug';
+import {
+    isKinderabzugTypFKJV,
+    TSKinderabzugTyp
+} from '../../../models/enums/TSKinderabzugTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -76,7 +82,6 @@ export class KindViewComponentConfig implements IComponentOptions {
 }
 
 export class KindViewController extends AbstractGesuchViewController<TSKindContainer> {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -93,7 +98,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EbeguRestUtil',
         'MandantService',
         'KinderabzugExchangeService',
-        'HybridFormBridgeService',
+        'HybridFormBridgeService'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -143,33 +148,50 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly mandantService: MandantService,
         private readonly kinderabzugExchangeService: KinderabzugExchangeService,
-        private readonly hybridFormBridgeService: HybridFormBridgeService,
+        private readonly hybridFormBridgeService: HybridFormBridgeService
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.KINDER,
+            $timeout
+        );
         if ($stateParams.kindNumber) {
             const kindNumber = parseInt($stateParams.kindNumber, 10);
-            const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+            const kindIndex =
+                this.gesuchModelManager.convertKindNumberToKindIndex(
+                    kindNumber
+                );
             if (kindIndex >= 0) {
-                this.model = angular.copy(this.gesuchModelManager.getGesuch().kindContainers[kindIndex]);
+                this.model = angular.copy(
+                    this.gesuchModelManager.getGesuch().kindContainers[
+                        kindIndex
+                    ]
+                );
                 this.gesuchModelManager.setKindIndex(kindIndex);
             }
         } else {
             // wenn kind nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
             this.model = this.initEmptyKind(undefined);
-            const kindIndex = this.gesuchModelManager.getGesuch().kindContainers ?
-                this.gesuchModelManager.getGesuch().kindContainers.length :
-                0;
+            const kindIndex = this.gesuchModelManager.getGesuch().kindContainers
+                ? this.gesuchModelManager.getGesuch().kindContainers.length
+                : 0;
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         // TODO: Replace with angularX async template pipe during ablösung
         this.mandantService.mandant$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(mandant => {
-                this.mandant = mandant;
-                this.initViewModel();
-        }, err => LOG.error(err));
-
+            .subscribe(
+                mandant => {
+                    this.mandant = mandant;
+                    this.initViewModel();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
@@ -180,7 +202,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = new EinschulungTypesVisitor().process(this.mandant);
+        this.einschulungTypValues = new EinschulungTypesVisitor().process(
+            this.mandant
+        );
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
@@ -196,49 +220,72 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getTextSprichtAmtssprache(): string {
-        return this.$translate.instant('SPRICHT_AMTSSPRACHE',
-            {
-                amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
-            });
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {
+            amtssprache: EbeguUtil.getAmtsspracheAsString(
+                this.gesuchModelManager.gemeindeStammdaten,
+                this.$translate
+            )
+        });
     }
 
     private initFachstelle(): void {
         this.showFachstelle = this.model.kindJA.pensumFachstellen?.length > 0;
-        this.showFachstelleGS = this.model.kindGS?.pensumFachstellen?.length > 0;
+        this.showFachstelleGS =
+            this.model.kindGS?.pensumFachstellen?.length > 0;
     }
 
     private initAusserordentlicherAnspruch(): void {
-        this.showAusserordentlicherAnspruch = !!(this.model.kindJA.pensumAusserordentlicherAnspruch);
+        this.showAusserordentlicherAnspruch =
+            !!this.model.kindJA.pensumAusserordentlicherAnspruch;
     }
 
     public save(): IPromise<TSKindContainer> {
         this.submitted = true;
         this.errorService.clearAll();
         this.kinderabzugExchangeService.triggerFormValidation();
-        if (!this.isGesuchValid() || this.kinderabzugExchangeService.anyFormInvalid()) {
+        if (
+            !this.isGesuchValid() ||
+            this.kinderabzugExchangeService.anyFormInvalid()
+        ) {
             return undefined;
         }
         const invalidPensumFachstellen = this.checkFachstellenValidity();
         if (invalidPensumFachstellen.length > 0) {
-            this.errorService.addMesageAsError(invalidPensumFachstellen[0].error);
+            this.errorService.addMesageAsError(
+                invalidPensumFachstellen[0].error
+            );
             return undefined;
         }
 
-        if (!this.hybridFormBridgeService.forms.reduce((prev, cur) => cur.valid && prev, true)) {
+        if (
+            !this.hybridFormBridgeService.forms.reduce(
+                (prev, cur) => cur.valid && prev,
+                true
+            )
+        ) {
             return undefined;
         }
 
-        if (!this.getPensumFachstellen().reduce((prev, cur) => prev && cur.isComplete(this.fachstellenTyp), true)) {
+        if (
+            !this.getPensumFachstellen().reduce(
+                (prev, cur) => prev && cur.isComplete(this.fachstellenTyp),
+                true
+            )
+        ) {
             return undefined;
         }
 
-        this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
+        this.getModel().zukunftigeGeburtsdatum =
+            this.isGeburtsdatumInZunkunft();
         this.getModel().inPruefung = false;
 
         this.errorService.clearAll();
         if (this.isGeburtstagInvalidForFkjv()) {
-            this.errorService.addMesageAsError(this.$translate.instant('ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG'));
+            this.errorService.addMesageAsError(
+                this.$translate.instant(
+                    'ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG'
+                )
+            );
             return undefined;
         }
         return this.gesuchModelManager.saveKind(this.model);
@@ -248,15 +295,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
      * Geburtsdatum darf nicht auf über 18 Jahre sein, wenn für das Kind bereits eine Betreuung erfasst wurde
      */
     public isGeburtstagInvalidForFkjv(): boolean {
-        return this.showFkjvKinderabzug()
-            && this.isOrGetsKindVolljaehrigDuringGP()
-            && this.hasKindBetreuungen();
+        return (
+            this.showFkjvKinderabzug() &&
+            this.isOrGetsKindVolljaehrigDuringGP() &&
+            this.hasKindBetreuungen()
+        );
     }
 
     public isOrGetsKindVolljaehrigDuringGP(): boolean {
         return EbeguUtil.calculateKindIsOrGetsVolljaehrig(
             this.getModel().geburtsdatum,
-            this.gesuchModelManager.getGesuchsperiode());
+            this.gesuchModelManager.getGesuchsperiode()
+        );
     }
 
     public cancel(): void {
@@ -295,24 +345,37 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public showAusserordentlicherAnspruchCheckbox(): boolean {
         // Checkbox nie anzeigen, wenn kein ausserordentlicher Anspruch
-        if (this.ausserodentlicherAnspruchTyp === TSAusserordentlicherAnspruchTyp.KEINE) {
+        if (
+            this.ausserodentlicherAnspruchTyp ===
+            TSAusserordentlicherAnspruchTyp.KEINE
+        ) {
             return false;
         }
         // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat und entweder bereits ein
         // Anspruch gesetzt ist, oder es sich um einen Gemeinde-User handelt
-        return this.getModel().familienErgaenzendeBetreuung && (
-            this.showAusserordentlicherAnspruch
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()));
+        return (
+            this.getModel().familienErgaenzendeBetreuung &&
+            (this.showAusserordentlicherAnspruch ||
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getAdministratorOrAmtRole()
+                ))
+        );
     }
 
     public isAusserordentlicherAnspruchEnabled(): boolean {
-        return !this.isGesuchReadonly()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        return (
+            !this.isGesuchReadonly() &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorOrAmtRole()
+            )
+        );
     }
 
     public showAusserordentlicherAnspruchClicked(): void {
-        this.getModel().pensumAusserordentlicherAnspruch =
-            this.showAusserordentlicherAnspruch ? new TSPensumAusserordentlicherAnspruch() : undefined;
+        this.getModel().pensumAusserordentlicherAnspruch = this
+            .showAusserordentlicherAnspruch
+            ? new TSPensumAusserordentlicherAnspruch()
+            : undefined;
     }
 
     public familienErgaenzendeBetreuungClicked(): void {
@@ -349,7 +412,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public isFachstelleRequired(): boolean {
-        return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showFachstelle;
+        return (
+            this.getModel() &&
+            this.getModel().familienErgaenzendeBetreuung &&
+            this.showFachstelle
+        );
     }
 
     public getPensumAusserordentlicherAnspruch(): TSPensumAusserordentlicherAnspruch {
@@ -366,7 +433,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public showAusAsylwesen(): boolean {
         // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat und zemis nicht deaktiviert ist
-        return this.getModel().familienErgaenzendeBetreuung && !this.isZemisDeaktiviert;
+        return (
+            this.getModel().familienErgaenzendeBetreuung &&
+            !this.isZemisDeaktiviert
+        );
     }
 
     public showZemisNummer(): boolean {
@@ -398,34 +468,57 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {
-        return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
+        return (
+            this.getModel() &&
+            this.getModel().familienErgaenzendeBetreuung &&
+            this.showAusserordentlicherAnspruch
+        );
     }
 
     public getYearEinschulung(): number {
-        if (this.gesuchModelManager && this.gesuchModelManager.getGesuchsperiodeBegin()) {
+        if (
+            this.gesuchModelManager &&
+            this.gesuchModelManager.getGesuchsperiodeBegin()
+        ) {
             return this.gesuchModelManager.getGesuchsperiodeBegin().year();
         }
         return undefined;
     }
 
     public getTextFachstelleKorrekturJA(): string {
-        return this.getContainer().kindGS?.pensumFachstellen.map(fachstelle => {
-                const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
-                const bisText = fachstelle.gueltigkeit.gueltigBis ?
-                    DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
-                    CONSTANTS.END_OF_TIME_STRING;
-                const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
-                const fachstellenname = fachstelle.fachstelle ? fachstelle.fachstelle.name : '';
-                return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
-                    name: fachstellenname,
-                    integration: integrationTyp,
-                    pensum: fachstelle.pensum,
-                    von: vonText,
-                    bis: bisText,
-                });
-            }).reduce((previousValue, currentValue) => previousValue.concat('\n', currentValue), '')
-            || this.$translate.instant('LABEL_KEINE_ANGABE');
-
+        return (
+            this.getContainer()
+                .kindGS?.pensumFachstellen.map(fachstelle => {
+                    const vonText = DateUtil.momentToLocalDateFormat(
+                        fachstelle.gueltigkeit.gueltigAb,
+                        'DD.MM.YYYY'
+                    );
+                    const bisText = fachstelle.gueltigkeit.gueltigBis
+                        ? DateUtil.momentToLocalDateFormat(
+                              fachstelle.gueltigkeit.gueltigBis,
+                              'DD.MM.YYYY'
+                          )
+                        : CONSTANTS.END_OF_TIME_STRING;
+                    const integrationTyp = this.$translate.instant(
+                        fachstelle.integrationTyp
+                    );
+                    const fachstellenname = fachstelle.fachstelle
+                        ? fachstelle.fachstelle.name
+                        : '';
+                    return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
+                        name: fachstellenname,
+                        integration: integrationTyp,
+                        pensum: fachstelle.pensum,
+                        von: vonText,
+                        bis: bisText
+                    });
+                })
+                .reduce(
+                    (previousValue, currentValue) =>
+                        previousValue.concat('\n', currentValue),
+                    ''
+                ) || this.$translate.instant('LABEL_KEINE_ANGABE')
+        );
     }
 
     private initEmptyKind(kindNumber: number): TSKindContainer {
@@ -444,32 +537,45 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public hasAngebotBGOnly(): boolean {
-        return this.getGesuch()
-            && this.getGesuch().dossier
-            && this.getGesuch().dossier.gemeinde
-            && this.getGesuch().dossier.gemeinde.angebotBG
-            && !(this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats);
+        return (
+            this.getGesuch() &&
+            this.getGesuch().dossier &&
+            this.getGesuch().dossier.gemeinde &&
+            this.getGesuch().dossier.gemeinde.angebotBG &&
+            !(
+                this.getGesuch().dossier.gemeinde.angebotTS &&
+                !this.getGesuch().dossier.gemeinde.nurLats
+            )
+        );
     }
 
     public hasAngebotTSOnly(): boolean {
-        return this.getGesuch()
-            && this.getGesuch().dossier
-            && this.getGesuch().dossier.gemeinde
-            && this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats
-            && !this.getGesuch().dossier.gemeinde.angebotBG;
+        return (
+            this.getGesuch() &&
+            this.getGesuch().dossier &&
+            this.getGesuch().dossier.gemeinde &&
+            this.getGesuch().dossier.gemeinde.angebotTS &&
+            !this.getGesuch().dossier.gemeinde.nurLats &&
+            !this.getGesuch().dossier.gemeinde.angebotBG
+        );
     }
 
     public hasAngebotBGAndTS(): boolean {
-        return this.getGesuch()
-            && this.getGesuch().dossier
-            && this.getGesuch().dossier.gemeinde
-            && this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats
-            && this.getGesuch().dossier.gemeinde.angebotBG;
+        return (
+            this.getGesuch() &&
+            this.getGesuch().dossier &&
+            this.getGesuch().dossier.gemeinde &&
+            this.getGesuch().dossier.gemeinde.angebotTS &&
+            !this.getGesuch().dossier.gemeinde.nurLats &&
+            this.getGesuch().dossier.gemeinde.angebotBG
+        );
     }
 
     public showKeinSelbstbehaltDurchGemeinde(): boolean {
-        return this.model.keinSelbstbehaltDurchGemeinde !== null
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+        return (
+            this.model.keinSelbstbehaltDurchGemeinde !== null &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        );
     }
 
     public deleteZemisNummer(): void {
@@ -479,20 +585,28 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private isGeburtsdatumInZunkunft(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getModel().geburtsdatum) &&
-            this.getModel().geburtsdatum.isAfter(moment());
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getModel().geburtsdatum) &&
+            this.getModel().geburtsdatum.isAfter(moment())
+        );
     }
 
     public showGeburtsdatumWarning(): boolean {
-        return this.isGeburtsdatumInZunkunft() || this.getModel().zukunftigeGeburtsdatum;
+        return (
+            this.isGeburtsdatumInZunkunft() ||
+            this.getModel().zukunftigeGeburtsdatum
+        );
     }
 
     private getEinstellungKontingentierung(): void {
-        this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
+        this.kontingentierungEnabled =
+            this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
     }
 
     public geburtsdatumChanged(): void {
-        this.kinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
+        this.kinderabzugExchangeService.triggerGeburtsdatumChanged(
+            this.getModel().geburtsdatum
+        );
     }
 
     public familienErgaenzendeBetreuungChanged(): void {
@@ -512,29 +626,50 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showWarningPensumOverlaps(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.fachstellenPensumOverlapsMessageKey);
+        return EbeguUtil.isNotNullOrUndefined(
+            this.fachstellenPensumOverlapsMessageKey
+        );
     }
 
     private loadEinstellungen(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(einstellungen => {
-                this.loadEinstellungZemisDisabled(einstellungen);
-                this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
-                this.loadEinstellungKinderabzugTyp(einstellungen);
-                this.loadEinstellungAnspruchUnabhaengig(einstellungen);
-                this.loadEinstellungSpracheAmtsprache(einstellungen);
-                this.loadEinstellungFachstellenTyp(einstellungen);
-                this.loadEinstellungAusserordentlicherAnspruchTyp(einstellungen);
-                this.loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen);
-                this.loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen);
-                this.loadEinstellungHoehereBeitraegeBeeintraechtigung(einstellungen);
-            }, error => LOG.error(error));
+            .subscribe(
+                einstellungen => {
+                    this.loadEinstellungZemisDisabled(einstellungen);
+                    this.loadEinstellungMaxAusserordentlicherAnspruch(
+                        einstellungen
+                    );
+                    this.loadEinstellungKinderabzugTyp(einstellungen);
+                    this.loadEinstellungAnspruchUnabhaengig(einstellungen);
+                    this.loadEinstellungSpracheAmtsprache(einstellungen);
+                    this.loadEinstellungFachstellenTyp(einstellungen);
+                    this.loadEinstellungAusserordentlicherAnspruchTyp(
+                        einstellungen
+                    );
+                    this.loadEinstellungSozialeIntegrationBisSchulstufe(
+                        einstellungen
+                    );
+                    this.loadEinstellungSprachlicheIntegrationBisSchulstufe(
+                        einstellungen
+                    );
+                    this.loadEinstellungHoehereBeitraegeBeeintraechtigung(
+                        einstellungen
+                    );
+                },
+                error => LOG.error(error)
+            );
     }
 
-    private loadEinstellungSpracheAmtsprache(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
+    private loadEinstellungSpracheAmtsprache(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED
+        );
         this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
         if (this.isSpracheAmtspracheDisabled) {
             this.getModel().sprichtAmtssprache = true;
@@ -542,73 +677,133 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private loadEinstellungZemisDisabled(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.ZEMIS_DISABLED
+        );
         this.isZemisDeaktiviert = einstellung.value === 'true';
     }
 
-    private loadEinstellungMaxAusserordentlicherAnspruch(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
+    private loadEinstellungMaxAusserordentlicherAnspruch(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e =>
+                e.key ===
+                TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH
+        );
         this.maxPensumAusserordentlicherAnspruch = einstellung.value;
     }
 
-    private loadEinstellungKinderabzugTyp(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
-        this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
+    private loadEinstellungKinderabzugTyp(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.KINDERABZUG_TYP
+        );
+        this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(
+            einstellung.value
+        );
     }
 
-    private loadEinstellungAnspruchUnabhaengig(einstellungen: TSEinstellung[]): void {
-        const einstellungAbhaengigkeitAnspruchBeschaeftigung = this.ebeguRestUtil
-            .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
-                .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
+    private loadEinstellungAnspruchUnabhaengig(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellungAbhaengigkeitAnspruchBeschaeftigung =
+            this.ebeguRestUtil.parseAnspruchBeschaeftigungAbhaengigkeitTyp(
+                einstellungen.find(
+                    e =>
+                        e.key ===
+                        TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM
+                )
+            );
 
         this.anspruchUnabhaengingVomBeschaeftigungspensum =
             einstellungAbhaengigkeitAnspruchBeschaeftigung ===
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 
-    private loadEinstellungFachstellenTyp(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.FACHSTELLEN_TYP);
-        this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+    private loadEinstellungFachstellenTyp(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.FACHSTELLEN_TYP
+        );
+        this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(
+            einstellung.value
+        );
 
-        this.integrationTypes = this.fachstellenTyp === TSFachstellenTyp.LUZERN ?
-            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
-            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
+        this.integrationTypes =
+            this.fachstellenTyp === TSFachstellenTyp.LUZERN
+                ? [
+                      TSIntegrationTyp.SPRACHLICHE_INTEGRATION,
+                      TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
+                  ]
+                : [
+                      TSIntegrationTyp.SOZIALE_INTEGRATION,
+                      TSIntegrationTyp.SPRACHLICHE_INTEGRATION
+                  ];
     }
 
-    private loadEinstellungAusserordentlicherAnspruchTyp(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE);
-        this.ausserodentlicherAnspruchTyp = this.ebeguRestUtil.parseAusserordentlicherAnspruchTyp(einstellung.value);
+    private loadEinstellungAusserordentlicherAnspruchTyp(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e => e.key === TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE
+        );
+        this.ausserodentlicherAnspruchTyp =
+            this.ebeguRestUtil.parseAusserordentlicherAnspruchTyp(
+                einstellung.value
+            );
     }
 
-    private loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE);
-        this.sozialeIntegrationBisSchulstufe = this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
+    private loadEinstellungSozialeIntegrationBisSchulstufe(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e =>
+                e.key ===
+                TSEinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE
+        );
+        this.sozialeIntegrationBisSchulstufe =
+            this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
     }
 
-    private loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE);
-        this.sprachlicheIntegrationBisSchulstufe = this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
+    private loadEinstellungSprachlicheIntegrationBisSchulstufe(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e =>
+                e.key ===
+                TSEinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE
+        );
+        this.sprachlicheIntegrationBisSchulstufe =
+            this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
     }
 
-    private loadEinstellungHoehereBeitraegeBeeintraechtigung(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT);
-        this.isHoehereBeitraegeBeeintraechtigungAktiviert = einstellung.getValueAsBoolean();
+    private loadEinstellungHoehereBeitraegeBeeintraechtigung(
+        einstellungen: TSEinstellung[]
+    ): void {
+        const einstellung = einstellungen.find(
+            e =>
+                e.key ===
+                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT
+        );
+        this.isHoehereBeitraegeBeeintraechtigungAktiviert =
+            einstellung.getValueAsBoolean();
     }
 
     public isEinschulungTypObligatorischerKindergarten(): boolean {
-        return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
+        return (
+            this.getModel().einschulungTyp ===
+            TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN
+        );
     }
 
     public einschulungTypChanged(): void {
-        if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
+        if (
+            this.getModel().einschulungTyp !==
+            TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN
+        ) {
             this.getModel().keinPlatzInSchulhort = false;
         }
     }
@@ -621,47 +816,75 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.fachstellenTyp !== TSFachstellenTyp.KEINE;
     }
 
-    public checkFachstellenValidity(): {pensumFachstelle: TSPensumFachstelle; error: string}[] {
-        const errors: { pensumFachstelle: TSPensumFachstelle; error: string }[] = [];
+    public checkFachstellenValidity(): {
+        pensumFachstelle: TSPensumFachstelle;
+        error: string;
+    }[] {
+        const errors: {pensumFachstelle: TSPensumFachstelle; error: string}[] =
+            [];
 
-        if (EbeguUtil.isNullOrUndefined(this.getPensumFachstellen()) || this.getPensumFachstellen().length < 1) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.getPensumFachstellen()) ||
+            this.getPensumFachstellen().length < 1
+        ) {
             return errors;
         }
-        const einschulungstypen = new EinschulungTypesVisitor().process(this.mandant);
-        const ordinalitaetKind =
-            einschulungstypen.findIndex(einschulungstyp => einschulungstyp === this.getModel().einschulungTyp);
+        const einschulungstypen = new EinschulungTypesVisitor().process(
+            this.mandant
+        );
+        const ordinalitaetKind = einschulungstypen.findIndex(
+            einschulungstyp =>
+                einschulungstyp === this.getModel().einschulungTyp
+        );
         if (ordinalitaetKind < 0) {
-            throw new Error(`Einschulungstyp ${this.getModel().einschulungTyp} not found for ${this.mandant}`);
+            throw new Error(
+                `Einschulungstyp ${this.getModel().einschulungTyp} not found for ${this.mandant}`
+            );
         }
 
         for (const pensumFachstelle of this.getPensumFachstellen()) {
             let ordinalitaetEinstellung;
             switch (pensumFachstelle.integrationTyp) {
                 case TSIntegrationTyp.SOZIALE_INTEGRATION:
-                    ordinalitaetEinstellung =
-                        einschulungstypen.findIndex(einschulungstyp => einschulungstyp === this.sozialeIntegrationBisSchulstufe);
+                    ordinalitaetEinstellung = einschulungstypen.findIndex(
+                        einschulungstyp =>
+                            einschulungstyp ===
+                            this.sozialeIntegrationBisSchulstufe
+                    );
                     if (ordinalitaetKind > ordinalitaetEinstellung) {
                         errors.push({
                             pensumFachstelle,
-                            error: this.$translate.instant('PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL',
-                                {stufe: this.$translate.instant(this.sozialeIntegrationBisSchulstufe)})
+                            error: this.$translate.instant(
+                                'PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL',
+                                {
+                                    stufe: this.$translate.instant(
+                                        this.sozialeIntegrationBisSchulstufe
+                                    )
+                                }
+                            )
                         });
                     }
                     break;
                 case TSIntegrationTyp.SPRACHLICHE_INTEGRATION:
                 case TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION:
-                    ordinalitaetEinstellung =
-                        einschulungstypen.findIndex(einschulungstyp =>
-                            einschulungstyp === this.sprachlicheIntegrationBisSchulstufe);
+                    ordinalitaetEinstellung = einschulungstypen.findIndex(
+                        einschulungstyp =>
+                            einschulungstyp ===
+                            this.sprachlicheIntegrationBisSchulstufe
+                    );
                     if (ordinalitaetKind > ordinalitaetEinstellung) {
                         errors.push({
                             pensumFachstelle,
-                            error: this.$translate.instant('PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH')
+                            error: this.$translate.instant(
+                                'PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH'
+                            )
                         });
                     }
                     break;
                 default:
-                    throw new Error(`Unhandled TSIntegrationTyp ${pensumFachstelle.integrationTyp}`);
+                    throw new Error(
+                        `Unhandled TSIntegrationTyp ${pensumFachstelle.integrationTyp}`
+                    );
             }
         }
         return errors;
