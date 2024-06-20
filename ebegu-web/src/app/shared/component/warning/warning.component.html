@@ -1,10 +1,9 @@
-<div *ngIf="!text" class="row">
-	<div class="col-sm-12 well well-status-warten" translate>
-		<ng-content></ng-content>
-	</div>
-</div>
-
-<div *ngIf="text" class="row">
-	<div class="col-sm-12 well well-status-warten" [innerHTML]="text">
-	</div>
+<div class="row">
+    @if (!text) {
+        <div class="col-sm-12 well well-status-warten" translate>
+            <ng-content></ng-content>
+        </div>
+    } @else {
+        <div class="col-sm-12 well well-status-warten" [innerHTML]="text"></div>
+    }
 </div>
