@@ -40,7 +40,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         MaterialModule,
         NgxIbanModule,
         ClipboardModule,
-        WarningComponent,
+        WarningComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

@@ -22,13 +22,7 @@
 
     <div class="row">
         <div class="col-md-12">
-
-            <form
-                name="form"
-                class=""
-                novalidate
-                unsaved-warning-form
-            >
+            <form name="form" class="" novalidate unsaved-warning-form>
                 <!--Aenderung per-->
                 <div class="row" *ngIf="isMutation()">
                     <div class="col-md-12">
@@ -72,11 +66,12 @@
                 <div class="row">
                     <div class="col-xs-12 dv-input-container-question">
                         <div class="form-group">
-                                <span class="ebegu-h1 required">
-                                    <span translate>FAMILIENSITUATION_FRAGE_2</span>
-                                    <dv-tooltip
-                                        [text]="'FAMILIENSITUATION_FRAGE_2_HINT'"></dv-tooltip>
-                                </span>
+                            <span class="ebegu-h1 required">
+                                <span translate>FAMILIENSITUATION_FRAGE_2</span>
+                                <dv-tooltip
+                                    [text]="'FAMILIENSITUATION_FRAGE_2_HINT'"
+                                ></dv-tooltip>
+                            </span>
                             <dv-radio-container-x>
                                 <mat-radio-group
                                     [(ngModel)]="
@@ -141,17 +136,50 @@
                     </div>
                 </div>
 
-                <dv-warning><span>{{'FAMILIENSITUATION_WARNING' | translate}}</span></dv-warning>
+                <dv-warning
+                    ><span>{{
+                        'FAMILIENSITUATION_WARNING' | translate
+                    }}</span></dv-warning
+                >
 
                 <dv-warning>
-                    <span [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FAMILIENSITUATION_PATCHWORKFAMILIE' | translate
+                        "
+                    ></span>
                     <ul>
-                        <li [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE_VERHEIRATET' | translate"></li>
-                        <li [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE_UNVERHEIRATET' | translate"></li>
-                        <li [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE_UNVERHEIRATET_GEMEINSAME_KINDER' | translate"></li>
-                        <li [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE_GEMEINSAME_KINDER' | translate"></li>
+                        <li
+                            [innerHTML]="
+                                'FAMILIENSITUATION_PATCHWORKFAMILIE_VERHEIRATET'
+                                    | translate
+                            "
+                        ></li>
+                        <li
+                            [innerHTML]="
+                                'FAMILIENSITUATION_PATCHWORKFAMILIE_UNVERHEIRATET'
+                                    | translate
+                            "
+                        ></li>
+                        <li
+                            [innerHTML]="
+                                'FAMILIENSITUATION_PATCHWORKFAMILIE_UNVERHEIRATET_GEMEINSAME_KINDER'
+                                    | translate
+                            "
+                        ></li>
+                        <li
+                            [innerHTML]="
+                                'FAMILIENSITUATION_PATCHWORKFAMILIE_GEMEINSAME_KINDER'
+                                    | translate
+                            "
+                        ></li>
                     </ul>
-                    <span [innerHTML]="'FAMILIENSITUATION_PATCHWORKFAMILIE_UNKLARHEITEN' | translate"></span>
+                    <span
+                        [innerHTML]="
+                            'FAMILIENSITUATION_PATCHWORKFAMILIE_UNKLARHEITEN'
+                                | translate
+                        "
+                    ></span>
                 </dv-warning>
 
                 <div class="row">

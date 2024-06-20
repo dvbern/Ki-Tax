@@ -74,7 +74,7 @@ import {EinkommensverschlechterungAppenzellResultateViewComponent} from './compo
         FallToolbarModule,
         FinanzielleSituationSchwyzModule,
         FamiliensituationModule,
-        WarningComponent,
+        WarningComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
