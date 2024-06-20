@@ -36,7 +36,6 @@ import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
 
 describe('DVQuicksearchList', () => {
-
     let institutionRS: InstitutionRS;
     let gesuchsperiodeRS: GesuchsperiodeRS;
     let gesuchRS: GesuchRS;
@@ -58,51 +57,71 @@ describe('DVQuicksearchList', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        searchRS = $injector.get('SearchRS');
-        institutionRS = $injector.get('InstitutionRS');
-        gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
-        $q = $injector.get('$q');
-        gesuchRS = $injector.get('GesuchRS');
-        $scope = $injector.get('$rootScope');
-        $filter = $injector.get('$filter');
-        $httpBackend = $injector.get('$httpBackend');
-        $state = $injector.get('$state');
-        wizardStepManager = $injector.get('WizardStepManager');
-        authServiceRS = $injector.get('AuthServiceRS');
-        gemeindeRS = $injector.get('GemeindeRS');
-        gemeindeRS = $injector.get('GemeindeRS');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            searchRS = $injector.get('SearchRS');
+            institutionRS = $injector.get('InstitutionRS');
+            gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');
+            $q = $injector.get('$q');
+            gesuchRS = $injector.get('GesuchRS');
+            $scope = $injector.get('$rootScope');
+            $filter = $injector.get('$filter');
+            $httpBackend = $injector.get('$httpBackend');
+            $state = $injector.get('$state');
+            wizardStepManager = $injector.get('WizardStepManager');
+            authServiceRS = $injector.get('AuthServiceRS');
+            gemeindeRS = $injector.get('GemeindeRS');
+            gemeindeRS = $injector.get('GemeindeRS');
+        })
+    );
 
     describe('API Usage', () => {
-
         describe('translateBetreuungsangebotTypList', () => {
             it('returns a comma separated string with all BetreuungsangebotTypen', () => {
-                quicksearchListViewController = new DVQuicksearchListController($filter,
+                quicksearchListViewController = new DVQuicksearchListController(
+                    $filter,
                     institutionRS,
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
                     gemeindeRS,
-                    applicationPropertyRS);
+                    applicationPropertyRS
+                );
                 const list: Array<TSBetreuungsangebotTyp> = [
                     TSBetreuungsangebotTyp.KITA,
                     TSBetreuungsangebotTyp.TAGESFAMILIEN
                 ];
-                expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita, Tagesfamilien');
+                expect(
+                    quicksearchListViewController.translateBetreuungsangebotTypList(
+                        list
+                    )
+                ).toEqual('Kita, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
-                quicksearchListViewController = new DVQuicksearchListController($filter,
+                quicksearchListViewController = new DVQuicksearchListController(
+                    $filter,
                     institutionRS,
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
                     gemeindeRS,
-                    applicationPropertyRS);
-                expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
-                expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
-                expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
+                    applicationPropertyRS
+                );
+                expect(
+                    quicksearchListViewController.translateBetreuungsangebotTypList(
+                        []
+                    )
+                ).toEqual('');
+                expect(
+                    quicksearchListViewController.translateBetreuungsangebotTypList(
+                        undefined
+                    )
+                ).toEqual('');
+                expect(
+                    quicksearchListViewController.translateBetreuungsangebotTypList(
+                        null
+                    )
+                ).toEqual('');
             });
         });
         describe('editAntrag', () => {
@@ -110,17 +129,23 @@ describe('DVQuicksearchList', () => {
                 const mockAntrag = mockGetAntragList();
                 mockRestCalls();
                 spyOn($state, 'go');
-                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(undefined);
-                quicksearchListViewController = new DVQuicksearchListController($filter,
+                spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue(
+                    undefined
+                );
+                quicksearchListViewController = new DVQuicksearchListController(
+                    $filter,
                     institutionRS,
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
                     gemeindeRS,
-                    applicationPropertyRS);
+                    applicationPropertyRS
+                );
 
                 const tsGesuch = new TSGesuch();
-                spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));
+                spyOn(gesuchRS, 'findGesuch').and.returnValue(
+                    $q.when(tsGesuch)
+                );
 
                 quicksearchListViewController.editAntrag(mockAntrag, undefined); // antrag wird eidtiert
                 $scope.$apply();
@@ -129,7 +154,6 @@ describe('DVQuicksearchList', () => {
                     gesuchId: '66345345',
                     dossierId: mockAntrag.dossierId
                 });
-
             });
         });
     });
@@ -151,8 +175,9 @@ describe('DVQuicksearchList', () => {
         mockAntrag.status = undefined;
         mockAntrag.gesuchsperiodeGueltigAb = undefined;
         mockAntrag.gesuchsperiodeGueltigBis = undefined;
-        spyOn(searchRS, 'getPendenzenList')
-            .and.returnValue(of(new TSAntragSearchresultDTO([mockAntrag])));
+        spyOn(searchRS, 'getPendenzenList').and.returnValue(
+            of(new TSAntragSearchresultDTO([mockAntrag]))
+        );
         return mockAntrag;
     }
 
@@ -160,7 +185,9 @@ describe('DVQuicksearchList', () => {
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/institutionen').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/benutzer').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
+        $httpBackend
+            .when('GET', '/ebegu/api/v1/gesuchsperioden/active')
+            .respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/').respond({});
     }
 });

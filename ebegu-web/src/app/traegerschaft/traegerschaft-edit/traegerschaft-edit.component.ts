@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
@@ -30,7 +35,6 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftEditComponent implements OnInit {
-
     @ViewChild(NgForm) public form: NgForm;
 
     public traegerschaft$: Observable<TSTraegerschaft>;
@@ -42,8 +46,7 @@ export class TraegerschaftEditComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly traegerschaftRS: TraegerschaftRS
-
-    ) { }
+    ) {}
 
     public ngOnInit(): void {
         this.navigationSource = this.$transition$.from();
@@ -52,7 +55,10 @@ export class TraegerschaftEditComponent implements OnInit {
             return;
         }
         this.traegerschaft$ = from(
-            this.traegerschaftRS.findTraegerschaft(this.traegerschaftId).then(result => result));
+            this.traegerschaftRS
+                .findTraegerschaft(this.traegerschaftId)
+                .then(result => result)
+        );
     }
 
     public save(stammdaten: TSTraegerschaft): void {
@@ -60,7 +66,9 @@ export class TraegerschaftEditComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        this.traegerschaftRS.saveTraegerschaft(stammdaten).then(() => this.navigateBack());
+        this.traegerschaftRS
+            .saveTraegerschaft(stammdaten)
+            .then(() => this.navigateBack());
     }
 
     public cancel(): void {
@@ -72,9 +80,10 @@ export class TraegerschaftEditComponent implements OnInit {
             this.$state.go('traegerschaft.list');
             return;
         }
-        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-            ? 'traegerschaft.view'
-            : this.navigationSource;
+        const redirectTo =
+            this.navigationSource.name === 'einladung.abschliessen'
+                ? 'traegerschaft.view'
+                : this.navigationSource;
 
         this.$state.go(redirectTo, {traegerschaftId: this.traegerschaftId});
     }

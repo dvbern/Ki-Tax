@@ -19,15 +19,9 @@ import {IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
 
 export class RedirectWarningDialogController {
+    public static $inject = ['$mdDialog'];
 
-    public static $inject = [
-        '$mdDialog'
-    ];
-
-    public constructor(
-        private readonly $mdDialog: IDialogService
-    ) {
-    }
+    public constructor(private readonly $mdDialog: IDialogService) {}
 
     public hide(): IPromise<any> {
         return this.$mdDialog.hide();

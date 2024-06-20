@@ -37,7 +37,6 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
 }
 
 export class DVErwerbspensumListController implements IOnInit {
-
     public static $inject: ReadonlyArray<string> = [];
 
     public erwerbspensen: TSErwerbspensum[];
@@ -63,11 +62,13 @@ export class DVErwerbspensumListController implements IOnInit {
             const obj: any = this.erwerbspensen[i];
             // FIXME woher kommt dieses Property?
             obj.isSelected = false;
-
         }
     }
 
-    public removeClicked(pensumToRemove: TSErwerbspensumContainer, index: any): void {
+    public removeClicked(
+        pensumToRemove: TSErwerbspensumContainer,
+        index: any
+    ): void {
         this.onRemove({pensum: pensumToRemove, index});
     }
 

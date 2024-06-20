@@ -30,28 +30,35 @@ import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
 
 /* eslint-disable no-magic-numbers */
 describe('EbeguUtil', () => {
-
     let ebeguUtil: EbeguUtil;
     const defaultFormat = 'DD.MM.YYYY';
 
     // Das wird nur fuer tests gebraucht in denen etwas uebersetzt wird. Leider muss man dieses erstellen
     // bevor man den Injector erstellt hat. Deshalb muss es fuer alle Tests definiert werden
-    beforeEach(angular.mock.module(($provide: IProvideService) => {
-        const mockTranslateFilter = (value: any) => {
-            if (value === 'FIRST') {
-                return 'Erster';
-            }
-            if (value === 'SECOND') {
-                return 'Zweiter';
-            }
-            return value;
-        };
-        $provide.value('translateFilter', mockTranslateFilter);
-    }));
+    beforeEach(
+        angular.mock.module(($provide: IProvideService) => {
+            const mockTranslateFilter = (value: any) => {
+                if (value === 'FIRST') {
+                    return 'Erster';
+                }
+                if (value === 'SECOND') {
+                    return 'Zweiter';
+                }
+                return value;
+            };
+            $provide.value('translateFilter', mockTranslateFilter);
+        })
+    );
 
-    beforeEach(angular.mock.inject($injector => {
-        ebeguUtil = new EbeguUtil($injector.get('$filter'), undefined, undefined);
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            ebeguUtil = new EbeguUtil(
+                $injector.get('$filter'),
+                undefined,
+                undefined
+            );
+        })
+    );
 
     describe('translateStringList', () => {
         it('should translate the given list of words', () => {
@@ -80,44 +87,92 @@ describe('EbeguUtil', () => {
     });
     describe('calculateBetreuungsId', () => {
         it('it returns empty string for undefined objects', () => {
-            expect(ebeguUtil.calculateBetreuungsId(undefined, undefined, undefined, 0, 0)).toBe('');
+            expect(
+                ebeguUtil.calculateBetreuungsId(
+                    undefined,
+                    undefined,
+                    undefined,
+                    0,
+                    0
+                )
+            ).toBe('');
         });
         it('it returns empty string for undefined kindContainer', () => {
             const fall = new TSFall();
             const gemeinde = new TSGemeinde();
-            expect(ebeguUtil.calculateBetreuungsId(undefined, fall, gemeinde, 0, 0)).toBe('');
+            expect(
+                ebeguUtil.calculateBetreuungsId(undefined, fall, gemeinde, 0, 0)
+            ).toBe('');
         });
         it('it returns empty string for undefined betreuung', () => {
             const gesuchsperiode = new TSGesuchsperiode();
-            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, undefined, undefined, 0, 0)).toBe('');
+            expect(
+                ebeguUtil.calculateBetreuungsId(
+                    gesuchsperiode,
+                    undefined,
+                    undefined,
+                    0,
+                    0
+                )
+            ).toBe('');
         });
         it('it returns the right ID: YY(gesuchsperiodeBegin).fallNummer.gemeindeNummer.Kind.Betreuung', () => {
             const fall = new TSFall(254);
             const gemeinde = new TSGemeinde();
             gemeinde.gemeindeNummer = 99;
             const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-            expect(ebeguUtil.calculateBetreuungsId(gesuchsperiode, fall, gemeinde, 1, 1)).toBe('16.000254.099.1.1');
+            expect(
+                ebeguUtil.calculateBetreuungsId(
+                    gesuchsperiode,
+                    fall,
+                    gemeinde,
+                    1,
+                    1
+                )
+            ).toBe('16.000254.099.1.1');
         });
     });
     describe('getFirstDayGesuchsperiodeAsString', () => {
         it('it returns empty string for undefined Gesuchsperiode', () => {
-            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(undefined)).toBe('');
+            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(undefined)).toBe(
+                ''
+            );
         });
         it('it returns empty string for undefined daterange in the Gesuchsperiode', () => {
-            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, undefined);
+            const gesuchsperiode = new TSGesuchsperiode(
+                TSGesuchsperiodeStatus.AKTIV,
+                undefined
+            );
             gesuchsperiode.gueltigkeit = undefined;
-            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
+            expect(
+                ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)
+            ).toBe('');
         });
         it('it returns empty string for undefined gueltigAb', () => {
-            const daterange = new TSDateRange(undefined, moment('31.07.2017', defaultFormat));
-            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
-            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('');
+            const daterange = new TSDateRange(
+                undefined,
+                moment('31.07.2017', defaultFormat)
+            );
+            const gesuchsperiode = new TSGesuchsperiode(
+                TSGesuchsperiodeStatus.AKTIV,
+                daterange
+            );
+            expect(
+                ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)
+            ).toBe('');
         });
         it('it returns 01.08.2016', () => {
-            const daterange = new TSDateRange(moment('01.08.2016', defaultFormat),
-                moment('31.07.2017', defaultFormat));
-            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, daterange);
-            expect(ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)).toBe('01.08.2016');
+            const daterange = new TSDateRange(
+                moment('01.08.2016', defaultFormat),
+                moment('31.07.2017', defaultFormat)
+            );
+            const gesuchsperiode = new TSGesuchsperiode(
+                TSGesuchsperiodeStatus.AKTIV,
+                daterange
+            );
+            expect(
+                ebeguUtil.getFirstDayGesuchsperiodeAsString(gesuchsperiode)
+            ).toBe('01.08.2016');
         });
     });
     describe('generateRandomName', () => {
@@ -148,7 +203,12 @@ describe('EbeguUtil', () => {
         }
 
         it('should not allow duplicates', () => {
-            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('1')], [Entity.of('1')])).toBe(false);
+            expect(
+                EbeguUtil.isSameById(
+                    [Entity.of('1'), Entity.of('1')],
+                    [Entity.of('1')]
+                )
+            ).toBe(false);
         });
 
         it('should allow identity', () => {
@@ -157,18 +217,30 @@ describe('EbeguUtil', () => {
         });
 
         it('should allow similar arrays', () => {
-            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('2')], [Entity.of('1'), Entity.of('2')]))
-                .toBe(true);
+            expect(
+                EbeguUtil.isSameById(
+                    [Entity.of('1'), Entity.of('2')],
+                    [Entity.of('1'), Entity.of('2')]
+                )
+            ).toBe(true);
         });
 
         it('should allow similar arrays - regardless of order', () => {
-            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('2')], [Entity.of('2'), Entity.of('1')]))
-                .toBe(true);
+            expect(
+                EbeguUtil.isSameById(
+                    [Entity.of('1'), Entity.of('2')],
+                    [Entity.of('2'), Entity.of('1')]
+                )
+            ).toBe(true);
         });
 
         it('should not require distinct ids', () => {
-            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('1')], [Entity.of('1'), Entity.of('2')]))
-                .toBe(false);
+            expect(
+                EbeguUtil.isSameById(
+                    [Entity.of('1'), Entity.of('1')],
+                    [Entity.of('1'), Entity.of('2')]
+                )
+            ).toBe(false);
         });
     });
     describe('ceilToFiveRappen', () => {
@@ -183,15 +255,22 @@ describe('EbeguUtil', () => {
     });
     describe('ZemisNummerToStandardZemisNummer', () => {
         it('Formate sollten in Standard Format konvertiert werden können', () => {
-            // eslint-disable-next-line
-                const zemis1 = '12345678.9';
-                const zemis2 = '012345678.9';
-                const zemis3 = '012.345.678.9';
-                const zemis4 = '012.345.678-9';
-                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis1)).toBe('12345678.9');
-                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis2)).toBe('12345678.9');
-                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis3)).toBe('12345678.9');
-                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis4)).toBe('12345678.9');
+            const zemis1 = '12345678.9';
+            const zemis2 = '012345678.9';
+            const zemis3 = '012.345.678.9';
+            const zemis4 = '012.345.678-9';
+            expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis1)).toBe(
+                '12345678.9'
+            );
+            expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis2)).toBe(
+                '12345678.9'
+            );
+            expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis3)).toBe(
+                '12345678.9'
+            );
+            expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis4)).toBe(
+                '12345678.9'
+            );
         });
         it('Formate sollen nicht akzeptiert werden und Fehler werfen', () => {
             const zemis1 = '123.45678.9';
@@ -199,21 +278,17 @@ describe('EbeguUtil', () => {
             const zemis3 = '0012.345.678.9';
             const zemis4 = '0012345678-9';
             expect(() => {
- EbeguUtil.zemisNummerToStandardZemisNummer(zemis1);
-})
-                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis1}`));
+                EbeguUtil.zemisNummerToStandardZemisNummer(zemis1);
+            }).toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis1}`));
             expect(() => {
- EbeguUtil.zemisNummerToStandardZemisNummer(zemis2);
-})
-                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis2}`));
+                EbeguUtil.zemisNummerToStandardZemisNummer(zemis2);
+            }).toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis2}`));
             expect(() => {
- EbeguUtil.zemisNummerToStandardZemisNummer(zemis3);
-})
-                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis3}`));
+                EbeguUtil.zemisNummerToStandardZemisNummer(zemis3);
+            }).toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis3}`));
             expect(() => {
- EbeguUtil.zemisNummerToStandardZemisNummer(zemis4);
-})
-                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis4}`));
+                EbeguUtil.zemisNummerToStandardZemisNummer(zemis4);
+            }).toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis4}`));
         });
     });
     describe('hasSprachlicheIndikation', () => {
@@ -224,23 +299,38 @@ describe('EbeguUtil', () => {
         });
 
         it('should return false if no PensumFachstellenList is defined', () => {
-            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(
+                false
+            );
         });
         it('should return false if no PensumFachstellenList is empty', () => {
             kindContainter.kindJA.pensumFachstellen = [];
-            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(
+                false
+            );
         });
         it('should return false if no PensumFachstellen with sprachliche indikation', () => {
             const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
-            pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SOZIALE_INTEGRATION;
-            kindContainter.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
-            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+            pensumFachstelleSozialeIndikation.integrationTyp =
+                TSIntegrationTyp.SOZIALE_INTEGRATION;
+            kindContainter.kindJA.pensumFachstellen = [
+                pensumFachstelleSozialeIndikation
+            ];
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(
+                false
+            );
         });
         it('should return true if one PensumFachstellen is sprachliche indikation', () => {
-            const pensumFachstelleSprachlicheIndikation = new TSPensumFachstelle();
-            pensumFachstelleSprachlicheIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
-            kindContainter.kindJA.pensumFachstellen = [pensumFachstelleSprachlicheIndikation];
-            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(true);
+            const pensumFachstelleSprachlicheIndikation =
+                new TSPensumFachstelle();
+            pensumFachstelleSprachlicheIndikation.integrationTyp =
+                TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+            kindContainter.kindJA.pensumFachstellen = [
+                pensumFachstelleSprachlicheIndikation
+            ];
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(
+                true
+            );
         });
     });
 });

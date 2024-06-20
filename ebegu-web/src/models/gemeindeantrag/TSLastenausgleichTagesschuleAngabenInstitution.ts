@@ -20,7 +20,6 @@ import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSOeffnungszeitenTagesschule} from './TSOeffnungszeitenTagesschule';
 
 export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEntity {
-
     // A: Informationen zur Tagesschule
     public isLehrbetrieb: boolean;
 
@@ -51,18 +50,38 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     public oeffnungszeiten: TSOeffnungszeitenTagesschule[];
 
     public areKontrollfragenAnswered(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.schuleAufBasisOrganisatorischesKonzept) &&
-            EbeguUtil.isNotNullOrUndefined(this.schuleAufBasisPaedagogischesKonzept) &&
-            EbeguUtil.isNotNullOrUndefined(this.raeumlicheVoraussetzungenEingehalten) &&
-            EbeguUtil.isNotNullOrUndefined(this.betreuungsverhaeltnisEingehalten) &&
-            EbeguUtil.isNotNullOrUndefined(this.ernaehrungsGrundsaetzeEingehalten);
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.schuleAufBasisOrganisatorischesKonzept
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.schuleAufBasisPaedagogischesKonzept
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.raeumlicheVoraussetzungenEingehalten
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.betreuungsverhaeltnisEingehalten
+            ) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.ernaehrungsGrundsaetzeEingehalten
+            )
+        );
     }
 
     public areKontrollfragenOk(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.schuleAufBasisOrganisatorischesKonzept) &&
-            EbeguUtil.isNotNullAndTrue(this.schuleAufBasisPaedagogischesKonzept) &&
-            EbeguUtil.isNotNullAndTrue(this.raeumlicheVoraussetzungenEingehalten) &&
+        return (
+            EbeguUtil.isNotNullAndTrue(
+                this.schuleAufBasisOrganisatorischesKonzept
+            ) &&
+            EbeguUtil.isNotNullAndTrue(
+                this.schuleAufBasisPaedagogischesKonzept
+            ) &&
+            EbeguUtil.isNotNullAndTrue(
+                this.raeumlicheVoraussetzungenEingehalten
+            ) &&
             EbeguUtil.isNotNullAndTrue(this.betreuungsverhaeltnisEingehalten) &&
-            EbeguUtil.isNotNullAndTrue(this.ernaehrungsGrundsaetzeEingehalten);
+            EbeguUtil.isNotNullAndTrue(this.ernaehrungsGrundsaetzeEingehalten)
+        );
     }
 }

@@ -14,6 +14,6 @@
  */
 
 export enum TSGeschlecht {
-  WEIBLICH = 'WEIBLICH',
-  MAENNLICH = 'MAENNLICH'
+    WEIBLICH = 'WEIBLICH',
+    MAENNLICH = 'MAENNLICH'
 }

@@ -23,8 +23,14 @@ import {LastenausgleichTSService} from './lastenausgleich-ts.service';
 
 describe('LastenausgleichTSService', () => {
     let service: LastenausgleichTSService;
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
-    const translateSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['addMesageAsInfo']
+    );
+    const translateSpy = jasmine.createSpyObj<TranslateService>(
+        TranslateService.name,
+        ['instant']
+    );
 
     beforeEach(() => {
         TestBed.configureTestingModule({

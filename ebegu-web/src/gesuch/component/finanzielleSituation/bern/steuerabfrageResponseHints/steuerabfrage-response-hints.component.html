@@ -15,56 +15,121 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div *ngIf="showWarningRetry() || showWarningWithoutRetry() || showZugriffKeineZPVNummer()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="getWarningText()"></p>
-    <a *ngIf="showWarningRetry() && (isGesuchsteller() || showRetryForGemeinde()) && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-    <a *ngIf="showZugriffKeineZPVNummer() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
+<div
+    *ngIf="
+        showWarningRetry() ||
+        showWarningWithoutRetry() ||
+        showZugriffKeineZPVNummer()
+    "
+    class="well well-status-warten minus-margin"
+>
+    <p class="ebegu-h3" [innerHTML]="getWarningText()"></p>
+    <a
+        *ngIf="
+            showWarningRetry() &&
+            (isGesuchsteller() || showRetryForGemeinde()) &&
+            !isGesuchReadonly()
+        "
+        class="pointer-cursor"
+        translate
+        (click)="tryAgain()"
+        >ERNEUT_VERSUCHEN</a
+    >
+    <a
+        *ngIf="
+            showZugriffKeineZPVNummer() &&
+            isGesuchsteller() &&
+            !isGesuchReadonly()
+        "
+        class="pointer-cursor"
+        translate
+        (click)="openDialogGSZPVVerknuepfen()"
+        >FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a
+    >
 </div>
 
-<div *ngIf="showZugriffErfolgreich(status)"
-     class="well well-status-bestaetigt minus-margin">
-<!--    wir haben den timestamp erst später hinzugefügt. deshalb kann es sein, dass dieser leer ist-->
-    <p class="ebegu-h3" *ngIf="timestampAbruf"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate: {timestamp: timestampAbruf | ebeguDateTime, veranlagungsstand: translateVeranlagungsstand()}"></p>
-    <p class="ebegu-h3" *ngIf="!timestampAbruf"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH_WITHOUT_TIMESTAMP' | translate: {veranlagungsstand: translateVeranlagungsstand()}"></p>
+<div
+    *ngIf="showZugriffErfolgreich(status)"
+    class="well well-status-bestaetigt minus-margin"
+>
+    <!--    wir haben den timestamp erst später hinzugefügt. deshalb kann es sein, dass dieser leer ist-->
+    <p
+        class="ebegu-h3"
+        *ngIf="timestampAbruf"
+        [innerHTML]="
+            'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH'
+                | translate
+                    : {
+                          timestamp: timestampAbruf | ebeguDateTime,
+                          veranlagungsstand: translateVeranlagungsstand()
+                      }
+        "
+    ></p>
+    <p
+        class="ebegu-h3"
+        *ngIf="!timestampAbruf"
+        [innerHTML]="
+            'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH_WITHOUT_TIMESTAMP'
+                | translate: {veranlagungsstand: translateVeranlagungsstand()}
+        "
+    ></p>
 
-    <div class="margin-bottom-20" *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
-        <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-        <dv-tooltip class="black-font" [text]="'ERNEUT_VERSUCHEN_HINT' | translate"></dv-tooltip>
+    <div
+        class="margin-bottom-20"
+        *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning"
+    >
+        <a class="pointer-cursor" translate (click)="tryAgain()"
+            >ERNEUT_VERSUCHEN</a
+        >
+        <dv-tooltip
+            class="black-font"
+            [text]="'ERNEUT_VERSUCHEN_HINT' | translate"
+        ></dv-tooltip>
     </div>
     <div *ngIf="steuerAbfrageRequestRunning">
-        <p class="ebegu-h3 black-font" [innerHTML]="steuerAbfrageResponeHintStatusText"></p>
+        <p
+            class="ebegu-h3 black-font"
+            [innerHTML]="steuerAbfrageResponeHintStatusText"
+        ></p>
     </div>
-    <p>
+    <p></p>
 
     <div *ngIf="checkboxInformierenPossible()">
         <dv-checkbox-x
-            [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            [dvBisherValue]="
+                gesuchModelManager.getGesuch().markiertFuerKontroll
+            "
             [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
             [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
-            (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
+            (modelChange)="
+                gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)
+            "
             [tooltip]="'CHECKBOX_MARKED_FUER_KONTROLL_INFO'"
         ></dv-checkbox-x>
     </div>
 </div>
 
-<div *ngIf="showRetry()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY' | translate"></p>
+<div *ngIf="showRetry()" class="well well-status-warten minus-margin">
+    <p
+        class="ebegu-h3"
+        [innerHTML]="
+            'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY' | translate
+        "
+    ></p>
     <dv-loading-button
-            [buttonDisabled]="!isGesuchsteller() && !showRetryForGemeinde()"
-            type="button"
-            (buttonClick)="tryAgain()">
-        {{'STEUERDATEN_ABHOLEN' | translate}}
+        [buttonDisabled]="!isGesuchsteller() && !showRetryForGemeinde()"
+        type="button"
+        (buttonClick)="tryAgain()"
+    >
+        {{ 'STEUERDATEN_ABHOLEN' | translate }}
     </dv-loading-button>
 </div>
 
-<div *ngIf="geburtstagNotMatching$ | async"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED</p>
+<div
+    *ngIf="geburtstagNotMatching$ | async"
+    class="well well-status-warten minus-margin"
+>
+    <p class="ebegu-h3" translate>
+        FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED
+    </p>
 </div>

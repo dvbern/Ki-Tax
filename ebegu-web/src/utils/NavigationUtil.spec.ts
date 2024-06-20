@@ -17,54 +17,82 @@ import {TSRole} from '../models/enums/TSRole';
 import {NavigationUtil} from './NavigationUtil';
 
 describe('NavigationUtil', () => {
-
     const gesuchId = '1111-1111';
 
     describe('navigateToStartsiteOfGesuchForRole', () => {
         it('should navigate to Betreuungen for Institution', () => {
-            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            const stateServiceSpy = jasmine.createSpyObj('StateService', [
+                'go'
+            ]);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
                 TSRole.SACHBEARBEITER_INSTITUTION,
                 stateServiceSpy,
-                gesuchId);
+                gesuchId
+            );
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith(
+                'gesuch.betreuungen',
+                {gesuchId}
+            );
         });
         it('should navigate to Betreuungen for Traegerschaft', () => {
-            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            const stateServiceSpy = jasmine.createSpyObj('StateService', [
+                'go'
+            ]);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
                 TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
                 stateServiceSpy,
-                gesuchId);
+                gesuchId
+            );
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.betreuungen', {gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith(
+                'gesuch.betreuungen',
+                {gesuchId}
+            );
         });
         it('should navigate to familiensituation for Steueramt', () => {
-            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            const stateServiceSpy = jasmine.createSpyObj('StateService', [
+                'go'
+            ]);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
                 TSRole.STEUERAMT,
                 stateServiceSpy,
-                gesuchId);
+                gesuchId
+            );
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.familiensituation', {gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith(
+                'gesuch.familiensituation',
+                {gesuchId}
+            );
         });
         it('should navigate to fallcreation for other roles', () => {
-            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            const stateServiceSpy = jasmine.createSpyObj('StateService', [
+                'go'
+            ]);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
                 TSRole.SACHBEARBEITER_BG,
                 stateServiceSpy,
-                gesuchId);
+                gesuchId
+            );
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gesuch.fallcreation', {gesuchId});
+            expect(stateServiceSpy.go).toHaveBeenCalledWith(
+                'gesuch.fallcreation',
+                {gesuchId}
+            );
         });
         it('should navigate to gemeindeantraege for ferienbetreuung roles', () => {
-            const stateServiceSpy = jasmine.createSpyObj('StateService', ['go']);
+            const stateServiceSpy = jasmine.createSpyObj('StateService', [
+                'go'
+            ]);
             NavigationUtil.navigateToStartsiteOfGesuchForRole(
                 TSRole.ADMIN_FERIENBETREUUNG,
                 stateServiceSpy,
-                gesuchId);
+                gesuchId
+            );
 
-            expect(stateServiceSpy.go).toHaveBeenCalledWith('gemeindeantrage.view');
+            expect(stateServiceSpy.go).toHaveBeenCalledWith(
+                'gemeindeantrage.view'
+            );
         });
     });
 });

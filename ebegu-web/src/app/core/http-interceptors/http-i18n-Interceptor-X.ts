@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HEADER_ACCEPT_LANGUAGE} from '../constants/CONSTANTS';
@@ -23,16 +28,15 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 
 @Injectable()
 export class HttpI18nInterceptorX implements HttpInterceptor {
+    public constructor(private readonly i18nService: I18nServiceRSRest) {}
 
-    public constructor(
-            private readonly i18nService: I18nServiceRSRest
-    ) {
-    }
-
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const language =  req.headers.get(HEADER_ACCEPT_LANGUAGE) ?
-                `${this.i18nService.currentLanguage()}, ${req.headers.get(HEADER_ACCEPT_LANGUAGE)}`
-                : this.i18nService.currentLanguage();
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
+        const language = req.headers.get(HEADER_ACCEPT_LANGUAGE)
+            ? `${this.i18nService.currentLanguage()}, ${req.headers.get(HEADER_ACCEPT_LANGUAGE)}`
+            : this.i18nService.currentLanguage();
 
         const clone = req.clone({
             headers: req.headers.set('Accept-Language', language)

@@ -50,7 +50,9 @@ import ITranslateService = angular.translate.ITranslateService;
 const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
 const LOG = LogFactory.createLog('FinanzielleSituationViewController');
-export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
+export class FinanzielleSituationViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./finanzielleSituationView.html');
     public controller = FinanzielleSituationViewController;
@@ -58,7 +60,6 @@ export class FinanzielleSituationViewComponentConfig implements IComponentOption
 }
 
 export class FinanzielleSituationViewController extends AbstractFinSitBernView {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -103,7 +104,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         private readonly gesuchRS: GesuchRS,
         private readonly demoFeatureRS: DemoFeatureRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
@@ -111,7 +113,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS);
+            applicationPropertyRS
+        );
         this.$stateParams = $stateParams;
         this.copyDataAndInit();
     }
@@ -121,11 +124,16 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!parsedNum) {
             parsedNum = 1;
         }
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            parsedNum);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            parsedNum
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.gesuchModelManager.setGesuchstellerNumber(parsedNum);
         this.initViewModel();
         this.calculate();
@@ -137,14 +145,18 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             return;
         }
-        const gesuchVorMutation = await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId);
+        const gesuchVorMutation =
+            await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(
+                this.getGesuch().vorgaengerId
+            );
         this.model.initFinSitVorMutation(gesuchVorMutation);
     }
 
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.initEinstellungen().then(() => {
             this.initSelbstaendigkeit();
             this.initErsatzeinkommenSelbststaendigkeit();
@@ -160,24 +172,35 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public showErsatzeinkommenSelbststaendigkeitClicked(): void {
         if (!this.showErsatzeinkommenSelbststaendigkeit) {
             this.resetErsatzeinkommenSelbststaendigkeitFields();
-        } else if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+        } else if (
+            this.getModel().finanzielleSituationJA.ersatzeinkommen === 0
+        ) {
             this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
 
     private initSelbstaendigkeit(): void {
-        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
-        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
-            ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
-
+        this.showSelbstaendig = this.model
+            .getFiSiConToWorkWith()
+            .finanzielleSituationJA.isSelbstaendig();
+        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith()
+            .finanzielleSituationGS
+            ? this.model
+                  .getFiSiConToWorkWith()
+                  .finanzielleSituationGS.isSelbstaendig()
+            : false;
     }
 
     private initErsatzeinkommenSelbststaendigkeit(): void {
-        this.showErsatzeinkommenSelbststaendigkeit =
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.hasErsatzeinkommenSelbststaendigkeit();
-        this.showErsatzeinkommenSelbststaendigkeitGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS ?
-            this.model.getFiSiConToWorkWith().finanzielleSituationGS.hasErsatzeinkommenSelbststaendigkeit() :
-            false;
+        this.showErsatzeinkommenSelbststaendigkeit = this.model
+            .getFiSiConToWorkWith()
+            .finanzielleSituationJA.hasErsatzeinkommenSelbststaendigkeit();
+        this.showErsatzeinkommenSelbststaendigkeitGS =
+            this.model.getFiSiConToWorkWith().finanzielleSituationGS
+                ? this.model
+                      .getFiSiConToWorkWith()
+                      .finanzielleSituationGS.hasErsatzeinkommenSelbststaendigkeit()
+                : false;
     }
 
     private resetSelbstaendigFields(): void {
@@ -185,9 +208,12 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return;
         }
 
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahr = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahr =
+            undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 =
+            undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 =
+            undefined;
         this.resetErsatzeinkommenSelbststaendigkeitFields();
         this.calculate();
     }
@@ -197,16 +223,21 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return;
         }
 
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr =
+            undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+            undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
+            undefined;
         this.initErsatzeinkommenSelbststaendigkeit();
         this.calculate();
     }
 
     public showSteuerveranlagung(): boolean {
         // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)
+        ) {
             return false;
         }
         // bei gemeinsamer Steuererklärung wird die Frage immer auf der StartView gezeigt
@@ -219,15 +250,23 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
 
         // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()
-            || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-                && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+        if (
+            !this.gesuchModelManager.getGesuch().isOnlineGesuch() ||
+            (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) &&
+                EbeguUtil.isNullOrUndefined(
+                    this.model.getFiSiConToWorkWith().finanzielleSituationGS
+                ))
+        ) {
             return true;
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
         // nicht
-        if (this.steuerSchnittstelleAktivForPeriode &&
-            EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (
+            this.steuerSchnittstelleAktivForPeriode &&
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            )
+        ) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -235,26 +274,39 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // falls Abfrage noch nicht erfolgt ist, zeigen wir die Frage nicht
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        ) {
             return false;
         }
         // falls Steuerabfrage nicht erfolgreich, zeigen wir die Frage ebenfalls
-        return !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+        return !isSteuerdatenAnfrageStatusErfolgreich(
+            this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+        );
     }
 
     public showSteuererklaerung(): boolean {
-        return !this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten;
+        return !this.model.getFiSiConToWorkWith().finanzielleSituationJA
+            .steuerveranlagungErhalten;
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        return super.showZugriffAufSteuerdaten() && !this.model.familienSituation.gemeinsameSteuererklaerung;
+        return (
+            super.showZugriffAufSteuerdaten() &&
+            !this.model.familienSituation.gemeinsameSteuererklaerung
+        );
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             return undefined;
         }
-        if (!this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() || !this.isErsatzeinkommenValid()) {
+        if (
+            !this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() ||
+            !this.isErsatzeinkommenValid()
+        ) {
             this.scrollToErsatzeinkommenSelbststaendigkeit();
             return undefined;
         }
@@ -267,7 +319,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         const finanzielleSituationContainer =
-            this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer;
+            this.gesuchModelManager.getStammdatenToWorkWith()
+                .finanzielleSituationContainer;
         // Auf der Finanziellen Situation ist nichts zwingend. Zumindest das erste Mal müssen wir daher auch
         // Speichern, wenn das Form nicht dirty ist!
         if (!this.form.$dirty && !finanzielleSituationContainer.isNew()) {
@@ -307,9 +360,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public subStepName(): TSFinanzielleSituationSubStepName {
-        return this.gesuchModelManager.gesuchstellerNumber === 2 ?
-            TSFinanzielleSituationSubStepName.BERN_GS2 :
-            TSFinanzielleSituationSubStepName.BERN_GS1;
+        return this.gesuchModelManager.gesuchstellerNumber === 2
+            ? TSFinanzielleSituationSubStepName.BERN_GS2
+            : TSFinanzielleSituationSubStepName.BERN_GS1;
     }
 
     public steuerdatenzugriffClicked(): void {
@@ -322,7 +375,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public showFormular(): boolean {
         // falls die Einstellung noch nicht geladen wurde zeigen wir das Formular nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)
+        ) {
             return false;
         }
         // falls Schnittstelle deaktiviert, erfolgt das Ausfüllen immer manuell
@@ -330,9 +385,13 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // bei einem Papiergesuch ebenfalls
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()
-            || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-                && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+        if (
+            !this.gesuchModelManager.getGesuch().isOnlineGesuch() ||
+            (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) &&
+                EbeguUtil.isNullOrUndefined(
+                    this.model.getFiSiConToWorkWith().finanzielleSituationGS
+                ))
+        ) {
             return true;
         }
         // wenn es sich um ein sozialdienstfall handelt ebenfalls
@@ -340,38 +399,63 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
-        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)
-            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (
+            EbeguUtil.isNotNullAndFalse(
+                this.model.familienSituation.gemeinsameSteuererklaerung
+            ) &&
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            )
+        ) {
             return false;
         }
         // falls die Frage mit ja beantwortet wurde, die Abfrage aber noch nicht gemacht wurde,
         // zeigen wir das Formular noch nicht
-        if (this.getModel().finanzielleSituationJA.steuerdatenZugriff
-            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+        if (
+            this.getModel().finanzielleSituationJA.steuerdatenZugriff &&
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        ) {
             return false;
         }
         return true;
     }
 
     public isSteueranfrageErfolgreich(): boolean {
-        return this.steuerSchnittstelleAktivForPeriode
-            && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
-            && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+        return (
+            this.steuerSchnittstelleAktivForPeriode &&
+            EbeguUtil.isNotNullAndTrue(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            ) &&
+            isSteuerdatenAnfrageStatusErfolgreich(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        );
     }
 
     public showAufteilung(): boolean {
-        return this.isSteueranfrageErfolgreich()
-            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
+        return (
+            this.isSteueranfrageErfolgreich() &&
+            this.gesuchModelManager.getGesuch().familiensituationContainer
+                .familiensituationJA.gemeinsameSteuererklaerung
+        );
     }
 
     public startAufteilung(): void {
         // zwischenspeichern dieser werte. Das sind die einzigen, die nicht readonly und dementsprechend schon
         // durch den User verändert sein könnten. Beim erneuten laden würden diese überschrieben
         const einkommenAusVereinfachtemVerfahren =
-            this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet;
-        const einkommenAusVereinfachtemVerfahrenAmount
-            = this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
-        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+            this.getModel().finanzielleSituationJA
+                .einkommenInVereinfachtemVerfahrenAbgerechnet;
+        const einkommenAusVereinfachtemVerfahrenAmount =
+            this.getModel().finanzielleSituationJA
+                .amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        this.dvDialog
+            .showDialogFullscreen(
+                aufteilungDialogTemplate,
+                FinanzielleSituationAufteilungDialogController
+            )
             .then(() => {
                 this.copyDataAndInit();
                 this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet =
@@ -384,16 +468,18 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
-                this.initAfterKiBonAnfrageUpdate();
-            }
-        );
+            this.initAfterKiBonAnfrageUpdate();
+        });
     }
 
     private initAfterKiBonAnfrageUpdate(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
-            TSWizardStepStatus.NOK);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+            TSWizardStepStatus.NOK
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.initSelbstaendigkeit();
         this.initErsatzeinkommenSelbststaendigkeit();
     }
@@ -403,11 +489,17 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) &&
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch()
+            ) &&
             this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
             !this.model.familienSituation.gemeinsameSteuererklaerung &&
             this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
-            EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff);
+            EbeguUtil.isNotNullAndFalse(
+                this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            )
+        );
     }
 
     protected isNotFinSitStartOrGS2Required(): boolean {
@@ -423,17 +515,26 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     private initEinstellungen(): Promise<void> {
-        return this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id).toPromise()
+        return this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .toPromise()
             .then(einstellungen => {
-                const showErsatzeinkommen = einstellungen.find(einstellung => einstellung.key
-                    === TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN);
+                const showErsatzeinkommen = einstellungen.find(
+                    einstellung =>
+                        einstellung.key ===
+                        TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN
+                );
                 if (showErsatzeinkommen === undefined) {
-                    // eslint-disable-next-line max-len
-                    LOG.error(`Missing Einstellung "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN" in gesuchsperiode ${this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString}`);
+                    LOG.error(
+                        `Missing Einstellung "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN" in gesuchsperiode ${this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString}`
+                    );
                     this.ersatzeinkommenSelbststaendigkeitActivated = false;
                     return;
                 }
-                this.ersatzeinkommenSelbststaendigkeitActivated = showErsatzeinkommen.getValueAsBoolean();
+                this.ersatzeinkommenSelbststaendigkeitActivated =
+                    showErsatzeinkommen.getValueAsBoolean();
             });
     }
 
@@ -443,67 +544,114 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
 
-        const ersatzeinkommen = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahr;
-        const ersatzeinkommen2 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-        const ersatzeinkommen3 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
+        const ersatzeinkommen =
+            finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahr;
+        const ersatzeinkommen2 =
+            finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+        const ersatzeinkommen3 =
+            finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
         const basisjahr = this.gesuchModelManager.getBasisjahr();
-        const params = {basisjahr, ersatzeinkommen, ersatzeinkommen2, ersatzeinkommen3};
+        const params = {
+            basisjahr,
+            ersatzeinkommen,
+            ersatzeinkommen2,
+            ersatzeinkommen3
+        };
 
-        return this.$translate.instant('JA_KORREKTUR_ERSATZEINKOMMEN_SELBSTAENDIG', params);
+        return this.$translate.instant(
+            'JA_KORREKTUR_ERSATZEINKOMMEN_SELBSTAENDIG',
+            params
+        );
     }
 
     public isErsatzeinkommenValid(): boolean {
-            const finSit: TSFinanzielleSituation = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        return (EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
-                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
-            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommen)
-                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
-            || finSit.ersatzeinkommen - finSit.ersatzeinkommenSelbststaendigkeitBasisjahr >= 0;
+        const finSit: TSFinanzielleSituation =
+            this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        return (
+            (EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen) &&
+                EbeguUtil.isNullOrUndefined(
+                    finSit.ersatzeinkommenSelbststaendigkeitBasisjahr
+                )) ||
+            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommen) &&
+                EbeguUtil.isNullOrUndefined(
+                    finSit.ersatzeinkommenSelbststaendigkeitBasisjahr
+                )) ||
+            finSit.ersatzeinkommen -
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahr >=
+                0
+        );
     }
 
     public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        return !this.showErsatzeinkommenSelbststaendigkeit ||
-            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
-                && finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
-                || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
-                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
-            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
-                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
+        return (
+            !this.showErsatzeinkommenSelbststaendigkeit ||
+            (EbeguUtil.isNotNullOrUndefined(
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahr
+            ) &&
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0) ||
+            (EbeguUtil.isNotNullOrUndefined(
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1
+            ) &&
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0) ||
+            (EbeguUtil.isNotNullOrUndefined(
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2
+            ) &&
+                finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0)
+        );
     }
 
     public hasGeschaeftsgewinn(basisjahrMinus: number): boolean {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
         if (basisjahrMinus === 2) {
-            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
+            return EbeguUtil.isNotNullOrUndefined(
+                finSit.geschaeftsgewinnBasisjahrMinus2
+            );
         }
         if (basisjahrMinus === 1) {
-            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1);
+            return EbeguUtil.isNotNullOrUndefined(
+                finSit.geschaeftsgewinnBasisjahrMinus1
+            );
         }
         return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahr);
     }
 
     public geschaeftsgewinnChange(basisjahrMinus: number): void {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        if (basisjahrMinus === 2 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2)) {
+        if (
+            basisjahrMinus === 2 &&
+            EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2)
+        ) {
             finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = null;
-        } else if (basisjahrMinus === 1 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)) {
+        } else if (
+            basisjahrMinus === 1 &&
+            EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)
+        ) {
             finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = null;
-        } else if (basisjahrMinus === 0 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)) {
+        } else if (
+            basisjahrMinus === 0 &&
+            EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)
+        ) {
             finSit.ersatzeinkommenSelbststaendigkeitBasisjahr = null;
         }
     }
 
     public ersatzeinkommenChanged(): void {
-        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0
-            && EbeguUtil.isNotNullOrUndefined(
-                this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr)) {
+        if (
+            this.getModel().finanzielleSituationJA.ersatzeinkommen === 0 &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.getModel().finanzielleSituationJA
+                    .ersatzeinkommenSelbststaendigkeitBasisjahr
+            )
+        ) {
             this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
 
     private scrollToErsatzeinkommenSelbststaendigkeit(): void {
-        const tmp = document.getElementById('ersatzeinkommen-selbststaendigkeit-container');
+        const tmp = document.getElementById(
+            'ersatzeinkommen-selbststaendigkeit-container'
+        );
         if (tmp) {
             tmp.scrollIntoView();
         }

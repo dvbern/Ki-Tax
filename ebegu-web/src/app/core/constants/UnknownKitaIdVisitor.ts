@@ -19,7 +19,6 @@ import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
 export class UnknownKitaIdVisitor implements MandantVisitor<string> {
-
     public process(mandant: KiBonMandant): string {
         return mandant.accept(this);
     }
@@ -43,5 +42,4 @@ export class UnknownKitaIdVisitor implements MandantVisitor<string> {
     public visitSchwyz(): string {
         return '00000000-0000-0000-0000-000000000012';
     }
-
 }

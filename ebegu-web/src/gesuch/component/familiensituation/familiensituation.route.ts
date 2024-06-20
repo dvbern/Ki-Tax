@@ -23,9 +23,7 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {RouterHelper} from '../../../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {getGesuchModelManager} from '../../gesuch.route';
-import {
-    FamiliensituationAppenzellViewXComponent
-} from './familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {FamiliensituationAppenzellViewXComponent} from './familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {FamiliensituationSchwyzComponent} from './familiensituation-schwyz/familiensituation-schwyz.component';
 import {FamiliensituationViewXComponent} from './familiensituation-view-x/familiensituation-view-x.component';
 
@@ -35,7 +33,7 @@ export function familiensituationRun(routerHelper: RouterHelper): void {
         new EbeguFamiliensituationState(),
         new EbeguFamiliensituationDefaultState(),
         new EbeguFamiliensituationAppenzellState(),
-        new EbeguFamiliensituationSchwyzState(),
+        new EbeguFamiliensituationSchwyzState()
     ]);
 }
 
@@ -44,17 +42,23 @@ const kommentarView = '<kommentar-view';
 class EbeguFamiliensituationState implements Ng1StateDeclaration {
     public name = 'gesuch.familiensituation';
     public url = '/familiensituation-route/:gesuchId';
-    public onEnter =  redirectToFamiliensituation;
+    public onEnter = redirectToFamiliensituation;
 }
 
-redirectToFamiliensituation.$inject = ['MandantService', '$state', '$stateParams'];
-function redirectToFamiliensituation(mandantService: MandantService, $state: StateService, $stateParams: StateParams) {
-    mandantService.mandant$
-        .pipe(take(1), delay(1))
-        .subscribe(mandant => {
-            const route = new FamiliensituationVisitor().process(mandant);
-            $state.transitionTo(route, {gesuchId:$stateParams.gesuchId});
-        });
+redirectToFamiliensituation.$inject = [
+    'MandantService',
+    '$state',
+    '$stateParams'
+];
+function redirectToFamiliensituation(
+    mandantService: MandantService,
+    $state: StateService,
+    $stateParams: StateParams
+) {
+    mandantService.mandant$.pipe(take(1), delay(1)).subscribe(mandant => {
+        const route = new FamiliensituationVisitor().process(mandant);
+        $state.transitionTo(route, {gesuchId: $stateParams.gesuchId});
+    });
 }
 
 class EbeguFamiliensituationDefaultState implements Ng1StateDeclaration {
@@ -63,19 +67,19 @@ class EbeguFamiliensituationDefaultState implements Ng1StateDeclaration {
 
     public views: any = {
         gesuchViewPort: {
-            component: FamiliensituationViewXComponent,
+            component: FamiliensituationViewXComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -85,19 +89,19 @@ class EbeguFamiliensituationAppenzellState implements Ng1StateDeclaration {
 
     public views: any = {
         gesuchViewPort: {
-            component: FamiliensituationAppenzellViewXComponent,
+            component: FamiliensituationAppenzellViewXComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }
 
@@ -107,18 +111,18 @@ class EbeguFamiliensituationSchwyzState implements Ng1StateDeclaration {
 
     public views: any = {
         gesuchViewPort: {
-            component: FamiliensituationSchwyzComponent,
+            component: FamiliensituationSchwyzComponent
         },
         kommentarViewPort: {
-            template: kommentarView,
-        },
+            template: kommentarView
+        }
     };
 
     public resolve = {
-        gesuch: getGesuchModelManager,
+        gesuch: getGesuchModelManager
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous(),
+        roles: TSRoleUtil.getAllRolesButAnonymous()
     };
 }

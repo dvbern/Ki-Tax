@@ -15,21 +15,22 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div ng-if="!vm.hideLanguageSelector()"
-    class="language-selector">
-
-    <button ng-if="!vm.isLanguage(vm.TSBrowserLanguage.DE)"
-            class="language-button"
-            ng-click="vm.changeLanguage(vm.TSBrowserLanguage.DE)"
-            aria-label="{{'DEUTSCH' | translate}}">
+<div ng-if="!vm.hideLanguageSelector()" class="language-selector">
+    <button
+        ng-if="!vm.isLanguage(vm.TSBrowserLanguage.DE)"
+        class="language-button"
+        ng-click="vm.changeLanguage(vm.TSBrowserLanguage.DE)"
+        aria-label="{{ 'DEUTSCH' | translate }}"
+    >
         <a data-translate="CHANGE_DEUTSCH" aria-hidden></a>
     </button>
 
-    <button ng-if="!vm.isLanguage(vm.TSBrowserLanguage.FR)"
-            class="language-button"
-            ng-click="vm.changeLanguage(vm.TSBrowserLanguage.FR)"
-            aria-label="{{'FRANZOESISCH' | translate}}">
+    <button
+        ng-if="!vm.isLanguage(vm.TSBrowserLanguage.FR)"
+        class="language-button"
+        ng-click="vm.changeLanguage(vm.TSBrowserLanguage.FR)"
+        aria-label="{{ 'FRANZOESISCH' | translate }}"
+    >
         <a data-translate="CHANGE_FRANZOESISCH" aria-hidden></a>
     </button>
-
 </div>

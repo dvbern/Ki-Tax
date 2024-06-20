@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
+import {
+    ComponentFixture,
+    fakeAsync,
+    TestBed,
+    tick,
+    waitForAsync
+} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -36,7 +42,6 @@ import {FallToolbarComponent} from './fallToolbar.component';
 
 /* eslint-disable */
 describe('fallToolbar', () => {
-
     const dossierId1 = 'ea02b313-e7c3-4b26-1122-e413f4041111';
     const dossierId2 = 'ea02b313-e7c3-4b26-1122-e413f4042222';
     const mockGesuchId = 'ea02b313-e7c3-4b26-1122-e413f4043333';
@@ -55,49 +60,64 @@ describe('fallToolbar', () => {
         // by default input values are empty/undefined
         initObjects();
 
-        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
-            getAktiveGueltigeGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
-        });
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            getPrincipalRole: TSRole.SUPER_ADMIN,
-            getPrincipal: user,
-            isRole: false,
-            isOneOfRoles: false,
-        });
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(
+            GemeindeRS.name,
+            {
+                getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
+                getAktiveGueltigeGemeinden: Promise.resolve([
+                    gemeinde1,
+                    gemeinde2
+                ])
+            }
+        );
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            {
+                getPrincipalRole: TSRole.SUPER_ADMIN,
+                getPrincipal: user,
+                isRole: false,
+                isOneOfRoles: false
+            }
+        );
         authServiceSpy.principal$ = of(user) as any;
 
-        const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            findDossiersByFall: Promise.resolve([dossier1, dossier2]),
-        });
-        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+        const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(
+            DossierRS.name,
+            {
+                findDossiersByFall: Promise.resolve([dossier1, dossier2])
+            }
+        );
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(
+            StateService.name,
+            ['go']
+        );
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, {
-            getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId),
+            getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId)
         });
 
-        const applicationPropertySpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, {
-            getKitaxUrl: Promise.resolve('http://google.com'),
-        });
+        const applicationPropertySpy =
+            jasmine.createSpyObj<ApplicationPropertyRS>(
+                ApplicationPropertyRS.name,
+                {
+                    getKitaxUrl: Promise.resolve('http://google.com')
+                }
+            );
 
         TestBed.configureTestingModule({
-            imports: [
-                MatDialogModule,
-                TranslateModule,
-            ],
+            imports: [MatDialogModule, TranslateModule],
             providers: [
                 {provide: DossierRS, useValue: dossierServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: GesuchRS, useValue: gesuchServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertySpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertySpy
+                }
             ],
-            declarations: [
-                FallToolbarComponent,
-                DvNgShowElementDirective,
-            ],
-        })
-            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES);
+            declarations: [FallToolbarComponent, DvNgShowElementDirective]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES);
     }));
 
     describe('functions', () => {
@@ -117,41 +137,29 @@ describe('fallToolbar', () => {
         }));
 
         it('should return true for the selected dossier', done => {
-            component.openDossier$(dossier1).subscribe(
-                () => {
-                    expect(component.isDossierActive(dossier1)).toBe(true);
-                    done();
-                },
-                done.fail,
-            );
+            component.openDossier$(dossier1).subscribe(() => {
+                expect(component.isDossierActive(dossier1)).toBe(true);
+                done();
+            }, done.fail);
         });
 
         it('should return false for a different dossier', done => {
-            component.openDossier$(dossier1).subscribe(
-                () => {
-                    expect(component.isDossierActive(dossier2)).toBe(false);
-                    done();
-                },
-                done.fail,
-            );
+            component.openDossier$(dossier1).subscribe(() => {
+                expect(component.isDossierActive(dossier2)).toBe(false);
+                done();
+            }, done.fail);
         });
         it('should return false for undefined', done => {
-            component.openDossier$(dossier1).subscribe(
-                () => {
-                    expect(component.isDossierActive(undefined)).toBe(false);
-                    done();
-                },
-                done.fail,
-            );
+            component.openDossier$(dossier1).subscribe(() => {
+                expect(component.isDossierActive(undefined)).toBe(false);
+                done();
+            }, done.fail);
         });
         it('should return false for the no selected dossier', done => {
-            component.openDossier$(undefined).subscribe(
-                () => {
-                    expect(component.isDossierActive(dossier1)).toBe(false);
-                    done();
-                },
-                done.fail,
-            );
+            component.openDossier$(undefined).subscribe(() => {
+                expect(component.isDossierActive(dossier1)).toBe(false);
+                done();
+            }, done.fail);
         });
     });
 
@@ -165,7 +173,7 @@ describe('fallToolbar', () => {
             component.fallId = fall.id;
             component.ngOnChanges({
                 fallId: fall.id,
-                dossierId: dossier2.id,
+                dossierId: dossier2.id
             });
 
             tick();
@@ -179,10 +187,20 @@ describe('fallToolbar', () => {
         beforeEach(waitForAsync(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
-                getAktiveGueltigeGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                getAktiveGemeinden: Promise.resolve([
+                    gemeinde1,
+                    gemeinde2,
+                    gemeinde3
+                ]),
+                getAktiveGueltigeGemeinden: Promise.resolve([
+                    gemeinde1,
+                    gemeinde2,
+                    gemeinde3
+                ])
             });
-            TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
+            TestBed.overrideProvider(GemeindeRS, {
+                useValue: threeGemeindeServiceSpy
+            });
             initTestBed();
         }));
 
@@ -201,13 +219,19 @@ describe('fallToolbar', () => {
         beforeEach(waitForAsync(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                getAllGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                getAllGemeinden: Promise.resolve([
+                    gemeinde1,
+                    gemeinde2,
+                    gemeinde3
+                ])
             });
             dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
-                findDossiersByFall: Promise.resolve([dossier1, dossier2]),
+                findDossiersByFall: Promise.resolve([dossier1, dossier2])
             });
-            TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
+            TestBed.overrideProvider(GemeindeRS, {
+                useValue: threeGemeindeServiceSpy
+            });
             TestBed.overrideProvider(DossierRS, {useValue: dossierServiceSpy});
             initTestBed();
         }));

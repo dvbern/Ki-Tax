@@ -19,17 +19,15 @@ import {TSFinanzielleSituationSubStepName} from '../../models/enums/TSFinanziell
 import {GesuchModelManager} from './gesuchModelManager';
 
 export abstract class FinanzielleSituationSubStepManager {
-
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public abstract getNextSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName;
 
     public abstract getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName;
 }

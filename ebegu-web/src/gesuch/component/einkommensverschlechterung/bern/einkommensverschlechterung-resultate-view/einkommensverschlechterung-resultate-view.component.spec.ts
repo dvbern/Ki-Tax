@@ -54,25 +54,47 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'setBasisJahrPlusNumber',
         'getBasisjahrToWorkWith',
         'getStammdatenToWorkWith'
-    ]);
+    ]
+);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
-    WizardStepManager.name, [
-        'getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
-        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe'
-    ]);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
-    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
-const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
-    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp', 'calculateEinkommensverschlechterungTemp']);
-berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
-    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    WizardStepManager.name,
+    [
+        'getCurrentStep',
+        'setCurrentStep',
+        'isNextStepBesucht',
+        'isNextStepEnabled',
+        'getCurrentStepName',
+        'updateCurrentWizardStepStatusSafe'
+    ]
+);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(
+    FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']
+);
+const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+    'params'
+]);
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+    BerechnungsManager.name,
+    [
+        'calculateFinanzielleSituation',
+        'calculateFinanzielleSituationTemp',
+        'calculateEinkommensverschlechterungTemp'
+    ]
+);
+berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(
+    Promise.resolve(new TSFinanzielleSituationResultateDTO())
+);
 
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
-    ['go']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'go'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'clearError'
+]);
 
 describe('EinkommensverschlechterungResultateViewComponent', () => {
     let component: EinkommensverschlechterungResultateViewComponent;
@@ -84,15 +106,16 @@ describe('EinkommensverschlechterungResultateViewComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
-                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {
+                    provide: FinanzielleSituationRS,
+                    useValue: finanzielleSituationRSSpy
+                },
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
             ],
-            imports: [
-                SharedModule
-            ]
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -102,16 +125,25 @@ describe('EinkommensverschlechterungResultateViewComponent', () => {
 
     beforeEach(() => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
-        fixture = TestBed.createComponent(EinkommensverschlechterungResultateViewComponent);
+        fixture = TestBed.createComponent(
+            EinkommensverschlechterungResultateViewComponent
+        );
         component = fixture.componentInstance;
         component.model = new TSFinanzModel(1, false, 1, 2);
-        component.model.einkommensverschlechterungContainerGS1 = new TSEinkommensverschlechterungContainer();
-        component.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 = new TSEinkommensverschlechterung();
-        component.model.einkommensverschlechterungContainerGS1.ekvGSBasisJahrPlus1 = new TSEinkommensverschlechterung();
-        component.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 = new TSEinkommensverschlechterung();
-        component.model.einkommensverschlechterungContainerGS1.ekvGSBasisJahrPlus2 = new TSEinkommensverschlechterung();
-        component.model.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
-        component.model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+        component.model.einkommensverschlechterungContainerGS1 =
+            new TSEinkommensverschlechterungContainer();
+        component.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 =
+            new TSEinkommensverschlechterung();
+        component.model.einkommensverschlechterungContainerGS1.ekvGSBasisJahrPlus1 =
+            new TSEinkommensverschlechterung();
+        component.model.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
+            new TSEinkommensverschlechterung();
+        component.model.einkommensverschlechterungContainerGS1.ekvGSBasisJahrPlus2 =
+            new TSEinkommensverschlechterung();
+        component.model.finanzielleSituationContainerGS1 =
+            new TSFinanzielleSituationContainer();
+        component.model.finanzielleSituationContainerGS1.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         console.log(component.getEinkommensverschlechterungGS1_JA());
         fixture.detectChanges();
     });
@@ -125,11 +157,15 @@ describe('EinkommensverschlechterungResultateViewComponent', () => {
         gesuch.finSitTyp = TSFinanzielleSituationTyp.BERN;
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1.finanzielleSituationContainer =
+            new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA =
+            new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
-        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
-        gesuch.gesuchsteller1.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
+        gesuch.familiensituationContainer.familiensituationJA =
+            new TSFamiliensituation();
+        gesuch.gesuchsteller1.einkommensverschlechterungContainer =
+            new TSEinkommensverschlechterungContainer();
         gesuch.gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
             new TSEinkommensverschlechterung();
         return gesuch;

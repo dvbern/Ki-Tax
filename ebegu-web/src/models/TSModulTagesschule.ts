@@ -20,7 +20,6 @@ import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSTextRessource} from './TSTextRessource';
 
 export class TSModulTagesschule extends TSAbstractEntity {
-
     public wochentag: TSDayOfWeek;
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true

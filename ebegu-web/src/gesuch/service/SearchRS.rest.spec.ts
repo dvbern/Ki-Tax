@@ -23,9 +23,10 @@ import {SearchRS} from './searchRS.rest';
 
 /* eslint-disable no-magic-numbers */
 describe('searchRS', () => {
-
     let service: SearchRS;
-    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['post']);
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, [
+        'post'
+    ]);
     const fallNummer = 1234;
 
     beforeEach(() => {
@@ -58,13 +59,18 @@ describe('searchRS', () => {
                 mockHttpClient.post.and.returnValue(of(searchResult));
 
                 let foundPendenzen: TSAntragSearchresultDTO;
-                service.getPendenzenList(filter).subscribe(result => {
-                    foundPendenzen = result;
-                    expect(foundPendenzen).toBeDefined();
-                    TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
-                }, error => console.error(error));
+                service.getPendenzenList(filter).subscribe(
+                    result => {
+                        foundPendenzen = result;
+                        expect(foundPendenzen).toBeDefined();
+                        TestDataUtil.compareDefinedProperties(
+                            foundPendenzen.antragDTOs[0],
+                            tsAntragDTO
+                        );
+                    },
+                    error => console.error(error)
+                );
             });
         });
     });
-
 });

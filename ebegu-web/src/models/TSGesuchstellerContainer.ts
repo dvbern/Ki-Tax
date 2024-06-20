@@ -21,7 +21,6 @@ import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer
 import {TSGesuchsteller} from './TSGesuchsteller';
 
 export class TSGesuchstellerContainer extends TSAbstractMutableEntity {
-
     private _gesuchstellerGS: TSGesuchsteller;
     private _gesuchstellerJA: TSGesuchsteller;
     private _adressen: Array<TSAdresseContainer>;
@@ -32,15 +31,18 @@ export class TSGesuchstellerContainer extends TSAbstractMutableEntity {
     private _einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer;
     private _showUmzug: boolean = false;
 
-    public constructor(gesuchstellerJA?: TSGesuchsteller, finanzielleSituation?: TSFinanzielleSituationContainer,
-                       erwerbspensen?: Array<TSErwerbspensumContainer>,
-                       einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer
+    public constructor(
+        gesuchstellerJA?: TSGesuchsteller,
+        finanzielleSituation?: TSFinanzielleSituationContainer,
+        erwerbspensen?: Array<TSErwerbspensumContainer>,
+        einkommensverschlechterungContainer?: TSEinkommensverschlechterungContainer
     ) {
         super();
         this._gesuchstellerJA = gesuchstellerJA;
         this._finanzielleSituationContainer = finanzielleSituation;
         this._erwerbspensenContainer = erwerbspensen ? erwerbspensen : [];
-        this._einkommensverschlechterungContainer = einkommensverschlechterungContainer;
+        this._einkommensverschlechterungContainer =
+            einkommensverschlechterungContainer;
     }
 
     public get gesuchstellerGS(): TSGesuchsteller {
@@ -93,7 +95,9 @@ export class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         return this._finanzielleSituationContainer;
     }
 
-    public set finanzielleSituationContainer(value: TSFinanzielleSituationContainer) {
+    public set finanzielleSituationContainer(
+        value: TSFinanzielleSituationContainer
+    ) {
         this._finanzielleSituationContainer = value;
     }
 
@@ -109,7 +113,9 @@ export class TSGesuchstellerContainer extends TSAbstractMutableEntity {
         return this._einkommensverschlechterungContainer;
     }
 
-    public set einkommensverschlechterungContainer(value: TSEinkommensverschlechterungContainer) {
+    public set einkommensverschlechterungContainer(
+        value: TSEinkommensverschlechterungContainer
+    ) {
         this._einkommensverschlechterungContainer = value;
     }
 

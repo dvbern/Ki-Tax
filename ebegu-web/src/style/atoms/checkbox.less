@@ -47,7 +47,7 @@
 }
 
 md-checkbox {
-    float:left;
+    float: left;
     font-size: 0;
     height: auto;
     margin-bottom: 0;
@@ -67,7 +67,8 @@ md-checkbox {
                 color: @contrast-dark;
             }
         }
-        &.md-checked, &:not(.md-checked) {
+        &.md-checked,
+        &:not(.md-checked) {
             .md-icon {
                 border: 1px solid @contrast-dark;
             }
@@ -78,14 +79,14 @@ md-checkbox {
             }
         }
     }
-    &.md-focused, &:focus {
+    &.md-focused,
+    &:focus {
         .md-icon {
             box-shadow: 0 0 0 2px @contrast-darkest;
             //-webkit-box-shadow: 0 0 4px 0 #858585;
             //box-shadow: 0 0 4px 0 #858585;
             //outline: 2px solid @contrast-darkest;
             transition: none;
-
         }
     }
     .md-container {
@@ -116,7 +117,8 @@ md-checkbox {
             vertical-align: middle;
         }
     }
-    .md-icon, &:not(.md-checked) .md-icon {
+    .md-icon,
+    &:not(.md-checked) .md-icon {
         border: 1px solid @contrast-darkest;
         border-radius: 0.2rem;
         bottom: 0;
@@ -159,7 +161,7 @@ md-checkbox.dv-ebegu-calendar {
     align-items: stretch;
     bottom: 0;
     display: flex;
-    float:left;
+    float: left;
     font-size: 0;
     height: 100%;
     justify-content: center;
@@ -172,14 +174,16 @@ md-checkbox.dv-ebegu-calendar {
     &:last-of-type {
         margin-right: 0;
     }
-    &[disabled], &:disabled {
+    &[disabled],
+    &:disabled {
         color: @contrast-lightest;
         .md-label {
             span {
                 color: @contrast-lightest;
             }
         }
-        &.md-checked, &:not(.md-checked) {
+        &.md-checked,
+        &:not(.md-checked) {
             .md-icon {
                 border: none !important;
             }
@@ -188,11 +192,11 @@ md-checkbox.dv-ebegu-calendar {
             background: @contrast-dark;
         }
     }
-    &.md-focused, &:focus {
+    &.md-focused,
+    &:focus {
         .md-icon {
             box-shadow: 0 0 0 2px @contrast-darkest;
             transition: none;
-
         }
     }
     .md-container {
@@ -231,7 +235,8 @@ md-checkbox.dv-ebegu-calendar {
             vertical-align: initial !important;
         }
     }
-    .md-icon, &:not(.md-checked) .md-icon {
+    .md-icon,
+    &:not(.md-checked) .md-icon {
         border: none;
         border-radius: 0;
         bottom: 0;
@@ -281,7 +286,7 @@ md-checkbox.dv-ebegu-calendar {
 md-checkbox.dv-ebegu-calendar--tagesschule {
     bottom: 0;
     display: block;
-    float:left;
+    float: left;
     font-size: 0;
     height: 100%;
     left: 0;
@@ -293,7 +298,8 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
     &:last-of-type {
         margin-right: 0;
     }
-    &[disabled], &:disabled {
+    &[disabled],
+    &:disabled {
         color: @contrast-lightest;
         .md-label {
             span {
@@ -302,13 +308,14 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
         }
 
         &:not(.md-checked) .md-icon {
-            background:@contrast-light;
+            background: @contrast-light;
             &:after {
                 color: @contrast-light;
             }
         }
 
-        &.md-checked, &:not(.md-checked) {
+        &.md-checked,
+        &:not(.md-checked) {
             .md-icon {
                 border: none !important;
             }
@@ -317,14 +324,14 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
             background: @contrast-light;
         }
     }
-    &.md-focused, &:focus {
+    &.md-focused,
+    &:focus {
         .md-icon {
             box-shadow: 0 0 0 2px @contrast-darkest;
             //-webkit-box-shadow: 0 0 4px 0 #858585;
             //box-shadow: 0 0 4px 0 #858585;
             //outline: 2px solid @contrast-darkest;
             transition: none;
-
         }
     }
     .md-container {
@@ -362,10 +369,10 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
                 color: red;
                 font-weight: bold;
             }
-
         }
     }
-    .md-icon, &:not(.md-checked) .md-icon {
+    .md-icon,
+    &:not(.md-checked) .md-icon {
         border: none;
         border-radius: 0;
         bottom: 0;
@@ -436,4 +443,3 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
     // this was default in angular material until v11
     display: inline !important;
 }
-

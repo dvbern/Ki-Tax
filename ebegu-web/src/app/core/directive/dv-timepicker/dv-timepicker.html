@@ -13,14 +13,16 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<input aria-describedby="{{vm.inputId + '-error'}}"
-       type="text"
-       id="{{vm.inputId}}"
-       ng-model="vm.dateTime"
-       ng-model-options="{debounce: 100}"
-       ng-change="vm.updateTimeModelValue()"
-       placeholder="{{vm.placeholder}}"
-       class="form-control dv-timepicker"
-       ng-blur="vm.onBlur()"
-       ng-required="vm.dateTimeRequired"
-       ng-disabled="vm.ngDisabled">
+<input
+    aria-describedby="{{ vm.inputId + '-error' }}"
+    type="text"
+    id="{{ vm.inputId }}"
+    ng-model="vm.dateTime"
+    ng-model-options="{debounce: 100}"
+    ng-change="vm.updateTimeModelValue()"
+    placeholder="{{ vm.placeholder }}"
+    class="form-control dv-timepicker"
+    ng-blur="vm.onBlur()"
+    ng-required="vm.dateTimeRequired"
+    ng-disabled="vm.ngDisabled"
+/>

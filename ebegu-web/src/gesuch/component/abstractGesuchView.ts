@@ -16,7 +16,10 @@
  */
 
 import {IController} from 'angular';
-import {isVerfuegtOrSTV, TSAntragStatus} from '../../models/enums/TSAntragStatus';
+import {
+    isVerfuegtOrSTV,
+    TSAntragStatus
+} from '../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
@@ -24,7 +27,6 @@ import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus'
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSBetreuung} from '../../models/TSBetreuung';
-import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSGesuch} from '../../models/TSGesuch';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -37,7 +39,6 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 export class AbstractGesuchViewController<T> implements IController {
-
     public readonly DEFAULT_DELAY: number = 200;
 
     public $scope: IScope;
@@ -73,7 +74,7 @@ export class AbstractGesuchViewController<T> implements IController {
          * auf !dirty. Dann kann der Benutzer nochmal auf Speichern klicken und die Daten werden gespeichert.
          * Damit dies nicht passiert, hoeren wir in allen Views auf diesen Event und setzen das Form auf dirty
          */
-        this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], (_event: any, _errors: TSExceptionReport[]) => {
+        this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], () => {
             if (this.form) {
                 this.form.$dirty = true;
                 this.form.$pristine = false;
@@ -99,13 +100,15 @@ export class AbstractGesuchViewController<T> implements IController {
     }
 
     public getGesuchId(): string {
-        return this.gesuchModelManager && this.getGesuch() ?
-            this.getGesuch().id :
-            '';
+        return this.gesuchModelManager && this.getGesuch()
+            ? this.getGesuch().id
+            : '';
     }
 
     public setGesuchStatus(status: TSAntragStatus): IPromise<TSAntragStatus> {
-        return this.gesuchModelManager ? this.gesuchModelManager.saveGesuchStatus(status) : undefined;
+        return this.gesuchModelManager
+            ? this.gesuchModelManager.saveGesuchStatus(status)
+            : undefined;
     }
 
     public isGesuchInStatus(status: TSAntragStatus): boolean {
@@ -113,9 +116,11 @@ export class AbstractGesuchViewController<T> implements IController {
     }
 
     public isBetreuungInStatus(status: TSBetreuungsstatus): boolean {
-        return this.gesuchModelManager.getBetreuungToWorkWith() ?
-            status === this.gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus :
-            false;
+        return this.gesuchModelManager.getBetreuungToWorkWith()
+            ? status ===
+                  this.gesuchModelManager.getBetreuungToWorkWith()
+                      .betreuungsstatus
+            : false;
     }
 
     public isMutation(): boolean {
@@ -171,28 +176,31 @@ export class AbstractGesuchViewController<T> implements IController {
         return EbeguUtil.isNotNullOrUndefined(value);
     }
 
-    public isMutationsmeldungAllowed(betreuung: TSBetreuung, isNewestGesuch: boolean): boolean {
+    public isMutationsmeldungAllowed(
+        betreuung: TSBetreuung,
+        isNewestGesuch: boolean
+    ): boolean {
         if (!betreuung || !this.gesuchModelManager.getGesuch()) {
             return false;
         }
         return (
-                (
-                    this.isMutation()
-                    && (
-                        betreuung.vorgaengerId
-                        || betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                    )
-                )
-                || (
-                    !this.isMutation()
-                    && (isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
-                        || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde)
-                    && betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                )
-            )
-            && betreuung.betreuungsstatus !== TSBetreuungsstatus.WARTEN
-            && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
-            && isNewestGesuch;
+            ((this.isMutation() &&
+                (betreuung.vorgaengerId ||
+                    betreuung.betreuungsstatus ===
+                        TSBetreuungsstatus.VERFUEGT)) ||
+                (!this.isMutation() &&
+                    (isVerfuegtOrSTV(
+                        this.gesuchModelManager.getGesuch().status
+                    ) ||
+                        this.gesuchModelManager.getGesuch()
+                            .gesperrtWegenBeschwerde) &&
+                    betreuung.betreuungsstatus ===
+                        TSBetreuungsstatus.VERFUEGT)) &&
+            betreuung.betreuungsstatus !== TSBetreuungsstatus.WARTEN &&
+            this.gesuchModelManager.getGesuch().gesuchsperiode.status ===
+                TSGesuchsperiodeStatus.AKTIV &&
+            isNewestGesuch
+        );
     }
 
     public getBasisjahr(): number | undefined {
@@ -226,12 +234,17 @@ export class AbstractGesuchViewController<T> implements IController {
     }
 
     public isFKJV(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getGesuch())
-            && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getGesuch()) &&
+            this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV
+        );
     }
 
     private getBasisjahrPlus(nbr: number): number | undefined {
-        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahrPlus(nbr)) {
+        if (
+            this.gesuchModelManager &&
+            this.gesuchModelManager.getBasisjahrPlus(nbr)
+        ) {
             return this.gesuchModelManager.getBasisjahrPlus(nbr);
         }
         return undefined;

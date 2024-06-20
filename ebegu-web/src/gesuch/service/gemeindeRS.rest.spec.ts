@@ -26,7 +26,6 @@ import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {GemeindeRS} from './gemeindeRS.rest';
 
 describe('GemeindeRS', () => {
-
     let gemeindeRS: GemeindeRS;
     let $httpBackend: IHttpBackendService;
     let allGemeinde: TSGemeinde[];
@@ -37,12 +36,14 @@ describe('GemeindeRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gemeindeRS = $injector.get('GemeindeRS');
-        $httpBackend = $injector.get('$httpBackend');
+    beforeEach(
+        angular.mock.inject($injector => {
+            gemeindeRS = $injector.get('GemeindeRS');
+            $httpBackend = $injector.get('$httpBackend');
 
-        createAllGemeinden();
-    }));
+            createAllGemeinden();
+        })
+    );
 
     describe('getGemeindenForPrincipal', () => {
         it('should give the gemeinden linked to the given user', done => {
@@ -52,7 +53,9 @@ describe('GemeindeRS', () => {
                 gemeinden => {
                     expect(gemeinden).toBeDefined();
                     expect(gemeinden.length).toBe(1);
-                    expect(gemeinden[0]).toEqual(user.extractCurrentGemeinden()[0]);
+                    expect(gemeinden[0]).toEqual(
+                        user.extractCurrentGemeinden()[0]
+                    );
                     done();
                 },
                 err => done.fail(err)
@@ -61,7 +64,9 @@ describe('GemeindeRS', () => {
 
         it('should give all gemeinden for a role without gemeinde', done => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            $httpBackend.expectGET(`${gemeindeRS.serviceURL  }/all`).respond(allGemeinde);
+            $httpBackend
+                .expectGET(`${gemeindeRS.serviceURL}/all`)
+                .respond(allGemeinde);
             const user = createUser(TSRole.SACHBEARBEITER_INSTITUTION, false);
 
             gemeindeRS.toGemeindenForPrincipal$(user).subscribe(
@@ -91,7 +96,10 @@ describe('GemeindeRS', () => {
 
     function createUser(role: TSRole, createGemeinde: boolean): TSBenutzer {
         const user = new TSBenutzer('Pedrito', 'Fuentes');
-        user.currentBerechtigung = TestDataUtil.createBerechtigung(role, createGemeinde);
+        user.currentBerechtigung = TestDataUtil.createBerechtigung(
+            role,
+            createGemeinde
+        );
         return user;
     }
 

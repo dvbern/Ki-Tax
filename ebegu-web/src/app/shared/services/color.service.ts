@@ -22,17 +22,19 @@ import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
     providedIn: 'root'
 })
 export class ColorService {
-
-    public constructor() {
-    }
-
     private static changeColor(color: string, cssVariable: string): void {
         document.documentElement.style.setProperty(cssVariable, color);
     }
 
     public static changeColors(config: TSPublicAppConfig): void {
         ColorService.changeColor(config.primaryColor, '--primary-color');
-        ColorService.changeColor(config.primaryColorDark, '--primary-color-dark');
-        ColorService.changeColor(config.primaryColorLight, '--primary-color-light');
+        ColorService.changeColor(
+            config.primaryColorDark,
+            '--primary-color-dark'
+        );
+        ColorService.changeColor(
+            config.primaryColorLight,
+            '--primary-color-light'
+        );
     }
 }

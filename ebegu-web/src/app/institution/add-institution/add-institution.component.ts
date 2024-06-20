@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -33,9 +39,7 @@ import {TSInstitution} from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {
-    DvNgGesuchstellerDialogComponent
-} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
+import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -52,7 +56,6 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddInstitutionComponent implements OnInit {
-
     private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
     @ViewChild(NgForm, {static: true}) public form: NgForm;
@@ -83,34 +86,38 @@ export class AddInstitutionComponent implements OnInit {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.betreuungsangebot = this.$transition$.params().betreuungsangebot;
         this.applicationPropertyRS.getPublicPropertiesCached().then(props => {
-            this.betreuungsangebote =
-                this.$transition$.params().betreuungsangebote.filter((angebotTyp: TSBetreuungsangebotTyp) => {
-                    switch (angebotTyp) {
-                        case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                            return props.angebotTFOActivated;
-                        case TSBetreuungsangebotTyp.FERIENINSEL:
-                            return props.angebotFIActivated;
-                        case TSBetreuungsangebotTyp.TAGESSCHULE:
-                            return props.angebotTSActivated;
-                        case TSBetreuungsangebotTyp.MITTAGSTISCH:
-                            return props.angebotMittagstischActivated;
-                        default:
-                            return true;
+            this.betreuungsangebote = this.$transition$
+                .params()
+                .betreuungsangebote.filter(
+                    (angebotTyp: TSBetreuungsangebotTyp) => {
+                        switch (angebotTyp) {
+                            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                                return props.angebotTFOActivated;
+                            case TSBetreuungsangebotTyp.FERIENINSEL:
+                                return props.angebotFIActivated;
+                            case TSBetreuungsangebotTyp.TAGESSCHULE:
+                                return props.angebotTSActivated;
+                            case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                                return props.angebotMittagstischActivated;
+                            default:
+                                return true;
+                        }
                     }
-                });
+                );
         });
         this.isLatsInstitution = this.$transition$.params().latsOnly;
 
         // initally we think it is a Betreuungsgutschein Institution
         this.isBGInstitution = true;
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE
-            || this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+        if (
+            this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE ||
+            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL
+        ) {
             this.isBGInstitution = false;
         }
         this.initInstitution();
@@ -121,12 +128,17 @@ export class AddInstitutionComponent implements OnInit {
         this.startDate = this.getStartDate();
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
-        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
-            this.institutionenDurchGemeindenEinladen = result;
-            if (this.institutionenDurchGemeindenEinladen || !this.isBGInstitution) {
-                this.loadGemeindenList();
-            }
-        });
+        this.applicationPropertyRS
+            .getInstitutionenDurchGemeindenEinladen()
+            .then(result => {
+                this.institutionenDurchGemeindenEinladen = result;
+                if (
+                    this.institutionenDurchGemeindenEinladen ||
+                    !this.isBGInstitution
+                ) {
+                    this.loadGemeindenList();
+                }
+            });
     }
 
     public cancel(): void {
@@ -142,62 +154,88 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     private persistInstitutionWithGSCheck(): void {
-        this.institutionRS.createInstitution(
-            this.institution,
-            this.startDate,
-            this.betreuungsangebot,
-            this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
-        ).subscribe(neueinstitution => {
-            this.institution = neueinstitution;
-            this.goToNextView();
-        }, ((exception: TSExceptionReport[]) => {
-            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
-                this.errorService.clearAll();
-                const adminRolle = 'TSRole_ADMIN_INSTITUTION';
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                    emailAdresse: this.adminMail,
-                    administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1]
-                };
-                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
-                    .subscribe(answer => {
-                            if (answer !== true) {
-                                return;
-                            }
-                            this.log.warn(`Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen`
-                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
-                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                                () => {
-                                    this.persistInstitution();
-                                }
-                            );
-                        },
-                        () => {
-                        });
-            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
-                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                    () => {
+        this.institutionRS
+            .createInstitution(
+                this.institution,
+                this.startDate,
+                this.betreuungsangebot,
+                this.adminMail,
+                this.selectedGemeinde ? this.selectedGemeinde.id : undefined
+            )
+            .subscribe(
+                neueinstitution => {
+                    this.institution = neueinstitution;
+                    this.goToNextView();
+                },
+                (exception: TSExceptionReport[]) => {
+                    if (
+                        exception[0].errorCodeEnum ===
+                        'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH'
+                    ) {
                         this.errorService.clearAll();
-                        this.persistInstitution();
+                        const adminRolle = 'TSRole_ADMIN_INSTITUTION';
+                        const dialogConfig = new MatDialogConfig();
+                        dialogConfig.data = {
+                            emailAdresse: this.adminMail,
+                            administratorRolle: adminRolle,
+                            gesuchstellerName: exception[0].argumentList[1]
+                        };
+                        this.dialog
+                            .open(
+                                DvNgGesuchstellerDialogComponent,
+                                dialogConfig
+                            )
+                            .afterClosed()
+                            .subscribe(
+                                answer => {
+                                    if (answer !== true) {
+                                        return;
+                                    }
+                                    this.log.warn(
+                                        `Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen` +
+                                            ` Rollen bekommen und seine Gesuch wird gelöscht werden!`
+                                    );
+                                    this.benutzerRS
+                                        .removeBenutzer(
+                                            exception[0].argumentList[0]
+                                        )
+                                        .then(() => {
+                                            this.persistInstitution();
+                                        });
+                                },
+                                () => {}
+                            );
+                    } else if (
+                        exception[0].errorCodeEnum ===
+                        'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH'
+                    ) {
+                        this.benutzerRS
+                            .removeBenutzer(exception[0].argumentList[0])
+                            .then(() => {
+                                this.errorService.clearAll();
+                                this.persistInstitution();
+                            });
                     }
-                );
-            }
-        }));
+                }
+            );
     }
 
     private persistInstitution(): void {
-        this.institutionRS.createInstitution(
-            this.institution,
-            this.startDate,
-            this.betreuungsangebot,
-            this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
-        ).subscribe(neueinstitution => {
-            this.institution = neueinstitution;
-            this.goToNextView();
-        }, error => LOG.error(error));
+        this.institutionRS
+            .createInstitution(
+                this.institution,
+                this.startDate,
+                this.betreuungsangebot,
+                this.adminMail,
+                this.selectedGemeinde ? this.selectedGemeinde.id : undefined
+            )
+            .subscribe(
+                neueinstitution => {
+                    this.institution = neueinstitution;
+                    this.goToNextView();
+                },
+                error => LOG.error(error)
+            );
     }
 
     private initInstitution(): void {
@@ -206,14 +244,16 @@ export class AddInstitutionComponent implements OnInit {
             this.institution.status = TSInstitutionStatus.NUR_LATS;
             return;
         }
-        this.institution.status = this.isBGInstitution ?
-                TSInstitutionStatus.EINGELADEN :
-                TSInstitutionStatus.KONFIGURATION;
+        this.institution.status = this.isBGInstitution
+            ? TSInstitutionStatus.EINGELADEN
+            : TSInstitutionStatus.KONFIGURATION;
     }
 
     private goToNextView(): void {
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE ||
-            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+        if (
+            this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE ||
+            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL
+        ) {
             this.navigateToEdit();
         } else {
             this.navigateBack();
@@ -233,24 +273,32 @@ export class AddInstitutionComponent implements OnInit {
 
     public loadGemeindenList(): void {
         let obs$;
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && this.isLatsInstitution) {
+        if (
+            this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE &&
+            this.isLatsInstitution
+        ) {
             obs$ = this.gemeindeRS.getGemeindenForPrincipal$();
-        } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && !this.isLatsInstitution) {
+        } else if (
+            this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE &&
+            !this.isLatsInstitution
+        ) {
             obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
-        } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+        } else if (
+            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL
+        ) {
             obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
         } else {
             obs$ = this.gemeindeRS.getGemeindenForBGByPrincipal$();
         }
-        obs$.pipe(take(1))
-            .subscribe(
-                gemeinden => {
-                    this.gemeinden = this.isLatsInstitution ? gemeinden : gemeinden.filter(gemeinde => !gemeinde.nurLats);
-                    this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
-                },
-                err => LOG.error(err)
-            );
-
+        obs$.pipe(take(1)).subscribe(
+            gemeinden => {
+                this.gemeinden = this.isLatsInstitution
+                    ? gemeinden
+                    : gemeinden.filter(gemeinde => !gemeinde.nurLats);
+                this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
+            },
+            err => LOG.error(err)
+        );
     }
 
     /*
@@ -263,7 +311,10 @@ export class AddInstitutionComponent implements OnInit {
         }
         const nextMonthBegin = moment().add(1, 'M').startOf('month');
 
-        if (this.isBGInstitution || nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung) {
+        if (
+            this.isBGInstitution ||
+            nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung
+        ) {
             return nextMonthBegin;
         }
         return TSMandant.earliestDateOfTSAnmeldung;
@@ -276,7 +327,9 @@ export class AddInstitutionComponent implements OnInit {
         if (!this.institutionenDurchGemeindenEinladen) {
             return false;
         }
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getAdministratorBgTsGemeindeRole()
+        );
     }
 
     // das Dropdown ist nur für den Superadmin sichtbar, aber nicht required. für alle
@@ -286,14 +339,18 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public selectAdminMail(): void {
-
-        this.benutzerRS.getAllEmailAdminForTraegerschaft(this.institution.traegerschaft)
+        this.benutzerRS
+            .getAllEmailAdminForTraegerschaft(this.institution.traegerschaft)
             .then(mail => {
                 const dialogConfig = new MatDialogConfig();
 
                 dialogConfig.data = mail;
 
-                this.dialog.open(DvNgSelectTraegerschaftEmailDialogComponent, dialogConfig)
+                this.dialog
+                    .open(
+                        DvNgSelectTraegerschaftEmailDialogComponent,
+                        dialogConfig
+                    )
                     .afterClosed()
                     .subscribe(result => {
                         this.adminMail = result.selectedEmail;

@@ -7,7 +7,6 @@ export enum ValidationType {
     ANY_NUMBER
 }
 
-// eslint-disable-next-line
 export function numberValidator(type: ValidationType): ValidatorFn {
     return control => {
         if (!control.value) {
@@ -57,5 +56,5 @@ function isHalf(val: any): boolean {
     if (isNaN(val)) {
         return false;
     }
-    return val * 2 % 1 === 0;
+    return (val * 2) % 1 === 0;
 }

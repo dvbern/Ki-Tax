@@ -26,7 +26,6 @@ import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 describe('finanzielleSituationStartView', () => {
-
     let gesuchModelManager: GesuchModelManager;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
@@ -37,19 +36,30 @@ describe('finanzielleSituationStartView', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
+        })
+    );
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
-            gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
-            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
-            gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
-        });
+        gesuchModelManager
+            .initGesuch(
+                TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_FALL,
+                undefined
+            )
+            .then(() => {
+                gesuchModelManager.getGesuch().familiensituationContainer =
+                    new TSFamiliensituationContainer();
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA =
+                    new TSFamiliensituation();
+                gesuchModelManager.getGesuch().gesuchsteller1 =
+                    new TSGesuchstellerContainer(new TSGesuchsteller());
+            });
     }));
 
     it('should be defined', () => {
@@ -58,7 +68,11 @@ describe('finanzielleSituationStartView', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('finanzielleSituationStartView', {$scope: scope}, bindings);
+        component = $componentController(
+            'finanzielleSituationStartView',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
 });

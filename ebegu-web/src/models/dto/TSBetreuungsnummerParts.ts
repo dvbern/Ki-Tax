@@ -17,14 +17,19 @@
  * Hilfsdto welches verwendet werden kann um eine Betreuungsnummer in ihre subteile aufzuteilen
  */
 export class TSBetreuungsnummerParts {
-
     private _jahr: string;
     private _fallId: string;
     private _gemeindeNr: string;
     private _kindnummer: string;
     private _betreuungsnummer: string;
 
-    public constructor(jahr: string, fallId: string, gemeindeNr: string, kindnummer: string, betreuungsnummer: string) {
+    public constructor(
+        jahr: string,
+        fallId: string,
+        gemeindeNr: string,
+        kindnummer: string,
+        betreuungsnummer: string
+    ) {
         this._jahr = jahr;
         this._fallId = fallId;
         this._gemeindeNr = gemeindeNr;

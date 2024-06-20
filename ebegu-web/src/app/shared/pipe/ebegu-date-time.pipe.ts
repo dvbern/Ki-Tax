@@ -24,12 +24,10 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     name: 'ebeguDateTime'
 })
 export class EbeguDateTimePipe implements PipeTransform {
-
     public transform(date: moment.Moment): unknown {
         if (!isMoment(date)) {
             return '';
         }
         return date.format(CONSTANTS.DATE_TIME_FORMAT);
     }
-
 }

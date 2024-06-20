@@ -31,13 +31,15 @@ const getKontoinhaberIn = () => {
     return cy.getByData('kontoinhaber');
 };
 
-const fillFinanzielleSituationStartForm = (dataset: keyof typeof FixtureFinSit) => {
-  FixtureFinSit[dataset](({Start}) => {
-      cy.wait(2000);
-      getSozialhilfebezueger(Start.sozialhilfebeziehende).click();
-      getIban().type(Start.iban);
-      getKontoinhaberIn().type(Start.kontoinhaber);
-  })
+const fillFinanzielleSituationStartForm = (
+    dataset: keyof typeof FixtureFinSit
+) => {
+    FixtureFinSit[dataset](({Start}) => {
+        cy.wait(2000);
+        getSozialhilfebezueger(Start.sozialhilfebeziehende).click();
+        getIban().type(Start.iban);
+        getKontoinhaberIn().type(Start.kontoinhaber);
+    });
 };
 
 const saveForm = () => {
@@ -53,5 +55,5 @@ export const FinanzielleSituationStartPO = {
     getKontoinhaberIn,
     // page actions
     fillFinanzielleSituationStartForm,
-    saveForm,
+    saveForm
 };

@@ -19,64 +19,67 @@
 import {GemeindeFixture} from '@dv-e2e/fixtures';
 
 const getAnschrift = () => {
-	return cy.getByData('anschrift');
+    return cy.getByData('anschrift');
 };
 
 const getEmail = () => {
-	return cy.getByData('email');
+    return cy.getByData('email');
 };
 
 const getStrasse = () => {
-	return cy.getByData('strasse');
+    return cy.getByData('strasse');
 };
 
 const getHausnummer = () => {
-	return cy.getByData('hausnummer');
+    return cy.getByData('hausnummer');
 };
 
 const getPLZ = () => {
-	return cy.getByData('plz');
+    return cy.getByData('plz');
 };
 
 const getOrt = () => {
-	return cy.getByData('ort');
+    return cy.getByData('ort');
 };
 
 const getTelefon = () => {
-	return cy.getByData('telefon');
+    return cy.getByData('telefon');
 };
 
 const getStandardVerantwortliche = () => {
-	return cy.getByData('standardverantwortliche');
+    return cy.getByData('standardverantwortliche');
 };
 
 const getEditButton = () => {
-	return cy.getByData('container.edit', 'navigation-button');
+    return cy.getByData('container.edit', 'navigation-button');
 };
 
 const getSaveButton = () => {
-	return cy.getByData('container.save', 'navigation-button');
+    return cy.getByData('container.save', 'navigation-button');
 };
 
 const getCancelButton = () => {
-	return cy.getByData('container.cancel');
+    return cy.getByData('container.cancel');
 };
 
 // !! -- PAGE ACTIONS -- !!
 
-const fillGemeindeStammdaten = (dataset: keyof typeof GemeindeFixture, gemeinde: string) => {
-  GemeindeFixture[dataset]((data) => {
-      const stammdaten = data.stammdaten;
-      getAnschrift().type(stammdaten.anschrift);
-      getEmail().type(`gemeinde-${gemeinde}@mailbucket.dvbern.ch`);
-      getStrasse().type(stammdaten.strasse);
-      getHausnummer().type(stammdaten.hausnummer);
-      getPLZ().type(stammdaten.plz);
-      getTelefon().type(stammdaten.telefon);
-      getOrt().type(gemeinde);
-      getStandardVerantwortliche().click();
-      cy.get('mat-option').first().click()
-  })
+const fillGemeindeStammdaten = (
+    dataset: keyof typeof GemeindeFixture,
+    gemeinde: string
+) => {
+    GemeindeFixture[dataset](data => {
+        const stammdaten = data.stammdaten;
+        getAnschrift().type(stammdaten.anschrift);
+        getEmail().type(`gemeinde-${gemeinde}@mailbucket.dvbern.ch`);
+        getStrasse().type(stammdaten.strasse);
+        getHausnummer().type(stammdaten.hausnummer);
+        getPLZ().type(stammdaten.plz);
+        getTelefon().type(stammdaten.telefon);
+        getOrt().type(gemeinde);
+        getStandardVerantwortliche().click();
+        cy.get('mat-option').first().click();
+    });
 };
 
 export const EditGemeindePO = {

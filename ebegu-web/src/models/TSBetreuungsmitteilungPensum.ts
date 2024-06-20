@@ -16,7 +16,6 @@
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
 export class TSBetreuungsmitteilungPensum extends TSAbstractMahlzeitenPensum {
-
     public betreuungInFerienzeit: boolean; //if not public conflict with same Property in TSBetreuungspensum
 
     public constructor() {

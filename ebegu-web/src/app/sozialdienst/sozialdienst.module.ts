@@ -20,14 +20,14 @@ import {SharedModule} from '../shared/shared.module';
 import {ListSozialdienstComponent} from './list-sozialdienst/list-sozialdienst.component';
 import {AddSozialdienstComponent} from './add-sozialdienst/add-sozialdienst.component';
 import {SozialdienstRoutingModule} from './sozialdienst-routing/sozialdienst-routing.module';
-import { EditSozialdienstComponent } from './edit-sozialdienst/edit-sozialdienst.component';
+import {EditSozialdienstComponent} from './edit-sozialdienst/edit-sozialdienst.component';
 
 @NgModule({
-    declarations: [ListSozialdienstComponent, AddSozialdienstComponent, EditSozialdienstComponent],
-    imports: [
-        SharedModule,
-        SozialdienstRoutingModule
-    ]
+    declarations: [
+        ListSozialdienstComponent,
+        AddSozialdienstComponent,
+        EditSozialdienstComponent
+    ],
+    imports: [SharedModule, SozialdienstRoutingModule]
 })
-export class SozialdienstModule {
-}
+export class SozialdienstModule {}

@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, Directive, ElementRef, Input, OnChanges} from '@angular/core';
+import {
+    AfterViewInit,
+    Directive,
+    ElementRef,
+    Input,
+    OnChanges
+} from '@angular/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -34,7 +40,6 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     selector: '[dvNgEnableElement]'
 })
 export class DvNgEnableElementDirective implements AfterViewInit, OnChanges {
-
     @Input()
     private readonly dvEnableAllowedRoles: ReadonlyArray<TSRole>;
 
@@ -44,8 +49,7 @@ export class DvNgEnableElementDirective implements AfterViewInit, OnChanges {
     public constructor(
         private readonly elementRef: ElementRef,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public ngAfterViewInit(): void {
         this.handleElement();
@@ -65,8 +69,10 @@ export class DvNgEnableElementDirective implements AfterViewInit, OnChanges {
      * The current user must have one of the passed roles.
      */
     private evaluateCondition(): boolean {
-        return this.dvEnabled &&
+        return (
+            this.dvEnabled &&
             EbeguUtil.isNotNullOrUndefined(this.dvEnableAllowedRoles) &&
-            this.authServiceRS.isOneOfRoles(this.dvEnableAllowedRoles);
+            this.authServiceRS.isOneOfRoles(this.dvEnableAllowedRoles)
+        );
     }
 }

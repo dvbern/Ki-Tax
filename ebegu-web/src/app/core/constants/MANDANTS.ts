@@ -48,12 +48,13 @@ export abstract class MANDANTS {
     };
     public static readonly NONE: KiBonMandant = {
         accept: () => {
-            throw new Error('Should never be called for Mandant NONE, make sure mandant is set');
+            throw new Error(
+                'Should never be called for Mandant NONE, make sure mandant is set'
+            );
         },
         hostname: null,
         fullName: null
     };
-
 }
 
 export interface KiBonMandant {

@@ -33,7 +33,8 @@
         text-align: center;
         vertical-align: middle;
     }
-    &.active, &:active {
+    &.active,
+    &:active {
         background: @primary;
         color: @contrast-lightest;
         text-decoration: none !important;
@@ -43,16 +44,17 @@
         color: @contrast-lightest;
     }
 
-    &:active, &:hover {
+    &:active,
+    &:hover {
         outline: none;
         text-decoration: none !important;
     }
     &:focus {
         outline: 2px solid @contrast-darkest;
         outline-offset: 0;
-
     }
-    &[disabled], &[disabled]:hover {
+    &[disabled],
+    &[disabled]:hover {
         background: @contrast;
         color: @contrast-lightest;
     }
@@ -106,7 +108,8 @@ dv-navigation {
     color: @contrast-darkest;
     font-size: 1.4rem;
     letter-spacing: 0.1rem;
-    &:hover, &:active {
+    &:hover,
+    &:active {
         background: transparent;
         color: @contrast-darkest;
     }
@@ -117,7 +120,7 @@ dv-navigation {
         }
 
         i {
-            text-decoration: none
+            text-decoration: none;
         }
         span {
             text-decoration: underline;
@@ -126,14 +129,13 @@ dv-navigation {
     span {
         line-height: normal;
     }
-    &[disabled], &[disabled]:hover {
-
+    &[disabled],
+    &[disabled]:hover {
         background: none;
         box-shadow: none;
         outline: 0;
         &:focus {
             outline: 2px solid @contrast-darkest;
-
         }
     }
     &.link-color-primary {
@@ -162,7 +164,6 @@ dv-navigation {
 }
 
 .dv-btn-operation {
-
     background: transparent;
     color: @contrast-darkest;
     letter-spacing: 0.1rem;
@@ -173,16 +174,16 @@ dv-navigation {
     .fa {
         vertical-align: middle;
     }
-    &.active, &:active {
+    &.active,
+    &:active {
         background: transparent;
         color: @contrast-darkest;
         .fa {
             color: @primary;
         }
-
     }
-    &:hover, &:focus {
-
+    &:hover,
+    &:focus {
         background: transparent;
         -webkit-box-shadow: none;
         box-shadow: none;
@@ -194,23 +195,23 @@ dv-navigation {
         }
     }
 
-    &:active, &:hover {
+    &:active,
+    &:hover {
         outline: none;
         text-decoration: none !important;
     }
 
-    &[disabled], &[disabled]:hover {
+    &[disabled],
+    &[disabled]:hover {
         background: transparent;
         color: @contrast-dark;
         .fa {
             color: @contrast-dark;
         }
     }
-
 }
 
 a.dv-btn {
-
     display: block;
     text-decoration: none;
     span {
@@ -223,7 +224,8 @@ a.dv-btn {
 .cancel-button {
     background: @secondary-button;
     color: @black;
-    &:hover, &:active {
+    &:hover,
+    &:active {
         background: @secondary-button-hover;
         color: @black;
     }
@@ -231,12 +233,12 @@ a.dv-btn {
 
 .dv-btn-operation--white {
     color: @contrast-lightest;
-    &.active, &:active {
+    &.active,
+    &:active {
         background: transparent;
         color: @contrast-lightest;
         .fa {
             color: @primary;
         }
-
     }
 }

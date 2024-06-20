@@ -33,10 +33,16 @@ describe('DvSearchListComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [DvSearchListComponent],
-            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
+            imports: [
+                MaterialModule,
+                TranslateModule.forRoot(),
+                UpgradeModule,
+                BrowserAnimationsModule
+            ],
             providers: []
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(() => {
@@ -57,5 +63,4 @@ describe('DvSearchListComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-})
-;
+});

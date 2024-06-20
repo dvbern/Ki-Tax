@@ -15,11 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
-import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
+import {
+    navigateToStartPageForRole,
+    navigateToStartPageForRoleWithParams
+} from '../../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
@@ -31,7 +39,6 @@ import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourSer
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeMainComponent implements OnInit {
-
     public logoUrl: string;
 
     public constructor(
@@ -40,31 +47,37 @@ export class WelcomeMainComponent implements OnInit {
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(res => {
-                this.logoUrl = `url("assets/images/${res.logoFileName}")`;
-                this.cd.markForCheck();
-            });
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.logoUrl = `url("assets/images/${res.logoFileName}")`;
+            this.cd.markForCheck();
+        });
     }
 
     public navigateToStartPage(): void {
         const params: ITourParams = {
             tourType: 'startTour'
         };
-        navigateToStartPageForRoleWithParams(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state, params);
+        navigateToStartPageForRoleWithParams(
+            this.authServiceRs.getPrincipal().getCurrentRole(),
+            this.$state,
+            params
+        );
         this.kibonGuidedTourService.emit();
     }
 
     public cancel(): void {
-        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+        navigateToStartPageForRole(
+            this.authServiceRs.getPrincipal().getCurrentRole(),
+            this.$state
+        );
     }
 
     public isNotSozialdienstRole(): boolean {
-        return !this.authServiceRs.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+        return !this.authServiceRs.isOneOfRoles(
+            TSRoleUtil.getSozialdienstRolle()
+        );
     }
 }

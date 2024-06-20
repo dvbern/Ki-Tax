@@ -97,7 +97,7 @@
     "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis/Nachweise über das Reinvermögen",
     "NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT": "Die Bestätigung der kantonalen Steuerverwaltung kann formlos unter Angabe der Personalien und des vergangenen Kalenderjahres angefordert werden unter: <a href='mailto:quest.stv@sz.ch'>quest.stv@sz.ch</a> oder +41 41 819 13 77",
     "KITA": "Kita / schulische Tagesstruktur",
-    "PARAM_PENSUM_KITA_MIN":"Min Pensum Kitas / schulische Tagesstrukturen",
+    "PARAM_PENSUM_KITA_MIN": "Min Pensum Kitas / schulische Tagesstrukturen",
     "MIN_VERGUENSTIGUNG_PRO_TG": "Minimaler Elternbeitrag pro Tag (Kitas / schulische Tagesstrukturen)",
     "MIN_VERGUENSTIGUNG_PRO_TG_READONLY": "Minimaler Elternbeitrag pro Tag (Kitas / schulische Tagesstrukturen): {{value}} CHF",
     "VERGUENSTIGUNG_HELP": "Bezeichnet den Betrag in CHF, der an die Kita / schulische Tagesstruktur / schulische Tagesstruktur überwiesen wird. Dieser entspricht dem Betreuungsgutschein abzüglich eines allfälligen minimalen Elternbeitrags (den die Kita / schulische Tagesstruktur bzw. die Tagesfamilienorganisation den Eltern in Rechnung stellen würde).",

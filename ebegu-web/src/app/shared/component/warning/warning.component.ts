@@ -8,7 +8,5 @@ import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
     standalone: true
 })
 export class WarningComponent {
-
     @Input() public text: string;
-
 }

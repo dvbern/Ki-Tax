@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   ~ Ki-Tax: System for the management of external childcare subsidies
   ~ Copyright (C) 2017 City of Bern Switzerland
@@ -19,27 +19,43 @@
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebegu-h1 required">
-                <span [innerHTML]="'FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER' | translate:{basisjahr: gesuchModelManager.getBasisjahr()}"></span>
+                <span
+                    [innerHTML]="
+                        'FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER'
+                            | translate
+                                : {basisjahr: gesuchModelManager.getBasisjahr()}
+                    "
+                ></span>
             </span>
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
-                            aria-labelledby="sozialhilfeBezueger_id"
-                            name="sozialhilfeBezueger"
-                            required
-                            dvEnableElement
-                            #sozialhilfebezueger="ngModel"
-                            [allowedRoles]="allowedRoles"
-                            [enableExpression]="!disabled && !isGesuchReadonly() && !isKorrekturModusJugendamt()"
-                            [(ngModel)]="sozialhilfeBezueger"
-                            (ngModelChange)="updateSozialhilfeBezueger($event)">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                        aria-labelledby="sozialhilfeBezueger_id"
+                        name="sozialhilfeBezueger"
+                        required
+                        dvEnableElement
+                        #sozialhilfebezueger="ngModel"
+                        [allowedRoles]="allowedRoles"
+                        [enableExpression]="
+                            !disabled &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
+                        [(ngModel)]="sozialhilfeBezueger"
+                        (ngModelChange)="updateSozialhilfeBezueger($event)"
+                    >
+                        <mat-radio-button [value]="true">{{
+                            'LABEL_JA' | translate
+                        }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{
+                            'LABEL_NEIN' | translate
+                        }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-error-messages
                         *ngIf="sozialhilfebezueger.touched"
                         [errorObject]="sozialhilfebezueger.errors"
-                        inputId="selbststaendig_id">
+                        inputId="selbststaendig_id"
+                    >
                     </dv-error-messages>
                 </dv-radio-container-x>
             </dv-input-container-x>
@@ -52,35 +68,66 @@
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebegu-h1 required">
-                <span *ngIf="!gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT</span>
-                <span *ngIf="gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV</span>
-                <dv-tooltip [inputId]="'verguenstigungGewuenscht'" [text]="'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP' | translate:{maxEinkommen: getMaxMassgebendesEinkommen()}"></dv-tooltip>
+                <span *ngIf="!gesuchModelManager.isFKJVTexte" translate
+                    >FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT</span
+                >
+                <span *ngIf="gesuchModelManager.isFKJVTexte" translate
+                    >FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV</span
+                >
+                <dv-tooltip
+                    [inputId]="'verguenstigungGewuenscht'"
+                    [text]="
+                        'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP'
+                            | translate
+                                : {maxEinkommen: getMaxMassgebendesEinkommen()}
+                    "
+                ></dv-tooltip>
             </span>
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
-                            aria-labelledby="verguenstigungGewuenscht_id"
-                            name="verguenstigungGewuenscht"
-                            required
-                            dvEnableElement
-                            #verguenstigunggewuenscht="ngModel"
-                            [enableExpression]="!disabled && !isGesuchReadonly() && !isKorrekturModusJugendamt()"
-                            [(ngModel)]="verguenstigungGewuenscht"
-                            (ngModelChange)="updateVerguenstigungGewuenscht($event)">
-                        <mat-radio-button [value]="true">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate }}</mat-radio-button>
+                        aria-labelledby="verguenstigungGewuenscht_id"
+                        name="verguenstigungGewuenscht"
+                        required
+                        dvEnableElement
+                        #verguenstigunggewuenscht="ngModel"
+                        [enableExpression]="
+                            !disabled &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
+                        [(ngModel)]="verguenstigungGewuenscht"
+                        (ngModelChange)="updateVerguenstigungGewuenscht($event)"
+                    >
+                        <mat-radio-button [value]="true">{{
+                            'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA'
+                                | translate
+                        }}</mat-radio-button>
                         <mat-radio-button [value]="false">
-                            <ng-container *ngIf="!gesuchModelManager.isFKJVTexte">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate}}</ng-container>
-                            <ng-container *ngIf="gesuchModelManager.isFKJVTexte">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV' | translate }}</ng-container>
+                            <ng-container
+                                *ngIf="!gesuchModelManager.isFKJVTexte"
+                                >{{
+                                    'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN'
+                                        | translate
+                                }}</ng-container
+                            >
+                            <ng-container
+                                *ngIf="gesuchModelManager.isFKJVTexte"
+                                >{{
+                                    'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV'
+                                        | translate
+                                }}</ng-container
+                            >
                         </mat-radio-button>
                     </mat-radio-group>
                     <dv-error-messages
                         *ngIf="verguenstigunggewuenscht.touched"
                         [errorObject]="verguenstigunggewuenscht.errors"
-                        inputId="selbststaendig_id">
+                        inputId="selbststaendig_id"
+                    >
                     </dv-error-messages>
                 </dv-radio-container-x>
             </dv-input-container-x>
         </div>
     </div>
 </div>
-

@@ -28,21 +28,30 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
     providedIn: 'root'
 })
 export class FinanzielleSituationLuzernService {
-
-    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
+    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> =
+        new ReplaySubject(1);
 
     public constructor(
         private readonly berechnungsManager: BerechnungsManager
-    ) {
-    }
+    ) {}
 
-    public static finSitNeedsTwoSeparateAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
+    public static finSitNeedsTwoSeparateAntragsteller(
+        gesuchModelManager: GesuchModelManager
+    ): boolean {
         // bei Luzern gibt es einen Spezialfall: Wenn die Antragstellenden verheiratet sind, dann gibt es
         // zwei Antragstellerinnen aber es wird nur eine FinSit verlangt
-        const hasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuchModelManager.getGesuch().gesuchsteller2);
-        const isVerheiratet = gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET;
-        const isSozialhilfeBezueger = EbeguUtil.isNotNullAndTrue(gesuchModelManager.getFamiliensituation().sozialhilfeBezueger);
-        return hasSecondAntragsteller && !isVerheiratet && !isSozialhilfeBezueger;
+        const hasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(
+            gesuchModelManager.getGesuch().gesuchsteller2
+        );
+        const isVerheiratet =
+            gesuchModelManager.getFamiliensituation().familienstatus ===
+            TSFamilienstatus.VERHEIRATET;
+        const isSozialhilfeBezueger = EbeguUtil.isNotNullAndTrue(
+            gesuchModelManager.getFamiliensituation().sozialhilfeBezueger
+        );
+        return (
+            hasSecondAntragsteller && !isVerheiratet && !isSozialhilfeBezueger
+        );
     }
 
     public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
@@ -50,12 +59,17 @@ export class FinanzielleSituationLuzernService {
     }
 
     public calculateMassgebendesEinkommen(model: TSFinanzModel): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(model)
+        this.berechnungsManager
+            .calculateFinanzielleSituationTemp(model)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahrPlus: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
+    public calculateEinkommensverschlechterung(
+        model: TSFinanzModel,
+        basisJahrPlus: number
+    ): void {
+        this.berechnungsManager
+            .calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 }

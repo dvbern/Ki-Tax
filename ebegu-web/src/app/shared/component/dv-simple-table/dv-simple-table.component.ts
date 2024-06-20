@@ -22,13 +22,14 @@ import {DvSimpleTableConfig} from './dv-simple-table-config';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvSimpleTableComponent implements OnInit, OnChanges {
-
     @Input() public data: any[] = [];
     @Input() public columns: DvSimpleTableColumnDefinition[];
     @Input() public config: DvSimpleTableConfig;
 
-    @Output() public readonly rowClicked: EventEmitter<{element: any; event: Event}>
-        = new EventEmitter<{element: any; event: Event}>();
+    @Output() public readonly rowClicked: EventEmitter<{
+        element: any;
+        event: Event;
+    }> = new EventEmitter<{element: any; event: Event}>();
 
     public datasource: MatTableDataSource<any>;
     private sortedData: any[];
@@ -48,15 +49,15 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        // eslint-disable-next-line
         if (changes.data) {
             if (!this.columns) {
-                console.error('data can not be used without specifying the columns. Use the columns input');
+                console.error(
+                    'data can not be used without specifying the columns. Use the columns input'
+                );
                 return;
             }
             this.initData();
         }
-
     }
 
     private initData(): void {
@@ -78,9 +79,13 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
             this.datasource.data = this.data;
         } else {
             // save sorted Data in separate variable. we use that for pagination
-            this.sortedData = [].concat(this.data).sort(((a, b) => sortEvent.direction === 'asc' ?
-                this.compare(a[sortEvent.active], b[sortEvent.active]) :
-                this.compare(b[sortEvent.active], a[sortEvent.active])));
+            this.sortedData = []
+                .concat(this.data)
+                .sort((a, b) =>
+                    sortEvent.direction === 'asc'
+                        ? this.compare(a[sortEvent.active], b[sortEvent.active])
+                        : this.compare(b[sortEvent.active], a[sortEvent.active])
+                );
         }
         // go to page 0 after sorting
         this.applyPaginator(0);
@@ -113,14 +118,24 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
         }
         this.page = pageIndex;
         const start = this.page * this.config.paginate;
-        this.datasource.data = this.sortedData.slice(start, start + this.config.paginate);
+        this.datasource.data = this.sortedData.slice(
+            start,
+            start + this.config.paginate
+        );
         this.updatePagination();
     }
 
     private updatePagination(): void {
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.data.length / this.config.paginate),
-            this.page + 5); i++) {
+        for (
+            let i = Math.max(1, this.page - 4);
+            i <=
+            Math.min(
+                Math.ceil(this.data.length / this.config.paginate),
+                this.page + 5
+            );
+            i++
+        ) {
             this.paginationItems.push(i);
         }
     }

@@ -21,8 +21,14 @@ import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {EnumEx} from './EnumEx';
 
 describe('getNames', () => {
-  it('must return enum values as strings', () => {
-   expect(EnumEx.getNames(TSGeschlecht)).toEqual(['WEIBLICH', 'MAENNLICH']);
-   expect(EnumEx.getNames(TSFinSitStatus)).toEqual(['AKZEPTIERT', 'ABGELEHNT']);
-  });
+    it('must return enum values as strings', () => {
+        expect(EnumEx.getNames(TSGeschlecht)).toEqual([
+            'WEIBLICH',
+            'MAENNLICH'
+        ]);
+        expect(EnumEx.getNames(TSFinSitStatus)).toEqual([
+            'AKZEPTIERT',
+            'ABGELEHNT'
+        ]);
+    });
 });

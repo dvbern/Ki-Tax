@@ -15,23 +15,29 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 <div>
-    <input class="dv-mat-datepicker"
-           type="text"
-           [name]="inputId"
-           [id]="inputId"
-           [matDatepicker]="dp"
-           [required]="required"
-           placeholder="mm.jjjj"
-           (ngModelChange)="onChange()"
-           [(ngModel)]="date">
+    <input
+        class="dv-mat-datepicker"
+        type="text"
+        [name]="inputId"
+        [id]="inputId"
+        [matDatepicker]="dp"
+        [required]="required"
+        placeholder="mm.jjjj"
+        (ngModelChange)="onChange()"
+        [(ngModel)]="date"
+    />
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-    <mat-datepicker #dp
-                    startView="multi-year"
-                    (yearSelected)="chosenYearHandler($event)"
-                    (monthSelected)="chosenMonthHandler($event, dp)"
-                    panelClass="example-month-picker">
+    <mat-datepicker
+        #dp
+        startView="multi-year"
+        (yearSelected)="chosenYearHandler($event)"
+        (monthSelected)="chosenMonthHandler($event, dp)"
+        panelClass="example-month-picker"
+    >
     </mat-datepicker>
-    <dv-error-messages [inputId]="inputId"
-                       [errorObject]="form.controls[inputId]?.errors">
+    <dv-error-messages
+        [inputId]="inputId"
+        [errorObject]="form.controls[inputId]?.errors"
+    >
     </dv-error-messages>
 </div>

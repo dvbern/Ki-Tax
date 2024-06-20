@@ -15,68 +15,116 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div *ngIf="currentTourStep && selectedElementRect && isOrbShowing"
-     (mouseenter)="handleOrb()"
-     class="tour-orb tour-{{ currentTourStep.orientation }}"
-     [style.top.px]="orbTopPosition"
-     [style.left.px]="orbLeftPosition"
-     [style.transform]="orbTransform">
+<div
+    *ngIf="currentTourStep && selectedElementRect && isOrbShowing"
+    (mouseenter)="handleOrb()"
+    class="tour-orb tour-{{ currentTourStep.orientation }}"
+    [style.top.px]="orbTopPosition"
+    [style.left.px]="orbLeftPosition"
+    [style.transform]="orbTransform"
+>
     <div class="tour-orb-ring"></div>
 </div>
 <div *ngIf="currentTourStep && !isOrbShowing">
-    <div class="guided-tour-user-input-mask" (click)="backdropClick($event)"></div>
-    <div class="guided-tour-spotlight-overlay"
-         [style.top.px]="overlayTop"
-         [style.left.px]="overlayLeft"
-         [style.height.px]="overlayHeight"
-         [style.width.px]="overlayWidth">
-    </div>
+    <div
+        class="guided-tour-user-input-mask"
+        (click)="backdropClick($event)"
+    ></div>
+    <div
+        class="guided-tour-spotlight-overlay"
+        [style.top.px]="overlayTop"
+        [style.left.px]="overlayLeft"
+        [style.height.px]="overlayHeight"
+        [style.width.px]="overlayWidth"
+    ></div>
 </div>
 <div *ngIf="currentTourStep && !isOrbShowing">
-    <div #tourStep *ngIf="currentTourStep"
-         class="tour-step tour-{{ currentTourStep.orientation }}"
-         [ngClass]="{
-                    'page-tour-step': !currentTourStep.selector
-                }"
-         [style.top.px]="(currentTourStep.selector && selectedElementRect ? topPosition : null)"
-         [style.left.px]="(currentTourStep.selector && selectedElementRect ? leftPosition : null)"
-         [style.width.px]="(currentTourStep.selector && selectedElementRect ? tourStepWidth : null)"
-         [style.transform]="(currentTourStep.selector && selectedElementRect ? transform : null)">
+    <div
+        #tourStep
+        *ngIf="currentTourStep"
+        class="tour-step tour-{{ currentTourStep.orientation }}"
+        [ngClass]="{
+            'page-tour-step': !currentTourStep.selector
+        }"
+        [style.top.px]="
+            currentTourStep.selector && selectedElementRect ? topPosition : null
+        "
+        [style.left.px]="
+            currentTourStep.selector && selectedElementRect
+                ? leftPosition
+                : null
+        "
+        [style.width.px]="
+            currentTourStep.selector && selectedElementRect
+                ? tourStepWidth
+                : null
+        "
+        [style.transform]="
+            currentTourStep.selector && selectedElementRect ? transform : null
+        "
+    >
         <div *ngIf="currentTourStep.selector" class="tour-arrow"></div>
         <div class="tour-block">
-            <h3 class="tour-title" *ngIf="currentTourStep.title && currentTourStep.selector">
+            <h3
+                class="tour-title"
+                *ngIf="currentTourStep.title && currentTourStep.selector"
+            >
                 {{ currentTourStep.title }}
             </h3>
-            <h2 class="tour-title" *ngIf="currentTourStep.title && !currentTourStep.selector">
+            <h2
+                class="tour-title"
+                *ngIf="currentTourStep.title && !currentTourStep.selector"
+            >
                 {{ currentTourStep.title }}
             </h2>
-            <div class="tour-content" [innerHTML]="currentTourStep.content"></div>
+            <div
+                class="tour-content"
+                [innerHTML]="currentTourStep.content"
+            ></div>
             <div class="tour-buttons">
-                <button *ngIf="!guidedTourService.onResizeMessage"
-                        (click)="guidedTourService.skipTour()"
-                        class="skip-button link-button">
-                    {{"BEENDEN" | translate}}
+                <button
+                    *ngIf="!guidedTourService.onResizeMessage"
+                    (click)="guidedTourService.skipTour()"
+                    class="skip-button link-button"
+                >
+                    {{ 'BEENDEN' | translate }}
                 </button>
-                <button *ngIf="!guidedTourService.onLastStep && !guidedTourService.onResizeMessage"
-                        class="next-button"
-                        (click)="guidedTourService.nextStep()">
-                    {{"WEITER_ONLY" | translate}}&nbsp;&nbsp;{{ guidedTourService.currentTourStepDisplay }}
+                <button
+                    *ngIf="
+                        !guidedTourService.onLastStep &&
+                        !guidedTourService.onResizeMessage
+                    "
+                    class="next-button"
+                    (click)="guidedTourService.nextStep()"
+                >
+                    {{ 'WEITER_ONLY' | translate }}&nbsp;&nbsp;{{
+                        guidedTourService.currentTourStepDisplay
+                    }}
                     /{{ guidedTourService.currentTourStepCount }}
                 </button>
-                <button *ngIf="guidedTourService.onLastStep"
-                        class="next-button"
-                        (click)="guidedTourService.nextStep()">
-                    {{"FERTIG" | translate}}
+                <button
+                    *ngIf="guidedTourService.onLastStep"
+                    class="next-button"
+                    (click)="guidedTourService.nextStep()"
+                >
+                    {{ 'FERTIG' | translate }}
                 </button>
-                <button *ngIf="guidedTourService.onResizeMessage"
-                        class="next-button"
-                        (click)="guidedTourService.resetTour()">
-                    {{"ABBRECHEN" | translate}}
+                <button
+                    *ngIf="guidedTourService.onResizeMessage"
+                    class="next-button"
+                    (click)="guidedTourService.resetTour()"
+                >
+                    {{ 'ABBRECHEN' | translate }}
                 </button>
-                <button *ngIf="!guidedTourService.onFirstStep && !guidedTourService.onResizeMessage"
-                        class="back-button link-button"
-                        (click)="guidedTourService.backStep()">
-                    {{"ZURUECK_ONLY" | translate}}
+                <button
+                    *ngIf="
+                        !guidedTourService.onFirstStep &&
+                        !guidedTourService.onResizeMessage
+                    "
+                    class="back-button link-button"
+                    (click)="guidedTourService.backStep()"
+                >
+                    {{ 'ZURUECK_ONLY' | translate }}
                 </button>
             </div>
         </div>

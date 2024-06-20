@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
@@ -32,10 +37,11 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftAddComponent implements OnInit {
+    private readonly log: Log = LogFactory.createLog(
+        'TraegerschaftAddComponent'
+    );
 
-    private readonly log: Log = LogFactory.createLog('TraegerschaftAddComponent');
-
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
 
@@ -48,8 +54,7 @@ export class TraegerschaftAddComponent implements OnInit {
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.traegerschaft = new TSTraegerschaft();
@@ -72,56 +77,74 @@ export class TraegerschaftAddComponent implements OnInit {
     }
 
     private save(): void {
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
+        this.traegerschaftRS
+            .createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
             .then(neueTraegerschaft => {
                 this.createTraegerschaftSuccessCallback(neueTraegerschaft);
-            }).catch((exception: TSExceptionReport[]) => {
-            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
-                this.errorService.clearAll();
-                const adminRolle = 'TSRole_ADMIN_TRAEGERSCHAFT';
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                    emailAdresse: this.traegerschaft.email,
-                    administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1]
-                };
-                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
-                    .subscribe(answer => {
-                            if (answer !== true) {
-                                this.isTransitionInProgress = false;
-                                return;
-                            }
-                            this.log.warn(`Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen`
-                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
-                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                                () => {
-                                    this.persistTraegerschaft();
+            })
+            .catch((exception: TSExceptionReport[]) => {
+                if (
+                    exception[0].errorCodeEnum ===
+                    'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH'
+                ) {
+                    this.errorService.clearAll();
+                    const adminRolle = 'TSRole_ADMIN_TRAEGERSCHAFT';
+                    const dialogConfig = new MatDialogConfig();
+                    dialogConfig.data = {
+                        emailAdresse: this.traegerschaft.email,
+                        administratorRolle: adminRolle,
+                        gesuchstellerName: exception[0].argumentList[1]
+                    };
+                    this.dialog
+                        .open(DvNgGesuchstellerDialogComponent, dialogConfig)
+                        .afterClosed()
+                        .subscribe(
+                            answer => {
+                                if (answer !== true) {
+                                    this.isTransitionInProgress = false;
+                                    return;
                                 }
-                            );
-                        },
-                        () => {
+                                this.log.warn(
+                                    `Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen` +
+                                        ` Rollen bekommen und seine Gesuch wird gelöscht werden!`
+                                );
+                                this.benutzerRS
+                                    .removeBenutzer(
+                                        exception[0].argumentList[0]
+                                    )
+                                    .then(() => {
+                                        this.persistTraegerschaft();
+                                    });
+                            },
+                            () => {}
+                        );
+                } else if (
+                    exception[0].errorCodeEnum ===
+                    'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH'
+                ) {
+                    this.benutzerRS
+                        .removeBenutzer(exception[0].argumentList[0])
+                        .then(() => {
+                            this.errorService.clearAll();
+                            this.persistTraegerschaft();
                         });
-            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
-                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                    () => {
-                        this.errorService.clearAll();
-                        this.persistTraegerschaft();
-                    }
-                );
-            } else {
-                this.isTransitionInProgress = false;
-            }
-        });
+                } else {
+                    this.isTransitionInProgress = false;
+                }
+            });
     }
 
     private persistTraegerschaft(): void {
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
+        this.traegerschaftRS
+            .createTraegerschaft(this.traegerschaft, this.traegerschaft.email)
             .then(neueTraegerschaft => {
                 this.createTraegerschaftSuccessCallback(neueTraegerschaft);
             });
     }
 
-    private createTraegerschaftSuccessCallback(neueTraegerschaft: TSTraegerschaft): void {
+    private createTraegerschaftSuccessCallback(
+        neueTraegerschaft: TSTraegerschaft
+    ): void {
         this.isTransitionInProgress = false;
         this.traegerschaft = neueTraegerschaft;
         this.navigateBack();

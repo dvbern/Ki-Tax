@@ -27,7 +27,6 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
     providedIn: 'root'
 })
 export class AuthLifeCycleService {
-
     private readonly LOG = LogFactory.createLog(AuthLifeCycleService.name);
 
     // use ReplaySubject because we don't have an initial value
@@ -38,7 +37,10 @@ export class AuthLifeCycleService {
             this.LOG.info(`An Auth Event has been thrown ${status}`, message);
             this._authLifeCycleSubject$.next(status);
         } else {
-            this.LOG.error('An undefined AuthEvent is not allowed. No event thrown', message);
+            this.LOG.error(
+                'An undefined AuthEvent is not allowed. No event thrown',
+                message
+            );
         }
     }
 

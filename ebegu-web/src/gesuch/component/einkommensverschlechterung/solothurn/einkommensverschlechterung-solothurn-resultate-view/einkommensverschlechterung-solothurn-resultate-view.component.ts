@@ -15,7 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {
+    Component,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
+} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -28,13 +32,14 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
-    templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
-    styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
+    templateUrl:
+        './einkommensverschlechterung-solothurn-resultate-view.component.html',
+    styleUrls: [
+        './einkommensverschlechterung-solothurn-resultate-view.component.less'
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EinkommensverschlechterungSolothurnResultateViewComponent
-    extends AbstractEinkommensverschlechterungResultat {
-
+export class EinkommensverschlechterungSolothurnResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
 
@@ -46,13 +51,15 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             wizardStepManager,
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             einstellungRS,
-            $transition$);
+            $transition$
+        );
     }
 
     public save(onResult: (arg: any) => any): IPromise<any> {

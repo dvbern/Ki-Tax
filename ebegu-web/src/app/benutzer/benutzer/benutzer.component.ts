@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -49,7 +55,6 @@ const LOG = LogFactory.createLog('BenutzerComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerComponent implements OnInit {
-
     @ViewChild(NgForm) private readonly form: NgForm;
 
     private readonly log: Log = LogFactory.createLog('BenutzerComponent');
@@ -77,8 +82,7 @@ export class BenutzerComponent implements OnInit {
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
         private readonly errorService: ErrorService
-    ) {
-    }
+    ) {}
 
     public get berechtigungHistoryList(): TSBerechtigungHistory[] {
         return this._berechtigungHistoryList;
@@ -108,8 +112,15 @@ export class BenutzerComponent implements OnInit {
             this.initSelectedUser();
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
             // "Default-Verantwortlichen" des entsprechenden Amtes handelt
-            if (PERMISSIONS[Permission.ROLE_GEMEINDE].indexOf(this.currentBerechtigung.role) > -1) {
-                this.benutzerRS.isBenutzerDefaultBenutzerOfAnyGemeinde(this.selectedUser.username)
+            if (
+                PERMISSIONS[Permission.ROLE_GEMEINDE].indexOf(
+                    this.currentBerechtigung.role
+                ) > -1
+            ) {
+                this.benutzerRS
+                    .isBenutzerDefaultBenutzerOfAnyGemeinde(
+                        this.selectedUser.username
+                    )
                     .then(isDefaultUser => {
                         this.isDefaultVerantwortlicher = isDefaultUser;
                     });
@@ -118,11 +129,15 @@ export class BenutzerComponent implements OnInit {
         });
     }
 
-    public getBerechtigungHistoryDescription(history: TSBerechtigungHistory): string {
+    public getBerechtigungHistoryDescription(
+        history: TSBerechtigungHistory
+    ): string {
         const role = this.getTranslatedRole(history.role);
         const details = history.getDescription();
 
-        return EbeguUtil.isEmptyStringNullOrUndefined(details) ? role : `${role} (${details})`;
+        return EbeguUtil.isEmptyStringNullOrUndefined(details)
+            ? role
+            : `${role} (${details})`;
     }
 
     public saveBenutzerBerechtigungen(): void {
@@ -144,7 +159,8 @@ export class BenutzerComponent implements OnInit {
 
         const isAdminRole = this.isAdminRole();
 
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
                 filter(userAccepted => !!userAccepted),
@@ -159,7 +175,8 @@ export class BenutzerComponent implements OnInit {
                         text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT'
                     };
 
-                    return this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
+                    return this.dialog
+                        .open(DvNgRemoveDialogComponent, adminDialogConfig)
                         .afterClosed()
                         .pipe(filter(userAccepted => !!userAccepted));
                 })
@@ -175,10 +192,12 @@ export class BenutzerComponent implements OnInit {
             return;
         }
 
-        this.benutzerRS.inactivateBenutzer(this.selectedUser).then(changedUser => {
-            this.selectedUser = changedUser;
-            this.changeDetectorRef.markForCheck();
-        });
+        this.benutzerRS
+            .inactivateBenutzer(this.selectedUser)
+            .then(changedUser => {
+                this.selectedUser = changedUser;
+                this.changeDetectorRef.markForCheck();
+            });
     }
 
     public reactivateBenutzer(): void {
@@ -186,10 +205,12 @@ export class BenutzerComponent implements OnInit {
             return;
         }
 
-        this.benutzerRS.reactivateBenutzer(this.selectedUser).then(changedUser => {
-            this.selectedUser = changedUser;
-            this.changeDetectorRef.markForCheck();
-        });
+        this.benutzerRS
+            .reactivateBenutzer(this.selectedUser)
+            .then(changedUser => {
+                this.selectedUser = changedUser;
+                this.changeDetectorRef.markForCheck();
+            });
     }
 
     public canAddBerechtigung(): boolean {
@@ -217,16 +238,20 @@ export class BenutzerComponent implements OnInit {
     }
 
     private getTranslatedRole(role: TSRole): string {
-        return this.translate.instant(TSRoleUtil.translationKeyForRole(role, true));
+        return this.translate.instant(
+            TSRoleUtil.translationKeyForRole(role, true)
+        );
     }
 
     private initSelectedUser(): void {
         this.currentBerechtigung = this.selectedUser.berechtigungen[0];
         this.futureBerechtigung = this.selectedUser.berechtigungen[1];
-        this.benutzerRS.getBerechtigungHistoriesForBenutzer(this.selectedUser.username).then(result => {
-            this._berechtigungHistoryList = result;
-            this.changeDetectorRef.markForCheck();
-        });
+        this.benutzerRS
+            .getBerechtigungHistoriesForBenutzer(this.selectedUser.username)
+            .then(result => {
+                this._berechtigungHistoryList = result;
+                this.changeDetectorRef.markForCheck();
+            });
     }
 
     private isAdminRole(): boolean {
@@ -234,20 +259,27 @@ export class BenutzerComponent implements OnInit {
     }
 
     private isMoreThanGesuchstellerRole(): boolean {
-        return this.isAtLeastOneRoleInList(TSRoleUtil.getAllRolesButGesuchsteller());
+        return this.isAtLeastOneRoleInList(
+            TSRoleUtil.getAllRolesButGesuchsteller()
+        );
     }
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    private isAtLeastOneRoleInList(rolesToCheck: ReadonlyArray<TSRole>): boolean {
+    private isAtLeastOneRoleInList(
+        rolesToCheck: ReadonlyArray<TSRole>
+    ): boolean {
         // Es muessen alle vorhandenen Rollen geprueft werden
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
             return true;
         }
 
-        return this.futureBerechtigung && rolesToCheck.indexOf(this.futureBerechtigung.role) > -1;
+        return (
+            this.futureBerechtigung &&
+            rolesToCheck.indexOf(this.futureBerechtigung.role) > -1
+        );
     }
 
     private doSaveBenutzer(): void {
@@ -261,13 +293,16 @@ export class BenutzerComponent implements OnInit {
             this.selectedUser.berechtigungen.push(this.futureBerechtigung);
         }
 
-        this.benutzerRS.saveBenutzerBerechtigungen(this.selectedUser).then(() => {
-            this.isDisabled = true;
-            this.navigateBackToUsersList();
-        }).catch(err => {
-            LOG.error('Could not save Benutzer', err);
-            this.initSelectedUser();
-        });
+        this.benutzerRS
+            .saveBenutzerBerechtigungen(this.selectedUser)
+            .then(() => {
+                this.isDisabled = true;
+                this.navigateBackToUsersList();
+            })
+            .catch(err => {
+                LOG.error('Could not save Benutzer', err);
+                this.initSelectedUser();
+            });
     }
 
     private navigateBackToUsersList(): void {
@@ -275,10 +310,9 @@ export class BenutzerComponent implements OnInit {
     }
 
     public erneutEinladen(): void {
-        this.benutzerRS.erneutEinladen(this.selectedUser)
-            .then(() => {
-                this.gotoBenutzerlist('BENUTZER_REINVITED_MESSAGE');
-            });
+        this.benutzerRS.erneutEinladen(this.selectedUser).then(() => {
+            this.gotoBenutzerlist('BENUTZER_REINVITED_MESSAGE');
+        });
     }
 
     public canBenutzerBeDeleted(): boolean {
@@ -292,21 +326,36 @@ export class BenutzerComponent implements OnInit {
             title: 'BENUTZER_DELETE_CONFIRMATION_TITLE',
             text: 'BENUTZER_DELETE_CONFIRMATION_TEXT'
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
             .subscribe(
-                userAccepted => {   // User confirmed removal
+                userAccepted => {
+                    // User confirmed removal
                     if (!userAccepted) {
                         return;
                     }
-                    this.benutzerRS.removeBenutzer(this.selectedUser.username).then(() => {
-                        this.gotoBenutzerlist('BENUTZER_DELETED_MESSAGE');
-                    }).catch(errorList => {
-                        if (errorList?.find((error: any) => error._argumentList?.includes(
-                            'FK_gemeindestammdaten_defaultbenutzer_id'))) {
-                            this.errorService.clearAll();
-                            this.errorService.addMesageAsError(this.translate.instant('ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR'));
-                        }
-                    });
+                    this.benutzerRS
+                        .removeBenutzer(this.selectedUser.username)
+                        .then(() => {
+                            this.gotoBenutzerlist('BENUTZER_DELETED_MESSAGE');
+                        })
+                        .catch(errorList => {
+                            if (
+                                errorList?.find((error: any) =>
+                                    error._argumentList?.includes(
+                                        'FK_gemeindestammdaten_defaultbenutzer_id'
+                                    )
+                                )
+                            ) {
+                                this.errorService.clearAll();
+                                this.errorService.addMesageAsError(
+                                    this.translate.instant(
+                                        'ERROR_DEFAULT_BENUTZER_NICHT_LOESCHBAR'
+                                    )
+                                );
+                            }
+                        });
                 },
                 () => {
                     this.log.error('error in observable. deleteBenutzer');
@@ -320,18 +369,25 @@ export class BenutzerComponent implements OnInit {
             title: 'BENUTZER_RESET_CONFIRMATION_TITLE',
             text: 'BENUTZER_RESET_CONFIRMATION_TEXT'
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
             .subscribe(
-                userAccepted => {   // User confirmed removal
+                userAccepted => {
+                    // User confirmed removal
                     if (!userAccepted) {
                         return;
                     }
-                    this.benutzerRS.deleteExternalUuidForBenutzer(this.selectedUser).then(() => {
-                        this.gotoBenutzerlist('BENUTZER_RESETTED_MESSAGE');
-                    });
+                    this.benutzerRS
+                        .deleteExternalUuidForBenutzer(this.selectedUser)
+                        .then(() => {
+                            this.gotoBenutzerlist('BENUTZER_RESETTED_MESSAGE');
+                        });
                 },
                 () => {
-                    this.log.error('error in observable. deleteExternalUuidForBenutzer');
+                    this.log.error(
+                        'error in observable. deleteExternalUuidForBenutzer'
+                    );
                 }
             );
     }
@@ -341,10 +397,11 @@ export class BenutzerComponent implements OnInit {
             if (!EbeguUtil.isNotNullOrUndefined(infoMessageKey)) {
                 return;
             }
-            this.errorService.addMesageAsInfo(this.translate.instant(
-                infoMessageKey,
-                {fullName: this.selectedUser.getFullName()}
-            ));
+            this.errorService.addMesageAsInfo(
+                this.translate.instant(infoMessageKey, {
+                    fullName: this.selectedUser.getFullName()
+                })
+            );
         });
     }
 }

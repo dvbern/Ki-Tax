@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -28,7 +34,6 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvCheckboxXComponent {
-
     @Input()
     public label: string;
 
@@ -51,23 +56,26 @@ export class DvCheckboxXComponent {
     public displayBisher: boolean = true;
 
     @Output()
-    public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public readonly modelChange: EventEmitter<boolean> =
+        new EventEmitter<boolean>();
 
     public uniqueName: string = `checkbox_${EbeguUtil.generateRandomName(10)}`;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public change(): void {
         this.modelChange.emit(this.model);
     }
 
     public showBisher(): boolean {
-        return this.displayBisher
-            && this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+        return (
+            this.displayBisher &&
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            TSEingangsart.ONLINE ===
+                this.gesuchModelManager.getGesuch().eingangsart
+        );
     }
 }

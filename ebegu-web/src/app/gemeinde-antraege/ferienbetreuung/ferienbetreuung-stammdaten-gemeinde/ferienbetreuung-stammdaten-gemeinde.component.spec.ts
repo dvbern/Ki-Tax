@@ -35,21 +35,31 @@ import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stammdaten-gemeinde.component';
 
-const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+    'getAllBfsGemeinden'
+]);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
     ['getFerienbetreuungContainer']
 );
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
-    ['addMesageAsError', 'addMesageAsInfo']);
-const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['getPrincipal', 'principal$']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError',
+    'addMesageAsInfo'
+]);
+const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+    AuthServiceRS.name,
+    ['getPrincipal', 'principal$']
+);
 
-const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-    ['params']);
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+    UIRouterGlobals.name,
+    ['params']
+);
 
-const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
-    ['registerForm']);
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(
+    UnsavedChangesService.name,
+    ['registerForm']
+);
 
 describe('FerienbetreuungStammdatenGemeindeComponent', () => {
     let component: FerienbetreuungStammdatenGemeindeComponent;
@@ -57,7 +67,8 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
 
     const container = new TSFerienbetreuungAngabenContainer();
     container.angabenDeklaration = new TSFerienbetreuungAngaben();
-    container.angabenDeklaration.stammdaten = new TSFerienbetreuungAngabenStammdaten();
+    container.angabenDeklaration.stammdaten =
+        new TSFerienbetreuungAngabenStammdaten();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -71,21 +82,32 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
+                {
+                    provide: FerienbetreuungService,
+                    useValue: ferienbetreuungServiceSpy
+                },
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+                {
+                    provide: UnsavedChangesService,
+                    useValue: unsavedChangesServiceSpy
+                }
             ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
 
     beforeEach(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
-        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(
+            of(container)
+        );
         authServiceRSSpy.principal$ = of(new TSBenutzer());
-        fixture = TestBed.createComponent(FerienbetreuungStammdatenGemeindeComponent);
+        fixture = TestBed.createComponent(
+            FerienbetreuungStammdatenGemeindeComponent
+        );
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

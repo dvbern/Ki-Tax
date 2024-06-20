@@ -98,7 +98,7 @@ p {
 }
 
 .onboarding-big-red-button {
-    color: #FFFFFF;
+    color: #ffffff;
     font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     height: 6rem;
@@ -155,7 +155,8 @@ p {
             margin-top: 0;
         }
 
-        ::ng-deep .mat-mdc-select, .mat-option {
+        ::ng-deep .mat-mdc-select,
+        .mat-option {
             border: 2px solid @black;
             font-family: 'Open Sans', sans-serif;
             font-size: 14px;
@@ -198,7 +199,6 @@ p {
                 top: 0.5rem;
             }
         }
-
     }
 
     ::ng-deep &-auswaehlen {
@@ -224,20 +224,12 @@ p {
     margin-top: 2vh;
 }
 
-@media only screen
-    and (min-device-width: 320px)
-    and (max-device-width: 568px)
-    and (-webkit-min-device-pixel-ratio: 2), only screen
-    and (min-device-width: 375px)
-    and (max-device-width: 667px)
-    and (-webkit-min-device-pixel-ratio: 2), only screen
-    and (min-device-width: 414px)
-    and (max-device-width: 736px)
-    and (-webkit-min-device-pixel-ratio: 3), only screen
-    and (max-device-width: 640px), only screen
-    and (max-device-width: 667px), only screen
-    and (max-width: 480px) {
-
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3),
+    only screen and (max-device-width: 640px),
+    only screen and (max-device-width: 667px),
+    only screen and (max-width: 480px) {
     .onboarding-big-red-button {
         font-size: 12px;
     }
@@ -248,17 +240,16 @@ p {
         flex-direction: column;
     }
 
-
     .onboarding-gs-abschliessen {
         max-width: 100%;
         min-width: 100%;
         width: 100%;
     }
 
-    .onboarding-gs-angaben, .onboarding-gs-gemeinde {
+    .onboarding-gs-angaben,
+    .onboarding-gs-gemeinde {
         width: 100%;
     }
-
 
     .onboarding-gemeinde-input-container,
     .be-login-actions {
@@ -299,7 +290,6 @@ p {
 }
 
 @media @mq-sm {
-
     .onboarding-gemeinde-container {
         justify-content: space-between;
     }
@@ -311,7 +301,6 @@ p {
 }
 
 @media @mq-sm {
-
     .onboarding-gemeinde-container {
         justify-content: space-between;
     }
@@ -320,5 +309,4 @@ p {
     .be-login-actions {
         width: 100%;
     }
-
 }

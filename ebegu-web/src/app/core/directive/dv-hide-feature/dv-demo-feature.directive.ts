@@ -23,15 +23,13 @@ import {TSDemoFeature} from './TSDemoFeature';
 @Directive({selector: '[dvDemoFeature]'})
 // Directive class
 export class DvDemoFeatureDirective implements OnInit {
-
     @Input() public dvDemoFeature: TSDemoFeature;
     @Input() private readonly hideIfDemoFeatureActive: boolean = false;
 
     public constructor(
         private readonly elementRef: ElementRef,
         private readonly demofeatureRS: DemoFeatureRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.setElementDisplayValue('none');
@@ -39,9 +37,10 @@ export class DvDemoFeatureDirective implements OnInit {
     }
 
     public checkIfAllowed(): void {
-        this.demofeatureRS.isDemoFeatureAllowed(this.dvDemoFeature)
+        this.demofeatureRS
+            .isDemoFeatureAllowed(this.dvDemoFeature)
             .then(isAllowed => {
-                if(isAllowed && !this.hideIfDemoFeatureActive) {
+                if (isAllowed && !this.hideIfDemoFeatureActive) {
                     this.setElementDisplayValue('block');
                 } else if (!isAllowed && this.hideIfDemoFeatureActive) {
                     this.setElementDisplayValue('block');

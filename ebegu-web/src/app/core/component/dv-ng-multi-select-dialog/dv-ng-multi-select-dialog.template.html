@@ -19,26 +19,41 @@
     <span *ngIf="text" [textContent]="text | translate"></span>
 
     <section>
-        <mat-checkbox class="select-all"
-                      [checked]="allChecked"
-                      [indeterminate]="someChecked"
-                      (change)="setAll($event.checked)">
-            {{(allChecked? 'ALLE_ABWAEHLEN' : 'ALLE_WAEHLEN') | translate}}
+        <mat-checkbox
+            class="select-all"
+            [checked]="allChecked"
+            [indeterminate]="someChecked"
+            (change)="setAll($event.checked)"
+        >
+            {{ (allChecked ? 'ALLE_ABWAEHLEN' : 'ALLE_WAEHLEN') | translate }}
         </mat-checkbox>
         <ul>
             <li *ngFor="let option of selectOptions">
-                <mat-checkbox [(ngModel)]="option.selected" (ngModelChange)="updateCheckedFlags()">{{option.labelSelectFunction ? option.labelSelectFunction() : option.item.name}}</mat-checkbox>
+                <mat-checkbox
+                    [(ngModel)]="option.selected"
+                    (ngModelChange)="updateCheckedFlags()"
+                    >{{
+                        option.labelSelectFunction
+                            ? option.labelSelectFunction()
+                            : option.item.name
+                    }}</mat-checkbox
+                >
             </li>
         </ul>
-
     </section>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="ok()" [textContent]="'LABEL_OK' | translate"></button>
-        <button class="dv-btn" (click)="cancel()" [textContent]="'BACK_TO_FORM' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="ok()"
+            [textContent]="'LABEL_OK' | translate"
+        ></button>
+        <button
+            class="dv-btn"
+            (click)="cancel()"
+            [textContent]="'BACK_TO_FORM' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>
-

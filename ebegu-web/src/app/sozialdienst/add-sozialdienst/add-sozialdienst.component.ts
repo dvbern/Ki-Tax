@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
@@ -34,7 +39,9 @@ import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddSozialdienstComponent implements OnInit {
-    private readonly log: Log = LogFactory.createLog('AddSozialdienstComponent');
+    private readonly log: Log = LogFactory.createLog(
+        'AddSozialdienstComponent'
+    );
 
     @ViewChild(NgForm, {static: true}) public form: NgForm;
 
@@ -47,8 +54,7 @@ export class AddSozialdienstComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.sozialdienst = new TSSozialdienst();
@@ -59,49 +65,67 @@ export class AddSozialdienstComponent implements OnInit {
         if (!this.form.valid) {
             return;
         }
-        this.sozialdienstRS.createSozialdienst(
-            this.sozialdienst,
-            this.adminEmail
-        )
-            .subscribe(neueSozialdienst => {
-                this.sozialdienst = neueSozialdienst;
-                this.navigateBack();
-            }, exception  => {
-                // eslint-disable-next-line
-            if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
-                this.errorService.clearAll();
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                    emailAdresse: this.adminEmail,
-                    administratorRolle: TSRole.ADMIN_SOZIALDIENST,
-                    gesuchstellerName: exception.error.argumentList[1]
-                };
-                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
-                    .subscribe(answer => {
-                            if (answer !== true) {
-                                return;
-                            }
-                            this.log.warn(`Der Gesuchsteller: ${exception.error.argumentList[1]} wird einen neuen`
-                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
-                            this.benutzerRS.removeBenutzer(exception.error.argumentList[0]).then(
-                                () => {
-                                    this.persistSozialdienst();
-                                }
-                            );
-                        },
-                        () => {
-                        });
-            } else if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
-                this.benutzerRS.removeBenutzer(exception.error.argumentList[0]).then(
-                    () => {
+        this.sozialdienstRS
+            .createSozialdienst(this.sozialdienst, this.adminEmail)
+            .subscribe(
+                neueSozialdienst => {
+                    this.sozialdienst = neueSozialdienst;
+                    this.navigateBack();
+                },
+                exception => {
+                    if (
+                        exception.error.errorCodeEnum ===
+                        'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH'
+                    ) {
                         this.errorService.clearAll();
-                        this.persistSozialdienst();
+                        const dialogConfig = new MatDialogConfig();
+                        dialogConfig.data = {
+                            emailAdresse: this.adminEmail,
+                            administratorRolle: TSRole.ADMIN_SOZIALDIENST,
+                            gesuchstellerName: exception.error.argumentList[1]
+                        };
+                        this.dialog
+                            .open(
+                                DvNgGesuchstellerDialogComponent,
+                                dialogConfig
+                            )
+                            .afterClosed()
+                            .subscribe(
+                                answer => {
+                                    if (answer !== true) {
+                                        return;
+                                    }
+                                    this.log.warn(
+                                        `Der Gesuchsteller: ${exception.error.argumentList[1]} wird einen neuen` +
+                                            ` Rollen bekommen und seine Gesuch wird gelöscht werden!`
+                                    );
+                                    this.benutzerRS
+                                        .removeBenutzer(
+                                            exception.error.argumentList[0]
+                                        )
+                                        .then(() => {
+                                            this.persistSozialdienst();
+                                        });
+                                },
+                                () => {}
+                            );
+                    } else if (
+                        exception.error.errorCodeEnum ===
+                        'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH'
+                    ) {
+                        this.benutzerRS
+                            .removeBenutzer(exception.error.argumentList[0])
+                            .then(() => {
+                                this.errorService.clearAll();
+                                this.persistSozialdienst();
+                            });
+                    } else {
+                        this.errorService.addMesageAsError(
+                            exception.error.translatedMessage
+                        );
                     }
-                );
-            } else {
-                this.errorService.addMesageAsError(exception.error.translatedMessage);
-            }
-        });
+                }
+            );
     }
 
     private navigateBack(): void {
@@ -113,13 +137,17 @@ export class AddSozialdienstComponent implements OnInit {
     }
 
     private persistSozialdienst(): void {
-        this.sozialdienstRS.createSozialdienst(
-            this.sozialdienst,
-            this.adminEmail
-        )
-            .subscribe(neueSozialdienst => {
-                this.sozialdienst = neueSozialdienst;
-                this.navigateBack();
-            }, () => this.errorService.addMesageAsError('SOZIALDIENST_PERSIST_ERROR'));
+        this.sozialdienstRS
+            .createSozialdienst(this.sozialdienst, this.adminEmail)
+            .subscribe(
+                neueSozialdienst => {
+                    this.sozialdienst = neueSozialdienst;
+                    this.navigateBack();
+                },
+                () =>
+                    this.errorService.addMesageAsError(
+                        'SOZIALDIENST_PERSIST_ERROR'
+                    )
+            );
     }
 }

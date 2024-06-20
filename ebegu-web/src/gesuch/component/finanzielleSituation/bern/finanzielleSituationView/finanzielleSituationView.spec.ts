@@ -30,7 +30,6 @@ import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 describe('finanzielleSituationView', () => {
-
     let gesuchModelManager: GesuchModelManager;
     let einstellungRS: EinstellungRS;
 
@@ -42,30 +41,51 @@ describe('finanzielleSituationView', () => {
     let scope: angular.IScope;
     let $componentController: angular.IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
-        einstellungRS = $injector.get('EinstellungRS');
-        const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(null,
-            TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
-            'false');
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
+            einstellungRS = $injector.get('EinstellungRS');
+            const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(
+                null,
+                TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
+                'false'
+            );
+            spyOn(
+                einstellungRS,
+                'getAllEinstellungenBySystemCached'
+            ).and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
+        })
+    );
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
-            gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
-            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
-            gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
-            gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
-        });
+        gesuchModelManager
+            .initGesuch(
+                TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_FALL,
+                undefined
+            )
+            .then(() => {
+                gesuchModelManager.getGesuch().familiensituationContainer =
+                    new TSFamiliensituationContainer();
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA =
+                    new TSFamiliensituation();
+                gesuchModelManager.getGesuch().gesuchsteller1 =
+                    new TSGesuchstellerContainer(new TSGesuchsteller());
+                gesuchModelManager.getGesuch().gesuchsperiode =
+                    new TSGesuchsperiode();
+            });
     }));
 
     it('should be defined', () => {
         const bindings = {};
-        component = $componentController('finanzielleSituationView', {$scope: scope}, bindings);
+        component = $componentController(
+            'finanzielleSituationView',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
 });

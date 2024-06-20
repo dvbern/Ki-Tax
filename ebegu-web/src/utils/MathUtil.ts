@@ -16,30 +16,54 @@
  */
 
 export abstract class MathUtil {
-    public static subtractFloatPrecisionSafe(value: number, toSubtract: number, decimalPrecision = 2): number {
-        const numToSub: number  = +toSubtract; //convert to number
-        const valueToSub: number  = +value; //convert to number
+    public static subtractFloatPrecisionSafe(
+        value: number,
+        toSubtract: number,
+        decimalPrecision = 2
+    ): number {
+        const numToSub: number = +toSubtract; //convert to number
+        const valueToSub: number = +value; //convert to number
         return parseFloat((valueToSub - numToSub).toFixed(decimalPrecision));
     }
 
-    public static addFloatPrecisionSafe(value: number, toAdd: number, decimalPrecision = 2): number {
-        const numToAdd: number  = +toAdd; //convert to number
+    public static addFloatPrecisionSafe(
+        value: number,
+        toAdd: number,
+        decimalPrecision = 2
+    ): number {
+        const numToAdd: number = +toAdd; //convert to number
         const valueToAdd: number = +value; //convert to number
         return parseFloat((valueToAdd + numToAdd).toFixed(decimalPrecision));
     }
 
-    public static subtractArrayFloatPrecisionSafe(value: number, toSubtract: number[], decimalPrecision = 2): number {
+    public static subtractArrayFloatPrecisionSafe(
+        value: number,
+        toSubtract: number[],
+        decimalPrecision = 2
+    ): number {
         let result = value;
         for (const current of toSubtract) {
-            result = MathUtil.subtractFloatPrecisionSafe(result, current, decimalPrecision);
+            result = MathUtil.subtractFloatPrecisionSafe(
+                result,
+                current,
+                decimalPrecision
+            );
         }
         return result;
     }
 
-    public static addArrayFloatPrecisionSafe(value: number, toAdd: number[], decimalPrecision = 2): number {
+    public static addArrayFloatPrecisionSafe(
+        value: number,
+        toAdd: number[],
+        decimalPrecision = 2
+    ): number {
         let result = value;
         for (const current of toAdd) {
-            result = MathUtil.addFloatPrecisionSafe(result, current, decimalPrecision);
+            result = MathUtil.addFloatPrecisionSafe(
+                result,
+                current,
+                decimalPrecision
+            );
         }
         return result;
     }

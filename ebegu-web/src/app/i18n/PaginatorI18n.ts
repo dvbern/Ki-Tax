@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MatPaginatorIntl } from '@angular/material/paginator';
-import { TranslateService } from '@ngx-translate/core';
+import {MatPaginatorIntl} from '@angular/material/paginator';
+import {TranslateService} from '@ngx-translate/core';
 import {LogFactory} from '../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('PaginatorI18n');
@@ -31,7 +31,6 @@ const LOG = LogFactory.createLog('PaginatorI18n');
  * https://stackoverflow.com/questions/46869616/how-to-use-matpaginatorintl
  */
 export class PaginatorI18n extends MatPaginatorIntl {
-
     public constructor(private readonly translate: TranslateService) {
         super();
         this.translate.onLangChange.subscribe(
@@ -53,14 +52,25 @@ export class PaginatorI18n extends MatPaginatorIntl {
         this.changes.next();
     }
 
-    private getRangeLabelOverriden(page: number, pageSize: number, length: number): string {
+    private getRangeLabelOverriden(
+        page: number,
+        pageSize: number,
+        length: number
+    ): string {
         if (length === 0 || pageSize === 0) {
-            return this.translate.instant('RANGE_PAGE_LABEL_1', { length });
+            return this.translate.instant('RANGE_PAGE_LABEL_1', {length});
         }
         const maxLength = Math.max(length, 0);
         const startIndex = page * pageSize;
         // If the start index exceeds the list length, do not try and fix the end index to the end.
-        const endIndex = startIndex < maxLength ? Math.min(startIndex + pageSize, maxLength) : startIndex + pageSize;
-        return this.translate.instant('RANGE_PAGE_LABEL_2', { startIndex: startIndex + 1, endIndex, maxLength });
+        const endIndex =
+            startIndex < maxLength
+                ? Math.min(startIndex + pageSize, maxLength)
+                : startIndex + pageSize;
+        return this.translate.instant('RANGE_PAGE_LABEL_2', {
+            startIndex: startIndex + 1,
+            endIndex,
+            maxLength
+        });
     }
 }

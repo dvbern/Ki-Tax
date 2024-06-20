@@ -27,7 +27,6 @@ import {debugHookRunBlock} from './onBefore/debug.hook';
 import {languageEnabledHookRunBlockX} from './onBefore/languageEnabledHookRunBlockX';
 
 export function initHooks(platformRef: NgModuleRef<AppModule>): void {
-
     authenticationHookRunBlockX(
         platformRef.injector.get<TransitionService>(TransitionService),
         platformRef.injector.get<AuthServiceRS>(AuthServiceRS)

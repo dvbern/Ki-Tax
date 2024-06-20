@@ -8,7 +8,9 @@
                         [label]="'KINDERABZUG_UNTERHALTSPFLICHTIG'"
                         [(model)]="kindContainer.kindJA.unterhaltspflichtig"
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.unterhaltspflichtig"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.unterhaltspflichtig
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -22,7 +24,9 @@
                         [label]="'WOHNT_KIND_HAUSHALT'"
                         [(model)]="kindContainer.kindJA.lebtKindAlternierend"
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.lebtKindAlternierend"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.lebtKindAlternierend
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -36,7 +40,9 @@
                         [label]="'KIND_PARTNER_UNTERHALTSPFLICHTIG'"
                         [(model)]="kindContainer.kindJA.gemeinsamesGesuch"
                         (modelChange)="change()"
-                        [dvBisherValue]="kindContainer.kindGS?.gemeinsamesGesuch"
+                        [dvBisherValue]="
+                            kindContainer.kindGS?.gemeinsamesGesuch
+                        "
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>

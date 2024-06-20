@@ -16,5 +16,8 @@
  */
 
 export function translationsMock($translateProvider: any): void {
-    $translateProvider.translations('de', require('../assets/translations/translations_de.json'));
+    $translateProvider.translations(
+        'de',
+        require('../assets/translations/translations_de.json')
+    );
 }

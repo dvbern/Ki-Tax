@@ -16,7 +16,10 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
 import {IPromise} from 'angular';
 import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,11 +34,11 @@ import {handleLoggedInUser} from './einladung-helpers';
 
 authentication.$inject = ['AuthServiceRS'];
 
-export function authentication(authService: AuthServiceRS): IPromise<TSBenutzer> {
+export function authentication(
+    authService: AuthServiceRS
+): IPromise<TSBenutzer> {
     return authService.principal$
-        .pipe(
-            ignoreNullAndUndefined(),
-            take(1))
+        .pipe(ignoreNullAndUndefined(), take(1))
         .toPromise();
 }
 
@@ -75,23 +78,17 @@ const states: NgHybridStateDeclaration[] = [
         data: {
             // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
             roles: TSRoleUtil.getAllRolesButAnonymous() // anonyme benutzer werden vom authentication.hook umgeleitet
-                                                         // zur loginpage
+            // zur loginpage
         },
-        resolve:
-            {
-                principal: authentication
-            }
+        resolve: {
+            principal: authentication
+        }
     }
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ],
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule],
     declarations: []
 })
-export class EinladungRoutingModule {
-}
+export class EinladungRoutingModule {}

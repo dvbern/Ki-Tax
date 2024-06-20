@@ -14,12 +14,8 @@ describe('VeranlagungSolothurnComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [VeranlagungSolothurnComponent],
-            providers: [
-                {provide: NgForm, useValue: formMock}
-            ],
-            imports: [
-                SharedModule
-            ]
+            providers: [{provide: NgForm, useValue: formMock}],
+            imports: [SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -28,7 +24,8 @@ describe('VeranlagungSolothurnComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(VeranlagungSolothurnComponent);
         component = fixture.componentInstance;
-        component.model = SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
+        component.model =
+            SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
         fixture.detectChanges();
     });
 

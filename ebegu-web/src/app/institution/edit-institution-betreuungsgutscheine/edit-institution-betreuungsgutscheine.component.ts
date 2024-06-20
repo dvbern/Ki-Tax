@@ -41,9 +41,9 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     styleUrls: ['./edit-institution-betreuungsgutscheine.component.less'],
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-
-export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnChanges {
-
+export class EditInstitutionBetreuungsgutscheineComponent
+    implements OnInit, OnChanges
+{
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean;
 
@@ -59,21 +59,24 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     //
     public ngOnInit(): void {
-        const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
-        this.abweichendeZahlungsAdresse = stammdatenBg && !!stammdatenBg.adresseKontoinhaber;
+        const stammdatenBg =
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine;
+        this.abweichendeZahlungsAdresse =
+            stammdatenBg && !!stammdatenBg.adresseKontoinhaber;
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.isInfomazahlungen = res.infomaZahlungen;
             this.cd.markForCheck();
         });
-        this.applicationPropertyRS.getZusatzinformationenInstitutionEnabled().then(enabled => {
-            this.zusatzinformationenInstitution = enabled;
-            this.cd.markForCheck();
-        });
+        this.applicationPropertyRS
+            .getZusatzinformationenInstitutionEnabled()
+            .then(enabled => {
+                this.zusatzinformationenInstitution = enabled;
+                this.cd.markForCheck();
+            });
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -83,40 +86,77 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     }
 
     public onPrePersist(): void {
-        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
+        if (!this.abweichendeZahlungsAdresse) {
+            // Reset Adresse Kontoinhaber if not used
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber =
+                undefined;
         }
     }
 
     public onAbweichendeZahlungsAdresseClick(): void {
-        if (!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber) {
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = new TSAdresse();
+        if (
+            !this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .adresseKontoinhaber
+        ) {
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber =
+                new TSAdresse();
         }
     }
 
     public getPlaceholderForPlaetze(): string {
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1');
+        if (
+            this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
+        ) {
+            return this.translate.instant(
+                'INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1'
+            );
         }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
+        if (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
+            return this.translate.instant(
+                'INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2'
+            );
         }
         return '';
     }
 
     public getAlterskategorien(): string {
         const alterskategorien: string[] = [];
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
+        if (
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .alterskategorieBaby
+        ) {
+            alterskategorien.push(
+                this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY')
+            );
         }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
+        if (
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .alterskategorieVorschule
+        ) {
+            alterskategorien.push(
+                this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE')
+            );
         }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
+        if (
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .alterskategorieKindergarten
+        ) {
+            alterskategorien.push(
+                this.translate.instant(
+                    'INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'
+                )
+            );
         }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
+        if (
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine
+                .alterskategorieSchule
+        ) {
+            alterskategorien.push(
+                this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE')
+            );
         }
         return alterskategorien.join(', ');
     }
@@ -129,20 +169,29 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     }
 
     private initIncompleteOeffnungszeiten(): void {
-        const stammdatenBg = this.stammdaten.institutionStammdatenBetreuungsgutscheine;
-        this.incompleteOeffnungszeiten = stammdatenBg && (!stammdatenBg.offenVon || !stammdatenBg.offenBis);
+        const stammdatenBg =
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine;
+        this.incompleteOeffnungszeiten =
+            stammdatenBg && (!stammdatenBg.offenVon || !stammdatenBg.offenBis);
     }
 
     public showInfomaFields(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
-        && this.isInfomazahlungen;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+            this.isInfomazahlungen
+        );
     }
 
     public getAuslastungInstitutionenLabel(): string {
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
+        if (
+            this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
+        ) {
             return 'INSTITUTION_AUSLASTUNG_INSTITUTIONEN_KITA';
         }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (
+            this.stammdaten.betreuungsangebotTyp ===
+            TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
             return 'INSTITUTION_AUSLASTUNG_INSTITUTIONEN_TFO';
         }
         return '';

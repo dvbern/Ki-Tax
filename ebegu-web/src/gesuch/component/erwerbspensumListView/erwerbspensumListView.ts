@@ -55,8 +55,9 @@ export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
 }
 
 export class ErwerbspensumListViewController
-    extends AbstractGesuchViewController<any> implements IDVFocusableController {
-
+    extends AbstractGesuchViewController<any>
+    implements IDVFocusableController
+{
     public static $inject: string[] = [
         '$state',
         'GesuchModelManager',
@@ -74,8 +75,8 @@ export class ErwerbspensumListViewController
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
-    public erwerbspensumRequired: boolean;      // ich muss es ausfuellen
-    public erwerbspensumNotAllowed: boolean;    // ich darf es nicht ausfuellen
+    public erwerbspensumRequired: boolean; // ich muss es ausfuellen
+    public erwerbspensumNotAllowed: boolean; // ich darf es nicht ausfuellen
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
@@ -94,74 +95,119 @@ export class ErwerbspensumListViewController
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.ERWERBSPENSUM,
-            $timeout);
+            $timeout
+        );
         this.initViewModel();
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2)
-                .forEach(value => {
-                    this.isGesuchBeendenFamSitActive = value.getValueAsBoolean();
-                });
-            const einstellung = response.find(r => r.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM);
-            this.anspruchBeschaeftigungAbhaengigkeit =
-                this.ebeguRestUtil.parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellung);
-        }, error => LOG.error(error));
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                (response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2
+                        )
+                        .forEach(value => {
+                            this.isGesuchBeendenFamSitActive =
+                                value.getValueAsBoolean();
+                        });
+                    const einstellung = response.find(
+                        r =>
+                            r.key ===
+                            TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM
+                    );
+                    this.anspruchBeschaeftigungAbhaengigkeit =
+                        this.ebeguRestUtil.parseAnspruchBeschaeftigungAbhaengigkeitTyp(
+                            einstellung
+                        );
+                },
+                error => LOG.error(error)
+            );
     }
 
     private initViewModel(): void {
-        this.erwerbspensumNotAllowed = !(this.getGesuch() && this.getGesuch().hasAnyJugendamtAngebot());
+        this.erwerbspensumNotAllowed = !(
+            this.getGesuch() && this.getGesuch().hasAnyJugendamtAngebot()
+        );
         if (EbeguUtil.isNotNullOrUndefined(this.getGesuchId())) {
-            this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
-                this.erwerbspensumRequired = response;
-                if (this.isSaveDisabled() || this.isErwerbspensumGS2Required() && !this.showErwerbspensumGS2()) {
-                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                        TSWizardStepName.ERWERBSPENSUM,
-                        TSWizardStepStatus.IN_BEARBEITUNG);
-                } else {
-                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                        TSWizardStepName.ERWERBSPENSUM,
-                        TSWizardStepStatus.OK);
-                }
-            });
+            this.gesuchModelManager
+                .isErwerbspensumRequired(this.getGesuchId())
+                .then((response: boolean) => {
+                    this.erwerbspensumRequired = response;
+                    if (
+                        this.isSaveDisabled() ||
+                        (this.isErwerbspensumGS2Required() &&
+                            !this.showErwerbspensumGS2())
+                    ) {
+                        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                            TSWizardStepName.ERWERBSPENSUM,
+                            TSWizardStepStatus.IN_BEARBEITUNG
+                        );
+                    } else {
+                        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                            TSWizardStepName.ERWERBSPENSUM,
+                            TSWizardStepStatus.OK
+                        );
+                    }
+                });
         }
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
-        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
-            this.gemeindeTelefon = this.gesuchModelManager.gemeindeStammdaten.telefon;
-            this.gemeindeEmail = this.gesuchModelManager.gemeindeStammdaten.mail;
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.gemeindeStammdaten
+            )
+        ) {
+            this.gemeindeTelefon =
+                this.gesuchModelManager.gemeindeStammdaten.telefon;
+            this.gemeindeEmail =
+                this.gesuchModelManager.gemeindeStammdaten.mail;
         }
     }
 
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
-        if (this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() !==
-            TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING) {
+        if (
+            this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() !==
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING
+        ) {
             this.showInfoAusserordentlichenAnspruch = false;
             return;
         }
 
-        this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
-            this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
-            this.showInfoAusserordentlichenAnspruch =
-                this.showInfoAusserordentlichenAnspruch
-                && !this.gesuchModelManager.getGesuch().allKindHaveAusserordentlicherAnspruch()
-                && !this.isSaveDisabled();
-        });
+        this.gesuchModelManager
+            .showInfoAusserordentlichenAnspruch()
+            .then((resp: any) => {
+                this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
+                this.showInfoAusserordentlichenAnspruch =
+                    this.showInfoAusserordentlichenAnspruch &&
+                    !this.gesuchModelManager
+                        .getGesuch()
+                        .allKindHaveAusserordentlicherAnspruch() &&
+                    !this.isSaveDisabled();
+            });
     }
 
     public getErwerbspensenListGS1(): Array<TSErwerbspensumContainer> {
         if (this.erwerbspensenGS1 === undefined) {
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1 &&
-                this.gesuchModelManager.getGesuch().gesuchsteller1.erwerbspensenContainer) {
-                const gesuchsteller1 = this.gesuchModelManager.getGesuch().gesuchsteller1;
+            if (
+                this.gesuchModelManager.getGesuch() &&
+                this.gesuchModelManager.getGesuch().gesuchsteller1 &&
+                this.gesuchModelManager.getGesuch().gesuchsteller1
+                    .erwerbspensenContainer
+            ) {
+                const gesuchsteller1 =
+                    this.gesuchModelManager.getGesuch().gesuchsteller1;
                 this.erwerbspensenGS1 = gesuchsteller1.erwerbspensenContainer;
-
             } else {
                 this.erwerbspensenGS1 = [];
             }
@@ -171,11 +217,15 @@ export class ErwerbspensumListViewController
 
     public getErwerbspensenListGS2(): Array<TSErwerbspensumContainer> {
         if (this.erwerbspensenGS2 === undefined) {
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2 &&
-                this.gesuchModelManager.getGesuch().gesuchsteller2.erwerbspensenContainer) {
-                const gesuchsteller2 = this.gesuchModelManager.getGesuch().gesuchsteller2;
+            if (
+                this.gesuchModelManager.getGesuch() &&
+                this.gesuchModelManager.getGesuch().gesuchsteller2 &&
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+                    .erwerbspensenContainer
+            ) {
+                const gesuchsteller2 =
+                    this.gesuchModelManager.getGesuch().gesuchsteller2;
                 this.erwerbspensenGS2 = gesuchsteller2.erwerbspensenContainer;
-
             } else {
                 this.erwerbspensenGS2 = [];
             }
@@ -195,30 +245,52 @@ export class ErwerbspensumListViewController
     ): void {
         // Spezielle Meldung, wenn es ein GS ist, der in einer Mutation loescht
         const principalRole = this.authServiceRS.getPrincipalRole();
-        const gsInMutation = principalRole === TSRole.GESUCHSTELLER && pensum.vorgaengerId !== undefined;
-        const pensumLaufendOderVergangen = pensum.erwerbspensumJA.gueltigkeit.gueltigAb.isBefore(moment(moment.now()));
+        const gsInMutation =
+            principalRole === TSRole.GESUCHSTELLER &&
+            pensum.vorgaengerId !== undefined;
+        const pensumLaufendOderVergangen =
+            pensum.erwerbspensumJA.gueltigkeit.gueltigAb.isBefore(
+                moment(moment.now())
+            );
         this.errorService.clearAll();
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            deleteText: (gsInMutation && pensumLaufendOderVergangen) ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION' : '',
-            title: 'ERWERBSPENSUM_LOESCHEN',
-            parentController: this,
-            elementID: elementId + String(index)
-        })
-            .then(() => {   // User confirmed removal
-                this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                this.form,
+                RemoveDialogController,
+                {
+                    deleteText:
+                        gsInMutation && pensumLaufendOderVergangen
+                            ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION'
+                            : '',
+                    title: 'ERWERBSPENSUM_LOESCHEN',
+                    parentController: this,
+                    elementID: elementId + String(index)
+                }
+            )
+            .then(() => {
+                // User confirmed removal
+                this.gesuchModelManager.setGesuchstellerNumber(
+                    gesuchstellerNumber
+                );
                 this.gesuchModelManager.removeErwerbspensum(pensum).then(() => {
                     this.setShowInfoAusserordentlichenAnspruchIfPossible();
                 });
             });
-
     }
 
     public editPensum(pensum: any, gesuchstellerNumber: any): void {
-        const index = this.gesuchModelManager.findIndexOfErwerbspensum(parseInt(gesuchstellerNumber, 10), pensum);
+        const index = this.gesuchModelManager.findIndexOfErwerbspensum(
+            parseInt(gesuchstellerNumber, 10),
+            pensum
+        );
         this.openErwerbspensumView(gesuchstellerNumber, index);
     }
 
-    private openErwerbspensumView(gesuchstellerNumber: number, erwerbspensumNum: number): void {
+    private openErwerbspensumView(
+        gesuchstellerNumber: number,
+        erwerbspensumNum: number
+    ): void {
         this.$state.go('gesuch.erwerbsPensum', {
             gesuchstellerNumber,
             erwerbspensumNum,
@@ -235,7 +307,10 @@ export class ErwerbspensumListViewController
             return false;
         }
 
-        if (this.getErwerbspensenListGS1() && this.getErwerbspensenListGS1().length <= 0) {
+        if (
+            this.getErwerbspensenListGS1() &&
+            this.getErwerbspensenListGS1().length <= 0
+        ) {
             return true;
         }
 
@@ -251,16 +326,20 @@ export class ErwerbspensumListViewController
             return false;
         }
 
-        return this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
+        return (
+            this.getErwerbspensenListGS2() &&
+            this.getErwerbspensenListGS2().length <= 0
+        );
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element(`#${  elementID}`).first().focus();
+        angular.element(`#${elementID}`).first().focus();
     }
 
     public getErwerbspensumNotRequired(): string {
-        const fiActive = this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
+        const fiActive =
+            this.gesuchModelManager.gemeindeKonfiguration &&
+            this.gesuchModelManager.gemeindeKonfiguration.isFerieninselanmeldungKonfiguriert();
         let undFerieninselnTxt = '';
         if (fiActive) {
             undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
@@ -275,22 +354,38 @@ export class ErwerbspensumListViewController
             return false;
         }
 
-        return this.isErwerbspensumGS2Required()
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return (
+            this.isErwerbspensumGS2Required() &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+            )
+        );
     }
 
     public isErwerbspensumGS2Required(): boolean {
-        const hasGS2 = this.gesuchModelManager.getFamiliensituation()
-            .hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        const hasGS2 = this.gesuchModelManager
+            .getFamiliensituation()
+            .hasSecondGesuchsteller(
+                this.gesuchModelManager.getGesuchsperiode().gueltigkeit
+                    .gueltigBis
+            );
         if (!hasGS2) {
             return false;
         }
-        let familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
-        const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
-        if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
-            familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        let familiensituation =
+            this.gesuchModelManager.getGesuch().familiensituationContainer
+                .familiensituationJA;
+        const partnerIdentischMitVorgesuch: boolean =
+            this.getGesuch().extractFamiliensituation()
+                .partnerIdentischMitVorgesuch;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)) {
+            familiensituation =
+                this.getGesuch().extractFamiliensituationErstgesuch();
         }
-        if (this.anspruchBeschaeftigungAbhaengigkeit === TSAnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ) {
+        if (
+            this.anspruchBeschaeftigungAbhaengigkeit ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ
+        ) {
             return this.isErwerbspensumGS2RequiredSchwyz(familiensituation);
         }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
@@ -298,17 +393,24 @@ export class ErwerbspensumListViewController
         const unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
 
         if (
-            unterhaltsvereinbarung !== null
-            && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            && (this.isPensumGS2InKonkubinatOmittable(familiensituation) || this.isAlleinerziehend(familiensituation))
+            unterhaltsvereinbarung !== null &&
+            unterhaltsvereinbarung ===
+                TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG &&
+            (this.isPensumGS2InKonkubinatOmittable(familiensituation) ||
+                this.isAlleinerziehend(familiensituation))
         ) {
             return false;
         }
         if (this.getGesuch().isMutation()) {
-            const famSitErstGesuch = this.getGesuch().extractFamiliensituationErstgesuch();
-            if ((this.isShortKonkubinat(familiensituation) || this.isAlleinerziehend(familiensituation)) &&
-                (this.isShortKonkubinat(famSitErstGesuch) || this.isAlleinerziehend(famSitErstGesuch))
-                && famSitErstGesuch.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+            const famSitErstGesuch =
+                this.getGesuch().extractFamiliensituationErstgesuch();
+            if (
+                (this.isShortKonkubinat(familiensituation) ||
+                    this.isAlleinerziehend(familiensituation)) &&
+                (this.isShortKonkubinat(famSitErstGesuch) ||
+                    this.isAlleinerziehend(famSitErstGesuch)) &&
+                famSitErstGesuch.unterhaltsvereinbarung ===
+                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
             ) {
                 return false;
             }
@@ -317,48 +419,71 @@ export class ErwerbspensumListViewController
         return true;
     }
 
-    private isErwerbspensumGS2RequiredSchwyz(familiensituation: TSFamiliensituation): boolean {
+    private isErwerbspensumGS2RequiredSchwyz(
+        familiensituation: TSFamiliensituation
+    ): boolean {
         const hasAnyKindWithUnterhalt = this.getGesuch()
-            .kindContainers
-            .map(kc => kc.kindJA)
+            .kindContainers.map(kc => kc.kindJA)
             .reduce((curr, kind) => curr || kind.gemeinsamesGesuch, false);
-        return familiensituation.hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis)
-            && hasAnyKindWithUnterhalt;
+        return (
+            familiensituation.hasSecondGesuchsteller(
+                this.gesuchModelManager.getGesuchsperiode().gueltigkeit
+                    .gueltigBis
+            ) && hasAnyKindWithUnterhalt
+        );
     }
 
-    private isPensumGS2InKonkubinatOmittable(familiensituation: TSFamiliensituation): boolean {
-        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+    private isPensumGS2InKonkubinatOmittable(
+        familiensituation: TSFamiliensituation
+    ): boolean {
+        if (
+            familiensituation.familienstatus !==
+            TSFamilienstatus.KONKUBINAT_KEIN_KIND
+        ) {
             return false;
         }
-        return this.isGesuchBeendenFamSitActive ?
-            familiensituation.konkuinatOhneKindBecomesXYearsDuringPeriode(this.gesuchModelManager.getGesuchsperiode()) :
-            this.isShortKonkubinat(familiensituation);
+        return this.isGesuchBeendenFamSitActive
+            ? familiensituation.konkuinatOhneKindBecomesXYearsDuringPeriode(
+                  this.gesuchModelManager.getGesuchsperiode()
+              )
+            : this.isShortKonkubinat(familiensituation);
     }
 
     private isShortKonkubinat(familiensituation: TSFamiliensituation): boolean {
-
-        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+        if (
+            familiensituation.familienstatus !==
+            TSFamilienstatus.KONKUBINAT_KEIN_KIND
+        ) {
             return false;
         }
 
         return !familiensituation.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
-            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis
+        );
     }
 
     private isAlleinerziehend(familienSituation: TSFamiliensituation): boolean {
-        return familienSituation.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+        return (
+            familienSituation.familienstatus ===
+            TSFamilienstatus.ALLEINERZIEHEND
+        );
     }
 
     private getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde(): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
-        return this.gesuchModelManager.gemeindeKonfiguration.anspruchUnabhaengingVonBeschaeftigungsPensum;
+        return this.gesuchModelManager.gemeindeKonfiguration
+            .anspruchUnabhaengingVonBeschaeftigungsPensum;
     }
 
     public anspruchUnabhaengingVomBeschaeftigungspensum(): boolean {
-        return this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde()  ===
-            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
+        return (
+            this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING
+        );
     }
 
     public getGS2FullName(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+        return this.gesuchModelManager
+            .getGesuch()
+            .gesuchsteller2.extractFullName();
     }
 }

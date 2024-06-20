@@ -22,17 +22,8 @@ import {BenutzerRoutingModule} from './benutzer-routing/benutzer-routing.module'
 import {BenutzerComponent} from './benutzer/benutzer.component';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        BenutzerRoutingModule
-    ],
-    declarations: [
-        BenutzerComponent,
-        BenutzerEinladenComponent
-    ],
-    exports: [
-        BenutzerComponent
-    ]
+    imports: [SharedModule, BenutzerRoutingModule],
+    declarations: [BenutzerComponent, BenutzerEinladenComponent],
+    exports: [BenutzerComponent]
 })
-export class BenutzerModule {
-}
+export class BenutzerModule {}

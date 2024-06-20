@@ -27,9 +27,7 @@ describe('GemeindeKennzahlenService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [SharedModule],
-            providers: [
-                WindowRef
-            ]
+            providers: [WindowRef]
         });
         service = TestBed.inject(GemeindeKennzahlenService);
     });

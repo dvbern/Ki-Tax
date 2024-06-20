@@ -19,52 +19,73 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
-
+            <form
+                role="form"
+                name="vm.form"
+                class=""
+                novalidate
+                unsaved-warning-form
+            >
                 <!-- Titel -->
                 <div class="row margin-top-40">
                     <div class="col-md-8">
                         <h3 class="ebegu-h2" class="main-title">
-                            {{vm.getKindName()}} / {{vm.getInstitutionName()}}
+                            {{ vm.getKindName() }} /
+                            {{ vm.getInstitutionName() }}
                         </h3>
                     </div>
                     <div class="col-md-4 text-right">
                         <h3 class="ebegu-h2" aria-hidden class="main-title">
-                            {{vm.getBetreuungNumber()}}
+                            {{ vm.getBetreuungNumber() }}
                         </h3>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <hr class="header"/>
+                        <hr class="header" />
                     </div>
                 </div>
 
                 <!-- Status -->
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="betreuung-status verfuegen-view ng-class:vm.getBetreuungsstatus();">
+                        <div
+                            class="betreuung-status verfuegen-view ng-class:vm.getBetreuungsstatus();"
+                        >
                             <div
-                                ng-bind="vm.getBetreuungsstatus() | translate">
-                            </div>
+                                ng-bind="vm.getBetreuungsstatus() | translate"
+                            ></div>
                             <span class="betreuung-bar"></span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Verfuegung Tagesschule -->
-                <div ng-if="vm.isTagesschuleVerfuegung() && !vm.getBetreuung().keineDetailinformationen">
-                    <br/>
+                <div
+                    ng-if="
+                        vm.isTagesschuleVerfuegung() &&
+                        !vm.getBetreuung().keineDetailinformationen
+                    "
+                >
+                    <br />
                     <!-- Eintrittsdatum -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small form-group">
-                            <label class="md-no-float required" data-translate="EINTRITTSDATUM"
-                                   for="eintrittsdatum_ID"></label>
-                            <dv-datepicker input-id="eintrittsdatum_ID" name="eintrittsdatum"
-                                           ng-model="vm.getBetreuung().belegungTagesschule.eintrittsdatum"
-                                           ng-required="true"
-                                           class="input-element "
-                                           ng-disabled="true">
+                        <div
+                            class="col-sm-12 dv-input-container-small form-group"
+                        >
+                            <label
+                                class="md-no-float required"
+                                data-translate="EINTRITTSDATUM"
+                                for="eintrittsdatum_ID"
+                            ></label>
+                            <dv-datepicker
+                                input-id="eintrittsdatum_ID"
+                                name="eintrittsdatum"
+                                ng-model="vm.getBetreuung().belegungTagesschule.eintrittsdatum"
+                                ng-required="true"
+                                class="input-element"
+                                ng-disabled="true"
+                            >
                             </dv-datepicker>
                         </div>
                     </div>
@@ -75,13 +96,21 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="planKlasse_ID">
                                     <span data-translate="PLANKLASSE"> </span>
-                                    <dv-tooltip input-id="planKlasse" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
+                                    <dv-tooltip
+                                        input-id="planKlasse"
+                                        text="'PLANKLASSE_INFO' | translate"
+                                    ></dv-tooltip>
                                 </label>
-                                <input aria-describedby="planKlasse_ID-error" id="planKlasse_ID"
-                                       type="text" name="planKlasse"
-                                       ng-model="vm.getBetreuung().belegungTagesschule.planKlasse"
-                                       dv-max-length class="form-control"
-                                       ng-disabled="true">
+                                <input
+                                    aria-describedby="planKlasse_ID-error"
+                                    id="planKlasse_ID"
+                                    type="text"
+                                    name="planKlasse"
+                                    ng-model="vm.getBetreuung().belegungTagesschule.planKlasse"
+                                    dv-max-length
+                                    class="form-control"
+                                    ng-disabled="true"
+                                />
                             </dv-input-container>
                         </div>
                     </div>
@@ -90,20 +119,27 @@
                     <div class="row margin-top-20">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float"
-                                       ng-class="{'required': vm.isGesuchstellerRole()}"
-                                       for="abholungTagesschule_ID">
-                                    <span data-translate="ABHOLUNG_AUS_TAGESSCHULE"></span>
+                                <label
+                                    class="md-no-float"
+                                    ng-class="{
+                                        required: vm.isGesuchstellerRole()
+                                    }"
+                                    for="abholungTagesschule_ID"
+                                >
+                                    <span
+                                        data-translate="ABHOLUNG_AUS_TAGESSCHULE"
+                                    ></span>
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="abholungTagesschule_ID-error"
-                                            name="abholungTagesschule"
-                                            id="abholungTagesschule_ID"
-                                            ng-model="vm.getBetreuung().belegungTagesschule.abholungTagesschule"
-                                            ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
-                                            class="form-control"
-                                            ng-disabled="true">
-                                    </select>
+                                    <select
+                                        aria-describedby="abholungTagesschule_ID-error"
+                                        name="abholungTagesschule"
+                                        id="abholungTagesschule_ID"
+                                        ng-model="vm.getBetreuung().belegungTagesschule.abholungTagesschule"
+                                        ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
+                                        class="form-control"
+                                        ng-disabled="true"
+                                    ></select>
                                 </div>
                             </div>
                         </div>
@@ -111,41 +147,75 @@
 
                     <!-- TS-Module -->
                     <div class="dv-ebegu-calendar-wrapper-tagesschule">
-
                         <!-- Header mit Wochentagen -->
                         <div class="dv-ebegu-calendar-row--tagesschule">
-                            <div class="dv-ebegu-calendar-wrapper-small-blank"></div>
+                            <div
+                                class="dv-ebegu-calendar-wrapper-small-blank"
+                            ></div>
                             <div class="dv-ebegu-calendar-wrapper">
-                                <div class="dv-ebegu-calendar-container-weekdays">
-                                    <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
-                                         ng-repeat="day in vm.getWeekDays()">{{ day | translate}}
+                                <div
+                                    class="dv-ebegu-calendar-container-weekdays"
+                                >
+                                    <div
+                                        class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{
+                                            day
+                                        }}"
+                                        ng-repeat="day in vm.getWeekDays()"
+                                    >
+                                        {{ day | translate }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="dv-ebegu-calendar-row--tagesschule"
-                             ng-repeat="group in vm.modulGroups track by group.group.identifier">
+                        <div
+                            class="dv-ebegu-calendar-row--tagesschule"
+                            ng-repeat="group in vm.modulGroups track by group.group.identifier"
+                        >
                             <!-- Gruppe (Name und Zeit) -->
-                            <div class="dv-ebegu-calendar-wrapper-small dv-ebegu-calendar-module">
-                                <span class="dv-ebegu-calendar-module-name"
-                                      ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
-                                <span class="dv-ebegu-calendar-module-time"
-                                      ng-bind="vm.getModulTimeAsString(group.group)"></span>
+                            <div
+                                class="dv-ebegu-calendar-wrapper-small dv-ebegu-calendar-module"
+                            >
+                                <span
+                                    class="dv-ebegu-calendar-module-name"
+                                    ng-bind="vm.getModulBezeichnungInLanguage(group.group)"
+                                ></span>
+                                <span
+                                    class="dv-ebegu-calendar-module-time"
+                                    ng-bind="vm.getModulTimeAsString(group.group)"
+                                ></span>
                             </div>
                             <div class="dv-ebegu-calendar-wrapper">
-                                <div class="dv-ebegu-calendar-container dv-ebegu-calendar-container--no-margin">
-
-                                    <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--1"
-                                         ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
+                                <div
+                                    class="dv-ebegu-calendar-container dv-ebegu-calendar-container--no-margin"
+                                >
+                                    <div
+                                        class="dv-ebegu-calendar-day dv-ebegu-calendar-day--1"
+                                        ng-repeat="mod in group.module track by mod.modulTagesschule.identifier"
+                                    >
                                         <md-checkbox
-                                            name="modul_{{mod.modulTagesschule.identifier}}"
+                                            name="modul_{{
+                                                mod.modulTagesschule.identifier
+                                            }}"
                                             ng-model="mod.modulTagesschule.angemeldet"
-                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            aria-label="Modul {{
+                                                group.group.bezeichnung
+                                            }} {{
+                                                mod.modulTagesschule.wochentag
+                                                    | translate
+                                            }}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
-                                            class="dv-ebegu-calendar--tagesschule">
+                                            class="dv-ebegu-calendar--tagesschule"
+                                        >
                                             <span
-                                                ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
+                                                ng-if="
+                                                    mod.modulTagesschule
+                                                        .angemeldet
+                                                "
+                                                >{{
+                                                    mod.intervall | translate
+                                                }}</span
+                                            >
                                         </md-checkbox>
                                     </div>
                                 </div>
@@ -156,187 +226,363 @@
                     <!-- Abweichung zweites Semester und Bemerkungen -->
                     <div class="row margin-top-30">
                         <div class="col-sm-12 dv-input-container-question">
-                            <md-checkbox class="checkbox margin-top-20"
-                                         ng-model="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
-                                         name="abweichungZweitesSemester"
-                                         id="abweichungZweitesSemester"
-                                         aria-label="{{'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX' | translate}}"
-                                         ng-disabled="true">
-                                <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
+                            <md-checkbox
+                                class="checkbox margin-top-20"
+                                ng-model="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
+                                name="abweichungZweitesSemester"
+                                id="abweichungZweitesSemester"
+                                aria-label="{{
+                                    'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX'
+                                        | translate
+                                }}"
+                                ng-disabled="true"
+                            >
+                                <span
+                                    data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"
+                                ></span>
                             </md-checkbox>
-                            <dv-input-container class="form-group"
-                                                ng-show="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester">
-                                <label class="md-no-float"
-                                       ng-class="{'required': vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester}"
-                                       data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG"
-                                       for="bemerkung_ID">
+                            <dv-input-container
+                                class="form-group"
+                                ng-show="
+                                    vm.getBetreuung().belegungTagesschule
+                                        .abweichungZweitesSemester
+                                "
+                            >
+                                <label
+                                    class="md-no-float"
+                                    ng-class="{
+                                        required:
+                                            vm.getBetreuung()
+                                                .belegungTagesschule
+                                                .abweichungZweitesSemester
+                                    }"
+                                    data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG"
+                                    for="bemerkung_ID"
+                                >
                                 </label>
-                                <p class="inline-hint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
-                                <textarea aria-describedby="bemerkung_ID-error"
-                                          name="bemerkung"
-                                          class="form-control " rows="6"
-                                          id="bemerkung_ID"
-                                          ng-model="vm.getBetreuung().belegungTagesschule.bemerkung"
-                                          ng-required="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
-                                          maxlength="4000"
-                                          ng-disabled="true">
+                                <p
+                                    class="inline-hint"
+                                    data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"
+                                ></p>
+                                <textarea
+                                    aria-describedby="bemerkung_ID-error"
+                                    name="bemerkung"
+                                    class="form-control"
+                                    rows="6"
+                                    id="bemerkung_ID"
+                                    ng-model="vm.getBetreuung().belegungTagesschule.bemerkung"
+                                    ng-required="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
+                                    maxlength="4000"
+                                    ng-disabled="true"
+                                >
                                 </textarea>
                             </dv-input-container>
                         </div>
                     </div>
                     <!-- Bei Tagis Tagesschule sind die Tarif und PDF nicht angezeigt-->
-                    <ng-container ng-if="!vm.isTagesschuleTagi() && vm.showTarifeTable()">
+                    <ng-container
+                        ng-if="!vm.isTagesschuleTagi() && vm.showTarifeTable()"
+                    >
                         <!-- Info bei noch provisorischem Tarif -->
-                        <div class="row"
-                             ng-if="vm.getBetreuung().betreuungsstatus !== 'SCHULAMT_ANMELDUNG_UEBERNOMMEN'">
+                        <div
+                            class="row"
+                            ng-if="
+                                vm.getBetreuung().betreuungsstatus !==
+                                'SCHULAMT_ANMELDUNG_UEBERNOMMEN'
+                            "
+                        >
                             <div class="col-md-12">
-                                <h3 class="md-no-float"
+                                <h3
+                                    class="md-no-float"
                                     data-test="verfuegung-tagesschule-provisorisch"
-                                    data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"></h3>
-                                <p class="inline-hint"
-                                   data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"></p>
+                                    data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"
+                                ></h3>
+                                <p
+                                    class="inline-hint"
+                                    data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"
+                                ></p>
                             </div>
                         </div>
 
                         <!-- Preview oder definitive Verfuegung -->
-                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0" data-test="tagesschul-anmeldung-tarife">
-                            <br/>
+                        <div
+                            class="row"
+                            ng-if="
+                                vm.tagesschuleZeitabschnitteMitBetreuung
+                                    .length > 0
+                            "
+                            data-test="tagesschul-anmeldung-tarife"
+                        >
+                            <br />
                             <div class="col-md-12 table-responsive">
-                                <h3 class="md-no-float"
-                                    data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
+                                <h3
+                                    class="md-no-float"
+                                    data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"
+                                ></h3>
 
-                                <table st-table="tsTagesschuleMitBetreuungList"
-                                       st-safe-src="vm.tagesschuleZeitabschnitteMitBetreuung"
-                                       class="table verfuegung-table">
+                                <table
+                                    st-table="tsTagesschuleMitBetreuungList"
+                                    st-safe-src="vm.tagesschuleZeitabschnitteMitBetreuung"
+                                    class="table verfuegung-table"
+                                >
                                     <thead>
-                                    <tr class="title-row">
-                                        <th data-translate="BETREUUNG_VON"></th>
-                                        <th data-translate="BETREUUNG_BIS"></th>
-                                        <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
-                                        <th data-translate="GEBUHR_PRO_STUNDE"></th>
-                                        <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
-                                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()" data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"></th>
-                                        <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
-                                    </tr>
+                                        <tr class="title-row">
+                                            <th
+                                                data-translate="BETREUUNG_VON"
+                                            ></th>
+                                            <th
+                                                data-translate="BETREUUNG_BIS"
+                                            ></th>
+                                            <th
+                                                data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                data-translate="GEBUHR_PRO_STUNDE"
+                                            ></th>
+                                            <th
+                                                data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                ng-if="
+                                                    vm.isMahlzeitenverguenstigungEnabled()
+                                                "
+                                                data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                class="result"
+                                                data-translate="TOTAL_KOSTEN_PRO_WOCHE"
+                                            ></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList" ng-attr-data-test="{{'tagesschul-anmeldung-zeitabschnitt#' + $index}}">
-                                        <!-- Von -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
-                                            data-test="tagesschul-anmeldung-zeitabschnitt-gueltig-ab"></td>
-                                        <!-- Bis -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
-                                            data-test="tagesschul-anmeldung-zeitabschnitt-gueltigb-bis"></td>
-                                        <!-- Betreungszeit Pro Woche -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
-                                        </td>
-                                        <!-- Gebühren Pro Stunde -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"
-                                            data-test="tagesschul-anmeldung-zeitabschnitt-tarif"></span>
-                                        </td>
-                                        <!-- Verpflegungskosten Pro Woche -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten | currency : '' : 2"></span>
-                                        </td>
-                                        <!-- Mahlzeitenvergünstigung -->
-                                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt | currency : '' : 2"></span>
-                                        </td>
-                                        <!-- Total Kosten Pro Woche -->
-                                        <td class="result"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche | currency : '' : 2"></span>
-                                        </td>
-                                    </tr>
+                                        <tr
+                                            ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList"
+                                            ng-attr-data-test="{{
+                                                'tagesschul-anmeldung-zeitabschnitt#' +
+                                                    $index
+                                            }}"
+                                        >
+                                            <!-- Von -->
+                                            <td
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                                data-test="tagesschul-anmeldung-zeitabschnitt-gueltig-ab"
+                                            ></td>
+                                            <!-- Bis -->
+                                            <td
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                                data-test="tagesschul-anmeldung-zeitabschnitt-gueltigb-bis"
+                                            ></td>
+                                            <!-- Betreungszeit Pro Woche -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.betreuungszeitProWocheFormatted"
+                                                ></span>
+                                            </td>
+                                            <!-- Gebühren Pro Stunde -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"
+                                                    data-test="tagesschul-anmeldung-zeitabschnitt-tarif"
+                                                ></span>
+                                            </td>
+                                            <!-- Verpflegungskosten Pro Woche -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten | currency : '' : 2"
+                                                ></span>
+                                            </td>
+                                            <!-- Mahlzeitenvergünstigung -->
+                                            <td
+                                                ng-if="
+                                                    vm.isMahlzeitenverguenstigungEnabled()
+                                                "
+                                            >
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt | currency : '' : 2"
+                                                ></span>
+                                            </td>
+                                            <!-- Total Kosten Pro Woche -->
+                                            <td class="result">
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche | currency : '' : 2"
+                                                ></span>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteOhneBetreuung.length > 0">
-                            <br/>
+                        <div
+                            class="row"
+                            ng-if="
+                                vm.tagesschuleZeitabschnitteOhneBetreuung
+                                    .length > 0
+                            "
+                        >
+                            <br />
                             <div class="col-md-12 table-responsive">
-                                <h3 class="md-no-float"
-                                    data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"></h3>
+                                <h3
+                                    class="md-no-float"
+                                    data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"
+                                ></h3>
 
-                                <table st-table="tsTagesschuleOhneBetreuungList"
-                                       st-safe-src="vm.tagesschuleZeitabschnitteOhneBetreuung"
-                                       class="table verfuegung-table">
+                                <table
+                                    st-table="tsTagesschuleOhneBetreuungList"
+                                    st-safe-src="vm.tagesschuleZeitabschnitteOhneBetreuung"
+                                    class="table verfuegung-table"
+                                >
                                     <thead>
-                                    <tr class="title-row">
-                                        <th data-translate="BETREUUNG_VON"></th>
-                                        <th data-translate="BETREUUNG_BIS"></th>
-                                        <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
-                                        <th data-translate="GEBUHR_PRO_STUNDE"></th>
-                                        <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
-                                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()" data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"></th>
-                                        <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
-                                    </tr>
+                                        <tr class="title-row">
+                                            <th
+                                                data-translate="BETREUUNG_VON"
+                                            ></th>
+                                            <th
+                                                data-translate="BETREUUNG_BIS"
+                                            ></th>
+                                            <th
+                                                data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                data-translate="GEBUHR_PRO_STUNDE"
+                                            ></th>
+                                            <th
+                                                data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                ng-if="
+                                                    vm.isMahlzeitenverguenstigungEnabled()
+                                                "
+                                                data-translate="VERGUENSTIGUNG_VERPFLEGUNG_PRO_WOCHE"
+                                            ></th>
+                                            <th
+                                                class="result"
+                                                data-translate="TOTAL_KOSTEN_PRO_WOCHE"
+                                            ></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleOhneBetreuungList">
-                                        <!-- Von -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                                        <!-- Bis -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                                        <!-- Betreungszeit Pro Woche -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
-                                        </td>
-                                        <!-- Gebühren Pro Stunde -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.gebuehrProStunde"></span>
-                                        </td>
-                                        <!-- Verpflegungskosten Pro Woche -->
-                                        <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskosten"></span>
-                                        </td>
-                                        <!-- Mahlzeitenvergünstigung -->
-                                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskostenVerguenstigt"></span>
-                                        </td>
-                                        <!-- Total Kosten Pro Woche -->
-                                        <td class="result"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.totalKostenProWoche"></span>
-                                        </td>
-                                    </tr>
+                                        <tr
+                                            ng-repeat="zeitabschnitt in tsTagesschuleOhneBetreuungList"
+                                        >
+                                            <!-- Von -->
+                                            <td
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                            ></td>
+                                            <!-- Bis -->
+                                            <td
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                            ></td>
+                                            <!-- Betreungszeit Pro Woche -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.betreuungszeitProWocheFormatted"
+                                                ></span>
+                                            </td>
+                                            <!-- Gebühren Pro Stunde -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.gebuehrProStunde"
+                                                ></span>
+                                            </td>
+                                            <!-- Verpflegungskosten Pro Woche -->
+                                            <td>
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskosten"
+                                                ></span>
+                                            </td>
+                                            <!-- Mahlzeitenvergünstigung -->
+                                            <td
+                                                ng-if="
+                                                    vm.isMahlzeitenverguenstigungEnabled()
+                                                "
+                                            >
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskostenVerguenstigt"
+                                                ></span>
+                                            </td>
+                                            <!-- Total Kosten Pro Woche -->
+                                            <td class="result">
+                                                <span
+                                                    ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.totalKostenProWoche"
+                                                ></span>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div class="row margin-top-20" ng-if="vm.showVorgaengerGebuehren()">
+                        <div
+                            class="row margin-top-20"
+                            ng-if="vm.showVorgaengerGebuehren()"
+                        >
                             <div class="col-xs-12">
                                 <h3>
-                                    <span data-translate="TAGESSCHULE_GEBUEHR_VOR_MUTATION"> </span>
-                                    <dv-tooltip input-id="planKlasse" text="'TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP' | translate"></dv-tooltip>
+                                    <span
+                                        data-translate="TAGESSCHULE_GEBUEHR_VOR_MUTATION"
+                                    >
+                                    </span>
+                                    <dv-tooltip
+                                        input-id="planKlasse"
+                                        text="'TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP' | translate"
+                                    ></dv-tooltip>
                                 </h3>
                                 <ul>
-                                    <li ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitteSchulamt"><p>
-                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></span>
-                                        <span>&nbsp;-&nbsp;</span>
-                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></span>
-                                        <span>:&nbsp;CHF </span>
-                                        <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde  | currency : '' : 2"></span>
-                                    </p></li>
+                                    <li
+                                        ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitteSchulamt"
+                                    >
+                                        <p>
+                                            <span
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                            ></span>
+                                            <span>&nbsp;-&nbsp;</span>
+                                            <span
+                                                ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                            ></span>
+                                            <span>:&nbsp;CHF </span>
+                                            <span
+                                                ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde  | currency : '' : 2"
+                                            ></span>
+                                        </p>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
 
                         <!--VerfuegungPDF anzeigen-->
                         <div class="row margin-top-20 text-left">
-                            <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
-                                <button type="button" class="dv-btn btn-link link-underline"
-                                        ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
+                            <div
+                                class="col-xs-12"
+                                ng-if="
+                                    vm.showAnmeldebestaetigungOhneTarifPdfLink()
+                                "
+                            >
+                                <button
+                                    type="button"
+                                    class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()"
+                                >
                                     <i class="fa fa-file-text-o"></i>
-                                    <span data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"></span>
+                                    <span
+                                        data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"
+                                    ></span>
                                 </button>
                             </div>
-                            <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungMitTarifPdfLink()">
-                                <button type="button" class="dv-btn btn-link link-underline"
-                                        ng-click="vm.openAnmeldebestaetigungMitTarifPDF()">
+                            <div
+                                class="col-xs-12"
+                                ng-if="
+                                    vm.showAnmeldebestaetigungMitTarifPdfLink()
+                                "
+                            >
+                                <button
+                                    type="button"
+                                    class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungMitTarifPDF()"
+                                >
                                     <i class="fa fa-file-text-o"></i>
-                                    <span data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"></span>
+                                    <span
+                                        data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"
+                                    ></span>
                                 </button>
                             </div>
                         </div>
@@ -344,244 +590,596 @@
                 </div>
 
                 <!-- Tabelle -->
-                <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung() && !vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()">
+                <div
+                    class="row"
+                    ng-if="
+                        vm.showVerfuegungsDetails() &&
+                        !vm.isTagesschuleVerfuegung() &&
+                        !vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()
+                    "
+                >
                     <div class="col-md-12 table-responsive">
-                        <table st-table="displayedCollection" st-safe-src="vm.getVerfuegungZeitabschnitte()"
-                               class="table verfuegung-table">
+                        <table
+                            st-table="displayedCollection"
+                            st-safe-src="vm.getVerfuegungZeitabschnitte()"
+                            class="table verfuegung-table"
+                        >
                             <thead>
-                            <tr class="infotext-row">
-                                <td></td>
-                                <td></td>
-                                <td ng-if="vm.showPercent">
-                                    <dv-tooltip text="'EFFEKTIVE_BETREUUNG_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showHours">
-                                    <dv-tooltip text="'EFFEKTIVE_BETREUUNG_IN_H_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showDays">
-                                    <dv-tooltip text="'EFFEKTIVE_BETREUUNG_IN_D_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showPercent">
-                                    <dv-tooltip text="'ANSPRUCH_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showHours">
-                                    <dv-tooltip text="'ANSPRUCH_IN_H_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showDays">
-                                    <dv-tooltip text="'ANSPRUCH_IN_D_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showPercent">
-                                    <dv-tooltip text="'VERGUENSTIGT_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showHours">
-                                    <dv-tooltip text="'VERGUENSTIGT_IN_H_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showDays">
-                                    <dv-tooltip text="'VERGUENSTIGT_IN_D_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td>
-                                    <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showSelbstbehaltProzent()" class="result">
-                                    <dv-tooltip text="'SELBSTBEHALT_PROZENT_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showBeitragshoheProzent()" class="result">
-                                    <dv-tooltip text="'BEITRAGSHOHE_PROZENT_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()">
-                                    &nbsp;
-                                </td>
-                                <td ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()">
-                                    <dv-tooltip
-                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showElternMinimalerBeitragColumns()" class="result">
-                                    <dv-tooltip
-                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showElternMinimalerBeitragColumns()" class="result">
-                                    <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showGutscheinProStunde()" class="result">
-                                    <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result">
-                                    <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
-                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.showAuszahlungAnElternCol()" class="result">
-                                    <dv-tooltip text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"></dv-tooltip>
-                                </td>
-                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
-                                    &nbsp;
-                                </td>
-                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
-                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
-                                </td>
-                            </tr>
-                            <tr class="title-row">
-                                <th data-translate="BETREUUNG_VON"></th>
-                                <th data-translate="BETREUUNG_BIS"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG" ng-if="vm.showPercent"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="ANSPRUCH" ng-if="vm.showPercent"></th>
-                                <th data-translate="ANSPRUCH_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="ANSPRUCH_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="VERGUENSTIGT" ng-if="vm.showPercent"></th>
-                                <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="VOLLKOSTEN"></th>
-                                <th ng-if="vm.showSelbstbehaltProzent()" data-translate="SELBSTBEHALT_PROZENT" class="result"></th>
-                                <th ng-if="vm.showBeitragshoheProzent()" data-translate="BEITRAGSHOHE_PROZENT" class="result"></th>
-                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
-                                <th ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
-                                    data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
-                                <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
-                                <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
-                                <th ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
-                                <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
-                                <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
-                                <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
-                                <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
-                            </tr>
+                                <tr class="infotext-row">
+                                    <td></td>
+                                    <td></td>
+                                    <td ng-if="vm.showPercent">
+                                        <dv-tooltip
+                                            text="'EFFEKTIVE_BETREUUNG_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showHours">
+                                        <dv-tooltip
+                                            text="'EFFEKTIVE_BETREUUNG_IN_H_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showDays">
+                                        <dv-tooltip
+                                            text="'EFFEKTIVE_BETREUUNG_IN_D_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showPercent">
+                                        <dv-tooltip
+                                            text="'ANSPRUCH_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showHours">
+                                        <dv-tooltip
+                                            text="'ANSPRUCH_IN_H_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showDays">
+                                        <dv-tooltip
+                                            text="'ANSPRUCH_IN_D_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showPercent">
+                                        <dv-tooltip
+                                            text="'VERGUENSTIGT_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showHours">
+                                        <dv-tooltip
+                                            text="'VERGUENSTIGT_IN_H_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td ng-if="vm.showDays">
+                                        <dv-tooltip
+                                            text="'VERGUENSTIGT_IN_D_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td>
+                                        <dv-tooltip
+                                            text="'VOLLKOSTEN_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="vm.showSelbstbehaltProzent()"
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'SELBSTBEHALT_PROZENT_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="vm.showBeitragshoheProzent()"
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'BEITRAGSHOHE_PROZENT_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="
+                                            vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()
+                                        "
+                                    >
+                                        &nbsp;
+                                    </td>
+                                    <td
+                                        ng-if="
+                                            vm.showGutscheinOhneBeruecksichtigungVollkosten()
+                                        "
+                                    >
+                                        <dv-tooltip
+                                            text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="vm.showGutscheinProStunde()"
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="
+                                            vm.showAuszahlungAnInstitutionenCol()
+                                        "
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'VERGUENSTIGUNG_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showZahlungsstatusInstitutionenCol()
+                                        "
+                                    >
+                                        <dv-tooltip
+                                            text="'ZAHLUNGSSTATUS_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="vm.showAuszahlungAnElternCol()"
+                                        class="result"
+                                    >
+                                        <dv-tooltip
+                                            text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showMahlzeitenverguenstigung()
+                                        "
+                                    >
+                                        &nbsp;
+                                    </td>
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showZahlungsstatusAntragstellerCol()
+                                        "
+                                    >
+                                        <dv-tooltip
+                                            text="'ZAHLUNGSSTATUS_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                </tr>
+                                <tr class="title-row">
+                                    <th data-translate="BETREUUNG_VON"></th>
+                                    <th data-translate="BETREUUNG_BIS"></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th data-translate="VOLLKOSTEN"></th>
+                                    <th
+                                        ng-if="vm.showSelbstbehaltProzent()"
+                                        data-translate="SELBSTBEHALT_PROZENT"
+                                        class="result"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.showBeitragshoheProzent()"
+                                        data-translate="BEITRAGSHOHE_PROZENT"
+                                        class="result"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()
+                                        "
+                                        data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showGutscheinOhneBeruecksichtigungVollkosten()
+                                        "
+                                        data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        data-translate="MIN_ELTERNBEITRAG"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.showGutscheinProStunde()"
+                                        class="result"
+                                        data-translate="GUTSCHEIN_PRO_STUNDE"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showAuszahlungAnInstitutionenCol()
+                                        "
+                                        class="result"
+                                        data-translate="VERGUENSTIGUNG_AN_INSTITUTION"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showZahlungsstatusInstitutionenCol()
+                                        "
+                                        class="result"
+                                        data-translate="ZAHLUNG_AN_INSTITUTION"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.showAuszahlungAnElternCol()"
+                                        class="result"
+                                        data-translate="VERGUENSTIGUNG_AN_ELTERN"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showMahlzeitenverguenstigung()
+                                        "
+                                        class="result"
+                                        data-translate="VERGUENSTIGUNG_MAHLZEITEN"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showZahlungsstatusAntragstellerCol()
+                                        "
+                                        class="result"
+                                        data-translate="ZAHLUNG_AN_ELTERN"
+                                    ></th>
+                                </tr>
                             </thead>
-                            <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
-                            <tr ng-repeat="verfuegungZeitabschnitt in displayedCollection" ng-attr-data-test="container.zeitabschnitt#{{$index}}">
-                                <!-- Von -->
-                                <td data-test="gueltigkeit-ab" ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                                <!-- Bis -->
-                                <td data-test="gueltigkeit-bis" ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                                <!-- Effektives Betreuungspensum -->
-                                <td data-test="betreuungspensumProzent" ng-if="vm.showPercent"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumProzent"></span>%
-                                </td>
-                                <td data-test="betreuungspensumZeiteinheit" ng-if="vm.showHours"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
-                                </td>
-                                <td data-test="betreuungspensumZeiteinheit" ng-if="vm.showDays"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
-                                </td>
-                                <!-- Anspruchberechtigtes Pensum -->
-                                <td data-test="anspruchberechtigtesPensum" ng-if="vm.showPercent"><span
-                                    ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
-                                </td>
-                                <td data-test="anspruchsberechtigteAnzahlZeiteinheiten" ng-if="vm.showHours"><span
-                                    ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
-                                </td>
-                                <td data-test="anspruchsberechtigteAnzahlZeiteinheiten" ng-if="vm.showDays"><span
-                                    ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
-                                </td>
-                                <!-- Vergünstigtes Pensum -->
-                                <td data-test="bgPensum" ng-if="vm.showPercent"><span
-                                    ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
-                                </td>
-                                <td data-test="verfuegteAnzahlZeiteinheiten" ng-if="vm.showHours"><span
-                                    ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
-                                </td>
-                                <td ng-if="vm.showDays"><span
-                                    ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
-                                </td>
-                                <!-- Kosten -->
-                                <td ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
-<!--                                selbstbehalt in prozent-->
-                                <td ng-if="vm.showSelbstbehaltProzent()" class="result"
-                                    ng-bind="vm.calculateSelbstbehaltProzent(verfuegungZeitabschnitt.beitragshoeheProzent)"></td>
-                                <!-- Beitragshohe in Prozent -->
-                                <td ng-if="vm.showBeitragshoheProzent()" class="result"
-                                    ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"></td>
-                                <!-- Städlicher Zuschlag in CHF -->
-                                <td ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()"
-                                    ng-bind="verfuegungZeitabschnitt.zusaetzlicherGutscheinGemeindeBetrag | currency : '' : 2"></td>
-                                <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
-                                <td data-test="verguenstigungOhneBeruecksichtigungVollkosten" ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
-                                <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
-                                <td ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
-                                <!-- Minimaler Elternbeitrag -->
-                                <td  ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
-                                    ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
-                                <!-- Gutschein pro Stunde -->
-                               <td ng-if="vm.showGutscheinProStunde()" class="result"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-
-                                <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenCol()"
-                                    ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
-                                <!-- Zahlungsstatus an Institution -->
-                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
-                                    <dv-zahlungsstatus-icon
-                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"
-                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
-                                    ></dv-zahlungsstatus-icon>
-                                </td>
-                                <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnElternCol()"
-                                    ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"></td>
-                                <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
-                                <td class="result"
-                                    ng-if="vm.showMahlzeitenverguenstigung()"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
-                                <!-- Zahlungsstatus an Antragsteller -->
-                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
-                                    <dv-zahlungsstatus-icon
-                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"
-                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
-                                    ></dv-zahlungsstatus-icon>
-                                </td>
-                            </tr>
+                            <tbody
+                                ng-if="
+                                    vm.getVerfuegungZeitabschnitte().length > 0
+                                "
+                            >
+                                <tr
+                                    ng-repeat="verfuegungZeitabschnitt in displayedCollection"
+                                    ng-attr-data-test="container.zeitabschnitt#{{
+                                        $index
+                                    }}"
+                                >
+                                    <!-- Von -->
+                                    <td
+                                        data-test="gueltigkeit-ab"
+                                        ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                    ></td>
+                                    <!-- Bis -->
+                                    <td
+                                        data-test="gueltigkeit-bis"
+                                        ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                    ></td>
+                                    <!-- Effektives Betreuungspensum -->
+                                    <td
+                                        data-test="betreuungspensumProzent"
+                                        ng-if="vm.showPercent"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.betreuungspensumProzent"
+                                        ></span
+                                        >%
+                                    </td>
+                                    <td
+                                        data-test="betreuungspensumZeiteinheit"
+                                        ng-if="vm.showHours"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"
+                                        ></span>
+                                    </td>
+                                    <td
+                                        data-test="betreuungspensumZeiteinheit"
+                                        ng-if="vm.showDays"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"
+                                        ></span>
+                                    </td>
+                                    <!-- Anspruchberechtigtes Pensum -->
+                                    <td
+                                        data-test="anspruchberechtigtesPensum"
+                                        ng-if="vm.showPercent"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"
+                                        ></span
+                                        >%
+                                    </td>
+                                    <td
+                                        data-test="anspruchsberechtigteAnzahlZeiteinheiten"
+                                        ng-if="vm.showHours"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"
+                                        ></span>
+                                    </td>
+                                    <td
+                                        data-test="anspruchsberechtigteAnzahlZeiteinheiten"
+                                        ng-if="vm.showDays"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"
+                                        ></span>
+                                    </td>
+                                    <!-- Vergünstigtes Pensum -->
+                                    <td
+                                        data-test="bgPensum"
+                                        ng-if="vm.showPercent"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.bgPensum"
+                                        ></span
+                                        >%
+                                    </td>
+                                    <td
+                                        data-test="verfuegteAnzahlZeiteinheiten"
+                                        ng-if="vm.showHours"
+                                    >
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"
+                                        ></span>
+                                    </td>
+                                    <td ng-if="vm.showDays">
+                                        <span
+                                            ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"
+                                        ></span>
+                                    </td>
+                                    <!-- Kosten -->
+                                    <td
+                                        ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"
+                                    ></td>
+                                    <!--                                selbstbehalt in prozent-->
+                                    <td
+                                        ng-if="vm.showSelbstbehaltProzent()"
+                                        class="result"
+                                        ng-bind="vm.calculateSelbstbehaltProzent(verfuegungZeitabschnitt.beitragshoeheProzent)"
+                                    ></td>
+                                    <!-- Beitragshohe in Prozent -->
+                                    <td
+                                        ng-if="vm.showBeitragshoheProzent()"
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"
+                                    ></td>
+                                    <!-- Städlicher Zuschlag in CHF -->
+                                    <td
+                                        ng-if="
+                                            vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()
+                                        "
+                                        ng-bind="verfuegungZeitabschnitt.zusaetzlicherGutscheinGemeindeBetrag | currency : '' : 2"
+                                    ></td>
+                                    <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
+                                    <td
+                                        data-test="verguenstigungOhneBeruecksichtigungVollkosten"
+                                        ng-if="
+                                            vm.showGutscheinOhneBeruecksichtigungVollkosten()
+                                        "
+                                        ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"
+                                    ></td>
+                                    <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
+                                    <td
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"
+                                    ></td>
+                                    <!-- Minimaler Elternbeitrag -->
+                                    <td
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"
+                                    ></td>
+                                    <!-- Gutschein pro Stunde -->
+                                    <td
+                                        ng-if="vm.showGutscheinProStunde()"
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"
+                                    ></td>
+                                    -
+                                    <!-- An Kita überwiesen (Gutschein) -->
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showAuszahlungAnInstitutionenCol()
+                                        "
+                                        ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"
+                                    ></td>
+                                    <!-- Zahlungsstatus an Institution -->
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showZahlungsstatusInstitutionenCol()
+                                        "
+                                    >
+                                        <dv-zahlungsstatus-icon
+                                            [zahlungsstatus]="
+                                                verfuegungZeitabschnitt.zahlungsstatusInstitution
+                                            "
+                                            [is-betreuung-gueltig]="
+                                                vm.isBetreuungGueltig()
+                                            "
+                                        ></dv-zahlungsstatus-icon>
+                                    </td>
+                                    <!-- An Kita überwiesen (Gutschein) -->
+                                    <td
+                                        class="result"
+                                        ng-if="vm.showAuszahlungAnElternCol()"
+                                        ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"
+                                    ></td>
+                                    <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showMahlzeitenverguenstigung()
+                                        "
+                                        ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"
+                                    ></td>
+                                    <!-- Zahlungsstatus an Antragsteller -->
+                                    <td
+                                        class="result"
+                                        ng-if="
+                                            vm.showZahlungsstatusAntragstellerCol()
+                                        "
+                                    >
+                                        <dv-zahlungsstatus-icon
+                                            [zahlungsstatus]="
+                                                verfuegungZeitabschnitt.zahlungsstatusAntragsteller
+                                            "
+                                            [is-betreuung-gueltig]="
+                                                vm.isBetreuungGueltig()
+                                            "
+                                        ></dv-zahlungsstatus-icon>
+                                    </td>
+                                </tr>
                             </tbody>
-                            <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">
-                            <tr>
-                                <td colspan="10"
-                                    class="empty-table text-left"
-                                    data-translate="ZEITABSCHNITTE_NICHT_BERECHNET"></td>
-                            </tr>
+                            <tbody
+                                ng-if="
+                                    vm.getVerfuegungZeitabschnitte().length ===
+                                    0
+                                "
+                            >
+                                <tr>
+                                    <td
+                                        colspan="10"
+                                        class="empty-table text-left"
+                                        data-translate="ZEITABSCHNITTE_NICHT_BERECHNET"
+                                    ></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div ng-if="!vm.isTagesschuleVerfuegung() && !vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()">
+                <div
+                    ng-if="
+                        !vm.isTagesschuleVerfuegung() &&
+                        !vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()
+                    "
+                >
                     <!--bemerkungen-->
-                    <div class="row margin-top-20" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
-                         dv-show-expression="vm.showVerfuegungsDetails()">
+                    <div
+                        class="row margin-top-20"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
+                        dv-show-expression="vm.showVerfuegungsDetails()"
+                    >
                         <div class="col-md-12 form-group">
-                            <label class="md-no-float inline-hint" for="manuelle_notes"
-								   data-translate="BEGRUENDUNG"></label>
-                            <textarea md-no-autogrow class="form-control" rows="6" name="manuelle_notes"
-                                      id="manuelle_notes"
-                                      ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
-                                      ng-required="vm.isVerfuegenClicked"
-                                      ng-attr-placeholder="{{'BEMERKUNGEN_PLACEHOLDER' | translate}}"
-                                      maxlength="8000"></textarea>
-                            <dv-error-messages input-id="manuelle_notes"
-                                               for="vm.form.manuelle_notes.$error"></dv-error-messages>
+                            <label
+                                class="md-no-float inline-hint"
+                                for="manuelle_notes"
+                                data-translate="BEGRUENDUNG"
+                            ></label>
+                            <textarea
+                                md-no-autogrow
+                                class="form-control"
+                                rows="6"
+                                name="manuelle_notes"
+                                id="manuelle_notes"
+                                ng-model="vm.bemerkungen"
+                                ng-disabled="vm.isBemerkungenDisabled()"
+                                ng-required="vm.isVerfuegenClicked"
+                                ng-attr-placeholder="{{
+                                    'BEMERKUNGEN_PLACEHOLDER' | translate
+                                }}"
+                                maxlength="8000"
+                            ></textarea>
+                            <dv-error-messages
+                                input-id="manuelle_notes"
+                                for="vm.form.manuelle_notes.$error"
+                            ></dv-error-messages>
                         </div>
                     </div>
 
                     <!-- Bestätigung, dass die Begründungen kontrolliert wurden -->
-                    <div class="row" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                         dv-show-expression="vm.showVerfuegung">
-                        <div class="col-xs-12 dv-input-container-question margin-bottom-20">
+                    <div
+                        class="row"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                        dv-show-expression="vm.showVerfuegung"
+                    >
+                        <div
+                            class="col-xs-12 dv-input-container-question margin-bottom-20"
+                        >
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
-                                             ng-required="vm.isVerfuegenClicked"
-                                             name="verfuegungsBemerkungenKontrolliert"
-                                             aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}"
-                                             data-test="verfuegungs-bemerkungen-kontrolliert">
-                                    <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
+                                <md-checkbox
+                                    ng-model="vm.verfuegungsBemerkungenKontrolliert"
+                                    ng-required="vm.isVerfuegenClicked"
+                                    name="verfuegungsBemerkungenKontrolliert"
+                                    aria-label="{{
+                                        'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT'
+                                            | translate
+                                    }}"
+                                    data-test="verfuegungs-bemerkungen-kontrolliert"
+                                >
+                                    <span
+                                        data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"
+                                    ></span>
                                 </md-checkbox>
                                 <div class="dv-error-messages">
-                                    <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
-                                         class="error">
-                                        <div ng-message="required"
-                                             data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
-                                             for="vm.form.verfuegungsBemerkungenKontrolliert.$error"
-                                             role="alert"></div>
+                                    <div
+                                        ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                        class="error"
+                                    >
+                                        <div
+                                            ng-message="required"
+                                            data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
+                                            for="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                            role="alert"
+                                        ></div>
                                     </div>
                                 </div>
                             </div>
@@ -589,114 +1187,247 @@
                     </div>
 
                     <!-- Info über Korrektur Betrag in Mutation -->
-                    <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
-                        <div ng-bind-html="vm.getKorrekturenString()" class="white-space-pre-wrap"></div>
+                    <div
+                        ng-if="vm.showInfoUeberKorrekutren()"
+                        class="well margin-top-20"
+                    >
+                        <div
+                            ng-bind-html="vm.getKorrekturenString()"
+                            class="white-space-pre-wrap"
+                        ></div>
                     </div>
 
                     <!--VerfuegungPDF anzeigen-->
                     <div class="row margin-top-20 text-left">
-                        <div class="col-xs-12" ng-if="vm.showVerfuegungPdfLink()">
-                            <button type="button" class="dv-btn btn-link link-underline"
-                                    ng-click="vm.openVerfuegungPDF()">
+                        <div
+                            class="col-xs-12"
+                            ng-if="vm.showVerfuegungPdfLink()"
+                        >
+                            <button
+                                type="button"
+                                class="dv-btn btn-link link-underline"
+                                ng-click="vm.openVerfuegungPDF()"
+                            >
                                 <i class="fa fa-file-text-o"></i>
-                                <span data-translate="PDF_VERFUEGUNG_ANZEIGEN"></span>
+                                <span
+                                    data-translate="PDF_VERFUEGUNG_ANZEIGEN"
+                                ></span>
                             </button>
                         </div>
 
                         <!--export for external programs-->
-                        <div class="col-xs-12" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
-                             dv-show-expression="vm.showExportLink()">
-                            <a type="button" class="btn-link link-underline" ng-click="vm.openExport()" href="">
+                        <div
+                            class="col-xs-12"
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                            dv-show-expression="vm.showExportLink()"
+                        >
+                            <a
+                                type="button"
+                                class="btn-link link-underline"
+                                ng-click="vm.openExport()"
+                                href=""
+                            >
                                 <i class="fa fa-file-text-o"></i>
-                                <span data-translate="DOWNLOAD_EXPORT_FILE"></span>
+                                <span
+                                    data-translate="DOWNLOAD_EXPORT_FILE"
+                                ></span>
                             </a>
-
                         </div>
                         <!--schemalinks-->
-                        <div class="col-xs-12 margin-top-10" dv-show-element
-                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
-                             dv-show-expression="vm.showSchemas && vm.showExportLink()">
+                        <div
+                            class="col-xs-12 margin-top-10"
+                            dv-show-element
+                            dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                            dv-show-expression="vm.showSchemas && vm.showExportLink()"
+                        >
                             <span class="marginRight10"> Schemas:</span>
-                            <a ng-click="vm.exportJsonSchema()" href=""
-                               class="btn-link link-underline"><span>json</span></a>
-                            <a ng-click="vm.exportXmlSchema()" href="" title="to show please disable popupblocker"
-                               class="btn-link link-underline"><span>xml</span></a>
+                            <a
+                                ng-click="vm.exportJsonSchema()"
+                                href=""
+                                class="btn-link link-underline"
+                                ><span>json</span></a
+                            >
+                            <a
+                                ng-click="vm.exportXmlSchema()"
+                                href=""
+                                title="to show please disable popupblocker"
+                                class="btn-link link-underline"
+                                ><span>xml</span></a
+                            >
                         </div>
 
-                        <div class="col-xs-12" ng-if="vm.showNichtEintretenPdfLink()">
-                            <button type="button" class="dv-btn btn-link link-underline"
-                                    ng-click="vm.openNichteintretenPDF()">
+                        <div
+                            class="col-xs-12"
+                            ng-if="vm.showNichtEintretenPdfLink()"
+                        >
+                            <button
+                                type="button"
+                                class="dv-btn btn-link link-underline"
+                                ng-click="vm.openNichteintretenPDF()"
+                            >
                                 <i class="fa fa-file-text-o"></i>
-                                <span data-translate="PDF_NICHT_EINTRETEN_ANZEIGEN"></span>
+                                <span
+                                    data-translate="PDF_NICHT_EINTRETEN_ANZEIGEN"
+                                ></span>
                             </button>
                         </div>
                     </div>
 
-
-                    <div class="row margin-top-20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
+                    <div
+                        class="row margin-top-20"
+                        ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten"
+                    >
                         <div class="col-md-12">
                             <div class="well well-status-warten">
-                                <span ng-show="!vm.mahlzeitenChanged || !vm.showMahlzeitenverguenstigung()" data-translate="IDENTISCHE_BERECHNUNG"></span>
-                                <span ng-show="vm.mahlzeitenChanged && vm.showMahlzeitenverguenstigung()" data-translate="NUR_MAHLZEITEN_GEANDERT"></span>
+                                <span
+                                    ng-show="
+                                        !vm.mahlzeitenChanged ||
+                                        !vm.showMahlzeitenverguenstigung()
+                                    "
+                                    data-translate="IDENTISCHE_BERECHNUNG"
+                                ></span>
+                                <span
+                                    ng-show="
+                                        vm.mahlzeitenChanged &&
+                                        vm.showMahlzeitenverguenstigung()
+                                    "
+                                    data-translate="NUR_MAHLZEITEN_GEANDERT"
+                                ></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="well well-status-warten margin-top-20" ng-if="vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()">
-                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                    <span translate>AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE</span>
+                <div
+                    class="well well-status-warten margin-top-20"
+                    ng-if="
+                        vm.hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole()
+                    "
+                >
+                    <i
+                        class="fa fa-exclamation-triangle"
+                        aria-hidden="true"
+                    ></i>
+                    <span translate
+                        >AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE</span
+                    >
                 </div>
                 <!-- Navigation Buttons -->
                 <div class="dv-navigation dv-navigation-flex">
-                    <span class="ie11-fix" dv-show-element
-                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                        <dv-loading-button input-id="buttonVerfuegen" type="submit"
-                                           button-click="vm.save()"
-                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung"
-                                           data-test="container.verfuegen">
-                            <span class="uppercase" data-translate="VERFUEGEN"></span>
+                    <span
+                        class="ie11-fix"
+                        dv-show-element
+                        dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                    >
+                        <dv-loading-button
+                            input-id="buttonVerfuegen"
+                            type="submit"
+                            button-click="vm.save()"
+                            ng-if="
+                                (!vm.sameVerfuegteVerfuegungsrelevanteDaten ||
+                                    vm.mahlzeitenChanged) &&
+                                vm.showVerfuegung
+                            "
+                            data-test="container.verfuegen"
+                        >
+                            <span
+                                class="uppercase"
+                                data-translate="VERFUEGEN"
+                            ></span>
                         </dv-loading-button>
-                        <dv-loading-button input-id="buttonNichtEintreten" type="submit"
-                                           button-click="vm.nichtEintreten()"
-                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()"
-                                           data-test="container.nicht-eintreten">
-                            <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
+                        <dv-loading-button
+                            input-id="buttonNichtEintreten"
+                            type="submit"
+                            button-click="vm.nichtEintreten()"
+                            ng-if="
+                                (!vm.sameVerfuegteVerfuegungsrelevanteDaten ||
+                                    vm.mahlzeitenChanged) &&
+                                vm.showVerfuegung &&
+                                vm.gesuchModelManager.isGesuch()
+                            "
+                            data-test="container.nicht-eintreten"
+                        >
+                            <span
+                                class="uppercase"
+                                data-translate="VERFUEGEN_NICHT_EINTRETEN"
+                            ></span>
                         </dv-loading-button>
-                        <span class="ie11-fix"
-                              ng-show="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && !vm.gesuchModelManager.isGesuch()">
+                        <span
+                            class="ie11-fix"
+                            ng-show="
+                                (!vm.sameVerfuegteVerfuegungsrelevanteDaten ||
+                                    vm.mahlzeitenChanged) &&
+                                vm.showVerfuegung &&
+                                !vm.gesuchModelManager.isGesuch()
+                            "
+                        >
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
-                            <dv-loading-button input-id="buttonAblehnen" type="submit"
-                                               button-click="vm.schliessenOhneVerfuegen()"
-                                               ng-if="!vm.disableAblehnen()"
-                                               data-test="container.ablehnen">
-                                <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
+                            <dv-loading-button
+                                input-id="buttonAblehnen"
+                                type="submit"
+                                button-click="vm.schliessenOhneVerfuegen()"
+                                ng-if="!vm.disableAblehnen()"
+                                data-test="container.ablehnen"
+                            >
+                                <span
+                                    class="uppercase"
+                                    data-translate="VERFUEGEN_ABLEHNEN"
+                                ></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix"
-                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
-                            <dv-loading-button input-id="buttonVerzichten" type="submit"
-                                               button-click="vm.schliessenOhneVerfuegen()"
-                                               data-test="container.verfuegen-verzichten">
-                                <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
+                        <span
+                            class="ie11-fix"
+                            ng-show="
+                                vm.showVerfuegung &&
+                                vm.sameVerfuegteVerfuegungsrelevanteDaten &&
+                                !vm.mahlzeitenChanged
+                            "
+                        >
+                            <dv-loading-button
+                                input-id="buttonVerzichten"
+                                type="submit"
+                                button-click="vm.schliessenOhneVerfuegen()"
+                                data-test="container.verfuegen-verzichten"
+                            >
+                                <span
+                                    class="uppercase"
+                                    data-translate="VERFUEGEN_VERZICHTEN"
+                                ></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix"
-                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
-                            <dv-loading-button input-id="buttonTrotzdemVerfuegen" type="submit"
-                                               button-click="vm.save()"
-                                               data-test="container.trotzdem-verfuegen">
-                                <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
+                        <span
+                            class="ie11-fix"
+                            ng-show="
+                                vm.showVerfuegung &&
+                                vm.sameVerfuegteVerfuegungsrelevanteDaten &&
+                                !vm.mahlzeitenChanged
+                            "
+                        >
+                            <dv-loading-button
+                                input-id="buttonTrotzdemVerfuegen"
+                                type="submit"
+                                button-click="vm.save()"
+                                data-test="container.trotzdem-verfuegen"
+                            >
+                                <span
+                                    class="uppercase"
+                                    data-translate="TROTZDEM_VERFUEGEN"
+                                ></span>
                             </dv-loading-button>
                         </span>
                     </span>
                     <span>
-                        <dv-navigation container-class="avoid" dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2" data-test="container.cancel">
+                        <dv-navigation
+                            container-class="avoid"
+                            dv-cancel="vm.cancel()"
+                            dv-next="false"
+                            dv-sub-step="2"
+                            data-test="container.cancel"
+                        >
                         </dv-navigation>
                     </span>
                 </div>
-
             </form>
         </div>
     </div>
