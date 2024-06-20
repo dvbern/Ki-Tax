@@ -290,7 +290,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     public isFinSitReadonly(): boolean {
         return (
             this.isGesuchReadonly() ||
-             (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER)));
+            (this.getGesuch().isMutation() &&
+                this.authServiceRS.isRole(TSRole.GESUCHSTELLER))
+        );
     }
 
     public showZahlungsinformationen(): boolean {
@@ -414,5 +416,4 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             this.model.familienSituation.sozialhilfeBezueger
         );
     }
-
 }

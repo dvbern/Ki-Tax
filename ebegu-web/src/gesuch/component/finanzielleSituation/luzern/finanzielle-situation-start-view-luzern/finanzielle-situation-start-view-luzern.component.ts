@@ -109,7 +109,6 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.gesuchModelManager.getFamiliensituation();
     }
 
-
     protected save(
         onResult: (arg: any) => any
     ): IPromise<TSFinanzielleSituationContainer> {
@@ -133,7 +132,8 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
                 }
                 onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
                 return gesuch.gesuchsteller1.finanzielleSituationContainer;
-            }).catch(error => {
+            })
+            .catch(error => {
                 throw error;
             });
     }

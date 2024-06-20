@@ -212,7 +212,9 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         expect(component.showVeranlagung()).toBeFalse();
         expect(component.gemeinsameStekVisible()).toBeTrue();
         expect(component.alleinigeStekVisible()).toBeFalse();
-        expect(component.getYearForDeklaration()).toBe(basisjahrPlus1.toString());
+        expect(component.getYearForDeklaration()).toBe(
+            basisjahrPlus1.toString()
+        );
         expect(component.isGemeinsam()).toBeTrue();
         expect(component.getAntragstellerNummer()).toBe(antragstellerNummer);
     });
@@ -226,7 +228,9 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
         expect(component.showVeranlagung()).toBeFalse();
         expect(component.gemeinsameStekVisible()).toBeFalse();
         expect(component.alleinigeStekVisible()).toBeTrue();
-        expect(component.getYearForDeklaration()).toBe(basisjahrPlus1.toString());
+        expect(component.getYearForDeklaration()).toBe(
+            basisjahrPlus1.toString()
+        );
         expect(component.isGemeinsam()).toBeFalse();
         expect(component.getAntragstellerNummer()).toBe(antragstellerNummer);
     });

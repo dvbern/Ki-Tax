@@ -7,7 +7,10 @@ export class MockElementRef extends ElementRef {
 }
 
 describe('DvEnableAllowedRolesDirective', () => {
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
     authServiceSpy.isOneOfRoles.and.returnValue(true);
     it('should create an instance', () => {
         const directive = new EnableElementDirective(authServiceSpy, null);

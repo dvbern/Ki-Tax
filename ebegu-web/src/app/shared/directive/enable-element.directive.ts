@@ -18,8 +18,9 @@ export class EnableElementDirective implements OnChanges {
     ) {}
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (!this.authService.isOneOfRoles(this.allowedRoles) ||
-                !this.enableExpression
+        if (
+            !this.authService.isOneOfRoles(this.allowedRoles) ||
+            !this.enableExpression
         ) {
             if (changes.enableExpression && this.ngControl?.control) {
                 const action = this.enableExpression ? 'enable' : 'disable';

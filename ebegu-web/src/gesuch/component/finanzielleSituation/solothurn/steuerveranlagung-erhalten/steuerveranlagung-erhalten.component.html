@@ -1,20 +1,33 @@
 <div class="row">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
-            <span class="ebegu-h1 required">{{ 'MOMENTAN_SELBSTSTAENDIG' | translate }}</span>
+            <span class="ebegu-h1 required">{{
+                'MOMENTAN_SELBSTSTAENDIG' | translate
+            }}</span>
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
                         #selbststaendig="ngModel"
-                        [(ngModel)]="model.finanzielleSituationJA.momentanSelbststaendig"
-                        [enableExpression]="canEdit() && !isGesuchReadonly() && !isKorrekturModusJugendamt()"
+                        [(ngModel)]="
+                            model.finanzielleSituationJA.momentanSelbststaendig
+                        "
+                        [enableExpression]="
+                            canEdit() &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
                         aria-labelledby="selbststaendig_id"
                         dvEnableElement
                         id="selbststaendig_id"
                         name="selbststaendig"
-                        required>
-                        <mat-radio-button [value]="true">{{ 'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{ 'LABEL_NEIN' | translate }}</mat-radio-button>
+                        required
+                    >
+                        <mat-radio-button [value]="true">{{
+                            'LABEL_JA' | translate
+                        }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{
+                            'LABEL_NEIN' | translate
+                        }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-error-messages
                         *ngIf="selbststaendig.touched"
@@ -30,19 +43,38 @@
 <div *ngIf="showVeranlagungErhalten()" class="row">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
-            <span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{
-                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{
-                        basisjahr: gesuchModelManager.getBasisjahr(),
-                        basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1),
-                        basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)
-                    }
+            <span
+                *ngIf="
+                    model.finanzielleSituationJA.momentanSelbststaendig ===
+                    false
+                "
+                class="ebegu-h1 required"
+                >{{
+                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG'
+                        | translate
+                            : {
+                                  basisjahr: gesuchModelManager.getBasisjahr(),
+                                  basisjahrMinus:
+                                      gesuchModelManager.getBasisjahrMinus(1),
+                                  basisjahrMinus2:
+                                      gesuchModelManager.getBasisjahrMinus(2)
+                              }
                 }}</span
-            ><span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === true" class="ebegu-h1 required">{{
-                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG' | translate:{
-                        basisjahr: gesuchModelManager.getBasisjahr(),
-                        basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1),
-                        basisjahrMinus2: gesuchModelManager.getBasisjahrMinus(2)
-                    }
+            ><span
+                *ngIf="
+                    model.finanzielleSituationJA.momentanSelbststaendig === true
+                "
+                class="ebegu-h1 required"
+                >{{
+                    'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG'
+                        | translate
+                            : {
+                                  basisjahr: gesuchModelManager.getBasisjahr(),
+                                  basisjahrMinus:
+                                      gesuchModelManager.getBasisjahrMinus(1),
+                                  basisjahrMinus2:
+                                      gesuchModelManager.getBasisjahrMinus(2)
+                              }
                 }}</span
             >
             <dv-input-container-x [verticalAlign]="true">

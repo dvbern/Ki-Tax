@@ -67,7 +67,9 @@ export class FinanzielleSituationStartSolothurnComponent
         );
     }
 
-    public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         if (this.form.disabled) {
             onResult(this.getModel());
             return undefined;
