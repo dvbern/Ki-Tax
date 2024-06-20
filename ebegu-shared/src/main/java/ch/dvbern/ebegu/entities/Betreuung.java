@@ -426,6 +426,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
+			target.setBedarfsstufe(this.bedarfsstufe);
 			target.setGueltig(false);
 			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			target.setBegruendungAuszahlungAnInstitution(this.getBegruendungAuszahlungAnInstitution());
