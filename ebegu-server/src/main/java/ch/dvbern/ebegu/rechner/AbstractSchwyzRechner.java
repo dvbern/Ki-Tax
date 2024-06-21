@@ -18,11 +18,6 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -32,6 +27,10 @@ import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.NotImplementedException;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
@@ -121,7 +120,6 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		result.setVerguenstigung(gutschein);
 		// Punkt VIII
 		handleHoehererBeitrag(result, hoehererBeitrag, verfuegungZeitabschnitt);
-		result.setBedarfsstufe(input.getBedarfsstufe());
 
 		result.setElternbeitrag(elternbeitrag);
 		result.setMinimalerElternbeitrag(minimalerBeitragProZeitAbschnitt);
