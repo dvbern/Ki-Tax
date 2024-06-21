@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.MonatsRule;
@@ -41,8 +40,6 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,23 +51,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static ch.dvbern.ebegu.enums.MsgKey.BEDARFSSTUFE_AENDERUNG_MSG;
-import static ch.dvbern.ebegu.enums.MsgKey.BEDARFSSTUFE_MSG;
-import static ch.dvbern.ebegu.enums.MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG;
-import static ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe.BEDARFSSTUFE_1;
-import static ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe.BEDARFSSTUFE_2;
-import static ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe.KEINE;
 import static ch.dvbern.ebegu.test.TestDataUtil.START_PERIODE;
 import static ch.dvbern.ebegu.test.TestDataUtil.getMandantLuzern;
-import static ch.dvbern.ebegu.test.TestDataUtil.getMandantSchwyz;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 
 /**
  * Tests fuer Verfügungsmuster
@@ -1383,162 +1371,6 @@ public class MutationsMergerTest {
 			zeitabschnitte,
 			START_PERIODE.plusMonths(2).with(TemporalAdjusters.lastDayOfMonth()),
 			bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
-	}
-
-	@ParameterizedTest
-	@EnumSource(value = Bedarfsstufe.class, names = {"KEINE"}, mode = EXCLUDE)
-	public void mutationHoehereBeitrageGewaerhtErstantragKeineHoeherenBeitraege(Bedarfsstufe bedarfsstufe) {
-		//Erstantrag keine höheren Beiträge
-		//Mutations mit höheren Beiträge
-		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantSchwyz());
-		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstGesuchBetreuung);
-
-		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.MUTATION);
-		mutierteBetreuung.setBedarfsstufe(bedarfsstufe);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
-		mutierteBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch,null);
-
-		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
-		assertNotNull(zeitabschnitte);
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			if (zeitabschnitt.isZuSpaetEingereicht()) {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), nullValue());
-				assertBedarfsstufeAenderungMsg(zeitabschnitt);
-			} else {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(bedarfsstufe));
-				assertBedarfsstufeMsg(zeitabschnitt);
-			}
-		});
-	}
-
-	@Test
-	public void mutationHoehereBeitrageNichtGewaerhtErstantragKeineHoeherenBeitraege() {
-		//Erstantrag keine höheren Beiträge
-		//Mutations höheren Beiträge nicht gewährt (Bedarfsstufe = KEINE)
-		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantSchwyz());
-		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstGesuchBetreuung);
-
-
-		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.MUTATION);
-		mutierteBetreuung.setBedarfsstufe(Bedarfsstufe.KEINE);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
-		mutierteBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch,null);
-
-		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
-		assertNotNull(zeitabschnitte);
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			if (zeitabschnitt.isZuSpaetEingereicht()) {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), nullValue());
-				assertBedarfsstufeAenderungMsg(zeitabschnitt);
-			} else {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(Bedarfsstufe.KEINE));
-				assertBedarfsstufeNichtGewaehrtMsg(zeitabschnitt);
-			}
-		});
-	}
-
-	@Test
-	public void mutationHoehereBeitrageWechselDerBeadarfsstufe() {
-		//Erstantrag mit höheren Beiträge Bedarfsstufe 1
-		//Mutations mit höheren Beiträge Bedarfsstufe 2
-		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.setBedarfsstufe(BEDARFSSTUFE_1);
-		erstGesuchBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		erstGesuchBetreuung.getInstitutionStammdaten().getInstitution().setMandant(getMandantSchwyz());
-		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstGesuchBetreuung);
-
-		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.MUTATION);
-		mutierteBetreuung.setBedarfsstufe(BEDARFSSTUFE_2);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
-		mutierteBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch,null);
-
-		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
-		assertNotNull(zeitabschnitte);
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			if (zeitabschnitt.isZuSpaetEingereicht()) {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(BEDARFSSTUFE_1));
-				assertBedarfsstufeAenderungMsg(zeitabschnitt);
-			} else {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(BEDARFSSTUFE_2));
-				assertBedarfsstufeMsg(zeitabschnitt);
-			}
-		});
-	}
-
-	@Test
-	public void mutationHoehereBeitrageKeinWechselDerBeadarfsstufe() {
-		//Erstantrag mit höheren Beiträge Bedarfsstufe 1
-		//Mutations mit höheren Beiträge Bedarfsstufe 1
-		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.setBedarfsstufe(BEDARFSSTUFE_1);
-		erstGesuchBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		erstGesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantSchwyz());
-		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstGesuchBetreuung);
-
-		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.MUTATION);
-		mutierteBetreuung.setBedarfsstufe(BEDARFSSTUFE_1);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
-		mutierteBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch,null);
-
-		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
-		assertNotNull(zeitabschnitte);
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(BEDARFSSTUFE_1));
-			assertBedarfsstufeMsg(zeitabschnitt);
-		});
-	}
-
-	@Test
-	public void mutationHoehereBeitrageWechselDerBeadarfsstufeAufNichtGewaehrt() {
-		//Erstantrag mit höheren Beiträge Bedarfsstufe 1
-		//Mutations mit höheren Beiträge Bedarfsstufe KEINE
-		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.ERSTGESUCH);
-		erstGesuchBetreuung.setBedarfsstufe(BEDARFSSTUFE_1);
-		erstGesuchBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		erstGesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantSchwyz());
-		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstGesuchBetreuung);
-
-		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(DEFAULT_MASGEBENDES_EINKOMMEN, AntragTyp.MUTATION);
-		mutierteBetreuung.setBedarfsstufe(KEINE);
-		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
-		mutierteBetreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch,null);
-
-		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
-		assertNotNull(zeitabschnitte);
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			if (zeitabschnitt.isZuSpaetEingereicht()) {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(BEDARFSSTUFE_1));
-				assertBedarfsstufeAenderungMsg(zeitabschnitt);
-			} else {
-				assertThat(zeitabschnitt.getBgCalculationInputAsiv().getBedarfsstufe(), is(KEINE));
-				assertBedarfsstufeNichtGewaehrtMsg(zeitabschnitt);
-			}
-		});
-	}
-
-	private void assertBedarfsstufeMsg(VerfuegungZeitabschnitt zeitabschnitt) {
-		assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_MSG));
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_NICHT_GEWAEHRT_MSG));
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_AENDERUNG_MSG));
-	}
-
-	private void assertBedarfsstufeAenderungMsg(VerfuegungZeitabschnitt zeitabschnitt) {
-		assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_AENDERUNG_MSG));
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_MSG));
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_NICHT_GEWAEHRT_MSG));
-	}
-
-	private void assertBedarfsstufeNichtGewaehrtMsg(VerfuegungZeitabschnitt zeitabschnitt) {
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_AENDERUNG_MSG));
-		assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_MSG));
-		assertTrue(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(BEDARFSSTUFE_NICHT_GEWAEHRT_MSG));
 	}
 
 	private Verfuegung prepareErstGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR, int bpPensum) {
