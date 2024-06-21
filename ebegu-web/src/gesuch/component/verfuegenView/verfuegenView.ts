@@ -338,13 +338,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.isVerfuegungExportEnabled = JSON.parse(response.value);
             });
 
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
-            this.gesuchModelManager.getDossier().gemeinde.id,
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe(response => {
-            this.isHoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(response.value);
-        })
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(response => {
+                this.isHoehereBeitraegeBeeintraechtigungAktiviert = JSON.parse(
+                    response.value
+                );
+            });
     }
 
     public cancel(): void {
@@ -1518,15 +1522,20 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public areHoehereBeitraegeGewaehrt(): boolean {
-        const verfuegungZeitabschnitte: Array<TSVerfuegungZeitabschnitt> = this.getVerfuegungZeitabschnitte();
+        const verfuegungZeitabschnitte: Array<TSVerfuegungZeitabschnitt> =
+            this.getVerfuegungZeitabschnitte();
         if (!verfuegungZeitabschnitte) {
             return false;
         }
-        return this.isHoehereBeitraegeBeeintraechtigungAktiviert &&
+        return (
+            this.isHoehereBeitraegeBeeintraechtigungAktiviert &&
             EbeguUtil.isNotNullOrUndefined(this.getBetreuung().bedarfsstufe) &&
-            verfuegungZeitabschnitte
-                .findIndex(z =>
-                    EbeguUtil.isNotNullOrUndefined(z.bedarfsstufe) && z.bedarfsstufe !== TSBedarfsstufe.KEINE) >= 0;
+            verfuegungZeitabschnitte.findIndex(
+                z =>
+                    EbeguUtil.isNotNullOrUndefined(z.bedarfsstufe) &&
+                    z.bedarfsstufe !== TSBedarfsstufe.KEINE
+            ) >= 0
+        );
     }
 
     private getEinstellungenElternbeitrag(): void {

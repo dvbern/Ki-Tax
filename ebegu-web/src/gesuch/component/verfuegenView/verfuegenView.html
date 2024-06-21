@@ -705,11 +705,17 @@
                                             vm.showElternMinimalerBeitragColumns()
                                         "
                                         class="result"
-                                    ><dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"></dv-tooltip>
-                                </td>
-                                <td ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result">
-                                </td>
-                                <td ng-if="vm.showGutscheinProStunde()"
+                                    >
+                                        <dv-tooltip
+                                            text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"
+                                        ></dv-tooltip>
+                                    </td>
+                                    <td
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                    ></td>
+                                    <td
+                                        ng-if="vm.showGutscheinProStunde()"
                                         class="result"
                                     >
                                         <dv-tooltip
@@ -757,30 +763,93 @@
                                         ng-if="
                                             vm.showZahlungsstatusAntragstellerCol()
                                         "
-                                    ><dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
-                                </td>
-                            </tr>
-                            <tr class="title-row">
-                                <th data-translate="BETREUUNG_VON"></th>
-                                <th data-translate="BETREUUNG_BIS"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG" ng-if="vm.showPercent"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="ANSPRUCH" ng-if="vm.showPercent"></th>
-                                <th data-translate="ANSPRUCH_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="ANSPRUCH_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="VERGUENSTIGT" ng-if="vm.showPercent"></th>
-                                <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
-                                <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
-                                <th data-translate="VOLLKOSTEN"></th>
-                                <th ng-if="vm.showSelbstbehaltProzent()" data-translate="SELBSTBEHALT_PROZENT" class="result"></th>
-                                <th ng-if="vm.showBeitragshoheProzent()" data-translate="BEITRAGSHOHE_PROZENT" class="result"></th>
-                                <th ng-if="vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()" data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"></th>
-                                <th ng-if="vm.showGutscheinOhneBeruecksichtigungVollkosten()" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result"
-                                    data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
-                                <th ng-if="vm.showElternMinimalerBeitragColumns()" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
-                                <th ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result" data-translate="GUTSCHEIN_HOEHERER_BEITRAG"></th>
+                                    >
+                                        <dv-tooltip
+                                            text="'ZAHLUNGSSTATUS_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </td>
+                                </tr>
+                                <tr class="title-row">
+                                    <th data-translate="BETREUUNG_VON"></th>
+                                    <th data-translate="BETREUUNG_BIS"></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="EFFEKTIVE_BETREUUNG_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="ANSPRUCH_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT"
+                                        ng-if="vm.showPercent"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT_IN_H"
+                                        ng-if="vm.showHours"
+                                    ></th>
+                                    <th
+                                        data-translate="VERGUENSTIGT_IN_D"
+                                        ng-if="vm.showDays"
+                                    ></th>
+                                    <th data-translate="VOLLKOSTEN"></th>
+                                    <th
+                                        ng-if="vm.showSelbstbehaltProzent()"
+                                        data-translate="SELBSTBEHALT_PROZENT"
+                                        class="result"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.showBeitragshoheProzent()"
+                                        data-translate="BEITRAGSHOHE_PROZENT"
+                                        class="result"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.isLineareZusaetzlicherGutscheinDurchGemeindeEnabled()
+                                        "
+                                        data-translate="STAEDTISCHER_ZUSCHLAG_IN_CHF"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showGutscheinOhneBeruecksichtigungVollkosten()
+                                        "
+                                        data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"
+                                    ></th>
+                                    <th
+                                        ng-if="
+                                            vm.showElternMinimalerBeitragColumns()
+                                        "
+                                        class="result"
+                                        data-translate="MIN_ELTERNBEITRAG"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                        data-translate="GUTSCHEIN_HOEHERER_BEITRAG"
+                                    ></th>
                                     <th
                                         ng-if="vm.showGutscheinProStunde()"
                                         class="result"
@@ -965,9 +1034,12 @@
                                         ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"
                                     ></td>
                                     <!-- Minimaler Elternbeitrag -->
-                                <td  ng-if="vm.areHoehereBeitraegeGewaehrt()" class="result"
-                                    ng-bind="verfuegungZeitabschnitt.hoehererBeitrag | currency : '' : 2"></td>
-                                <!-- Gutschein pro Stunde -->
+                                    <td
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.hoehererBeitrag | currency : '' : 2"
+                                    ></td>
+                                    <!-- Gutschein pro Stunde -->
                                     <td
                                         ng-if="vm.showGutscheinProStunde()"
                                         class="result"
