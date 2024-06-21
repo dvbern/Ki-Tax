@@ -17,30 +17,50 @@
 
 package ch.dvbern.ebegu.rules.mutationsmerger;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.MonatsRule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.test.TestDataUtil.START_PERIODE;
 import static ch.dvbern.ebegu.test.TestDataUtil.getMandantLuzern;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests fuer Verfügungsmuster
@@ -94,11 +114,10 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, START_PERIODE.plusMonths(6), bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, START_PERIODE.plusMonths(6), bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
-
 	}
 
 	@Test
@@ -137,8 +156,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, aenderungsDatumPensum, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, aenderungsDatumPensum, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -180,8 +199,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, aenderungsDatumPensum, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, aenderungsDatumPensum, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -222,8 +241,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, aenderungsDatumPensum, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, aenderungsDatumPensum, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -255,8 +274,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, aenderungsDatumPensum, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, aenderungsDatumPensum, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -287,8 +306,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, eingangsdatumMuation, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 	}
@@ -318,8 +337,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, aenderungsDatumPensum, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, aenderungsDatumPensum, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -350,8 +369,8 @@ public class MutationsMergerTest {
 				verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, eingangsdatumMuation, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 
@@ -383,8 +402,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, eingangsdatumMuation, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, false);
@@ -420,8 +439,8 @@ public class MutationsMergerTest {
 			verfuegungsZeitabschnitteMutiert);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(13, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(13, zeitabschnitte.size());
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, bpPensumVorMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllAfter(zeitabschnitte, eingangsdatumMuation, bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 		checkAllBefore(zeitabschnitte, eingangsdatumMuation, true);
@@ -438,8 +457,8 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(1, zeitabschnitteMutation.size());
-		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertEquals(1, zeitabschnitteMutation.size());
+		assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
 	}
 
 	@Test
@@ -448,14 +467,14 @@ public class MutationsMergerTest {
 		Verfuegung verfuegungErstGesuch =
 			prepareErstGesuchVerfuegung(START_PERIODE.plusMonths(2).plusDays(15), TestDataUtil.createMandant(
 				MandantIdentifier.APPENZELL_AUSSERRHODEN), 20);
-		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(0).isZuSpaetEingereicht());
-		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(1).isZuSpaetEingereicht());
-		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte()
+		assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(0).isZuSpaetEingereicht());
+		assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(1).isZuSpaetEingereicht());
+		assertTrue(verfuegungErstGesuch.getZeitabschnitte()
 			.get(2)
 			.getGueltigkeit()
 			.getGueltigAb()
 			.isEqual(START_PERIODE.plusMonths(2).plusDays(15).minusDays(30)));
-		Assert.assertFalse(verfuegungErstGesuch.getZeitabschnitte().get(2).isZuSpaetEingereicht());
+		assertFalse(verfuegungErstGesuch.getZeitabschnitte().get(2).isZuSpaetEingereicht());
 		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 30, START_PERIODE);
 		mutierteBetreuung.extractGesuch()
 			.getFall()
@@ -465,10 +484,10 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(2, zeitabschnitteMutation.size());
-		Assert.assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
-		Assert.assertFalse(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
-		Assert.assertTrue(zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigAb().isEqual(START_PERIODE.plusMonths(1)));
+		assertEquals(2, zeitabschnitteMutation.size());
+		assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertFalse(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
+		assertTrue(zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigAb().isEqual(START_PERIODE.plusMonths(1)));
 	}
 
 	@Test
@@ -484,8 +503,8 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(1, zeitabschnitteMutation.size());
-		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertEquals(1, zeitabschnitteMutation.size());
+		assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
 	}
 
 	@Test
@@ -503,8 +522,8 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(1, zeitabschnitteMutation.size());
-		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertEquals(1, zeitabschnitteMutation.size());
+		assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
 	}
 
 	@Test
@@ -520,8 +539,8 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(1, zeitabschnitteMutation.size());
-		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertEquals(1, zeitabschnitteMutation.size());
+		assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
 	}
 
 	@Test
@@ -538,9 +557,9 @@ public class MutationsMergerTest {
 
 		//Zeitabschnitt Flag zuSpät = false
 		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(2, zeitabschnitteMutation.size());
-		Assert.assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
-		Assert.assertFalse(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
+		assertEquals(2, zeitabschnitteMutation.size());
+		assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		assertFalse(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
 	}
 
 	@Test
@@ -556,21 +575,21 @@ public class MutationsMergerTest {
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 
-		Assert.assertEquals(2, zeitaschnitteMutation.size());
+		assertEquals(2, zeitaschnitteMutation.size());
 
 		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
 		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
 
 		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab 30 Tage vor Einreichedatum, also Start der Periode, Gültig bis Ende des 1
 		// . Monats
-		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(START_PERIODE.plusMonths(2).minusDays(1), zeitabschnitt1.getGueltigkeit().getGueltigBis());
+		assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
+		assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		assertEquals(START_PERIODE.plusMonths(2).minusDays(1), zeitabschnitt1.getGueltigkeit().getGueltigBis());
 
 		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 2. Monats und gültig bis Ende der Periode
-		Assert.assertFalse(zeitabschnitt2.isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE.plusMonths(2), zeitabschnitt2.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		assertFalse(zeitabschnitt2.isZuSpaetEingereicht());
+		assertEquals(START_PERIODE.plusMonths(2), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		assertEquals(
 			TestDataUtil.ENDE_PERIODE.with(TemporalAdjusters.lastDayOfMonth()),
 			zeitabschnitt2.getGueltigkeit().getGueltigBis());
 	}
@@ -586,22 +605,22 @@ public class MutationsMergerTest {
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 
-		Assert.assertEquals(2, zeitaschnitteMutation.size());
+		assertEquals(2, zeitaschnitteMutation.size());
 
 		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
 		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
 
 		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab Start der Periode, Gültig bis Ende des 1. Monats
-		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
+		assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		assertEquals(
 			START_PERIODE.with(TemporalAdjusters.lastDayOfMonth()),
 			zeitabschnitt1.getGueltigkeit().getGueltigBis());
 
 		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 2. Monats und gültig bis Ende der Periode
-		Assert.assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE.plusMonths(1), zeitabschnitt2.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
+		assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
+		assertEquals(START_PERIODE.plusMonths(1), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
@@ -614,21 +633,21 @@ public class MutationsMergerTest {
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
-		Assert.assertEquals(2, zeitaschnitteMutation.size());
+		assertEquals(2, zeitaschnitteMutation.size());
 		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
 		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
 
 		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab Start der Periode, Gültig bis Ende des 2. Monats
-		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
+		assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
+		assertEquals(START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		assertEquals(
 			START_PERIODE.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth()),
 			zeitabschnitt1.getGueltigkeit().getGueltigBis());
 
 		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 3. Monats und gültig bis Ende der Periode
-		Assert.assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
-		Assert.assertEquals(START_PERIODE.plusMonths(2), zeitabschnitt2.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
+		assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
+		assertEquals(START_PERIODE.plusMonths(2), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
@@ -645,17 +664,17 @@ public class MutationsMergerTest {
 		erstGesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnittAugust = verfuegungErstgesuch.getZeitabschnitte().get(0);
-		Assert.assertTrue(verfuegungZeitabschnittAugust.isZuSpaetEingereicht());
-		Assert.assertEquals(0, verfuegungZeitabschnittAugust.getAnspruchberechtigtesPensum());
+		assertTrue(verfuegungZeitabschnittAugust.isZuSpaetEingereicht());
+		assertEquals(0, verfuegungZeitabschnittAugust.getAnspruchberechtigtesPensum());
 
 		Betreuung mutation = prepareMutation(START_PERIODE.plusMonths(2), DEFAULT_PENSUM, START_PERIODE, DEFAULT_PENSUM);
 		mutation.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
 		VerfuegungZeitabschnitt mutationZeitabschnittAugust = zeitaschnitteMutation.get(0);
-		Assert.assertEquals(0, mutationZeitabschnittAugust.getAnspruchberechtigtesPensum());
-		Assert.assertNotNull(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString());
-		Assert.assertFalse(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString()
+		assertEquals(0, mutationZeitabschnittAugust.getAnspruchberechtigtesPensum());
+		assertNotNull(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString());
+		assertFalse(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString()
 			.contains(
 				"Ihre Anpassung hat eine Erhöhung des Betreuungsgutscheins zur Folge, die Anpassung erfolgt auf den Folgemonat "
 					+ "nach Einreichung aller Belege (Art 34r ASIV)."));
@@ -682,10 +701,10 @@ public class MutationsMergerTest {
 			zeitabschnitteAfterMonatsRule);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		zeitabschnitte
-			.forEach(zeitabschnitt -> Assert.assertFalse(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
+			.forEach(zeitabschnitt -> assertFalse(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
 	}
 
 	@Test
@@ -710,10 +729,71 @@ public class MutationsMergerTest {
 			zeitabschnitteAfterMonatsRule);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 		zeitabschnitte
-			.forEach(zeitabschnitt -> Assert.assertTrue(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
+			.forEach(zeitabschnitt -> assertTrue(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
+		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
+		mode = EnumSource.Mode.EXCLUDE)
+	void auszahlungAnInstuitionAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
+		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
+			.setZahlungsstatusInstitution(zahlungsstatus);
+
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE);
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			monatsRule,
+			mutierteBetreuung,
+			EbeguRuleTestsHelper.calculate(mutierteBetreuung));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
+		assertFalse(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).isAuszahlungAnEltern());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).isAuszahlungAnEltern());
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
+		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
+		mode = EnumSource.Mode.INCLUDE)
+	void auszahlungAnInstuitionNichtAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
+		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
+			.setZahlungsstatusInstitution(zahlungsstatus);
+
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE);
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			monatsRule,
+			mutierteBetreuung,
+			EbeguRuleTestsHelper.calculate(mutierteBetreuung));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).isAuszahlungAnEltern());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).isAuszahlungAnEltern());
 	}
 
 	@Test
@@ -732,10 +812,10 @@ public class MutationsMergerTest {
 
 		zeitabschnitte.forEach(zeitabschnitt -> {
 			if (zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(October31)) {
-				Assert.assertTrue(zeitabschnitt.getBemerkungenDTOList()
+				assertTrue(zeitabschnitt.getBemerkungenDTOList()
 					.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			} else {
-				Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList()
+				assertFalse(zeitabschnitt.getBemerkungenDTOList()
 					.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			}
 			assertEqualBigDecimal(BigDecimal.valueOf(40000), zeitabschnitt.getMassgebendesEinkommen());
@@ -828,7 +908,7 @@ public class MutationsMergerTest {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
 
 		zeitabschnitte.forEach(zeitabschnitt -> {
-			Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList()
+			assertFalse(zeitabschnitt.getBemerkungenDTOList()
 				.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			assertEqualBigDecimal(BigDecimal.valueOf(50000), zeitabschnitt.getMassgebendesEinkommen());
 		});
@@ -859,7 +939,7 @@ public class MutationsMergerTest {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
 
 		zeitabschnitte.forEach(zeitabschnitt -> {
-			Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList()
+			assertFalse(zeitabschnitt.getBemerkungenDTOList()
 				.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 		});
 
@@ -928,10 +1008,10 @@ public class MutationsMergerTest {
 
 		zeitabschnitte.forEach(zeitabschnitt -> {
 			if (zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(October31)) {
-				Assert.assertTrue(zeitabschnitt.getBemerkungenDTOList()
+				assertTrue(zeitabschnitt.getBemerkungenDTOList()
 					.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			} else {
-				Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList()
+				assertFalse(zeitabschnitt.getBemerkungenDTOList()
 					.containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			}
 		});
@@ -991,7 +1071,7 @@ public class MutationsMergerTest {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
 
 		zeitabschnitte.forEach(zeitabschnitt ->
-			Assert.assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST)));
+			assertFalse(zeitabschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST)));
 
 		// EK bis Oktober 50000 ab Oktober 40000
 		assertEqualBigDecimal(
@@ -1117,8 +1197,8 @@ public class MutationsMergerTest {
 	}
 
 	private void assertEqualBigDecimal(@Nonnull BigDecimal expected, @Nullable BigDecimal actual) {
-		Assert.assertNotNull(actual);
-		Assert.assertEquals(expected.stripTrailingZeros(), actual.stripTrailingZeros());
+		assertNotNull(actual);
+		assertEquals(expected.stripTrailingZeros(), actual.stripTrailingZeros());
 	}
 
 	@Test
@@ -1146,32 +1226,32 @@ public class MutationsMergerTest {
 			zeitabschnitteAfterMonatsRule);
 
 		//ueberprüfen
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(12, zeitabschnitte.size());
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
 
-		Assert.assertFalse(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).getRelevantBgCalculationInput()
+		assertFalse(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.OCTOBER).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.OCTOBER).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.NOVEMBER).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.NOVEMBER).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.DECEMBER).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.DECEMBER).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JANUARY).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JANUARY).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.FEBRUARY).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.FEBRUARY).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MARCH).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MARCH).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.APRIL).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.APRIL).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MAY).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MAY).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JUNE).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JUNE).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
-		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JULY).getRelevantBgCalculationInput()
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JULY).getRelevantBgCalculationInput()
 			.isAuszahlungAnEltern());
 	}
 
@@ -1205,10 +1285,10 @@ public class MutationsMergerTest {
 		// die andere sollten nicht zu spaet eingereicht werden wegen der MutationsMerger,
 		// nur die die im erst Antrag zu Spaet eingereicht waren mussen weiter zu spaet eingereicht werden und das beim ASIV und
 		// Gemeinde Result
-		Assert.assertTrue(zeitabschnitte.get(0).getBgCalculationResultAsiv().isZuSpaetEingereicht());
-		Assert.assertFalse(zeitabschnitte.get(1).getBgCalculationResultAsiv().isZuSpaetEingereicht());
-		Assert.assertTrue(zeitabschnitte.get(0).getBgCalculationResultGemeinde().isZuSpaetEingereicht());
-		Assert.assertFalse(zeitabschnitte.get(1).getBgCalculationResultGemeinde().isZuSpaetEingereicht());
+		assertTrue(zeitabschnitte.get(0).getBgCalculationResultAsiv().isZuSpaetEingereicht());
+		assertFalse(zeitabschnitte.get(1).getBgCalculationResultAsiv().isZuSpaetEingereicht());
+		assertTrue(zeitabschnitte.get(0).getBgCalculationResultGemeinde().isZuSpaetEingereicht());
+		assertFalse(zeitabschnitte.get(1).getBgCalculationResultGemeinde().isZuSpaetEingereicht());
 	}
 
 	private VerfuegungZeitabschnitt findZeitabschnittByMonth(List<VerfuegungZeitabschnitt> zeitabschnittList, Month month) {
@@ -1409,8 +1489,10 @@ public class MutationsMergerTest {
 			filter(za -> za.getGueltigkeit().endsBefore(endsBeforeOrAt) || za.getGueltigkeit()
 				.endsSameDay(endsBeforeOrAt)).
 			forEach(za ->
-				Assert.assertEquals("Falsches anspruchberechtiges Pensum in Zeitabschnitt " + za,
-					anspruchberechtigtesPensum, za.getAnspruchberechtigtesPensum())
+				assertEquals(
+					anspruchberechtigtesPensum,
+					za.getAnspruchberechtigtesPensum(),
+					"Falsches anspruchberechtiges Pensum in Zeitabschnitt " + za)
 			);
 	}
 
@@ -1421,9 +1503,10 @@ public class MutationsMergerTest {
 		zeitabschnitte.stream().
 			filter(za -> za.getGueltigkeit().startsAfter(startAfterOrAt) || za.getGueltigkeit()
 				.startsSameDay(startAfterOrAt)).
-			forEach(za ->
-				Assert.assertEquals("Falsches anspruchberechtiges Pensum in Zeitabschnitt " + za,
-					anspruchberechtigtesPensum, za.getAnspruchberechtigtesPensum())
+			forEach(za -> assertEquals(
+				anspruchberechtigtesPensum,
+				za.getAnspruchberechtigtesPensum(),
+				"Falsches anspruchberechtiges Pensum in Zeitabschnitt " + za)
 			);
 	}
 
@@ -1436,8 +1519,10 @@ public class MutationsMergerTest {
 			filter(za -> za.getGueltigkeit().endsBefore(endsBeforeOrAt) || za.getGueltigkeit()
 				.endsSameDay(endsBeforeOrAt)).
 			forEach(za ->
-				Assert.assertEquals("BesondereBedurfnisse sind falsch gesetzt in Zeitabschnitt " + za,
-					besondereBedurfnisseBestaetigt, za.isBesondereBeduerfnisseBestaetigt())
+				assertEquals(
+					besondereBedurfnisseBestaetigt,
+					za.isBesondereBeduerfnisseBestaetigt(),
+					"BesondereBedurfnisse sind falsch gesetzt in Zeitabschnitt " + za)
 			);
 	}
 
@@ -1449,8 +1534,10 @@ public class MutationsMergerTest {
 			filter(za -> za.getGueltigkeit().startsAfter(startAfterOrAt) || za.getGueltigkeit()
 				.startsSameDay(startAfterOrAt)).
 			forEach(za ->
-				Assert.assertEquals("BesondereBedurfnisse sind falsch gesetzt in Zeitabschnitt " + za,
-					besondereBedurfnisseBestaetigt, za.isBesondereBeduerfnisseBestaetigt())
+				assertEquals(
+					besondereBedurfnisseBestaetigt,
+					za.isBesondereBeduerfnisseBestaetigt(),
+					"BesondereBedurfnisse sind falsch gesetzt in Zeitabschnitt " + za)
 			);
 	}
 
