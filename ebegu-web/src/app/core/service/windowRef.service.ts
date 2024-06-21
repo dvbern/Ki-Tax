@@ -39,7 +39,6 @@ function getMockWindow(): any {
 
 @Injectable()
 export class WindowRef {
-
     private readonly isBrowser: boolean = false;
 
     public get nativeWindow(): Window {

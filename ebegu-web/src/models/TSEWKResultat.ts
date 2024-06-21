@@ -20,7 +20,6 @@ import {TSEWKPerson} from './TSEWKPerson';
  * DTO für Resultate aus dem EWK
  */
 export class TSEWKResultat extends TSAbstractMutableEntity {
-
     private _personen: Array<TSEWKPerson>;
 
     public constructor(personen?: Array<TSEWKPerson>) {
@@ -35,5 +34,4 @@ export class TSEWKResultat extends TSAbstractMutableEntity {
     public set personen(value: Array<TSEWKPerson>) {
         this._personen = value;
     }
-
 }

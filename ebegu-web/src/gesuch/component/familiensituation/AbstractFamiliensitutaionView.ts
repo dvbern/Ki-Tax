@@ -16,7 +16,6 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
 export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<TSFamiliensituationContainer> {
-
     public allowedRoles: ReadonlyArray<TSRole>;
 
     public savedClicked: boolean = false;
@@ -28,19 +27,23 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
         protected readonly familiensituationRS: FamiliensituationRS,
         protected readonly authService: AuthServiceRS
     ) {
-
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             wizardStepManager,
-            TSWizardStepName.FAMILIENSITUATION);
+            TSWizardStepName.FAMILIENSITUATION
+        );
         this.initViewModel();
         this.gesuchModelManager.initFamiliensituation();
-        this.model = this.getGesuch().familiensituationContainer.deepCopyTo(new TSFamiliensituationContainer());
+        this.model = this.getGesuch().familiensituationContainer.deepCopyTo(
+            new TSFamiliensituationContainer()
+        );
     }
 
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FAMILIENSITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
@@ -49,9 +52,13 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
     }
 
     public hasError(): boolean {
-        return this.isMutation()
-            && this.getFamiliensituation()?.aenderungPer
-            && this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation());
+        return (
+            this.isMutation() &&
+            this.getFamiliensituation()?.aenderungPer &&
+            this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(
+                this.getFamiliensituation()
+            )
+        );
     }
 
     public getFamiliensituation(): TSFamiliensituation {
@@ -67,9 +74,12 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
     }
 
     public showBisher(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            TSEingangsart.ONLINE ===
+                this.gesuchModelManager.getGesuch().eingangsart
+        );
     }
 
     public onDatumBlur(): void {
@@ -79,13 +89,19 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
     }
 
     public hasEmptyAenderungPer(): boolean {
-        return this.isMutation()
-            && !this.getFamiliensituation()?.aenderungPer
-            && !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation());
+        return (
+            this.isMutation() &&
+            !this.getFamiliensituation()?.aenderungPer &&
+            !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(
+                this.getFamiliensituation()
+            )
+        );
     }
 
     public resetFamsit(): void {
-        this.getFamiliensituation().revertFamiliensituation(this.getFamiliensituationErstgesuch());
+        this.getFamiliensituation().revertFamiliensituation(
+            this.getFamiliensituationErstgesuch()
+        );
     }
 
     public getAllRolesButTraegerschaftInstitutionSteueramt(): ReadonlyArray<TSRole> {
@@ -98,17 +114,22 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
 
     public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
         this.savedClicked = true;
-        if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
+        if (
+            this.isGesuchValid() &&
+            !this.hasEmptyAenderungPer() &&
+            !this.hasError()
+        ) {
             if (!this.form.dirty) {
                 // If there are no changes in form we don't need anything to update on Server and we could return the
                 // promise immediately
                 // Update wizardStepStatus also if the form is empty and not dirty
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                this.wizardStepManager.updateCurrentWizardStepStatus(
+                    TSWizardStepStatus.OK
+                );
                 onResult(this.getGesuch().familiensituationContainer);
                 return;
             }
             await this.confirm(onResult);
-
         } else {
             onResult(undefined);
         }
@@ -116,15 +137,20 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
 
     protected save(): Promise<TSFamiliensituationContainer> {
         this.errorService.clearAll();
-        return this.familiensituationRS.saveFamiliensituation(
-            this.model,
-            this.getGesuch().id
-        ).pipe(mergeMap((familienContainerResponse: any) => {
-            this.model = familienContainerResponse;
-            this.getGesuch().familiensituationContainer = familienContainerResponse;
-            // Gesuchsteller may changed...
-            return this.gesuchModelManager.reloadGesuch().then(() => this.model);
-        })).toPromise();
+        return this.familiensituationRS
+            .saveFamiliensituation(this.model, this.getGesuch().id)
+            .pipe(
+                mergeMap((familienContainerResponse: any) => {
+                    this.model = familienContainerResponse;
+                    this.getGesuch().familiensituationContainer =
+                        familienContainerResponse;
+                    // Gesuchsteller may changed...
+                    return this.gesuchModelManager
+                        .reloadGesuch()
+                        .then(() => this.model);
+                })
+            )
+            .toPromise();
     }
 
     protected abstract confirm(onResult: (arg: any) => void): Promise<void>;
@@ -138,8 +164,12 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
             return true;
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()) &&
-            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
+        return (
+            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.getFamiliensituation().aenderungPer
+            )
+        );
     }
 
     public isOneOfRoles(allowedRoles: ReadonlyArray<TSRole>) {

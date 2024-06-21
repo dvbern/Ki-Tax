@@ -23,7 +23,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
@@ -43,10 +43,11 @@ const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 @Component({
     selector: 'dv-fkjv-kinderabzug',
     templateUrl: './fkjv-kinderabzug.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
-
+export class FkjvKinderabzugComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @ViewChild(NgForm)
     public readonly form: NgForm;
 
@@ -59,27 +60,39 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly fkjvExchangeService: KinderabzugExchangeService,
-    ) {
-    }
+        private readonly fkjvExchangeService: KinderabzugExchangeService
+    ) {}
 
     public ngOnInit(): void {
         const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        this.fkjvExchangeService.getFormValidationTriggered$()
+        this.fkjvExchangeService
+            .getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => {
-                this.cd.markForCheck();
-            }, err => LOG.error(err));
-        this.fkjvExchangeService.getGeburtsdatumChanged$()
+            .subscribe(
+                () => {
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err)
+            );
+        this.fkjvExchangeService
+            .getGeburtsdatumChanged$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(date => {
-                this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(date, gesuchsperiode);
-                this.change();
-            }, err => LOG.error(err));
-        this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
-            this.kindContainer?.kindJA.geburtsdatum,
-            gesuchsperiode,
-        );
+            .subscribe(
+                date => {
+                    this.kindIsOrGetsVolljaehrig =
+                        EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+                            date,
+                            gesuchsperiode
+                        );
+                    this.change();
+                },
+                err => LOG.error(err)
+            );
+        this.kindIsOrGetsVolljaehrig =
+            EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+                this.kindContainer?.kindJA.geburtsdatum,
+                gesuchsperiode
+            );
         this.change();
     }
 
@@ -100,20 +113,32 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public obhutAlternierendAusuebenVisible(): boolean {
-        return !this.kindIsOrGetsVolljaehrig && !this.kindContainer?.kindJA.isPflegekind;
+        return (
+            !this.kindIsOrGetsVolljaehrig &&
+            !this.kindContainer?.kindJA.isPflegekind
+        );
     }
 
     public gemeinsamesGesuchVisible(): boolean {
-        return this.kindContainer?.kindJA.obhutAlternierendAusueben &&
-            EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.familienErgaenzendeBetreuung) &&
-            (this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
-                || this.gesuchModelManager.getFamiliensituation().unterhaltsvereinbarung
-                === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            );
+        return (
+            this.kindContainer?.kindJA.obhutAlternierendAusueben &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.kindContainer?.kindJA.familienErgaenzendeBetreuung
+            ) &&
+            (this.gesuchModelManager.getFamiliensituation()
+                .gesuchstellerKardinalitaet ===
+                TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                this.gesuchModelManager.getFamiliensituation()
+                    .unterhaltsvereinbarung ===
+                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
+        );
     }
 
     public inErstausbildungVisible(): boolean {
-        return this.kindIsOrGetsVolljaehrig && !this.kindContainer?.kindJA.isPflegekind;
+        return (
+            this.kindIsOrGetsVolljaehrig &&
+            !this.kindContainer?.kindJA.isPflegekind
+        );
     }
 
     public lebtKindAlternierendVisible(): boolean {
@@ -125,14 +150,18 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public alimenteBezahlenVisible(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.lebtKindAlternierend)
-            && !this.kindContainer?.kindJA.lebtKindAlternierend;
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.kindContainer?.kindJA.lebtKindAlternierend
+            ) && !this.kindContainer?.kindJA.lebtKindAlternierend
+        );
     }
 
     private deleteValuesOfHiddenQuestions(): void {
         if (this.kindContainer?.kindJA) {
             if (!this.pflegeEntschaedigungErhaltenVisible()) {
-                this.kindContainer.kindJA.pflegeEntschaedigungErhalten = undefined;
+                this.kindContainer.kindJA.pflegeEntschaedigungErhalten =
+                    undefined;
             }
             if (!this.obhutAlternierendAusuebenVisible()) {
                 this.kindContainer.kindJA.obhutAlternierendAusueben = undefined;
@@ -153,7 +182,10 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
                 this.kindContainer.kindJA.alimenteBezahlen = undefined;
             }
             // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
-            if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
+            if (
+                !this.famErgaenzendeBetreuuungVisible() &&
+                !this.hasKindBetreuungen()
+            ) {
                 this.kindContainer.kindJA.familienErgaenzendeBetreuung = false;
             }
         }
@@ -168,19 +200,29 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private isShortKonkubinat(): boolean {
-        if (this.getFamiliensituationToUse().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+        if (
+            this.getFamiliensituationToUse().familienstatus !==
+            TSFamilienstatus.KONKUBINAT_KEIN_KIND
+        ) {
             return false;
         }
 
-        return this.getFamiliensituationToUse()
-            .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
+        return this.getFamiliensituationToUse().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(
+            this.gesuchModelManager.getGesuchsperiode()
+        );
     }
 
     private getFamiliensituationToUse(): TSFamiliensituation {
         //wenn mutation und partner nicht identisch mit vorgesuch dann ist FamSit des Erstantrages relevant
-        if (this.gesuchModelManager.getGesuch().isMutation() &&
-            EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getFamiliensituation().partnerIdentischMitVorgesuch) &&
-            !this.gesuchModelManager.getFamiliensituation().partnerIdentischMitVorgesuch) {
+        if (
+            this.gesuchModelManager.getGesuch().isMutation() &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getFamiliensituation()
+                    .partnerIdentischMitVorgesuch
+            ) &&
+            !this.gesuchModelManager.getFamiliensituation()
+                .partnerIdentischMitVorgesuch
+        ) {
             return this.gesuchModelManager.getFamiliensituationErstgesuch();
         }
 

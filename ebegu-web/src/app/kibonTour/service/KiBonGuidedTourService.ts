@@ -24,13 +24,14 @@ import {BehaviorSubject, Observable} from 'rxjs';
     providedIn: 'root'
 })
 export class KiBonGuidedTourService extends GuidedTourService {
-
     private readonly guidedTourSubject$ = new BehaviorSubject(false);
     private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
 
-    private constructor(public errorHandler: ErrorHandler,
-                        private readonly window: WindowRefService,
-                        @Inject(DOCUMENT) private readonly domEl: any) {
+    private constructor(
+        public errorHandler: ErrorHandler,
+        private readonly window: WindowRefService,
+        @Inject(DOCUMENT) private readonly domEl: any
+    ) {
         super(errorHandler, window, domEl);
     }
 

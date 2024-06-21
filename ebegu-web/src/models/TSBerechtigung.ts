@@ -23,7 +23,6 @@ import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSBerechtigung extends TSAbstractDateRangedEntity {
-
     private _traegerschaft?: TSTraegerschaft;
     private _institution?: TSInstitution;
     private _role: TSRole;

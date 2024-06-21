@@ -176,7 +176,9 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         return this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
     }
 
-    public set amountEinkommenInVereinfachtemVerfahrenAbgerechnet(value: number) {
+    public set amountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+        value: number
+    ) {
         this._amountEinkommenInVereinfachtemVerfahrenAbgerechnet = value;
     }
 
@@ -232,7 +234,9 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         return this._selbstdeklaration;
     }
 
-    public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
+    public set selbstdeklaration(
+        value: TSFinanzielleSituationSelbstdeklaration
+    ) {
         this._selbstdeklaration = value;
     }
 
@@ -240,7 +244,9 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         return this._finSitZusatzangabenAppenzell;
     }
 
-    public set finSitZusatzangabenAppenzell(value: TSFinSitZusatzangabenAppenzell) {
+    public set finSitZusatzangabenAppenzell(
+        value: TSFinSitZusatzangabenAppenzell
+    ) {
         this._finSitZusatzangabenAppenzell = value;
     }
 

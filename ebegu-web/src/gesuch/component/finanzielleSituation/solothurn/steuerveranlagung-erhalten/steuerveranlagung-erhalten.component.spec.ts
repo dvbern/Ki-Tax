@@ -10,7 +10,8 @@ import {SteuerveranlagungErhaltenComponent} from './steuerveranlagung-erhalten.c
 describe('SteuerveranlagungErhaltenComponent', () => {
     let component: SteuerveranlagungErhaltenComponent;
     let fixture: ComponentFixture<SteuerveranlagungErhaltenComponent>;
-    const gesuchModelmanagerSpy = SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
+    const gesuchModelmanagerSpy =
+        SolothurnFinSitTestHelpers.createGesuchModelManagerMock();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -29,7 +30,8 @@ describe('SteuerveranlagungErhaltenComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(SteuerveranlagungErhaltenComponent);
         component = fixture.componentInstance;
-        component.model = SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
+        component.model =
+            SolothurnFinSitTestHelpers.createFinanzModel().finanzielleSituationContainerGS1;
         fixture.detectChanges();
     });
 

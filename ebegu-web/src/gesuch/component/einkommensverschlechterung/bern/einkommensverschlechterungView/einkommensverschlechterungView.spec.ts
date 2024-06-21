@@ -31,7 +31,6 @@ import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 describe('einkommensverschlechterungView', () => {
-
     let gesuchModelManager: GesuchModelManager;
     let einstellungRS: EinstellungRS;
 
@@ -43,30 +42,45 @@ describe('einkommensverschlechterungView', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        einstellungRS = $injector.get('EinstellungRS');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
-        const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(null,
-            TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
-            'false');
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            $componentController = $injector.get('$componentController');
+            gesuchModelManager = $injector.get('GesuchModelManager');
+            einstellungRS = $injector.get('EinstellungRS');
+            const $rootScope = $injector.get('$rootScope');
+            scope = $rootScope.$new();
+            const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(
+                null,
+                TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
+                'false'
+            );
+            spyOn(
+                einstellungRS,
+                'getAllEinstellungenBySystemCached'
+            ).and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
+        })
+    );
 
     beforeEach(waitForAsync(() => {
-        gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined).then(() => {
-            gesuchModelManager.initFamiliensituation();
-            gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
-            gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer =
-                new TSEinkommensverschlechterungContainer();
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
-                new TSEinkommensverschlechterung();
-            gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
-        });
-
+        gesuchModelManager
+            .initGesuch(
+                TSEingangsart.PAPIER,
+                TSCreationAction.CREATE_NEW_FALL,
+                undefined
+            )
+            .then(() => {
+                gesuchModelManager.initFamiliensituation();
+                gesuchModelManager.getGesuch().gesuchsteller1 =
+                    new TSGesuchstellerContainer(new TSGesuchsteller());
+                gesuchModelManager.getGesuch().gesuchsteller2 =
+                    new TSGesuchstellerContainer(new TSGesuchsteller());
+                gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer =
+                    new TSEinkommensverschlechterungContainer();
+                gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
+                    new TSEinkommensverschlechterung();
+                gesuchModelManager.getGesuch().gesuchsperiode =
+                    new TSGesuchsperiode();
+            });
     }));
 
     it('should be defined', () => {
@@ -75,8 +89,11 @@ describe('einkommensverschlechterungView', () => {
          pass them to $componentController.
          */
         const bindings = {};
-        component = $componentController('einkommensverschlechterungView', {$scope: scope}, bindings);
+        component = $componentController(
+            'einkommensverschlechterungView',
+            {$scope: scope},
+            bindings
+        );
         expect(component).toBeDefined();
     });
-
 });

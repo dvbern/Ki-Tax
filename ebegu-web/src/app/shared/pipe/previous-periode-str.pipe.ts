@@ -9,7 +9,6 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
     name: 'previousPeriodeStr'
 })
 export class PreviousPeriodeStrPipe implements PipeTransform {
-
     public transform(periode: TSGesuchsperiode): string {
         if (!periode || !periode.gueltigkeit) {
             return '';
@@ -18,5 +17,4 @@ export class PreviousPeriodeStrPipe implements PipeTransform {
         const secondYear = firstYear + 1;
         return `${firstYear.toString()}/${secondYear.toString().substr(2)}`;
     }
-
 }

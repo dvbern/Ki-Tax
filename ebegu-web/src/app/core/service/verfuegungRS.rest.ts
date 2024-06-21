@@ -21,8 +21,13 @@ import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class VerfuegungRS {
-
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        'WizardStepManager'
+    ];
     public serviceURL: string;
 
     public constructor(
@@ -40,9 +45,13 @@ export class VerfuegungRS {
     }
 
     public calculateVerfuegung(gesuchID: string): IPromise<TSKindContainer[]> {
-        return this.http.get(`${this.serviceURL}/calculate/${encodeURIComponent(gesuchID)}`)
+        return this.http
+            .get(`${this.serviceURL}/calculate/${encodeURIComponent(gesuchID)}`)
             .then((response: any) => {
-                this.log.debug('PARSING KindContainers REST object ', response.data);
+                this.log.debug(
+                    'PARSING KindContainers REST object ',
+                    response.data
+                );
                 return this.ebeguRestUtil.parseKindContainerList(response.data);
             });
     }
@@ -58,34 +67,70 @@ export class VerfuegungRS {
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}/${ignorierenMahlzeiten}`;
 
-        return this.http.put(url, verfuegungManuelleBemerkungen)
-            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId)
-                .then(() => this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data)));
+        return this.http
+            .put(url, verfuegungManuelleBemerkungen)
+            .then((response: any) =>
+                this.wizardStepManager
+                    .findStepsFromGesuch(gesuchId)
+                    .then(() =>
+                        this.ebeguRestUtil.parseVerfuegung(
+                            new TSVerfuegung(),
+                            response.data
+                        )
+                    )
+            );
     }
 
-    public verfuegungSchliessenOhneVerfuegen(gesuchId: string, betreuungId: string): IPromise<void> {
-        return this.http.post(`${this.serviceURL}/schliessenOhneVerfuegen/${encodeURIComponent(betreuungId)}`, {})
-            .then(() => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {}
-                ));
+    public verfuegungSchliessenOhneVerfuegen(
+        gesuchId: string,
+        betreuungId: string
+    ): IPromise<void> {
+        return this.http
+            .post(
+                `${this.serviceURL}/schliessenOhneVerfuegen/${encodeURIComponent(betreuungId)}`,
+                {}
+            )
+            .then(() =>
+                this.wizardStepManager
+                    .findStepsFromGesuch(gesuchId)
+                    .then(() => {})
+            );
     }
 
-    public nichtEintreten(gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
+    public nichtEintreten(
+        gesuchId: string,
+        betreuungId: string
+    ): IPromise<TSVerfuegung> {
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/nichtEintreten/${gesuchIdEnc}/${betreuungIdEnc}`;
 
-        return this.http.get(url)
-            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                    this.log.debug('PARSING Verfuegung REST object ', response.data);
-                    return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
-                }));
+        return this.http.get(url).then((response: any) =>
+            this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                this.log.debug(
+                    'PARSING Verfuegung REST object ',
+                    response.data
+                );
+                return this.ebeguRestUtil.parseVerfuegung(
+                    new TSVerfuegung(),
+                    response.data
+                );
+            })
+        );
     }
 
-    public anmeldungUebernehmen(
-        betreuung: TSBetreuung
-    ): IPromise<TSBetreuung> {
-        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
-        return this.http.put(`${this.serviceURL}/anmeldung/uebernehmen`, restBetreuung)
-            .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
+    public anmeldungUebernehmen(betreuung: TSBetreuung): IPromise<TSBetreuung> {
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject(
+            {},
+            betreuung
+        );
+        return this.http
+            .put(`${this.serviceURL}/anmeldung/uebernehmen`, restBetreuung)
+            .then(response =>
+                this.ebeguRestUtil.parseBetreuung(
+                    new TSBetreuung(),
+                    response.data
+                )
+            );
     }
 }

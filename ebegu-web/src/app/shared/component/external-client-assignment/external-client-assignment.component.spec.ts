@@ -30,7 +30,10 @@ describe('ExternalClientAssignmentComponent', () => {
     let translateServiceSpy: SpyObj<TranslateService>;
 
     beforeEach(waitForAsync(() => {
-        translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+        translateServiceSpy = jasmine.createSpyObj<TranslateService>(
+            TranslateService.name,
+            ['instant']
+        );
         TestBed.configureTestingModule({
             providers: [
                 {
@@ -39,8 +42,7 @@ describe('ExternalClientAssignmentComponent', () => {
                 }
             ],
             declarations: [ExternalClientAssignmentComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -55,7 +57,13 @@ describe('ExternalClientAssignmentComponent', () => {
 
     it('should display KEINE when no assignment', () => {
         translateServiceSpy.instant.and.returnValue('none');
-        component.ngOnChanges({externalClients: new SimpleChange(undefined, new TSExternalClientAssignment(), true)});
+        component.ngOnChanges({
+            externalClients: new SimpleChange(
+                undefined,
+                new TSExternalClientAssignment(),
+                true
+            )
+        });
         expect(translateServiceSpy.instant).toHaveBeenCalledWith('LABEL_KEINE');
         expect(component.assignedClients).toBe('none');
     });
@@ -64,7 +72,9 @@ describe('ExternalClientAssignmentComponent', () => {
         const clients = new TSExternalClientAssignment();
         clients.assignedClients = [createClient('foo'), createClient('bar')];
 
-        component.ngOnChanges({externalClients: new SimpleChange(undefined, clients, true)});
+        component.ngOnChanges({
+            externalClients: new SimpleChange(undefined, clients, true)
+        });
         expect(component.assignedClients).toBe('bar, foo');
     });
 });

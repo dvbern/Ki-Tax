@@ -34,7 +34,8 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'mitteilungen.view',
-        template: '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
+        template:
+            '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/mitteilungen/:fallId/:dossierId/:betreuungId',
         params: {
             betreuungId: ''

@@ -36,16 +36,37 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
 
 import {TagesschulenAngabenComponent} from './tagesschulen-angaben.component';
 
-const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSService>(LastenausgleichTSService.name,
-    ['getLATSAngabenGemeindeContainer']);
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsError']);
-const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
-const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
-const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href', 'go']);
-const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
-const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(UnsavedChangesService.name,
-    ['registerForm']);
+const lastenausgleichTSServiceSpy =
+    jasmine.createSpyObj<LastenausgleichTSService>(
+        LastenausgleichTSService.name,
+        ['getLATSAngabenGemeindeContainer']
+    );
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles'
+]);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
+    'addMesageAsError'
+]);
+const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(
+    EinstellungRS.name,
+    ['saveEinstellung']
+);
+const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(
+    UIRouterGlobals.name,
+    ['params']
+);
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, [
+    'href',
+    'go'
+]);
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(
+    EinstellungRS.name,
+    ['findEinstellung']
+);
+const unsavedChangesServiceSpy = jasmine.createSpyObj<UnsavedChangesService>(
+    UnsavedChangesService.name,
+    ['registerForm']
+);
 
 describe('TagesschulenAngabenComponent', () => {
     let component: TagesschulenAngabenComponent;
@@ -64,7 +85,10 @@ describe('TagesschulenAngabenComponent', () => {
             declarations: [TagesschulenAngabenComponent],
             providers: [
                 WindowRef,
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
+                {
+                    provide: LastenausgleichTSService,
+                    useValue: lastenausgleichTSServiceSpy
+                },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
@@ -72,7 +96,10 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+                {
+                    provide: UnsavedChangesService,
+                    useValue: unsavedChangesServiceSpy
+                }
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -87,10 +114,14 @@ describe('TagesschulenAngabenComponent', () => {
         einstellungRSSpy.findEinstellung.and.returnValue(of(null));
         fixture = TestBed.createComponent(TagesschulenAngabenComponent);
         component = fixture.componentInstance;
-        component.fruehbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
-        component.mittagsbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
-        component.nachmittagsbetreuung1Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
-        component.nachmittagsbetreuung2Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
+        component.fruehbetreuungOeffnungszeiten =
+            new TSOeffnungszeitenTagesschule();
+        component.mittagsbetreuungOeffnungszeiten =
+            new TSOeffnungszeitenTagesschule();
+        component.nachmittagsbetreuung1Oeffnungszeiten =
+            new TSOeffnungszeitenTagesschule();
+        component.nachmittagsbetreuung2Oeffnungszeiten =
+            new TSOeffnungszeitenTagesschule();
         fixture.detectChanges();
     });
 

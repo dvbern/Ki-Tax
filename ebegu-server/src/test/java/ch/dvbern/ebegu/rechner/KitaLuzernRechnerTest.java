@@ -17,6 +17,11 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Collections;
+
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -25,11 +30,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Collections;
 
 public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
@@ -339,13 +339,13 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
 
 		//gutschein pro Monat = 123
-		//expected pauschale * verguenstigung / vollkosten => 500 * 123 / 1600 = 38.44 (38.45 auf 5rp gerundet
+		//expected kosten * verguenstigung / vollkosten => 500 * 123 / 1600 = 38.44 (38.45 auf 5rp gerundet
 		testValues.expectedGutscheinEingewoehnung = BigDecimal.valueOf(38.45);
 
 		//expected verguenstigung = gutschein pro Monat + gutschein eingewoehnung => 123 + 38.45 = 161.45
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(161.45);
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungPauschale(BigDecimal.valueOf(500));
+		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungKosten(BigDecimal.valueOf(500));
 
 		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);

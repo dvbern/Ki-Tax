@@ -21,102 +21,48 @@ import {UpgradeModule} from '@angular/upgrade/static';
 import {EwkAdresseComponent} from '../app/ewk-adresse/ewk-adresse.component';
 import {PersonensucheComponent} from '../app/personensuche/personensuche.component';
 import {SharedModule} from '../app/shared/shared.module';
-import {
-    SelbstdeklarationComponent
-} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
-import {
-    BetreuungOverrideWarningComponent
-} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
-import {
-    DvFinanzielleSituationRequireXComponent
-} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
+import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
+import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
+import {DvFinanzielleSituationRequireXComponent} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
-import {
-    EinkommensverschlechterungResultateViewComponent
-} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
-import {
-    EinkommensverschlechterungLuzernResultateViewComponent
-} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
-import {
-    EinkommensverschlechterungLuzernViewComponent
-} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
-import {
-    EinkommensverschlechterungSolothurnResultateViewComponent
-} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
-import {
-    EinkommensverschlechterungSolothurnViewComponent
-} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
+import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
+import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
-import {
-    FinSitFelderAppenzellComponent
-} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
+import {FinSitFelderAppenzellComponent} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
 import {FamiliensituationModule} from './component/familiensituation/familiensituation.module';
-import {
-    FinanzielleSituationAppenzellViewComponent
-} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
-import {
-    DialogInitZPVNummerVerknuepfenComponent
-} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
-import {
-    AufteilungComponent
-} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
-import {
-    FinanzielleSituationAufteilungComponent
-} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
-import {
-    SteuerabfrageResponseHintsComponent
-} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
-import {
-    AngabenGesuchsteller2Component
-} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
-import {
-    FinanzielleSituationStartViewLuzernComponent
-} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
+import {DialogInitZPVNummerVerknuepfenComponent} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
+import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
+import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
+import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ZahlungsinformationenFieldsComponent} from './component/finanzielleSituation/luzern/zahlungsinformationen-fields/zahlungsinformationen-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {FinanzielleSituationSchwyzModule} from './component/finanzielleSituation/schwyz/finanzielle-situation-schwyz.module';
-import {
-    AngabenGs1Component
-} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
-import {
-    AngabenGs2Component
-} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
+import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
+import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
 import {BruttolohnComponent} from './component/finanzielleSituation/solothurn/bruttolohn/bruttolohn.component';
-import {
-    FinanzielleSituationStartSolothurnComponent
-} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
-import {
-    MassgebendesEinkommenComponent
-} from './component/abstractFinanzielleSituation/resultat/massgebendes-einkommen.component';
-import {
-    SteuerveranlagungErhaltenComponent
-} from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
-import {
-    VeranlagungSolothurnComponent
-} from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
-import {
-    InternePendenzDialogComponent
-} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
-import {
-    InternePendenzenTableComponent
-} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
+import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
+import {MassgebendesEinkommenComponent} from './component/abstractFinanzielleSituation/resultat/massgebendes-einkommen.component';
+import {SteuerveranlagungErhaltenComponent} from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
+import {VeranlagungSolothurnComponent} from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
+import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
+import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
-import {
-    HoehereBetraegeBeeintraechtigungComponent
-} from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
+import {HoehereBetraegeBeeintraechtigungComponent} from './component/kindView/hoehere-betraege-beeintraechtigung/hoehere-betraege-beeintraechtigung.component';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
 import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
-import {
-    EinkommensverschlechterungAppenzellViewComponent
-} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
-import {
-    EinkommensverschlechterungAppenzellResultateViewComponent
-} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
+import {EinkommensverschlechterungAppenzellViewComponent} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
+import {EinkommensverschlechterungAppenzellResultateViewComponent} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 
 @NgModule({
     imports: [
@@ -172,13 +118,8 @@ import {
         KindFachstelleComponent,
         OnlineFreigabeComponent,
         PersonensucheComponent,
-        EwkAdresseComponent,
+        EwkAdresseComponent
     ],
-    exports: [
-        DvSwitchComponent,
-        ZahlungsstatusIconComponent
-    ],
+    exports: [DvSwitchComponent, ZahlungsstatusIconComponent]
 })
-
-export class NgGesuchModule {
-}
+export class NgGesuchModule {}

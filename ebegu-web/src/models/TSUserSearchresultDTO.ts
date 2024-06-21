@@ -16,7 +16,6 @@
 import {TSBenutzer} from './TSBenutzer';
 
 export class TSUserSearchresultDTO {
-
     private _userDTOs: Array<TSBenutzer>;
     private _totalResultSize: number;
 

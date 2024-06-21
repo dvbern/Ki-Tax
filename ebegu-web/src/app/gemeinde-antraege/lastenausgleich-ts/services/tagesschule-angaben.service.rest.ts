@@ -28,102 +28,148 @@ import {CONSTANTS} from '../../../core/constants/CONSTANTS';
     providedIn: 'root'
 })
 export class TagesschuleAngabenRS {
-
     private readonly ebeguRestUtils = new EbeguRestUtil();
 
     private readonly apiUrl = `${CONSTANTS.REST_API}lats/institution/`;
 
-    public constructor(private readonly http: HttpClient) {
-    }
+    public constructor(private readonly http: HttpClient) {}
 
     public saveTagesschuleAngaben(
         latsInstitutionAngabenContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
-        return this.http.put(`${this.apiUrl}save`,
-            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsInstitutionAngabenContainer)).pipe(
-            map(latsAngabenInstitutionContainer => this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(), latsAngabenInstitutionContainer))
-        );
+        return this.http
+            .put(
+                `${this.apiUrl}save`,
+                this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    latsInstitutionAngabenContainer
+                )
+            )
+            .pipe(
+                map(latsAngabenInstitutionContainer =>
+                    this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                        new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                        latsAngabenInstitutionContainer
+                    )
+                )
+            );
     }
 
     public tagesschuleAngabenFreigeben(
         latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
-        return this.http.put(`${this.apiUrl}freigeben`,
-            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsAngabenInstitutionContainer)).pipe(
-            map(latsAngabenInstitutionContainerfromServer =>
-                this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                    new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                    latsAngabenInstitutionContainerfromServer,
-            ))
-        );
-
+        return this.http
+            .put(
+                `${this.apiUrl}freigeben`,
+                this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    latsAngabenInstitutionContainer
+                )
+            )
+            .pipe(
+                map(latsAngabenInstitutionContainerfromServer =>
+                    this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                        new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                        latsAngabenInstitutionContainerfromServer
+                    )
+                )
+            );
     }
 
     public tagesschuleAngabenGeprueft(
         latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
-        return this.http.put(`${this.apiUrl}geprueft`,
-            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsAngabenInstitutionContainer)).pipe(
-            map(latsAngabenInstitutionContainerfromServer =>
-                this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                    new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                    latsAngabenInstitutionContainerfromServer))
-        );
+        return this.http
+            .put(
+                `${this.apiUrl}geprueft`,
+                this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    latsAngabenInstitutionContainer
+                )
+            )
+            .pipe(
+                map(latsAngabenInstitutionContainerfromServer =>
+                    this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                        new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                        latsAngabenInstitutionContainerfromServer
+                    )
+                )
+            );
     }
 
     public falscheAngabenGemeinde(
         latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
-        return this.http.put(
-            `${this.apiUrl}gemeinde-falsche-angaben`,
-            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsAngabenInstitutionContainer)
-        ).pipe(
-            map(latsAngabenInstitutionContainerfromServer =>
-                this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                    new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                    latsAngabenInstitutionContainerfromServer
-            ))
-        );
+        return this.http
+            .put(
+                `${this.apiUrl}gemeinde-falsche-angaben`,
+                this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    latsAngabenInstitutionContainer
+                )
+            )
+            .pipe(
+                map(latsAngabenInstitutionContainerfromServer =>
+                    this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                        new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                        latsAngabenInstitutionContainerfromServer
+                    )
+                )
+            );
     }
 
     public falscheAngabenTS(
         latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer> {
-        return this.http.put(
-            `${this.apiUrl}ts-falsche-angaben`,
-            this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject({},
-                latsAngabenInstitutionContainer)
-        ).pipe(
-            map(latsAngabenInstitutionContainerfromServer =>
-                this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
-                new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
-                    latsAngabenInstitutionContainerfromServer
-                )));
+        return this.http
+            .put(
+                `${this.apiUrl}ts-falsche-angaben`,
+                this.ebeguRestUtils.lastenausgleichTagesschuleAngabenInstitutionContainerToRestObject(
+                    {},
+                    latsAngabenInstitutionContainer
+                )
+            )
+            .pipe(
+                map(latsAngabenInstitutionContainerfromServer =>
+                    this.ebeguRestUtils.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                        new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                        latsAngabenInstitutionContainerfromServer
+                    )
+                )
+            );
     }
 
     public getAnzahlEingeschriebeneKinder(
         container: TSLastenausgleichTagesschuleAngabenInstitutionContainer
     ): Observable<TSAnzahlEingeschriebeneKinder> {
-        return this.http.get(
-            `${this.apiUrl}anzahl-eingeschriebene-kinder/${encodeURIComponent(container.id)}`
-        ).pipe(map(data => this.ebeguRestUtils.parseAnzahlEingeschriebeneKinder(
-                new TSAnzahlEingeschriebeneKinder(),
-                data
-            )));
+        return this.http
+            .get(
+                `${this.apiUrl}anzahl-eingeschriebene-kinder/${encodeURIComponent(container.id)}`
+            )
+            .pipe(
+                map(data =>
+                    this.ebeguRestUtils.parseAnzahlEingeschriebeneKinder(
+                        new TSAnzahlEingeschriebeneKinder(),
+                        data
+                    )
+                )
+            );
     }
 
-    public getDurchschnittKinderProTag(container: TSLastenausgleichTagesschuleAngabenInstitutionContainer):
-        Observable<TSDurchschnittKinderProTag> {
-        return this.http.get(
-            `${this.apiUrl}durchschnitt-kinder-pro-tag/${encodeURIComponent(container.id)}`
-        ).pipe(map(data => this.ebeguRestUtils.parseDurchschnittKinderProTag(
-                new TSDurchschnittKinderProTag(),
-                data
-            )));
+    public getDurchschnittKinderProTag(
+        container: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    ): Observable<TSDurchschnittKinderProTag> {
+        return this.http
+            .get(
+                `${this.apiUrl}durchschnitt-kinder-pro-tag/${encodeURIComponent(container.id)}`
+            )
+            .pipe(
+                map(data =>
+                    this.ebeguRestUtils.parseDurchschnittKinderProTag(
+                        new TSDurchschnittKinderProTag(),
+                        data
+                    )
+                )
+            );
     }
 }

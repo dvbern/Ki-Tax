@@ -18,7 +18,6 @@
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 
 export class TSPensumAusserordentlicherAnspruch extends TSAbstractIntegerPensumEntity {
-
     private _begruendung: string;
 
     public constructor() {

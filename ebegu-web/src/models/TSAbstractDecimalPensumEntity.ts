@@ -17,18 +17,17 @@
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
+import {TSEingewoehnung} from './TSEingewoehnung';
 
 export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
-
     private _unitForDisplay: TSPensumUnits;
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
     private _betreuteTage: number;
-    private _eingewoehnungPauschale: TSEingewoehnungPauschale;
+    private _eingewoehnung: TSEingewoehnung;
     // Transient field used for calculations. Not sent to server
-    private _hasEingewoehnungsPauschale: boolean;
+    private _hasEingewoehnung: boolean;
 
     public get unitForDisplay(): TSPensumUnits {
         return this._unitForDisplay;
@@ -70,19 +69,19 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
         this._betreuteTage = value;
     }
 
-    public get eingewoehnungPauschale(): TSEingewoehnungPauschale {
-        return this._eingewoehnungPauschale;
+    public get eingewoehnung(): TSEingewoehnung {
+        return this._eingewoehnung;
     }
 
-    public set eingewoehnungPauschale(value: TSEingewoehnungPauschale) {
-        this._eingewoehnungPauschale = value;
+    public set eingewoehnung(value: TSEingewoehnung) {
+        this._eingewoehnung = value;
     }
 
-    public get hasEingewoehnungsPauschale(): boolean {
-        return this._hasEingewoehnungsPauschale;
+    public get hasEingewoehnungs(): boolean {
+        return this._hasEingewoehnung;
     }
 
-    public set hasEingewoehnungsPauschale(value: boolean) {
-        this._hasEingewoehnungsPauschale = value;
+    public set hasEingewoehnung(value: boolean) {
+        this._hasEingewoehnung = value;
     }
 }

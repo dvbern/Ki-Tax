@@ -17,9 +17,6 @@
 
 package ch.dvbern.ebegu.testfaelle.dataprovider;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -32,6 +29,9 @@ import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	protected SchwyzTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
@@ -47,6 +47,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 		return familiensituation;
 	}
 
@@ -58,6 +59,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 		return familiensituation;
 	}
 

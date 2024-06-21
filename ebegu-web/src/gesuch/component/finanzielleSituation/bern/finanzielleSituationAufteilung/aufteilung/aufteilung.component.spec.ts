@@ -32,13 +32,14 @@ describe('AufteilungComponent', () => {
     let component: AufteilungComponent;
     let fixture: ComponentFixture<AufteilungComponent>;
 
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+        GesuchModelManager.name,
+        ['getGesuch']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             declarations: [AufteilungComponent],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},

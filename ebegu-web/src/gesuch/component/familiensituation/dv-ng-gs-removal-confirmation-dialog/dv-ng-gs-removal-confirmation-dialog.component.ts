@@ -11,7 +11,7 @@ export interface GSRemovalConfirmationDialogData {
 @Component({
     selector: 'dv-dv-ng-gs-removal-confirmation-dialog',
     templateUrl: './dv-ng-gs-removal-confirmation-dialog.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvNgGsRemovalConfirmationDialogComponent {
     public readonly text: string;
@@ -19,15 +19,22 @@ export class DvNgGsRemovalConfirmationDialogComponent {
     public constructor(
         private readonly $translate: TranslateService,
         private readonly dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) private readonly data: GSRemovalConfirmationDialogData,
+        @Inject(MAT_DIALOG_DATA)
+        private readonly data: GSRemovalConfirmationDialogData
     ) {
-        if (EbeguUtil.isNullOrUndefined(this.data) || EbeguUtil.isNullOrUndefined(data.gsFullName)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.data) ||
+            EbeguUtil.isNullOrUndefined(data.gsFullName)
+        ) {
             throw new Error('Wrong Dialog configuration');
         }
 
-        this.text = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
-            gsfullname: this.data.gsFullName,
-        });
+        this.text = this.$translate.instant(
+            'FAMILIENSITUATION_WARNING_BESCHREIBUNG',
+            {
+                gsfullname: this.data.gsFullName
+            }
+        );
     }
 
     public ok(): void {

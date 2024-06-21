@@ -15,11 +15,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
+import {
+    MatSort,
+    MatSortHeader,
+    Sort,
+    SortDirection
+} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
@@ -58,13 +71,16 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnDestroy {
-
+export class ZahlungsauftragViewXComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @ViewChild(NgForm) public readonly form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
     @ViewChild(MatPaginator) private readonly paginator: MatPaginator;
 
-    public datasource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+    public datasource: MatTableDataSource<any> = new MatTableDataSource<any>(
+        []
+    );
     public data: TSZahlungsauftrag[] = [];
 
     public zahlungsauftragToEdit: TSZahlungsauftrag;
@@ -125,26 +141,37 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         private readonly transition: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly errorService: ErrorService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        const isMahlzeitenzahlungen = EbeguUtil.isNotNullAndTrue(this.uiRouterGlobals.params.isMahlzeitenzahlungen);
+        const isMahlzeitenzahlungen = EbeguUtil.isNotNullAndTrue(
+            this.uiRouterGlobals.params.isMahlzeitenzahlungen
+        );
         this.zahlungslaufTyp = isMahlzeitenzahlungen
             ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
         this.updateHasMahlzeitenZahlungslaeufe();
         this.updateHasAuszahlungAnElternZahlungslaeufe();
-        this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
-            this.testMode = response;
-        });
-        this.applicationPropertyRS.getCheckboxAuszahlungInZukunft().then((response: any) => {
-            this.checkboxAuszahlungInZukunft = response;
-            this.auszahlungInZukunft = this.checkboxAuszahlungInZukunft;
-        });
+        this.applicationPropertyRS
+            .isZahlungenTestMode()
+            .then((response: any) => {
+                this.testMode = response;
+            });
+        this.applicationPropertyRS
+            .getCheckboxAuszahlungInZukunft()
+            .then((response: any) => {
+                this.checkboxAuszahlungInZukunft = response;
+                this.auszahlungInZukunft = this.checkboxAuszahlungInZukunft;
+            });
         this.setupTableColumns();
-        this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));
-        this.translate.onDefaultLangChange.subscribe(() => this.setupTableColumns(), (error: any) => LOG.error(error));
+        this.authServiceRS.principal$.subscribe(
+            user => (this.principal = user),
+            error => LOG.error(error)
+        );
+        this.translate.onDefaultLangChange.subscribe(
+            () => this.setupTableColumns(),
+            (error: any) => LOG.error(error)
+        );
         this.transition.onStart({exiting: 'zahlungsauftrag.view'}, () => {
             if (this.sort.active) {
                 this.stateStore.store(this.SORT_STORE_KEY, this.sort);
@@ -152,7 +179,10 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                 this.stateStore.delete(this.SORT_STORE_KEY);
             }
             if (this.filterGemeinde) {
-                this.stateStore.store(this.FILTER_STORE_KEY, this.filterGemeinde);
+                this.stateStore.store(
+                    this.FILTER_STORE_KEY,
+                    this.filterGemeinde
+                );
             } else {
                 this.stateStore.delete(this.FILTER_STORE_KEY);
             }
@@ -178,7 +208,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             this.sort.active = this.DEFAULT_SORT.active;
             this.sort.direction = this.DEFAULT_SORT.direction as SortDirection;
         }
-        (this.sort.sortables.get(this.sort.active) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        (
+            this.sort.sortables.get(this.sort.active) as MatSortHeader
+        )?._setAnimationTransitionState({toState: 'active'});
     }
 
     public updateZahlungsauftrag(): void {
@@ -196,7 +228,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                             this.zahlungslaufTyp
                         );
                     }
-                    return of(new TSPaginationResultDTO<TSZahlungsauftrag>([], 0));
+                    return of(
+                        new TSPaginationResultDTO<TSZahlungsauftrag>([], 0)
+                    );
                 })
             )
             .subscribe(
@@ -212,7 +246,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag): void {
         this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id,
-            isMahlzeitenzahlungen: this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
+            isMahlzeitenzahlungen:
+                this.zahlungslaufTyp ===
+                TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
         });
     }
 
@@ -227,117 +263,178 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             text: this.translate.instant('ZAHLUNG_ERSTELLEN_INFO')
         };
 
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(filter(result => !!result))
-            .subscribe(() => {
-            this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_AUSGELOEST_INFO'));
-            this.zahlungRS.createZahlungsauftrag(
-                    this.zahlungslaufTyp,
-                    this.gemeinde,
-                    this.beschrieb,
-                    this.faelligkeitsdatum,
-                    this.datumGeneriert,
-                    this.auszahlungInZukunft
-                ).subscribe((response: TSZahlungsauftrag) => {
-                        this.errorService.clearAll();
-                        this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
-                        this.zahlungsAuftraege.push(response);
-                        this.resetEditZahlungsauftrag();
-                        this.resetForm();
-                        this.updateZahlungsauftrag();
-                        this.cd.markForCheck();
-                    },
-                    error => LOG.error(error)
-                );
-            }, error => LOG.error(error));
+            .subscribe(
+                () => {
+                    this.errorService.addMesageAsInfo(
+                        this.translate.instant('ZAHLUNG_AUSGELOEST_INFO')
+                    );
+                    this.zahlungRS
+                        .createZahlungsauftrag(
+                            this.zahlungslaufTyp,
+                            this.gemeinde,
+                            this.beschrieb,
+                            this.faelligkeitsdatum,
+                            this.datumGeneriert,
+                            this.auszahlungInZukunft
+                        )
+                        .subscribe(
+                            (response: TSZahlungsauftrag) => {
+                                this.errorService.clearAll();
+                                this.errorService.addMesageAsInfo(
+                                    this.translate.instant('ZAHLUNG_ERSTELLT')
+                                );
+                                this.zahlungsAuftraege.push(response);
+                                this.resetEditZahlungsauftrag();
+                                this.resetForm();
+                                this.updateZahlungsauftrag();
+                                this.cd.markForCheck();
+                            },
+                            error => LOG.error(error)
+                        );
+                },
+                error => LOG.error(error)
+            );
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag): Promise<void> {
-       return this.downloadZahlungsfile(zahlungsauftrag, TSGeneratedDokumentTyp.PAIN001);
+        return this.downloadZahlungsfile(
+            zahlungsauftrag,
+            TSGeneratedDokumentTyp.PAIN001
+        );
     }
 
     public downloadInfoma(zahlungsauftrag: TSZahlungsauftrag): Promise<void> {
-        return this.downloadZahlungsfile(zahlungsauftrag, TSGeneratedDokumentTyp.INFOMA);
+        return this.downloadZahlungsfile(
+            zahlungsauftrag,
+            TSGeneratedDokumentTyp.INFOMA
+        );
     }
 
-    private downloadZahlungsfile(zahlungsauftrag: TSZahlungsauftrag, typ: TSGeneratedDokumentTyp) {
+    private downloadZahlungsfile(
+        zahlungsauftrag: TSZahlungsauftrag,
+        typ: TSGeneratedDokumentTyp
+    ) {
         const win = this.downloadRS.prepareDownloadWindow();
-        return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id, typ)
+        return this.downloadRS
+            .getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id, typ)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    true,
+                    win
+                );
             })
             .catch(error => {
-                this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
-                    'ERROR_UNEXPECTED'));
+                this.errorService.addMesageAsError(
+                    error?.error?.translatedMessage ||
+                        this.translate.instant('ERROR_UNEXPECTED')
+                );
                 win.close();
             }) as Promise<void>;
     }
 
     public downloadAllDetails(zahlungsauftrag: TSZahlungsauftrag): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.reportRS.getZahlungsauftragReportExcel(zahlungsauftrag.id)
+        this.reportRS
+            .getZahlungsauftragReportExcel(zahlungsauftrag.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
-            // eslint-disable-next-line
             .catch(error => {
-                this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
-                    'ERROR_UNEXPECTED'));
+                this.errorService.addMesageAsError(
+                    error?.error?.translatedMessage ||
+                        this.translate.instant('ERROR_UNEXPECTED')
+                );
                 win.close();
             });
     }
 
-    // eslint-disable-next-line
     public ausloesen(zahlungsauftragId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
             text: this.translate.instant('ZAHLUNG_AUSLOESEN_INFO')
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
-            .subscribe(result => {   // User confirmed removal
-                if (!result) {
-                    return;
-                }
-                this.zahlungRS.zahlungsauftragAusloesen(zahlungsauftragId).subscribe((response: TSZahlungsauftrag) => {
-                        const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
-                        if (index > -1) {
-                            this.zahlungsAuftraege[index] = response;
-                        }
-                        this.updateZahlungsauftrag();
-                        this.cd.markForCheck();
-                    },
-                    error => this.errorService.addMesageAsError(
-                        error?.error?.translatedMessage || this.translate.instant('ERROR_UNEXPECTED')));
-            }, error => LOG.error(error));
+            .subscribe(
+                result => {
+                    // User confirmed removal
+                    if (!result) {
+                        return;
+                    }
+                    this.zahlungRS
+                        .zahlungsauftragAusloesen(zahlungsauftragId)
+                        .subscribe(
+                            (response: TSZahlungsauftrag) => {
+                                const index = EbeguUtil.getIndexOfElementwithID(
+                                    response,
+                                    this.zahlungsAuftraege
+                                );
+                                if (index > -1) {
+                                    this.zahlungsAuftraege[index] = response;
+                                }
+                                this.updateZahlungsauftrag();
+                                this.cd.markForCheck();
+                            },
+                            error =>
+                                this.errorService.addMesageAsError(
+                                    error?.error?.translatedMessage ||
+                                        this.translate.instant(
+                                            'ERROR_UNEXPECTED'
+                                        )
+                                )
+                        );
+                },
+                error => LOG.error(error)
+            );
     }
 
     public edit(zahlungsauftrag: TSZahlungsauftrag): void {
         this.zahlungsauftragToEdit = zahlungsauftrag;
     }
 
-    public save(_zahlungsauftrag: TSZahlungsauftrag): void {
+    public save(): void {
         if (!this.isEditValid()) {
             return;
         }
 
-        this.zahlungRS.updateZahlungsauftrag(
-            this.zahlungsauftragToEdit.beschrieb,
-            this.zahlungsauftragToEdit.datumFaellig,
-            this.zahlungsauftragToEdit.id
-        ).subscribe((response: TSZahlungsauftrag) => {
-                const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
-                if (index > -1) {
-                    this.zahlungsAuftraege[index] = response;
-                }
-                // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                this.form.form.markAsPristine();
-                this.resetEditZahlungsauftrag();
-            },
-            error => this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
-                'ERROR_UNEXPECTED')));
+        this.zahlungRS
+            .updateZahlungsauftrag(
+                this.zahlungsauftragToEdit.beschrieb,
+                this.zahlungsauftragToEdit.datumFaellig,
+                this.zahlungsauftragToEdit.id
+            )
+            .subscribe(
+                (response: TSZahlungsauftrag) => {
+                    const index = EbeguUtil.getIndexOfElementwithID(
+                        response,
+                        this.zahlungsAuftraege
+                    );
+                    if (index > -1) {
+                        this.zahlungsAuftraege[index] = response;
+                    }
+                    // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
+                    this.form.form.markAsPristine();
+                    this.resetEditZahlungsauftrag();
+                },
+                error =>
+                    this.errorService.addMesageAsError(
+                        error?.error?.translatedMessage ||
+                            this.translate.instant('ERROR_UNEXPECTED')
+                    )
+            );
     }
 
     public isEditable(status: TSZahlungsauftragsstatus): boolean {
@@ -350,10 +447,12 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
 
     public isEditValid(): boolean {
         if (this.zahlungsauftragToEdit) {
-            return this.zahlungsauftragToEdit.beschrieb
-                && this.zahlungsauftragToEdit.beschrieb.length > 0
-                && this.zahlungsauftragToEdit.datumFaellig !== null
-                && this.zahlungsauftragToEdit.datumFaellig !== undefined;
+            return (
+                this.zahlungsauftragToEdit.beschrieb &&
+                this.zahlungsauftragToEdit.beschrieb.length > 0 &&
+                this.zahlungsauftragToEdit.datumFaellig !== null &&
+                this.zahlungsauftragToEdit.datumFaellig !== undefined
+            );
         }
         return false;
     }
@@ -384,22 +483,30 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public getCalculatedStatus(zahlungsauftrag: TSZahlungsauftrag): any {
-        if (zahlungsauftrag.status !== TSZahlungsauftragsstatus.BESTAETIGT
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
-            && zahlungsauftrag.zahlungen.every(zahlung => zahlung.status === TSZahlungsstatus.BESTAETIGT)) {
-
+        if (
+            zahlungsauftrag.status !== TSZahlungsauftragsstatus.BESTAETIGT &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            ) &&
+            zahlungsauftrag.zahlungen.every(
+                zahlung => zahlung.status === TSZahlungsstatus.BESTAETIGT
+            )
+        ) {
             return TSZahlungsstatus.BESTAETIGT;
         }
         return zahlungsauftrag.status;
     }
 
     private initGemeindenListAndFilter(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 gemeinden => {
                     this.berechtigteGemeindenList = gemeinden;
-                    this.berechtigteGemeindenList.sort((a, b) => a.name.localeCompare(b.name));
+                    this.berechtigteGemeindenList.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    );
                     this.toggleAuszahlungslaufTyp();
                     this.initFilterFromStore();
                     this.cd.markForCheck();
@@ -410,7 +517,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
 
     private initFilterFromStore(): void {
         if (this.stateStore.has(this.FILTER_STORE_KEY)) {
-            this.filterGemeinde = this.stateStore.get(this.FILTER_STORE_KEY) as TSGemeinde;
+            this.filterGemeinde = this.stateStore.get(
+                this.FILTER_STORE_KEY
+            ) as TSGemeinde;
             this.updateZahlungsauftrag();
         }
     }
@@ -418,31 +527,42 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     private updateHasMahlzeitenZahlungslaeufe(): void {
         this.hasMahlzeitenZahlungslaeufe = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorOrAmtRole()
+            )
+        ) {
             this.hasMahlzeitenZahlungslaeufe = false;
             return;
         }
         // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
-        this.gemeindeRS.getGemeindenWithMahlzeitenverguenstigungForBenutzer().then(value => {
-            if (value.length <= 0) {
-                return;
-            }
-            // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
-            // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
-            this.hasMahlzeitenZahlungslaeufe = true;
-            this.berechtigteGemeindenMitMahlzeitenList = value;
-            this.cd.markForCheck();
-        });
+        this.gemeindeRS
+            .getGemeindenWithMahlzeitenverguenstigungForBenutzer()
+            .then(value => {
+                if (value.length <= 0) {
+                    return;
+                }
+                // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
+                // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
+                this.hasMahlzeitenZahlungslaeufe = true;
+                this.berechtigteGemeindenMitMahlzeitenList = value;
+                this.cd.markForCheck();
+            });
     }
 
     private updateHasAuszahlungAnElternZahlungslaeufe(): void {
         this.hasAuszahlungAnEltern = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorOrAmtRole()
+            )
+        ) {
             this.hasAuszahlungAnEltern = false;
             return;
         }
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
                 this.hasAuszahlungAnEltern = response.auszahlungAnEltern;
                 this.hasInfomaZahlung = response.infomaZahlungen;
@@ -451,10 +571,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
 
     public toggleAuszahlungslaufTyp(): void {
         this.filterGemeinde = null;
-        this.gemeindenList
-            = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp || !this.hasMahlzeitenZahlungslaeufe
-            ? Array.from(this.berechtigteGemeindenList)
-            : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
+        this.gemeindenList =
+            TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp ||
+            !this.hasMahlzeitenZahlungslaeufe
+                ? Array.from(this.berechtigteGemeindenList)
+                : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
         this.totalResult = 0;
         this.page = 0;
         this.updateZahlungsauftrag();
@@ -476,8 +597,15 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     private updatePagination(totalResultSize: number): void {
         this.totalResult = totalResultSize;
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(totalResultSize / this.PAGE_SIZE),
-            this.page + 5); i++) {
+        for (
+            let i = Math.max(1, this.page - 4);
+            i <=
+            Math.min(
+                Math.ceil(totalResultSize / this.PAGE_SIZE),
+                this.page + 5
+            );
+            i++
+        ) {
             this.paginationItems.push(i);
         }
     }
@@ -491,12 +619,19 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public showAuszahlungsTypToggle(): boolean {
         // Wenn entweder Mahlzeitenzahlungslaeufe oder Auszahlungen an Eltern aktiviert sind,
         // soll der zweite Tab angezeigt werden
-        return !!this.hasMahlzeitenZahlungslaeufe || !!this.hasAuszahlungAnEltern;
+        return (
+            !!this.hasMahlzeitenZahlungslaeufe || !!this.hasAuszahlungAnEltern
+        );
     }
 
     public getLabelZahlungslaufErstellen(): string {
-        if (this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER && this.hasMahlzeitenZahlungslaeufe) {
-            return this.translate.instant('BUTTON_GEMEINDE_ZAHLUNGSLAUF_MAHLZEITEN');
+        if (
+            this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER &&
+            this.hasMahlzeitenZahlungslaeufe
+        ) {
+            return this.translate.instant(
+                'BUTTON_GEMEINDE_ZAHLUNGSLAUF_MAHLZEITEN'
+            );
         }
         return this.translate.instant('BUTTON_GEMEINDE_ZAHLUNGSLAUF_GUTSCHEIN');
     }
@@ -510,7 +645,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             {
                 displayedName: this.translate.instant('ZAHLUNG_GENERIERT'),
                 attributeName: 'datumGeneriert',
-                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY')
+                displayFunction: (date: moment.Moment) =>
+                    date.format('DD.MM.YYYY')
             },
             {
                 displayedName: this.translate.instant('GEMEINDE'),
@@ -521,7 +657,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 displayFunction: (
-                    // eslint-disable-next-line
                     status: TSZahlungsauftragsstatus,
                     element: TSZahlungsauftrag
                 ) => this.getCalculatedStatus(element)
@@ -530,17 +665,28 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public getColumnsAttributeName(): string[] {
-        const allColumnNames = this.tableColumns?.map(column => column.attributeName);
+        const allColumnNames = this.tableColumns?.map(
+            column => column.attributeName
+        );
         allColumnNames.splice(0, 0, 'datumFaellig');
-        allColumnNames.splice(3, 0,  'zahlungPainExcel');
+        allColumnNames.splice(3, 0, 'zahlungPainExcel');
         allColumnNames.splice(4, 0, `beschrieb`);
         allColumnNames.splice(5, 0, `betragTotalAuftrag`);
-        if (this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles())) {
+        if (
+            this.principal?.hasOneOfRoles(
+                TSRoleUtil.getAdministratorBgGemeindeRoles()
+            )
+        ) {
             allColumnNames.splice(3, 0, `zahlungPain`);
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
 
-            if (this.hasInfomaZahlung && this.gemeindenList.some(gemeinde => gemeinde.infomaZahlungen === true)) {
+            if (
+                this.hasInfomaZahlung &&
+                this.gemeindenList.some(
+                    gemeinde => gemeinde.infomaZahlungen === true
+                )
+            ) {
                 allColumnNames.splice(3, 0, `zahlungInfoma`);
             }
         }
@@ -549,13 +695,18 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
 
     public getDisplayValue(element: any, column: any): string {
         if (column.displayFunction !== undefined) {
-            return column.displayFunction(element[column.attributeName], element);
+            return column.displayFunction(
+                element[column.attributeName],
+                element
+            );
         }
         return element[column.attributeName];
     }
 
     public showForm(): boolean {
-        return this.principal?.hasOneOfRoles(TSRoleUtil.getAdministratorBgGemeindeRoles());
+        return this.principal?.hasOneOfRoles(
+            TSRoleUtil.getAdministratorBgGemeindeRoles()
+        );
     }
 
     public showGemeindeFilter(): boolean {

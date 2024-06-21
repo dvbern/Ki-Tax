@@ -16,11 +16,11 @@
 import {LogLevel} from '../app/core/logging/log-level';
 import {Environment} from './IEnvironment';
 
-// eslint-disable-next-line
 export const environment: Environment = {
     production: true,
     test: false,
     hmr: false,
     logLevel: LogLevel.INFO,
-    sentryDSN: 'https://4cc11d702c245cb414996f6a2c655022@sentry-relay.dvbern.ch/33'
+    sentryDSN:
+        'https://4cc11d702c245cb414996f6a2c655022@sentry-relay.dvbern.ch/33'
 };

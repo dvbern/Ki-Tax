@@ -16,30 +16,32 @@
  */
 
 const getGesuchstellendeKinderBetreuungTab = () => {
-	return cy.getByData('statistik-gesuchsteller-kinder-betreuung');
+    return cy.getByData('statistik-gesuchsteller-kinder-betreuung');
 };
 
 const getVon = () => {
-	return cy.getByData('statistik-von');
+    return cy.getByData('statistik-von');
 };
 
 const getBis = () => {
-	return cy.getByData('statistik-bis');
+    return cy.getByData('statistik-bis');
 };
 
 const getGesuchsperiode = () => {
-	return cy.getByData('gesuchsperiode');
+    return cy.getByData('gesuchsperiode');
 };
 
 const getGenerierenButton = () => {
-	return cy.getByData('container.generieren', 'navigation-button');
+    return cy.getByData('container.generieren', 'navigation-button');
 };
 
 const getStatistikJob = (listIndex: number) => {
     return cy.getByData('statistik#' + listIndex);
 };
 const getStatistikJobStatus = (listIndex: number, timeout = 20000) => {
-	return getStatistikJob(listIndex).find('[data-test="job-status"]', { timeout });
+    return getStatistikJob(listIndex).find('[data-test="job-status"]', {
+        timeout
+    });
 };
 
 export const StatistikPO = {

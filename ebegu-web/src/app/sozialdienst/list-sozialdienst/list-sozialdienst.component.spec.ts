@@ -31,19 +31,23 @@ describe('ListSozialdienstComponent', () => {
     let component: ListSozialdienstComponent;
     let fixture: ComponentFixture<ListSozialdienstComponent>;
 
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-        ['getSozialdienstList']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(
+        SozialdienstRS.name,
+        ['getSozialdienstList']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ListSozialdienstComponent],
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 WindowRef,
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},

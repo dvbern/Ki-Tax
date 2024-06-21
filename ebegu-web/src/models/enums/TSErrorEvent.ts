@@ -16,5 +16,5 @@
 export enum TSMessageEvent {
     ERROR_UPDATE = 'ERROR_UPDATE',
     INFO_UPDATE = 'INFO_UPDATE',
-    CLEAR = 'CLEAR',
+    CLEAR = 'CLEAR'
 }

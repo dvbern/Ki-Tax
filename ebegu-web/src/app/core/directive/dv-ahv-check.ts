@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 export class DvAhvCheck implements IDirective {
@@ -26,12 +32,20 @@ export class DvAhvCheck implements IDirective {
 
     public constructor(CONSTANTS: any) {
         this.length = CONSTANTS.MAX_LENGTH;
-        this.link = (_scope: IScope, _element: IAugmentedJQuery, _attrs, ctrl: any) => {
+        this.link = (
+            _scope: IScope,
+            _element: IAugmentedJQuery,
+            _attrs,
+            ctrl: any
+        ) => {
             if (!ctrl) {
                 return;
             }
 
-            ctrl.$validators.dvAhvCheck = (_modelValue: any, viewValue: any) => {
+            ctrl.$validators.dvAhvCheck = (
+                _modelValue: any,
+                viewValue: any
+            ) => {
                 if (EbeguUtil.isNullOrUndefined(viewValue)) {
                     return true;
                 }
@@ -46,20 +60,28 @@ export class DvAhvCheck implements IDirective {
                     return false;
                 }
 
-                const relevantDigits = digits.slice(0,12).reverse();
+                const relevantDigits = digits.slice(0, 12).reverse();
 
-                const relevantDigitsSum = relevantDigits.reduce((total: number, next: number, index: number) => {
-                    const multiplier = index % 2 === 0 ? 3 : 1;
-                    return total + next * multiplier;
-                }, 0);
+                const relevantDigitsSum = relevantDigits.reduce(
+                    (total: number, next: number, index: number) => {
+                        const multiplier = index % 2 === 0 ? 3 : 1;
+                        return total + next * multiplier;
+                    },
+                    0
+                );
 
-                const relevantDigitsRounded = Math.ceil(relevantDigitsSum / 10) * 10;
-                const calculatedCheckDigit = relevantDigitsRounded - relevantDigitsSum;
+                const relevantDigitsRounded =
+                    Math.ceil(relevantDigitsSum / 10) * 10;
+                const calculatedCheckDigit =
+                    relevantDigitsRounded - relevantDigitsSum;
                 const checkDigit = digits[12];
 
                 const startDigits = viewValue.slice(0, 3);
 
-                return checkDigit === calculatedCheckDigit && startDigits === START_DIGITS;
+                return (
+                    checkDigit === calculatedCheckDigit &&
+                    startDigits === START_DIGITS
+                );
             };
         };
     }

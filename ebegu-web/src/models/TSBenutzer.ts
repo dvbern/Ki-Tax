@@ -27,7 +27,6 @@ import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
 export class TSBenutzer {
-
     private _nachname: string;
     private _vorname: string;
     private _username: string;
@@ -164,7 +163,10 @@ export class TSBenutzer {
             }
         }
         if (!this._currentBerechtigung) {
-            console.log('ERROR - Benutzer hat keine Berechtigung!', this.username);
+            console.log(
+                'ERROR - Benutzer hat keine Berechtigung!',
+                this.username
+            );
         }
         return this._currentBerechtigung;
     }
@@ -189,7 +191,9 @@ export class TSBenutzer {
     }
 
     public extractCurrentAktiveGemeinden(): TSGemeinde[] {
-        return this.currentBerechtigung.gemeindeList.filter(gmde => gmde.status === TSGemeindeStatus.AKTIV);
+        return this.currentBerechtigung.gemeindeList.filter(
+            gmde => gmde.status === TSGemeindeStatus.AKTIV
+        );
     }
 
     public getFullName(): string {

@@ -37,5 +37,4 @@ import {VerlaufComponent} from './verlauf.component';
         SharedModule
     ]
 })
-export class VerlaufModule {
-}
+export class VerlaufModule {}

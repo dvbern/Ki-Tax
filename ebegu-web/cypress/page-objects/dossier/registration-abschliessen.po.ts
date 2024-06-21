@@ -16,23 +16,23 @@
  */
 
 const getBGBeantragen = () => {
-	return cy.getByData('bg-beantragen');
+    return cy.getByData('bg-beantragen');
 };
 
 const getGemeindeSelection = () => {
     return cy.getByData('gemeinde');
 };
 const getRegistrierenButton = () => {
-	return cy.getByData('registrieren');
+    return cy.getByData('registrieren');
 };
 
 const getRegistrierungAbschliessenButton = () => {
-	return cy.getByData('registrierung-abschliessen');
+    return cy.getByData('registrierung-abschliessen');
 };
 
 export const RegistrationAbschliessenPO = {
     getBGBeantragen,
     getGemeindeSelection,
     getRegistrierenButton,
-    getRegistrierungAbschliessenButton,
+    getRegistrierungAbschliessenButton
 };

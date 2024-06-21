@@ -17,7 +17,6 @@ import {IComponentOptions, IController} from 'angular';
 import {TSSearchResultEntry} from '../../../../../models/dto/TSSearchResultEntry';
 
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
-
     public transclude = false;
     public bindings = {
         entry: '<'
@@ -28,7 +27,6 @@ export class DvSearchResultIconComponentConfig implements IComponentOptions {
 }
 
 export class DvSearchResultController implements IController {
-
     public static $inject: ReadonlyArray<string> = [];
 
     public entry: TSSearchResultEntry;

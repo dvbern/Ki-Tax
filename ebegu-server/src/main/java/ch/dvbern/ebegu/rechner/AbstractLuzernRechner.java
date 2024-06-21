@@ -17,6 +17,11 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -26,10 +31,6 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.util.List;
 
 public abstract class AbstractLuzernRechner extends AbstractRechner {
 
@@ -149,8 +150,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal vollkostenProMonat,
 		VerfuegungZeitabschnitt zeitabschnitt
 	) {
-		if (input.getEingewoehnungPauschale().compareTo(BigDecimal.ZERO) <= 0 || vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
-			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+		if (input.getEingewoehnungKosten().compareTo(BigDecimal.ZERO) <= 0 || vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN);
 			return BigDecimal.ZERO;
 		}
 
@@ -161,7 +162,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal calculateGutscheinEingewoehnung(BigDecimal gutscheinProMonat, BigDecimal vollkostenProMonat) {
 		BigDecimal gutscheinEingewoehung =  EXACT.divide(
-			EXACT.multiply(input.getEingewoehnungPauschale(), gutscheinProMonat),
+			EXACT.multiply(input.getEingewoehnungKosten(), gutscheinProMonat),
 			vollkostenProMonat);
 		return MathUtil.roundToFrankenRappen(gutscheinEingewoehung);
 	}
@@ -172,7 +173,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	) {
 		VerfuegungsBemerkungDTO eingewoehungBemerkung = zeitabschnitt
 			.getBemerkungenDTOList()
-			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_KOSTEN);
 
 		if (eingewoehungBemerkung == null) {
 			return;

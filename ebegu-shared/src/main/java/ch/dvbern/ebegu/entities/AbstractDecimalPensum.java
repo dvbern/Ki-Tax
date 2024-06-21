@@ -80,8 +80,8 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "eingewoehnungPauschale"), nullable = true)
-	private EingewoehnungPauschale eingewoehnungPauschale;
+	@JoinColumn(foreignKey = @ForeignKey(name = "eingewoehnung"), nullable = true)
+	private Eingewoehnung eingewoehnung;
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -101,7 +101,7 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 			&& this.getMonatlicheBetreuungskosten().compareTo(otherAbstDateRangedEntity.getMonatlicheBetreuungskosten()) == 0
 			&& MathUtil.isSame(this.getStuendlicheVollkosten(), otherAbstDateRangedEntity.getStuendlicheVollkosten())
 			&& MathUtil.isSame(this.getBetreuteTage(), otherAbstDateRangedEntity.getBetreuteTage())
-			&& EbeguUtil.isSame(this.getEingewoehnungPauschale(), otherAbstDateRangedEntity.getEingewoehnungPauschale());
+			&& EbeguUtil.isSame(this.getEingewoehnung(), otherAbstDateRangedEntity.getEingewoehnung());
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
@@ -114,9 +114,9 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
 		target.setBetreuteTage(this.getBetreuteTage());
-		if (this.getEingewoehnungPauschale() != null) {
-			target.setEingewoehnungPauschale(this.getEingewoehnungPauschale()
-				.copyEingewohnungEntity(new EingewoehnungPauschale(), copyType));
+		if (this.getEingewoehnung() != null) {
+			target.setEingewoehnung(this.getEingewoehnung()
+				.copyEingewohnungEntity(new Eingewoehnung(), copyType));
 		}
 	}
 
@@ -181,12 +181,12 @@ public abstract class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	}
 
 	@Nullable
-	public EingewoehnungPauschale getEingewoehnungPauschale() {
-		return eingewoehnungPauschale;
+	public Eingewoehnung getEingewoehnung() {
+		return eingewoehnung;
 	}
 
-	public void setEingewoehnungPauschale(@Nullable EingewoehnungPauschale eingewoehnungPauschale) {
-		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	public void setEingewoehnung(@Nullable Eingewoehnung eingewoehnung) {
+		this.eingewoehnung = eingewoehnung;
 	}
 
 	@Nullable

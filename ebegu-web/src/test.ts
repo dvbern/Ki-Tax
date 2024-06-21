@@ -29,7 +29,10 @@ require('rxjs');
 require('angular-mocks');
 
 import {getTestBed} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
+import {
+    BrowserDynamicTestingModule,
+    platformBrowserDynamicTesting
+} from '@angular/platform-browser-dynamic/testing';
 /* eslint-disable import/no-unassigned-import */
 require('@uirouter/angular-hybrid');
 require('angular-animate');
@@ -54,4 +57,3 @@ getTestBed().initTestEnvironment(
     BrowserDynamicTestingModule,
     platformBrowserDynamicTesting()
 );
-

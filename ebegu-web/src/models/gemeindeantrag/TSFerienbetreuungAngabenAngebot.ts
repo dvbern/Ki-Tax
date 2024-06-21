@@ -19,7 +19,6 @@ import {TSAdresse} from '../TSAdresse';
 import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngaben';
 
 export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAngaben {
-
     private _angebot: string;
     private _angebotKontaktpersonVorname: string;
     private _angebotKontaktpersonNachname: string;
@@ -280,7 +279,9 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
         return this._ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet;
     }
 
-    public set ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(value: boolean) {
+    public set ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(
+        value: boolean
+    ) {
         this._ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet = value;
     }
 

@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Category, HookResult, Transition, TransitionService} from '@uirouter/core';
+import {
+    Category,
+    HookResult,
+    Transition,
+    TransitionService
+} from '@uirouter/core';
 import {LogLevel} from '../../../app/core/logging/log-level';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {OnBeforePriorities} from './onBeforePriorities';
@@ -27,10 +32,14 @@ const LOG = LogFactory.createLog('debugHookRunBlock');
  */
 
 export function debugHookRunBlock($transitions: TransitionService): void {
-    $transitions.onBefore({
-        // the hook is only active when the app loads initially, e.g. when we are not yet on any state
-        from: state => !state.name
-    }, activateDebugMode, {priority: OnBeforePriorities.DEBUG});
+    $transitions.onBefore(
+        {
+            // the hook is only active when the app loads initially, e.g. when we are not yet on any state
+            from: state => !state.name
+        },
+        activateDebugMode,
+        {priority: OnBeforePriorities.DEBUG}
+    );
 }
 
 function activateDebugMode(transition: Transition): HookResult {

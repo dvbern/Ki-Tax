@@ -17,5 +17,5 @@
 
 export enum TSRueckforderungInstitutionTyp {
     OEFFENTLICH = 'OEFFENTLICH',
-    PRIVAT = 'PRIVAT',
+    PRIVAT = 'PRIVAT'
 }

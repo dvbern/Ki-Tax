@@ -16,15 +16,15 @@
  */
 
 const getInstitution = () => {
-	return cy.getByData('institution.tageschule.modul.import.institution');
+    return cy.getByData('institution.tageschule.modul.import.institution');
 };
 
 const getGesuchsperiode = () => {
-	return cy.getByData('institution.tageschule.modul.import.gesuchsperiode');
+    return cy.getByData('institution.tageschule.modul.import.gesuchsperiode');
 };
 
 const getImportButton = () => {
-	return cy.getByData('institution.tageschule.modul.import.button');
+    return cy.getByData('institution.tageschule.modul.import.button');
 };
 
 export const TagesschuleModulImportDialogPO = {

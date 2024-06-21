@@ -27,7 +27,6 @@ import {TSInstitution} from './TSInstitution';
 import {TSMitteilungTyp} from './enums/TSMitteilungTyp';
 
 export class TSMitteilung extends TSAbstractMutableEntity {
-
     private _dossier: TSDossier;
     private _betreuung: TSBetreuung;
     private _finanzielleSituation: TSFinanzielleSituation;
@@ -55,7 +54,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         mitteilungStatus?: TSMitteilungStatus,
         sentDatum?: moment.Moment,
         institution?: TSInstitution,
-        mitteilungTyp?: TSMitteilungTyp,
+        mitteilungTyp?: TSMitteilungTyp
     ) {
         super();
         this._dossier = dossier;
@@ -187,9 +186,9 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     public get senderAsString(): string {
         let senderAsString: string;
         if (this.sender.currentBerechtigung.institution) {
-            senderAsString = `${this.sender.currentBerechtigung.institution.name  }, `;
+            senderAsString = `${this.sender.currentBerechtigung.institution.name}, `;
         } else if (this.sender.currentBerechtigung.traegerschaft) {
-            senderAsString = `${this.sender.currentBerechtigung.traegerschaft.name  }, `;
+            senderAsString = `${this.sender.currentBerechtigung.traegerschaft.name}, `;
         }
         if (senderAsString) {
             return senderAsString + this.sender.getFullName();
@@ -207,7 +206,9 @@ export class TSMitteilung extends TSAbstractMutableEntity {
 
     // Die Neue Veranlagung Mitteilung sind die einzige Mitteilungen im System mit Sender und Empfeanger Typ = JUGENDAMT
     public isNeueVeranlagung(): boolean {
-        return this.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT
-        && this.empfaengerTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT;
+        return (
+            this.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT &&
+            this.empfaengerTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT
+        );
     }
 }

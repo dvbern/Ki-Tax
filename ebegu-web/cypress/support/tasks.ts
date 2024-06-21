@@ -12,7 +12,7 @@ type FileParams = {
  * Delete a file from the given folder
  */
 export const deleteDownload = (opts: FileParams) => {
-    const { dirPath, fileName } = opts;
+    const {dirPath, fileName} = opts;
     fs.readdir(dirPath, (_, files) => {
         for (const file of files) {
             if (fileName && file === fileName) {
@@ -32,15 +32,18 @@ type XlsxParams = FileParams & {
  * Converts a xlsx file to json @see https://docs.sheetjs.com/docs/api/utilities/array#array-output
  */
 export const convertXlsxToJson = (opts: XlsxParams) => {
-    const { refs, sheets, fileName, dirPath } = opts;
-    const workbook = XLSX.readFile(path.join(dirPath, fileName), { sheets });
+    const {refs, sheets, fileName, dirPath} = opts;
+    const workbook = XLSX.readFile(path.join(dirPath, fileName), {sheets});
     return Object.entries(workbook.Sheets).map(([name, data]) => {
         if (refs) {
             data['!ref'] = refs;
         }
         return {
             sheet: name,
-            data: XLSX.utils.sheet_to_json<any[]>(data, { header: 1, blankrows: false }),
+            data: XLSX.utils.sheet_to_json<any[]>(data, {
+                header: 1,
+                blankrows: false
+            })
         };
     });
 };

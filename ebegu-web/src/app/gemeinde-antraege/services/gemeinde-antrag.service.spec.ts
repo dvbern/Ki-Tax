@@ -22,8 +22,9 @@ import {TSWizardStepXTyp} from '../../../models/enums/TSWizardStepXTyp';
 
 import {GemeindeAntragService} from './gemeinde-antrag.service';
 
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-    ['isOneOfRoles']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+    'isOneOfRoles'
+]);
 
 describe('GemeindeAntragService', () => {
     let service: GemeindeAntragService;
@@ -31,9 +32,7 @@ describe('GemeindeAntragService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            providers: [
-                {provide: AuthServiceRS, useValue: authServiceSpy}
-            ]
+            providers: [{provide: AuthServiceRS, useValue: authServiceSpy}]
         });
         service = TestBed.inject(GemeindeAntragService);
     });
@@ -43,10 +42,14 @@ describe('GemeindeAntragService', () => {
     });
 
     it('should ensure wizardStepType is compatible with backend', () => {
-      expect(service.gemeindeAntragTypStringToWizardStepTyp('FERIENBETREUUNG'))
-          .toEqual(TSWizardStepXTyp.FERIENBETREUUNG);
-      expect(service.gemeindeAntragTypStringToWizardStepTyp('LASTENAUSGLEICH_TAGESSCHULEN'))
-          .toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+        expect(
+            service.gemeindeAntragTypStringToWizardStepTyp('FERIENBETREUUNG')
+        ).toEqual(TSWizardStepXTyp.FERIENBETREUUNG);
+        expect(
+            service.gemeindeAntragTypStringToWizardStepTyp(
+                'LASTENAUSGLEICH_TAGESSCHULEN'
+            )
+        ).toEqual(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN);
     });
     it('should be created', () => {
         expect(service).toBeTruthy();
@@ -54,17 +57,17 @@ describe('GemeindeAntragService', () => {
 
     it('should return only Ferienbetreuung', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(false);
-        expect(service.getFilterableTypesForRole()).toEqual([TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN]);
+        expect(service.getFilterableTypesForRole()).toEqual([
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN
+        ]);
     });
 
     it('should return Ferienbetreuung, GemeindeKennzahlen and Lastenausgleich Tagesschule', () => {
         authServiceSpy.isOneOfRoles.and.returnValue(true);
-        expect(service.getFilterableTypesForRole()).toEqual(
-            [
-                TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
-                TSGemeindeAntragTyp.FERIENBETREUUNG,
-                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN
-            ]
-        );
+        expect(service.getFilterableTypesForRole()).toEqual([
+            TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
+            TSGemeindeAntragTyp.FERIENBETREUUNG,
+            TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN
+        ]);
     });
 });

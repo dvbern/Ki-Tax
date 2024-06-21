@@ -29,17 +29,17 @@ describe('DebuggingComponent', () => {
     let component: DebuggingComponent;
     let fixture: ComponentFixture<DebuggingComponent>;
 
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
-        ['simulateNewVerfuegung']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, [
+        'simulateNewVerfuegung'
+    ]);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                UIRouterModule.forRoot()
-            ],
+            imports: [SharedModule, UIRouterModule.forRoot()],
             declarations: [DebuggingComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},

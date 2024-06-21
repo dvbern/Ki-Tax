@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
@@ -29,7 +37,6 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
     styleUrls: ['./stammdaten-header.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class StammdatenHeaderComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     @Input() public preTitel: string;
@@ -39,7 +46,8 @@ export class StammdatenHeaderComponent implements OnInit {
     @Input() public logoImageUrl: string;
     @Input() public editMode: boolean;
     @Input() public allowedRoles: TSRole[] = [TSRole.SUPER_ADMIN];
-    @Output() public readonly logoImageChange: EventEmitter<File> = new EventEmitter();
+    @Output() public readonly logoImageChange: EventEmitter<File> =
+        new EventEmitter();
 
     public logoImageUrl$: Observable<string>;
     private fileToUpload: File;
@@ -48,8 +56,7 @@ export class StammdatenHeaderComponent implements OnInit {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.logoImageUrl$ = of(this.logoImageUrl);
@@ -65,25 +72,27 @@ export class StammdatenHeaderComponent implements OnInit {
 
     public srcChange(files: FileList): void {
         this.fileToUpload = files[0];
-        this.gemeindeRS.isSupportedImage(this.fileToUpload).then( () => {
-            const tmpFileReader = new FileReader();
-            tmpFileReader.readAsDataURL(this.fileToUpload);
-            tmpFileReader.onload = (event: any): void => {
-                const result: string = event.target.result;
-                this.logoImageUrl$ = of(result);
-                // emit logo change to upload image by parent view
+        this.gemeindeRS
+            .isSupportedImage(this.fileToUpload)
+            .then(() => {
+                const tmpFileReader = new FileReader();
+                tmpFileReader.readAsDataURL(this.fileToUpload);
+                tmpFileReader.onload = (event: any): void => {
+                    const result: string = event.target.result;
+                    this.logoImageUrl$ = of(result);
+                    // emit logo change to upload image by parent view
+                    this.emitLogoChange();
+                };
+            })
+            .catch(() => {
+                this.fileToUpload = null;
+                this.logoImageUrl$ = null;
+                this.logoImageUrl = null;
                 this.emitLogoChange();
-            };
-        }).catch(() => {
-            this.fileToUpload = null;
-            this.logoImageUrl$ = null;
-            this.logoImageUrl = null;
-            this.emitLogoChange();
-        });
+            });
     }
 
-    public $postLink(): void {
-    }
+    public $postLink(): void {}
 
     private emitLogoChange(): void {
         if (this.logoImageChange) {

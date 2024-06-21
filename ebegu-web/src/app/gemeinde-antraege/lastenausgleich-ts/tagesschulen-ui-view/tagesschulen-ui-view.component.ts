@@ -24,22 +24,27 @@ import {StateService, TransitionService} from '@uirouter/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TagesschulenUiViewComponent implements OnInit {
-
     public constructor(
         private readonly $state: StateService,
         private readonly $transition: TransitionService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.$transition.onSuccess({to: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN'}, () => {
-            this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST');
-        });
+        this.$transition.onSuccess(
+            {to: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN'},
+            () => {
+                this.$state.go(
+                    'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'
+                );
+            }
+        );
 
-        if (this.$state.is('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN')) {
-            this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST');
+        if (
+            this.$state.is('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN')
+        ) {
+            this.$state.go(
+                'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST'
+            );
         }
-
     }
-
 }

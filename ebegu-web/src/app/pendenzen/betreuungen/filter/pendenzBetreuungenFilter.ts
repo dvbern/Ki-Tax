@@ -22,20 +22,30 @@ pendenzBetreuungenFilter.$inject = ['$filter'];
 // Zuerst pruefen wir welcher Wert kommt, d.h. aus welcher Column. Je nach Column wird danach dem entsprechenden
 // Comparator aufgerufen. Fuer mehrere Columns reicht es mit dem standard Comparator, der auch hier einfach
 // implementiert wird.
-export function pendenzBetreuungenFilter($filter: any): (array: any, expression: any) => any {
-
+export function pendenzBetreuungenFilter(
+    $filter: any
+): (array: any, expression: any) => any {
     const filterFilter = $filter('filter');
 
     return (array, expression) => {
-
         function customComparator(actual: any, expected: any): boolean {
-            if (expression.institution && expression.institution === expected && actual) {
+            if (
+                expression.institution &&
+                expression.institution === expected &&
+                actual
+            ) {
                 return actual.name === expected;
             }
-            if (expression.eingangsdatum && expression.eingangsdatum === expected) {
+            if (
+                expression.eingangsdatum &&
+                expression.eingangsdatum === expected
+            ) {
                 return EbeguUtil.compareDates(actual, expected);
             }
-            if (expression.geburtsdatum && expression.geburtsdatum === expected) {
+            if (
+                expression.geburtsdatum &&
+                expression.geburtsdatum === expected
+            ) {
                 return EbeguUtil.compareDates(actual, expected);
             }
             return EbeguUtil.hasTextCaseInsensitive(actual, expected);

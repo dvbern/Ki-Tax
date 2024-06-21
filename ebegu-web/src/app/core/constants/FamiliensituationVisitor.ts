@@ -1,7 +1,7 @@
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class FamiliensituationVisitor implements MandantVisitor<any>  {
+export class FamiliensituationVisitor implements MandantVisitor<any> {
     public process(mandant: KiBonMandant): any {
         return mandant.accept(this);
     }

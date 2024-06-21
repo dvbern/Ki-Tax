@@ -10,19 +10,20 @@ import {DvNgBackDialogComponent} from '../../core/component/dv-ng-back-dialog/dv
     providedIn: 'root'
 })
 export class UnsavedChangesService {
-
     private formGroup: FormGroup;
 
     public constructor(
         private readonly $transition: TransitionService,
         private readonly dialog: MatDialog
     ) {
-        this.$transition.onStart({}, async () => this.checkUnsavedChanges().then(userAccepted => {
+        this.$transition.onStart({}, async () =>
+            this.checkUnsavedChanges().then(userAccepted => {
                 if (userAccepted) {
                     this.unregisterForm();
                 }
                 return userAccepted;
-            }));
+            })
+        );
     }
 
     public registerForm(formGroup: FormGroup): void {
@@ -33,8 +34,7 @@ export class UnsavedChangesService {
         if (!this.isFormDirty()) {
             return of(true).toPromise();
         }
-        return this.openDialog()
-            .toPromise();
+        return this.openDialog().toPromise();
     }
 
     private isFormDirty(): boolean {
@@ -49,12 +49,16 @@ export class UnsavedChangesService {
         dialogConfig.data = {
             title: 'UNSAVED_WARNING'
         };
-        return this.dialog.open(DvNgBackDialogComponent, dialogConfig)
+        return this.dialog
+            .open(DvNgBackDialogComponent, dialogConfig)
             .afterClosed()
-            .pipe(map(answer =>
-                // answer is undefined, if cancel is pressed. we need a boolean here
-                 answer === true
-            ));
+            .pipe(
+                map(
+                    answer =>
+                        // answer is undefined, if cancel is pressed. we need a boolean here
+                        answer === true
+                )
+            );
     }
 
     public unregisterForm(): void {

@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -44,10 +50,9 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
     styleUrls: ['./add-gemeinde.component.less']
 })
 export class AddGemeindeComponent implements OnInit {
-
     private readonly log: Log = LogFactory.createLog('AddGemeindeComponent');
 
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
 
     public gemeinde: TSGemeinde = undefined;
     public adminMail: string = undefined;
@@ -73,30 +78,40 @@ export class AddGemeindeComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly cd: ChangeDetectorRef,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         const gemeindeId: string = this.$transition$.params().gemeindeId;
-        if (gemeindeId) { // edit
+        if (gemeindeId) {
+            // edit
             this.gemeindeRS.findGemeinde(gemeindeId).then(result => {
                 this.gemeinde = result;
             });
-        } else { // add
+        } else {
+            // add
             this.initGemeinde();
-            this.unregisteredGemeinden$ = from(this.gemeindeRS.getUnregisteredBfsGemeinden())
-                .pipe(map(bfsGemeinden => {
+            this.unregisteredGemeinden$ = from(
+                this.gemeindeRS.getUnregisteredBfsGemeinden()
+            ).pipe(
+                map(bfsGemeinden => {
                     bfsGemeinden.sort(EbeguUtil.compareByName);
                     return bfsGemeinden;
-                }));
+                })
+            );
         }
         this.adminMail = '';
         const currentDate = moment();
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.gemeinde.betreuungsgutscheineStartdatum = futureMonthBegin;
-        this.gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
-        this.gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        this.gemeinde.tagesschulanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
+        this.gemeinde.ferieninselanmeldungenStartdatum = moment(
+            '20200801',
+            'YYYYMMDD'
+        );
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tageschuleEnabledForMandant = res.angebotTSActivated;
         });
@@ -109,7 +124,6 @@ export class AddGemeindeComponent implements OnInit {
      * erscheint nicht, wir setzen fix auf BG=true, den Rest false
      */
     private initializeFlags(): void {
-        // eslint-disable-next-line
         if (!this.tageschuleEnabledForMandant) {
             this.gemeinde.angebotBG = true;
             this.gemeinde.angebotBGTFO = true;
@@ -136,7 +150,8 @@ export class AddGemeindeComponent implements OnInit {
     public bfsGemeindeSelected(): void {
         if (this.selectedUnregisteredGemeinde) {
             this.gemeinde.name = this.selectedUnregisteredGemeinde.name;
-            this.gemeinde.bfsNummer = this.selectedUnregisteredGemeinde.bfsNummer;
+            this.gemeinde.bfsNummer =
+                this.selectedUnregisteredGemeinde.bfsNummer;
         } else {
             this.gemeinde.name = undefined;
             this.gemeinde.bfsNummer = undefined;
@@ -150,54 +165,64 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeindeWithGSCheck(): void {
-        this.gemeindeRS.createGemeinde(
-            this.gemeinde,
-            this.adminMail
-        )
+        this.gemeindeRS
+            .createGemeinde(this.gemeinde, this.adminMail)
             .then(neueGemeinde => {
                 this.gemeinde = neueGemeinde;
                 this.navigateBack();
-            }).catch((exception: TSExceptionReport[]) => {
-            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
-                this.errorService.clearAll();
-                const adminRolle = this.getUserRoleForGemeindeAdmin();
-                const dialogConfig = new MatDialogConfig();
-                dialogConfig.data = {
-                    emailAdresse: this.adminMail,
-                    administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1]
-                };
-                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
-                    .subscribe(answer => {
-                            if (answer !== true) {
-                                return;
-                            }
-                            this.log.warn(`Der Gesuchsteller: ${exception[0].argumentList[1]} wird einen neuen`
-                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
-                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                                () => {
-                                    this.persistGemeinde();
+            })
+            .catch((exception: TSExceptionReport[]) => {
+                if (
+                    exception[0].errorCodeEnum ===
+                    'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH'
+                ) {
+                    this.errorService.clearAll();
+                    const adminRolle = this.getUserRoleForGemeindeAdmin();
+                    const dialogConfig = new MatDialogConfig();
+                    dialogConfig.data = {
+                        emailAdresse: this.adminMail,
+                        administratorRolle: adminRolle,
+                        gesuchstellerName: exception[0].argumentList[1]
+                    };
+                    this.dialog
+                        .open(DvNgGesuchstellerDialogComponent, dialogConfig)
+                        .afterClosed()
+                        .subscribe(
+                            answer => {
+                                if (answer !== true) {
+                                    return;
                                 }
-                            );
-                        },
-                        () => {
+                                this.log.warn(
+                                    `Der Gesuchsteller: ${exception[0].argumentList[1]} wird einen neuen` +
+                                        ` Rollen bekommen und seine Gesuch wird gelöscht werden!`
+                                );
+                                this.benutzerRS
+                                    .removeBenutzer(
+                                        exception[0].argumentList[0]
+                                    )
+                                    .then(() => {
+                                        this.persistGemeinde();
+                                    });
+                            },
+                            () => {}
+                        );
+                } else if (
+                    exception[0].errorCodeEnum ===
+                    'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH'
+                ) {
+                    this.benutzerRS
+                        .removeBenutzer(exception[0].argumentList[0])
+                        .then(() => {
+                            this.errorService.clearAll();
+                            this.persistGemeinde();
                         });
-            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
-                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
-                    () => {
-                        this.errorService.clearAll();
-                        this.persistGemeinde();
-                    }
-                );
-            }
-        });
+                }
+            });
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(
-            this.gemeinde,
-            this.adminMail
-        )
+        this.gemeindeRS
+            .createGemeinde(this.gemeinde, this.adminMail)
             .then(neueGemeinde => {
                 this.gemeinde = neueGemeinde;
                 this.navigateBack();
@@ -215,7 +240,10 @@ export class AddGemeindeComponent implements OnInit {
 
     private getUserRoleForGemeindeAdmin(): string {
         const hasBG = this.gemeinde.angebotBG;
-        const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI || this.gemeinde.besondereVolksschule;
+        const hasTS =
+            this.gemeinde.angebotTS ||
+            this.gemeinde.angebotFI ||
+            this.gemeinde.besondereVolksschule;
         if (!hasBG) {
             return 'TSRole_ADMIN_TS';
         }
@@ -238,10 +266,12 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private setBesondereVolksschuleBfsNummer(): void {
-        this.gemeindeRS.getNextBesondereVolksschuleBfsNummer().then(bfsnummer => {
-            this.gemeinde.bfsNummer = bfsnummer;
-            this.cd.markForCheck();
-        });
+        this.gemeindeRS
+            .getNextBesondereVolksschuleBfsNummer()
+            .then(bfsnummer => {
+                this.gemeinde.bfsNummer = bfsnummer;
+                this.cd.markForCheck();
+            });
     }
 
     public handleAngebotTSChange(): void {

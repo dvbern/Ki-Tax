@@ -39,7 +39,6 @@ const LOG = LogFactory.createLog('ErrorMessagesComponent');
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class ErrorMessagesComponent implements OnChanges, OnDestroy {
-
     @Input() public errorObject: ValidationErrors | null;
     @Input() public inputId: string;
 
@@ -51,12 +50,10 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
         public readonly form: NgForm,
         public readonly changeDetectorRef: ChangeDetectorRef
     ) {
-        this.form.ngSubmit
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                () => this.changeDetectorRef.markForCheck(),
-                err => LOG.error(err)
-            );
+        this.form.ngSubmit.pipe(takeUntil(this.unsubscribe$)).subscribe(
+            () => this.changeDetectorRef.markForCheck(),
+            err => LOG.error(err)
+        );
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

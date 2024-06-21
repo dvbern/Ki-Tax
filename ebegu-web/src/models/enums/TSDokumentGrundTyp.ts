@@ -14,7 +14,6 @@
  */
 
 export enum TSDokumentGrundTyp {
-
     FAMILIENSITUATION = 'FAMILIENSITUATION',
     KINDER = 'KINDER',
     ERWERBSPENSUM = 'ERWERBSPENSUM',
@@ -24,7 +23,6 @@ export enum TSDokumentGrundTyp {
     PAPIERGESUCH = 'PAPIERGESUCH',
     FREIGABEQUITTUNG = 'FREIGABEQUITTUNG',
     ERWEITERTE_BETREUUNG = 'ERWEITERTE_BETREUUNG'
-
 }
 
 export function getTSTSDokumentTypValues(): Array<TSDokumentGrundTyp> {

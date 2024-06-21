@@ -25,8 +25,10 @@ import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
 
 import {FerienbetreuungBerechnungComponent} from './ferienbetreuung-berechnung.component';
 
-const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
-    ['getPauschalbetraegeFerienbetreuung']);
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(
+    EinstellungRS.name,
+    ['getPauschalbetraegeFerienbetreuung']
+);
 
 describe('FerienbetreuungBerechnungComponent', () => {
     let component: FerienbetreuungBerechnungComponent;
@@ -36,14 +38,9 @@ describe('FerienbetreuungBerechnungComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            providers: [
-                {provide: EinstellungRS, useValue: einstellungRSSpy}
-            ],
+            providers: [{provide: EinstellungRS, useValue: einstellungRSSpy}],
             declarations: [FerienbetreuungBerechnungComponent],
-            imports: [
-                HttpClientModule,
-                SharedModule
-            ]
+            imports: [HttpClientModule, SharedModule]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -59,10 +56,11 @@ describe('FerienbetreuungBerechnungComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should calculate 1440 CHF, 960 CHF and \"true\"', () => {
+    it('should calculate 1440 CHF, 960 CHF and "true"', () => {
         const berechnung = new TSFerienbetreuungBerechnung();
         berechnung.pauschaleBetreuungstag = pauschale;
-        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+        berechnung.pauschaleBetreuungstagSonderschueler =
+            pauschaleSonderschueler;
         berechnung.personalkosten = 2400;
         berechnung.sachkosten = 500;
         berechnung.verpflegungskosten = 500;
@@ -82,10 +80,11 @@ describe('FerienbetreuungBerechnungComponent', () => {
         expect(berechnung.beteiligungZuTief).toBeTrue();
     });
 
-    it('should calculate 1440 CHF, 960 CHF and \"false\". It should use calculation for delegationsmodell', () => {
+    it('should calculate 1440 CHF, 960 CHF and "false". It should use calculation for delegationsmodell', () => {
         const berechnung = new TSFerienbetreuungBerechnung();
         berechnung.pauschaleBetreuungstag = pauschale;
-        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+        berechnung.pauschaleBetreuungstagSonderschueler =
+            pauschaleSonderschueler;
         berechnung.sockelbeitrag = 1111;
         berechnung.beitraegeNachAnmeldungen = 2222;
         berechnung.vorfinanzierteKantonsbeitraege = 3000;
@@ -105,15 +104,21 @@ describe('FerienbetreuungBerechnungComponent', () => {
         expect(berechnung.beteiligungZuTief).toBeTrue();
     });
 
-    it('should return 0, throw no error and beteiligungZuTief should be "false" '
-        + 'if no values are given', () => {
-        const berechnung = new TSFerienbetreuungBerechnung();
-        berechnung.pauschaleBetreuungstag = pauschale;
-        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
-        berechnung.calculate();
-        expect(berechnung.totalKantonsbeitrag).toEqual(0);
-        expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(0);
-        expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(0);
-        expect(berechnung.beteiligungZuTief).toBeFalse();
-    });
+    it(
+        'should return 0, throw no error and beteiligungZuTief should be "false" ' +
+            'if no values are given',
+        () => {
+            const berechnung = new TSFerienbetreuungBerechnung();
+            berechnung.pauschaleBetreuungstag = pauschale;
+            berechnung.pauschaleBetreuungstagSonderschueler =
+                pauschaleSonderschueler;
+            berechnung.calculate();
+            expect(berechnung.totalKantonsbeitrag).toEqual(0);
+            expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(
+                0
+            );
+            expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(0);
+            expect(berechnung.beteiligungZuTief).toBeFalse();
+        }
+    );
 });

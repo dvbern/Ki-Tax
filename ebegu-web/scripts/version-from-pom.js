@@ -16,18 +16,25 @@
 const {resolve} = require('path');
 const {readFileSync, writeFileSync} = require('fs');
 
-const contents = readFileSync(__dirname + '/../../.flattened-pom.xml').toString();
+const contents = readFileSync(
+    __dirname + '/../../.flattened-pom.xml'
+).toString();
 
 const re = new RegExp(
-    '<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');
+    '<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>',
+    'im'
+);
 const myMatchArray = re.exec(contents);
-const parsedversion = (myMatchArray === null) ? 'unknown' : myMatchArray[1];
+const parsedversion = myMatchArray === null ? 'unknown' : myMatchArray[1];
 console.log('Parsed Version from pom is ' + parsedversion);
 
 const file = resolve(__dirname, '..', 'src', 'environments', 'version.ts');
-writeFileSync(file,
+writeFileSync(
+    file,
     `// IMPORTANT: THIS FILE IS AUTO GENERATED! DO NOT MANUALLY EDIT OR CHECKIN!
 export const VERSION = '${parsedversion}';
 
 export const BUILDTSTAMP = '${new Date().toISOString()}';
-`, {encoding: 'utf-8'});
+`,
+    {encoding: 'utf-8'}
+);

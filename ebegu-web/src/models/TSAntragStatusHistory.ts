@@ -19,7 +19,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBenutzer} from './TSBenutzer';
 
 export class TSAntragStatusHistory extends TSAbstractMutableEntity {
-
     private _gesuchId: string;
     private _benutzer: TSBenutzer;
     private _timestampVon: moment.Moment;

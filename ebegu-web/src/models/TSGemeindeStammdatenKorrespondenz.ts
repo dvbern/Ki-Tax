@@ -18,7 +18,6 @@
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSGemeindeStammdatenKorrespondenz extends TSAbstractEntity {
-
     public senderAddressSpacingLeft: number;
     public senderAddressSpacingTop: number;
     public receiverAddressSpacingLeft: number;
@@ -29,5 +28,4 @@ export class TSGemeindeStammdatenKorrespondenz extends TSAbstractEntity {
     public standardSignatur: string;
     // Transient, should not be sent to the backend
     public hasAlternativeLogoTagesschule: boolean;
-
 }

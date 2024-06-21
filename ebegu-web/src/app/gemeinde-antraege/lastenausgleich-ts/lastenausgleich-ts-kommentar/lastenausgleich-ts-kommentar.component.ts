@@ -16,7 +16,13 @@
  */
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -37,7 +43,6 @@ const LOG = LogFactory.createLog('LastenausgleichTsKommentarComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
-
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public form: FormGroup;
     private kommentarControl: FormControl;
@@ -53,16 +58,19 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         private readonly translate: TranslateService,
         private readonly $state: StateService,
         private readonly benutzerRS: BenutzerRSX
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.subscription = this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
-            .subscribe(container => {
-                this.lATSAngabenGemeindeContainer = container;
-                this.initForm();
-                this.ref.markForCheck();
-            }, err => LOG.error(err));
+        this.subscription = this.lastenausgleichTSService
+            .getLATSAngabenGemeindeContainer()
+            .subscribe(
+                container => {
+                    this.lATSAngabenGemeindeContainer = container;
+                    this.initForm();
+                    this.ref.markForCheck();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {
@@ -74,12 +82,18 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
             return;
         }
         this.saving$.next(true);
-        this.lastenausgleichTSService.saveLATSKommentar(
-            this.lATSAngabenGemeindeContainer.id,
-            this.kommentarControl.value
-        ).subscribe(() => {
-            this.saving$.next(false);
-        }, (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_LATS_KOMMENTAR_SAVE'));
+        this.lastenausgleichTSService
+            .saveLATSKommentar(
+                this.lATSAngabenGemeindeContainer.id,
+                this.kommentarControl.value
+            )
+            .subscribe(
+                () => {
+                    this.saving$.next(false);
+                },
+                (error: HttpErrorResponse) =>
+                    this.handleErrorOnSave(error, 'ERROR_LATS_KOMMENTAR_SAVE')
+            );
     }
 
     private initForm(): void {
@@ -109,24 +123,30 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
     }
 
     public saveVerantwortlicher(): void {
-        this.lastenausgleichTSService.saveLATSVerantworlicher(this.lATSAngabenGemeindeContainer.id,
-            this.lATSAngabenGemeindeContainer.verantwortlicher?.username)
+        this.lastenausgleichTSService
+            .saveLATSVerantworlicher(
+                this.lATSAngabenGemeindeContainer.id,
+                this.lATSAngabenGemeindeContainer.verantwortlicher?.username
+            )
             .subscribe(
                 () => {},
-                (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_VERANTWORTLICHER_SAVE'));
+                (error: HttpErrorResponse) =>
+                    this.handleErrorOnSave(error, 'ERROR_VERANTWORTLICHER_SAVE')
+            );
     }
 
-    private handleErrorOnSave(error: HttpErrorResponse, errorMsgKey: string): void {
+    private handleErrorOnSave(
+        error: HttpErrorResponse,
+        errorMsgKey: string
+    ): void {
         LOG.error(error);
         const translated = this.translate.instant(errorMsgKey);
         this.errorService.addMesageAsError(translated);
     }
 
     private loadUserList(): void {
-        this.benutzerRS.getAllActiveBenutzerMandant()
-            .then(response => {
-                this.userList = response;
-            });
+        this.benutzerRS.getAllActiveBenutzerMandant().then(response => {
+            this.userList = response;
+        });
     }
-
 }

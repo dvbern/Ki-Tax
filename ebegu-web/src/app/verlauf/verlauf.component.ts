@@ -15,7 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
@@ -36,9 +41,8 @@ import {DvSimpleTableConfig} from '../shared/component/dv-simple-table/dv-simple
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VerlaufComponent implements OnInit {
-
     public dossier: TSDossier;
-    public gesuche: { [gesuchId: string]: string } = {};
+    public gesuche: {[gesuchId: string]: string} = {};
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
@@ -69,8 +73,7 @@ export class VerlaufComponent implements OnInit {
         private readonly ebeguUtil: EbeguUtil,
         private readonly authService: AuthServiceRS,
         private readonly cd: ChangeDetectorRef
-    ) {
-    }
+    ) {}
 
     public async ngOnInit(): Promise<void> {
         if (!this.uiRouterGlobals.params.gesuchId) {
@@ -78,7 +81,9 @@ export class VerlaufComponent implements OnInit {
             return;
         }
 
-        const gesuchResponse = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
+        const gesuchResponse = await this.gesuchRS.findGesuch(
+            this.uiRouterGlobals.params.gesuchId
+        );
         this.dossier = gesuchResponse.dossier;
         this.gs1Name = gesuchResponse.gesuchsteller1?.extractNachname();
         const gesuchsperiode = gesuchResponse.gesuchsperiode;
@@ -86,16 +91,23 @@ export class VerlaufComponent implements OnInit {
             this.cancel();
         }
 
-        const allAntragDTO = await this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id);
+        const allAntragDTO = await this.gesuchRS.getAllAntragDTOForDossier(
+            this.dossier.id
+        );
         allAntragDTO.forEach(item => {
-            this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
-                item.antragTyp,
-                item.eingangsdatum,
-                item.laufnummer
-            );
+            this.gesuche[item.antragId] =
+                this.ebeguUtil.getAntragTextDateAsString(
+                    item.antragTyp,
+                    item.eingangsdatum,
+                    item.laufnummer
+                );
         });
 
-        this.antragStatusHistoryRS.loadAllAntragStatusHistoryByGesuchsperiode(this.dossier, gesuchsperiode)
+        this.antragStatusHistoryRS
+            .loadAllAntragStatusHistoryByGesuchsperiode(
+                this.dossier,
+                gesuchsperiode
+            )
             .then((response: TSAntragStatusHistory[]) => {
                 this.tableData = response.map(r => {
                     const tableEntry: any = {};
@@ -130,10 +142,14 @@ export class VerlaufComponent implements OnInit {
     }
 
     public dossierToolbarVisible(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller());
+        return this.authService.isOneOfRoles(
+            TSRoleUtil.getAllRolesButGesuchsteller()
+        );
     }
 
     public dossierToolbarGesuchstellerVisible(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        return this.authService.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerOnlyRoles()
+        );
     }
 }

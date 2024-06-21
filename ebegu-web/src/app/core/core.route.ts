@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/browser";
+import * as Sentry from '@sentry/browser';
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import * as moment from 'moment';
@@ -67,25 +67,27 @@ export function appRun(
     gemeindeRS: GemeindeRS,
     LOCALE_ID: string
 ): void {
-    const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
+    const applicationPropertyRS = $injector.get<ApplicationPropertyRS>(
+        'ApplicationPropertyRS'
+    );
     const mandantService = $injector.get<MandantService>('MandantService');
-    mandantService.mandant$.pipe(
-        take(1)
-    ).subscribe(() => {
-        applicationPropertyRS.getPublicPropertiesCached()
-            .then(response => {
+    mandantService.mandant$.pipe(take(1)).subscribe(
+        () => {
+            applicationPropertyRS.getPublicPropertiesCached().then(response => {
                 if (environment.test) {
                     return;
                 }
 
-                Sentry.configureScope(scope =>{
+                Sentry.configureScope(scope => {
                     scope.addEventProcessor(event => {
                         event.environment = response.sentryEnvName;
                         return event;
                     });
                 });
             });
-    }, error => LOG.error(error));
+        },
+        error => LOG.error(error)
+    );
 
     function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
@@ -107,10 +109,12 @@ export function appRun(
 
     function onLoginSuccess(): void {
         if (!environment.test) {
-            listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
+            listResourceRS.getLaenderList(); // initial aufruefen damit cache populiert wird
         }
         // muss immer geleert werden
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
+        globalCacheService
+            .getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE)
+            .removeAll();
         // since we will need these lists anyway we already load on login
         gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         gemeindeRS.getAllGemeinden();
@@ -119,17 +123,13 @@ export function appRun(
 
     moment.locale(LOCALE_ID);
 
-    authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-        .subscribe(
-            onLoginSuccess,
-            err => LOG.error(err)
-        );
+    authLifeCycleService
+        .get$(TSAuthEvent.LOGIN_SUCCESS)
+        .subscribe(onLoginSuccess, err => LOG.error(err));
 
-    authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
-        .subscribe(
-            onNotAuthenticated,
-            err => LOG.error(err)
-        );
+    authLifeCycleService
+        .get$(TSAuthEvent.NOT_AUTHENTICATED)
+        .subscribe(onNotAuthenticated, err => LOG.error(err));
 
     angularMomentConfig.format = 'DD.MM.YYYY';
 
@@ -143,7 +143,7 @@ export function appRun(
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
+        callback: () =>
+            $timeout(() => angular.element('.next').last().trigger('click'))
     });
-
 }

@@ -14,171 +14,319 @@
   -->
 
 <div class="dv-dokumente-list row">
-
     <div class="col-md-12 table-responsive" ng-if="vm.dokumente.length">
-
         <h2>
-            <span>{{vm.getTableTitleText()}}</span>
+            <span>{{ vm.getTableTitleText() }}</span>
         </h2>
         <div class="overflow-scroll-table">
-            <table st-table="table" st-safe-src="vm.dokumente" class="table dokumentgrundtable" id="{{vm.tableId}}">
+            <table
+                st-table="table"
+                st-safe-src="vm.dokumente"
+                class="table dokumentgrundtable"
+                id="{{ vm.tableId }}"
+            >
                 <thead>
-                <tr ng-if="!vm.sonstige">
-                    <!--without tag-->
-                    <th id="{{vm.tableId +'-dok'}}" width="vm.getWidth()">
-                        <span data-translate="DOK_DOKUMENT"> </span>
-                    </th>
+                    <tr ng-if="!vm.sonstige">
+                        <!--without tag-->
+                        <th
+                            id="{{ vm.tableId + '-dok' }}"
+                            width="vm.getWidth()"
+                        >
+                            <span data-translate="DOK_DOKUMENT"> </span>
+                        </th>
 
-                    <th id="{{vm.tableId +'-tag'}}" width="20%" ng-if="vm.tag">
-                        <span data-translate="{{vm.tag}}"></span>
-                    </th>
-                    <th ng-if="!vm.tag">
-                    </th>
+                        <th
+                            id="{{ vm.tableId + '-tag' }}"
+                            width="20%"
+                            ng-if="vm.tag"
+                        >
+                            <span data-translate="{{ vm.tag }}"></span>
+                        </th>
+                        <th ng-if="!vm.tag"></th>
 
-                    <th id="{{vm.tableId +'-fuer'}}" width="25%">
-                        <span data-translate="DOK_FUER"> </span>
-                    </th>
+                        <th id="{{ vm.tableId + '-fuer' }}" width="25%">
+                            <span data-translate="DOK_FUER"> </span>
+                        </th>
 
-                    <th width="5%"></th>
-                    <th id="{{vm.tableId +'-status'}}" width="5%"></th>
-                    <th id="{{vm.tableId +'-upload'}}" width="5%"></th>
-                </tr>
+                        <th width="5%"></th>
+                        <th id="{{ vm.tableId + '-status' }}" width="5%"></th>
+                        <th id="{{ vm.tableId + '-upload' }}" width="5%"></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat-start="row in table" class="dokument-grund-row"
-                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                    aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                    ng-disabled="vm.isDokumenteUploadDisabled()">
+                    <tr
+                        ng-repeat-start="row in table"
+                        class="dokument-grund-row"
+                        title="{{ 'GS_DOKUMENT_HOCHLADEN' | translate }}"
+                        aria-label="{{ 'GS_DOKUMENT_HOCHLADEN' | translate }}"
+                        ng-disabled="vm.isDokumenteUploadDisabled()"
+                    >
+                        <!--with and without tag-->
+                        <td
+                            style="white-space: normal !important"
+                            headers="{{ vm.tableId + '-dok' }}"
+                            ngf-drop="vm.uploadAnhaenge($files, row)"
+                            ngf-drag-over-class="'dragover'"
+                            ngf-multiple="true"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row),
+                                'no-color': vm.sonstige
+                            }"
+                        >
+                            <span ngf-select="vm.uploadAnhaenge($files, row)">{{
+                                vm.getDokumentText(row)
+                            }}</span>
+                            <dv-tooltip
+                                ng-if="
+                                    row.dokumentTyp ===
+                                    vm.dokumentTyp
+                                        .NACHWEIS_ABGERECHNETE_QUELLENSTEUERN
+                                "
+                                ng-disabled="true"
+                                text="'NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT' | translate"
+                            ></dv-tooltip>
+                        </td>
 
-                    <!--with and without tag-->
-                    <td style="white-space: normal !important;"
-                        headers="{{vm.tableId +'-dok'}}"
-                        ngf-drop="vm.uploadAnhaenge($files, row)"
-                        ngf-drag-over-class="'dragover'"
-                        ngf-multiple="true"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color':vm.sonstige}">
-                        <span ngf-select="vm.uploadAnhaenge($files, row)">{{vm.getDokumentText(row)}}</span>
-                        <dv-tooltip ng-if="row.dokumentTyp === vm.dokumentTyp.NACHWEIS_ABGERECHNETE_QUELLENSTEUERN"
-                                    ng-disabled="true"
-                                    text="'NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT' | translate"></dv-tooltip>
-                    </td>
+                        <!--with tag-->
+                        <td
+                            headers="{{ vm.tableId + '-tag' }}"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ng-bind="row.tag"
+                            ng-if="!vm.sonstige && vm.tag"
+                            ngf-drop="vm.uploadAnhaenge($files, row)"
+                            ngf-drag-over-class="'dragover'"
+                            ngf-multiple="true"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row)
+                            }"
+                        ></td>
+                        <td
+                            ng-if="!vm.sonstige && !vm.tag"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ngf-drop="vm.uploadAnhaenge($files, row)"
+                            ngf-drag-over-class="'dragover'"
+                            ngf-multiple="true"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row)
+                            }"
+                        ></td>
 
-                    <!--with tag-->
-                    <td headers="{{vm.tableId +'-tag'}}"
-                        ngf-select="vm.uploadAnhaenge($files, row)"
-                        ng-bind="row.tag"
-                        ng-if="!vm.sonstige && vm.tag"
-                        ngf-drop="vm.uploadAnhaenge($files, row)"
-                        ngf-drag-over-class="'dragover'" ngf-multiple="true"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
-                    <td ng-if="!vm.sonstige && !vm.tag"
-                        ngf-select="vm.uploadAnhaenge($files, row)"
-                        ngf-drop="vm.uploadAnhaenge($files, row)"
-                        ngf-drag-over-class="'dragover'" ngf-multiple="true"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"></td>
+                        <td
+                            headers="{{ vm.tableId + '-fuer' }}"
+                            ng-bind="vm.extractFullName(row)"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row)
+                            }"
+                            ng-if="!vm.sonstige"
+                            ngf-drop="vm.uploadAnhaenge($files, row)"
+                            ngf-drag-over-class="'dragover'"
+                            ngf-multiple="true"
+                        ></td>
 
-                    <td headers="{{vm.tableId +'-fuer'}}" ng-bind="vm.extractFullName(row)"
-                        ngf-select="vm.uploadAnhaenge($files, row)"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"
-                        ng-if="!vm.sonstige"
-                        ngf-drop="vm.uploadAnhaenge($files, row)"
-                        ngf-drag-over-class="'dragover'" ngf-multiple="true"></td>
-
-
-                    <td ngf-select="vm.uploadAnhaenge($files, row)" ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}"></td>
-                    <td headers="{{vm.tableId +'-status'}}" ng-if="!vm.sonstige" class="symbol"
-                        ngf-select="vm.uploadAnhaenge($files, row)"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row)}"
-                        ngf-drop="vm.uploadAnhaenge($files, row)"
-                        ngf-drag-over-class="'dragover'" ngf-multiple="true">
-                        <i ng-if="!vm.hasDokuments(row)" class="fa fa-circle" aria-hidden="true"></i>
-                        <i ng-if="row.needed && vm.hasDokuments(row)" class="fa fa-check" aria-hidden="true"></i>
-                        <i ng-if="!row.needed && vm.hasDokuments(row)" class="fa fa-check check-warning"
-                           aria-hidden="true"></i>
-                    </td>
-                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
-
-                    </td>
-                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
-
-                    </td>
-                    <td ng-if="vm.sonstige" ngf-select="vm.uploadAnhaenge($files, row)" class="no-color">
-
-                    </td>
-                    <td headers="{{vm.tableId +'-upload'}}"
-                        width="5%"
-                        class="symbol"
-                        tabindex="-1"
-                        ngf-select="vm.uploadAnhaenge($files, row)"
-                        ng-click="$event.stopPropagation()"
-                        ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color' : vm.sonstige}">
-                        <button ngf-select="vm.uploadAnhaenge($files, row)" ngf-multiple="true"
-                                ng-attr-data-test="upload-file-{{vm.tableId}}#{{$index}}"
-                                accept="{{vm.allowedMimetypes}}"
+                        <td
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row),
+                                'no-color': vm.sonstige
+                            }"
+                        ></td>
+                        <td
+                            headers="{{ vm.tableId + '-status' }}"
+                            ng-if="!vm.sonstige"
+                            class="symbol"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row)
+                            }"
+                            ngf-drop="vm.uploadAnhaenge($files, row)"
+                            ngf-drag-over-class="'dragover'"
+                            ngf-multiple="true"
+                        >
+                            <i
+                                ng-if="!vm.hasDokuments(row)"
+                                class="fa fa-circle"
+                                aria-hidden="true"
+                            ></i>
+                            <i
+                                ng-if="row.needed && vm.hasDokuments(row)"
+                                class="fa fa-check"
+                                aria-hidden="true"
+                            ></i>
+                            <i
+                                ng-if="!row.needed && vm.hasDokuments(row)"
+                                class="fa fa-check check-warning"
+                                aria-hidden="true"
+                            ></i>
+                        </td>
+                        <td
+                            ng-if="vm.sonstige"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            class="no-color"
+                        ></td>
+                        <td
+                            ng-if="vm.sonstige"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            class="no-color"
+                        ></td>
+                        <td
+                            ng-if="vm.sonstige"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            class="no-color"
+                        ></td>
+                        <td
+                            headers="{{ vm.tableId + '-upload' }}"
+                            width="5%"
+                            class="symbol"
+                            tabindex="-1"
+                            ngf-select="vm.uploadAnhaenge($files, row)"
+                            ng-click="$event.stopPropagation()"
+                            ng-class="{
+                                'documents-vailable': vm.hasDokuments(row),
+                                'no-documents': !vm.hasDokuments(row),
+                                'no-color': vm.sonstige
+                            }"
+                        >
+                            <button
+                                ngf-select="vm.uploadAnhaenge($files, row)"
+                                ngf-multiple="true"
+                                ng-attr-data-test="upload-file-{{
+                                    vm.tableId
+                                }}#{{ $index }}"
+                                accept="{{ vm.allowedMimetypes }}"
                                 class="dv-btn fa fa-upload dv-btn-operation"
-                                title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                ng-disabled="vm.isDokumenteUploadDisabled()" tabindex="0">
-                        </button>
-                    </td>
-                </tr>
+                                title="{{
+                                    'GS_DOKUMENT_HOCHLADEN' | translate
+                                }}"
+                                aria-label="{{
+                                    'GS_DOKUMENT_HOCHLADEN' | translate
+                                }}"
+                                ng-disabled="vm.isDokumenteUploadDisabled()"
+                                tabindex="0"
+                            ></button>
+                        </td>
+                    </tr>
 
-                <tr class="dateientable" style="background-color: transparent;" ng-if="vm.hasDokuments(row)">
-                    <!--without tag-->
-                    <th id="{{vm.tableId +'-name-'+$index}}" class="dateientable-th" width="40%"
-                        st-sort-default="true">
-                        <span data-translate="DATEINAME"></span>
-                    </th>
+                    <tr
+                        class="dateientable"
+                        style="background-color: transparent"
+                        ng-if="vm.hasDokuments(row)"
+                    >
+                        <!--without tag-->
+                        <th
+                            id="{{ vm.tableId + '-name-' + $index }}"
+                            class="dateientable-th"
+                            width="40%"
+                            st-sort-default="true"
+                        >
+                            <span data-translate="DATEINAME"></span>
+                        </th>
 
-                    <th id="{{vm.tableId +'-date-'+$index}}" class="dateientable-th" width="20%">
-                        <span data-translate="DATUM"></span>
-                    </th>
-                    <th id="{{vm.tableId +'-size-'+$index}}" class="dateientable-th" width="20%">
-                        <span data-translate="SIZE"></span>
-                    </th>
+                        <th
+                            id="{{ vm.tableId + '-date-' + $index }}"
+                            class="dateientable-th"
+                            width="20%"
+                        >
+                            <span data-translate="DATUM"></span>
+                        </th>
+                        <th
+                            id="{{ vm.tableId + '-size-' + $index }}"
+                            class="dateientable-th"
+                            width="20%"
+                        >
+                            <span data-translate="SIZE"></span>
+                        </th>
 
-                    <th class="dateientable-th" width="5%"></th>
-                    <th class="dateientable-th" width="5%"></th>
-                    <th class="dateientable-th" width="5%"></th>
-                </tr>
+                        <th class="dateientable-th" width="5%"></th>
+                        <th class="dateientable-th" width="5%"></th>
+                        <th class="dateientable-th" width="5%"></th>
+                    </tr>
 
-                <tr class="dateientable" ng-repeat="dokument in row.dokumente  | orderBy: 'timestampUpload'">
-                    <td headers="{{vm.tableId +'-size-'+$index}}" class="dateientable-td" ng-bind="dokument.filename"
-                        ng-class="{true:'vorgaenger', false:''}[dokument.hasVorgaenger()]"></td>
-                    <td headers="{{vm.tableId +'-date-'+$index}}" class="dateientable-td"
-                        ng-bind="dokument.timestampUpload | amDateFormat : 'DD.MM.YYYY'"
-                        ng-class="{true:'vorgaenger', false:''}[dokument.hasVorgaenger()]"></td>
-                    <td headers="{{vm.tableId +'-name-'+$index}}" class="dateientable-td" ng-bind="dokument.filesize"
-                        ng-class="{true:'vorgaenger', false:''}[dokument.hasVorgaenger()]"></td>
-                    <td class="dateientable-td symbol" ng-if="!vm.isRemoveAllowed(row, dokument)">
-                    </td>
-                    <td class="dateientable-td symbol">
-                        <span ng-click="vm.download(dokument, true)" class="fa fa-download"
-                              data-test="download-file-{{vm.tableId}}#{{$index}}"
-                              title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                              aria-label="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                              style="color: black"></span>
-                    </td>
-                    <td class="dateientable-td symbol">
-                        <span ng-click="vm.download(dokument, false)" class="fa fa-eye"
-                              title="{{'DOKUMENT_LOOK' | translate}}"
-                              aria-label="{{'DOKUMENT_LOOK' | translate}}"
-                              style="color: black"></span>
-                    </td>
-                    <td class="dateientable-td symbol" ng-if="vm.isRemoveAllowed(row, dokument)">
-                        <span
-                            ng-click="vm.remove(row, dokument)" class="fa fa-trash"
-                            title="{{'DOKUMENT_DELETE' | translate}}"
-                            aria-label="{{'DOKUMENT_DELETE' | translate}}"
-                            style="color: black"></span>
-                    </td>
-                </tr>
-                <tr ng-repeat-end>
-                    <td colspan="100%" class="dateien-spacer"></td>
-                </tr>
+                    <tr
+                        class="dateientable"
+                        ng-repeat="dokument in row.dokumente  | orderBy: 'timestampUpload'"
+                    >
+                        <td
+                            headers="{{ vm.tableId + '-size-' + $index }}"
+                            class="dateientable-td"
+                            ng-bind="dokument.filename"
+                            ng-class="
+                                {true: 'vorgaenger', false: ''}[
+                                    dokument.hasVorgaenger()
+                                ]
+                            "
+                        ></td>
+                        <td
+                            headers="{{ vm.tableId + '-date-' + $index }}"
+                            class="dateientable-td"
+                            ng-bind="dokument.timestampUpload | amDateFormat : 'DD.MM.YYYY'"
+                            ng-class="
+                                {true: 'vorgaenger', false: ''}[
+                                    dokument.hasVorgaenger()
+                                ]
+                            "
+                        ></td>
+                        <td
+                            headers="{{ vm.tableId + '-name-' + $index }}"
+                            class="dateientable-td"
+                            ng-bind="dokument.filesize"
+                            ng-class="
+                                {true: 'vorgaenger', false: ''}[
+                                    dokument.hasVorgaenger()
+                                ]
+                            "
+                        ></td>
+                        <td
+                            class="dateientable-td symbol"
+                            ng-if="!vm.isRemoveAllowed(row, dokument)"
+                        ></td>
+                        <td class="dateientable-td symbol">
+                            <span
+                                ng-click="vm.download(dokument, true)"
+                                class="fa fa-download"
+                                data-test="download-file-{{ vm.tableId }}#{{
+                                    $index
+                                }}"
+                                title="{{ 'DOKUMENT_DOWNLOAD' | translate }}"
+                                aria-label="{{
+                                    'DOKUMENT_DOWNLOAD' | translate
+                                }}"
+                                style="color: black"
+                            ></span>
+                        </td>
+                        <td class="dateientable-td symbol">
+                            <span
+                                ng-click="vm.download(dokument, false)"
+                                class="fa fa-eye"
+                                title="{{ 'DOKUMENT_LOOK' | translate }}"
+                                aria-label="{{ 'DOKUMENT_LOOK' | translate }}"
+                                style="color: black"
+                            ></span>
+                        </td>
+                        <td
+                            class="dateientable-td symbol"
+                            ng-if="vm.isRemoveAllowed(row, dokument)"
+                        >
+                            <span
+                                ng-click="vm.remove(row, dokument)"
+                                class="fa fa-trash"
+                                title="{{ 'DOKUMENT_DELETE' | translate }}"
+                                aria-label="{{ 'DOKUMENT_DELETE' | translate }}"
+                                style="color: black"
+                            ></span>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end>
+                        <td colspan="100%" class="dateien-spacer"></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>

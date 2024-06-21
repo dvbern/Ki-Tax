@@ -18,25 +18,27 @@
 <div class="gesuch-modul">
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
 
-
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span translate
-                      [translateParams]="{basisjahr: ''}">FINANZIELLE_SITUATION_RESULTATE</span>
+                <span translate [translateParams]="{basisjahr: ''}"
+                    >FINANZIELLE_SITUATION_RESULTATE</span
+                >
             </h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
     <form #form="ngForm" disabled>
-
         <div class="row">
             <div class="col-sm-6">
                 <dv-input-label-field
                     [model]="resultate?.massgebendesEinkVorAbzFamGrGS1"
-                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                    [labelMessageKey]="
+                        'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'
+                    "
                     [labelMessageKeyArgs]="{namegs: extractFullNameGS1()}"
-                    [inputDisabled]="true">
+                    [inputDisabled]="true"
+                >
                 </dv-input-label-field>
             </div>
         </div>
@@ -45,9 +47,12 @@
             <div class="col-sm-6">
                 <dv-input-label-field
                     [model]="resultate?.massgebendesEinkVorAbzFamGrGS2"
-                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
+                    [labelMessageKey]="
+                        'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'
+                    "
                     [labelMessageKeyArgs]="{namegs: extractFullNameGS2()}"
-                    [inputDisabled]="true">
+                    [inputDisabled]="true"
+                >
                 </dv-input-label-field>
             </div>
         </div>
@@ -56,17 +61,21 @@
             <div class="col-sm-6">
                 <dv-input-label-field
                     [model]="resultate?.massgebendesEinkVorAbzFamGr"
-                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
-                    [inputDisabled]="true">
+                    [labelMessageKey]="
+                        'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'
+                    "
+                    [inputDisabled]="true"
+                >
                 </dv-input-label-field>
             </div>
         </div>
     </form>
 
-    <dv-navigation-x (dvSave)="navigate($event.onResult)"
-                     [dvNext]="true"
-                     [dvPrevious]="true"
-                     [dvSubStep]="gesuchmodelManager.gesuchstellerNumber"
-                     [dvSubStepName]="getSubStepName()"></dv-navigation-x>
-
+    <dv-navigation-x
+        (dvSave)="navigate($event.onResult)"
+        [dvNext]="true"
+        [dvPrevious]="true"
+        [dvSubStep]="gesuchmodelManager.gesuchstellerNumber"
+        [dvSubStepName]="getSubStepName()"
+    ></dv-navigation-x>
 </div>

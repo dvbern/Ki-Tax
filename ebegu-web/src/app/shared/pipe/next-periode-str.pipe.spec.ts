@@ -11,7 +11,10 @@ describe('NextPeriodeStrPipe', () => {
 
     it('should return "2020/21"', () => {
         const periode = new TSGesuchsperiode();
-        periode.gueltigkeit = new TSDateRange(moment('2019-01-01'), moment('2020-01-01'));
+        periode.gueltigkeit = new TSDateRange(
+            moment('2019-01-01'),
+            moment('2020-01-01')
+        );
         const pipe = new NextPeriodeStrPipe();
         expect(pipe.transform(periode)).toBe('2020/21');
     });

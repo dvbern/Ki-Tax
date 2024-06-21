@@ -19,14 +19,12 @@ import {Directive, ElementRef, Injector, Input} from '@angular/core';
 import {UpgradeComponent} from '@angular/upgrade/static';
 
 @Directive({
-  selector: 'dv-accordion-tab'
+    selector: 'dv-accordion-tab'
 })
 export class AccordionTabDirective extends UpgradeComponent {
-
     @Input() public tabid: string;
 
     public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvAccordionTab', elementRef, injector);
     }
-
 }

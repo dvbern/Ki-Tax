@@ -19,25 +19,24 @@ import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
 export class KindGeschlechtVisitor implements MandantVisitor<boolean> {
+    public process(mandant: KiBonMandant): any {
+        return mandant.accept(this);
+    }
+    public visitAppenzellAusserrhoden(): boolean {
+        return false;
+    }
 
-	public process(mandant: KiBonMandant): any {
-		return mandant.accept(this);
-	}
-	public visitAppenzellAusserrhoden(): boolean {
-		return false;
-	}
+    public visitBern(): boolean {
+        return true;
+    }
 
-	public visitBern(): boolean {
-		return true;
-	}
+    public visitLuzern(): boolean {
+        return true;
+    }
 
-	public visitLuzern(): boolean {
-		return true;
-	}
-
-	public visitSolothurn(): boolean {
-		return true;
-	}
+    public visitSolothurn(): boolean {
+        return true;
+    }
 
     public visitSchwyz(): boolean {
         return this.visitSolothurn();

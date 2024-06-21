@@ -39,21 +39,36 @@ export class OnboardingMainComponent {
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        this.onboardingPlaceholderService.description1$.subscribe(updatedDescription1 => {
-            this.description1 = updatedDescription1;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description2$.subscribe(updatedDescription2 => {
-            this.description2 = updatedDescription2;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description3$.subscribe(updatedDescription3 => {
-            this.description3 = updatedDescription3;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description4$.subscribe(updatedDescription4 => {
-            this.description4 = updatedDescription4;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.splittedScreen$.subscribe(updatedSplittedScreen => {
-            this.splittedScreen = updatedSplittedScreen;
-        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description1$.subscribe(
+            updatedDescription1 => {
+                this.description1 = updatedDescription1;
+            },
+            err => LOG.error(err)
+        );
+        this.onboardingPlaceholderService.description2$.subscribe(
+            updatedDescription2 => {
+                this.description2 = updatedDescription2;
+            },
+            err => LOG.error(err)
+        );
+        this.onboardingPlaceholderService.description3$.subscribe(
+            updatedDescription3 => {
+                this.description3 = updatedDescription3;
+            },
+            err => LOG.error(err)
+        );
+        this.onboardingPlaceholderService.description4$.subscribe(
+            updatedDescription4 => {
+                this.description4 = updatedDescription4;
+            },
+            err => LOG.error(err)
+        );
+        this.onboardingPlaceholderService.splittedScreen$.subscribe(
+            updatedSplittedScreen => {
+                this.splittedScreen = updatedSplittedScreen;
+            },
+            err => LOG.error(err)
+        );
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.logoFileNameWhite = res.logoFileNameWhite;
         });

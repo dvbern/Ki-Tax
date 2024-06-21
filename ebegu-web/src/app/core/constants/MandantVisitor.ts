@@ -16,7 +16,6 @@
  */
 
 export interface MandantVisitor<T> {
-
     visitBern(): T;
 
     visitSolothurn(): T;

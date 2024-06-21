@@ -16,7 +16,13 @@
  */
 
 import {Directive} from '@angular/core';
-import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
+import {
+    AbstractControl,
+    NG_VALIDATORS,
+    ValidationErrors,
+    Validator,
+    ValidatorFn
+} from '@angular/forms';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 /*
@@ -34,7 +40,13 @@ QR-IIDs bestehen * exklusiv aus Nummern von 30000 bis 31999.
  */
 @Directive({
     selector: '[isNotQrIbanN]',
-    providers: [{provide: NG_VALIDATORS, useExisting: QrIbanValidatorDirective, multi: true}]
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useExisting: QrIbanValidatorDirective,
+            multi: true
+        }
+    ]
 })
 export class QrIbanValidatorDirective implements Validator {
     public validate(control: AbstractControl): ValidationErrors | null {
@@ -50,7 +62,11 @@ export function qrIbanValidator(): ValidatorFn {
 }
 
 function isQrIbanLike(value: unknown): boolean {
-    return typeof value === 'string' && value.length > 0 && CONSTANTS.QR_IBAN_PATTERN.test(stripWhiteSpaces(value));
+    return (
+        typeof value === 'string' &&
+        value.length > 0 &&
+        CONSTANTS.QR_IBAN_PATTERN.test(stripWhiteSpaces(value))
+    );
 }
 
 function stripWhiteSpaces(value: string): string {

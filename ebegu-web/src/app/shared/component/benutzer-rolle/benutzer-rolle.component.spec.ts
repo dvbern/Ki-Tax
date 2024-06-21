@@ -29,18 +29,20 @@ describe('BenutzerRolleComponent', () => {
     let component: BenutzerRolleComponent;
     let fixture: ComponentFixture<BenutzerRolleComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getVisibleRolesForPrincipal']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal']
+    );
 
     beforeEach(waitForAsync(() => {
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
 
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},

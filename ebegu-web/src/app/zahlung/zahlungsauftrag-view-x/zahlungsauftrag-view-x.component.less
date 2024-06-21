@@ -24,12 +24,12 @@
     .symbol {
         padding: 0 0 0 1em;
 
-        .dvb-loading-button, button {
+        .dvb-loading-button,
+        button {
             display: block;
             height: 100%;
             text-align: left;
             width: 100%;
-
         }
         &.text-center {
             button {
@@ -56,7 +56,8 @@
         }
     }
 
-    #betragTotalAuftrag, .numeric-column {
+    #betragTotalAuftrag,
+    .numeric-column {
         padding-right: 5em;
         text-align: right;
     }
@@ -94,7 +95,11 @@
         width: 100%;
     }
 
-    ::ng-deep mat-header-cell[aria-sort='descending'] >  .mat-sort-header-sorted .mat-sort-header-arrow > .mat-sort-header-indicator {
+    ::ng-deep
+        mat-header-cell[aria-sort='descending']
+        > .mat-sort-header-sorted
+        .mat-sort-header-arrow
+        > .mat-sort-header-indicator {
         transform: translateY(10px) !important;
     }
 
@@ -110,6 +115,4 @@
             width: 100%;
         }
     }
-
 }
-

@@ -28,9 +28,12 @@ const LOG = LogFactory.createLog('FamiliensituationSchwyzComponent');
     templateUrl: './familiensituation-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionView implements OnInit {
-
-    protected readonly TSGesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet;
+export class FamiliensituationSchwyzComponent
+    extends AbstractFamiliensitutaionView
+    implements OnInit
+{
+    protected readonly TSGesuchstellerKardinalitaet =
+        TSGesuchstellerKardinalitaet;
     private readonly initialFamiliensituation: TSFamiliensituation;
 
     public constructor(
@@ -43,27 +46,47 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog
     ) {
-        super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
+        super(
+            gesuchModelManager,
+            errorService,
+            wizardStepManager,
+            familiensituationRS,
+            authService
+        );
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
-        this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
+        this.initialFamiliensituation =
+            this.gesuchModelManager.getFamiliensituation();
     }
 
     public ngOnInit(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
-                .forEach(value => {
-                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
-                });
-        }, error => LOG.error(error));
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                (response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.MINIMALDAUER_KONKUBINAT
+                        )
+                        .forEach(value => {
+                            this.getFamiliensituation().minDauerKonkubinat =
+                                Number(value.value);
+                        });
+                },
+                error => LOG.error(error)
+            );
     }
 
     public getBisherText(): string {
         return this.translate.instant(
-            this.getFamiliensituationGS()?.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE ?
-                'LABEL_NEIN' :
-                'LABEL_JA');
+            this.getFamiliensituationGS()?.gesuchstellerKardinalitaet ===
+                TSGesuchstellerKardinalitaet.ALLEINE
+                ? 'LABEL_NEIN'
+                : 'LABEL_JA'
+        );
     }
 
     public hasError(): boolean {
@@ -71,33 +94,44 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
     }
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
-        if (this.changeResetsGS2()
-        ) {
-            this.dialog.open<DvNgGsRemovalConfirmationDialogComponent, GSRemovalConfirmationDialogData>(
-                DvNgGsRemovalConfirmationDialogComponent,
-                {
+        if (this.changeResetsGS2()) {
+            this.dialog
+                .open<
+                    DvNgGsRemovalConfirmationDialogComponent,
+                    GSRemovalConfirmationDialogData
+                >(DvNgGsRemovalConfirmationDialogComponent, {
                     data: {
                         gsFullName: this.getGesuch().gesuchsteller2
-                            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
+                            ? this.getGesuch().gesuchsteller2.extractFullName()
+                            : ''
                     }
-                }).afterClosed().toPromise().then(async hasConfirmed => {
-                if (hasConfirmed) {
-                    onResult(await this.save());
-                } else {
-                    onResult(undefined);
-                }
-            });
+                })
+                .afterClosed()
+                .toPromise()
+                .then(async hasConfirmed => {
+                    if (hasConfirmed) {
+                        onResult(await this.save());
+                    } else {
+                        onResult(undefined);
+                    }
+                });
             return;
         }
         onResult(await this.save());
     }
 
     private changeResetsGS2(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2) &&
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+            ) &&
             (this.isMutation() ||
-                FamiliensituationUtil.isChangeFrom2GSTo1GS(this.initialFamiliensituation,
+                FamiliensituationUtil.isChangeFrom2GSTo1GS(
+                    this.initialFamiliensituation,
                     this.getFamiliensituation(),
-                    this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis));
+                    this.gesuchModelManager.getGesuchsperiode().gueltigkeit
+                        .gueltigBis
+                ))
+        );
     }
-
 }

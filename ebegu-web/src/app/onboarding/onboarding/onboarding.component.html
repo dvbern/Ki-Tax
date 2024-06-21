@@ -15,59 +15,70 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div style="display: inline-block; max-width:100%;">
-
+<div style="display: inline-block; max-width: 100%">
     <div class="onboarding-welcome">
         <p translate>ONBOARDING_KIBON_BGTS_BEANTRAGEN</p>
     </div>
 
     <div class="onboarding-login" *ngIf="showLogin">
         <div class="onboarding-login-buttons">
-            <button uiSref="onboarding.neubenutzer" class="dv-btn onboarding-big-red-button onboarding-login-button-width" autofocus>
+            <button
+                uiSref="onboarding.neubenutzer"
+                class="dv-btn onboarding-big-red-button onboarding-login-button-width"
+                autofocus
+            >
                 <span translate>ONBOARDING_NEU_BENUTZER</span>
             </button>
-            <br/>
-            <br/>
-            <button uiSref="authentication.login" [uiOptions]="{location: false}"
-                    class="dv-btn onboarding-red-border-button onboarding-login-button-width">
+            <br />
+            <br />
+            <button
+                uiSref="authentication.login"
+                [uiOptions]="{location: false}"
+                class="dv-btn onboarding-red-border-button onboarding-login-button-width"
+            >
                 <span translate>ONBOARDING_ANMELDEN</span>
             </button>
         </div>
-        <br/>
+        <br />
         <ng-container>
             <span class="fa fa-question-circle"></span>
             <a href="" (click)="openHelp($event)" translate>ONBARDING_HILFE</a>
-            <br/>
-            <br/>
+            <br />
+            <br />
         </ng-container>
         <ng-container *ngIf="isMultimandantEnabled$ | async">
             <a href="" uiSref="onboarding.mandant" translate>PORTAL_WECHSELN</a>
-            <br/>
-            <br/>
+            <br />
+            <br />
         </ng-container>
-        <a href=""
-           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
-        <br/>
-        <a href=""
-           uiSref="onboarding.infoinstitution" translate>ONBOARDING_INFO_INSTITUTION_LINK</a>
+        <a href="" uiSref="onboarding.infogemeinde" translate
+            >ONBOARDING_INFO_GEMEINDE_LINK</a
+        >
+        <br />
+        <a href="" uiSref="onboarding.infoinstitution" translate
+            >ONBOARDING_INFO_INSTITUTION_LINK</a
+        >
         <ng-container *ngIf="isDummyMode$ | async">
-            <br/>
-            <br/>
-            <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
+            <br />
+            <br />
+            <a href="" uiSref="authentication.locallogin" translate
+                >ONBOARDING_LOCAL_LOGIN</a
+            >
         </ng-container>
-        <div class="onboarding-iframe-tutorial" *ngIf="(this.youtubeLink$ | async) as link">
+        <div
+            class="onboarding-iframe-tutorial"
+            *ngIf="this.youtubeLink$ | async as link"
+        >
             <iframe
-                    [src]="link"
-                    frameborder="0"
-                    allow="accelerometer;
+                [src]="link"
+                frameborder="0"
+                allow="accelerometer;
                     encrypted-media;
                     gyroscope;
                     picture-in-picture"
-                    allowfullscreen>
+                allowfullscreen
+            >
             </iframe>
         </div>
     </div>
 </div>
-
-
-

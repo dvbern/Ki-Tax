@@ -17,11 +17,13 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSErweiterteBetreuung} from './TSErweiterteBetreuung';
 
 export class TSErweiterteBetreuungContainer extends TSAbstractMutableEntity {
-
     private _erweiterteBetreuungGS: TSErweiterteBetreuung;
     private _erweiterteBetreuungJA: TSErweiterteBetreuung;
 
-    public constructor(erweiterteBetreuungGS?: TSErweiterteBetreuung, erweiterteBetreuungJA?: TSErweiterteBetreuung) {
+    public constructor(
+        erweiterteBetreuungGS?: TSErweiterteBetreuung,
+        erweiterteBetreuungJA?: TSErweiterteBetreuung
+    ) {
         super();
         this._erweiterteBetreuungGS = erweiterteBetreuungGS;
         this._erweiterteBetreuungJA = erweiterteBetreuungJA;

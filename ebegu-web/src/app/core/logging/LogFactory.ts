@@ -68,18 +68,20 @@ class LogFunctions {
         public readonly warn: LogFunction,
         public readonly info: LogFunction,
         public readonly debug: LogFunction
-    ) {
-    }
+    ) {}
 }
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-console
         super(console.error, console.warn, console.info, console.debug);
     }
 }
 
-function formatModuleName(moduleName: string, options: FormattingOptions): string {
+function formatModuleName(
+    moduleName: string,
+    options: FormattingOptions
+): string {
     let aligned = moduleName;
     const minWidth = options.moduleNameMinWidth;
     if (minWidth > 0) {
@@ -113,14 +115,21 @@ function findLogFunc(logFunctions: LogFunctions, level: LogLevel): LogFunction {
  * See:
  * {@link https://developers.google.com/web/tools/chrome-devtools/console/console-write#styling_console_output_with_css}
  */
-function formatColored(args: any[], formattedModuleName: string, colorSupport: ColorSupport,
-                       backgroundColor: string
+function formatColored(
+    args: any[],
+    formattedModuleName: string,
+    colorSupport: ColorSupport,
+    backgroundColor: string
 ): any[] {
     if (colorSupport === ColorSupport.NONE) {
         return [formattedModuleName, ...args];
     }
 
-    if (args.length && typeof args[0] === 'string' && colorSupport === ColorSupport.MULTIPLE) {
+    if (
+        args.length &&
+        typeof args[0] === 'string' &&
+        colorSupport === ColorSupport.MULTIPLE
+    ) {
         return [
             `%c${formattedModuleName} %c${args[0]}`,
             `background-color: ${backgroundColor}; color: white; border: 1px solid ${backgroundColor};`,
@@ -154,19 +163,29 @@ function logFuncFallback(loggingError: any, params: any[]): void {
  * Method that handles the actual logging.
  * Separate type definition for decoupling only.
  */
-type LogHandler = (level: LogLevel, args: any[], moduleName: string, backgroundColor: string) => void;
+type LogHandler = (
+    level: LogLevel,
+    args: any[],
+    moduleName: string,
+    backgroundColor: string
+) => void;
 
 /**
  * The classic logger interface...
  */
 export class Log {
-
-    private readonly formatter = new Intl.DateTimeFormat('de-ch', { dateStyle: 'short',timeStyle: 'long'});
+    private readonly formatter = new Intl.DateTimeFormat('de-ch', {
+        dateStyle: 'short',
+        timeStyle: 'long'
+    });
 
     public constructor(
         private readonly logHandler: LogHandler,
         public readonly name: string,
-        public readonly backgroundColor: string = randomColor({seed: name, format: 'rgb'})
+        public readonly backgroundColor: string = randomColor({
+            seed: name,
+            format: 'rgb'
+        })
     ) {
         // nop
     }
@@ -190,7 +209,6 @@ export class Log {
         args.unshift(this.formatter.format(new Date()));
         this.logHandler(LogLevel.DEBUG, args, this.name, this.backgroundColor);
     }
-
 }
 
 /**
@@ -229,7 +247,8 @@ export class LogFactory {
      * Check if logging is enabled for a given log level.
      */
     public static isEnabled(moduleName: string, level: LogLevel): boolean {
-        const moduleLevel = LogFactory.logModules[moduleName] || LogFactory.logLevel;
+        const moduleLevel =
+            LogFactory.logModules[moduleName] || LogFactory.logLevel;
         const enabled = LEVELS[level].level >= LEVELS[moduleLevel].level;
 
         return enabled;
@@ -238,18 +257,31 @@ export class LogFactory {
     /**
      * Actually log a message to the console
      */
-    public static log(level: LogLevel, args: any[], moduleName: string, backgroundColor: string): void {
+    public static log(
+        level: LogLevel,
+        args: any[],
+        moduleName: string,
+        backgroundColor: string
+    ): void {
         if (!LogFactory.isEnabled(moduleName, level)) {
             return;
         }
 
-        const formattedModuleName = formatModuleName(moduleName, LogFactory.formattingOptions);
+        const formattedModuleName = formatModuleName(
+            moduleName,
+            LogFactory.formattingOptions
+        );
         const colorSupport = findColorSupport(LogFactory.logSupportsColor);
-        const params = formatColored(args, formattedModuleName, colorSupport, backgroundColor);
+        const params = formatColored(
+            args,
+            formattedModuleName,
+            colorSupport,
+            backgroundColor
+        );
 
         const logFunc = findLogFunc(LogFactory.logFunctions, level);
         try {
-            logFunc(params[0], ... params.slice(1));
+            logFunc(params[0], ...params.slice(1));
         } catch (loggingError) {
             // happens primarily on IE if the developer console is closed
             logFuncFallback(loggingError, params);

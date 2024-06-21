@@ -15,19 +15,18 @@
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export class TSEingewoehnungPauschale extends TSAbstractDateRangedEntity {
-
-    private _pauschale: number;
+export class TSEingewoehnung extends TSAbstractDateRangedEntity {
+    private _kosten: number;
 
     public constructor() {
         super();
     }
 
-    public get pauschale(): number {
-        return this._pauschale;
+    public get kosten(): number {
+        return this._kosten;
     }
 
-    public set pauschale(value: number) {
-        this._pauschale = value;
+    public set kosten(value: number) {
+        this._kosten = value;
     }
 }

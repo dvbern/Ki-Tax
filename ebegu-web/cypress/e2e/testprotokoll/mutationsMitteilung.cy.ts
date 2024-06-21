@@ -19,17 +19,20 @@ import {
     AntragBetreuungPO,
     ConfirmDialogPO,
     DossierToolbarPO,
-    FaelleListePO, FallToolbarPO,
+    FaelleListePO,
+    FallToolbarPO,
     MitteilungenPO,
-    TestFaellePO,
+    TestFaellePO
 } from '@dv-e2e/page-objects';
-import {getUser} from "@dv-e2e/types";
+import {getUser} from '@dv-e2e/types';
 import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
-    const sachbearbeiterGemeindeUser = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
+    const sachbearbeiterGemeindeUser = getUser(
+        '[6-L-SB-Gemeinde] Stefan Weibel'
+    );
     const monatlichesPensum = '60';
     const monatlicheKosten = '1000';
     const startdatum = '01.04.2023';
@@ -57,21 +60,35 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
         SidenavPO.goTo('BETREUUNG');
-        AntragBetreuungPO.getBetreuung(0,0).click();
+        AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.getMutationsmeldungErstellenButton().click();
-        AntragBetreuungPO.getBetreuungspensum(0).clear().type(monatlichesPensum);
-        AntragBetreuungPO.getMonatlicheBetreuungskosten(0).clear().type(monatlicheKosten);
-        AntragBetreuungPO.getBetreuungspensumAb(0).find('input').clear().type(startdatum);
-        AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type(enddatum);
+        AntragBetreuungPO.getBetreuungspensum(0)
+            .clear()
+            .type(monatlichesPensum);
+        AntragBetreuungPO.getMonatlicheBetreuungskosten(0)
+            .clear()
+            .type(monatlicheKosten);
+        AntragBetreuungPO.getBetreuungspensumAb(0)
+            .find('input')
+            .clear()
+            .type(startdatum);
+        AntragBetreuungPO.getBetreuungspensumBis(0)
+            .find('input')
+            .clear()
+            .type(enddatum);
         AntragBetreuungPO.getMutationsmeldungSendenButton().click();
-        cy.waitForRequest('PUT', '**/mitteilungen/sendbetreuungsmitteilung', () => {
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
+        cy.waitForRequest(
+            'PUT',
+            '**/mitteilungen/sendbetreuungsmitteilung',
+            () => {
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
+            }
+        );
         DossierToolbarPO.getMitteilungen().click();
         MitteilungenPO.getMitteilung(0).should('exist');
         MitteilungenPO.getMitteilung(0).click();
         MitteilungenPO.getInhaltOfMitteilung(0)
-            .should('include.text', "1’000")
+            .should('include.text', '1’000')
             .and('include.text', monatlichesPensum)
             .and('include.text', startdatum)
             .and('include.text', enddatum);
@@ -86,9 +103,13 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         DossierToolbarPO.getMitteilungen().click();
         MitteilungenPO.getMitteilung(0).click();
         MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
-        cy.waitForRequest('PUT', '**/mitteilungen/applybetreuungsmitteilung/**', () => {
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
+        cy.waitForRequest(
+            'PUT',
+            '**/mitteilungen/applybetreuungsmitteilung/**',
+            () => {
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
+            }
+        );
     });
 
     it('should check if the Mutationsmeldung was accepted', () => {
@@ -96,9 +117,16 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).first().click();
         SidenavPO.goTo('BETREUUNG');
-        AntragBetreuungPO.getBetreuung(0,1).click();
-        AntragBetreuungPO.getMonatlicheBetreuungskosten(0).should('have.value', monatlicheKosten);
-        AntragBetreuungPO.getBetreuungspensumAb(0).find("input").should('have.value', startdatum);
-        AntragBetreuungPO.getBetreuungspensumBis(0).find("input").should('have.value', enddatum);
+        AntragBetreuungPO.getBetreuung(0, 1).click();
+        AntragBetreuungPO.getMonatlicheBetreuungskosten(0).should(
+            'have.value',
+            monatlicheKosten
+        );
+        AntragBetreuungPO.getBetreuungspensumAb(0)
+            .find('input')
+            .should('have.value', startdatum);
+        AntragBetreuungPO.getBetreuungspensumBis(0)
+            .find('input')
+            .should('have.value', enddatum);
     });
 });

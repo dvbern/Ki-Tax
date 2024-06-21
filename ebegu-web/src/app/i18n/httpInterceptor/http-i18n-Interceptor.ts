@@ -20,17 +20,15 @@ import {HEADER_ACCEPT_LANGUAGE} from '../../core/constants/CONSTANTS';
 import {I18nServiceRSRest} from '../services/i18nServiceRS.rest';
 
 export class HttpI18nInterceptor implements IHttpInterceptor {
-
     public static $inject = ['I18nServiceRSRest'];
 
-    public constructor(
-        private readonly i18nService: I18nServiceRSRest
-    ) {
-    }
+    public constructor(private readonly i18nService: I18nServiceRSRest) {}
 
     public request = (config: IRequestConfig) => {
-        config.headers[HEADER_ACCEPT_LANGUAGE] = config.headers[HEADER_ACCEPT_LANGUAGE] ?
-            `${this.i18nService.currentLanguage()}, ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
+        config.headers[HEADER_ACCEPT_LANGUAGE] = config.headers[
+            HEADER_ACCEPT_LANGUAGE
+        ]
+            ? `${this.i18nService.currentLanguage()}, ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
             : this.i18nService.currentLanguage();
 
         return config;

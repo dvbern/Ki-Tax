@@ -99,7 +99,9 @@ export class TSGemeindeKennzahlen extends TSAbstractEntity {
     }
 
     public isInBearbeitungGemeinde(): boolean {
-        return this.status === TSGemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE;
+        return (
+            this.status === TSGemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE
+        );
     }
 
     public isAbgeschlossen(): boolean {

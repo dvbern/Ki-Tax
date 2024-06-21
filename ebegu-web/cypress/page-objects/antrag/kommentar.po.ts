@@ -16,19 +16,19 @@
  */
 
 const getSTVBemerkungGemeinde = () => {
-	return cy.getByData('bemerkungen-gemeinde');
+    return cy.getByData('bemerkungen-gemeinde');
 };
 
 const getSTVBemerkung = () => {
-	return cy.getByData('bemerkungen-stv');
+    return cy.getByData('bemerkungen-stv');
 };
 
 const getSTVPruefungZurueckAnGemeindeButton = () => {
-	return cy.getByData('container.zurueck-an-gemeinde');
+    return cy.getByData('container.zurueck-an-gemeinde');
 };
 
 export const KommentarPO = {
     getSTVBemerkung,
     getSTVBemerkungGemeinde,
-    getSTVPruefungZurueckAnGemeindeButton,
+    getSTVPruefungZurueckAnGemeindeButton
 };
