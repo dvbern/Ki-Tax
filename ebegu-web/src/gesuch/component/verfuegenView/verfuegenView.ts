@@ -1529,7 +1529,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         return (
             this.isHoehereBeitraegeBeeintraechtigungAktiviert &&
-            EbeguUtil.isNotNullOrUndefined(this.getBetreuung().bedarfsstufe) &&
             verfuegungZeitabschnitte.findIndex(
                 z =>
                     EbeguUtil.isNotNullOrUndefined(z.bedarfsstufe) &&
