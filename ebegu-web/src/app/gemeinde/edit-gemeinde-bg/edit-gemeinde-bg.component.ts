@@ -93,6 +93,8 @@ export class EditGemeindeBGComponent implements OnInit {
     public erlaubenInstitutionenZuWaehlen: boolean;
     public institutionen: TSInstitution[];
     public anspruchBeschaeftigungAbhaengigkeitTypValues: Array<TSAnspruchBeschaeftigungAbhaengigkeitTyp>;
+    public keineBeschwerdeAdresseText: string;
+    public gemeindeName: string;
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     private readonly gesuchsperiodenMaxMassgebendesEinkommen: Map<string, number> = new Map<string, number>();
@@ -119,6 +121,9 @@ export class EditGemeindeBGComponent implements OnInit {
                 this.konfigurationsListe = stammdaten.konfigurationsListe;
                 this.gemeindeStatus = stammdaten.gemeinde.status;
                 this.initProperties();
+                this.getAdressTranslation();
+                this.getKeineBeschwerdeAdresseInfo();
+                this.getAdressTranslation();
             },
             err => LOG.error(err));
 
@@ -227,6 +232,28 @@ export class EditGemeindeBGComponent implements OnInit {
 
     public getKonfigKontingentierungString(): string {
         return this.translate.instant('KONTINGENTIERUNG');
+    }
+
+    public getKeineBeschwerdeAdresseInfo(): void {
+        this.stammdaten$.subscribe(res => {
+            this.keineBeschwerdeAdresseText = `${res.adresse.strasse} ${res.adresse.hausnummer},
+            ${res.adresse.plz} ${res.adresse.ort}`;
+            this.gemeindeName = res.gemeinde?.name;
+        })
+    }
+
+    public getAdressTranslation(): string {
+        const key = 'KEINE_BESCHWERDE_ADRESSE_TOOLTIP';
+        if (EbeguUtil.isNotNullOrUndefined(this.keineBeschwerdeAdresseText)) {
+            return this.translate.instant(key, {
+                adress: this.keineBeschwerdeAdresseText,
+                name: this.gemeindeName
+            })
+        }
+        return this.translate.instant(key, {
+            name: this.gemeindeName
+        })
+
     }
 
     public changeKonfigKontingentierung(gk: TSGemeindeKonfiguration): void {
