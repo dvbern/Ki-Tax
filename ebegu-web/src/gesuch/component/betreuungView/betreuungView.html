@@ -214,7 +214,8 @@
                                                 is-disabled="!vm.isEnabled()"
                                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
                                                 betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
-                                                is-luzern="vm.isLuzern">
+                                                is-luzern="vm.isLuzern"
+                                                vertrag="vm.getBetreuungModel().vertrag">
                             </dv-betreuung-input>
 
                             <!--provisorische monatliche Betreuungskosten-->
@@ -757,7 +758,8 @@
                                                             multiplier-kita="vm.getMultiplierKita()"
                                                             multiplier-tfo="vm.getMultiplierTFO()"
                                                             betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
-                                                            is-luzern="vm.isLuzern">
+                                                            is-luzern="vm.isLuzern"
+                                                            vertrag="vm.getBetreuungModel().vertrag">
                                         </dv-betreuung-input>
                                     </div>
                                     <!--Monatliche Betreuungskosten-->

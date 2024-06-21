@@ -36,7 +36,8 @@ export class BetreuungInputConfig implements IComponentOptions {
         multiplierKita: '<',
         multiplierTfo: '<',
         betreuungInputSwitchTyp: '<',
-        isLuzern: '<'
+        isLuzern: '<',
+        vertrag: '<'
     };
     public controller = BetreuungInput;
     public controllerAs = 'vm';
@@ -62,6 +63,7 @@ export class BetreuungInput implements IController {
     private multiplier: number = 1;
     private readonly multiplierKita: number;
     private readonly multiplierTfo: number;
+    private readonly vertrag: boolean;
 
     private pensumValue: number;
 
