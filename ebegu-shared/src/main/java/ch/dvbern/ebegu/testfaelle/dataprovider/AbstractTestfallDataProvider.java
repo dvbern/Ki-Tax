@@ -47,7 +47,7 @@ public abstract class AbstractTestfallDataProvider {
 
 	protected Auszahlungsdaten createDefaultAuszahlungsdaten() {
 		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
-		auszahlungsdaten.setIban(new IBAN("CH2089144969768441935"));
+		auszahlungsdaten.setIban(new IBAN("CH9789144829733648596"));
 		auszahlungsdaten.setKontoinhaber("kiBon Test");
 		return auszahlungsdaten;
 	}

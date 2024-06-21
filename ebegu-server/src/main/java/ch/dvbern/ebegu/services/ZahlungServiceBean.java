@@ -415,7 +415,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		Predicate predicateAngebot =
 			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
 		predicates.add(predicateAngebot);
 		// Gesuche, welche seit dem letzten Zahlungslauf verfuegt wurden. Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateDatum = cb.between(
