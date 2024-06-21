@@ -158,7 +158,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.AnwesenheitstageMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
-import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.KostenMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenKostenMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
@@ -1046,11 +1046,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen =
 				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
-		// (2) Da die Eingewöhnungspauschale in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
+		// (2) Da die Eingewöhnungskosten in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
 		// übernehmen
 		initialAbweichungen.forEach(abweichung -> {
-			if (abweichung.getEingewoehnungPauschale() == null && abweichung.getVertraglicheEingewoehnungPauschale() != null) {
-				abweichung.setEingewoehnungPauschale(abweichung.getVertraglicheEingewoehnungPauschale());
+			if (abweichung.getEingewoehnung() == null && abweichung.getVertraglicheEingewoehnung() != null) {
+				abweichung.setEingewoehnung(abweichung.getVertraglicheEingewoehnung());
 			}
 		});
 		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
@@ -1247,7 +1247,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				pensumFactory,
 				anwesenheitstageProMonatFactory,
 				kostenFactory,
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+				new EingewoehnungMessageFactory(mandant, locale)
 			),
 			schulergaenzendeBetreuungFactory
 		);

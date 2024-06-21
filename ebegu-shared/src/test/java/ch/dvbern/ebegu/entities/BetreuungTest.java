@@ -29,8 +29,11 @@ import ch.dvbern.ebegu.util.DateUtil;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 class BetreuungTest {
 
@@ -98,107 +101,107 @@ class BetreuungTest {
 		}
 
 		@Nested
-		class EingewoehnungPauschaleTest {
+		class EingewoehnungTest {
 
 			@Test
-			void pensumOverMonthEnd_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungPauschaleForEntireFirstMonth() {
+			void pensumOverMonthEnd_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungForEntireFirstMonth() {
 				final BigDecimal pensum = BigDecimal.valueOf(80);
 				final BigDecimal pauschale = BigDecimal.valueOf(500);
 				final BetreuungspensumContainer betreuungspensum = createBetreuungspensum(pensum, AUG_15, NOV_30);
 				Betreuung betreuung = setupBetreuung();
-				betreuungspensum.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, AUG_1, AUG_15));
+				betreuungspensum.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, AUG_1, AUG_15));
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum);
 
 				List<BetreuungspensumAbweichung> abweichungen = betreuung.fillAbweichungen(BigDecimal.ONE);
-				final EingewoehnungPauschale eingewoehnungPauschaleAug = abweichungen.get(0).getVertraglicheEingewoehnungPauschale();
+				final Eingewoehnung eingewoehnungAug = abweichungen.get(0).getVertraglicheEingewoehnung();
 
-				assertThat(eingewoehnungPauschaleAug, notNullValue());
-				assertThat(eingewoehnungPauschaleAug.getPauschale(), comparesEqualTo(pauschale));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigBis(), is(AUG_15));
+				assertThat(eingewoehnungAug, notNullValue());
+				assertThat(eingewoehnungAug.getKosten(), comparesEqualTo(pauschale));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigBis(), is(AUG_15));
 			}
 
 			@Test
-			void pensumOverMonthEndNotFirstMonth_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungPauschaleForEntireFirstMonth() {
+			void pensumOverMonthEndNotFirstMonth_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungForEntireFirstMonth() {
 				final BigDecimal pensum = BigDecimal.valueOf(80);
 				final BigDecimal pauschale = BigDecimal.valueOf(500);
 				final BetreuungspensumContainer betreuungspensum = createBetreuungspensum(pensum, OCT_16, NOV_30);
 				Betreuung betreuung = setupBetreuung();
-				betreuungspensum.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, AUG_1, AUG_15));
+				betreuungspensum.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, AUG_1, AUG_15));
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum);
 
 				List<BetreuungspensumAbweichung> abweichungen = betreuung.fillAbweichungen(BigDecimal.ONE);
 				final BetreuungspensumAbweichung abweichungAug = abweichungen.get(0);
 				final BetreuungspensumAbweichung abweichungSep = abweichungen.get(1);
 				final BetreuungspensumAbweichung abweichungOct = abweichungen.get(2);
-				final EingewoehnungPauschale eingewoehnungPauschaleOct = abweichungOct.getVertraglicheEingewoehnungPauschale();
+				final Eingewoehnung eingewoehnungOct = abweichungOct.getVertraglicheEingewoehnung();
 
-				assertThat(abweichungAug.getVertraglicheEingewoehnungPauschale(), nullValue());
-				assertThat(abweichungSep.getVertraglicheEingewoehnungPauschale(), nullValue());
-				assertThat(eingewoehnungPauschaleOct, notNullValue());
-				assertThat(eingewoehnungPauschaleOct.getPauschale(), comparesEqualTo(pauschale));
-				assertThat(eingewoehnungPauschaleOct.getGueltigkeit().getGueltigAb(), is(AUG_1));
-				assertThat(eingewoehnungPauschaleOct.getGueltigkeit().getGueltigBis(), is(AUG_15));
+				assertThat(abweichungAug.getVertraglicheEingewoehnung(), nullValue());
+				assertThat(abweichungSep.getVertraglicheEingewoehnung(), nullValue());
+				assertThat(eingewoehnungOct, notNullValue());
+				assertThat(eingewoehnungOct.getKosten(), comparesEqualTo(pauschale));
+				assertThat(eingewoehnungOct.getGueltigkeit().getGueltigAb(), is(AUG_1));
+				assertThat(eingewoehnungOct.getGueltigkeit().getGueltigBis(), is(AUG_15));
 			}
 
 			@Test
-			void multiplePensumInMonth_whenFillAbweichung_shouldHaveAbweichungWithBothEingewoehnungPauschaleAddedForEntireFirstMonth() {
+			void multiplePensumInMonth_whenFillAbweichung_shouldHaveAbweichungWithBothEingewoehnungAddedForEntireFirstMonth() {
 				final BigDecimal pensum = BigDecimal.valueOf(80);
 				final BigDecimal pauschale = BigDecimal.valueOf(500);
 				final BetreuungspensumContainer betreuungspensum1 = createBetreuungspensum(pensum, AUG_1, AUG_15);
 				final BetreuungspensumContainer betreuungspensum2 = createBetreuungspensum(pensum, AUG_16, NOV_30);
 				Betreuung betreuung = setupBetreuung();
-				betreuungspensum1.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, AUG_1, AUG_15));
-				betreuungspensum2.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, AUG_16, OCT_16));
+				betreuungspensum1.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, AUG_1, AUG_15));
+				betreuungspensum2.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, AUG_16, OCT_16));
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum1);
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum2);
 
 				List<BetreuungspensumAbweichung> abweichungen = betreuung.fillAbweichungen(BigDecimal.ONE);
 				final BetreuungspensumAbweichung abweichungAug = abweichungen.get(0);
 				final BetreuungspensumAbweichung abweichungSep = abweichungen.get(1);
-				final EingewoehnungPauschale eingewoehnungPauschaleAug = abweichungAug.getVertraglicheEingewoehnungPauschale();
+				final Eingewoehnung eingewoehnungAug = abweichungAug.getVertraglicheEingewoehnung();
 				final BigDecimal pauschaleTwoTimes = pauschale.add(pauschale);
 
-				assertThat(eingewoehnungPauschaleAug, notNullValue());
-				assertThat(eingewoehnungPauschaleAug.getPauschale(), comparesEqualTo(pauschaleTwoTimes));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigBis(), is(OCT_16));
-				assertThat(abweichungSep.getVertraglicheEingewoehnungPauschale(), nullValue());
+				assertThat(eingewoehnungAug, notNullValue());
+				assertThat(eingewoehnungAug.getKosten(), comparesEqualTo(pauschaleTwoTimes));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigBis(), is(OCT_16));
+				assertThat(abweichungSep.getVertraglicheEingewoehnung(), nullValue());
 			}
 
 			@Test
-			void multipleOneMonthPensenWithGap_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungPauschaleForBothMonths() {
+			void multipleOneMonthPensenWithGap_whenFillAbweichung_shouldHaveAbweichungWithEingewoehnungForBothMonths() {
 				final BigDecimal pensum = BigDecimal.valueOf(80);
 				final BigDecimal pauschale = BigDecimal.valueOf(500);
 				final BetreuungspensumContainer betreuungspensum1 = createBetreuungspensum(pensum, AUG_1, AUG_15);
 				final BetreuungspensumContainer betreuungspensum2 = createBetreuungspensum(pensum, OCT_1, OCT_16);
 				Betreuung betreuung = setupBetreuung();
-				betreuungspensum1.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, AUG_1, AUG_15));
-				betreuungspensum2.getBetreuungspensumJA().setEingewoehnungPauschale(createEinewoehnungPauschale(pauschale, OCT_1, OCT_16));
+				betreuungspensum1.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, AUG_1, AUG_15));
+				betreuungspensum2.getBetreuungspensumJA().setEingewoehnung(createEinewoehnung(pauschale, OCT_1, OCT_16));
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum1);
 				betreuung.getBetreuungspensumContainers().add(betreuungspensum2);
 
 				List<BetreuungspensumAbweichung> abweichungen = betreuung.fillAbweichungen(BigDecimal.ONE);
 				final BetreuungspensumAbweichung abweichungAug = abweichungen.get(0);
 				final BetreuungspensumAbweichung abweichungOct = abweichungen.get(2);
-				final EingewoehnungPauschale eingewoehnungPauschaleAug = abweichungAug.getVertraglicheEingewoehnungPauschale();
-				final EingewoehnungPauschale eingewoehnungPauschaleOct = abweichungOct.getVertraglicheEingewoehnungPauschale();
+				final Eingewoehnung eingewoehnungAug = abweichungAug.getVertraglicheEingewoehnung();
+				final Eingewoehnung eingewoehnungOct = abweichungOct.getVertraglicheEingewoehnung();
 
-				assertThat(eingewoehnungPauschaleAug, notNullValue());
-				assertThat(eingewoehnungPauschaleAug.getPauschale(), comparesEqualTo(pauschale));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
-				assertThat(eingewoehnungPauschaleAug.getGueltigkeit().getGueltigBis(), is(AUG_15));
-				assertThat(eingewoehnungPauschaleOct, notNullValue());
-				assertThat(eingewoehnungPauschaleOct.getPauschale(), comparesEqualTo(pauschale));
-				assertThat(eingewoehnungPauschaleOct.getGueltigkeit().getGueltigAb(), is(OCT_1));
-				assertThat(eingewoehnungPauschaleOct.getGueltigkeit().getGueltigBis(), is(OCT_16));
+				assertThat(eingewoehnungAug, notNullValue());
+				assertThat(eingewoehnungAug.getKosten(), comparesEqualTo(pauschale));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigAb(), is(AUG_1));
+				assertThat(eingewoehnungAug.getGueltigkeit().getGueltigBis(), is(AUG_15));
+				assertThat(eingewoehnungOct, notNullValue());
+				assertThat(eingewoehnungOct.getKosten(), comparesEqualTo(pauschale));
+				assertThat(eingewoehnungOct.getGueltigkeit().getGueltigAb(), is(OCT_1));
+				assertThat(eingewoehnungOct.getGueltigkeit().getGueltigBis(), is(OCT_16));
 			}
 
-			private EingewoehnungPauschale createEinewoehnungPauschale(BigDecimal pauschale, LocalDate von, LocalDate bis) {
-				EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
-				eingewoehnungPauschale.setPauschale(pauschale);
-				eingewoehnungPauschale.setGueltigkeit(new DateRange(von, bis));
-				return eingewoehnungPauschale;
+			private Eingewoehnung createEinewoehnung(BigDecimal pauschale, LocalDate von, LocalDate bis) {
+				Eingewoehnung eingewoehnung = new Eingewoehnung();
+				eingewoehnung.setKosten(pauschale);
+				eingewoehnung.setGueltigkeit(new DateRange(von, bis));
+				return eingewoehnung;
 			}
 		}
 	}

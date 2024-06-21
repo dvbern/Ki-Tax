@@ -15,32 +15,36 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
-import java.math.BigDecimal;
+
+import lombok.EqualsAndHashCode;
 
 /**
  * Superklasse fuer ein Pensum
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxEingewoehnungPauschale extends JaxAbstractDateRangedDTO {
+@EqualsAndHashCode(callSuper = true)
+public class JaxEingewoehnung extends JaxAbstractDateRangedDTO {
 
 
 	private static final long serialVersionUID = 5161971483109161443L;
 
 	@Nonnull
-	private BigDecimal pauschale;
+	private BigDecimal kosten;
 
 
 	@Nonnull
-	public BigDecimal getPauschale() {
-		return pauschale;
+	public BigDecimal getKosten() {
+		return kosten;
 	}
 
-	public void setPauschale(@Nonnull BigDecimal pauschale) {
-		this.pauschale = pauschale;
+	public void setKosten(@Nonnull BigDecimal kosten) {
+		this.kosten = kosten;
 	}
 }

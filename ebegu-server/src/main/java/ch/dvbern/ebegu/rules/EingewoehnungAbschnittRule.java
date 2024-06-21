@@ -15,13 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.types.DateRange;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -30,10 +23,23 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EingewoehnungPauschaleAbschnittRule extends AbstractAbschnittRule {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.types.DateRange;
+
+public class EingewoehnungAbschnittRule extends AbstractAbschnittRule {
 
 
-	public EingewoehnungPauschaleAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	public EingewoehnungAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
@@ -51,32 +57,31 @@ public class EingewoehnungPauschaleAbschnittRule extends AbstractAbschnittRule {
 
 
 		return betreuungspensen.stream()
-			.map(betreuungspensumContainer ->
-				createVerfuegungsZeitabschnittIfEingewoehnungPauschale(betreuungspensumContainer.getBetreuungspensumJA()))
+			.map(b -> createVerfuegungsZeitabschnittIfEingewoehnung(b.getBetreuungspensumJA()))
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 	}
 
 	@Nullable
-	private VerfuegungZeitabschnitt createVerfuegungsZeitabschnittIfEingewoehnungPauschale(
+	private VerfuegungZeitabschnitt createVerfuegungsZeitabschnittIfEingewoehnung(
 		Betreuungspensum betreuungspensum
 	) {
-		if (betreuungspensum.getEingewoehnungPauschale() == null) {
+		if (betreuungspensum.getEingewoehnung() == null) {
 			return null;
 		}
 
-		return toVerfuegungZeitabschnitt(betreuungspensum.getEingewoehnungPauschale(), betreuungspensum.getGueltigkeit());
+		return toVerfuegungZeitabschnitt(betreuungspensum.getEingewoehnung(), betreuungspensum.getGueltigkeit());
 	}
 
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
-		@Nonnull EingewoehnungPauschale eingewoehnungPauschale,
+		@Nonnull Eingewoehnung eingewoehnung,
 		@Nonnull DateRange gueltigkeitBetreuungspensum
 	) {
 		DateRange gueltigkeit = calculateGueltigkeitForEingewoehnungZa(gueltigkeitBetreuungspensum);
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
-		zeitabschnitt.setEingewoehnungPauschale(eingewoehnungPauschale.getPauschale());
-		zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINGEWOEHUNG_PASCHALE, getLocale());
+		zeitabschnitt.setEingewoehnungKosten(eingewoehnung.getKosten());
+		zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINGEWOEHUNG_KOSTEN, getLocale());
 		return zeitabschnitt;
 	}
 
