@@ -331,16 +331,24 @@
 
                     <!--provisorische Betreuung KITA TFO-->
                     <fieldset>
-                        <div ng-if="vm.isProvisorischeBetreuung() && !vm.getBetreuungModel().keineDetailinformationen && !vm.isBetreuungsangebotMittagstisch()">
-
-                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
-                                                input-id="provPensum"
-                                                index="$index"
-                                                is-disabled="!vm.isEnabled()"
-                                                betreuungsangebot-typ="vm.betreuungsangebot.key"
-                                                betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
-                                                is-luzern="vm.isLuzern"
-                                                vertrag="vm.getBetreuungModel().vertrag">
+                        <div
+                            ng-if="
+                                vm.isProvisorischeBetreuung() &&
+                                !vm.getBetreuungModel()
+                                    .keineDetailinformationen &&
+                                !vm.isBetreuungsangebotMittagstisch()
+                            "
+                        >
+                            <dv-betreuung-input
+                                pensum-container="vm.getBetreuungspensum(0)"
+                                input-id="provPensum"
+                                index="$index"
+                                is-disabled="!vm.isEnabled()"
+                                betreuungsangebot-typ="vm.betreuungsangebot.key"
+                                betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
+                                is-luzern="vm.isLuzern"
+                                vertrag="vm.getBetreuungModel().vertrag"
+                            >
                             </dv-betreuung-input>
 
                             <!--provisorische monatliche Betreuungskosten-->
@@ -1181,16 +1189,20 @@
 
                                     <!--Betreuungspensum-->
                                     <div ng-if="vm.showBetreuungsPensumInput()">
-                                        <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
-                                                            input-id="betreuungspensum-{{$index}}"
-                                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                            is-disabled="!vm.isPensumEditable()"
-                                                            index="$index"
-                                                            multiplier-kita="vm.getMultiplierKita()"
-                                                            multiplier-tfo="vm.getMultiplierTFO()"
-                                                            betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
-                                                            is-luzern="vm.isLuzern"
-                                                            vertrag="vm.getBetreuungModel().vertrag">
+                                        <dv-betreuung-input
+                                            pensum-container="vm.getBetreuungspensum($index)"
+                                            input-id="betreuungspensum-{{
+                                                $index
+                                            }}"
+                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                            is-disabled="!vm.isPensumEditable()"
+                                            index="$index"
+                                            multiplier-kita="vm.getMultiplierKita()"
+                                            multiplier-tfo="vm.getMultiplierTFO()"
+                                            betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
+                                            is-luzern="vm.isLuzern"
+                                            vertrag="vm.getBetreuungModel().vertrag"
+                                        >
                                         </dv-betreuung-input>
                                     </div>
                                     <!--Monatliche Betreuungskosten-->

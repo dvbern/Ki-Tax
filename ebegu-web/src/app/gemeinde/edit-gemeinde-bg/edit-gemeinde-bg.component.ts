@@ -305,7 +305,7 @@ export class EditGemeindeBGComponent implements OnInit {
             this.keineBeschwerdeAdresseText = `${res.adresse.strasse} ${res.adresse.hausnummer},
             ${res.adresse.plz} ${res.adresse.ort}`;
             this.gemeindeName = res.gemeinde?.name;
-        })
+        });
     }
 
     public getAdressTranslation(): string {
@@ -314,12 +314,11 @@ export class EditGemeindeBGComponent implements OnInit {
             return this.translate.instant(key, {
                 adress: this.keineBeschwerdeAdresseText,
                 name: this.gemeindeName
-            })
+            });
         }
         return this.translate.instant(key, {
             name: this.gemeindeName
-        })
-
+        });
     }
 
     public changeKonfigKontingentierung(gk: TSGemeindeKonfiguration): void {

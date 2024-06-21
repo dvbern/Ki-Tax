@@ -17,18 +17,23 @@
 <div ng-form="pensumForm">
     <div class="pensum-input">
         <dv-input-container class="form-group col-md-12">
-            <label class="md-no-float"
-                   for="betreuungspensum-{{vm.index}}">
-                <span>{{vm.getBetreuungspensumLabel(vm.index + 1)}}</span>
-                <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte && vm.vertrag"
-                            input-id="betreuungspensum-{{vm.index}}"
-                            text="vm.betreuungspensumHelpKey | translate"></dv-tooltip>
-                <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte && !vm.vertrag"
-                            input-id="betreuungspensum-{{vm.index + 1}}"
-                            text="'BETREUUNGSPENSUM_HELP_UNBEKANNTE_INSTITUTION' | translate"></dv-tooltip>
-                <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte"
-                            input-id="betreuungspensum-{{vm.index}}"
-                            text="'BETREUUNGSPENSUM_HELP_FKJV' | translate"></dv-tooltip>
+            <label class="md-no-float" for="betreuungspensum-{{ vm.index }}">
+                <span>{{ vm.getBetreuungspensumLabel(vm.index + 1) }}</span>
+                <dv-tooltip
+                    ng-if="!vm.gesuchModelManager.isFKJVTexte && vm.vertrag"
+                    input-id="betreuungspensum-{{ vm.index }}"
+                    text="vm.betreuungspensumHelpKey | translate"
+                ></dv-tooltip>
+                <dv-tooltip
+                    ng-if="!vm.gesuchModelManager.isFKJVTexte && !vm.vertrag"
+                    input-id="betreuungspensum-{{ vm.index + 1 }}"
+                    text="'BETREUUNGSPENSUM_HELP_UNBEKANNTE_INSTITUTION' | translate"
+                ></dv-tooltip>
+                <dv-tooltip
+                    ng-if="vm.gesuchModelManager.isFKJVTexte"
+                    input-id="betreuungspensum-{{ vm.index }}"
+                    text="'BETREUUNGSPENSUM_HELP_FKJV' | translate"
+                ></dv-tooltip>
             </label>
             <div class="dv-input-container-medium-label">
                 <input
