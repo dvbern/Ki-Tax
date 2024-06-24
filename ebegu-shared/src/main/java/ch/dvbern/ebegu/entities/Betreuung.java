@@ -335,7 +335,12 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 		boolean sameErweiterteBeduerfnisse =
 			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
 
-		return pensenSame && abwesenheitenSame && statusSame && sameErweiterteBeduerfnisse;
+		return pensenSame
+			&& abwesenheitenSame
+			&& statusSame
+			&& sameErweiterteBeduerfnisse
+			&& this.getBedarfsstufe() == otherBetreuung.bedarfsstufe
+			&& this.isAuszahlungAnEltern() == otherBetreuung.isAuszahlungAnEltern();
 	}
 
 	@Transient
