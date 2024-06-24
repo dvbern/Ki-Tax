@@ -17,12 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.awt.Color;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -37,6 +31,11 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenerator {
 
@@ -86,7 +85,8 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
 		VerfuegungTable verfuegungTable = new VerfuegungTable(
 			zeitabschnitte,
-			getPageConfiguration()
+			getPageConfiguration(),
+			false
 		);
 		verfuegungTable
 			.add(createVonColumn())
@@ -133,68 +133,6 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
 			.build();
 	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createPensumAnspruchKonkretColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_BG))
-			.width(88)
-			.dataExtractor(this::printVerguenstigt)
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createPensumAnspruchColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_ANSPRUCH))
-			.width(88)
-			.dataExtractor(this::printAnspruch)
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createPensumBetreuungColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_BETREUUNG))
-			.width(88)
-			.dataExtractor(this::printEffektiv)
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createElternbeitragColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(ELTERNBEITRAG))
-			.bgColor(Color.LIGHT_GRAY)
-			.width(108)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getElternbeitrag()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createGutscheinOhneVollkostenColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN))
-			.width(100)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createVollkostenColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(VOLLKOSTEN))
-			.width(88)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVollkosten()))
-			.build();
-	}
-
 
 	@Override
 	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {

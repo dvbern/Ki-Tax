@@ -17,20 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.awt.Color;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -64,6 +50,19 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Nonnull;
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
@@ -409,7 +408,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
 		VerfuegungTable verfuegungTable = new VerfuegungTable(
 			zeitabschnitte,
-			getPageConfiguration()
+			getPageConfiguration(),
+			true
 		);
 		verfuegungTable
 			.add(createVonColumn())

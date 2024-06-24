@@ -17,10 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -36,6 +32,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -91,7 +90,8 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
 		VerfuegungTable verfuegungTable = new VerfuegungTable(
 			zeitabschnitte,
-			getPageConfiguration()
+			getPageConfiguration(),
+			true
 		);
 
 		verfuegungTable.add(createVonColumn())

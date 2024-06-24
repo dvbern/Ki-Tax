@@ -17,15 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
@@ -41,6 +32,14 @@ import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 @RequiredArgsConstructor
@@ -49,9 +48,11 @@ public class VerfuegungTable {
 	final List<VerfuegungTableColumnGroup> groups = new ArrayList<>();
 	final List<VerfuegungZeitabschnitt> zeitabschnitte;
 	final PageConfiguration pageConfiguration;
+	final boolean hasRomanNumberTitel;
 
 	private Font fontTabelle = null;
 	private Font fontTabelleBold = null;
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungTable.class);
 
@@ -89,7 +90,7 @@ public class VerfuegungTable {
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * getFontTabelle().getSize() * 2);
 
-		if (hasAnyRomanNumber()) {
+		if (hasRomanNumberTitel && hasAnyRomanNumber()) {
 			buildRomanNumberRow(table);
 		}
 		buildFirstHeaderRow(table);

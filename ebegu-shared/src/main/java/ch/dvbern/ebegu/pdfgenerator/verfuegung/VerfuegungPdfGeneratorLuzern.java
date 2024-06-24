@@ -22,12 +22,12 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
-import com.lowagie.text.*;
-import com.lowagie.text.Font;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
@@ -70,7 +70,8 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
 		VerfuegungTable verfuegungTable = new VerfuegungTable(
 			zeitabschnitte,
-			getPageConfiguration()
+			getPageConfiguration(),
+			false
 		);
 
 		verfuegungTable
@@ -101,36 +102,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 
 	@Override
 	@Nonnull
-	protected VerfuegungTableColumn createPensumAnspruchKonkretColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_BG))
-			.width(88)
-			.dataExtractor(this::printVerguenstigt)
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createPensumAnspruchColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_ANSPRUCH))
-			.width(88)
-			.dataExtractor(this::printAnspruch)
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createVollkostenColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(VOLLKOSTEN))
-			.width(88)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVollkosten()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
 	protected VerfuegungTableColumn createGutscheinElternColumn() {
 		return VerfuegungTableColumn.builder()
 			.title(translate(GUTSCHEIN_AN_ELTERN))
@@ -150,16 +121,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 			.boldContent(true)
 			.width(108)
 			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createPensumBetreuungColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(PENSUM_BETREUUNG))
-			.width(88)
-			.dataExtractor(this::printEffektiv)
 			.build();
 	}
 

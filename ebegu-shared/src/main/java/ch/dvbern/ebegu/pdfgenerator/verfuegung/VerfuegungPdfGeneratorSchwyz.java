@@ -17,11 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.awt.Color;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -34,10 +29,12 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
@@ -94,7 +91,8 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
 		VerfuegungTable verfuegungTable = new VerfuegungTable(
 			zeitabschnitte,
-			getPageConfiguration()
+			getPageConfiguration(),
+			false
 		);
 
 		verfuegungTable
@@ -115,58 +113,8 @@ public class VerfuegungPdfGeneratorSchwyz extends AbstractVerfuegungPdfGenerator
 	protected VerfuegungTableColumn createVollkostenColumn() {
 		return VerfuegungTableColumn.builder()
 			.title(translate(VOLLKOSTEN))
-			.romanNumber("IV")
 			.width(100)
 			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVollkosten()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createGutscheinOhneMinimalbeitragColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG))
-			.romanNumber("V")
-			.bgColor(Color.LIGHT_GRAY)
-			.boldContent(true)
-			.width(100)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createElternbeitragColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(ELTERNBEITRAG))
-			.romanNumber("VI")
-			.bgColor(Color.LIGHT_GRAY)
-			.width(108)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createGutscheinInstitutionColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(GUTSCHEIN_AN_INSTITUTION))
-			.romanNumber("VII")
-			.bgColor(Color.LIGHT_GRAY)
-			.width(110)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
-			.build();
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungTableColumn createGutscheinElternColumn() {
-		return VerfuegungTableColumn.builder()
-			.title(translate(GUTSCHEIN_AN_ELTERN))
-			.romanNumber("VII")
-			.bgColor(Color.LIGHT_GRAY)
-			.width(110)
-			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnEltern(abschnitt)))
 			.build();
 	}
 
