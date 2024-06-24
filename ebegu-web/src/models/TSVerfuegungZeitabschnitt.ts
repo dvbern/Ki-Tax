@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSBedarfsstufe} from './enums/betreuung/TSBedarfsstufe';
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
@@ -59,4 +60,6 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public auszahlungAnEltern: boolean;
     public beitragshoeheProzent: number;
     public zusaetzlicherGutscheinGemeindeBetrag: number;
+    public bedarfsstufe: TSBedarfsstufe;
+    public hoehererBeitrag: number;
 }

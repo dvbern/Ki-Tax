@@ -3271,6 +3271,14 @@
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MIN_MASSGEBENDES_EINKOMMEN_READONLY": "Massgebendes Einkommen in CHF für zusätzlichen Gutschein (Min): {{value}} CHF",
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY": "Massgebendes Einkommen in CHF für zusätzlichen Gutschein (Max): {{value}} CHF",
     "STAEDTISCHER_ZUSCHLAG_IN_CHF": "Städtischer Zuschlag in CHF",
-
+    "HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT": "Für das Kind wurden höhere Beiträge beantragt.",
+    "BEDARFSSTUFE_WAEHLEN": "Bedarfsstufe gemäss Beurteilung der Fachstelle für Kinderbetreuung:",
+    "BEDARFSSTUFE_INFOTEXT": "Wurden die Unterlagen von den Gesuchstellenden digital hochgeladen, so muss die Gemeinde diese zur Beurteilung an die Fachstelle für Kinderbetreuung per E-Mail weiterleiten. Haben die Gesuchstellenden sich entschieden die Unterlagen per Post einzureichen, so gelangen diese direkt an die Fachstelle für Kinderbetreuung. Die Gemeinde erfasst die Bedarfsstufe, nachdem sie von der Fachstelle für Kinderbetreuung darüber informiert worden ist.",
+    "BEDARFSSTUFE_KEINE": "Keine höheren Beiträge",
+    "BEDARFSSTUFE_1": "Bedarfsstufe: 1 / leicht",
+    "BEDARFSSTUFE_2": "Bedarfsstufe: 2 / mittel",
+    "BEDARFSSTUFE_3": "Bedarfsstufe: 3 / ausgeprägt",
+    "BEDARFSSTUFE_MISSING_BEDARFSSTUFE": "Für das Kind {{vorname}} {{nachname}} wurden höhere Beiträge beantragt. Setzen Sie die Bedarfsstufe in der Betreuung des Kindes nach erfolgter Beurteilung der Fachstelle für Kinderbetreuung. <a target='_blank' href='assets/pdf/schwyz/Workflow_hoehere_Beitraege.pdf'>Weitere Informationen zum Ablauf finden Sie hier.</a>",
+    "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

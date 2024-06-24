@@ -76,7 +76,7 @@ public class MutationsMergerTest {
 
 	private static final BigDecimal MAX_MASGEBENDES_EINKOMMEN = BigDecimal.valueOf(160000);
 
-	private static final BigDecimal DEFAULT_MASGEBENDES_EINKOMMEN = MathUtil.DEFAULT.from(50000);
+	private static final BigDecimal DEFAULT_MASGEBENDES_EINKOMMEN = BigDecimal.valueOf(50000);
 	private static final int DEFAULT_PENSUM = 80;
 
 	@Test
@@ -1436,22 +1436,12 @@ public class MutationsMergerTest {
 			bpPensumNachMutation + ERWERBSPENSUM_ZUSCHLAG);
 	}
 
-	private void setErwerbspensumContainer(Betreuung betreuung, int pensum) {
-		betreuung.extractGesuch().getGesuchsteller1().getErwerbspensenContainers().clear();
-		betreuung.extractGesuch().getGesuchsteller1().addErwerbspensumContainer
-			(TestDataUtil.createErwerbspensum(START_PERIODE, TestDataUtil.ENDE_PERIODE, pensum));
-	}
-
-
-
 	private Verfuegung prepareErstGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR, int bpPensum) {
 		Betreuung erstgesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensum, START_PERIODE);
 		erstgesuchBetreuung.extractGesuch().setEingangsdatum(eingangsdatum);
 		erstgesuchBetreuung.extractGesuch().getFall().setMandant(mandantAR);
 		return MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 	}
-
-
 
 	private Verfuegung prepareErstTagesschuleGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR) {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createGesuchWithAnmeldungTagesschule();

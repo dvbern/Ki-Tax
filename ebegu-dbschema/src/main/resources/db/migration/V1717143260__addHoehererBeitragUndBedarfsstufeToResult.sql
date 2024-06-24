@@ -15,21 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator.verfuegung;
-
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@Builder
-public class VerfuegungPdfGeneratorKonfiguration {
-
-	boolean kontingentierungEnabledAndEntwurf;
-	boolean stadtBernAsivConfigured;
-	boolean FKJVTexte;
-	boolean isHoehereBeitraegeConfigured;
-	BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
-}
+ALTER TABLE bgcalculation_result ADD COLUMN IF NOT EXISTS hoeherer_beitrag DECIMAL(19,2);
+ALTER TABLE bgcalculation_result_aud ADD COLUMN IF NOT EXISTS hoeherer_beitrag DECIMAL(19,2);
+ALTER TABLE bgcalculation_result ADD COLUMN IF NOT EXISTS bedarfsstufe varchar(255);
+ALTER TABLE bgcalculation_result_aud ADD COLUMN IF NOT EXISTS bedarfsstufe varchar(255);

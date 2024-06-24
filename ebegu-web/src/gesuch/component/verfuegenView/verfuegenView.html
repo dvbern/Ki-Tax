@@ -711,6 +711,10 @@
                                         ></dv-tooltip>
                                     </td>
                                     <td
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                    ></td>
+                                    <td
                                         ng-if="vm.showGutscheinProStunde()"
                                         class="result"
                                     >
@@ -840,6 +844,11 @@
                                         "
                                         class="result"
                                         data-translate="MIN_ELTERNBEITRAG"
+                                    ></th>
+                                    <th
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                        data-translate="GUTSCHEIN_HOEHERER_BEITRAG"
                                     ></th>
                                     <th
                                         ng-if="vm.showGutscheinProStunde()"
@@ -1023,6 +1032,12 @@
                                         "
                                         class="result"
                                         ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"
+                                    ></td>
+                                    <!-- Höherer Beiträge -->
+                                    <td
+                                        ng-if="vm.areHoehereBeitraegeGewaehrt()"
+                                        class="result"
+                                        ng-bind="verfuegungZeitabschnitt.hoehererBeitrag | currency : '' : 2"
                                     ></td>
                                     <!-- Gutschein pro Stunde -->
                                     <td

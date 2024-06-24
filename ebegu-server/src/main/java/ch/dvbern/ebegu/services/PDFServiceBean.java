@@ -131,7 +131,8 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung));
+			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
@@ -269,7 +270,8 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			art,
-			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected));
+			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 

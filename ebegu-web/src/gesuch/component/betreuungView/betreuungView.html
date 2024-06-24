@@ -329,14 +329,12 @@
                         </div>
                     </div>
 
-                    <!--provisorische Betreuung KITA TFO-->
+                    <!--provisorische Betreuung-->
                     <fieldset>
                         <div
                             ng-if="
                                 vm.isProvisorischeBetreuung() &&
-                                !vm.getBetreuungModel()
-                                    .keineDetailinformationen &&
-                                !vm.isBetreuungsangebotMittagstisch()
+                                !vm.getBetreuungModel().keineDetailinformationen
                             "
                         >
                             <dv-betreuung-input
@@ -985,6 +983,66 @@
                                     class="error"
                                 >
                                 </dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Infobox höhere Beiträge beantragt  -->
+                    <div
+                        class="row margin-bottom-20"
+                        ng-if="
+                            vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt &&
+                            vm.isHoehereBeitraegeEinstellungAktiviert
+                        "
+                    >
+                        <div class="well well-status-warten">
+                            {{
+                                'HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT'
+                                    | translate
+                            }}
+                        </div>
+                    </div>
+
+                    <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
+                    <div
+                        class="row margin-bottom-20"
+                        ng-if="
+                            vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt &&
+                            vm.isHoehereBeitraegeEinstellungAktiviert
+                        "
+                    >
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label
+                                    class="md-no-float margin-bottom-20"
+                                    for="bedarfsstufe"
+                                >
+                                    <span
+                                        class="required"
+                                        data-translate="BEDARFSSTUFE_WAEHLEN"
+                                    ></span>
+                                    <dv-tooltip
+                                        text="'BEDARFSSTUFE_INFOTEXT' | translate"
+                                    >
+                                    </dv-tooltip>
+                                </label>
+                                <div class="dv-select-style">
+                                    <select
+                                        class="form-control"
+                                        id="bedarfsstufe"
+                                        name="bedarfsstufe"
+                                        ng-change="vm.changedBedarfsstufe()"
+                                        ng-disabled="!vm.canEditBedarfsstufen"
+                                        ng-model="vm.getBetreuungModel().bedarfsstufe"
+                                        ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
+                                        ng-required="vm.canEditBedarfsstufen"
+                                    ></select>
+
+                                    <dv-error-messages
+                                        for="vm.form.bedarfsstufe.$error"
+                                        input-id="bedarfsstufe"
+                                    ></dv-error-messages>
+                                </div>
                             </div>
                         </div>
                     </div>

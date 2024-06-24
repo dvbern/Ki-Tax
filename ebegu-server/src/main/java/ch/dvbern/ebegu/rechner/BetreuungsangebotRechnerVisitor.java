@@ -33,7 +33,7 @@ public class BetreuungsangebotRechnerVisitor implements BetreuungsangebotTypVisi
 	}
 
 	@Override
-	public AbstractRechner visitMittagtisch() {
+	public AbstractRechner visitMittagstisch() {
 		return new MittagstischRechnerVisitor().visit(mandant);
 	}
 

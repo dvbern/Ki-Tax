@@ -36,6 +36,7 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {
+    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA,
     isAnyStatusOfVerfuegt,
     isVerfuegtOrSTV,
     TSAntragStatus
@@ -85,6 +86,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {createTSBetreuungspensum} from './betreuungView.util';
+import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -128,6 +130,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'MandantService',
         'EbeguRestUtil'
     ];
+    public bedarfsstufe: TSBedarfsstufe = null;
+    public bedarfsstufeValues: TSBedarfsstufe[] = [
+        TSBedarfsstufe.KEINE,
+        TSBedarfsstufe.BEDARFSSTUFE_1,
+        TSBedarfsstufe.BEDARFSSTUFE_2,
+        TSBedarfsstufe.BEDARFSSTUFE_3
+    ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
     // der ausgewaehlte instStamm wird hier gespeichert und dann in die entsprechende
@@ -157,26 +166,28 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
+    public minPensumSprachlicheIndikation: number;
+    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
+    public provMonatlicheBetreuungskosten: number;
+    public abweichungenAktiviert: boolean;
+    public auszahlungAnEltern: boolean;
+    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    public hoehereBeitraegeWegenBeeintraechtigungBeantragt: boolean = false;
+    public isHoehereBeitraegeEinstellungAktiviert: boolean = false;
+    public canEditBedarfsstufen: boolean = false;
+    protected minEintrittsdatum: moment.Moment;
     private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
-    protected minEintrittsdatum: moment.Moment;
     private betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
-    public isTFOKostenBerechnungStuendlich: boolean = false;
-
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
     private oeffnungsstundenTFO: number;
     private kitastundenprotag: number;
-
     private multiplierKita: number;
     private multiplierTFO: number;
-
-    public minPensumSprachlicheIndikation: number;
-
-    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
-    public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
     private mandant: KiBonMandant;
     private angebotTS: boolean;
@@ -186,12 +197,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
     private schulergaenzendeBetreuungAktiv: boolean = false;
-
     private erweitereBeduerfnisseAktiv: boolean = false;
-    public abweichungenAktiviert: boolean;
-
-    public auszahlungAnEltern: boolean;
-    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
     private isAnwesenheitstageProMonatAktiviert: boolean = false;
 
     public constructor(
@@ -349,6 +355,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     // just to read!
                     this.kindModel =
                         this.gesuchModelManager.getKindToWorkWith();
+                    this.canRoleEditBedarfsstufe();
+
+                    this.hoehereBeitraegeWegenBeeintraechtigungBeantragt =
+                        this.hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(
+                            this.kindModel
+                        );
                 } else {
                     this.$log.error(
                         `There is no kind available with kind-number:${this.$stateParams.kindNumber}`
@@ -391,199 +403,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     });
                 this.initEinstellungen();
             });
-    }
-
-    private initEinstellungen(): void {
-        this.loadAuszahlungAnEltern();
-        const gesuchsperiodeId: string =
-            this.gesuchModelManager.getGesuchsperiode().id;
-        this.einstellungRS
-            .getAllEinstellungenBySystemCached(gesuchsperiodeId)
-            .subscribe(
-                (response: TSEinstellung[]) => {
-                    response
-                        .filter(
-                            r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP
-                        )
-                        .forEach(value => {
-                            this.eingewoehnungTyp = stringEingewoehnungTyp(
-                                value.value
-                            );
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT
-                        )
-                        .forEach(value => {
-                            this.kitaPlusZuschlagAktiviert =
-                                value.getValueAsBoolean();
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN
-                        )
-                        .forEach(value => {
-                            if (
-                                EbeguUtil.isNotNullAndTrue(
-                                    value.getValueAsBoolean()
-                                )
-                            ) {
-                                this.isKesbPlatzierung = false;
-                                this.changeKeineKesbPlatzierung();
-                            }
-                            this.hideKesbPlatzierung =
-                                value.getValueAsBoolean();
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN
-                        )
-                        .forEach(value => {
-                            if (
-                                EbeguUtil.isNotNullAndTrue(
-                                    value.getValueAsBoolean()
-                                )
-                            ) {
-                                this.besondereBeduerfnisseAufwandKonfigurierbar =
-                                    true;
-                            }
-                        });
-                    response
-                        .filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
-                        .forEach(einstellung => {
-                            this.fachstellenTyp =
-                                this.ebeguRestUtil.parseFachstellenTyp(
-                                    einstellung.value
-                                );
-                        });
-
-                    response
-                        .filter(
-                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA
-                        )
-                        .forEach(einstellung => {
-                            this.oeffnungstageKita = parseInt(
-                                einstellung.value,
-                                10
-                            );
-                        });
-                    response
-                        .filter(
-                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO
-                        )
-                        .forEach(einstellung => {
-                            this.oeffnungstageTFO = parseInt(
-                                einstellung.value,
-                                10
-                            );
-                        });
-                    response
-                        .filter(
-                            r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO
-                        )
-                        .forEach(einstellung => {
-                            this.oeffnungsstundenTFO = parseInt(
-                                einstellung.value,
-                                10
-                            );
-                        });
-                    response
-                        .filter(
-                            r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG
-                        )
-                        .forEach(einstellung => {
-                            this.kitastundenprotag = parseInt(
-                                einstellung.value,
-                                10
-                            );
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN
-                        )
-                        .forEach(einstellung => {
-                            this.sprachfoerderungBestaetigenAktiviert =
-                                einstellung.getValueAsBoolean();
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN
-                        )
-                        .forEach(value => {
-                            if (
-                                EbeguUtil.isNotNullAndTrue(
-                                    value.getValueAsBoolean()
-                                )
-                            ) {
-                                this.schulergaenzendeBetreuungAktiv = true;
-                            }
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV
-                        )
-                        .forEach(value => {
-                            if (
-                                EbeguUtil.isNotNullAndTrue(
-                                    value.getValueAsBoolean()
-                                )
-                            ) {
-                                this.erweitereBeduerfnisseAktiv = true;
-                            }
-                        });
-                    response
-                        .filter(
-                            r =>
-                                r.key ===
-                                TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT
-                        )
-                        .forEach(value => {
-                            this.isAnwesenheitstageProMonatAktiviert =
-                                EbeguUtil.isNotNullAndTrue(
-                                    value.getValueAsBoolean()
-                                );
-                        });
-                },
-                error => LOG.error(error)
-            );
-
-        this.einstellungRS
-            .findEinstellung(
-                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
-                this.gesuchModelManager.getGemeinde().id,
-                gesuchsperiodeId
-            )
-            .subscribe(
-                res => {
-                    this.zuschlagBehinderungProTag = Number(res.value);
-                },
-                error => LOG.error(error)
-            );
-
-        this.einstellungRS
-            .findEinstellung(
-                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
-                this.gesuchModelManager.getGemeinde().id,
-                gesuchsperiodeId
-            )
-            .subscribe(
-                res => {
-                    this.zuschlagBehinderungProStd = Number(res.value);
-                },
-                error => LOG.error(error)
-            );
     }
 
     private loadAuszahlungAnEltern(): void {
@@ -644,6 +463,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return this.betreuungspensumAnzeigeTypEinstellung;
+    }
+
+    public changedBedarfsstufe() {
+        return this.getBetreuungModel().bedarfsstufe;
     }
 
     /**
@@ -749,11 +572,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.kindModel;
     }
 
+    public hasHoehereBeitraegeWegenBeeintraechtigungBeantragt(
+        kindModel: TSKindContainer
+    ): boolean {
+        return kindModel.kindJA
+            ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+    }
+
     public getBetreuungModel(): TSBetreuung {
         if (this.isMutationsmeldungStatus && this.mutationsmeldungModel) {
             return this.mutationsmeldungModel;
         }
-
         return this.model;
     }
 
@@ -1154,13 +983,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public reset(): void {
         this.removeBetreuungFromKind(); // wenn model existiert und nicht neu ist wegnehmen, sonst resetten
-    }
-
-    private removeBetreuungFromKind(): void {
-        if (this.model && !this.model.timestampErstellt) {
-            // wenn die Betreeung noch nicht erstellt wurde, loeschen wir die Betreuung vom Array
-            this.gesuchModelManager.removeBetreuungFromKind();
-        }
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
@@ -2233,10 +2055,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         );
     }
 
-    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
-        return this.besondereBeduerfnisseAufwandKonfigurierbar;
-    }
-
     public isBesondereBeduerfnisseAufwandVisible(): boolean {
         if (!this.isBesondereBeduerfnisseAufwandKonfigurierbar()) {
             return false;
@@ -2253,6 +2071,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             );
         }
         return true;
+    }
+
+    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+        return this.besondereBeduerfnisseAufwandKonfigurierbar;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {
@@ -2444,8 +2266,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.getInstitutionenSDList();
         }
         const searchString = query.toLocaleLowerCase();
-        return this.getInstitutionenSDList().filter(item => {
-            return (
+        return this.getInstitutionenSDList().filter(
+            item =>
                 item.institution.name
                     .toLocaleLowerCase()
                     .indexOf(searchString) > -1 ||
@@ -2455,8 +2277,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     -1 ||
                 item.adresse.strasse.toLocaleLowerCase().indexOf(searchString) >
                     -1
-            );
-        });
+        );
     }
 
     public isAnmeldungTSEditable(): boolean {
@@ -2727,5 +2548,237 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return 'MONATLICHE_BETREUUNGSKOSTEN_TFO_HELP';
         }
         return 'MONATLICHE_BETREUUNGSKOSTEN_HELP';
+    }
+
+    public canRoleEditBedarfsstufe() {
+        this.canEditBedarfsstufen =
+            (this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            ) ||
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getSuperAdminRoles()
+                )) &&
+            !isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(
+                this.getGesuch()?.status
+            );
+    }
+
+    public isBedarfsstufeEmpty() {
+        return !this.bedarfsstufe;
+    }
+
+    // die Meldung soll angezeigt werden, wenn eine Mutationsmeldung gemacht wird,
+    // oder wenn die Gemeinde die Angaben in einer Mutation über "falsche Angaben" korrigiert
+
+    private initEinstellungen(): void {
+        this.loadAuszahlungAnEltern();
+        const gesuchsperiodeId: string =
+            this.gesuchModelManager.getGesuchsperiode().id;
+        const gemeindeId: string = this.gesuchModelManager.getGemeinde().id;
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(gesuchsperiodeId)
+            .subscribe(
+                (response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP
+                        )
+                        .forEach(value => {
+                            this.eingewoehnungTyp = stringEingewoehnungTyp(
+                                value.value
+                            );
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT
+                        )
+                        .forEach(value => {
+                            this.kitaPlusZuschlagAktiviert =
+                                value.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.isKesbPlatzierung = false;
+                                this.changeKeineKesbPlatzierung();
+                            }
+                            this.hideKesbPlatzierung =
+                                value.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.besondereBeduerfnisseAufwandKonfigurierbar =
+                                    true;
+                            }
+                        });
+                    response
+                        .filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
+                        .forEach(einstellung => {
+                            this.fachstellenTyp =
+                                this.ebeguRestUtil.parseFachstellenTyp(
+                                    einstellung.value
+                                );
+                        });
+
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungstageKita = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungstageTFO = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO
+                        )
+                        .forEach(einstellung => {
+                            this.oeffnungsstundenTFO = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG
+                        )
+                        .forEach(einstellung => {
+                            this.kitastundenprotag = parseInt(
+                                einstellung.value,
+                                10
+                            );
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN
+                        )
+                        .forEach(einstellung => {
+                            this.sprachfoerderungBestaetigenAktiviert =
+                                einstellung.getValueAsBoolean();
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.schulergaenzendeBetreuungAktiv = true;
+                            }
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.ERWEITERTE_BEDUERFNISSE_AKTIV
+                        )
+                        .forEach(value => {
+                            if (
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                )
+                            ) {
+                                this.erweitereBeduerfnisseAktiv = true;
+                            }
+                        });
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT
+                        )
+                        .forEach(value => {
+                            this.isAnwesenheitstageProMonatAktiviert =
+                                EbeguUtil.isNotNullAndTrue(
+                                    value.getValueAsBoolean()
+                                );
+                        });
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(
+                res => {
+                    this.zuschlagBehinderungProTag = Number(res.value);
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(
+                res => {
+                    this.zuschlagBehinderungProStd = Number(res.value);
+                },
+                error => LOG.error(error)
+            );
+
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                gemeindeId,
+                gesuchsperiodeId
+            )
+            .subscribe(res => {
+                this.isHoehereBeitraegeEinstellungAktiviert =
+                    EbeguUtil.getBoolean(res.value);
+            });
+    }
+
+    private removeBetreuungFromKind(): void {
+        if (this.model && !this.model.timestampErstellt) {
+            // wenn die Betreeung noch nicht erstellt wurde, loeschen wir die Betreuung vom Array
+            this.gesuchModelManager.removeBetreuungFromKind();
+        }
     }
 }

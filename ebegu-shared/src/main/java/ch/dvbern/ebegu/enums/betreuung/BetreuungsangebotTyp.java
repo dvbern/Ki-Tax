@@ -41,7 +41,7 @@ public enum BetreuungsangebotTyp {
 	MITTAGSTISCH {
 		@Override
 		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
-			return visitor.visitMittagtisch();
+			return visitor.visitMittagstisch();
 		}
 	},
 	TAGESFAMILIEN {

@@ -17,19 +17,24 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import java.awt.Color;
+import java.util.List;
+
+import com.lowagie.text.Element;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NonNull;
 
-@Getter
-@Setter
 @Builder
-public class VerfuegungPdfGeneratorKonfiguration {
+public class VerfuegungTableColumnGroup {
 
-	boolean kontingentierungEnabledAndEntwurf;
-	boolean stadtBernAsivConfigured;
-	boolean FKJVTexte;
-	boolean isHoehereBeitraegeConfigured;
-	BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
+	@NonNull
+	String title;
+	@Builder.Default
+	int headerAlignment = Element.ALIGN_CENTER;
+	@Builder.Default
+	Color bgColor = Color.WHITE;
+
+	@NonNull
+	List<VerfuegungTableColumn> columns;
+
 }

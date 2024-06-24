@@ -335,7 +335,12 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 		boolean sameErweiterteBeduerfnisse =
 			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
 
-		return pensenSame && abwesenheitenSame && statusSame && sameErweiterteBeduerfnisse;
+		return pensenSame
+			&& abwesenheitenSame
+			&& statusSame
+			&& sameErweiterteBeduerfnisse
+			&& this.getBedarfsstufe() == otherBetreuung.bedarfsstufe
+			&& this.isAuszahlungAnEltern() == otherBetreuung.isAuszahlungAnEltern();
 	}
 
 	@Transient
@@ -426,6 +431,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
+			target.setBedarfsstufe(this.bedarfsstufe);
 			target.setGueltig(false);
 			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			target.setBegruendungAuszahlungAnInstitution(this.getBegruendungAuszahlungAnInstitution());
