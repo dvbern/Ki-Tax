@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -60,6 +60,6 @@ public class ErsteMahnungPdfGeneratorVisitor implements MandantVisitor<AbstractE
 
 	@Override
 	public AbstractErsteMahnungPdfGenerator visitSchwyz() {
-		return this.visitSolothurn();
+		return new ErsteMahnungPdfGeneratorSchwyz(mahnung, stammdaten);
 	}
 }

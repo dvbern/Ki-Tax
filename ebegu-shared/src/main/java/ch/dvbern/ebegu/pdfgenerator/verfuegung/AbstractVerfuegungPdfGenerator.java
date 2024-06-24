@@ -679,7 +679,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		if (beschwerdeAdresse == null) {
 			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
 		}
-		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
+		return translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressWithOrganisationAsStringInOneLine());
 	}
 
 	protected Element createNichtEingetretenParagraph1() {
