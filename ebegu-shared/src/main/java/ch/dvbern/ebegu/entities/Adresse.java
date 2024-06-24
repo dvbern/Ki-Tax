@@ -231,17 +231,25 @@ public class Adresse extends AbstractDateRangedEntity {
 	}
 
 	@Nonnull
-	public String getAddressAsStringInOneLine() {
+	public String getAddressWithOrganisationAsStringInOneLine() {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(getOrganisation())) {
 			sb.append(getOrganisation());
 			sb.append(", ");
 		}
+		sb.append(getAddressAsStringInOneLine());
+		return sb.toString();
+	}
+
+	@Nonnull
+	public String getAddressAsStringInOneLine() {
+		StringBuilder sb = new StringBuilder();
 		sb.append(getStrasseAndHausnummer());
 		sb.append(", ");
 		sb.append(getPlz()).append(' ').append(getOrt());
 		return sb.toString();
 	}
+
 
 	@Nonnull
 	public String getStrasseAndHausnummer() {

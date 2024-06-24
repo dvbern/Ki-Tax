@@ -357,7 +357,7 @@ public class MailTemplateConfiguration {
 				"getWarnungFreigabequittungFehlt",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.getDossier().getGemeinde().getId()));
 
-		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressAsStringInOneLine());
+		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressWithOrganisationAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
 		paramMap.put(TS_ONLY_ANTRAG, gesuch.hasOnlyBetreuungenOfSchulamt());
