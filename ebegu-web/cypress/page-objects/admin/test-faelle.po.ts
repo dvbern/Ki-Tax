@@ -94,7 +94,9 @@ const createPapierTestfall = (data: {
     periode: TestPeriode;
     betreuungsstatus: TestBetreuungsstatus;
 }) => {
-    cy.waitForRequest("GET", "**/gemeinde/active", () => navigateToTestfaelle());
+    cy.waitForRequest('GET', '**/gemeinde/active', () =>
+        navigateToTestfaelle()
+    );
     getGemeindeSelection().click();
     getGemeindeOption(data.gemeinde).click();
     getPeriodeSelection().click();
@@ -110,7 +112,9 @@ const createOnlineTestfall = (data: {
     betreuungsstatus: TestBetreuungsstatus;
     besitzerin: TestGesuchstellende;
 }) => {
-    cy.waitForRequest("GET", "**/gemeinde/active", () => navigateToTestfaelle());
+    cy.waitForRequest('GET', '**/gemeinde/active', () =>
+        navigateToTestfaelle()
+    );
     getGemeindeSelection().click();
     getGemeindeOption(data.gemeinde).click();
     getPeriodeSelection().click();
