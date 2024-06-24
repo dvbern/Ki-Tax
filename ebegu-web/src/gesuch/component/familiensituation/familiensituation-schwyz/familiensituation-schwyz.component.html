@@ -67,10 +67,16 @@
                     <div class="col-xs-12 dv-input-container-question">
                         <div class="form-group">
                             <span class="ebegu-h1 required">
-                                <span translate>FAMILIENSITUATION_FRAGE_2</span>
-                                <dv-tooltip
-                                    [text]="'FAMILIENSITUATION_FRAGE_2_HINT'"
-                                ></dv-tooltip>
+                                <span
+                                    >{{
+                                        'FAMILIENSITUATION_FRAGE_2' | translate
+                                    }}
+                                    <dv-tooltip
+                                        [text]="
+                                            'FAMILIENSITUATION_FRAGE_2_HINT'
+                                        "
+                                    ></dv-tooltip
+                                ></span>
                             </span>
                             <dv-radio-container-x>
                                 <mat-radio-group
