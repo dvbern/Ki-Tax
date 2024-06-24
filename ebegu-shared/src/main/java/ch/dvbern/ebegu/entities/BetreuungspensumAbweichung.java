@@ -32,7 +32,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -42,9 +42,9 @@ import static java.util.Objects.requireNonNull;
 
 @Audited
 @Entity
-@AssociationOverride(name = "eingewoehnungPauschale",
-	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"),
-	foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id"))
+@AssociationOverride(name = "eingewoehnung",
+	joinColumns = @JoinColumn(name = "eingewoehnung_id"),
+	foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_id"))
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;
@@ -90,7 +90,7 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 	@Transient
 	@Nullable
-	private EingewoehnungPauschale vertraglicheEingewoehnungPauschale = null;
+	private Eingewoehnung vertraglicheEingewoehnung = null;
 
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
@@ -156,12 +156,12 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	}
 
 	@Nullable
-	public EingewoehnungPauschale getVertraglicheEingewoehnungPauschale() {
-		return vertraglicheEingewoehnungPauschale;
+	public Eingewoehnung getVertraglicheEingewoehnung() {
+		return vertraglicheEingewoehnung;
 	}
 
-	public void setVertraglicheEingewoehnungPauschale(@Nullable EingewoehnungPauschale vertraglicheEingewoehnungPauschale) {
-		this.vertraglicheEingewoehnungPauschale = vertraglicheEingewoehnungPauschale;
+	public void setVertraglicheEingewoehnung(@Nullable Eingewoehnung vertraglicheEingewoehnung) {
+		this.vertraglicheEingewoehnung = vertraglicheEingewoehnung;
 	}
 
 	public void addPensum(BigDecimal pensum) {
@@ -191,27 +191,27 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			vertraglicherTarifNebenmahlzeit);
 	}
 
-	public void addEingewoehnungPauschale(EingewoehnungPauschale eingewoehnungPauschale) {
-		if (this.getVertraglicheEingewoehnungPauschale() == null) {
-			this.setVertraglicheEingewoehnungPauschale(eingewoehnungPauschale.copyEingewohnungEntity(
-				new EingewoehnungPauschale(),
+	public void addEingewoehnung(Eingewoehnung eingewoehnung) {
+		if (this.getVertraglicheEingewoehnung() == null) {
+			this.setVertraglicheEingewoehnung(eingewoehnung.copyEingewohnungEntity(
+				new Eingewoehnung(),
 				AntragCopyType.MUTATION));
 			return;
 		}
 
-		this.getVertraglicheEingewoehnungPauschale().addPauschale(eingewoehnungPauschale.getPauschale());
+		this.getVertraglicheEingewoehnung().addKosten(eingewoehnung.getKosten());
 
-		this.getVertraglicheEingewoehnungPauschale()
+		this.getVertraglicheEingewoehnung()
 			.getGueltigkeit()
 			.setGueltigAb(DateUtil.getMin(
-				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigAb(),
-				eingewoehnungPauschale.getGueltigkeit().getGueltigAb()));
+				this.getVertraglicheEingewoehnung().getGueltigkeit().getGueltigAb(),
+				eingewoehnung.getGueltigkeit().getGueltigAb()));
 
-		this.getVertraglicheEingewoehnungPauschale()
+		this.getVertraglicheEingewoehnung()
 			.getGueltigkeit()
 			.setGueltigBis(DateUtil.getMax(
-				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigBis(),
-				eingewoehnungPauschale.getGueltigkeit().getGueltigBis()));
+				this.getVertraglicheEingewoehnung().getGueltigkeit().getGueltigBis(),
+				eingewoehnung.getGueltigkeit().getGueltigBis()));
 
 	}
 
@@ -298,11 +298,11 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			}
 		}
 
-		if (getEingewoehnungPauschale() != null) {
-			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
-			eingewoehnungPauschale.setGueltigkeit(getEingewoehnungPauschale().getGueltigkeit());
-			eingewoehnungPauschale.setPauschale(getEingewoehnungPauschale().getPauschale());
-			mitteilungPensum.setEingewoehnungPauschale(eingewoehnungPauschale);
+		if (getEingewoehnung() != null) {
+			Eingewoehnung eingewoehnung = new Eingewoehnung();
+			eingewoehnung.setGueltigkeit(getEingewoehnung().getGueltigkeit());
+			eingewoehnung.setKosten(getEingewoehnung().getKosten());
+			mitteilungPensum.setEingewoehnung(eingewoehnung);
 		}
 
 		return mitteilungPensum;

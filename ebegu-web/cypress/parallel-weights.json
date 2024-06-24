@@ -1,1 +1,4 @@
-{"cypress\\e2e\\antrag.cy.ts":{"time":54554,"weight":16},"cypress\\e2e\\test-fall.cy.ts":{"time":10218,"weight":3}}
+{
+    "cypress\\e2e\\antrag.cy.ts": {"time": 54554, "weight": 16},
+    "cypress\\e2e\\test-fall.cy.ts": {"time": 10218, "weight": 3}
+}

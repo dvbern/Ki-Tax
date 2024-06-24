@@ -16,7 +16,6 @@
 import {TSDokumentGrund} from '../TSDokumentGrund';
 
 export class TSDokumenteDTO {
-
     private _dokumentGruende: Array<TSDokumentGrund>;
 
     public get dokumentGruende(): Array<TSDokumentGrund> {

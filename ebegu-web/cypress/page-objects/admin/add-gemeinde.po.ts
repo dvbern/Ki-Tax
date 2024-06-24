@@ -20,15 +20,15 @@ const getGemeindeSelection = () => {
 };
 
 const getAdminMail = () => {
-	return cy.getByData('admin-mail');
+    return cy.getByData('admin-mail');
 };
 
 const getEinladungSendenButton = () => {
-	return cy.getByData('container.einladung-senden', 'navigation-button');
+    return cy.getByData('container.einladung-senden', 'navigation-button');
 };
 
 export const AddGemeindePO = {
     getGemeindeSelection,
     getAdminMail,
-    getEinladungSendenButton,
+    getEinladungSendenButton
 };

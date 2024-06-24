@@ -35,19 +35,41 @@ describe('BenutzerComponent', () => {
     let fixture: ComponentFixture<BenutzerComponent>;
 
     beforeEach(waitForAsync(() => {
-        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
-        const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-        const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
+        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+            InstitutionRS.name,
+            ['getAllInstitutionen']
+        );
+        const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(
+            TraegerschaftRS.name,
+            ['getAllTraegerschaften']
+        );
+        const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(
+            BenutzerRSX.name,
             [
-                'getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
-                'inactivateBenutzer', 'reactivateBenutzer'
-            ]);
+                'getBerechtigungHistoriesForBenutzer',
+                'saveBenutzerBerechtigungen',
+                'findBenutzer',
+                'inactivateBenutzer',
+                'reactivateBenutzer'
+            ]
+        );
 
-        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
-        const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-        const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+            AuthServiceRS.name,
+            ['isRole']
+        );
+        const transitionSpy = jasmine.createSpyObj<Transition>(
+            Transition.name,
+            ['params']
+        );
+        const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+            I18nServiceRSRest.name,
+            ['extractPreferredLanguage']
+        );
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+            ErrorService.name,
+            ['addMesageAsInfo']
+        );
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
@@ -76,7 +98,9 @@ describe('BenutzerComponent', () => {
             .compileComponents();
 
         insitutionSpy.getAllInstitutionen.and.returnValue(of([]));
-        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(
+            Promise.resolve([])
+        );
         transitionSpy.params.and.returnValue({benutzerId: undefined});
     }));
 

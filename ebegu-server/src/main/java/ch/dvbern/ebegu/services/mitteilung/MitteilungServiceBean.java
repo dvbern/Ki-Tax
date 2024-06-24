@@ -61,6 +61,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
@@ -105,9 +107,9 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -153,10 +155,12 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.AnwesenheitstageMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
-import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
-import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.KostenMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenKostenMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.SchulergaenzendeBetreuungMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -168,6 +172,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory.combine;
 import static java.util.Objects.requireNonNull;
@@ -222,6 +229,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
+
+	@Inject
+	private BetreuungEinstellungenService betreuungEinstellungenService;
 
 	@Override
 	@Nonnull
@@ -488,6 +498,28 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		tq.setParameter("betreuunParam", betreuung);
 		return tq.getResultList();
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Betreuungsmitteilung> findOffeneBetreuungsmitteilungenByReferenzNummer(@Nonnull String referenzNummer) {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+
+		CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
+		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
+
+		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
+
+		ParameterExpression<String> referenzNummerParam = cb.parameter(String.class, AbstractPlatz_.REFERENZ_NUMMER);
+
+		query.where(
+			cb.equal(betreuungJoin.get(AbstractPlatz_.referenzNummer), referenzNummerParam),
+			cb.isFalse(root.get(Betreuungsmitteilung_.applied))
+		);
+
+		return persistence.getEntityManager().createQuery(query)
+			.setParameter(referenzNummerParam, referenzNummer)
+			.getResultList();
 	}
 
 	@Nonnull
@@ -783,8 +815,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
-		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
+	public void replaceOffeneBetreungsmitteilungenWithSameReferenzNummer(
+		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung,
+		@Nonnull String referenzNummer
+	) {
+		findOffeneBetreuungsmitteilungenByReferenzNummer(referenzNummer).forEach(persistence::remove);
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 
@@ -1011,11 +1046,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen =
 				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
-		// (2) Da die Eingewöhnungspauschale in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
+		// (2) Da die Eingewöhnungskosten in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
 		// übernehmen
 		initialAbweichungen.forEach(abweichung -> {
-			if (abweichung.getEingewoehnungPauschale() == null && abweichung.getVertraglicheEingewoehnungPauschale() != null) {
-				abweichung.setEingewoehnungPauschale(abweichung.getVertraglicheEingewoehnungPauschale());
+			if (abweichung.getEingewoehnung() == null && abweichung.getVertraglicheEingewoehnung() != null) {
+				abweichung.setEingewoehnung(abweichung.getVertraglicheEingewoehnung());
 			}
 		});
 		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
@@ -1186,24 +1221,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return new MittagstischMessageFactory(mandant, locale);
 		}
 
-		boolean mvzEnabled = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode()).getValueAsBoolean();
-
-		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
-			EinstellungKey.PENSUM_ANZEIGE_TYP,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-
+		BetreuungEinstellungen einstellungen = betreuungEinstellungenService.getEinstellungen(betreuung);
+		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, betreuung);
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		BetreuungsmitteilungPensumMessageFactory pensumFactory = mvzEnabled ?
-			new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier) :
-			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+		var pensumFactory = new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
 
-		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = showSchulergaenzendeBetreuung(betreuung) ?
+		var kostenFactory = einstellungen.isMahlzeitenVerguenstigungEnabled() ?
+			new MahlzeitenKostenMessageFactory(mandant, locale) :
+			new KostenMessageFactory(mandant, locale);
+
+		var anwesenheitstageProMonatFactory = einstellungen.isBetreuteTageEnabled() ?
+			new AnwesenheitstageMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
+
+		var schulergaenzendeBetreuungFactory = einstellungen.isSchulergaenzendeBetreuungEnabled() ?
 			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
 			BetreuungsmitteilungPensumMessageFactory.empty();
 
@@ -1212,19 +1245,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			combine(
 				", ",
 				pensumFactory,
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+				anwesenheitstageProMonatFactory,
+				kostenFactory,
+				new EingewoehnungMessageFactory(mandant, locale)
 			),
 			schulergaenzendeBetreuungFactory
 		);
-	}
-
-	@Override
-	public boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
-		return requireNonNull(betreuung.getKind().getKindJA().getEinschulungTyp()).isEingeschult()
-			&& einstellungService.findEinstellung(
-			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode()).getValueAsBoolean();
 	}
 
 	@Nonnull
@@ -1242,19 +1268,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
 		if (betreuung.isAngebotKita()) {
-			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA,
-					betreuung.extractGemeinde(),
-					betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+			BigDecimal oeffnungstageKita = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_KITA, betreuung);
+
 			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita,
 					BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 		}
-		BigDecimal oeffnungstageTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO,
-				betreuung.extractGemeinde(),
-				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 
-		BigDecimal oeffnungsstundenTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-				betreuung.extractGemeinde(),
-				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+		BigDecimal oeffnungstageTFO = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_TFO, betreuung);
+		BigDecimal oeffnungsstundenTFO = einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSSTUNDEN_TFO, betreuung);
 
 		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO,
 				oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));

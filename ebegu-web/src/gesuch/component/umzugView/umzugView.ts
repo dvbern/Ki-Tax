@@ -43,8 +43,9 @@ export class UmzugViewComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class UmzugViewController extends AbstractGesuchViewController<Array<TSAdresseContainer>> {
-
+export class UmzugViewController extends AbstractGesuchViewController<
+    Array<TSAdresseContainer>
+> {
     public static $inject = [
         'GesuchModelManager',
         'BerechnungsManager',
@@ -70,14 +71,23 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         $scope: IScope,
         $timeout: ITimeoutService
     ) {
-
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.UMZUG, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.UMZUG,
+            $timeout
+        );
         this.initViewModel();
     }
 
     private initViewModel(): void {
         this.model = [];
-        this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.UMZUG, TSWizardStepStatus.OK);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.UMZUG,
+            TSWizardStepStatus.OK
+        );
         this.extractAdressenListFromBothGS();
     }
 
@@ -94,14 +104,20 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             // Update wizardStepStatus also if the form is empty and not dirty
-            this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
-            return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith());
+            this.wizardStepManager.updateCurrentWizardStepStatus(
+                TSWizardStepStatus.OK
+            );
+            return this.$q.when(
+                this.gesuchModelManager.getStammdatenToWorkWith()
+            );
         }
 
         this.errorService.clearAll();
         this.saveAdresseInGS();
         this.gesuchModelManager.setGesuchstellerNumber(1);
-        return this.gesuchModelManager.updateGesuchsteller(true).then(() => this.gesuchModelManager.getStammdatenToWorkWith());
+        return this.gesuchModelManager
+            .updateGesuchsteller(true)
+            .then(() => this.gesuchModelManager.getStammdatenToWorkWith());
     }
 
     private extractAdressenListFromBothGS(): void {
@@ -122,19 +138,27 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
 
     public removeUmzugAdresse(adresse: TSAdresseContainer): void {
         const remTitleText = this.$translate.instant('UMZUG_LOESCHEN');
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: remTitleText,
-            deleteText: '',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => {   // User confirmed removal
-            this.dirty = true;
-            const indexOf = this.model.lastIndexOf(adresse);
-            if (indexOf >= 0) {
-                this.model.splice(indexOf, 1);
-            }
-            this.$timeout(() => EbeguUtil.selectFirst(), 100);
-        });
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: remTitleText,
+                    deleteText: '',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() => {
+                // User confirmed removal
+                this.dirty = true;
+                const indexOf = this.model.lastIndexOf(adresse);
+                if (indexOf >= 0) {
+                    this.model.splice(indexOf, 1);
+                }
+                this.$timeout(() => EbeguUtil.selectFirst(), 100);
+            });
     }
 
     /**
@@ -165,15 +189,25 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
     private saveAdresseInGS(): void {
         const gesuch = this.gesuchModelManager.getGesuch();
         const gesuchsteller1 = gesuch.gesuchsteller1;
-        if (gesuchsteller1 && gesuchsteller1.adressen && gesuchsteller1.adressen.length > 0) {
+        if (
+            gesuchsteller1 &&
+            gesuchsteller1.adressen &&
+            gesuchsteller1.adressen.length > 0
+        ) {
             gesuchsteller1.adressen.length = 1;
         }
         this.model.forEach(umzugAdresse => {
-            this.addAdresseToGS(this.gesuchModelManager.getGesuch().gesuchsteller1, umzugAdresse);
+            this.addAdresseToGS(
+                this.gesuchModelManager.getGesuch().gesuchsteller1,
+                umzugAdresse
+            );
         });
     }
 
-    private addAdresseToGS(gesuchsteller: TSGesuchstellerContainer, adresse: TSAdresseContainer): void {
+    private addAdresseToGS(
+        gesuchsteller: TSGesuchstellerContainer,
+        adresse: TSAdresseContainer
+    ): void {
         if (!gesuchsteller) {
             return;
         }
@@ -185,10 +219,14 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
     }
 
     public getPreviousButtonText(): string {
-        return this.getUmzugAdressenList().length === 0 ? 'ZURUECK_ONLY' : 'ZURUECK';
+        return this.getUmzugAdressenList().length === 0
+            ? 'ZURUECK_ONLY'
+            : 'ZURUECK';
     }
 
     public getNextButtonText(): string {
-        return this.getUmzugAdressenList().length === 0 ? 'WEITER_ONLY' : 'WEITER';
+        return this.getUmzugAdressenList().length === 0
+            ? 'WEITER_ONLY'
+            : 'WEITER';
     }
 }

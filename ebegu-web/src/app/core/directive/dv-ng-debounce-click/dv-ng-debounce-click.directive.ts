@@ -13,7 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    Directive,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 import {merge, Subject, Subscription} from 'rxjs';
 import {debounceTime, throttleTime} from 'rxjs/operators';
 
@@ -32,15 +41,13 @@ import {debounceTime, throttleTime} from 'rxjs/operators';
     selector: '[dvNgDebounceClick]'
 })
 export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
-
     @Input() public delay = 1000;
     @Output() public readonly debounceClick = new EventEmitter<MouseEvent>();
 
     private readonly clicks$ = new Subject<MouseEvent>();
     private subscription: Subscription;
 
-    public constructor(private readonly domElement: ElementRef) {
-    }
+    public constructor(private readonly domElement: ElementRef) {}
 
     public ngOnInit(): void {
         // we throttle and debounce the click. With throttle we get the first click at the beginning of the delay and
@@ -50,20 +57,20 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
         // ---click-----click-----click--------------------------click---------------
         // ---action/disable--------------enable-----------------action/disable---enable---
 
-        this.subscription =
-            merge(
-                this.clicks$.pipe(throttleTime(this.delay)),
-                this.clicks$.pipe(debounceTime(this.delay))
-            )
-                .subscribe(e => {
-                        if (this.isDomElementEnabled()) {
-                            this.debounceClick.emit(e);
-                        }
-                        this.handleDomElement();
-                    }, err => {
-                        console.log('Error. dv-debounce-button-click', err);
-                    }
-                );
+        this.subscription = merge(
+            this.clicks$.pipe(throttleTime(this.delay)),
+            this.clicks$.pipe(debounceTime(this.delay))
+        ).subscribe(
+            e => {
+                if (this.isDomElementEnabled()) {
+                    this.debounceClick.emit(e);
+                }
+                this.handleDomElement();
+            },
+            err => {
+                console.log('Error. dv-debounce-button-click', err);
+            }
+        );
 
         // todo It should wait for an HTTPResponse to come and then enable the button again
     }
@@ -72,7 +79,8 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
      * It enables the domElement when it is disabled and disables it when it is enabled
      */
     private handleDomElement(): void {
-        this.domElement.nativeElement.disabled = !this.domElement.nativeElement.disabled;
+        this.domElement.nativeElement.disabled =
+            !this.domElement.nativeElement.disabled;
     }
 
     private isDomElementEnabled(): boolean {

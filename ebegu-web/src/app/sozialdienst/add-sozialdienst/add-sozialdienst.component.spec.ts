@@ -31,20 +31,27 @@ describe('AddSozialdienstComponent', () => {
     let component: AddSozialdienstComponent;
     let fixture: ComponentFixture<AddSozialdienstComponent>;
 
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-        ['createSozialdienst']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(
+        BenutzerRSX.name,
+        ['removeBenutzer']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(
+        SozialdienstRS.name,
+        ['createSozialdienst']
+    );
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [AddSozialdienstComponent],
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 WindowRef,
                 {provide: StateService, useValue: stateServiceSpy},

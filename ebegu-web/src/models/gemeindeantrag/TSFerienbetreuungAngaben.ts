@@ -94,7 +94,10 @@ export class TSFerienbetreuungAngaben extends TSAbstractEntity {
         if (!this._angebot) {
             return false;
         }
-        return EbeguUtil.isNotNullAndFalse(this._angebot.gemeindeFuehrtAngebotSelber)
-            && this._angebot.gemeindeBeauftragtExterneAnbieter;
+        return (
+            EbeguUtil.isNotNullAndFalse(
+                this._angebot.gemeindeFuehrtAngebotSelber
+            ) && this._angebot.gemeindeBeauftragtExterneAnbieter
+        );
     }
 }

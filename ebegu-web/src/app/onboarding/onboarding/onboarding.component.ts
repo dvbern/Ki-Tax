@@ -21,6 +21,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {YoutubeLinkVisitor} from '../../core/constants/YoutubeLinkVisitor';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../shared/services/mandant.service';
@@ -33,7 +34,6 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
     styleUrls: ['./onboarding.component.less', '../onboarding.less']
 })
 export class OnboardingComponent implements OnInit, OnDestroy {
-
     @Input() public showLogin: boolean = true;
 
     private readonly description1: string = 'ONBOARDING_MAIN_DESC1';
@@ -45,7 +45,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     public isMultimandantEnabled$: Observable<boolean>;
     public isLuzern$: Observable<boolean>;
     private readonly unsubscribe$ = new Subject<void>();
-    public youtubeLink$: Observable<SafeResourceUrl>;
+    public youtubeLink$: Observable<SafeResourceUrl | null>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -56,21 +56,34 @@ export class OnboardingComponent implements OnInit, OnDestroy {
         private readonly sanitizer: DomSanitizer
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
-        this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());
+        this.isMultimandantEnabled$ = from(
+            this.applicationPropertyRS.isMultimandantEnabled()
+        );
     }
 
     public ngOnInit(): void {
-        this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
-        this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
-        this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
-        this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
+        this.onboardingPlaceholderService.setDescription1(
+            this.translate.instant(this.description1)
+        );
+        this.onboardingPlaceholderService.setDescription2(
+            this.translate.instant(this.description2)
+        );
+        this.onboardingPlaceholderService.setDescription3(
+            this.translate.instant(this.description3)
+        );
+        this.onboardingPlaceholderService.setDescription4(
+            this.translate.instant(this.description4)
+        );
 
         this.currentLangDe$ = new BehaviorSubject(this.currLangIsGerman());
-        this.translate.onLangChange.subscribe(() => {
-            this.currentLangDe$.next(this.currLangIsGerman());
-        }, (err: any) => {
-            console.error(err);
-        });
+        this.translate.onLangChange.subscribe(
+            () => {
+                this.currentLangDe$.next(this.currLangIsGerman());
+            },
+            (err: any) => {
+                console.error(err);
+            }
+        );
         this.initYoutubeLink();
     }
 
@@ -94,12 +107,18 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     }
 
     private initYoutubeLink(): void {
-        const mandant$ = this.mandantService.mandant$.pipe(takeUntil(this.unsubscribe$));
+        const mandant$ = this.mandantService.mandant$.pipe(
+            takeUntil(this.unsubscribe$)
+        );
         const isGerman$ = this.isGerman$().pipe(takeUntil(this.unsubscribe$));
-        this.youtubeLink$ = combineLatest([mandant$, isGerman$])
-                .pipe(map(([mandant, isGerman]) => {
-                    const url = new YoutubeLinkVisitor(isGerman).process(mandant);
-                    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-                }));
+        this.youtubeLink$ = combineLatest([mandant$, isGerman$]).pipe(
+            map(([mandant, isGerman]) => {
+                const url = new YoutubeLinkVisitor(isGerman).process(mandant);
+                if (EbeguUtil.isNullOrUndefined(url)) {
+                    return null;
+                }
+                return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+            })
+        );
     }
 }

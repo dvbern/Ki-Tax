@@ -20,7 +20,6 @@ import {TSFerienbetreuungAbstractAngaben} from './TSFerienbetreuungAbstractAngab
 import * as moment from 'moment';
 
 export class TSFerienbetreuungAngabenStammdaten extends TSFerienbetreuungAbstractAngaben {
-
     private _amAngebotBeteiligteGemeinden: string[];
     private _seitWannFerienbetreuungen: moment.Moment;
     private _traegerschaft: string;
@@ -47,7 +46,7 @@ export class TSFerienbetreuungAngabenStammdaten extends TSFerienbetreuungAbstrac
         return this._seitWannFerienbetreuungen;
     }
 
-    public set seitWannFerienbetreuungen(value:  moment.Moment) {
+    public set seitWannFerienbetreuungen(value: moment.Moment) {
         this._seitWannFerienbetreuungen = value;
     }
 

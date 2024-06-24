@@ -17,7 +17,7 @@
 
 import {IComponentOptions, IController} from 'angular';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
@@ -43,7 +43,6 @@ export class BetreuungInputConfig implements IComponentOptions {
 }
 
 export class BetreuungInput implements IController {
-
     public static $inject = ['$translate', 'GesuchModelManager'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInput.name);
@@ -54,10 +53,12 @@ export class BetreuungInput implements IController {
     public id: string;
     public index: number;
     public step: number = 0.01;
-    public betreuungInputSwitchTyp: TSPensumAnzeigeTyp = TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+    public betreuungInputSwitchTyp: TSPensumAnzeigeTyp =
+        TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
+    public betreuungspensumHelpKey: string = 'BETREUUNGSPENSUM_HELP';
     private multiplier: number = 1;
     private readonly multiplierKita: number;
     private readonly multiplierTfo: number;
@@ -66,9 +67,10 @@ export class BetreuungInput implements IController {
 
     private readonly isLuzern: boolean;
 
-    public constructor(private readonly translate: ITranslateService,
-                       public readonly gesuchModelManager: GesuchModelManager) {
-    }
+    public constructor(
+        private readonly translate: ITranslateService,
+        public readonly gesuchModelManager: GesuchModelManager
+    ) {}
 
     public $onInit(): void {
         this.LOG.debug(this.betreuungsangebotTyp);
@@ -90,9 +92,15 @@ export class BetreuungInput implements IController {
     }
 
     public getPlaceholder(): string {
-        if (this.pensumContainer
-                && this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
-            if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (
+            this.pensumContainer &&
+            this.pensumContainer.betreuungspensumJA.unitForDisplay ===
+                this.switchOptions[1]
+        ) {
+            if (
+                this.betreuungsangebotTyp ===
+                TSBetreuungsangebotTyp.TAGESFAMILIEN
+            ) {
                 return this.translate.instant('STUNDEN_PLACEHOLDER');
             }
             return this.translate.instant('TAGE_PLACEHOLDER');
@@ -100,7 +108,9 @@ export class BetreuungInput implements IController {
         if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             return this.translate.instant('STUNDEN_PLACEHOLDER');
         }
-        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_MAHLZEITEN) {
+        if (
+            this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_MAHLZEITEN
+        ) {
             return this.translate.instant('MAHLZEITEN_PLACEHOLDER');
         }
 
@@ -109,16 +119,26 @@ export class BetreuungInput implements IController {
 
     public getBetreuungspensumLabel(index: number): string {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            return this.translate.instant('PENSUM_MAHLZEITEN', {betreuungspensumnumber: index});
+            return this.translate.instant('PENSUM_MAHLZEITEN', {
+                betreuungspensumnumber: index
+            });
         }
 
-        return this.translate.instant('BETREUUNGSPENSUM', {betreuungspensumnumber: index});
+        return this.translate.instant('BETREUUNGSPENSUM', {
+            betreuungspensumnumber: index
+        });
     }
 
     public setAngebotDependingVariables(): void {
-        if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
+        if (
+            this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN
+        ) {
+            this.switchOptions = [
+                TSPensumUnits.PERCENTAGE,
+                TSPensumUnits.HOURS
+            ];
             this.multiplier = this.multiplierTfo;
+            this.betreuungspensumHelpKey = 'BETREUUNGSPENSUM_TFO_HELP';
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
             this.multiplier = this.multiplierKita;
@@ -146,44 +166,64 @@ export class BetreuungInput implements IController {
             this.label = '';
             return;
         }
-        const lbl = this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
-            ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
-            : this.translate.instant(this.switchOptions[0]);
+        const lbl =
+            this.pensumContainer.betreuungspensumJA.unitForDisplay ===
+            this.switchOptions[0]
+                ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
+                : this.translate.instant(this.switchOptions[0]);
 
         this.label = `${this.translate.instant('OR')} ${calculatedResult.toFixed(2)}${lbl}`;
     }
 
     private calculateValueForAdditionalLabel(): number {
-        return this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? (this.pensumValue * this.multiplier)
-            : (this.pensumValue / this.multiplier);
+        return this.pensumContainer.betreuungspensumJA.unitForDisplay ===
+            TSPensumUnits.PERCENTAGE
+            ? this.pensumValue * this.multiplier
+            : this.pensumValue / this.multiplier;
     }
 
     // Rechnet von Prozent => Anzeigendem Pensum (z.B. von Prozent => Stunden)
     private parseToPensumUnit(): void {
-
         // Wenn der Input Switch (Toggle) nicht dargestellt ist, wird das Pensum immer in Prozent dargestellt
         if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
-            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
-        } else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
-            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.HOURS;
+            this.pensumContainer.betreuungspensumJA.unitForDisplay =
+                TSPensumUnits.PERCENTAGE;
+        } else if (
+            this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN
+        ) {
+            this.pensumContainer.betreuungspensumJA.unitForDisplay =
+                TSPensumUnits.HOURS;
         }
 
-        if (EbeguUtil.isNullOrUndefined(this.pensumContainer.betreuungspensumJA.pensum)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.pensumContainer.betreuungspensumJA.pensum
+            )
+        ) {
             return;
         }
 
         this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
 
-        if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
-            && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)) {
-            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
-            this.pensumValue = EbeguUtil.roundDefaultBetreuungspensum(this.pensumValue);
+        if (
+            EbeguUtil.isNotNullOrUndefined(this.multiplier) &&
+            this.pensumContainer &&
+            this.pensumContainer.betreuungspensumJA.unitForDisplay !==
+                TSPensumUnits.PERCENTAGE
+        ) {
+            this.pensumValue =
+                this.pensumContainer.betreuungspensumJA.pensum *
+                this.multiplier;
+            this.pensumValue = EbeguUtil.roundDefaultBetreuungspensum(
+                this.pensumValue
+            );
         }
     }
 
     private parseToPercentage(): void {
-        if (!(this.pensumContainer && this.pensumContainer.betreuungspensumJA)) {
+        if (
+            !(this.pensumContainer && this.pensumContainer.betreuungspensumJA)
+        ) {
             return;
         }
         if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
@@ -191,13 +231,17 @@ export class BetreuungInput implements IController {
             return;
         }
         this.pensumContainer.betreuungspensumJA.pensum =
-            this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            this.pensumContainer.betreuungspensumJA.unitForDisplay ===
+            TSPensumUnits.PERCENTAGE
                 ? this.pensumValue
                 : this.pensumValue / this.multiplier;
     }
 
     private showBetreuungInputSwitch(): boolean {
-        return this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+        return (
+            this.betreuungInputSwitchTyp ===
+            TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT
+        );
     }
 
     public getStepSize(): string {

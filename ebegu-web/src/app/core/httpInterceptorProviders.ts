@@ -22,7 +22,9 @@ import IInjectorService = angular.auto.IInjectorService;
 /* eslint-disable */
 
 // HttpI18nInterceptor
-export function httpI18nInterceptorFactory(i: IInjectorService): HttpI18nInterceptor {
+export function httpI18nInterceptorFactory(
+    i: IInjectorService
+): HttpI18nInterceptor {
     return i.get('HttpI18nInterceptor');
 }
 
@@ -30,9 +32,9 @@ export const httpI18nInterceptorProvider = {
     provide: HttpI18nInterceptor,
     useFactory: httpI18nInterceptorFactory,
     deps: ['$injector'],
-    multi: true,
+    multi: true
 };
 
 export const UPGRADED_HTTP_INTERCEPTOR_PROVIDERS: Provider[] = [
-    httpI18nInterceptorProvider,
+    httpI18nInterceptorProvider
 ];

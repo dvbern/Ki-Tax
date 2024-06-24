@@ -21,7 +21,6 @@ import {TSEWKAdresse} from './TSEWKAdresse';
  * DTO für eine Beziehung aus dem EWK
  */
 export class TSEWKBeziehung extends TSAbstractMutableEntity {
-
     private _beziehungstyp: string;
     private _personID: string;
     private _nachname: string;

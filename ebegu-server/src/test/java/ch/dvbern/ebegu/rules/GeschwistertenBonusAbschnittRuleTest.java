@@ -34,7 +34,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -48,7 +48,7 @@ import org.needle4j.annotation.ObjectUnderTest;
 public class GeschwistertenBonusAbschnittRuleTest {
 
 	@ObjectUnderTest
-	private GeschwisterbonusAbschnittRule ruleToTest;
+	private GeschwisterbonusLuzernAbschnittRule ruleToTest;
 
 	@Nonnull
 	private Betreuung betreuung;
@@ -70,7 +70,7 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		DateRange validy = new DateRange(LocalDate.of(1000, 1, 1), LocalDate.of(3000, 1, 1));
 		betreuung = createBetreuung();
 		gesuch = betreuung.extractGesuch();
-		ruleToTest = new GeschwisterbonusAbschnittRule(EinschulungTyp.VORSCHULALTER, validy, Constants.DEUTSCH_LOCALE);
+		ruleToTest = new GeschwisterbonusLuzernAbschnittRule(EinschulungTyp.VORSCHULALTER, validy, Constants.DEUTSCH_LOCALE);
 	}
 
 	private Betreuung createBetreuung() {

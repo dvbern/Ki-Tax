@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
@@ -28,7 +35,6 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BenutzerRolleComponent implements OnInit {
-
     @Input() public name: string;
     @Input() public readonly inputId: string;
     @Input() public readonly required: boolean = false;
@@ -44,13 +50,18 @@ export class BenutzerRolleComponent implements OnInit {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         public readonly form: NgForm
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
-        this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
+        this.roles = this.authServiceRS
+            .getVisibleRolesForPrincipal()
             .filter(rolle => !this.excludedRoles.includes(rolle))
-            .reduce((rollenMap, rolle) => rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true)),
+            .reduce(
+                (rollenMap, rolle) =>
+                    rollenMap.set(
+                        rolle,
+                        TSRoleUtil.translationKeyForRole(rolle, true)
+                    ),
                 new Map<TSRole, string>()
             );
     }
@@ -67,7 +78,10 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public trackByRole(_index: number, item: { key: TSRole; value: string }): string {
+    public trackByRole(
+        _index: number,
+        item: {key: TSRole; value: string}
+    ): string {
         return item.key;
     }
 }

@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IController, IDirective, IDirectiveFactory, INgModelController} from 'angular';
+import {
+    IAugmentedJQuery,
+    IController,
+    IDirective,
+    IDirectiveFactory,
+    INgModelController
+} from 'angular';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import ITimeoutService = angular.ITimeoutService;
 
@@ -41,14 +47,12 @@ export class DVValueinput implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();
-        // @ts-ignore
-        directive.$inject = [];
+        directive.$inject = [] as string[];
         return directive;
     }
 }
 
 export class ValueinputController implements IController {
-
     public static $inject: string[] = ['$timeout'];
 
     public valueinput: string;
@@ -60,8 +64,7 @@ export class ValueinputController implements IController {
     public fixedDecimals: number;
     public dvOnBlur: () => void;
 
-    public constructor(private readonly $timeout: ITimeoutService) {
-    }
+    public constructor(private readonly $timeout: ITimeoutService) {}
 
     private static numberToString(num: number): string {
         if (num || num === 0) {
@@ -74,20 +77,20 @@ export class ValueinputController implements IController {
         if (str) {
             return Number(ValueinputController.formatFromNumberString(str));
         }
-        return null;  // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
+        return null; // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
     }
 
     private static formatToNumberString(valueString: string): string {
         if (valueString !== null && valueString !== undefined) {
             const parts = valueString.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\'');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
             return parts.join('.');
         }
         return valueString;
     }
 
     private static formatFromNumberString(numberString: string): string {
-        return numberString.split('\'').join('').split(',').join('');
+        return numberString.split("'").join('').split(',').join('');
     }
 
     // beispiel wie man auf changes eines attributes von aussen reagieren kann
@@ -117,7 +120,9 @@ export class ValueinputController implements IController {
         this.ngModelCtrl.$render = () => {
             this.valueinput = this.ngModelCtrl.$viewValue;
         };
-        this.ngModelCtrl.$formatters.unshift(ValueinputController.numberToString);
+        this.ngModelCtrl.$formatters.unshift(
+            ValueinputController.numberToString
+        );
         this.ngModelCtrl.$parsers.push(ValueinputController.stringToNumber);
 
         this.ngModelCtrl.$validators.valueinput = (modelValue, viewValue) => {
@@ -126,12 +131,15 @@ export class ValueinputController implements IController {
                 return true;
             }
 
-            const value = modelValue || ValueinputController.stringToNumber(viewValue);
+            const value =
+                modelValue || ValueinputController.stringToNumber(viewValue);
             const maxValue = 999999999999;
 
-            return !isNaN(Number(value)) && (Number(value) < maxValue) && this.allowNegative ?
-                true :
-                Number(value) >= 0;
+            return !isNaN(Number(value)) &&
+                Number(value) < maxValue &&
+                this.allowNegative
+                ? true
+                : Number(value) >= 0;
         };
     }
 
@@ -147,7 +155,6 @@ export class ValueinputController implements IController {
      * onFocus schreiben wir den string als zahl ins feld und setzen den cursor ans ende des inputs
      */
     public handleFocus(event: any): void {
-
         this.valueinput = this.sanitizeInputString();
         if (!event) {
             return;
@@ -167,7 +174,6 @@ export class ValueinputController implements IController {
                 element.val(element.val());
             }
         });
-
     }
 
     public updateModelValue(): void {
@@ -175,25 +181,35 @@ export class ValueinputController implements IController {
         if (this.valueinput) {
             // if a number of fixed decimals are requested make the transformation on blur
             if (this.float && !isNaN(this.fixedDecimals)) {
-                this.valueinput = parseFloat(this.valueinput).toFixed(this.fixedDecimals);
+                this.valueinput = parseFloat(this.valueinput).toFixed(
+                    this.fixedDecimals
+                );
             }
-            const valueString = ValueinputController.formatFromNumberString(this.valueinput);
-            this.valueinput = ValueinputController.formatToNumberString(valueString);
+            const valueString = ValueinputController.formatFromNumberString(
+                this.valueinput
+            );
+            this.valueinput =
+                ValueinputController.formatToNumberString(valueString);
         }
         this.ngModelCtrl.$setViewValue(this.valueinput);
-        if (this.dvOnBlur) { // userdefined onBlur event
+        if (this.dvOnBlur) {
+            // userdefined onBlur event
             this.dvOnBlur();
         }
-
     }
 
     public removeNotDigits(): void {
         const transformedInput = this.sanitizeInputString();
 
         // neuen wert ins model schreiben
-        if (EbeguUtil.isNotNullOrUndefined(transformedInput) && transformedInput !== this.ngModelCtrl.$viewValue) {
+        if (
+            EbeguUtil.isNotNullOrUndefined(transformedInput) &&
+            transformedInput !== this.ngModelCtrl.$viewValue
+        ) {
             // setting the new raw number into the invisible parentmodel
-            this.ngModelCtrl.$setViewValue(ValueinputController.formatToNumberString(transformedInput));
+            this.ngModelCtrl.$setViewValue(
+                ValueinputController.formatToNumberString(transformedInput)
+            );
             this.ngModelCtrl.$render();
         }
         if (this.valueinput !== transformedInput) {
@@ -205,28 +221,38 @@ export class ValueinputController implements IController {
         let transformedInput = this.valueinput;
         if (this.valueinput) {
             let sign = '';
-            if (this.allowNegative && this.valueinput && this.valueinput.indexOf('-') === 0) {
+            if (
+                this.allowNegative &&
+                this.valueinput &&
+                this.valueinput.indexOf('-') === 0
+            ) {
                 // if negative allowed, get sign
                 sign = '-';
                 transformedInput = transformedInput.substr(1); // get just the number part
             }
 
-            transformedInput = this.float ?
-                this.sanitizeFloatString(transformedInput, sign) :
-                this.sanitizeIntString(transformedInput, sign);
+            transformedInput = this.float
+                ? this.sanitizeFloatString(transformedInput, sign)
+                : this.sanitizeIntString(transformedInput, sign);
         }
         return transformedInput;
     }
 
-    private sanitizeFloatString(transformedInput: string, sign: string): string {
+    private sanitizeFloatString(
+        transformedInput: string,
+        sign: string
+    ): string {
         // removes all chars that are not a digit or a point
         let result = transformedInput.replace(/([^0-9|.])+/g, '');
         if (result) {
             const pointIndex = result.indexOf('.');
             // only parse if there is either no floating point or the floating point is not at the end. Also dont parse
             // if 0 at end
-            if (pointIndex === -1
-                || (pointIndex !== (result.length - 1) && result.lastIndexOf('0') !== (result.length - 1))) {
+            if (
+                pointIndex === -1 ||
+                (pointIndex !== result.length - 1 &&
+                    result.lastIndexOf('0') !== result.length - 1)
+            ) {
                 // parse to float to remove unwanted  digits like leading zeros and then back to string
                 result = parseFloat(result).toString();
             }
@@ -245,5 +271,4 @@ export class ValueinputController implements IController {
 
         return result;
     }
-
 }

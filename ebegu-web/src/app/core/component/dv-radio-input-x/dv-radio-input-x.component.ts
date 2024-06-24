@@ -15,7 +15,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output
+} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
@@ -31,7 +37,6 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     styleUrls: ['./dv-radio-input-x.component.less']
 })
 export class DvRadioInputXComponent {
-
     @Input()
     public label: string;
 
@@ -54,7 +59,8 @@ export class DvRadioInputXComponent {
     public inlineHint: string;
 
     @Output()
-    public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public readonly modelChange: EventEmitter<boolean> =
+        new EventEmitter<boolean>();
 
     // unique name for this radio
     public uniqueName: string = `radio_${EbeguUtil.generateRandomName(10)}`;
@@ -62,16 +68,18 @@ export class DvRadioInputXComponent {
     public constructor(
         public readonly form: NgForm,
         private readonly gesuchModelManager: GesuchModelManager
-    ) {
-    }
+    ) {}
 
     public change($event: MatRadioChange): void {
         this.modelChange.emit($event.value);
     }
 
     public showBisher(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            TSEingangsart.ONLINE ===
+                this.gesuchModelManager.getGesuch().eingangsart
+        );
     }
 }

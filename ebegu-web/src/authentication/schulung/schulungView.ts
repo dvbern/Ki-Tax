@@ -34,12 +34,16 @@ export const SCHULUNG_CONFIG: IComponentOptions = {
 const LOG = LogFactory.createLog('SchulungViewController');
 
 export class SchulungViewController implements IController {
-
-    public static $inject: string[] = ['$state', 'AuthServiceRS', 'TestFaelleRS'];
+    public static $inject: string[] = [
+        '$state',
+        'AuthServiceRS',
+        'TestFaelleRS'
+    ];
 
     public usersList: Array<TSBenutzer> = Array<TSBenutzer>();
     private gesuchstellerList: string[];
-    private readonly institutionsuserList: Array<TSBenutzer> = Array<TSBenutzer>();
+    private readonly institutionsuserList: Array<TSBenutzer> =
+        Array<TSBenutzer>();
     private readonly amtUserList: Array<TSBenutzer> = Array<TSBenutzer>();
     private readonly mandant: TSMandant;
     private readonly institutionForelle: TSInstitution;
@@ -50,49 +54,86 @@ export class SchulungViewController implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly testFaelleRS: TestFaelleRS
     ) {
-
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
         this.institutionForelle = this.getInstitutionForelle();
-        this.testFaelleRS.getSchulungBenutzer().subscribe((response: any) => {
-            this.gesuchstellerList = response;
-            for (let i = 0; i < this.gesuchstellerList.length; i++) {
-                const name = this.gesuchstellerList[i];
-                const username = `sch${  ((i + 1) < 10) ? `0${  (i + 1).toString()}` : (i + 1).toString()}`;
-                const benutzer = new TSBenutzer('Sandra',
-                    name,
-                    username,
-                    'password1',
-                    `sandra.${name.toLocaleLowerCase()}@example.com`,
-                    this.mandant,
-                    TSRole.GESUCHSTELLER);
-                this.usersList.push(benutzer);
-            }
+        this.testFaelleRS.getSchulungBenutzer().subscribe(
+            (response: any) => {
+                this.gesuchstellerList = response;
+                for (let i = 0; i < this.gesuchstellerList.length; i++) {
+                    const name = this.gesuchstellerList[i];
+                    const username = `sch${i + 1 < 10 ? `0${(i + 1).toString()}` : (i + 1).toString()}`;
+                    const benutzer = new TSBenutzer(
+                        'Sandra',
+                        name,
+                        username,
+                        'password1',
+                        `sandra.${name.toLocaleLowerCase()}@example.com`,
+                        this.mandant,
+                        TSRole.GESUCHSTELLER
+                    );
+                    this.usersList.push(benutzer);
+                }
 
-            this.setInstitutionUsers();
-            this.setAmtUsers();
-        }, err => LOG.error(err));
+                this.setInstitutionUsers();
+                this.setAmtUsers();
+            },
+            err => LOG.error(err)
+        );
     }
 
     private setInstitutionUsers(): void {
-        this.institutionsuserList.push(new TSBenutzer('Fritz', 'Fisch', 'sch20', 'password1', 'fritz.fisch@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftFisch, undefined));
-        this.institutionsuserList.push(new TSBenutzer('Franz',
-            'Forelle',
-            'sch21',
-            'password1',
-            'franz.forelle@example.com',
-            this.mandant,
-            TSRole.SACHBEARBEITER_INSTITUTION,
-            undefined,
-            this.institutionForelle));
+        this.institutionsuserList.push(
+            new TSBenutzer(
+                'Fritz',
+                'Fisch',
+                'sch20',
+                'password1',
+                'fritz.fisch@example.com',
+                this.mandant,
+                TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+                this.traegerschaftFisch,
+                undefined
+            )
+        );
+        this.institutionsuserList.push(
+            new TSBenutzer(
+                'Franz',
+                'Forelle',
+                'sch21',
+                'password1',
+                'franz.forelle@example.com',
+                this.mandant,
+                TSRole.SACHBEARBEITER_INSTITUTION,
+                undefined,
+                this.institutionForelle
+            )
+        );
     }
 
     private setAmtUsers(): void {
-        this.amtUserList.push(new TSBenutzer('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_TS));
-        this.amtUserList.push(new TSBenutzer('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_BG));
+        this.amtUserList.push(
+            new TSBenutzer(
+                'Julien',
+                'Schuler',
+                'scju',
+                'password9',
+                'julien.schuler@example.com',
+                this.mandant,
+                TSRole.SACHBEARBEITER_TS
+            )
+        );
+        this.amtUserList.push(
+            new TSBenutzer(
+                'Jennifer',
+                'Müller',
+                'jemu',
+                'password2',
+                'jennifer.mueller@example.com',
+                this.mandant,
+                TSRole.SACHBEARBEITER_BG
+            )
+        );
     }
 
     /**
@@ -128,8 +169,11 @@ export class SchulungViewController implements IController {
     }
 
     public logIn(credentials: TSBenutzer): void {
-        this.authServiceRS.loginRequest(credentials)
-            .then(user => navigateToStartPageForRole(user.getCurrentRole(), this.$state));
+        this.authServiceRS
+            .loginRequest(credentials)
+            .then(user =>
+                navigateToStartPageForRole(user.getCurrentRole(), this.$state)
+            );
     }
 }
 

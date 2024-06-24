@@ -20,21 +20,27 @@
 .ddm() when (@dropDown) {
     > li > .dropdown-menu {
         background-color: @primary;
+
         > li {
             > a {
                 color: @contrast-lightest;
-                &:hover, &:focus {
+
+                &:hover,
+                &:focus {
                     background-color: @primary;
                     color: @primary-light;
                 }
             }
+
             > .divider {
                 background-color: @primary;
             }
         }
     }
     .open .dropdown-menu > .active {
-        > a, > a:hover, > a:focus {
+        > a,
+        > a:hover,
+        > a:focus {
             color: @primary-light;
             //   background-color: @primary;
         }
@@ -59,11 +65,13 @@
         letter-spacing: 0.15rem;
         text-align: center;
         width: 100%;
+
         > li {
             display: inline-block;
             float: none;
             height: @navbar-height;
             padding-left: 6rem;
+
             a {
                 .ebeguNormal();
                 box-sizing: border-box;
@@ -75,12 +83,17 @@
                 padding: 0;
                 text-align: center;
                 text-decoration: none;
-                &:hover, &:focus {
+
+                &:hover,
+                &:focus {
                     color: @primary-light;
                 }
             }
+
             &.active {
-                a, > a:hover, > a:focus {
+                a,
+                > a:hover,
+                > a:focus {
                     .ebeguBold();
                     background-color: @primary;
                     border-bottom: 0.5rem solid @contrast-lightest;
@@ -90,6 +103,7 @@
                 }
             }
         }
+
         .active {
             > a {
                 .ebeguBold();
@@ -97,8 +111,11 @@
                 // background-color: @primary;
             }
         }
+
         .open {
-            > a, > a:hover, > a:focus {
+            > a,
+            > a:hover,
+            > a:focus {
                 color: @primary-light;
                 //    background-color: @primary;
             }
@@ -110,12 +127,17 @@
     .navbar-default .navbar-nav .open .dropdown-menu {
         > li > a {
             color: @contrast-lightest;
-            &:hover, &:focus {
+
+            &:hover,
+            &:focus {
                 color: @primary-light;
             }
         }
+
         > .active {
-            > a, > a:hover, > a:focus {
+            > a,
+            > a:hover,
+            > a:focus {
                 background-color: @primary;
                 color: @primary-light;
             }
@@ -145,15 +167,22 @@
         outline: none;
     }
 
-    &[disabled], &[disabled]:hover {
+    &[disabled],
+    &[disabled]:hover {
         background: @contrast;
         color: @contrast-lightest;
     }
 
-    .md-button:not([disabled]):hover, &:focus {
+    .md-button:not([disabled]):hover,
+    &:focus {
         background: @contrast;
     }
 
+    &.mat-mdc-menu-item,
+    &.mat-mdc-menu-item:visited,
+    &.mat-mdc-menu-item:link {
+        color: var(--mat-menu-item-label-text-color);
+    }
 }
 
 ::ng-deep .mat-button-focus-overlay {

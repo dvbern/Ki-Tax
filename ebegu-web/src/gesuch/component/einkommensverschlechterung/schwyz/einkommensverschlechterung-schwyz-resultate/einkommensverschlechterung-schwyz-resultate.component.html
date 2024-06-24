@@ -1,63 +1,126 @@
 <div class="gesuch-modul">
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
-    <div class="row view-title ">
+    <div class="row view-title">
         <div class="col-md-12">
             <h2 translate>EKV_RESULTATE</h2>
-            <hr class="header"/>
+            <hr class="header" />
         </div>
     </div>
 
     <div class="row">
-        <form role="form"
-              class="col-md-12"
-              #form="ngForm"
-              novalidate>
+        <form role="form" class="col-md-12" #form="ngForm" novalidate>
+            <ng-container
+                *ngIf="hasMultipleFinSits(); then multipleGS; else oneGS"
+            ></ng-container>
 
-
-            <ng-container *ngIf="hasMultipleFinSits(); then multipleGS else oneGS"></ng-container>
-
-            <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
-                             [dvSubStep]="4"></dv-navigation-x>
+            <dv-navigation-x
+                (dvSave)="save($event.onResult)"
+                [dvPrevious]="true"
+                [dvNext]="true"
+                [dvSubStep]="4"
+            ></dv-navigation-x>
 
             <ng-template #oneGS>
                 <div class="row margin-bottom-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="resultate?.massgebendesEinkVorAbzFamGr"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
-                            [inputDisabled]="true">
+                            [model]="
+                                resultate?.finSitResultate
+                                    ?.massgebendesEinkVorAbzFamGr
+                            "
+                            [labelMessageKey]="
+                                'EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT'
+                            "
+                            [inputDisabled]="true"
+                        >
+                        </dv-input-label-field>
+                        <dv-input-label-field
+                            [model]="
+                                resultate?.ekvResultate
+                                    ?.massgebendesEinkVorAbzFamGr
+                            "
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN'"
+                            [inputDisabled]="true"
+                        >
+                        </dv-input-label-field>
+                        <dv-input-label-field
+                            [model]="veraenderungTotalToPercentageString()"
+                            [labelMessageKey]="'EVK_IN_PROZENT'"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
             </ng-template>
 
             <ng-template #multipleGS>
+                <div class="row">
+                    <div class="col-sm-6 margin-bottom-20">
+                        <dv-input-label-field
+                            [model]="
+                                resultate?.finSitResultate
+                                    ?.massgebendesEinkVorAbzFamGr
+                            "
+                            [labelMessageKey]="
+                                'EKV_MASSGEBENDES_EINKOMMEN_FIN_SIT'
+                            "
+                            [inputDisabled]="true"
+                        >
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="
+                                resultate?.ekvResultate
+                                    ?.massgebendesEinkVorAbzFamGrGS1
+                            "
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_GS'"
+                            [labelMessageKeyArgs]="{
+                                namegs: extractFullNameGS1()
+                            }"
+                            [inputDisabled]="true"
+                        >
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="
+                                resultate?.ekvResultate
+                                    ?.massgebendesEinkVorAbzFamGrGS2
+                            "
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN_GS'"
+                            [labelMessageKeyArgs]="{
+                                namegs: extractFullNameGS2()
+                            }"
+                            [inputDisabled]="true"
+                        >
+                        </dv-input-label-field>
+                    </div>
+                </div>
                 <div class="row margin-bottom-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="resultate?.massgebendesEinkVorAbzFamGr"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
-                            [inputDisabled]="true">
+                            [model]="
+                                resultate?.ekvResultate
+                                    ?.massgebendesEinkVorAbzFamGr
+                            "
+                            [labelMessageKey]="'EKV_MASSGEBENDES_EINKOMMEN'"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="resultate?.massgebendesEinkVorAbzFamGrGS1"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
-                            [labelMessageKeyArgs]="{namegs: extractFullNameGS1()}"
-                            [inputDisabled]="true">
-                        </dv-input-label-field>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <dv-input-label-field
-                            [model]="resultate?.massgebendesEinkVorAbzFamGrGS2"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_MIT_GS'"
-                            [labelMessageKeyArgs]="{namegs: extractFullNameGS2()}"
-                            [inputDisabled]="true">
+                            [model]="veraenderungTotalToPercentageString()"
+                            [labelMessageKey]="'EVK_IN_PROZENT'"
+                            [inputDisabled]="true"
+                        >
                         </dv-input-label-field>
                     </div>
                 </div>

@@ -28,14 +28,10 @@ import {CONSTANTS} from '../constants/CONSTANTS';
     providedIn: 'root'
 })
 export class BatchJobRS {
-
     public readonly serviceURL = `${CONSTANTS.REST_API}admin/batch`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
-    public constructor(
-        public http: HttpClient
-    ) {
-    }
+    public constructor(public http: HttpClient) {}
 
     public getAllJobs(): Observable<TSWorkJob[]> {
         return this.getInfo(`${this.serviceURL}/jobs`);
@@ -45,8 +41,13 @@ export class BatchJobRS {
         return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
     }
 
-    private getInfo(url: string): Observable<Array<TSWorkJob> | never> {
-        return this.http.get(url)
-            .pipe(map((response: any) => this.ebeguRestUtil.parseWorkJobList(response)));
+    private getInfo(url: string): Observable<Array<TSWorkJob>> {
+        return this.http
+            .get(url)
+            .pipe(
+                map((response: any) =>
+                    this.ebeguRestUtil.parseWorkJobList(response)
+                )
+            );
     }
 }

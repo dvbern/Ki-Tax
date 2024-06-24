@@ -15,7 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component
+} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -28,12 +32,14 @@ import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
-const LOG = LogFactory.createLog('FinanzielleSituationResultateSchwyzComponent');
+const LOG = LogFactory.createLog(
+    'FinanzielleSituationResultateSchwyzComponent'
+);
 
 @Component({
     selector: 'dv-finanzielle-situation-resultate-schwyz',
     templateUrl: './finanzielle-situation-resultate-schwyz.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationResultateSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> {
     public resultate?: TSFinanzielleSituationResultateDTO;
@@ -42,12 +48,21 @@ export class FinanzielleSituationResultateSchwyzComponent extends AbstractGesuch
         protected ref: ChangeDetectorRef,
         protected readonly gesuchmodelManager: GesuchModelManager,
         protected readonly wizardstepManager: WizardStepManager,
-        private readonly finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService,
+        private readonly finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService
     ) {
-        super(gesuchmodelManager, wizardstepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
-        this.model =
-            new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), 1);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        super(
+            gesuchmodelManager,
+            wizardstepManager,
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ
+        );
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            1
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
 
         this.calculate();
     }
@@ -66,19 +81,24 @@ export class FinanzielleSituationResultateSchwyzComponent extends AbstractGesuch
     }
 
     public calculate(): void {
-        this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(resultate => {
-                this.resultate = resultate;
+        this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(
+            resultate => {
+                this.resultate = resultate.finSitResultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error),
+            },
+            error => LOG.error(error)
         );
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(
+            this.model
+        );
     }
 
     private updateWizardStepStatus(): Promise<void> {
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
-                TSWizardStepStatus.OK) as Promise<void>;
+        return this.gesuchModelManager.getGesuch().isMutation()
+            ? (this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void>)
+            : (this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                  TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
+                  TSWizardStepStatus.OK
+              ) as Promise<void>);
     }
 }

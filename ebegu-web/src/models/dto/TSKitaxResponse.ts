@@ -16,7 +16,6 @@
  */
 
 export class TSKitaxResponse {
-
     private _url: string;
     private _fallNummer: string;
 

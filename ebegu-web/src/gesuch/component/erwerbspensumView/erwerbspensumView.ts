@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
+import {
+    IComponentOptions,
+    IPromise,
+    IQService,
+    IScope,
+    ITimeoutService
+} from 'angular';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
@@ -24,7 +30,7 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
+import {TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
@@ -51,7 +57,6 @@ export class ErwerbspensumViewComponentConfig implements IComponentOptions {
 }
 
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -74,6 +79,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public isLuzern: boolean;
     public mandant: KiBonMandant;
     private isUnbezahlterUrlaubAktiv: boolean;
+    public wegzeitRequiredEinstellung: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -89,35 +95,52 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         $timeout: ITimeoutService,
         private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.ERWERBSPENSUM,
-            $timeout);
+            $timeout
+        );
         this.patternPercentage = CONSTANTS.PATTERN_PERCENTAGE;
-        this.gesuchModelManager.setGesuchstellerNumber(parseInt($stateParams.gesuchstellerNumber, 10));
+        this.gesuchModelManager.setGesuchstellerNumber(
+            parseInt($stateParams.gesuchstellerNumber, 10)
+        );
         this.gesuchsteller = this.gesuchModelManager.getStammdatenToWorkWith();
         if (this.gesuchsteller) {
             if ($stateParams.erwerbspensumNum) {
                 const ewpNum = parseInt($stateParams.erwerbspensumNum, 10) || 0;
-                this.model = angular.copy(this.gesuchsteller.erwerbspensenContainer[ewpNum]);
+                this.model = angular.copy(
+                    this.gesuchsteller.erwerbspensenContainer[ewpNum]
+                );
             } else {
                 // wenn erwerbspensum nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
                 this.model = this.initEmptyEwpContainer();
             }
         } else {
-            errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
+            errorService.addMesageAsError(
+                'Unerwarteter Zustand: Gesuchsteller unbekannt'
+            );
             console.log('kein gesuchsteller gefunden');
         }
         this.initUnbezahlterUrlaub();
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        }, err => LOG.error(err));
-        // TODO: Replace with angularX async template pipe during ablösung
-        this.mandantService.mandant$.subscribe(mandant => {
-            this.mandant = mandant;
-        }, error => LOG.error(error));
+        this.mandantService.mandant$
+            .pipe(map(mandant => mandant === MANDANTS.LUZERN))
+            .subscribe(
+                isLuzern => {
+                    this.isLuzern = isLuzern;
+                },
+                err => LOG.error(err)
+            );
+        // TODO: Replace with angularX async template pipe during ablÃ¶sung
+        this.mandantService.mandant$.subscribe(
+            mandant => {
+                this.mandant = mandant;
+            },
+            error => LOG.error(error)
+        );
+        this.initWegzeitEinstellung();
     }
 
     // TODO: replace with observable pipe during abloesung
@@ -141,7 +164,10 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             return this.$q.when(this.model);
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveErwerbspensum(this.gesuchsteller, this.model);
+        return this.gesuchModelManager.saveErwerbspensum(
+            this.gesuchsteller,
+            this.model
+        );
     }
 
     public cancel(): void {
@@ -153,7 +179,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         const ewpContainer = new TSErwerbspensumContainer();
         ewpContainer.erwerbspensumJA = ewp;
         return ewpContainer;
-
     }
 
     public taetigkeitChanged(): void {
@@ -169,8 +194,12 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public erwerbspensumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
         if (this.model && this.model.erwerbspensumJA) {
-            return this.model.erwerbspensumJA.vorgaengerId
-                && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+            return (
+                this.model.erwerbspensumJA.vorgaengerId &&
+                !this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getAdministratorOrAmtRole()
+                )
+            );
         }
         return false;
     }
@@ -179,9 +208,14 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         if (!this.isUnbezahlterUrlaubAktiv) {
             return false;
         }
-        return this.model && this.model.erwerbspensumJA
-            && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
-                || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
+        return (
+            this.model &&
+            this.model.erwerbspensumJA &&
+            (this.model.erwerbspensumJA.taetigkeit ===
+                TSTaetigkeit.ANGESTELLT ||
+                this.model.erwerbspensumJA.taetigkeit ===
+                    TSTaetigkeit.SELBSTAENDIG)
+        );
     }
 
     public isUnbezahlterUrlaubDisabled(): boolean {
@@ -190,24 +224,40 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     private initUnbezahlterUrlaub(): void {
         this.loadEinstellungUnbezahlterUrlaubAktiv();
-        this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
-            && this.model.erwerbspensumJA.unbezahlterUrlaub);
-        this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
-            && this.model.erwerbspensumGS.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaub = !!(
+            this.model &&
+            this.model.erwerbspensumJA &&
+            this.model.erwerbspensumJA.unbezahlterUrlaub
+        );
+        this.hasUnbezahlterUrlaubGS = !!(
+            this.model &&
+            this.model.erwerbspensumGS &&
+            this.model.erwerbspensumGS.unbezahlterUrlaub
+        );
     }
 
     public unbezahlterUrlaubClicked(): void {
-        this.model.erwerbspensumJA.unbezahlterUrlaub =
-            this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+        this.model.erwerbspensumJA.unbezahlterUrlaub = this.hasUnbezahlterUrlaub
+            ? new TSUnbezahlterUrlaub()
+            : undefined;
     }
 
     public getTextUnbezahlterUrlaubKorrekturJA(): string {
-        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
+        if (
+            this.model.erwerbspensumGS &&
+            this.model.erwerbspensumGS.unbezahlterUrlaub
+        ) {
             const urlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
-            const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
-            const bisText = urlaub.gueltigkeit.gueltigBis ?
-                DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
-                CONSTANTS.END_OF_TIME_STRING;
+            const vonText = DateUtil.momentToLocalDateFormat(
+                urlaub.gueltigkeit.gueltigAb,
+                'DD.MM.YYYY'
+            );
+            const bisText = urlaub.gueltigkeit.gueltigBis
+                ? DateUtil.momentToLocalDateFormat(
+                      urlaub.gueltigkeit.gueltigBis,
+                      'DD.MM.YYYY'
+                  )
+                : CONSTANTS.END_OF_TIME_STRING;
             return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
                 von: vonText,
                 bis: bisText
@@ -217,30 +267,62 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     private loadEinstellungUnbezahlterUrlaubAktiv(): void {
-        this.einstellungRS.findEinstellung(
-            TSEinstellungKey.UNBEZAHLTER_URLAUB_AKTIV,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(unbezahlterUrlaubAktivEinsellung => {
-                this.isUnbezahlterUrlaubAktiv = unbezahlterUrlaubAktivEinsellung.value === 'true';
-            }, error => LOG.error(error));
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.UNBEZAHLTER_URLAUB_AKTIV,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                unbezahlterUrlaubAktivEinsellung => {
+                    this.isUnbezahlterUrlaubAktiv =
+                        unbezahlterUrlaubAktivEinsellung.value === 'true';
+                },
+                error => LOG.error(error)
+            );
     }
 
     public isErwerbspensumInstitutionRequired(): boolean {
-        return this.isLuzern &&
-            (this.isAngestellt() || this.isInAusildungWeiterbildung() || this.isInIntegrationBeschaeftigung());
+        return (
+            this.isLuzern &&
+            (this.isAngestellt() ||
+                this.isInAusildungWeiterbildung() ||
+                this.isInIntegrationBeschaeftigung())
+        );
     }
 
     private isAngestellt(): boolean {
-        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT;
+        return (
+            this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
+        );
     }
 
     private isInAusildungWeiterbildung(): boolean {
-        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.AUSBILDUNG;
+        return (
+            this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.AUSBILDUNG
+        );
     }
 
     private isInIntegrationBeschaeftigung(): boolean {
-        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
+        return (
+            this.model.erwerbspensumJA.taetigkeit ===
+            TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM
+        );
     }
 
+    private initWegzeitEinstellung(): void {
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.WEGZEIT_ERWERBSPENSUM,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                wegzeitRequired => {
+                    this.wegzeitRequiredEinstellung =
+                        wegzeitRequired.value === 'true';
+                },
+                errorWegzeit => LOG.error(errorWegzeit)
+            );
+    }
 }

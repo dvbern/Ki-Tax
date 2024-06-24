@@ -23,15 +23,18 @@ const getVerfuegung = (kindIndex: number, betreuungsIndex: number) => {
 };
 
 const getVerfuegenStartenButton = () => {
-	return cy.getByData('container.verfuegen', 'navigation-button');
+    return cy.getByData('container.verfuegen', 'navigation-button');
 };
 
 const getGeprueftButton = () => {
-	return cy.getByData('container.geprueft', 'navigation-button');
+    return cy.getByData('container.geprueft', 'navigation-button');
 };
 
 const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
-	return cy.getByData(`verfuegung#${kindIndex}-${betreuungsIndex}`, 'betreuungs-status');
+    return cy.getByData(
+        `verfuegung#${kindIndex}-${betreuungsIndex}`,
+        'betreuungs-status'
+    );
 };
 
 const getFinSitAkzeptiert = (status: string) => {
@@ -39,16 +42,16 @@ const getFinSitAkzeptiert = (status: string) => {
 };
 
 const getAbschliessenButton = () => {
-	return cy.getByData('container.abschliessen','navigation-button');
+    return cy.getByData('container.abschliessen', 'navigation-button');
 };
 
 const getSendToSTVButton = () => {
-	return cy.getByData('container.send-to-stv', 'navigation-button');
+    return cy.getByData('container.send-to-stv', 'navigation-button');
 };
 
 // !! -- PAGE OBJECTS -- !!
 const pruefeGesuch = () => {
-	cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
+    cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
         VerfuegenPO.getGeprueftButton().click();
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
@@ -62,7 +65,7 @@ const verfuegenStarten = () => {
 };
 
 const finSitAkzeptieren = () => {
-	return cy.waitForRequest('POST',  '**/changeFinSitStatus/**', () => {
+    return cy.waitForRequest('POST', '**/changeFinSitStatus/**', () => {
         // likely to be an angularjs issue, where radio-buttons are enabled but not clickable soon after first render
         cy.wait(400);
         getFinSitAkzeptiert('AKZEPTIERT').click();
@@ -80,5 +83,5 @@ export const VerfuegenPO = {
     // PAGE ACTIONS
     pruefeGesuch,
     verfuegenStarten,
-    finSitAkzeptieren,
+    finSitAkzeptieren
 };

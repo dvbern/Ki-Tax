@@ -98,8 +98,8 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 	@Override
 	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean besonderebeduerfnisse,
+		boolean unter12Monate,
+	 	boolean besonderebeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		boolean bezahltVollkosten,
 		@Nullable EinschulungTyp einschulungTyp) {
@@ -134,6 +134,7 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 	 * Beispiel: Betreuung ueber einen halben Monat:
 	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
 	 */
+	@Override
 	protected void handleAnteileMahlzeitenverguenstigung(
 		@Nonnull BGCalculationResult result,
 		@Nonnull BigDecimal anteilMonat,
@@ -144,5 +145,14 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		final BigDecimal mahlzeitenTotal = rechnerParameter.getVerguenstigungMahlzeitenTotal();
 		result.setVerguenstigungMahlzeitenTotal(MathUtil.DEFAULT.multiply(mahlzeitenTotal, anteilMonat,
 			anteilMonatEffektivAusbezahlt));
+	}
+
+	@Override
+	protected void handleAnteileZusaetzlicherGutscheinGemeindeBetrag(
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal effektivAusbezahlteZeiteinheiten
+	) {
+		final BigDecimal zusaetzlicherGutscheinGemeindeBetrag = rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag();
+		result.setZusaetzlicherGutscheinGemeindeBetrag(MathUtil.EXACT.multiplyNullSafe(effektivAusbezahlteZeiteinheiten, zusaetzlicherGutscheinGemeindeBetrag));
 	}
 }

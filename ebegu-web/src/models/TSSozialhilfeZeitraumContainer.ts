@@ -24,7 +24,10 @@ export class TSSozialhilfeZeitraumContainer extends TSAbstractMutableEntity {
     private _sozialhilfeZeitraumGS: TSSozialhilfeZeitraum;
     private _sozialhilfeZeitraumJA: TSSozialhilfeZeitraum;
 
-    public constructor(sozialhilfeZeitraumGS?: TSSozialhilfeZeitraum, sozialhilfeZeitraumJA?: TSSozialhilfeZeitraum) {
+    public constructor(
+        sozialhilfeZeitraumGS?: TSSozialhilfeZeitraum,
+        sozialhilfeZeitraumJA?: TSSozialhilfeZeitraum
+    ) {
         super();
         this._sozialhilfeZeitraumGS = sozialhilfeZeitraumGS;
         this._sozialhilfeZeitraumJA = sozialhilfeZeitraumJA;
@@ -50,13 +53,21 @@ export class TSSozialhilfeZeitraumContainer extends TSAbstractMutableEntity {
         return EbeguUtil.isNullOrUndefined(this.sozialhilfeZeitraumGS);
     }
 
-    public deepCopyTo(target: TSSozialhilfeZeitraumContainer): TSSozialhilfeZeitraumContainer {
+    public deepCopyTo(
+        target: TSSozialhilfeZeitraumContainer
+    ): TSSozialhilfeZeitraumContainer {
         super.deepCopyTo(target);
         if (EbeguUtil.isNotNullOrUndefined(this._sozialhilfeZeitraumGS)) {
-            target._sozialhilfeZeitraumGS = this._sozialhilfeZeitraumGS.deepCopyTo(new TSSozialhilfeZeitraum());
+            target._sozialhilfeZeitraumGS =
+                this._sozialhilfeZeitraumGS.deepCopyTo(
+                    new TSSozialhilfeZeitraum()
+                );
         }
         if (EbeguUtil.isNotNullOrUndefined(this._sozialhilfeZeitraumJA)) {
-            target._sozialhilfeZeitraumJA = this._sozialhilfeZeitraumJA.deepCopyTo(new TSSozialhilfeZeitraum());
+            target._sozialhilfeZeitraumJA =
+                this._sozialhilfeZeitraumJA.deepCopyTo(
+                    new TSSozialhilfeZeitraum()
+                );
         }
         return target;
     }

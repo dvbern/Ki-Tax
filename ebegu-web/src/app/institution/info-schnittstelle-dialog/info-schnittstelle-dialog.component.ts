@@ -16,7 +16,7 @@
  */
 
 import {Clipboard} from '@angular/cdk/clipboard';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
@@ -26,8 +26,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
     templateUrl: './info-schnittstelle-dialog.template.html',
     styleUrls: ['./info-schnittstelle-dialog.component.less']
 })
-export class InfoSchnittstelleDialogComponent implements OnInit {
-
+export class InfoSchnittstelleDialogComponent {
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public institution: TSInstitution;
     public copied: any = {};
@@ -45,13 +44,10 @@ export class InfoSchnittstelleDialogComponent implements OnInit {
         this.editMode = data.editMode;
     }
 
-    public ngOnInit(): void {
-    }
-
     public copyToClipboard(text: string, key: string): void {
         this.clipboard.copy(text);
         this.copied[key] = true;
-        setTimeout(() => this.copied[key] = false, this.resetCopiedAfterMS);
+        setTimeout(() => (this.copied[key] = false), this.resetCopiedAfterMS);
     }
 
     public close(): void {

@@ -19,7 +19,6 @@ import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSBetreuungsstandort extends TSAbstractEntity {
-
     private _adresse: TSAdresse;
     private _mail: string;
     private _telefon: string;

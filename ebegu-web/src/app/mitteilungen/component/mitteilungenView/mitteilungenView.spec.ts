@@ -41,7 +41,6 @@ import {IMitteilungenStateParams} from '../../mitteilungen.route';
 import ITimeoutService = angular.ITimeoutService;
 
 describe('mitteilungenView', () => {
-
     let mitteilungRS: MitteilungRS;
     let authServiceRS: AuthServiceRS;
     let stateParams: IMitteilungenStateParams;
@@ -66,46 +65,56 @@ describe('mitteilungenView', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        mitteilungRS = $injector.get('MitteilungRS');
-        authServiceRS = $injector.get('AuthServiceRS');
-        betreuungRS = $injector.get('BetreuungRS');
-        stateParams = $injector.get('$stateParams');
-        dossierRS = $injector.get('DossierRS');
-        $timeout = $injector.get('$timeout');
-        $rootScope = $injector.get('$rootScope');
-        $q = $injector.get('$q');
-        institutionRS = $injector.get('InstitutionRS');
-        scope = $rootScope.$new();
-        gemeindeRS = $injector.get('GemeindeRS');
-        gesuchRS = $injector.get('GesuchRS');
+    beforeEach(
+        angular.mock.inject($injector => {
+            mitteilungRS = $injector.get('MitteilungRS');
+            authServiceRS = $injector.get('AuthServiceRS');
+            betreuungRS = $injector.get('BetreuungRS');
+            stateParams = $injector.get('$stateParams');
+            dossierRS = $injector.get('DossierRS');
+            $timeout = $injector.get('$timeout');
+            $rootScope = $injector.get('$rootScope');
+            $q = $injector.get('$q');
+            institutionRS = $injector.get('InstitutionRS');
+            scope = $rootScope.$new();
+            gemeindeRS = $injector.get('GemeindeRS');
+            gesuchRS = $injector.get('GesuchRS');
 
-        // prepare fall
-        stateParams.dossierId = '123';
-        fall = new TSFall();
-        fall.id = stateParams.dossierId;
-        dossier = new TSDossier();
-        dossier.id = stateParams.dossierId;
-        dossier.fall = fall;
-        besitzer = new TSBenutzer();
-        besitzer.nachname = 'Romualdo Besitzer';
-        fall.besitzer = besitzer;
-        dossier.fall.besitzer = besitzer;
-        dossier.gemeinde = new TSGemeinde();
-        dossier.gemeinde.id = '11111111-1111-1111-1111-111111111111';
-        verantwortlicher = new TSBenutzerNoDetails();
-        verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
-        dossier.verantwortlicherBG = verantwortlicher;
+            // prepare fall
+            stateParams.dossierId = '123';
+            fall = new TSFall();
+            fall.id = stateParams.dossierId;
+            dossier = new TSDossier();
+            dossier.id = stateParams.dossierId;
+            dossier.fall = fall;
+            besitzer = new TSBenutzer();
+            besitzer.nachname = 'Romualdo Besitzer';
+            fall.besitzer = besitzer;
+            dossier.fall.besitzer = besitzer;
+            dossier.gemeinde = new TSGemeinde();
+            dossier.gemeinde.id = '11111111-1111-1111-1111-111111111111';
+            verantwortlicher = new TSBenutzerNoDetails();
+            verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
+            dossier.verantwortlicherBG = verantwortlicher;
 
-        spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
+            spyOn(
+                mitteilungRS,
+                'getEntwurfOfDossierForCurrentRolle'
+            ).and.returnValue($q.when(undefined));
 
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({} as TSGemeindeStammdaten));
-    }));
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls(
+                $injector.get('$httpBackend')
+            );
+            spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue(
+                $q.when({} as TSGemeindeStammdaten)
+            );
+        })
+    );
 
     const assertMitteilungContent = () => {
-        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
+        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(
+            TSMitteilungStatus.NEU
+        );
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         // diese Parameter muessen im Server gesetzt werden
         expect(controller.getCurrentMitteilung().empfaenger).toBeUndefined();
@@ -124,9 +133,12 @@ describe('mitteilungenView', () => {
         });
         it('should create an empty TSMItteilung for JA', () => {
             const sachbearbeiterBG = new TSBenutzer();
-            sachbearbeiterBG.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
-            spyOn(authServiceRS, 'isOneOfRoles').and
-                .callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0);
+            sachbearbeiterBG.currentBerechtigung.role =
+                TSRole.SACHBEARBEITER_BG;
+            spyOn(authServiceRS, 'isOneOfRoles').and.callFake(
+                (roles: Array<TSRole>) =>
+                    roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0
+            );
 
             createMitteilungForUser(sachbearbeiterBG);
 
@@ -135,9 +147,12 @@ describe('mitteilungenView', () => {
         });
         it('should create an empty TSMItteilung for Institution', () => {
             const sachbearbeiterInst = new TSBenutzer();
-            sachbearbeiterInst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
-            spyOn(authServiceRS, 'isOneOfRoles').and
-                .callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0);
+            sachbearbeiterInst.currentBerechtigung.role =
+                TSRole.SACHBEARBEITER_INSTITUTION;
+            spyOn(authServiceRS, 'isOneOfRoles').and.callFake(
+                (roles: Array<TSRole>) =>
+                    roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0
+            );
 
             createMitteilungForUser(sachbearbeiterInst);
 
@@ -157,7 +172,9 @@ describe('mitteilungenView', () => {
             const savedMitteilung = new TSMitteilung();
             savedMitteilung.id = '321';
             savedMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
-            spyOn(mitteilungRS, 'sendMitteilung').and.returnValue($q.when(savedMitteilung));
+            spyOn(mitteilungRS, 'sendMitteilung').and.returnValue(
+                $q.when(savedMitteilung)
+            );
             controller.getCurrentMitteilung().subject = 'subject';
             controller.getCurrentMitteilung().message = 'message';
 
@@ -165,7 +182,9 @@ describe('mitteilungenView', () => {
             controller.form.$dirty = true;
             controller.sendMitteilung();
 
-            expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
+            expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(
+                TSMitteilungStatus.NEU
+            );
             expect(controller.getCurrentMitteilung().sentDatum).toBeUndefined();
             expect(controller.getCurrentMitteilung().id).toBeUndefined();
         });
@@ -182,25 +201,35 @@ describe('mitteilungenView', () => {
             const mitteilung = new TSMitteilung();
             mitteilung.id = '123';
             mitteilung.empfaenger = gesuchsteller;
-            spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue($q.when(mitteilung));
+            spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue(
+                $q.when(mitteilung)
+            );
 
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             controller.setErledigt(mitteilung);
-            expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ERLEDIGT); // von GELESEN auf ERLEDIGT
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
+            expect(mitteilung.mitteilungStatus).toBe(
+                TSMitteilungStatus.ERLEDIGT
+            ); // von GELESEN auf ERLEDIGT
+            expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith(
+                '123'
+            );
 
             controller.setErledigt(mitteilung);
-            expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.GELESEN); // von ERLEDIGT auf GELESEN
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
+            expect(mitteilung.mitteilungStatus).toBe(
+                TSMitteilungStatus.GELESEN
+            ); // von ERLEDIGT auf GELESEN
+            expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith(
+                '123'
+            );
         });
     });
 
     function compareCommonAttributes(currentUser: TSBenutzer): void {
         expect(controller.getCurrentMitteilung()).toBeDefined();
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
-        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
+        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(
+            TSMitteilungStatus.NEU
+        );
         expect(controller.getCurrentMitteilung().sender).toBe(currentUser);
         expect(controller.getCurrentMitteilung().subject).toBeUndefined();
         expect(controller.getCurrentMitteilung().message).toBeUndefined();
@@ -209,14 +238,36 @@ describe('mitteilungenView', () => {
     function createMitteilungForUser(user: TSBenutzer): void {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
         spyOn(dossierRS, 'findDossier').and.returnValue($q.when(dossier));
-        spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.resolve([]));
-        spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.resolve([]));
-        controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
-            $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
-            dossierRS, undefined, institutionRS, gemeindeRS, gesuchRS);
-        controller.$onInit();   // hack, muesste wohl eher so gehen
-                                // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
+        spyOn(
+            mitteilungRS,
+            'getMitteilungenOfDossierForCurrentRolle'
+        ).and.returnValue($q.resolve([]));
+        spyOn(
+            mitteilungRS,
+            'setAllNewMitteilungenOfDossierGelesen'
+        ).and.returnValue($q.resolve([]));
+        controller = new DVMitteilungListController(
+            stateParams,
+            mitteilungRS,
+            authServiceRS,
+            betreuungRS,
+            $q,
+            null,
+            $rootScope,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            scope,
+            $timeout,
+            dossierRS,
+            undefined,
+            institutionRS,
+            gemeindeRS,
+            gesuchRS
+        );
+        controller.$onInit(); // hack, muesste wohl eher so gehen
+        // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();
     }
-
 });

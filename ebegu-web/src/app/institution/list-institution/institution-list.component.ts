@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
@@ -24,7 +30,7 @@ import {map} from 'rxjs/operators';
 import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../models/TSBerechtigung';
@@ -42,9 +48,13 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     templateUrl: './institution-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstitutionListComponent extends AbstractAdminViewX implements OnInit {
-
-    private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
+export class InstitutionListComponent
+    extends AbstractAdminViewX
+    implements OnInit
+{
+    private readonly log: Log = LogFactory.createLog(
+        'InstitutionListComponent'
+    );
 
     public hiddenDVTableColumns = [''];
 
@@ -76,32 +86,50 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         this.loadData();
         this.setupGemeindeAndRoleSpecificProperties();
         this.applicationPropertyRS.getPublicPropertiesCached().then(result => {
-            this.institutionenDurchGemeindenEinladen = result.institutionenDurchGemeindenEinladen;
+            this.institutionenDurchGemeindenEinladen =
+                result.institutionenDurchGemeindenEinladen;
             this.angebotTSActivated = result.angebotTSActivated;
             this.angebotFIActivated = result.angebotFIActivated;
-            this.angebotMittagstischActivated = result.angebotMittagstischActivated;
+            this.angebotMittagstischActivated =
+                result.angebotMittagstischActivated;
         });
     }
 
     private setupGemeindeAndRoleSpecificProperties(): void {
         combineLatest([
             this.gemeindeRS.getGemeindenForPrincipal$(),
-            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin()))
-        ]).subscribe(([gemeinden, isSuperadmin]) => {
-            this.userHasGemeindeWithTSEnabled = isSuperadmin ||
-                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => (gemeinde.angebotTS && !gemeinde.nurLats)));
-            this.userHasGemeindeWithoutTSEnabled = isSuperadmin ||
-                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => !gemeinde.angebotTS || gemeinde.nurLats));
-        }, err => this.log.error(err));
+            this.authServiceRS.principal$.pipe(
+                map(principal => principal.currentBerechtigung.isSuperadmin())
+            )
+        ]).subscribe(
+            ([gemeinden, isSuperadmin]) => {
+                this.userHasGemeindeWithTSEnabled =
+                    isSuperadmin ||
+                    EbeguUtil.isNotNullOrUndefined(
+                        gemeinden.find(
+                            gemeinde => gemeinde.angebotTS && !gemeinde.nurLats
+                        )
+                    );
+                this.userHasGemeindeWithoutTSEnabled =
+                    isSuperadmin ||
+                    EbeguUtil.isNotNullOrUndefined(
+                        gemeinden.find(
+                            gemeinde => !gemeinde.angebotTS || gemeinde.nurLats
+                        )
+                    );
+            },
+            err => this.log.error(err)
+        );
     }
 
     public loadData(): void {
         const deleteAllowed = this.isDeleteAllowed();
-        this.antragList$ = this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
-            .pipe(map((institutionList => {
-                const entitaetListItems: DVEntitaetListItem[] = [];
-                institutionList.forEach(
-                    institution => {
+        this.antragList$ = this.institutionRS
+            .getInstitutionenListDTOEditableForCurrentBenutzer()
+            .pipe(
+                map(institutionList => {
+                    const entitaetListItems: DVEntitaetListItem[] = [];
+                    institutionList.forEach(institution => {
                         const dvListItem = {
                             id: institution.id,
                             name: institution.name,
@@ -114,11 +142,11 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                             canRemove: deleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    }
-                );
-                this.cd.markForCheck();
-                return entitaetListItems;
-            })));
+                    });
+                    this.cd.markForCheck();
+                    return entitaetListItems;
+                })
+            );
     }
 
     public removeInstitution(institutionEventId: string): void {
@@ -126,16 +154,24 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE'
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
             .subscribe(
-                userAccepted => {   // User confirmed removal
+                userAccepted => {
+                    // User confirmed removal
                     if (!userAccepted) {
                         return;
                     }
-                    this.institutionRS.removeInstitution(institutionEventId).subscribe(() => {
-                        this.loadData();
-                        this.cd.markForCheck();
-                    }, error => this.log.error(error));
+                    this.institutionRS
+                        .removeInstitution(institutionEventId)
+                        .subscribe(
+                            () => {
+                                this.loadData();
+                                this.cd.markForCheck();
+                            },
+                            error => this.log.error(error)
+                        );
                 },
                 () => {
                     this.log.error('error in observable. removeInstitution');
@@ -184,16 +220,29 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     }
 
     public hatBerechtigungEditieren(institution: TSInstitution): boolean {
-        return institution.status !== TSInstitutionStatus.EINGELADEN
-            || this.isCurrentUserAdminForInstitution(institution)
-            || this.isSuperAdmin();
+        return (
+            institution.status !== TSInstitutionStatus.EINGELADEN ||
+            this.isCurrentUserAdminForInstitution(institution) ||
+            this.isSuperAdmin()
+        );
     }
 
-    private isCurrentUserAdminForInstitution(institution: TSInstitution): boolean {
-        const currentBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
+    private isCurrentUserAdminForInstitution(
+        institution: TSInstitution
+    ): boolean {
+        const currentBerechtigung =
+            this.authServiceRS.getPrincipal().currentBerechtigung;
         if (currentBerechtigung) {
-            return this.isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution, currentBerechtigung)
-                || this.isCurrentUserInstitutionAdminOfSelectedInstitution(institution, currentBerechtigung);
+            return (
+                this.isCurrentUserTraegerschaftAdminOfSelectedInstitution(
+                    institution,
+                    currentBerechtigung
+                ) ||
+                this.isCurrentUserInstitutionAdminOfSelectedInstitution(
+                    institution,
+                    currentBerechtigung
+                )
+            );
         }
         return false;
     }
@@ -202,42 +251,58 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         institution: TSInstitution,
         currentBerechtigung: TSBerechtigung
     ): boolean {
-        return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
-            && (currentBerechtigung.traegerschaft && institution.traegerschaft
-                && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id);
+        return (
+            currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT &&
+            currentBerechtigung.traegerschaft &&
+            institution.traegerschaft &&
+            currentBerechtigung.traegerschaft.id ===
+                institution.traegerschaft.id
+        );
     }
 
     private isCurrentUserInstitutionAdminOfSelectedInstitution(
         institution: TSInstitution,
         currentBerechtigung: TSBerechtigung
     ): boolean {
-        return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
-            && (currentBerechtigung.institution
-                && currentBerechtigung.institution.id === institution.id);
+        return (
+            currentBerechtigung.role === TSRole.ADMIN_INSTITUTION &&
+            currentBerechtigung.institution &&
+            currentBerechtigung.institution.id === institution.id
+        );
     }
 
     public isCreateBGAllowed(): boolean {
         if (this.institutionenDurchGemeindenEinladen) {
-            return this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN]);
+            return this.authServiceRS.isOneOfRoles([
+                TSRole.ADMIN_BG,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SUPER_ADMIN
+            ]);
         }
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public isCreateTSAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
-            && this.userHasGemeindeWithTSEnabled
-            && this.angebotTSActivated;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
+            this.userHasGemeindeWithTSEnabled &&
+            this.angebotTSActivated
+        );
     }
 
     public isCreateLATSTSAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
-            && this.userHasGemeindeWithoutTSEnabled
-            && this.angebotTSActivated;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
+            this.userHasGemeindeWithoutTSEnabled &&
+            this.angebotTSActivated
+        );
     }
 
     public isCreateFIAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
-            && this.angebotFIActivated;
+        return (
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
+            this.angebotFIActivated
+        );
     }
 
     public isDeleteAllowed(): boolean {

@@ -16,7 +16,7 @@
  */
 
 const getGemeindeHinzufuegenButton = () => {
-	return cy.getByData('container.gemeinde-hinzufuegen', 'navigation-button');
+    return cy.getByData('container.gemeinde-hinzufuegen', 'navigation-button');
 };
 
 const getSearchField = () => {
@@ -24,7 +24,7 @@ const getSearchField = () => {
 };
 
 const getSearchItem = (idx: number) => {
-	return cy.getByData('search-list-item.' + idx);
+    return cy.getByData('search-list-item.' + idx);
 };
 
 export const GemeindeListPO = {

@@ -41,17 +41,16 @@ const LOG = LogFactory.createLog('AbstractFinSitBernView');
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
 enum saveHints {
-    LOADING= 'FINSIT_BERN_LOADING',
-    SAVED= 'FINSIT_BERN_SAVED',
-    ERROR= 'FINSIT_BERN_ERROR'
+    LOADING = 'FINSIT_BERN_LOADING',
+    SAVED = 'FINSIT_BERN_SAVED',
+    ERROR = 'FINSIT_BERN_ERROR'
 }
 
 export abstract class AbstractFinSitBernView extends AbstractGesuchViewController<TSFinanzModel> {
-
     protected steuerSchnittstelleAktivForPeriode: boolean;
     public steuerSchnittstelleAktivAbStr: string;
     protected steuerSchnittstelleAkivAbInPast: boolean;
-    protected zahlungsangabenRequired: boolean =  false;
+    protected zahlungsangabenRequired: boolean = false;
     protected finSitRequestState: string;
     protected finSitRequestRunning: boolean;
 
@@ -66,32 +65,55 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         protected readonly dvDialog: DvDialog,
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
-            $timeout);
+            $timeout
+        );
 
         this.loadEinstellungen();
-        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
-            this.steuerSchnittstelleAkivAbInPast = moment().isAfter(properties.steuerschnittstelleAktivAb);
-            this.steuerSchnittstelleAktivAbStr = properties.steuerschnittstelleAktivAb.format(CONSTANTS.DATE_FORMAT);
-        });
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(properties => {
+                this.steuerSchnittstelleAkivAbInPast = moment().isAfter(
+                    properties.steuerschnittstelleAktivAb
+                );
+                this.steuerSchnittstelleAktivAbStr =
+                    properties.steuerschnittstelleAktivAb.format(
+                        CONSTANTS.DATE_FORMAT
+                    );
+            });
     }
 
     private loadEinstellungen(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode()?.id)
-            .subscribe(einstellungen => {
-                const einstellungSteuerschnittstelle = einstellungen
-                    .find(e => e.key === TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV);
-                this.steuerSchnittstelleAktivForPeriode = (einstellungSteuerschnittstelle?.value === 'true');
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode()?.id
+            )
+            .subscribe(
+                einstellungen => {
+                    const einstellungSteuerschnittstelle = einstellungen.find(
+                        e =>
+                            e.key ===
+                            TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV
+                    );
+                    this.steuerSchnittstelleAktivForPeriode =
+                        einstellungSteuerschnittstelle?.value === 'true';
 
-                const einstellungZahlungsangebenRequired = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED);
-                this.zahlungsangabenRequired =
-                    (einstellungZahlungsangebenRequired?.value === 'true');
-            }, error => LOG.error(error));
+                    const einstellungZahlungsangebenRequired =
+                        einstellungen.find(
+                            e =>
+                                e.key ===
+                                TSEinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED
+                        );
+                    this.zahlungsangabenRequired =
+                        einstellungZahlungsangebenRequired?.value === 'true';
+                },
+                error => LOG.error(error)
+            );
     }
 
     public getModel(): TSFinanzielleSituationContainer {
@@ -103,16 +125,23 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
         if (this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
-            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = true;
+            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt =
+                true;
             if (this.model.familienSituation.gemeinsameSteuererklaerung) {
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
+                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten =
+                    true;
+                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
+                    true;
             }
-        } else if (!this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
+        } else if (
+            !this.getModel().finanzielleSituationJA.steuerveranlagungErhalten
+        ) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
-            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
+            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt =
+                undefined;
             if (this.model.familienSituation.gemeinsameSteuererklaerung) {
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
+                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten =
+                    false;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                     undefined;
             }
@@ -124,52 +153,78 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     }
 
     public showSteuerdatenAbholenButton(): boolean {
-        return this.steuerSchnittstelleAktivForPeriode
-            && this.steuerSchnittstelleAkivAbInPast
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff
-            && this.isNotFinSitStartOrGS2Required()
-            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+        return (
+            this.steuerSchnittstelleAktivForPeriode &&
+            this.steuerSchnittstelleAkivAbInPast &&
+            this.getModel().finanzielleSituationJA.steuerdatenZugriff &&
+            this.isNotFinSitStartOrGS2Required() &&
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        );
     }
 
     protected abstract isNotFinSitStartOrGS2Required(): boolean;
 
     public showWarningSteuerschnittstelleNotYetActive(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenZugriff && !this.steuerSchnittstelleAkivAbInPast;
+        return (
+            this.getModel().finanzielleSituationJA.steuerdatenZugriff &&
+            !this.steuerSchnittstelleAkivAbInPast
+        );
     }
 
     protected showResetDialog(): IPromise<void> {
-        return this.dvDialog.showRemoveDialog(removeDialogTemplate, null, RemoveDialogController, {
-            title: 'WOLLEN_SIE_FORTFAHREN',
-            deleteText: 'RESET_KIBON_ABFRAGE_WARNING'
-        });
+        return this.dvDialog.showRemoveDialog(
+            removeDialogTemplate,
+            null,
+            RemoveDialogController,
+            {
+                title: 'WOLLEN_SIE_FORTFAHREN',
+                deleteText: 'RESET_KIBON_ABFRAGE_WARNING'
+            }
+        );
     }
 
     public resetKiBonAnfrageFinSitIfRequired(): void {
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+            )
+        ) {
             this.resetKiBonAnfrageFinSit();
             return;
         }
-        this.showResetDialog().then(() => {
-            this.resetKiBonAnfrageFinSit();
-        }, () => this.getModel().finanzielleSituationJA.steuerdatenZugriff = true);
+        this.showResetDialog().then(
+            () => {
+                this.resetKiBonAnfrageFinSit();
+            },
+            () =>
+                (this.getModel().finanzielleSituationJA.steuerdatenZugriff =
+                    true)
+        );
     }
 
     public callKiBonAnfrageAndUpdateFinSit(): void {
         this.finSitRequestRunning = true;
         this.finSitRequestState = saveHints.LOADING;
-        this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.familienSituation.gemeinsameSteuererklaerung))
+        this.callKiBonAnfrage(
+            EbeguUtil.isNotNullAndTrue(
+                this.model.familienSituation.gemeinsameSteuererklaerung
+            )
+        )
             .then(() => {
-                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                    this.form.$setDirty();
-                    this.finSitRequestState = saveHints.SAVED;
-                }
-            ).catch(() => {
-                this.finSitRequestState = saveHints.ERROR;
-            }
-        ).finally(() => {
+                this.model.copyFinSitDataFromGesuch(
+                    this.gesuchModelManager.getGesuch()
+                );
+                this.form.$setDirty();
                 this.finSitRequestState = saveHints.SAVED;
-            }
-        );
+            })
+            .catch(() => {
+                this.finSitRequestState = saveHints.ERROR;
+            })
+            .finally(() => {
+                this.finSitRequestState = saveHints.SAVED;
+            });
         setTimeout(() => {
             this.finSitRequestRunning = false;
         }, 5000);
@@ -180,11 +235,13 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected abstract showAutomatischePruefungSteuerdatenFrage(): boolean;
 
     public resetAutomatischePruefungSteuerdaten(): void {
-        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt =
+            undefined;
     }
 
     public einkommenInVereinfachtemVerfarenClicked(): void {
-        this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+        this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+            null;
     }
 
     protected showZugriffAufSteuerdaten(): boolean {
@@ -196,23 +253,43 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
-            !this.showZugriffAufSteuerdatenForGemeinde()) {
+        if (
+            !this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            !this.showZugriffAufSteuerdatenForGemeinde()
+        ) {
             return false;
         }
 
-        return this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])
-            || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
-            || this.showZugriffAufSteuerdatenForGemeinde();
+        return (
+            this.authServiceRS.isOneOfRoles([
+                TSRole.GESUCHSTELLER,
+                TSRole.SUPER_ADMIN
+            ]) ||
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getFiSiConToWorkWith().finanzielleSituationGS
+            ) ||
+            this.showZugriffAufSteuerdatenForGemeinde()
+        );
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
-        return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN));
+        return (
+            EbeguUtil.isNotNullOrUndefined(
+                this.model.getFiSiConToWorkWith().finanzielleSituationJA
+                    ?.steuerdatenAbfrageStatus
+            ) &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN)
+            )
+        );
     }
 
-    protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
+    protected callKiBonAnfrage(
+        isGemeinsam: boolean
+    ): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(isGemeinsam);
+        return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(
+            isGemeinsam
+        );
     }
 }

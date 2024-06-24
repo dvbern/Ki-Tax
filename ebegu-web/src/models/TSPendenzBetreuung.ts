@@ -14,12 +14,11 @@
  */
 
 import * as moment from 'moment';
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
 import {TSInstitution} from './TSInstitution';
 
 export class TSPendenzBetreuung {
-
     private _betreuungsNummer: string;
     private _betreuungsId: string;
     private _gesuchId: string;

@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.*;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
@@ -456,6 +457,10 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, "0.00", gesuchsperiode);
 		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, "0.00", gesuchsperiode);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_KITA_MAX, "", gesuchsperiode);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_LINEAR_TFO_MAX, "", gesuchsperiode);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MIN_MASSGEBENDES_EINKOMMEN, "", gesuchsperiode);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_MAX_MASSGEBENDES_EINKOMMEN, "", gesuchsperiode);
 		saveEinstellung(
 			GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
 			EinschulungTyp.VORSCHULALTER.name(),
@@ -516,7 +521,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode);
-		saveEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
+		saveEinstellung(GESCHWISTERNBONUS_TYP, "NONE", gesuchsperiode);
 		saveEinstellung(DAUER_BABYTARIF, "12", gesuchsperiode);
 		saveEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode);
@@ -539,6 +544,10 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode);
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode);
 		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode);
+		saveEinstellung(WEGZEIT_ERWERBSPENSUM, "false", gesuchsperiode);
+		saveEinstellung(ANWESENHEITSTAGE_PRO_MONAT_AKTIVIERT, "false", gesuchsperiode);
+		saveEinstellung(SOZIALVERSICHERUNGSNUMMER_PERIODE, "false", gesuchsperiode);
+		saveEinstellung(HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

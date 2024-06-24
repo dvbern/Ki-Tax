@@ -33,7 +33,6 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSFall} from '../../../models/TSFall';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
@@ -44,26 +43,54 @@ import {PosteingangViewComponent} from './posteingang-view.component';
 describe('PosteingangViewComponent', () => {
     let component: PosteingangViewComponent;
     let fixture: ComponentFixture<PosteingangViewComponent>;
-    const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'isOneOfRoles']);
-    const mitteilungRSSpy = jasmine.createSpyObj<MitteilungRS>(MitteilungRS.name, ['searchMitteilungen']);
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
-        ['onStart']);
-    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
-        ['has', 'get', 'delete', 'store']);
-    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
-        ['$current']);
-    const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getAllBenutzerBgTsOrGemeinde']);
+    const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
+        'isRole',
+        'isOneOfRoles'
+    ]);
+    const mitteilungRSSpy = jasmine.createSpyObj<MitteilungRS>(
+        MitteilungRS.name,
+        ['searchMitteilungen']
+    );
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenForPrincipal$'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(
+        TransitionService.name,
+        ['onStart']
+    );
+    const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(
+        StateStoreService.name,
+        ['has', 'get', 'delete', 'store']
+    );
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(
+        UIRouterGlobals.name,
+        ['$current']
+    );
+    const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, [
+        'getAllBenutzerBgTsOrGemeinde'
+    ]);
     authRSSpy.principal$ = of(new TSBenutzer());
-    const demoFeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(DemoFeatureRS.name, ['isDemoFeatureAllowed']);
-    demoFeatureRSSpy.isDemoFeatureAllowed.and.returnValue(Promise.resolve(false));
+    const demoFeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(
+        DemoFeatureRS.name,
+        ['isDemoFeatureAllowed']
+    );
+    demoFeatureRSSpy.isDemoFeatureAllowed.and.returnValue(
+        Promise.resolve(false)
+    );
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [PosteingangViewComponent],
-            imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
+            imports: [
+                MaterialModule,
+                TranslateModule.forRoot(),
+                UpgradeModule,
+                BrowserAnimationsModule
+            ],
             providers: [
                 {provide: MitteilungRS, useValue: mitteilungRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
@@ -78,7 +105,9 @@ describe('PosteingangViewComponent', () => {
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        benutzerSpy.getAllBenutzerBgTsOrGemeinde.and.returnValue(Promise.resolve([]));
+        benutzerSpy.getAllBenutzerBgTsOrGemeinde.and.returnValue(
+            Promise.resolve([])
+        );
         mockGetMitteilung();
     });
 
@@ -100,7 +129,8 @@ describe('PosteingangViewComponent', () => {
         mockDossier.fall = mockFall;
         const gesuchsteller = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
-        const result = new TSMitteilung(mockDossier,
+        const result = new TSMitteilung(
+            mockDossier,
             undefined,
             undefined,
             TSMitteilungTeilnehmerTyp.GESUCHSTELLER,
@@ -110,8 +140,11 @@ describe('PosteingangViewComponent', () => {
             'Frage',
             'Warum ist die Banane krumm?',
             TSMitteilungStatus.NEU,
-            undefined);
+            undefined
+        );
         const dtoList = [result];
-        mitteilungRSSpy.searchMitteilungen.and.returnValue(Promise.resolve(new TSMtteilungSearchresultDTO(dtoList, 1)));
+        mitteilungRSSpy.searchMitteilungen.and.returnValue(
+            Promise.resolve(new TSMtteilungSearchresultDTO(dtoList, 1))
+        );
     }
 });

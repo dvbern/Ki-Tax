@@ -185,7 +185,6 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nonnull
-	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nullable BigDecimal augment) {
 		if (augment == null) {
 			return value;

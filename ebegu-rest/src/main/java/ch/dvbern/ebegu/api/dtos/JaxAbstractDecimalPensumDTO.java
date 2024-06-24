@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import ch.dvbern.ebegu.enums.PensumUnits;
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +26,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
-import java.math.BigDecimal;
+
+import ch.dvbern.ebegu.enums.PensumUnits;
 
 /**
  * Superklasse fuer ein Betreuungspensum
@@ -54,8 +55,12 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	private BigDecimal stuendlicheVollkosten;
 
 	@Nullable
-	private JaxEingewoehnungPauschale eingewoehnungPauschale;
+	private JaxEingewoehnung eingewoehnung;
 
+	@Nullable
+	private BigDecimal betreuteTage;
+
+	@Nonnull
 	public PensumUnits getUnitForDisplay() {
 		return unitForDisplay;
 	}
@@ -92,11 +97,20 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	}
 
 	@Nullable
-	public JaxEingewoehnungPauschale getEingewoehnungPauschale() {
-		return eingewoehnungPauschale;
+	public JaxEingewoehnung getEingewoehnung() {
+		return eingewoehnung;
 	}
 
-	public void setEingewoehnungPauschale(@Nullable JaxEingewoehnungPauschale eingewoehnungPauschale) {
-		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	public void setEingewoehnung(@Nullable JaxEingewoehnung eingewoehnung) {
+		this.eingewoehnung = eingewoehnung;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuteTage() {
+		return betreuteTage;
+	}
+
+	public void setBetreuteTage(@Nullable BigDecimal betreuteTage) {
+		this.betreuteTage = betreuteTage;
 	}
 }

@@ -17,6 +17,18 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.OutputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -28,15 +40,9 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.OutputStream;
-import java.time.LocalDate;
-import java.util.*;
-
 public abstract class KibonPdfGenerator {
 
-	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
+	protected static final String REFERENZ_NUMMER = "PdfGeneration_Referenznummer";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
 	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben";
 	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";

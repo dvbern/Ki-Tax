@@ -22,10 +22,11 @@ import {TSExceptionReport} from './TSExceptionReport';
 import {TSMitteilungVerarbeitungResult} from './TSMitteilungVerarbeitungResult';
 
 export class TSMitteilungVerarbeitung {
-
     private readonly _successItems$: BehaviorSubject<TSBetreuungsmitteilung[]>;
     private readonly _failedItems$: BehaviorSubject<TSBetreuungsmitteilung[]>;
-    private readonly _errorItems$: BehaviorSubject<{ errors: TSExceptionReport[]; mitteilung: TSBetreuungsmitteilung }[]>;
+    private readonly _errorItems$: BehaviorSubject<
+        {errors: TSExceptionReport[]; mitteilung: TSBetreuungsmitteilung}[]
+    >;
     private readonly _total: number;
     private readonly _count$: BehaviorSubject<number>;
 
@@ -33,37 +34,50 @@ export class TSMitteilungVerarbeitung {
         this._total = total;
         this._successItems$ = new BehaviorSubject<TSBetreuungsmitteilung[]>([]);
         this._failedItems$ = new BehaviorSubject<TSBetreuungsmitteilung[]>([]);
-        this._errorItems$ = new BehaviorSubject<{ errors: TSExceptionReport[]; mitteilung: TSBetreuungsmitteilung }[]>([]);
+        this._errorItems$ = new BehaviorSubject<
+            {errors: TSExceptionReport[]; mitteilung: TSBetreuungsmitteilung}[]
+        >([]);
         this._count$ = new BehaviorSubject<number>(0);
     }
 
     public get results(): Observable<TSMitteilungVerarbeitungResult> {
         return combineLatest([
-            this._successItems$, this._failedItems$, this._count$, this._errorItems$,
+            this._successItems$,
+            this._failedItems$,
+            this._count$,
+            this._errorItems$
         ]).pipe(
-            map(
-                ([successItems, failedItems, count, errors]) => ({
-                    count,
-                    successItems,
-                    failedItems,
-                    total: this._total,
-                    errors,
-                })),
+            map(([successItems, failedItems, count, errors]) => ({
+                count,
+                successItems,
+                failedItems,
+                total: this._total,
+                errors
+            }))
         );
     }
 
     public addSuccess(appliedMitteilung: TSBetreuungsmitteilung): void {
-        this._successItems$.next(this._successItems$.value.concat(appliedMitteilung));
+        this._successItems$.next(
+            this._successItems$.value.concat(appliedMitteilung)
+        );
         this.increaseCount();
     }
 
     public addFailure(appliedMitteilung: TSBetreuungsmitteilung): void {
-        this._failedItems$.next(this._failedItems$.value.concat(appliedMitteilung));
+        this._failedItems$.next(
+            this._failedItems$.value.concat(appliedMitteilung)
+        );
         this.increaseCount();
     }
 
-    public addError(mitteilung: TSBetreuungsmitteilung, errors: TSExceptionReport[]): void {
-        this._errorItems$.next(this._errorItems$.value.concat({errors, mitteilung}));
+    public addError(
+        mitteilung: TSBetreuungsmitteilung,
+        errors: TSExceptionReport[]
+    ): void {
+        this._errorItems$.next(
+            this._errorItems$.value.concat({errors, mitteilung})
+        );
         this.increaseCount();
     }
 

@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -32,10 +37,12 @@ import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboardin
     selector: 'dv-onboarding-neu-benutzer',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-neu-benutzer.component.html',
-    styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less']
+    styleUrls: [
+        './onboarding-neu-benutzer.component.less',
+        '../onboarding.less'
+    ]
 })
 export class OnboardingNeuBenutzerComponent {
-
     @Input() public nextState: string = 'onboarding.be-login';
     public isTSAngebotEnabled: boolean;
 
@@ -59,21 +66,38 @@ export class OnboardingNeuBenutzerComponent {
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
-            .pipe(map(gemeinden => {
+        this.gemeinden$ = from(
+            this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden()
+        ).pipe(
+            map(gemeinden => {
                 gemeinden.sort(EbeguUtil.compareByName);
                 return gemeinden;
-            }));
-        this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
-            gemeinde => gemeinde.angebotBG)));
-        this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
-            gemeinde => gemeinde.angebotTS && !gemeinde.besondereVolksschule && !gemeinde.nurLats)));
-        this.besondereVolksschulen$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
-            gemeinde => gemeinde.besondereVolksschule)));
-        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
-            this.isTSAngebotEnabled = properties.angebotTSActivated;
-            this.cd.markForCheck();
-        });
+            })
+        );
+        this.gemeindenBG$ = from(this.gemeinden$).pipe(
+            map(gemeinden => gemeinden.filter(gemeinde => gemeinde.angebotBG))
+        );
+        this.gemeindenTS$ = from(this.gemeinden$).pipe(
+            map(gemeinden =>
+                gemeinden.filter(
+                    gemeinde =>
+                        gemeinde.angebotTS &&
+                        !gemeinde.besondereVolksschule &&
+                        !gemeinde.nurLats
+                )
+            )
+        );
+        this.besondereVolksschulen$ = from(this.gemeinden$).pipe(
+            map(gemeinden =>
+                gemeinden.filter(gemeinde => gemeinde.besondereVolksschule)
+            )
+        );
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(properties => {
+                this.isTSAngebotEnabled = properties.angebotTSActivated;
+                this.cd.markForCheck();
+            });
     }
 
     public async onSubmit(form: NgForm): Promise<void> {
@@ -100,7 +124,9 @@ export class OnboardingNeuBenutzerComponent {
     }
 
     public showPopupAfterRegistrierenIfNecessary(): Promise<boolean> {
-        const popupText = this.translate.instant('POPUPTEXT_AFTER_REGISTRIEREN');
+        const popupText = this.translate.instant(
+            'POPUPTEXT_AFTER_REGISTRIEREN'
+        );
         // dieses popup haben wir nicht bei allen Mandanten. Wir zeigen es nur, falls ein Text dafür in den Translation
         // files existiert.
         if (popupText.length === 0) {
@@ -110,7 +136,8 @@ export class OnboardingNeuBenutzerComponent {
         dialogConfig.data = {
             frage: popupText
         };
-        return this.dialog.open(DvNgCancelDialogComponent, dialogConfig)
+        return this.dialog
+            .open(DvNgCancelDialogComponent, dialogConfig)
             .afterClosed()
             .toPromise();
     }
@@ -124,7 +151,9 @@ export class OnboardingNeuBenutzerComponent {
     }
 
     public getTSGemeinden(): Observable<TSGemeinde[]> {
-        return this.besondereVolksschuleBeantragen ? this.besondereVolksschulen$ : this.gemeindenTS$;
+        return this.besondereVolksschuleBeantragen
+            ? this.besondereVolksschulen$
+            : this.gemeindenTS$;
     }
 
     public resetGemeindeListe(): void {

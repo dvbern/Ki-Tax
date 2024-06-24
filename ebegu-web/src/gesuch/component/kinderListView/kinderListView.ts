@@ -52,8 +52,10 @@ export class KinderListViewComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
 }
 
-export class KinderListViewController extends AbstractGesuchViewController<any> implements IDVFocusableController {
-
+export class KinderListViewController
+    extends AbstractGesuchViewController<any>
+    implements IDVFocusableController
+{
     public static $inject: string[] = [
         '$state',
         'GesuchModelManager',
@@ -80,7 +82,14 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         $timeout: ITimeoutService,
         private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.KINDER,
+            $timeout
+        );
         this.initViewModel();
         this.initEinstellungen();
     }
@@ -88,15 +97,19 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     private initViewModel(): void {
         this.gesuchModelManager.initKinder();
 
-        if (!this.gesuchModelManager.isThereAnyNotGeprueftesKind()
-            && this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()) {
+        if (
+            !this.gesuchModelManager.isThereAnyNotGeprueftesKind() &&
+            this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+        ) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.KINDER,
-                TSWizardStepStatus.OK);
+                TSWizardStepStatus.OK
+            );
         } else {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.KINDER,
-                TSWizardStepStatus.IN_BEARBEITUNG);
+                TSWizardStepStatus.IN_BEARBEITUNG
+            );
         }
     }
 
@@ -104,24 +117,36 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         const gemeinde = this.gesuchModelManager.getGemeinde();
         const gs = this.gesuchModelManager.getGesuchsperiode();
         combineLatest([
-            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
                 gemeinde.id,
-                gs.id),
-            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+                gs.id
+            ),
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
                 gemeinde.id,
-                gs.id),
-            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+                gs.id
+            ),
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
                 gemeinde.id,
-                gs.id),
-            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+                gs.id
+            ),
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
                 gemeinde.id,
-                gs.id)
-        ]).subscribe(einstellungen => {
-            this.allFamilienPauschalAbzuegeZero = einstellungen.reduce((
-                isZero: boolean,
-                einstellung: TSEinstellung
-            ) => isZero && parseInt(einstellung.value, 10) === 0, true);
-        }, error => LOG.error(error));
+                gs.id
+            )
+        ]).subscribe(
+            einstellungen => {
+                this.allFamilienPauschalAbzuegeZero = einstellungen.reduce(
+                    (isZero: boolean, einstellung: TSEinstellung) =>
+                        isZero && parseInt(einstellung.value, 10) === 0,
+                    true
+                );
+            },
+            error => LOG.error(error)
+        );
     }
 
     public getKinderList(): Array<TSKindContainer> {
@@ -137,7 +162,8 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public editKind(kind: any): void {
-        if (kind) {         // check entfernt
+        if (kind) {
+            // check entfernt
             kind.isSelected = false; // damit die row in der Tabelle nicht mehr als "selected" markiert ist
             this.openKindView(kind.kindNummer);
         }
@@ -145,19 +171,26 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     public getDubletten(kindContainer: TSKindContainer): TSKindDublette[] {
         if (this.kinderDubletten) {
-            return this.kinderDubletten.filter(kd => kd.kindNummerOriginal === kindContainer.kindNummer);
+            return this.kinderDubletten.filter(
+                kd => kd.kindNummerOriginal === kindContainer.kindNummer
+            );
         }
         return undefined;
     }
 
     public gotoKindDublette(dublette: TSKindDublette): void {
-        const url = this.$state.href('gesuch.kind',
-            {kindNumber: dublette.kindNummerDublette, gesuchId: dublette.gesuchId});
+        const url = this.$state.href('gesuch.kind', {
+            kindNumber: dublette.kindNummerDublette,
+            gesuchId: dublette.gesuchId
+        });
         window.open(url, '_blank');
     }
 
     private openKindView(kindNumber: number): void {
-        this.$state.go('gesuch.kind', {kindNumber, gesuchId: this.getGesuchId()});
+        this.$state.go('gesuch.kind', {
+            kindNumber,
+            gesuchId: this.getGesuchId()
+        });
     }
 
     public getFallNummer(dublette: TSKindDublette): string {
@@ -165,14 +198,23 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public removeKind(kind: any, index: any): void {
-        const remTitleText = this.$translate.instant('KIND_LOESCHEN', {kindname: kind.kindJA.getFullName()});
-        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: remTitleText,
-            deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
-            parentController: this,
-            elementID: `removeKindButton_${index}`
-        })
-            .then(() => {   // User confirmed removal
+        const remTitleText = this.$translate.instant('KIND_LOESCHEN', {
+            kindname: kind.kindJA.getFullName()
+        });
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: remTitleText,
+                    deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
+                    parentController: this,
+                    elementID: `removeKindButton_${index}`
+                }
+            )
+            .then(() => {
+                // User confirmed removal
                 const kindIndex = this.gesuchModelManager.findKind(kind);
                 if (kindIndex >= 0) {
                     this.gesuchModelManager.setKindIndex(kindIndex);
@@ -186,14 +228,12 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
      * ist (es ist ein neues kind) oder in einer mutation wenn es (obwohl ein altes Kind) keine Betreuungen hat
      */
     public canRemoveKind(kind: TSKindContainer): boolean {
-        return !this.isGesuchReadonly()
-            && (
-                (
-                    this.gesuchModelManager.getGesuch().isMutation()
-                    && (!kind.betreuungen || kind.betreuungen.length <= 0)
-                )
-                || !kind.kindJA.vorgaengerId
-            );
+        return (
+            !this.isGesuchReadonly() &&
+            ((this.gesuchModelManager.getGesuch().isMutation() &&
+                (!kind.betreuungen || kind.betreuungen.length <= 0)) ||
+                !kind.kindJA.vorgaengerId)
+        );
     }
 
     public getColsNumber(): number {
@@ -201,7 +241,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element(`#${  elementID}`).first().focus();
+        angular.element(`#${elementID}`).first().focus();
     }
 
     public getKinderHint3(): string {

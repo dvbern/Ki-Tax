@@ -15,20 +15,27 @@
 
 package ch.dvbern.ebegu.rules;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
-import ch.dvbern.ebegu.util.KitaxUtil;
-
-import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.KitaxUtil;
 
 /**
  * Regel für die Erstellung der Zeitabschnitte der Betreuungspensen
@@ -147,6 +154,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
 		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
 		zeitabschnitt.setPensumUnitForAsivAndGemeinde(betreuungspensum.getUnitForDisplay());
+		if (betreuungspensum.getBetreuteTage() != null) {
+			zeitabschnitt.setAnwesenheitsTageProMonat(betreuungspensum.getBetreuteTage());
+		}
 		// Anzahl Haupt und Nebenmahlzeiten übernehmen
 		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheHauptmahlzeiten());
 		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheNebenmahlzeiten());
@@ -190,9 +200,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}
-
-		// Information, ob die Zahlung an die Eltern oder Institution ausbezahlt wird übernehmen.
-		zeitabschnitt.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
 
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
 

@@ -16,8 +16,11 @@
  */
 
 import {NgModule} from '@angular/core';
-import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {getBgInstitutionenBetreuungsangebote} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    NgHybridStateDeclaration,
+    UIRouterUpgradeModule
+} from '@uirouter/angular-hybrid';
+import {getBgInstitutionenBetreuungsangebote} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddInstitutionComponent} from '../add-institution/add-institution.component';
@@ -83,12 +86,7 @@ const states: NgHybridStateDeclaration[] = [
 ];
 
 @NgModule({
-    imports: [
-        UIRouterUpgradeModule.forChild({states})
-    ],
-    exports: [
-        UIRouterUpgradeModule
-    ]
+    imports: [UIRouterUpgradeModule.forChild({states})],
+    exports: [UIRouterUpgradeModule]
 })
-export class InstitutionRoutingModule {
-}
+export class InstitutionRoutingModule {}

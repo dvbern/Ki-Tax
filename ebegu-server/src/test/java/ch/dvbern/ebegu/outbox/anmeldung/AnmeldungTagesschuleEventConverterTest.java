@@ -40,8 +40,8 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -84,7 +84,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		AnmeldungTagesschuleEvent anmeldungTagesschuleEvent = converter.of(anmeldungTagesschule);
 
 		TagesschuleAnmeldungEventDTO specificRecord =
-			assertEventAndConvertBackFromAvro(anmeldungTagesschuleEvent, anmeldungTagesschule.getBGNummer());
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleEvent, anmeldungTagesschule.getReferenzNummer());
 
 		assert anmeldungTagesschule.getVerfuegung() != null;
 		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
@@ -101,7 +101,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		AnmeldungTagesschuleEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
 
 		TagesschuleAnmeldungEventDTO specificRecord =
-			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getBGNummer());
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getReferenzNummer());
 
 		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
 
@@ -133,7 +133,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		anmeldungTagesschule.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
 		AnmeldungTagesschuleEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
 		TagesschuleAnmeldungEventDTO specificRecord =
-			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getBGNummer());
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getReferenzNummer());
 		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
 			.where(
 				TagesschuleAnmeldungEventDTO::getStatus,
@@ -145,9 +145,10 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	private TagesschuleAnmeldungEventDTO assertEventAndConvertBackFromAvro(
 		AnmeldungTagesschuleEvent anmeldungTagesschuleEvent,
-		String bgNummer) {
+		String referenzNummer
+	) {
 		assertThat(anmeldungTagesschuleEvent, is(pojo(ExportedEvent.class)
-			.where(ExportedEvent::getAggregateId, is(bgNummer))
+			.where(ExportedEvent::getAggregateId, is(referenzNummer))
 			.where(ExportedEvent::getAggregateType, is("Anmeldung"))
 			.where(ExportedEvent::getType, is("AnmeldungTagesschule")))
 		);
@@ -176,7 +177,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 		Iterator<BelegungTagesschuleModul> iterator = belegung.getBelegungTagesschuleModule().iterator();
 
 		return pojo(TagesschuleAnmeldungDetailsDTO.class)
-			.where(TagesschuleAnmeldungDetailsDTO::getRefnr, is(anmeldungTagesschule.getBGNummer()))
+			.where(TagesschuleAnmeldungDetailsDTO::getRefnr, is(anmeldungTagesschule.getReferenzNummer()))
 			.where(TagesschuleAnmeldungDetailsDTO::getBemerkung, is(belegung.getBemerkung()))
 			.where(TagesschuleAnmeldungDetailsDTO::getEintrittsdatum, is(belegung.getEintrittsdatum()))
 			.where(TagesschuleAnmeldungDetailsDTO::getPlanKlasse, is(belegung.getPlanKlasse()))

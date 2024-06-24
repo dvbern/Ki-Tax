@@ -16,11 +16,21 @@
  */
 package ch.dvbern.ebegu.enums.reporting;
 
-import ch.dvbern.oss.lib.excelmerger.mergefields.*;
-
 import javax.annotation.Nonnull;
 
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.*;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatColMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
+
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider {
 
@@ -109,7 +119,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gutscheinTotalTitel(new SimpleMergeField<>("gutscheinTotalTitel", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	gesuchstellerKinderBetreuungTitle(new SimpleMergeField<>("gesuchstellerKinderBetreuungTitle", STRING_CONVERTER)),
-	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
+	referenzNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
 	ausserordentlicherAnspruchTitle(new SimpleMergeField<>("ausserordentlicherAnspruchTitle", STRING_CONVERTER)),
 	zusatzFelderGemeinden(new SimpleMergeField<>("zusatzFelderGemeinden", STRING_CONVERTER)),
 
@@ -120,7 +130,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 
-	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
+	referenzNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),

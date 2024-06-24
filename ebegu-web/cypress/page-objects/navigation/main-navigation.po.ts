@@ -20,21 +20,20 @@ const getMobileMenuButton = () => {
 };
 
 const getMenuButton = () => {
-	return cy.getByData('page-menu');
+    return cy.getByData('page-menu');
 };
 
 const getTestdatenLink = () => {
-	return cy.getByData('action-admin.testdaten');
+    return cy.getByData('action-admin.testdaten');
 };
 
 const getGemeindenLink = () => {
-	return cy.getByData('action-gemeinde.list');
+    return cy.getByData('action-gemeinde.list');
 };
-
 
 export const MainNavigationPO = {
     getTestdatenLink,
     getMenuButton,
     getMobileMenuButton,
-    getGemeindenLink,
+    getGemeindenLink
 };

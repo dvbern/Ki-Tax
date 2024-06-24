@@ -15,8 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import * as Sentry from '@sentry/browser';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -32,21 +38,21 @@ import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.r
     encapsulation: ViewEncapsulation.None
 })
 export class PulldownUserMenuComponent implements OnInit {
-
     // Replace with Observable once ApplicationPropertyRS is migrated in KIBON-2963
     public multimandantAktiv: boolean = false;
     public frenchEnabled: boolean = false;
+    public testfaelleEnabled: boolean = false;
 
     public constructor(
         private readonly authService: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly state: StateService
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.initMandantSwitch();
         this.initFrenchEnabled();
+        this.initTestFaelleEnabled().catch(e => Sentry.captureException(e));
     }
 
     public getFullName(): Observable<string> {
@@ -86,23 +92,29 @@ export class PulldownUserMenuComponent implements OnInit {
     }
 
     private initMandantSwitch(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached().then(
-            publicAppConfig => publicAppConfig.mulitmandantAktiv
-        ).then(active => {
-            this.multimandantAktiv = active;
-        });
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(publicAppConfig => publicAppConfig.mulitmandantAktiv)
+            .then(active => {
+                this.multimandantAktiv = active;
+            });
     }
 
     private initFrenchEnabled(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached().then(
-            publicAppConfig => publicAppConfig.frenchEnabled
-        ).then(enabled => {
-            this.frenchEnabled = enabled;
-        });
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
+            .then(publicAppConfig => publicAppConfig.frenchEnabled)
+            .then(enabled => {
+                this.frenchEnabled = enabled;
+            });
+    }
+
+    private async initTestFaelleEnabled(): Promise<void> {
+        this.testfaelleEnabled =
+            await this.applicationPropertyRS.isTestfaelleEnabled();
     }
 
     public logout(): void {
         this.state.go('authentication.login', {type: 'logout'});
     }
-
 }

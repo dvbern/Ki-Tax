@@ -15,17 +15,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild
+} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import {isBereitZumVerfuegenOderVerfuegt, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
+import {
+    isBereitZumVerfuegenOderVerfuegt,
+    TSRueckforderungStatus
+} from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -48,19 +57,31 @@ const LOG = LogFactory.createLog('NotrechtComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotrechtComponent implements OnInit {
-
-    @ViewChild(MatSort, { static: true })
+    @ViewChild(MatSort, {static: true})
     private readonly sort: MatSort;
 
-    @ViewChild(MatPaginator, { static: true }) public paginator: MatPaginator;
+    @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
-    // eslint-disable-next-line
-    public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
-        'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
-    public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
-        'status', 'zahlungStufe1', 'zahlungStufe2', 'verantwortlich', 'dokumente', 'is-clickable'];
+    public displayedColumns = [
+        'institutionStammdaten.institution.name',
+        'institutionStammdaten.betreuungsangebotTyp',
+        'status',
+        'zahlungStufe1',
+        'zahlungStufe2',
+        'is-clickable'
+    ];
+    public displayedColumnsMandant = [
+        'institutionStammdaten.institution.name',
+        'institutionStammdaten.betreuungsangebotTyp',
+        'status',
+        'zahlungStufe1',
+        'zahlungStufe2',
+        'verantwortlich',
+        'dokumente',
+        'is-clickable'
+    ];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
 
@@ -77,23 +98,25 @@ export class NotrechtComponent implements OnInit {
         private readonly $state: StateService,
         private readonly dialog: MatDialog,
         private readonly downloadRS: DownloadRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.loadRueckforderungFormulareForCurrentBenutzer();
     }
 
     private loadRueckforderungFormulareForCurrentBenutzer(): void {
-        this.notrechtRS.getRueckforderungFormulareForCurrentBenutzer().then(formulare => {
-            this.rueckforderungFormulare = formulare;
-            this.initDataSource(formulare);
-            this.cdr.detectChanges();
-        });
+        this.notrechtRS
+            .getRueckforderungFormulareForCurrentBenutzer()
+            .then(formulare => {
+                this.rueckforderungFormulare = formulare;
+                this.initDataSource(formulare);
+                this.cdr.detectChanges();
+            });
     }
 
     private initDataSource(formulare: TSRueckforderungFormular[]): void {
-        this.rueckforderungFormulareSource = new MatTableDataSource<TSRueckforderungFormular>(formulare);
+        this.rueckforderungFormulareSource =
+            new MatTableDataSource<TSRueckforderungFormular>(formulare);
         this.rueckforderungFormulareSource.paginator = this.paginator;
 
         this.initFilter();
@@ -101,7 +124,10 @@ export class NotrechtComponent implements OnInit {
     }
 
     private initSort(): void {
-        this.rueckforderungFormulareSource.sortingDataAccessor = (item, property) => {
+        this.rueckforderungFormulareSource.sortingDataAccessor = (
+            item,
+            property
+        ) => {
             switch (property) {
                 case 'institutionStammdaten.institution.name':
                     return item.institutionStammdaten.institution.name;
@@ -110,16 +136,21 @@ export class NotrechtComponent implements OnInit {
                 case 'institutionStammdaten.betreuungsangebotTyp':
                     return item.institutionStammdaten.betreuungsangebotTyp;
                 case 'zahlungStufe1':
-                    return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
+                    return this.getZahlungAusgeloest(
+                        item.stufe1FreigabeAusbezahltAm
+                    );
                 case 'zahlungStufe2':
-                    return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
+                    return this.getZahlungAusgeloest(
+                        item.stufe2VerfuegungAusbezahltAm
+                    );
                 case 'verantwortlich':
                     return item.verantwortlicherName;
                 case 'dokumente':
                     return item.verantwortlicherName;
                 default:
-                    // @ts-ignore
-                    return item[property];
+                    return item[property as keyof typeof item] as
+                        | string
+                        | number;
             }
         };
         this.rueckforderungFormulareSource.sort = this.sort;
@@ -128,21 +159,35 @@ export class NotrechtComponent implements OnInit {
 
     private sortTable(): void {
         this.sort.sort({
-                id: 'institutionStammdaten.institution.name',
-                start: 'asc',
-                disableClear: false
-            }
-        );
+            id: 'institutionStammdaten.institution.name',
+            start: 'asc',
+            disableClear: false
+        });
     }
 
     private initFilter(): void {
         this.rueckforderungFormulareSource.filterPredicate = (data, filter) =>
-            EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
-                || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
-                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter)
-                || EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
+            EbeguUtil.hasTextCaseInsensitive(
+                data.institutionStammdaten.institution.name,
+                filter
+            ) ||
+            EbeguUtil.hasTextCaseInsensitive(
+                this.translateRueckforderungStatus(data.status),
+                filter
+            ) ||
+            EbeguUtil.hasTextCaseInsensitive(
+                data.institutionStammdaten.betreuungsangebotTyp,
+                filter
+            ) ||
+            EbeguUtil.hasTextCaseInsensitive(
+                this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm),
+                filter
+            ) ||
+            EbeguUtil.hasTextCaseInsensitive(
+                this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm),
+                filter
+            ) ||
+            EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
     }
 
     public initializeRueckforderungFormulare(): void {
@@ -151,21 +196,28 @@ export class NotrechtComponent implements OnInit {
             title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
             text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT'
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(answer => {
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                answer => {
                     if (answer !== true) {
                         return;
                     }
-                    this.notrechtRS.initializeRueckforderungFormulare().then(formulare => {
-                        this.errorService.addMesageAsInfo(this.translate.instant(
-                            'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
-                            {anzahlFormulare: formulare.length}
-                        ));
-                        this.loadRueckforderungFormulareForCurrentBenutzer();
-                    });
+                    this.notrechtRS
+                        .initializeRueckforderungFormulare()
+                        .then(formulare => {
+                            this.errorService.addMesageAsInfo(
+                                this.translate.instant(
+                                    'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
+                                    {anzahlFormulare: formulare.length}
+                                )
+                            );
+                            this.loadRueckforderungFormulareForCurrentBenutzer();
+                        });
                 },
-                () => {
-                });
+                () => {}
+            );
     }
 
     public initializePhase2(): void {
@@ -174,20 +226,25 @@ export class NotrechtComponent implements OnInit {
             title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
             text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT'
         };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(answer => {
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                answer => {
                     if (answer !== true) {
                         return;
                     }
                     this.notrechtRS.initializePhase2().then(() => {
                         this.loadRueckforderungFormulareForCurrentBenutzer();
-                        this.errorService.addMesageAsInfo(this.translate.instant(
-                            'RUECKFORDERUNG_PHASE2_INITIALISIERT'
-                        ));
+                        this.errorService.addMesageAsInfo(
+                            this.translate.instant(
+                                'RUECKFORDERUNG_PHASE2_INITIALISIERT'
+                            )
+                        );
                     });
                 },
-                () => {
-                });
+                () => {}
+            );
     }
 
     public verfuegenUndAusdrucken(): void {
@@ -197,26 +254,37 @@ export class NotrechtComponent implements OnInit {
             text: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT'
         };
         const token = DateUtil.now().format('YYYY-MM-DD-HH-mm-ss');
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(answer => {
-                if (answer !== true) {
-                    return;
-                }
-                // Wir loggen die AuftragId: Falls beim Download des ZIPs etwas schief geht, finden wir damit
-                // die Files auf dem Server
-                LOG.warn('Starting Massen-Verfuegung', token);
-                const win = this.downloadRS.prepareDownloadWindow();
-                this.downloadRS.getNotverordnungVerfuegungenAccessTokenGeneratedDokument(token)
-                    .then((downloadFile: TSDownloadFile) => {
-                        this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
-                        this.loadRueckforderungFormulareForCurrentBenutzer();
-                    })
-                    .catch(() => {
-                        win.close();
-                    });
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
+            .subscribe(
+                answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    // Wir loggen die AuftragId: Falls beim Download des ZIPs etwas schief geht, finden wir damit
+                    // die Files auf dem Server
+                    LOG.warn('Starting Massen-Verfuegung', token);
+                    const win = this.downloadRS.prepareDownloadWindow();
+                    this.downloadRS
+                        .getNotverordnungVerfuegungenAccessTokenGeneratedDokument(
+                            token
+                        )
+                        .then((downloadFile: TSDownloadFile) => {
+                            this.downloadRS.startDownload(
+                                downloadFile.accessToken,
+                                downloadFile.filename,
+                                true,
+                                win
+                            );
+                            this.loadRueckforderungFormulareForCurrentBenutzer();
+                        })
+                        .catch(() => {
+                            win.close();
+                        });
                 },
-                () => {
-                });
+                () => {}
+            );
     }
 
     public isSuperAdmin(): boolean {
@@ -229,26 +297,43 @@ export class NotrechtComponent implements OnInit {
         dialogConfig.data = {isEinladung};
         dialogConfig.panelClass = this.panelClass;
         // Bei Ok erhalten wir die Mitteilung, die gesendet werden soll, sonst nichts
-        this.dialog.open(SendNotrechtMitteilungComponent, dialogConfig).afterClosed().toPromise().then(result => {
-            if (EbeguUtil.isNullOrUndefined(result) || EbeguUtil.isNullOrUndefined(result.mitteilung)) {
-                return;
-            }
-            if (isEinladung) {
-                this.notrechtRS.sendEinladung(result.mitteilung).then(() => {
-                    this.errorService.addMesageAsInfo(this.translate.instant(
-                        'RUECKFORDERUNG_EINLADUNG_VERSENDET'
-                    ));
-                    this.loadRueckforderungFormulareForCurrentBenutzer();
-                });
-                return;
-            }
-            // eslint-disable-next-line
-            this.notrechtRS.sendMitteilung(result.mitteilung, result.statusToSendMitteilung).then(() => {
-                this.errorService.addMesageAsInfo(this.translate.instant(
-                    'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
-                ));
+        this.dialog
+            .open(SendNotrechtMitteilungComponent, dialogConfig)
+            .afterClosed()
+            .toPromise()
+            .then(result => {
+                if (
+                    EbeguUtil.isNullOrUndefined(result) ||
+                    EbeguUtil.isNullOrUndefined(result.mitteilung)
+                ) {
+                    return;
+                }
+                if (isEinladung) {
+                    this.notrechtRS
+                        .sendEinladung(result.mitteilung)
+                        .then(() => {
+                            this.errorService.addMesageAsInfo(
+                                this.translate.instant(
+                                    'RUECKFORDERUNG_EINLADUNG_VERSENDET'
+                                )
+                            );
+                            this.loadRueckforderungFormulareForCurrentBenutzer();
+                        });
+                    return;
+                }
+                this.notrechtRS
+                    .sendMitteilung(
+                        result.mitteilung,
+                        result.statusToSendMitteilung
+                    )
+                    .then(() => {
+                        this.errorService.addMesageAsInfo(
+                            this.translate.instant(
+                                'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
+                            )
+                        );
+                    });
             });
-        });
     }
 
     public getZahlungAusgeloest(date: moment.Moment | null): string {
@@ -273,19 +358,23 @@ export class NotrechtComponent implements OnInit {
         }
     };
 
-    public openRueckforderungFormular(formular: TSRueckforderungFormular, event: any): void {
+    public openRueckforderungFormular(
+        formular: TSRueckforderungFormular,
+        event: any
+    ): void {
         if (!this.openFormularAllowed(formular)) {
             return;
         }
         if (EbeguUtil.isNotNullOrUndefined(event) && event.ctrlKey === true) {
-            const url = this.$state.href('notrecht.form', {rueckforderungId: formular.id});
+            const url = this.$state.href('notrecht.form', {
+                rueckforderungId: formular.id
+            });
             window.open(url, '_blank');
         } else {
             this.$state.go('notrecht.form', {
                 rueckforderungId: formular.id
             });
         }
-
     }
 
     public translateRueckforderungStatus(status: string): string {
@@ -301,7 +390,9 @@ export class NotrechtComponent implements OnInit {
     }
 
     public getDisplayColumns(): string[] {
-        return this.isMandantOrSuperuser() ? this.displayedColumnsMandant : this.displayedColumns;
+        return this.isMandantOrSuperuser()
+            ? this.displayedColumnsMandant
+            : this.displayedColumns;
     }
 
     public filterRueckforderungFormulare(): void {
@@ -310,20 +401,31 @@ export class NotrechtComponent implements OnInit {
             return;
         }
         if (this.showOnlyOffenePendenzen) {
-            filteredFormulare = filteredFormulare.filter(d => this.isOffenePendenz(d));
+            filteredFormulare = filteredFormulare.filter(d =>
+                this.isOffenePendenz(d)
+            );
         }
         if (this.showOnlyAntraegeWithDokumenten) {
-            filteredFormulare = filteredFormulare.filter(d => d.uncheckedDocuments);
+            filteredFormulare = filteredFormulare.filter(
+                d => d.uncheckedDocuments
+            );
         }
         if (this.showOnlyMirZugewieseneAntraege) {
-            const currentUsername = this.authServiceRS.getPrincipal().getFullName();
-            filteredFormulare = filteredFormulare.filter(d => d.verantwortlicherName === currentUsername);
+            const currentUsername = this.authServiceRS
+                .getPrincipal()
+                .getFullName();
+            filteredFormulare = filteredFormulare.filter(
+                d => d.verantwortlicherName === currentUsername
+            );
         }
         this.initDataSource(filteredFormulare);
     }
 
     private isOffenePendenz(formular: TSRueckforderungFormular): boolean {
-        return formular.isPrivat() && !isBereitZumVerfuegenOderVerfuegt(formular.status)
-            && formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH;
+        return (
+            formular.isPrivat() &&
+            !isBereitZumVerfuegenOderVerfuegt(formular.status) &&
+            formular.status !== TSRueckforderungStatus.VERFUEGT_PROVISORISCH
+        );
     }
 }

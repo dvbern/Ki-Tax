@@ -16,13 +16,22 @@
 <h2 mat-dialog-title [textContent]="title | translate"></h2>
 
 <mat-dialog-content>
-    <a class="md-default-theme" (click)="close()" href="{{link}}" data-test="dialog-link">
+    <a
+        class="md-default-theme"
+        (click)="close()"
+        href="{{ link }}"
+        data-test="dialog-link"
+    >
         <span class="ng-binding ng-scope" [textContent]="link"></span>
     </a>
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="close()" [textContent]="'LABEL_OK' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="close()"
+            [textContent]="'LABEL_OK' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

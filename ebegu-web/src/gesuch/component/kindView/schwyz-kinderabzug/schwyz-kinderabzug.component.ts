@@ -6,7 +6,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
@@ -23,10 +23,11 @@ const LOG = LogFactory.createLog('SchwyzKinderabzugComponent');
 @Component({
     selector: 'dv-schwyz-kinderabzug',
     templateUrl: './schwyz-kinderabzug.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
-
+export class SchwyzKinderabzugComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @ViewChild(NgForm)
     public readonly form: NgForm;
 
@@ -38,27 +39,34 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly exchangeService: KinderabzugExchangeService,
-    ) {
-    }
+        private readonly exchangeService: KinderabzugExchangeService
+    ) {}
 
     public ngOnInit(): void {
-        this.exchangeService.getFormValidationTriggered$()
+        this.exchangeService
+            .getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => {
-                this.cd.markForCheck();
-            }, err => LOG.error(err));
+            .subscribe(
+                () => {
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err)
+            );
 
-        this.exchangeService.getFamilienErgaenzendeBetreuungChanged$()
+        this.exchangeService
+            .getFamilienErgaenzendeBetreuungChanged$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(() => {
-                this.change();
-                this.cd.markForCheck();
-            }, err => LOG.error(err));
+            .subscribe(
+                () => {
+                    this.change();
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public ngAfterViewInit(): void {
-        this.exchangeService.form = this.form;
+        this.exchangeService.addForm(this.form);
     }
 
     public ngOnDestroy(): void {
@@ -66,7 +74,9 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     public wirdKindExternBetreut(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.familienErgaenzendeBetreuung);
+        return EbeguUtil.isNotNullAndTrue(
+            this.kindContainer?.kindJA.familienErgaenzendeBetreuung
+        );
     }
 
     public change(): void {
@@ -88,11 +98,19 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     public lebtKindImHaushaltVisible(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.unterhaltspflichtig);
+        return EbeguUtil.isNotNullAndTrue(
+            this.kindContainer?.kindJA.unterhaltspflichtig
+        );
     }
 
     public partnerUnterhaltspflichtigVisible(): boolean {
-        return this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
-            && EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.lebtKindAlternierend);
+        return (
+            this.gesuchModelManager.getFamiliensituation()
+                .gesuchstellerKardinalitaet ===
+                TSGesuchstellerKardinalitaet.ZU_ZWEIT &&
+            EbeguUtil.isNotNullAndTrue(
+                this.kindContainer?.kindJA.lebtKindAlternierend
+            )
+        );
     }
 }

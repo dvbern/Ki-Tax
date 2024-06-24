@@ -18,7 +18,6 @@
 import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 
 export class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
-
     public administratoren: string = undefined; // read only
     public sachbearbeiter: string = undefined; // read only
 

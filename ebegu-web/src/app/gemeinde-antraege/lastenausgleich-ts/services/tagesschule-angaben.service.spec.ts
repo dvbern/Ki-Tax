@@ -15,21 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {HttpClientModule} from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { TagesschuleAngabenRS } from './tagesschule-angaben.service.rest';
+import {TagesschuleAngabenRS} from './tagesschule-angaben.service.rest';
 
 describe('TagesschuleAngabenService', () => {
-  let service: TagesschuleAngabenRS;
+    let service: TagesschuleAngabenRS;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [HttpClientModule]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule]
+        });
+        service = TestBed.inject(TagesschuleAngabenRS);
     });
-    service = TestBed.inject(TagesschuleAngabenRS);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });

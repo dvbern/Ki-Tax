@@ -15,22 +15,32 @@
 @import (reference) 'variables.less';
 @import (reference) 'mixins.less';
 
-h1, h2, h3, label, label:after, p, a {
+h1,
+h2,
+h3,
+label,
+label:after,
+p,
+a {
     color: @contrast-darkest;
     .form-group & {
         color: @contrast-darkest;
     }
 }
 
-h1, .ebegu-h1 {
+h1,
+.ebegu-h1 {
     .ebeguH1();
 }
 
-md-dialog .md-dialog-content h2, h2, .ebegu-h2 {
+md-dialog .md-dialog-content h2,
+h2,
+.ebegu-h2 {
     .ebeguH2();
 }
 
-h3, .ebegu-h3 {
+h3,
+.ebegu-h3 {
     .ebeguH3();
 }
 
@@ -38,8 +48,14 @@ h4 {
     font-size: 1.8rem;
 }
 
-p {
+p,
+.md-dialog-content ul {
     .ebeguP();
+}
+
+p.with-space {
+    .ebeguP();
+    margin: revert;
 }
 
 .p-bg {
@@ -51,7 +67,8 @@ a {
     .ebeguA();
 }
 
-md-input-container label:not(.md-container-ignore), label {
+md-input-container label:not(.md-container-ignore),
+label {
     .ebeguLabel();
     color: @danger;
     display: block;
@@ -62,8 +79,13 @@ md-input-container label:not(.md-container-ignore), label {
     }
 }
 
-md-input-container:not(.md-input-invalid).md-input-has-value, md-input-container, md-input-container:not(.md-input-invalid).md-input-focused, md-input-container:not(.md-input-focused):not(.md-input-invalid), .form-group {
-    label, label.md-required {
+md-input-container:not(.md-input-invalid).md-input-has-value,
+md-input-container,
+md-input-container:not(.md-input-invalid).md-input-focused,
+md-input-container:not(.md-input-focused):not(.md-input-invalid),
+.form-group {
+    label,
+    label.md-required {
         .ebeguLabel();
         color: @contrast-darkest;
         display: block;

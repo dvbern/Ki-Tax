@@ -127,24 +127,24 @@ public interface BetreuungService {
 	Optional<? extends AbstractPlatz> findPlatz(@Nonnull String id);
 
 	/**
-	 * @param key PK (id) der Betreuung
+	 * @param betreuungId PK (id) der Betreuung
 	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für diese Betreuung geprüft werden muss.
 	 * @return Betreuung mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck);
+	Optional<Betreuung> findBetreuung(@Nonnull String betreuungId, boolean doAuthCheck);
 
 	/**
-	 * @param bgNummer BGNummer der Anmeldung
+	 * @param referenzNummer BGNummer der Anmeldung
 	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
 	 */
-	List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer);
+	List<AbstractAnmeldung> findAnmeldungenByReferenzNummer(@Nonnull String referenzNummer);
 
 	/**
-	 * @param bgNummer BGNummer der Anmeldung
+	 * @param referenzNummer BGNummer der Anmeldung
 	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
-	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
+	List<AbstractAnmeldung> findNewestAnmeldungByReferenzNummer(@Nonnull String referenzNummer);
 
 	/**
 	 * Findet die entsprechende Betreuung in der uebergebenen Gesuchsperiode
@@ -163,14 +163,15 @@ public interface BetreuungService {
 	 * Wenn onlyGueltig = false:
 	 * return auch die Betreuung in andere Status (Warten Z.B.)
 	 */
-	Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant);
+	Optional<Betreuung> findBetreuungByReferenzNummer(@Nonnull String referenzNummer, boolean onlyGueltig);
 
 	/**
-	 * @param key PK (id) der Betreuung
-	 * @return Betreuung mit dem gegebenen key inkl. Betreuungspensen oder null falls nicht vorhanden
+	 * @param betreuungId PK (id) der Betreuung
+	 * @return Betreuung mit eager gefetchten {@link Betreuung#getBetreuungspensumContainers()} und
+	 * {@link Betreuung#getAbwesenheitContainers()}
 	 */
 	@Nonnull
-	Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String key);
+	Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String betreuungId);
 
 	/**
 	 * entfernt eine Betreuung aus der Database
@@ -235,7 +236,7 @@ public interface BetreuungService {
 	/**
 	 * entfernt eine Anmeldung aus der Datenbank
 	 *
-	 * @param betreuungId Id der zu entfernenden Betreuung
+	 * @param anmeldungId Id der zu entfernenden Anmeldung
 	 */
 	void removeAnmeldung(@Nonnull String anmeldungId);
 
@@ -263,7 +264,7 @@ public interface BetreuungService {
 	void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
 
 	@Nonnull
-	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer, @Nonnull Mandant mandant);
+	Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByReferenzNummer(@Nonnull String referenzNummer);
 
 	@Nonnull
 	Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(@Nonnull Set<BetreuungsmitteilungPensum> pensen, @Nonnull DateRange gueltigkeit);

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSAdresse} from './TSAdresse';
@@ -25,7 +25,6 @@ import {TSInstitutionStammdatenFerieninsel} from './TSInstitutionStammdatenFerie
 import {TSInstitutionStammdatenTagesschule} from './TSInstitutionStammdatenTagesschule';
 
 export class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
-
     public betreuungsangebotTyp: TSBetreuungsangebotTyp = undefined;
     public institution: TSInstitution = undefined;
     public adresse: TSAdresse = undefined;
@@ -33,9 +32,12 @@ export class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
     public telefon: string = undefined;
     public webseite: string = undefined;
     public oeffnungszeiten: string = undefined;
-    public institutionStammdatenBetreuungsgutscheine: TSInstitutionStammdatenBetreuungsgutscheine = undefined;
-    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
-    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
+    public institutionStammdatenBetreuungsgutscheine: TSInstitutionStammdatenBetreuungsgutscheine =
+        undefined;
+    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule =
+        undefined;
+    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel =
+        undefined;
     public sendMailWennOffenePendenzen: boolean = true;
     public erinnerungMail: string = undefined;
     public grundSchliessung: string = undefined;

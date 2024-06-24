@@ -33,7 +33,6 @@ ebegu-server/ch.dvbern.ebegu.entities.KindContainer/
 ebegu-shared/src/test/java/ch/dvbern/ebegu/config/
 ebegu-web/src/assets/impressum/
 ebegu-web/src/impressum/
-ebegu-ws/src/test/
 /logstash/input/local/server.log**
 /logstash/input/dev/server.log**
 /logstash/input/uat/server.log**
@@ -49,3 +48,6 @@ ebegu-ws/src/test/
 *.snap.debug
 .flattened-pom.xml
 .scannerwork
+
+.vscode
+.nx

@@ -19,23 +19,23 @@ import {FixtureFamSit} from '@dv-e2e/fixtures';
 import {NavigationPO} from '@dv-e2e/page-objects';
 
 const getGeschlechtOption = (selection: string) => {
-	return cy.getByData(`geschlecht.radio-value.${selection}`);
+    return cy.getByData(`geschlecht.radio-value.${selection}`);
 };
 
 const getVorname = () => {
-	return cy.getByData('vorname');
+    return cy.getByData('vorname');
 };
 
 const getNachname = () => {
-	return cy.getByData('nachname');
+    return cy.getByData('nachname');
 };
 
 const getGeburtsdatum = () => {
-	return cy.getByData('geburtsdatum');
+    return cy.getByData('geburtsdatum');
 };
 
 const getKorrespondenzsprache = () => {
-	return cy.getByData('korrespondenzSprache');
+    return cy.getByData('korrespondenzSprache');
 };
 
 const getAdresseStrasse = () => {
@@ -55,7 +55,7 @@ const getAdresseOrt = () => {
 };
 
 const getFormularTitle = () => {
-	return cy.getByData('gesuchformular-title');
+    return cy.getByData('gesuchformular-title');
 };
 
 // !! -- PAGE ACTIONS -- !!
@@ -66,9 +66,8 @@ const fillVerheiratet = (dataset: keyof typeof FixtureFamSit) => {
     NavigationPO.saveAndGoNext();
     getFormularTitle().should('include.text', '2');
     FixtureFamSit[dataset](({GS2}) => {
-       fillBaseGesuchsteller(GS2);
+        fillBaseGesuchsteller(GS2);
     });
-
 };
 
 // TODO: type this
@@ -81,7 +80,12 @@ function fillGS1(GS1: any): void {
     getAdresseOrt().type(GS1.adresseOrt);
 }
 
-const fillBaseGesuchsteller = (GS1: {geschlecht: string, vorname: string, nachname: string, geburtsdatum: string}) => {
+const fillBaseGesuchsteller = (GS1: {
+    geschlecht: string;
+    vorname: string;
+    nachname: string;
+    geburtsdatum: string;
+}) => {
     cy.wait(2000);
     getGeschlechtOption(GS1.geschlecht).click();
     getVorname().clear().type(GS1.vorname);
@@ -103,5 +107,5 @@ export const GesuchstellendePO = {
     getFormularTitle,
     // page actions
     fillVerheiratet,
-    fillBaseGesuchsteller,
+    fillBaseGesuchsteller
 };

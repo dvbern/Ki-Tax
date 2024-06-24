@@ -21,22 +21,21 @@ import {Pipe, PipeTransform} from '@angular/core';
     name: 'ebeguNumber'
 })
 export class EbeguNumberPipe implements PipeTransform {
-
     public static stringToNumber(str: string): number | undefined | null {
         if (str) {
             return Number(EbeguNumberPipe.formatFromNumberString(str));
         }
-        return null;  // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
+        return null; // null zurueckgeben und nicht undefined denn sonst wird ein ng-parse error erzeugt
     }
 
     private static formatFromNumberString(numberString: string): string {
-        return numberString.split('\'').join('').split(',').join('');
+        return numberString.split("'").join('').split(',').join('');
     }
 
     public static formatToNumberString(valueString: string): string {
         if (valueString !== null && valueString !== undefined) {
             const parts = valueString.split('.');
-            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\'');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
             return parts.join('.');
         }
         return valueString;
@@ -53,22 +52,28 @@ export class EbeguNumberPipe implements PipeTransform {
                 formattedInput = input.substr(1); // get just the number part
             }
 
-            formattedInput = float ?
-                EbeguNumberPipe.sanitizeFloatString(formattedInput, sign) :
-                EbeguNumberPipe.sanitizeIntString(formattedInput, sign);
+            formattedInput = float
+                ? EbeguNumberPipe.sanitizeFloatString(formattedInput, sign)
+                : EbeguNumberPipe.sanitizeIntString(formattedInput, sign);
         }
         return formattedInput;
     }
 
-    private static sanitizeFloatString(transformedInput: string, sign: string): string {
+    private static sanitizeFloatString(
+        transformedInput: string,
+        sign: string
+    ): string {
         // removes all chars that are not a digit or a point
         let result = transformedInput.replace(/([^0-9|.])+/g, '');
         if (result) {
             const pointIndex = result.indexOf('.');
             // only parse if there is either no floating point or the floating point is not at the end. Also dont parse
             // if 0 at end
-            if (pointIndex === -1
-                || (pointIndex !== (result.length - 1) && result.lastIndexOf('0') !== (result.length - 1))) {
+            if (
+                pointIndex === -1 ||
+                (pointIndex !== result.length - 1 &&
+                    result.lastIndexOf('0') !== result.length - 1)
+            ) {
                 // parse to float to remove unwanted  digits like leading zeros and then back to string
                 result = parseFloat(result).toString();
             }
@@ -77,7 +82,10 @@ export class EbeguNumberPipe implements PipeTransform {
         return result;
     }
 
-    private static sanitizeIntString(transformedInput: string, sign: string): string {
+    private static sanitizeIntString(
+        transformedInput: string,
+        sign: string
+    ): string {
         let result = transformedInput.replace(/\D+/g, ''); // removes all "not digit"
         if (result) {
             // parse to int to remove not wanted digits like leading zeros and then back to string

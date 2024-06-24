@@ -32,13 +32,19 @@ import {
     TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
+import {
+    isBetreuungsstatusStorniert,
+    TSBetreuungsstatus
+} from '../../../models/enums/betreuung/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
 import {TSRole} from '../../../models/enums/TSRole';
-import {getAllWizardStepsWithoutFinSitSteps, TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {
+    getAllWizardStepsWithoutFinSitSteps,
+    TSWizardStepName
+} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -79,7 +85,6 @@ export class VerfuegenListViewComponentConfig implements IComponentOptions {
 }
 
 export class VerfuegenListViewController extends AbstractGesuchViewController<any> {
-
     public static $inject: string[] = [
         '$state',
         'GesuchModelManager',
@@ -113,7 +118,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private letzteIgnorierteGesuchId: string;
     public finSitStatusUpdateIsRunning: boolean = false;
 
-    public readonly demoFeatureFachstelleUebergangsloesung = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
+    public readonly demoFeatureFachstelleUebergangsloesung =
+        TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -130,12 +136,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         private readonly einstellungRS: EinstellungRS,
         ebeguUtil: EbeguUtil
     ) {
-
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.VERFUEGEN,
+            $timeout
+        );
         this.initViewModel();
         this.ebeguUtil = ebeguUtil;
 
-        if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
+        if (
+            this.gesuchModelManager.getGesuch().status ===
+            TSAntragStatus.IGNORIERT
+        ) {
             this.loadNeustesVerfuegtesGesuchFuerGesuch();
         }
     }
@@ -157,61 +172,98 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.VERFUEGEN,
-            TSWizardStepStatus.WARTEN);
+            TSWizardStepStatus.WARTEN
+        );
 
         // Berechnung aller finanziellen Daten
         const gesuch = this.gesuchModelManager.getGesuch();
         if (!this.berechnungsManager.finanzielleSituationResultate) {
             this.berechnungsManager.calculateFinanzielleSituation(gesuch);
         }
-        if (gesuch
-            && gesuch.extractEinkommensverschlechterungInfo()
-            && gesuch.extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus1
-            && !this.berechnungsManager.einkommensverschlechterungResultateBjP1) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 1);
+        if (
+            gesuch &&
+            gesuch.extractEinkommensverschlechterungInfo() &&
+            gesuch.extractEinkommensverschlechterungInfo()
+                .ekvFuerBasisJahrPlus1 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP1
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                1
+            );
         }
-        if (gesuch
-            && gesuch.extractEinkommensverschlechterungInfo()
-            && gesuch.extractEinkommensverschlechterungInfo().ekvFuerBasisJahrPlus2
-            && !this.berechnungsManager.einkommensverschlechterungResultateBjP2) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 2);
+        if (
+            gesuch &&
+            gesuch.extractEinkommensverschlechterungInfo() &&
+            gesuch.extractEinkommensverschlechterungInfo()
+                .ekvFuerBasisJahrPlus2 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP2
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                2
+            );
         }
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
-        // eslint-disable-next-line
-        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                    this.kontingentierungEnabled = JSON.parse(response.value);
-                }, error => LOG.error(error));
 
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                    this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
-                }, error => LOG.error(error));
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id
-            ).subscribe(response => {
-                this.minPensumSprachlicheIndikation = Number(response.value);
-            }, error => LOG.error(error));
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuchsperiode()
+            )
+        ) {
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.kontingentierungEnabled = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.minPensumSprachlicheIndikation = Number(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
         }
     }
 
     private refreshKinderListe(): IPromise<any> {
         return this.gesuchModelManager.calculateVerfuegungen().then(() => {
-            this.kinderWithBetreuungList = this.gesuchModelManager.getKinderWithBetreuungList();
+            this.kinderWithBetreuungList =
+                this.gesuchModelManager.getKinderWithBetreuungList();
             this.calculateVeraenderung();
         });
     }
@@ -233,21 +285,31 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return false;
         }
 
-        if (EbeguUtil.isNullOrUndefined(this.veraenderungBG)
-            || EbeguUtil.isNullOrUndefined(this.veraenderungTS)) {
+        if (
+            EbeguUtil.isNullOrUndefined(this.veraenderungBG) ||
+            EbeguUtil.isNullOrUndefined(this.veraenderungTS)
+        ) {
             return false;
         }
 
-        return !isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status);
+        return !isStatusVerfuegenVerfuegt(
+            this.gesuchModelManager.getGesuch().status
+        );
     }
 
     public setMutationIgnorieren(): void {
-        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
-            deleteText: 'CONFIRM_GESUCH_STATUS_IGNORIEREN_BESCHREIBUNG',
-            parentController: undefined,
-            elementID: undefined
-        })
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
+                    deleteText: 'CONFIRM_GESUCH_STATUS_IGNORIEREN_BESCHREIBUNG',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
             .then(() => this.gesuchModelManager.mutationIgnorieren())
             .then(() => {
                 this.refreshKinderListe();
@@ -267,7 +329,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
 
-        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
+        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(
+            kind.kindNummer
+        );
         if (kindIndex < 0) {
             return;
         }
@@ -277,8 +341,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
          * wird bei Betreuungen im Status Bestätigt und Unbekannte Institution direkt das PDF erzeugt.
          * Alle anderen darf der GS nicht anschauen (siehe isDetailAvailableForBetreuungstatus())
          */
-        if (this.isGesuchstellerOrSozialdienst() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
-            && !betreuung.isAngebotTagesschule()) {
+        if (
+            this.isGesuchstellerOrSozialdienst() &&
+            !isAnyStatusOfVerfuegt(
+                this.gesuchModelManager.getGesuch().status
+            ) &&
+            !betreuung.isAngebotTagesschule()
+        ) {
             this.openVerfuegungPDF(betreuung);
             return;
         }
@@ -293,10 +362,20 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            betreuung.id, false, betreuung.verfuegung.generatedBemerkungen)
+        this.downloadRS
+            .getAccessTokenVerfuegungGeneratedDokument(
+                this.gesuchModelManager.getGesuch().id,
+                betreuung.id,
+                false,
+                betreuung.verfuegung.generatedBemerkungen
+            )
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
@@ -304,21 +383,35 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public kannVerfuegungOeffnen(betreuung: TSBetreuung): boolean {
         if (betreuung) {
             if (betreuung.isAngebotTagesschule()) {
-                return this.isDetailAvailableForTagesschuleAnmeldung(betreuung.betreuungsstatus);
+                return this.isDetailAvailableForTagesschuleAnmeldung(
+                    betreuung.betreuungsstatus
+                );
             }
-            return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
+            return this.isDetailAvailableForBetreuungstatus(
+                betreuung.betreuungsstatus
+            );
         }
         return false;
     }
 
     public showWarningSozialeIndikationPensumNichtErreicht(): boolean {
-        if (!this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+        if (
+            !this.authServiceRs.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN)
+            )
+        ) {
             return false;
         }
 
-        return this.getKinderWithBetreuungList()?.filter(kindcontainer => EbeguUtil.hasSprachlicheIndikation(kindcontainer))
-            .filter(kindcontainer => this.isOneBetreuungspensumLessThanMinPensum(kindcontainer))
-            .length > 0;
+        return (
+            this.getKinderWithBetreuungList()
+                ?.filter(kindcontainer =>
+                    EbeguUtil.hasSprachlicheIndikation(kindcontainer)
+                )
+                .filter(kindcontainer =>
+                    this.isOneBetreuungspensumLessThanMinPensum(kindcontainer)
+                ).length > 0
+        );
     }
 
     /**
@@ -326,7 +419,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * wenn der Status der Betreuung Bestätigt oder Unbekannte Institution ist.
      * Nach Freigabe darf er wie alle anderen Rollen alle Verfügungen öffnen.
      */
-    private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
+    private isDetailAvailableForBetreuungstatus(
+        betreuungsstatus: TSBetreuungsstatus
+    ): boolean {
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
             TSBetreuungsstatus.BESTAETIGT,
@@ -337,7 +432,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
 
-    private isDetailAvailableForTagesschuleAnmeldung(betreuungsstatus: TSBetreuungsstatus): boolean {
+    private isDetailAvailableForTagesschuleAnmeldung(
+        betreuungsstatus: TSBetreuungsstatus
+    ): boolean {
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
@@ -356,49 +453,64 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return false;
         }
         if (this.isGesuchstellerOrSozialdienst()) {
-            return isAnyStatusOfVerfuegt(this.getAntragStatus())
-                && !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
+            return (
+                isAnyStatusOfVerfuegt(this.getAntragStatus()) &&
+                !this.isFinSitAbglehnt() &&
+                !this.isGesuchIgnoriert()
+            );
         }
         if (this.hasOnlyFerienbetreuung()) {
             return false;
         }
         return !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
-
     }
 
     public hasNichtBerechenbareBetreuungen(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
+        return gesuch && gesuch.hasNichtBerechenbareBetreuungen();
     }
 
     public mustFinanzielleSituationBeValidated(): boolean {
         // Die FinSit muss auch bei Sozialhilfe geprueft werden!
-        return this.gesuchModelManager.isFinanzielleSituationRequired()
-            || (this.getGesuch()
-                && this.getGesuch().familiensituationContainer
-                && this.getGesuch().familiensituationContainer.familiensituationJA.sozialhilfeBezueger);
+        return (
+            this.gesuchModelManager.isFinanzielleSituationRequired() ||
+            (this.getGesuch() &&
+                this.getGesuch().familiensituationContainer &&
+                this.getGesuch().familiensituationContainer.familiensituationJA
+                    .sozialhilfeBezueger)
+        );
     }
 
     public isBegleitschreibenVisible(): boolean {
         if (this.isGesuchstellerOrSozialdienst()) {
-            return isAnyStatusOfVerfuegtButIgnoriert(this.getAntragStatus())
-                && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
-                && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
+            return (
+                isAnyStatusOfVerfuegtButIgnoriert(this.getAntragStatus()) &&
+                !this.gesuchModelManager.areThereOnlySchulamtAngebote() &&
+                !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung()
+            );
         }
-        return !this.gesuchModelManager.areThereOnlySchulamtAngebote()
-            && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
+        return (
+            !this.gesuchModelManager.areThereOnlySchulamtAngebote() &&
+            !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung()
+        );
     }
 
     public isKompletteKorrespondenzVisible(): boolean {
         const status = this.getAntragStatus();
 
-        return this.isBegleitschreibenVisible()
-            && isAnyStatusOfVerfuegtButIgnoriert(status)
-            && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
+        return (
+            this.isBegleitschreibenVisible() &&
+            isAnyStatusOfVerfuegtButIgnoriert(status) &&
+            this.authServiceRs.isOneOfRoles(
+                this.TSRoleUtil.getJugendamtAndSchulamtRole()
+            )
+        );
     }
 
     private getAntragStatus(): TSAntragStatus {
-        const status = this.getGesuch() ? this.getGesuch().status : TSAntragStatus.IN_BEARBEITUNG_GS;
+        const status = this.getGesuch()
+            ? this.getGesuch().status
+            : TSAntragStatus.IN_BEARBEITUNG_GS;
         return status;
     }
 
@@ -424,47 +536,75 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setGesuchStatusGeprueft(): IPromise<TSAntragStatus> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_STATUS_GEPRUEFT',
-            deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(async () => {
-
-            //gesuchstatus darf erst updated werden, wenn der finSitStatusRequest fertig ist
-            while (this.finSitStatusUpdateIsRunning) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
-            this.refreshKinderListe();
-            return antragStatus;
-        });
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_GESUCH_STATUS_GEPRUEFT',
+                    deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(async () => {
+                //gesuchstatus darf erst updated werden, wenn der finSitStatusRequest fertig ist
+                while (this.finSitStatusUpdateIsRunning) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                const antragStatus = this.setGesuchStatus(
+                    TSAntragStatus.GEPRUEFT
+                );
+                this.refreshKinderListe();
+                return antragStatus;
+            });
     }
 
     public closeWithoutAngebot(): IPromise<TSGesuch> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT',
-            deleteText: 'BESCHREIBUNG_GESUCH_KEIN_ANGEBOT',
-            parentController: undefined,
-            elementID: undefined
-
-        }).then(() => this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
-                this.gesuchModelManager.setGesuch(response);
-                this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch());
-            }));
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT',
+                    deleteText: 'BESCHREIBUNG_GESUCH_KEIN_ANGEBOT',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .closeWithoutAngebot(this.gesuchModelManager.getGesuch().id)
+                    .then(response => {
+                        this.gesuchModelManager.setGesuch(response);
+                        this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
+                        return this.refreshKinderListe().then(() =>
+                            this.gesuchModelManager.getGesuch()
+                        );
+                    })
+            );
     }
 
     public setGesuchStatusVerfuegen(): IPromise<TSGesuch> {
         const deleteTextValue = 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN';
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
-            deleteText: deleteTextValue,
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
-                .then(
-                    response => {
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
+                    deleteText: deleteTextValue,
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .verfuegenStarten(this.gesuchModelManager.getGesuch().id)
+                    .then(response => {
                         if (response.status === TSAntragStatus.NUR_SCHULAMT) {
                             // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even
                             // to
@@ -474,15 +614,23 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                             // for the role JA and is only available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA
                             // doesn't need the PDFs to be created. When a Schulamt worker opens this Gesuch, she can
                             // generate the PDFs by clicking on the corresponding links
-                            navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+                            navigateToStartPageForRole(
+                                this.authServiceRs
+                                    .getPrincipal()
+                                    .getCurrentRole(),
+                                this.$state
+                            );
                             return this.gesuchModelManager.getGesuch();
                         }
                         // for NUR_SCHULAMT this makes no sense
                         this.gesuchModelManager.setGesuch(response);
                         this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
-                                                  // clean setzen
-                        return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch());
-                    }));
+                        // clean setzen
+                        return this.refreshKinderListe().then(() =>
+                            this.gesuchModelManager.getGesuch()
+                        );
+                    })
+            );
     }
 
     private hasOffeneMahnungen(): boolean {
@@ -495,18 +643,25 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public sendToSteuerverwaltung(): void {
-        this.dvDialog.showDialog(bemerkungDialogTempl, BemerkungenDialogController, {
-            title: 'SEND_TO_STV_CONFIRMATION',
-            bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV
-        }).then((bemerkung: string) => {
-            this.gesuchRS.sendGesuchToSTV(this.getGesuch().id, bemerkung).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
+        this.dvDialog
+            .showDialog(bemerkungDialogTempl, BemerkungenDialogController, {
+                title: 'SEND_TO_STV_CONFIRMATION',
+                bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV
+            })
+            .then((bemerkung: string) => {
+                this.gesuchRS
+                    .sendGesuchToSTV(this.getGesuch().id, bemerkung)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                    });
             });
-        });
     }
 
     public showVerfuegungEingeschriebenSenden(): boolean {
-        return this.isVerfuegungEingeschriebenSendenAktiv && this.showVerfuegenStarten();
+        return (
+            this.isVerfuegungEingeschriebenSendenAktiv &&
+            this.showVerfuegenStarten()
+        );
     }
 
     public showSendToSteuerverwaltung(): boolean {
@@ -514,90 +669,138 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         // pruefen lassen darf
         const statuse = [TSAntragStatus.VERFUEGT, TSAntragStatus.NUR_SCHULAMT];
 
-        return this.gesuchModelManager.isGesuchStatusIn(statuse) && !this.getGesuch().gesperrtWegenBeschwerde;
+        return (
+            this.gesuchModelManager.isGesuchStatusIn(statuse) &&
+            !this.getGesuch().gesperrtWegenBeschwerde
+        );
     }
 
     public stvPruefungZurueckholen(): void {
-        this.callStvPruefungAbschliessen('STV_PRUEFUNG_ZURUECKHOLEN_CONFIRMATION');
+        this.callStvPruefungAbschliessen(
+            'STV_PRUEFUNG_ZURUECKHOLEN_CONFIRMATION'
+        );
     }
 
     public showSTVPruefungZurueckholen(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.PRUEFUNG_STV)
-            && !this.getGesuch().gesperrtWegenBeschwerde;
+        return (
+            this.gesuchModelManager.isGesuchStatus(
+                TSAntragStatus.PRUEFUNG_STV
+            ) && !this.getGesuch().gesperrtWegenBeschwerde
+        );
     }
 
     private stvPruefungAbschliessen(): void {
-        this.callStvPruefungAbschliessen('STV_PRUEFUNG_ABSCHLIESSEN_CONFIRMATION');
+        this.callStvPruefungAbschliessen(
+            'STV_PRUEFUNG_ABSCHLIESSEN_CONFIRMATION'
+        );
     }
 
     public showSTVPruefungAbschliessen(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT_STV)
-            && !this.getGesuch().gesperrtWegenBeschwerde;
+        return (
+            this.gesuchModelManager.isGesuchStatus(
+                TSAntragStatus.GEPRUEFT_STV
+            ) && !this.getGesuch().gesperrtWegenBeschwerde
+        );
     }
 
     private callStvPruefungAbschliessen(title: string): void {
-        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: `${title}`,
-            deleteText: '',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => {
-            this.gesuchRS.stvPruefungAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: `${title}`,
+                    deleteText: '',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() => {
+                this.gesuchRS
+                    .stvPruefungAbschliessen(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                    });
             });
-        });
     }
 
     public showErsteMahnungErstellen(): boolean {
         // Nur wenn keine offenen Mahnungen vorhanden!
-        const statuse = [TSAntragStatus.IN_BEARBEITUNG_JA, TSAntragStatus.FREIGEGEBEN];
+        const statuse = [
+            TSAntragStatus.IN_BEARBEITUNG_JA,
+            TSAntragStatus.FREIGEGEBEN
+        ];
 
-        return this.gesuchModelManager.isGesuchStatusIn(statuse)
-            && this.mahnung === undefined
-            && !this.hasOffeneMahnungen()
-            && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatusIn(statuse) &&
+            this.mahnung === undefined &&
+            !this.hasOffeneMahnungen() &&
+            !this.isGesuchReadonly()
+        );
     }
 
     public showErsteMahnungAusloesen(): boolean {
-        return this.mahnung !== undefined
-            && this.mahnung.mahnungTyp === TSMahnungTyp.ERSTE_MAHNUNG
-            && !this.isGesuchReadonly();
+        return (
+            this.mahnung !== undefined &&
+            this.mahnung.mahnungTyp === TSMahnungTyp.ERSTE_MAHNUNG &&
+            !this.isGesuchReadonly()
+        );
     }
 
     public showZweiteMahnungErstellen(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN)
-            && this.mahnung === undefined
-            && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatus(
+                TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN
+            ) &&
+            this.mahnung === undefined &&
+            !this.isGesuchReadonly()
+        );
     }
 
     public showZweiteMahnungAusloesen(): boolean {
-        return this.mahnung !== undefined
-            && this.mahnung.mahnungTyp === TSMahnungTyp.ZWEITE_MAHNUNG
-            && !this.isGesuchReadonly();
+        return (
+            this.mahnung !== undefined &&
+            this.mahnung.mahnungTyp === TSMahnungTyp.ZWEITE_MAHNUNG &&
+            !this.isGesuchReadonly()
+        );
     }
 
     /**
      * Nur required in Status VERFUEGEN oder GEPRUEFT und wenn der Benutzer nicht am Erstellen einer Mahnung ist.
      */
     public isFinSitStatusRequired(): boolean {
-        return !this.showErsteMahnungAusloesen()
-            && !this.showZweiteMahnungAusloesen()
-            && this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.VERFUEGEN, TSAntragStatus.GEPRUEFT]);
+        return (
+            !this.showErsteMahnungAusloesen() &&
+            !this.showZweiteMahnungAusloesen() &&
+            this.gesuchModelManager.isGesuchStatusIn([
+                TSAntragStatus.VERFUEGEN,
+                TSAntragStatus.GEPRUEFT
+            ])
+        );
     }
 
     public showMahnlaufBeenden(): boolean {
-        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly()) : false;
+        return this.getGesuch()
+            ? isAnyStatusOfMahnung(this.getGesuch().status) &&
+                  !this.isGesuchReadonly()
+            : false;
     }
 
     public showDokumenteNichtKomplett(): boolean {
-        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status)
-            && this.getGesuch().dokumenteHochgeladen
-            && !this.isGesuchReadonly()) : false;
+        return this.getGesuch()
+            ? isAnyStatusOfMahnung(this.getGesuch().status) &&
+                  this.getGesuch().dokumenteHochgeladen &&
+                  !this.isGesuchReadonly()
+            : false;
     }
 
     public showZweiteMahnungNichtEingetreten(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN)
-            && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatus(
+                TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN
+            ) && !this.isGesuchReadonly()
+        );
     }
 
     public ersteMahnungErstellen(): void {
@@ -615,37 +818,49 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
 
-        this.mahnungRS.saveMahnung(this.mahnung).then((mahnungResponse: TSMahnung) => {
-            this.setGesuchStatus(this.tempAntragStatus).then(() => {
-                this.mahnungList.push(mahnungResponse);
-                this.tempAntragStatus = undefined;
-                this.mahnung = undefined;
+        this.mahnungRS
+            .saveMahnung(this.mahnung)
+            .then((mahnungResponse: TSMahnung) => {
+                this.setGesuchStatus(this.tempAntragStatus).then(() => {
+                    this.mahnungList.push(mahnungResponse);
+                    this.tempAntragStatus = undefined;
+                    this.mahnung = undefined;
+                });
             });
-        });
     }
 
     private createMahnung(typ: TSMahnungTyp): IPromise<any> {
-        return this.mahnungRS.getInitialeBemerkungen(this.getGesuch()).then(generatedBemerkungen => {
-            this.mahnung = new TSMahnung();
-            this.mahnung.mahnungTyp = typ;
-            this.mahnung.gesuch = this.getGesuch();
-            this.mahnung.timestampAbgeschlossen = null;
-            this.mahnung.bemerkungen = generatedBemerkungen.data;
-            if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                && this.getGesuch().areThereOnlySchulamtAngebote()) {
-                this.mahnung.datumFristablauf = moment(moment.now()).add(7, 'days');
-            }
-            return;
-        });
+        return this.mahnungRS
+            .getInitialeBemerkungen(this.getGesuch())
+            .then(generatedBemerkungen => {
+                this.mahnung = new TSMahnung();
+                this.mahnung.mahnungTyp = typ;
+                this.mahnung.gesuch = this.getGesuch();
+                this.mahnung.timestampAbgeschlossen = null;
+                this.mahnung.bemerkungen = generatedBemerkungen.data;
+                if (
+                    this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
+                    this.getGesuch().areThereOnlySchulamtAngebote()
+                ) {
+                    this.mahnung.datumFristablauf = moment(moment.now()).add(
+                        7,
+                        'days'
+                    );
+                }
+                return;
+            });
     }
 
     public mahnlaufBeenden(): void {
         // Gesuchstatus zuruecksetzen UND die Mahnungen auf erledigt setzen
         this.mahnungRS.mahnlaufBeenden(this.getGesuch()).then(() => {
-            this.mahnungRS.findMahnungen(this.getGesuch().id).then(reloadedMahnungen => {
-                this.mahnungList = reloadedMahnungen;
-                this.gesuchModelManager.getGesuch().status = TSAntragStatus.IN_BEARBEITUNG_JA;
-            });
+            this.mahnungRS
+                .findMahnungen(this.getGesuch().id)
+                .then(reloadedMahnungen => {
+                    this.mahnungList = reloadedMahnungen;
+                    this.gesuchModelManager.getGesuch().status =
+                        TSAntragStatus.IN_BEARBEITUNG_JA;
+                });
         });
     }
 
@@ -664,54 +879,72 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * Der Button Geprueft wird nur beim Status IN_BEARBEITUNG_JA eingeblendet
      */
     public showGeprueft(): boolean {
-        const statuse = [TSAntragStatus.IN_BEARBEITUNG_JA, TSAntragStatus.FREIGEGEBEN];
+        const statuse = [
+            TSAntragStatus.IN_BEARBEITUNG_JA,
+            TSAntragStatus.FREIGEGEBEN
+        ];
 
-        return this.gesuchModelManager.isGesuchStatusIn(statuse)
-            && this.wizardStepManager.areAllStepsOK(this.getGesuch())
-            && this.mahnung === undefined
-            && (
-                !this.gesuchModelManager.areThereOnlySchulamtAngebote()
-                || !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-            ) && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatusIn(statuse) &&
+            this.wizardStepManager.areAllStepsOK(this.getGesuch()) &&
+            this.mahnung === undefined &&
+            (!this.gesuchModelManager.areThereOnlySchulamtAngebote() ||
+                !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()) &&
+            !this.isGesuchReadonly()
+        );
     }
 
     /**
      * Der Button Verfuegung starten wird angezeigt, wenn alle Betreuungen bestaetigt und das Gesuch geprueft wurden
      */
     public showVerfuegenStarten(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT)
-            && this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
-            && this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-            && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
-            && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT) &&
+            this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG) &&
+            this.gesuchModelManager.getGesuch().isThereAnyBetreuung() &&
+            !this.gesuchModelManager.areThereOnlySchulamtAngebote() &&
+            !this.isGesuchReadonly()
+        );
     }
 
     public showKeinKontingent(): boolean {
-        return this.getGesuch() ? (this.getGesuch().typ !== TSAntragTyp.MUTATION
-                && this.showVerfuegenStarten()
-                && this.kontingentierungEnabled)
+        return this.getGesuch()
+            ? this.getGesuch().typ !== TSAntragTyp.MUTATION &&
+                  this.showVerfuegenStarten() &&
+                  this.kontingentierungEnabled
             : false;
     }
 
     public showKontingentVorhanden(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.KEIN_KONTINGENT);
+        return this.gesuchModelManager.isGesuchStatus(
+            TSAntragStatus.KEIN_KONTINGENT
+        );
     }
 
     /**
      * Nur wenn ein Gesuch keine Angebote hat und geprueft ist, kann man es ohne Angebote schliessen.
      */
     public showCloseWithoutAngebot(): boolean {
-        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT)
-            && !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-            && !this.isGesuchReadonly();
+        return (
+            this.gesuchModelManager.isGesuchStatus(TSAntragStatus.GEPRUEFT) &&
+            !this.gesuchModelManager.getGesuch().isThereAnyBetreuung() &&
+            !this.isGesuchReadonly()
+        );
     }
 
     /**
      * ausblenden, wenn Gesuch readonly und finSitStatus nicht gesetzt (für alte Gesuche). Fuer GS nicht anzeigen.
      */
     public showFinSitStatus(): boolean {
-        return !(this.isGesuchReadonly() && EbeguUtil.isNullOrUndefined(this.getGesuch().finSitStatus))
-            && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
+        return (
+            !(
+                this.isGesuchReadonly() &&
+                EbeguUtil.isNullOrUndefined(this.getGesuch().finSitStatus)
+            ) &&
+            this.authServiceRs.isOneOfRoles(
+                this.TSRoleUtil.getJugendamtAndSchulamtRole()
+            )
+        );
     }
 
     public openFinanzielleSituationPDF(): void {
@@ -719,9 +952,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
+        this.downloadRS
+            .getFinSitDokumentAccessTokenGeneratedDokument(
+                this.gesuchModelManager.getGesuch().id
+            )
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
@@ -731,9 +972,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
+        this.downloadRS
+            .getBegleitschreibenDokumentAccessTokenGeneratedDokument(
+                this.gesuchModelManager.getGesuch().id
+            )
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
@@ -743,25 +992,42 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
+        this.downloadRS
+            .getKompletteKorrespondenzAccessTokenGeneratedDokument(
+                this.gesuchModelManager.getGesuch().id
+            )
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public openMahnungPDF(mahnung: TSMahnung): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenMahnungGeneratedDokument(mahnung || this.mahnung)
+        this.downloadRS
+            .getAccessTokenMahnungGeneratedDokument(mahnung || this.mahnung)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    false,
+                    win
+                );
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public showBeschwerdeHaengig(): boolean {
         // Schulamt Status duerfen keine Beschwerde starten
-        return isAnyStatusOfVerfuegt(this.getAntragStatus()) && !this.getGesuch().gesperrtWegenBeschwerde;
+        return (
+            isAnyStatusOfVerfuegt(this.getAntragStatus()) &&
+            !this.getGesuch().gesperrtWegenBeschwerde
+        );
     }
 
     public showBeschwerdeAbschliessen(): boolean {
@@ -770,10 +1036,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public showAbschliessen(): boolean {
         const status = this.getAntragStatus();
-        return (TSAntragStatus.IN_BEARBEITUNG_JA === status || TSAntragStatus.GEPRUEFT === status)
-            && this.gesuchModelManager.areThereOnlySchulamtAngebote()
-            && this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-            && this.authServiceRs.isOneOfRoles(TSRoleUtil.getSchulamtRoles());
+        return (
+            (TSAntragStatus.IN_BEARBEITUNG_JA === status ||
+                TSAntragStatus.GEPRUEFT === status) &&
+            this.gesuchModelManager.areThereOnlySchulamtAngebote() &&
+            this.gesuchModelManager.getGesuch().isThereAnyBetreuung() &&
+            this.authServiceRs.isOneOfRoles(TSRoleUtil.getSchulamtRoles())
+        );
     }
 
     public isFinSitChoosen(): boolean {
@@ -781,49 +1050,96 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isFinSitAbglehnt(): boolean {
-        return this.isFinSitChoosen() && this.getGesuch().finSitStatus !== TSFinSitStatus.AKZEPTIERT;
+        return (
+            this.isFinSitChoosen() &&
+            this.getGesuch().finSitStatus !== TSFinSitStatus.AKZEPTIERT
+        );
     }
 
     public setAbschliessen(): IPromise<TSGesuch> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'GESUCH_ABSCHLIESSEN',
-            deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => this.reloadView(gesuch)));
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'GESUCH_ABSCHLIESSEN',
+                    deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .setAbschliessen(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => this.reloadView(gesuch))
+            );
     }
 
     public setGesuchStatusBeschwerdeHaengig(): IPromise<TSGesuch> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'BESCHWERDE_HAENGIG',
-            deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.setBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                return this.gesuchModelManager.getGesuch();
-            }));
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'BESCHWERDE_HAENGIG',
+                    deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .setBeschwerdeHaengig(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        return this.gesuchModelManager.getGesuch();
+                    })
+            );
     }
 
     public setGesuchStatusBeschwerdeAbschliessen(): IPromise<TSGesuch> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'BESCHWERDE_ABSCHLIESSEN',
-            deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                this.gesuchModelManager.setGesuch(gesuch);
-                return this.gesuchModelManager.getGesuch();
-            }));
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'BESCHWERDE_ABSCHLIESSEN',
+                    deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .removeBeschwerdeHaengig(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => {
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        return this.gesuchModelManager.getGesuch();
+                    })
+            );
     }
 
     public setGesuchStatusKeinKontingent(): IPromise<TSGesuch> {
-        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'CONFIRM_KEIN_KONTINGENT_TITLE',
-            deleteText: 'CONFIRM_KEIN_KONTINGENT_TEXT',
-            parentController: undefined,
-            elementID: undefined
-        }).then(() => this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => this.reloadView(gesuch)));
+        return this.dvDialog
+            .showRemoveDialog(
+                removeDialogTempl,
+                this.form,
+                RemoveDialogController,
+                {
+                    title: 'CONFIRM_KEIN_KONTINGENT_TITLE',
+                    deleteText: 'CONFIRM_KEIN_KONTINGENT_TEXT',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() =>
+                this.gesuchRS
+                    .setKeinKontingent(this.getGesuch().id)
+                    .then((gesuch: TSGesuch) => this.reloadView(gesuch))
+            );
     }
 
     private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
@@ -837,13 +1153,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
         this.finSitStatusUpdateIsRunning = true;
-        this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
-            this.getGesuch().finSitStatus).then(() => {
-            // Die Berechnungen neu ausführen, da der FinSit-Status (zumindest bei TS) Einfluss hat auf den Tarif
-            this.refreshKinderListe();
-            this.form.$setPristine();
-            this.finSitStatusUpdateIsRunning = false;
-        });
+        this.gesuchRS
+            .changeFinSitStatus(
+                this.getGesuch().id,
+                this.getGesuch().finSitStatus
+            )
+            .then(() => {
+                // Die Berechnungen neu ausführen, da der FinSit-Status (zumindest bei TS) Einfluss hat auf den Tarif
+                this.refreshKinderListe();
+                this.form.$setPristine();
+                this.finSitStatusUpdateIsRunning = false;
+            });
     }
 
     public verfuegungEingeschriebenChanged(): void {
@@ -856,15 +1176,20 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getTitle(): string {
         const gesuch = this.gesuchModelManager.getGesuch();
-        if (this.isGesuchstellerOrSozialdienst()
-            && gesuch && !isAnyStatusOfVerfuegt(gesuch.status)) {
+        if (
+            this.isGesuchstellerOrSozialdienst() &&
+            gesuch &&
+            !isAnyStatusOfVerfuegt(gesuch.status)
+        ) {
             return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
         }
         return this.$translate.instant('VERFUEGUNGEN');
     }
 
     public isGesuchstellerOrSozialdienst(): boolean {
-        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
+        return this.authServiceRs.isOneOfRoles(
+            TSRoleUtil.getGesuchstellerSozialdienstRolle()
+        );
     }
 
     public $postLink(): void {
@@ -873,7 +1198,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isInstitutionRoles(): boolean {
-        return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION]);
+        return this.authServiceRs.isOneOfRoles([
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION
+        ]);
     }
 
     private calculateVeraenderung(): void {
@@ -887,23 +1215,38 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
             kindContainer.betreuungen
-                .filter(betreuung => betreuung.getAngebotTyp() !== TSBetreuungsangebotTyp.FERIENINSEL)
+                .filter(
+                    betreuung =>
+                        betreuung.getAngebotTyp() !==
+                        TSBetreuungsangebotTyp.FERIENINSEL
+                )
                 .forEach(betreuung => {
-                this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung?.ignorable;
-                if (EbeguUtil.isNullOrUndefined(betreuung.verfuegung?.veraenderungVerguenstigungGegenueberVorgaenger)
-                || isBetreuungsstatusStorniert(betreuung.betreuungsstatus)) {
-                    this.hasAnyNewOrStornierteBetreuung = true;
-                    return;
-                }
+                    this.allVerfuegungenIgnorable =
+                        this.allVerfuegungenIgnorable &&
+                        betreuung.verfuegung?.ignorable;
+                    if (
+                        EbeguUtil.isNullOrUndefined(
+                            betreuung.verfuegung
+                                ?.veraenderungVerguenstigungGegenueberVorgaenger
+                        ) ||
+                        isBetreuungsstatusStorniert(betreuung.betreuungsstatus)
+                    ) {
+                        this.hasAnyNewOrStornierteBetreuung = true;
+                        return;
+                    }
 
-                if (betreuung.isAngebotTagesschule()) {
-                    this.veraenderungTS = this.findAbsoultMax(
-                        this.veraenderungTS,
-                        betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
-                } else {
-                    this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
-                }
-            }));
+                    if (betreuung.isAngebotTagesschule()) {
+                        this.veraenderungTS = this.findAbsoultMax(
+                            this.veraenderungTS,
+                            betreuung.verfuegung
+                                .veraenderungVerguenstigungGegenueberVorgaenger
+                        );
+                    } else {
+                        this.veraenderungBG +=
+                            betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
+                    }
+                })
+        );
     }
 
     private hasOnlyFerienbetreuung(): boolean {
@@ -912,8 +1255,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
 
         return this.kinderWithBetreuungList.every(kindcontainer =>
-            kindcontainer.betreuungen
-                .every(betreuung => betreuung.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL));
+            kindcontainer.betreuungen.every(
+                betreuung =>
+                    betreuung.getAngebotTyp() ===
+                    TSBetreuungsangebotTyp.FERIENINSEL
+            )
+        );
     }
 
     private findAbsoultMax(val1: number, val2: number): number {
@@ -925,23 +1272,31 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showIgnoreMutation(): boolean {
-        return this.isMutation() &&
+        return (
+            this.isMutation() &&
             !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
             this.correctStatusForIgnorieren() &&
             this.hasOnlyFinSitChanges() &&
-            this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT;
+            this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT
+        );
     }
 
     private correctStatusForIgnorieren(): boolean {
         if (this.gesuchModelManager.areThereOnlySchulamtAngebote()) {
-            return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.IN_BEARBEITUNG_JA]);
+            return this.gesuchModelManager.isGesuchStatusIn([
+                TSAntragStatus.IN_BEARBEITUNG_JA
+            ]);
         }
-        return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+        return this.gesuchModelManager.isGesuchStatusIn([
+            TSAntragStatus.GEPRUEFT
+        ]);
     }
 
     public getVeraenderungBgString(): string {
-        let roundedVeranderung =  EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        let roundedVeranderung = EbeguUtil.roundToFiveRappen(
+            this.veraenderungBG
+        );
         let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
 
         if (roundedVeranderung < 0) {
@@ -949,7 +1304,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             roundedVeranderung *= -1;
         }
 
-        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung.toFixed(2)});
+        return this.$translate.instant(translationId, {
+            veraenderung: roundedVeranderung.toFixed(2)
+        });
     }
 
     public getVeraenderungTsString(): string {
@@ -961,7 +1318,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             veranderung *= -1;
         }
 
-        return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
+        return this.$translate.instant(translationId, {
+            veraenderung: veranderung.toFixed(2)
+        });
     }
 
     public isGesuchIgnoriert(): boolean {
@@ -972,18 +1331,27 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const navObj: any = {
             gesuchId: this.letzteIgnorierteGesuchId
         };
-        this.$state.go('gesuch.verfuegen',navObj);
+        this.$state.go('gesuch.verfuegen', navObj);
     }
 
-    private loadNeustesVerfuegtesGesuchFuerGesuch(): void  {
-        this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
-            (response: any) => this.letzteIgnorierteGesuchId = response.id
-        );
+    private loadNeustesVerfuegtesGesuchFuerGesuch(): void {
+        this.gesuchRS
+            .getNeustesVerfuegtesGesuchFuerGesuch(
+                this.gesuchModelManager.getGesuch().id
+            )
+            .then(
+                (response: any) => (this.letzteIgnorierteGesuchId = response.id)
+            );
     }
 
     private hasOnlyFinSitChanges(): boolean {
-        for(const step of getAllWizardStepsWithoutFinSitSteps()) {
-            if (this.wizardStepManager.hasStepGivenStatus(step, TSWizardStepStatus.MUTIERT)) {
+        for (const step of getAllWizardStepsWithoutFinSitSteps()) {
+            if (
+                this.wizardStepManager.hasStepGivenStatus(
+                    step,
+                    TSWizardStepStatus.MUTIERT
+                )
+            ) {
                 return false;
             }
         }
@@ -991,11 +1359,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return true;
     }
 
-    private isOneBetreuungspensumLessThanMinPensum(kindContainer: TSKindContainer): boolean {
+    private isOneBetreuungspensumLessThanMinPensum(
+        kindContainer: TSKindContainer
+    ): boolean {
         for (const betreuungen of kindContainer.betreuungen) {
-            if (betreuungen.betreuungspensumContainers
-                .filter(pensum => pensum.betreuungspensumJA.pensum < this.minPensumSprachlicheIndikation)
-                .length > 0) {
+            if (
+                betreuungen.betreuungspensumContainers.filter(
+                    pensum =>
+                        pensum.betreuungspensumJA.pensum <
+                        this.minPensumSprachlicheIndikation
+                ).length > 0
+            ) {
                 return true;
             }
         }

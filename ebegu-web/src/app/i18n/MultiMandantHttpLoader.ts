@@ -31,7 +31,6 @@ interface Resource {
 const LOG = LogFactory.createLog('MultiMandantHttpLoader');
 
 export class MultiMandantHttpLoader implements TranslateLoader {
-
     private readonly RESOURCE: Resource = {
         prefix: './assets/translations/translations_',
         suffix: `.json?t=${Date.now()}`
@@ -40,34 +39,50 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     public constructor(
         private readonly http: HttpClient,
         private readonly mandantService: MandantService
-    ) {
-    }
+    ) {}
 
     public getTranslation(lang: string): Observable<any> {
         return this.mandantService.mandant$.pipe(
-            mergeMap(mandant => iif(() =>
-                mandant !== MANDANTS.NONE && mandant !== MANDANTS.BERN,
-                this.createMultimandantRequests(lang, mandant),
-                this.createBaseTranslationRequest(lang))
+            mergeMap(mandant =>
+                iif(
+                    () =>
+                        mandant !== MANDANTS.NONE && mandant !== MANDANTS.BERN,
+                    this.createMultimandantRequests(lang, mandant),
+                    this.createBaseTranslationRequest(lang)
+                )
             )
         );
     }
 
-    private createMultimandantRequests(lang: string, mandant: KiBonMandant): Observable<any> {
+    private createMultimandantRequests(
+        lang: string,
+        mandant: KiBonMandant
+    ): Observable<any> {
         return forkJoin([
-                this.createBaseTranslationRequest(lang),
-                this.http.get(`${this.RESOURCE.prefix}${mandant.hostname}_${lang}${this.RESOURCE.suffix}`)
-                    .pipe(catchError(err => {
+            this.createBaseTranslationRequest(lang),
+            this.http
+                .get(
+                    `${this.RESOURCE.prefix}${mandant.hostname}_${lang}${this.RESOURCE.suffix}`
+                )
+                .pipe(
+                    catchError(err => {
                         LOG.error(err);
                         return of({});
-                    }))
-            ]
-        ).pipe(
-            map(loadedResources => loadedResources.reduce((defaultResource, resource) => ({...defaultResource, ...resource})))
+                    })
+                )
+        ]).pipe(
+            map(loadedResources =>
+                loadedResources.reduce((defaultResource, resource) => ({
+                    ...defaultResource,
+                    ...resource
+                }))
+            )
         );
     }
 
     private createBaseTranslationRequest(lang: string): Observable<any> {
-        return this.http.get(`${this.RESOURCE.prefix}${lang}${this.RESOURCE.suffix}`);
+        return this.http.get(
+            `${this.RESOURCE.prefix}${lang}${this.RESOURCE.suffix}`
+        );
     }
 }

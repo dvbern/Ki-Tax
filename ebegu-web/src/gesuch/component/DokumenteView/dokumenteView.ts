@@ -14,15 +14,19 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
+import {first} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -46,7 +50,6 @@ export class DokumenteViewComponentConfig implements IComponentOptions {
  * Controller fuer den Dokumenten Upload
  */
 export class DokumenteViewController extends AbstractGesuchViewController<any> {
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -58,6 +61,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         '$scope',
         '$timeout',
         'GesuchRS',
+        'EinstellungRS'
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -70,6 +74,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
     public massenversand: string[] = [];
+    public isOnlineFreigabeAktiv: boolean = false;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -82,13 +87,32 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         $scope: IScope,
         $timeout: ITimeoutService,
         private readonly gesuchRS: GesuchRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
+        super(
+            gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.DOKUMENTE,
+            $timeout
+        );
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.DOKUMENTE,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.calculate();
+
+        this.einstellungRS
+            .getEinstellung(
+                this.gesuchModelManager.getGesuch().gesuchsperiode.id,
+                TSEinstellungKey.GESUCHFREIGABE_ONLINE
+            )
+            .pipe(first())
+            .subscribe((onlineFreigabe: TSEinstellung) => {
+                this.isOnlineFreigabeAktiv = onlineFreigabe.getValueAsBoolean();
+            });
     }
 
     public calculate(): void {
@@ -100,26 +124,64 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         this.berechnungsManager
             .getDokumente(this.gesuchModelManager.getGesuch())
             .then((alleDokumente: TSDokumenteDTO) => {
-                this.searchDokumente(alleDokumente,
+                this.searchDokumente(
+                    alleDokumente,
                     this.dokumenteEkv,
-                    TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-                this.searchDokumente(alleDokumente, this.dokumenteFinSit, TSDokumentGrundTyp.FINANZIELLESITUATION);
-                this.searchDokumente(alleDokumente, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
-                this.searchDokumente(alleDokumente, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
-                this.searchDokumente(alleDokumente, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
-                this.searchDokumente(alleDokumente, this.dokumenteErwBetr, TSDokumentGrundTyp.ERWEITERTE_BETREUUNG);
-                this.searchDokumente(alleDokumente, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
-                this.searchDokumente(alleDokumente, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
-                this.searchDokumente(alleDokumente,
+                    TSDokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteFinSit,
+                    TSDokumentGrundTyp.FINANZIELLESITUATION
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteFamSit,
+                    TSDokumentGrundTyp.FAMILIENSITUATION
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteErwp,
+                    TSDokumentGrundTyp.ERWERBSPENSUM
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteKinder,
+                    TSDokumentGrundTyp.KINDER
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteErwBetr,
+                    TSDokumentGrundTyp.ERWEITERTE_BETREUUNG
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumenteSonst,
+                    TSDokumentGrundTyp.SONSTIGE_NACHWEISE
+                );
+                this.searchDokumente(
+                    alleDokumente,
+                    this.dokumentePapiergesuch,
+                    TSDokumentGrundTyp.PAPIERGESUCH
+                );
+                this.searchDokumente(
+                    alleDokumente,
                     this.dokumenteFreigabequittung,
-                    TSDokumentGrundTyp.FREIGABEQUITTUNG);
-                this.dokumenteFamSit =
-                    this.dokumenteFamSit.filter(dokumentGrund => dokumentGrund.dokumentTyp !== TSDokumentTyp.AUSWEIS_ID);
+                    TSDokumentGrundTyp.FREIGABEQUITTUNG
+                );
+                this.dokumenteFamSit = this.dokumenteFamSit.filter(
+                    dokumentGrund =>
+                        dokumentGrund.dokumentTyp !== TSDokumentTyp.AUSWEIS_ID
+                );
             });
 
-        this.gesuchRS.getMassenversandTexteForGesuch(this.gesuchModelManager.getGesuch().id).then((response: any) => {
-            this.massenversand = response;
-        });
+        this.gesuchRS
+            .getMassenversandTexteForGesuch(
+                this.gesuchModelManager.getGesuch().id
+            )
+            .then((response: any) => {
+                this.massenversand = response;
+            });
     }
 
     private searchDokumente(
@@ -127,9 +189,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         dokumenteForType: TSDokumentGrund[],
         dokumentGrundTyp: TSDokumentGrundTyp
     ): void {
-
         alleDokumente.dokumentGruende
-            .filter(tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp)
+            .filter(
+                tsDokument => tsDokument.dokumentGrundTyp === dokumentGrundTyp
+            )
             .forEach(tsDokument => dokumenteForType.push(tsDokument));
 
         dokumenteForType.sort((n1: TSDokumentGrund, n2: TSDokumentGrund) => {
@@ -140,32 +203,51 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                     result = n1.tag.localeCompare(n2.tag);
                 }
                 if (result === 0 && n1.dokumentTyp && n2.dokumentTyp) {
-                    result = n1.dokumentTyp.toString().localeCompare(n2.dokumentTyp.toString());
+                    result = n1.dokumentTyp
+                        .toString()
+                        .localeCompare(n2.dokumentTyp.toString());
                 }
             }
             return result;
         });
     }
 
-    public addUploadedDokuments(dokumentGrund: any, dokumente: TSDokumentGrund[]): void {
+    public addUploadedDokuments(
+        dokumentGrund: any,
+        dokumente: TSDokumentGrund[]
+    ): void {
         this.$log.debug('addUploadedDokuments called');
-        const index = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
+        const index = EbeguUtil.getIndexOfElementwithID(
+            dokumentGrund,
+            dokumente
+        );
 
         if (index > -1) {
             this.$log.debug('add dokument to dokumentList');
             dokumente[index] = dokumentGrund;
 
             // Clear cached Papiergesuch on add...
-            if (dokumentGrund.dokumentGrundTyp === TSDokumentGrundTyp.PAPIERGESUCH) {
-                this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
+            if (
+                dokumentGrund.dokumentGrundTyp ===
+                TSDokumentGrundTyp.PAPIERGESUCH
+            ) {
+                this.globalCacheService
+                    .getCache(TSCacheTyp.EBEGU_DOCUMENT)
+                    .removeAll();
             }
         }
         EbeguUtil.handleSmarttablesUpdateBug(dokumente);
     }
 
-    public removeDokument(dokumentGrund: TSDokumentGrund, dokument: TSDokument, dokumente: TSDokumentGrund[]): void {
-
-        const index = EbeguUtil.getIndexOfElementwithID(dokument, dokumentGrund.dokumente);
+    public removeDokument(
+        dokumentGrund: TSDokumentGrund,
+        dokument: TSDokument,
+        dokumente: TSDokumentGrund[]
+    ): void {
+        const index = EbeguUtil.getIndexOfElementwithID(
+            dokument,
+            dokumentGrund.dokumente
+        );
 
         if (index > -1) {
             this.$log.debug('add dokument to dokumentList');
@@ -173,30 +255,42 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         }
 
         this.dokumenteRS.removeDokument(dokument).then(response => {
-
             const returnedDG = angular.copy(response);
 
             if (returnedDG) {
                 // replace existing object in table with returned if returned not null
-                const idx = EbeguUtil.getIndexOfElementwithID(returnedDG, dokumente);
+                const idx = EbeguUtil.getIndexOfElementwithID(
+                    returnedDG,
+                    dokumente
+                );
                 if (idx > -1) {
                     this.$log.debug('update dokumentGrund in dokumentList');
                     dokumente[idx] = dokumentGrund;
 
                     // Clear cached Papiergesuch on remove...
-                    if (dokumentGrund.dokumentGrundTyp === TSDokumentGrundTyp.PAPIERGESUCH) {
-                        this.globalCacheService.getCache(TSCacheTyp.EBEGU_DOCUMENT).removeAll();
+                    if (
+                        dokumentGrund.dokumentGrundTyp ===
+                        TSDokumentGrundTyp.PAPIERGESUCH
+                    ) {
+                        this.globalCacheService
+                            .getCache(TSCacheTyp.EBEGU_DOCUMENT)
+                            .removeAll();
                     }
                 }
             } else {
                 // delete object in table with sended if returned is null
-                const idx = EbeguUtil.getIndexOfElementwithID(dokumentGrund, dokumente);
+                const idx = EbeguUtil.getIndexOfElementwithID(
+                    dokumentGrund,
+                    dokumente
+                );
                 if (idx > -1) {
                     this.$log.debug('remove dokumentGrund in dokumentList');
                     dokumente.splice(idx, 1);
                 }
             }
-            this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id);
+            this.wizardStepManager.findStepsFromGesuch(
+                this.gesuchModelManager.getGesuch().id
+            );
         });
 
         EbeguUtil.handleSmarttablesUpdateBug(dokumente);
@@ -212,10 +306,12 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     }
 
     public getTagAnhandFinanzielleSituationTyp(): string | null {
-        if (this.gesuchModelManager.getGesuch().finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
+        if (
+            this.gesuchModelManager.getGesuch().finSitTyp ===
+            TSFinanzielleSituationTyp.SCHWYZ
+        ) {
             return null;
         }
         return 'DOK_JAHR';
     }
-
 }

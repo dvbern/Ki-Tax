@@ -17,16 +17,18 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSEinkommensverschlechterungInfo} from './TSEinkommensverschlechterungInfo';
 
 export class TSEinkommensverschlechterungInfoContainer extends TSAbstractMutableEntity {
-
     private _einkommensverschlechterungInfoGS: TSEinkommensverschlechterungInfo;
 
-    private _einkommensverschlechterungInfoJA = new TSEinkommensverschlechterungInfo();
+    private _einkommensverschlechterungInfoJA =
+        new TSEinkommensverschlechterungInfo();
 
     public get einkommensverschlechterungInfoGS(): TSEinkommensverschlechterungInfo {
         return this._einkommensverschlechterungInfoGS;
     }
 
-    public set einkommensverschlechterungInfoGS(value: TSEinkommensverschlechterungInfo) {
+    public set einkommensverschlechterungInfoGS(
+        value: TSEinkommensverschlechterungInfo
+    ) {
         this._einkommensverschlechterungInfoGS = value;
     }
 
@@ -34,12 +36,15 @@ export class TSEinkommensverschlechterungInfoContainer extends TSAbstractMutable
         return this._einkommensverschlechterungInfoJA;
     }
 
-    public set einkommensverschlechterungInfoJA(value: TSEinkommensverschlechterungInfo) {
+    public set einkommensverschlechterungInfoJA(
+        value: TSEinkommensverschlechterungInfo
+    ) {
         this._einkommensverschlechterungInfoJA = value;
     }
 
     public init(): void {
-        this.einkommensverschlechterungInfoJA = new TSEinkommensverschlechterungInfo();
+        this.einkommensverschlechterungInfoJA =
+            new TSEinkommensverschlechterungInfo();
         this.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 = false;
         this.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus2 = false;
     }

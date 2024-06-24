@@ -16,13 +16,14 @@
   -->
 
 <dv-full-height-inner-padding-container>
-    <form role="form"
-		  #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          *ngIf="stammdaten$ | async as stammdaten"
-          (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
-          novalidate>
-
+    <form
+        role="form"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        *ngIf="stammdaten$ | async as stammdaten"
+        (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
+        novalidate
+    >
         <dv-stammdaten-header
             (logoImageChange)="collectLogoChange($event)"
             [preTitel]="stammdaten.gemeinde.bfsNummer"
@@ -31,81 +32,131 @@
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
             [allowedRoles]="getMitarbeiterVisibleRoles()"
-            [editMode]="editMode"> <!-- this is the edit view -->
+            [editMode]="editMode"
+        >
+            <!-- this is the edit view -->
         </dv-stammdaten-header>
 
-        <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab" animationDuration="0ms">
-            <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}" ngForm="gemeinde_stammdaten">
-                <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
-                                             [gemeindeId]="gemeindeId"
-                                             [editMode]="editMode"
-                                             [(altTSAdresse)]="altTSAdresse"
-                                             [tageschuleEnabledForMandant]="tageschuleEnabledForMandant"
-                                             [tfoEnabledForMandant]="tfoEnabledForMandant">
+        <mat-tab-group
+            dynamicHeight
+            [(selectedIndex)]="currentTab"
+            animationDuration="0ms"
+        >
+            <mat-tab
+                label="{{ 'GEMEINDE_TAB_STAMMDATEN' | translate }}"
+                ngForm="gemeinde_stammdaten"
+            >
+                <dv-edit-gemeinde-stammdaten
+                    [stammdaten$]="stammdaten$"
+                    [gemeindeId]="gemeindeId"
+                    [editMode]="editMode"
+                    [(altTSAdresse)]="altTSAdresse"
+                    [tageschuleEnabledForMandant]="tageschuleEnabledForMandant"
+                    [tfoEnabledForMandant]="tfoEnabledForMandant"
+                    [gemeindeVereinfachteKonfigAktiv]="
+                        gemeindeVereinfachteKonfigAktiv
+                    "
+                >
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}" ngForm="gemeinde_bg"
-                     *ngIf="stammdaten.gemeinde.angebotBG">
-                <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
-                                     [gemeindeId]="gemeindeId"
-                                     [beguStartStr]="beguStartStr"
-                                     [editMode]="isEditModeForBG()"
-                                     [(altBGAdresse)]="altBGAdresse"
-                                     [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
-                                     [beguStartDatum]="beguStartDatum"
-                                     [gemeindeList$]="gemeindeList$">
+            <mat-tab
+                label="{{ 'GEMEINDE_TAB_BG' | translate }}"
+                ngForm="gemeinde_bg"
+                *ngIf="stammdaten.gemeinde.angebotBG"
+            >
+                <dv-edit-gemeinde-bg
+                    [stammdaten$]="stammdaten$"
+                    [gemeindeId]="gemeindeId"
+                    [beguStartStr]="beguStartStr"
+                    [editMode]="isEditModeForBG()"
+                    [(altBGAdresse)]="altBGAdresse"
+                    [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
+                    [beguStartDatum]="beguStartDatum"
+                    [gemeindeList$]="gemeindeList$"
+                    [gemeindeVereinfachteKonfigAktiv]="
+                        gemeindeVereinfachteKonfigAktiv
+                    "
+                >
                 </dv-edit-gemeinde-bg>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
-                     *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
-                <dv-edit-gemeinde-ts (altLogoImageChange)="altCollectLogoChange($event)"
-                                     [stammdaten$]="stammdaten$"
-                                     [gemeindeId]="gemeindeId"
-                                     [editMode]="editModeForTSFI()"
-                                     [(altTSAdresse)]="altTSAdresse"
-                                     [tsAnmeldungenStartStr]="tsAnmeldungenStartStr"
-                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
-                                     [externalClients]="externalClients"
-                                     [isSuperAdmin]="isSuperAdmin()"
-                                     [(usernameScolaris)]="usernameScolaris"
-                                     [altLogoImageUrl]="getAlternativeLogoImageUrl(stammdaten.gemeinde)">
+            <mat-tab
+                label="{{ 'GEMEINDE_TAB_TS' | translate }}"
+                ngForm="gemeinde_ts"
+                *ngIf="
+                    tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS
+                "
+            >
+                <dv-edit-gemeinde-ts
+                    (altLogoImageChange)="altCollectLogoChange($event)"
+                    [stammdaten$]="stammdaten$"
+                    [gemeindeId]="gemeindeId"
+                    [editMode]="editModeForTSFI()"
+                    [(altTSAdresse)]="altTSAdresse"
+                    [tsAnmeldungenStartStr]="tsAnmeldungenStartStr"
+                    [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
+                    [externalClients]="externalClients"
+                    [isSuperAdmin]="isSuperAdmin()"
+                    [(usernameScolaris)]="usernameScolaris"
+                    [altLogoImageUrl]="
+                        getAlternativeLogoImageUrl(stammdaten.gemeinde)
+                    "
+                >
                 </dv-edit-gemeinde-ts>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
-                     *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI">
-                <dv-edit-gemeinde-fi [stammdaten$]="stammdaten$"
-                                     [gemeindeId]="gemeindeId"
-                                     [editMode]="editModeForTSFI()"
-                                     [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum"
-                                     [fiAnmeldungenStartStr]="fiAnmeldungenStartStr">
+            <mat-tab
+                label="{{ 'GEMEINDE_TAB_FI' | translate }}"
+                ngForm="gemeinde_fi"
+                *ngIf="
+                    tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI
+                "
+            >
+                <dv-edit-gemeinde-fi
+                    [stammdaten$]="stammdaten$"
+                    [gemeindeId]="gemeindeId"
+                    [editMode]="editModeForTSFI()"
+                    [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum"
+                    [fiAnmeldungenStartStr]="fiAnmeldungenStartStr"
+                >
                 </dv-edit-gemeinde-fi>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_KORRESPONDENZ' | translate}}" ngForm="gemeinde_korrespondenz">
-                <dv-edit-gemeinde-korrespondenz [stammdaten$]="stammdaten$"
-                                                [editMode]="editMode">
+            <mat-tab
+                label="{{ 'GEMEINDE_TAB_KORRESPONDENZ' | translate }}"
+                ngForm="gemeinde_korrespondenz"
+            >
+                <dv-edit-gemeinde-korrespondenz
+                    [stammdaten$]="stammdaten$"
+                    [editMode]="editMode"
+                >
                 </dv-edit-gemeinde-korrespondenz>
             </mat-tab>
         </mat-tab-group>
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <dv-loading-button type="button" *ngIf="!editMode && isGemeindeEditable()"
-                               data-test="container.edit"
-                               (buttonClick)="setEditMode()">
+            <dv-loading-button
+                type="button"
+                *ngIf="!editMode && isGemeindeEditable()"
+                data-test="container.edit"
+                (buttonClick)="setEditMode()"
+            >
                 <span translate>GEMEINDE_EDIT</span>
             </dv-loading-button>
-            <dv-loading-button *ngIf="editMode"
-                               data-test="container.save"
-                               [type]="'submit'">
+            <dv-loading-button
+                *ngIf="editMode"
+                data-test="container.save"
+                [type]="'submit'"
+            >
                 <span translate>GEMEINDE_SPEICHERN</span>
             </dv-loading-button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    data-test="container.cancel"
-                    *ngIf="!isRegistering()"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                data-test="container.cancel"
+                *ngIf="!isRegistering()"
+                (click)="cancel()"
+                [textContent]="'CANCEL' | translate"
+            ></button>
         </div>
     </form>
 </dv-full-height-inner-padding-container>

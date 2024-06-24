@@ -19,7 +19,6 @@ import * as moment from 'moment';
  * DTO fuer die Infos zu einem BatchJob
  */
 export class TSBatchJobInformation {
-
     private _batchStatus: string;
     private _createTime: moment.Moment;
     private _endTime: moment.Moment;

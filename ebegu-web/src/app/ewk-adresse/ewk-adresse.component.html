@@ -1,0 +1,38 @@
+<div *ngIf="adresse.adresszusatz1">
+    <span class="ewk-label">{{
+        'EWK_ADRESSE_ADRESSZUSATZ_1' | translate
+    }}</span>
+    {{ adresse.adresszusatz1 }}
+</div>
+<div *ngIf="adresse.adresszusatz2">
+    <span class="ewk-label">{{
+        'EWK_ADRESSE_ADRESSZUSATZ_2' | translate
+    }}</span>
+    {{ adresse.adresszusatz2 }}
+</div>
+<div *ngIf="adresse.hausnummer">
+    <span class="ewk-label">{{ 'EWK_ADRESSE_HAUSNUMMER' | translate }}</span>
+    {{ adresse.hausnummer }}
+</div>
+<div *ngIf="adresse.wohnungsnummer">
+    <span class="ewk-label">{{
+        'EWK_ADRESSE_WOHNUNGSNUMMER' | translate
+    }}</span>
+    {{ adresse.wohnungsnummer }}
+</div>
+<div *ngIf="adresse.strasse">
+    <span class="ewk-label">{{ 'EWK_ADRESSE_STRASSE' | translate }}</span>
+    {{ adresse.strasse }}
+</div>
+<div *ngIf="adresse.postleitzahl">
+    <span class="ewk-label">{{ 'EWK_ADRESSE_PLZ' | translate }}</span>
+    {{ adresse.postleitzahl }}
+</div>
+<div *ngIf="adresse.ort">
+    <span class="ewk-label">{{ 'EWK_ADRESSE_ORT' | translate }}</span>
+    {{ adresse.ort }}
+</div>
+<div *ngIf="adresse.gebiet">
+    <span class="ewk-label">{{ 'EWK_ADRESSE_KANTON' | translate }}</span>
+    {{ adresse.gebiet }}
+</div>

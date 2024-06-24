@@ -19,56 +19,97 @@
     <h1>{{ 'IMPORT_FROM_OTHER_INSTITUTION' | translate }}</h1>
 
     <div *ngIf="institutionStammdatenList.length">
-
         <p>{{ 'WARNING_APPEND_OTHER_MODULES' | translate }}</p>
-        <p [textContent]="'INSTITUTION_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text-institution"></p>
+        <p
+            [textContent]="'INSTITUTION_AUSWAEHLEN' | translate"
+            class="dv-dialog-text"
+            id="dv-dialog-text-institution"
+        ></p>
 
         <div class="dv-content">
-            <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text-institution" name="institution"
-                    id="institution"
-                    [(ngModel)]="selectedInstitutionStammdaten"
-                    class="form-control"
-                    data-test="institution.tageschule.modul.import.institution"
-                    [required]="true">
-
-                <option *ngFor="let institutionStammdaten of institutionStammdatenList" [ngValue]="institutionStammdaten"
-                        [attr.data-test]="'institution.tageschule.modul.import.institution-' + institutionStammdaten.institution.name">{{institutionStammdaten.institution.name}}</option>
+            <select
+                aria-describedby="betreuungsangebot-error"
+                aria-labelledby="dv-dialog-text-institution"
+                name="institution"
+                id="institution"
+                [(ngModel)]="selectedInstitutionStammdaten"
+                class="form-control"
+                data-test="institution.tageschule.modul.import.institution"
+                [required]="true"
+            >
+                <option
+                    *ngFor="
+                        let institutionStammdaten of institutionStammdatenList
+                    "
+                    [ngValue]="institutionStammdaten"
+                    [attr.data-test]="
+                        'institution.tageschule.modul.import.institution-' +
+                        institutionStammdaten.institution.name
+                    "
+                >
+                    {{ institutionStammdaten.institution.name }}
+                </option>
             </select>
         </div>
 
         <div *ngIf="selectedInstitutionStammdaten">
-            <p [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate" class="dv-dialog-text"
-               id="dv-dialog-text-gesuchsperiode"></p>
+            <p
+                [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate"
+                class="dv-dialog-text"
+                id="dv-dialog-text-gesuchsperiode"
+            ></p>
 
             <div class="dv-content">
-                <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text-gesuchsperiode"
-                        name="gesuchsperiode"
-                        id="gesuchsperiode"
-                        [(ngModel)]="selectedEinstellungTagesschule"
-                        class="form-control"
-                        data-test="institution.tageschule.modul.import.gesuchsperiode"
-                        [required]="true">
-
-                    <option *ngFor="let einstellungTagesschule of filterEinstellungenTagesschule(selectedInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule)"
-                            [ngValue]="einstellungTagesschule">
-                        {{einstellungTagesschule.gesuchsperiode.gesuchsperiodeString}}
+                <select
+                    aria-describedby="betreuungsangebot-error"
+                    aria-labelledby="dv-dialog-text-gesuchsperiode"
+                    name="gesuchsperiode"
+                    id="gesuchsperiode"
+                    [(ngModel)]="selectedEinstellungTagesschule"
+                    class="form-control"
+                    data-test="institution.tageschule.modul.import.gesuchsperiode"
+                    [required]="true"
+                >
+                    <option
+                        *ngFor="
+                            let einstellungTagesschule of filterEinstellungenTagesschule(
+                                selectedInstitutionStammdaten
+                                    .institutionStammdatenTagesschule
+                                    .einstellungenTagesschule
+                            )
+                        "
+                        [ngValue]="einstellungTagesschule"
+                    >
+                        {{
+                            einstellungTagesschule.gesuchsperiode
+                                .gesuchsperiodeString
+                        }}
                     </option>
                 </select>
             </div>
         </div>
-
     </div>
     <div *ngIf="!institutionStammdatenList.length">
         <p>{{ 'KEINE_MODULE_ZUM_IMPORTIEREN' | translate }}</p>
     </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="save()" [textContent]="'IMPORT' | translate"
-                *ngIf="selectedEinstellungTagesschule && institutionStammdatenList.length"
-                data-test="institution.tageschule.modul.import.button"></button>
-        <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+        <button
+            class="dv-btn"
+            (click)="save()"
+            [textContent]="'IMPORT' | translate"
+            *ngIf="
+                selectedEinstellungTagesschule &&
+                institutionStammdatenList.length
+            "
+            data-test="institution.tageschule.modul.import.button"
+        ></button>
+        <button
+            class="dv-btn cancel-button"
+            (click)="close()"
+            [textContent]="'CANCEL' | translate"
+        ></button>
     </div>
 </mat-dialog-actions>

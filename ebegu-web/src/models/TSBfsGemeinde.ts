@@ -18,14 +18,10 @@
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSBfsGemeinde extends TSAbstractEntity {
-
     private _name: string;
     private _bfsNummer: number;
 
-    public constructor(
-        gemeinde?: string,
-        bfsNummer?: number
-    ) {
+    public constructor(gemeinde?: string, bfsNummer?: number) {
         super();
         this._name = gemeinde;
         this._bfsNummer = bfsNummer;

@@ -27,7 +27,6 @@ export class DvAccordionComponentConfig implements IComponentOptions {
 }
 
 export class DvAccordionController implements IOnChanges {
-
     public static $inject: ReadonlyArray<string> = [];
 
     public accordion: string[] = [];

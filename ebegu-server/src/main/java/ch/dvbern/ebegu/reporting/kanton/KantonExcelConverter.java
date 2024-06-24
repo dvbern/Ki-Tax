@@ -98,7 +98,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = new ExcelMergerDTO();
 			excelRowGroup.addValue(MergeFieldKanton.gemeinde, dataRow.getGemeinde());
-			excelRowGroup.addValue(MergeFieldKanton.bgNummer, dataRow.getBgNummer());
+			excelRowGroup.addValue(MergeFieldKanton.referenzNummer, dataRow.getReferenzNummer());
 			excelRowGroup.addValue(MergeFieldKanton.gesuchId, dataRow.getGesuchId());
 			excelRowGroup.addValue(MergeFieldKanton.name, dataRow.getName());
 			excelRowGroup.addValue(MergeFieldKanton.vorname, dataRow.getVorname());
@@ -128,7 +128,7 @@ public class KantonExcelConverter implements ExcelConverter {
 	private void addEmptyRow(RowFiller rowFiller) {
 		ExcelMergerDTO excelRowGroup = new ExcelMergerDTO();
 		excelRowGroup.addValue(MergeFieldKanton.gemeinde, EMPTY_STRING);
-		excelRowGroup.addValue(MergeFieldKanton.bgNummer, EMPTY_STRING);
+		excelRowGroup.addValue(MergeFieldKanton.referenzNummer, EMPTY_STRING);
 		excelRowGroup.addValue(MergeFieldKanton.gesuchId, EMPTY_STRING);
 		excelRowGroup.addValue(MergeFieldKanton.name, EMPTY_STRING);
 		excelRowGroup.addValue(MergeFieldKanton.vorname, EMPTY_STRING);

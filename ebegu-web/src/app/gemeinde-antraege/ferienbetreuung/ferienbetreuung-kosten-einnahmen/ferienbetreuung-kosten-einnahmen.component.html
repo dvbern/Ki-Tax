@@ -17,436 +17,832 @@
 
 <div class="ferienbetreuung-nutzung">
     <h1 class="access-for-all-title">
-        {{'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE' | translate:{
-        periode: container?.gesuchsperiode?.gesuchsperiodeString,
-        von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb),
-        bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)
-    } }}
+        {{
+            'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE'
+                | translate
+                    : {
+                          periode:
+                              container?.gesuchsperiode?.gesuchsperiodeString,
+                          von: addOneMonthToMoment(
+                              container?.gesuchsperiode?.gueltigkeit.gueltigAb
+                          ),
+                          bis: addOneMonthToMoment(
+                              container?.gesuchsperiode?.gueltigkeit.gueltigBis
+                          )
+                      }
+        }}
     </h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>{{'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE' | translate:{
-                periode: container?.gesuchsperiode?.gesuchsperiodeString,
-                von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb),
-                bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)
-            } }}</h2>
-            <hr class="header"/>
+            <h2>
+                {{
+                    'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE'
+                        | translate
+                            : {
+                                  periode:
+                                      container?.gesuchsperiode
+                                          ?.gesuchsperiodeString,
+                                  von: addOneMonthToMoment(
+                                      container?.gesuchsperiode?.gueltigkeit
+                                          .gueltigAb
+                                  ),
+                                  bis: addOneMonthToMoment(
+                                      container?.gesuchsperiode?.gueltigkeit
+                                          .gueltigBis
+                                  )
+                              }
+                }}
+            </h2>
+            <hr class="header" />
         </div>
     </div>
 
     <form *ngIf="container" [formGroup]="form">
-
         <h3 class="uppercase">
-            {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+            {{ 'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }}
+            {{ container?.gesuchsperiode?.gesuchsperiodeString }}
         </h3>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="personalkosten_id"
-                       required
-                       [ngClass]="{'label-required-error': form && form.controls.personalkosten.errors}">
-                    {{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate }}
-                    <dv-tooltip inputId="personalkosten_id"
-                                [text]="'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT' | translate">
+                <label
+                    for="personalkosten_id"
+                    required
+                    [ngClass]="{
+                        'label-required-error':
+                            form && form.controls.personalkosten.errors
+                    }"
+                >
+                    {{ 'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate }}
+                    <dv-tooltip
+                        inputId="personalkosten_id"
+                        [text]="
+                            'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT'
+                                | translate
+                        "
+                    >
                     </dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="personalkosten_id"
-                           formControlName="personalkosten"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.personalkosten.errors?.required"
-                               translate>ERROR_REQUIRED
+                    <input
+                        matInput
+                        id="personalkosten_id"
+                        formControlName="personalkosten"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.personalkosten.errors?.required
+                        "
+                        translate
+                        >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form?.controls.personalkosten?.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <mat-error
+                        *ngIf="
+                            form?.controls.personalkosten?.errors?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkosten"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.personalkosten
+                        "
                         [korrektur]="form.value.personalkosten"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.personalkosten"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen?.personalkosten
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="personalkosten_leitung_admin_id" class="padding-left-20"
-                       [ngClass]="{'label-required-error': form?.get('personalkostenLeitungAdmin').errors}">
-                    {{'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN' | translate }}
+                <label
+                    for="personalkosten_leitung_admin_id"
+                    class="padding-left-20"
+                    [ngClass]="{
+                        'label-required-error': form?.get(
+                            'personalkostenLeitungAdmin'
+                        ).errors
+                    }"
+                >
+                    {{
+                        'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN'
+                            | translate
+                    }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="personalkosten_leitung_admin_id"
-                           formControlName="personalkostenLeitungAdmin"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.personalkostenLeitungAdmin.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <input
+                        matInput
+                        id="personalkosten_leitung_admin_id"
+                        formControlName="personalkostenLeitungAdmin"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.personalkostenLeitungAdmin.errors
+                                ?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkostenLeitungAdmin"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.personalkostenLeitungAdmin
+                        "
                         [korrektur]="form.value.personalkostenLeitungAdmin"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.personalkostenLeitungAdmin"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen
+                        ?.personalkostenLeitungAdmin
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="sachkosten_id"
-                       required
-                       [ngClass]="{'label-required-error': form && form.controls.sachkosten.errors}">
-                    {{'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate }}
-                    <dv-tooltip inputId="sachkosten_id"
-                                [text]="'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT_HINT' | translate">
+                <label
+                    for="sachkosten_id"
+                    required
+                    [ngClass]="{
+                        'label-required-error':
+                            form && form.controls.sachkosten.errors
+                    }"
+                >
+                    {{ 'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate }}
+                    <dv-tooltip
+                        inputId="sachkosten_id"
+                        [text]="
+                            'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT_HINT'
+                                | translate
+                        "
+                    >
                     </dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="sachkosten_id"
-                           formControlName="sachkosten"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.sachkosten.errors?.required"
-                               translate>ERROR_REQUIRED
+                    <input
+                        matInput
+                        id="sachkosten_id"
+                        formControlName="sachkosten"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form && form.controls.sachkosten.errors?.required
+                        "
+                        translate
+                        >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.controls.sachkosten.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.sachkosten.errors?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sachkosten"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.sachkosten
+                        "
                         [korrektur]="form.value.sachkosten"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.sachkosten"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen?.sachkosten
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="verpflegungskosten_id"
-                       [ngClass]="{'label-required-error': form && form.controls.verpflegungskosten.errors}">
-                    {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
+                <label
+                    for="verpflegungskosten_id"
+                    [ngClass]="{
+                        'label-required-error':
+                            form && form.controls.verpflegungskosten.errors
+                    }"
+                >
+                    {{
+                        'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT'
+                            | translate
+                    }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="verpflegungskosten_id"
-                           formControlName="verpflegungskosten"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.verpflegungskosten.errors?.required"
-                               translate>ERROR_REQUIRED
+                    <input
+                        matInput
+                        id="verpflegungskosten_id"
+                        formControlName="verpflegungskosten"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.verpflegungskosten.errors?.required
+                        "
+                        translate
+                        >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.controls.verpflegungskosten.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.verpflegungskosten.errors
+                                ?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.verpflegungskosten"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.verpflegungskosten
+                        "
                         [korrektur]="form.value.verpflegungskosten"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.verpflegungskosten"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen
+                        ?.verpflegungskosten
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
-
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="weitere_kosten_id"
-                       [ngClass]="{'label-required-error': form?.get('weitereKosten').errors}">
-                    {{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
+                <label
+                    for="weitere_kosten_id"
+                    [ngClass]="{
+                        'label-required-error':
+                            form?.get('weitereKosten').errors
+                    }"
+                >
+                    {{ 'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="weitere_kosten_id"
-                           formControlName="weitereKosten"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.weitereKosten.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <input
+                        matInput
+                        id="weitere_kosten_id"
+                        formControlName="weitereKosten"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.weitereKosten.errors?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereKosten"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.weitereKosten
+                        "
                         [korrektur]="form.value.weitereKosten"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.weitereKosten"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen?.weitereKosten
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
-            <dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
+            <dv-input-container-x
+                class="max-width-container-750"
+                [verticalAlign]="true"
+            >
                 <label for="bemerkungen_kosten_id">
-                    {{'BEMERKUNGEN' | translate }}
+                    {{ 'BEMERKUNGEN' | translate }}
                 </label>
                 <mat-form-field floatLabel="always" class="no-margin-left">
-                <textarea matInput
-                          id="bemerkungen_kosten_id"
-                          formControlName="bemerkungenKosten"
-                          class="form-control dv-input"></textarea>
+                    <textarea
+                        matInput
+                        id="bemerkungen_kosten_id"
+                        formControlName="bemerkungenKosten"
+                        class="form-control dv-input"
+                    ></textarea>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.bemerkungenKosten
+                        "
                         [korrektur]="form.value.bemerkungenKosten"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.bemerkungenKosten"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen
+                        ?.bemerkungenKosten
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <mat-divider></mat-divider>
 
         <h3 class="uppercase">
-            {{'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+            {{ 'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }}
+            {{ container?.gesuchsperiode?.gesuchsperiodeString }}
         </h3>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="elterngebuehren_id"
-                       required
-                       [ngClass]="{'label-required-error': form && form.controls.elterngebuehren.errors}">
-                    {{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate }}
-                    <dv-tooltip inputId="elterngebuehren_id"
-                                [text]="'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN_HINT' | translate">
+                <label
+                    for="elterngebuehren_id"
+                    required
+                    [ngClass]="{
+                        'label-required-error':
+                            form && form.controls.elterngebuehren.errors
+                    }"
+                >
+                    {{
+                        'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN'
+                            | translate
+                    }}
+                    <dv-tooltip
+                        inputId="elterngebuehren_id"
+                        [text]="
+                            'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN_HINT'
+                                | translate
+                        "
+                    >
                     </dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="elterngebuehren_id"
-                           formControlName="elterngebuehren"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.elterngebuehren.errors?.required"
-                               translate>ERROR_REQUIRED
+                    <input
+                        matInput
+                        id="elterngebuehren_id"
+                        formControlName="elterngebuehren"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.elterngebuehren.errors?.required
+                        "
+                        translate
+                        >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.controls.elterngebuehren.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.elterngebuehren.errors?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.elterngebuehren"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.elterngebuehren
+                        "
                         [korrektur]="form.value.elterngebuehren"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.elterngebuehren"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen
+                        ?.elterngebuehren
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
-                <label for="weitereEinnahmen_id"
-                       required
-                       [ngClass]="{'label-required-error': form && form.controls.weitereEinnahmen.errors}">
-                    {{'FERIENBETREUUNG_WEITERE_EINNAHMEN' | translate }}
-                    <dv-tooltip inputId="weitereEinnahmen_id"
-                                [text]="'FERIENBETREUUNG_WEITERE_EINNAHMEN_HINT' | translate">
+                <label
+                    for="weitereEinnahmen_id"
+                    required
+                    [ngClass]="{
+                        'label-required-error':
+                            form && form.controls.weitereEinnahmen.errors
+                    }"
+                >
+                    {{ 'FERIENBETREUUNG_WEITERE_EINNAHMEN' | translate }}
+                    <dv-tooltip
+                        inputId="weitereEinnahmen_id"
+                        [text]="
+                            'FERIENBETREUUNG_WEITERE_EINNAHMEN_HINT' | translate
+                        "
+                    >
                     </dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="weitereEinnahmen_id"
-                           formControlName="weitereEinnahmen"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.controls.weitereEinnahmen.errors?.required"
-                               translate>ERROR_REQUIRED
+                    <input
+                        matInput
+                        id="weitereEinnahmen_id"
+                        formControlName="weitereEinnahmen"
+                        class="form-control dv-input"
+                    />
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.weitereEinnahmen.errors?.required
+                        "
+                        translate
+                        >ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.controls.weitereEinnahmen.errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
+                    <mat-error
+                        *ngIf="
+                            form &&
+                            form.controls.weitereEinnahmen.errors?.isNotInteger
+                        "
+                        translate
+                        >ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereEinnahmen"
+                        [deklaration]="
+                            container?.angabenDeklaration?.kostenEinnahmen
+                                ?.weitereEinnahmen
+                        "
                         [korrektur]="form.value.weitereEinnahmen"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        [showBisher]="
+                            container.isAtLeastInPruefungKantonOrZurueckgegeben()
+                        "
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate"
+                    >
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
-                *ngIf="(vorgaenger$ | async) as vorgaenger"
-                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.weitereEinnahmen"
+                *ngIf="vorgaenger$ | async as vorgaenger"
+                [gesuchsperiode]="
+                    vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                "
+                [value]="
+                    vorgaenger.angabenKorrektur?.kostenEinnahmen
+                        ?.weitereEinnahmen
+                "
             ></dv-ferienbetreuung-last-year-value>
         </div>
-
 
         <mat-divider></mat-divider>
 
         <div *ngIf="isDelegationsmodell">
-
             <h3 class="uppercase">
-                {{'FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_LEISTUNGSVERTRAG' | translate }}
+                {{
+                    'FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_LEISTUNGSVERTRAG'
+                        | translate
+                }}
             </h3>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
-                    <label for="sockelbeitrag_id"
-                           required
-                           [ngClass]="{'label-required-error': form && form.controls.sockelbeitrag.errors}">
-                        {{'FERIENBETREUUNG_SOCKELBEITRAG' | translate }}
+                    <label
+                        for="sockelbeitrag_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                form && form.controls.sockelbeitrag.errors
+                        }"
+                    >
+                        {{ 'FERIENBETREUUNG_SOCKELBEITRAG' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput
-                               id="sockelbeitrag_id"
-                               formControlName="sockelbeitrag"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.controls.sockelbeitrag.errors?.required"
-                                   translate>ERROR_REQUIRED
+                        <input
+                            matInput
+                            id="sockelbeitrag_id"
+                            formControlName="sockelbeitrag"
+                            class="form-control dv-input"
+                        />
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.sockelbeitrag.errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.controls.sockelbeitrag.errors?.isNotInteger"
-                                   translate>ERROR_NOT_INTEGER
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.sockelbeitrag.errors?.isNotInteger
+                            "
+                            translate
+                            >ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sockelbeitrag"
+                            [deklaration]="
+                                container?.angabenDeklaration?.kostenEinnahmen
+                                    ?.sockelbeitrag
+                            "
                             [korrektur]="form.value.sockelbeitrag"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
                 <dv-ferienbetreuung-last-year-value
-                    *ngIf="(vorgaenger$ | async) as vorgaenger"
-                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.sockelbeitrag"
+                    *ngIf="vorgaenger$ | async as vorgaenger"
+                    [gesuchsperiode]="
+                        vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                    "
+                    [value]="
+                        vorgaenger.angabenKorrektur?.kostenEinnahmen
+                            ?.sockelbeitrag
+                    "
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
-                    <label for="beitraegeNachAnmeldungen_id"
-                           required
-                           [ngClass]="{'label-required-error': form && form.controls.beitraegeNachAnmeldungen.errors}">
-                        {{'FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN' | translate }}
+                    <label
+                        for="beitraegeNachAnmeldungen_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                form &&
+                                form.controls.beitraegeNachAnmeldungen.errors
+                        }"
+                    >
+                        {{
+                            'FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN'
+                                | translate
+                        }}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput
-                               id="beitraegeNachAnmeldungen_id"
-                               formControlName="beitraegeNachAnmeldungen"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.controls.beitraegeNachAnmeldungen.errors?.required"
-                                   translate>ERROR_REQUIRED
+                        <input
+                            matInput
+                            id="beitraegeNachAnmeldungen_id"
+                            formControlName="beitraegeNachAnmeldungen"
+                            class="form-control dv-input"
+                        />
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.beitraegeNachAnmeldungen.errors
+                                    ?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.controls.beitraegeNachAnmeldungen.errors?.isNotInteger"
-                                   translate>ERROR_NOT_INTEGER
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.beitraegeNachAnmeldungen.errors
+                                    ?.isNotInteger
+                            "
+                            translate
+                            >ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.beitraegeNachAnmeldungen"
+                            [deklaration]="
+                                container?.angabenDeklaration?.kostenEinnahmen
+                                    ?.beitraegeNachAnmeldungen
+                            "
                             [korrektur]="form.value.beitraegeNachAnmeldungen"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
                 <dv-ferienbetreuung-last-year-value
-                    *ngIf="(vorgaenger$ | async) as vorgaenger"
-                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.beitraegeNachAnmeldungen"
+                    *ngIf="vorgaenger$ | async as vorgaenger"
+                    [gesuchsperiode]="
+                        vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                    "
+                    [value]="
+                        vorgaenger.angabenKorrektur?.kostenEinnahmen
+                            ?.beitraegeNachAnmeldungen
+                    "
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
-                    <label for="vorfinanzierteKantonsbeitraege_id"
-                           class="padding-left-20"
-                           required
-                           [ngClass]="{'label-required-error': form && form.controls.vorfinanzierteKantonsbeitraege.errors}">
-                        {{'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE' | translate }}
-                        <dv-tooltip inputId="vorfinanzierteKantonsbeitraege_id"
-                                    [text]="'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE_HINT' | translate">
+                    <label
+                        for="vorfinanzierteKantonsbeitraege_id"
+                        class="padding-left-20"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                form &&
+                                form.controls.vorfinanzierteKantonsbeitraege
+                                    .errors
+                        }"
+                    >
+                        {{
+                            'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE'
+                                | translate
+                        }}
+                        <dv-tooltip
+                            inputId="vorfinanzierteKantonsbeitraege_id"
+                            [text]="
+                                'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE_HINT'
+                                    | translate
+                            "
+                        >
                         </dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput
-                               id="vorfinanzierteKantonsbeitraege_id"
-                               formControlName="vorfinanzierteKantonsbeitraege"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.controls.vorfinanzierteKantonsbeitraege.errors?.required"
-                                   translate>ERROR_REQUIRED
+                        <input
+                            matInput
+                            id="vorfinanzierteKantonsbeitraege_id"
+                            formControlName="vorfinanzierteKantonsbeitraege"
+                            class="form-control dv-input"
+                        />
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.vorfinanzierteKantonsbeitraege
+                                    .errors?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.controls.vorfinanzierteKantonsbeitraege.errors?.isNotInteger"
-                                   translate>ERROR_NOT_INTEGER
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.vorfinanzierteKantonsbeitraege
+                                    .errors?.isNotInteger
+                            "
+                            translate
+                            >ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
-                            [korrektur]="form.value.vorfinanzierteKantonsbeitraege"
+                            [deklaration]="
+                                container?.angabenDeklaration?.kostenEinnahmen
+                                    ?.vorfinanzierteKantonsbeitraege
+                            "
+                            [korrektur]="
+                                form.value.vorfinanzierteKantonsbeitraege
+                            "
                             [showBisher]="container.isAtLeastInPruefungKanton()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
                 <dv-ferienbetreuung-last-year-value
-                    *ngIf="(vorgaenger$ | async) as vorgaenger"
-                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
+                    *ngIf="vorgaenger$ | async as vorgaenger"
+                    [gesuchsperiode]="
+                        vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                    "
+                    [value]="
+                        vorgaenger.angabenKorrektur?.kostenEinnahmen
+                            ?.vorfinanzierteKantonsbeitraege
+                    "
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
-                    <label for="eigenleistungenGemeinde_id"
-                           required
-                           [ngClass]="{'label-required-error': form && form.controls.eigenleistungenGemeinde.errors}">
-                        {{'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE' | translate }}
-                        <dv-tooltip inputId="eigenleistungenGemeinde_id"
-                                    [text]="'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE_HINT' | translate">
+                    <label
+                        for="eigenleistungenGemeinde_id"
+                        required
+                        [ngClass]="{
+                            'label-required-error':
+                                form &&
+                                form.controls.eigenleistungenGemeinde.errors
+                        }"
+                    >
+                        {{
+                            'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE'
+                                | translate
+                        }}
+                        <dv-tooltip
+                            inputId="eigenleistungenGemeinde_id"
+                            [text]="
+                                'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE_HINT'
+                                    | translate
+                            "
+                        >
                         </dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput
-                               id="eigenleistungenGemeinde_id"
-                               formControlName="eigenleistungenGemeinde"
-                               class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.controls.eigenleistungenGemeinde.errors?.required"
-                                   translate>ERROR_REQUIRED
+                        <input
+                            matInput
+                            id="eigenleistungenGemeinde_id"
+                            formControlName="eigenleistungenGemeinde"
+                            class="form-control dv-input"
+                        />
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.eigenleistungenGemeinde.errors
+                                    ?.required
+                            "
+                            translate
+                            >ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.controls.eigenleistungenGemeinde.errors?.isNotInteger"
-                                   translate>ERROR_NOT_INTEGER
+                        <mat-error
+                            *ngIf="
+                                form &&
+                                form.controls.eigenleistungenGemeinde.errors
+                                    ?.isNotInteger
+                            "
+                            translate
+                            >ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.eigenleistungenGemeinde"
+                            [deklaration]="
+                                container?.angabenDeklaration?.kostenEinnahmen
+                                    ?.eigenleistungenGemeinde
+                            "
                             [korrektur]="form.value.eigenleistungenGemeinde"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [specificBisherLabel]="
+                                'LATS_BISHER_LABEL' | translate
+                            "
+                        >
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
                 <dv-ferienbetreuung-last-year-value
-                    *ngIf="(vorgaenger$ | async) as vorgaenger"
-                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.eigenleistungenGemeinde"
+                    *ngIf="vorgaenger$ | async as vorgaenger"
+                    [gesuchsperiode]="
+                        vorgaenger.gesuchsperiode?.gesuchsperiodeString
+                    "
+                    [value]="
+                        vorgaenger.angabenKorrektur?.kostenEinnahmen
+                            ?.eigenleistungenGemeinde
+                    "
                 ></dv-ferienbetreuung-last-year-value>
             </div>
         </div>
@@ -454,31 +850,38 @@
         <mat-divider *ngIf="isDelegationsmodell"></mat-divider>
 
         <div class="max-width-container-750">
-
-            <dv-ferienbetreuung-berechnung [form]="form"></dv-ferienbetreuung-berechnung>
-
+            <dv-ferienbetreuung-berechnung
+                [form]="form"
+            ></dv-ferienbetreuung-berechnung>
         </div>
-
     </form>
 
     <div class="actions">
-        <button type="button" class="dv-btn cancel-button"
-                *ngIf="canSeeFalscheAngaben | async"
-                (click)="onFalscheAngaben()"
-                [textContent]="'FERIENBETREUUNG_ANGABEN_KORRIGIEREN' | translate"
+        <button
+            type="button"
+            class="dv-btn cancel-button"
+            *ngIf="canSeeFalscheAngaben | async"
+            (click)="onFalscheAngaben()"
+            [textContent]="'FERIENBETREUUNG_ANGABEN_KORRIGIEREN' | translate"
         ></button>
-        <button type="button" class="dv-btn cancel-button"
-                *ngIf="canSeeSave | async"
-                (click)="save()"
-                [textContent]="'SAVE' | translate">
-        </button>
+        <button
+            type="button"
+            class="dv-btn cancel-button"
+            *ngIf="canSeeSave | async"
+            (click)="save()"
+            [textContent]="'SAVE' | translate"
+        ></button>
         <dv-loading-button
             *ngIf="canSeeAbschliessen | async"
             type="button"
-            (buttonClick)="onAbschliessen()">
-            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
-            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
+            (buttonClick)="onAbschliessen()"
+        >
+            <span *ngIf="!container?.isInPruefungKanton()" translate
+                >ABSCHLIESSEN</span
+            >
+            <span *ngIf="container?.isInPruefungKanton()" translate
+                >GEPRUEFT</span
+            >
         </dv-loading-button>
     </div>
-
 </div>

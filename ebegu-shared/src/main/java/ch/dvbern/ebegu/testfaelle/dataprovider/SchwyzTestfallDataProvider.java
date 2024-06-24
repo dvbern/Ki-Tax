@@ -17,12 +17,11 @@
 
 package ch.dvbern.ebegu.testfaelle.dataprovider;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -30,6 +29,9 @@ import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	protected SchwyzTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
@@ -45,6 +47,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 		return familiensituation;
 	}
 
@@ -56,6 +59,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 		return familiensituation;
 	}
 
@@ -67,11 +71,22 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		// required in all finsit
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
 		finanzielleSituation.setQuellenbesteuert(false);
+		applyVerfuegt(finanzielleSituation, vermoegen, einkommen, BigDecimal.ZERO, BigDecimal.ZERO);
+
+		return finanzielleSituation;
+	}
+
+	public static void applyVerfuegt(
+		AbstractFinanzielleSituation finanzielleSituation,
+		BigDecimal vermoegen,
+		BigDecimal einkommen,
+		BigDecimal abzuegeLiegenschaft,
+		BigDecimal einkaeufeVorsorge
+	) {
 		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
-		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
-		finanzielleSituation.setEinkaeufeVorsorge(BigDecimal.ZERO);
-		return finanzielleSituation;
+		finanzielleSituation.setAbzuegeLiegenschaft(abzuegeLiegenschaft);
+		finanzielleSituation.setEinkaeufeVorsorge(einkaeufeVorsorge);
 	}
 
 	@Override
@@ -89,19 +104,43 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
-		kind.setGeschlecht(geschlecht);
-		kind.setGeburtsdatum(geburtsdatum);
-		kind.setVorname(vorname);
-		kind.setNachname(name);
+		setSchwyzKindData(TestKindParameter.builder()
+			.kind(kind)
+			.geschlecht(geschlecht)
+			.name(name)
+			.vorname(vorname)
+			.geburtsdatum(geburtsdatum)
+			.betreuung(betreuung)
+			.build());
+		return kind;
+	}
+
+	public static void setSchwyzKindData(TestKindParameter testKindParameter) {
+		final Kind kind = testKindParameter.getKind();
+
+		kind.setGeschlecht(testKindParameter.getGeschlecht());
+		kind.setGeburtsdatum(testKindParameter.getGeburtsdatum());
+		kind.setVorname(testKindParameter.getVorname());
+		kind.setNachname(testKindParameter.getName());
 		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		kind.setSprichtAmtssprache(true);
 		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
-		if (betreuung) {
+		if (testKindParameter.isBetreuung()) {
 			kind.setFamilienErgaenzendeBetreuung(true);
 			kind.setUnterhaltspflichtig(true);
 			kind.setLebtKindAlternierend(true);
 			kind.setGemeinsamesGesuch(true);
 		}
-		return kind;
+	}
+
+	@Override
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = super.createGesuchsteller(name, vorname, gesuchstellerNumber);
+		if (gesuchstellerNumber == 1) {
+			gesuchsteller.setSozialversicherungsnummer("756.1234.5678.97");
+		} else {
+			gesuchsteller.setSozialversicherungsnummer("756.1238.5678.93");
+		}
+		return gesuchsteller;
 	}
 }

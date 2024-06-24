@@ -21,7 +21,6 @@ import {FinanzielleSituationSubStepManager} from './finanzielleSituationSubStepM
 import {GesuchModelManager} from './gesuchModelManager';
 
 export class FinanzielleSituationSubStepManagerSolothurn extends FinanzielleSituationSubStepManager {
-
     public constructor(gesuchModelManager: GesuchModelManager) {
         super(gesuchModelManager);
     }
@@ -29,11 +28,18 @@ export class FinanzielleSituationSubStepManagerSolothurn extends FinanzielleSitu
     public getNextSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_START &&
-            FinanzielleSituationSolothurnService.finSitNeedsTwoAntragsteller(this.gesuchModelManager)) {
+        if (
+            currentSubStep ===
+                TSFinanzielleSituationSubStepName.SOLOTHURN_START &&
+            FinanzielleSituationSolothurnService.finSitNeedsTwoAntragsteller(
+                this.gesuchModelManager
+            )
+        ) {
             return TSFinanzielleSituationSubStepName.SOLOTHURN_GS1;
         }
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1) {
+        if (
+            currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1
+        ) {
             return TSFinanzielleSituationSubStepName.SOLOTHURN_GS2;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
@@ -42,10 +48,14 @@ export class FinanzielleSituationSubStepManagerSolothurn extends FinanzielleSitu
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS2) {
+        if (
+            currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS2
+        ) {
             return TSFinanzielleSituationSubStepName.SOLOTHURN_GS1;
         }
-        if (currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1) {
+        if (
+            currentSubStep === TSFinanzielleSituationSubStepName.SOLOTHURN_GS1
+        ) {
             return TSFinanzielleSituationSubStepName.SOLOTHURN_START;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

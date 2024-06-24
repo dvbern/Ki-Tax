@@ -22,7 +22,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <h3 translate>FI_START</h3>
-                    <p>{{fiAnmeldungenStartStr}}</p>
+                    <p>{{ fiAnmeldungenStartStr }}</p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,8 @@
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
                 [editMode]="editMode"
-                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum">
+                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum"
+            >
             </dv-gemeinde-fi-konfiguration>
         </fieldset>
     </div>
@@ -42,7 +43,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <h3 translate>FI_START</h3>
-                        <p>{{fiAnmeldungenStartStr}}</p>
+                        <p>{{ fiAnmeldungenStartStr }}</p>
                     </div>
                 </div>
             </div>
@@ -50,9 +51,9 @@
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
                 [editMode]="editMode"
-                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum">
+                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum"
+            >
             </dv-gemeinde-fi-konfiguration>
         </fieldset>
     </ng-template>
 </div>
-

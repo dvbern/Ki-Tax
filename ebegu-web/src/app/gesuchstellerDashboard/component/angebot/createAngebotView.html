@@ -15,122 +15,207 @@
 
 <!-- TODO fallToolbar should be added hier. This functionality won't be used in the first version though-->
 
-<dossier-toolbar-gesuchsteller flex="nogrow"
-                               class="dossier-toolbar-gesuchsteller"
-                               dossier-id="{{vm.gesuchModelManager.getGesuch().dossier.id}}"
-                               is-dashboard-screen="{{true}}">
+<dossier-toolbar-gesuchsteller
+    flex="nogrow"
+    class="dossier-toolbar-gesuchsteller"
+    dossier-id="{{ vm.gesuchModelManager.getGesuch().dossier.id }}"
+    is-dashboard-screen="{{ true }}"
+>
 </dossier-toolbar-gesuchsteller>
-<div layout="row" flex="auto" class="overflow-auto ng-scope layout-row flex-auto">
+<div
+    layout="row"
+    flex="auto"
+    class="overflow-auto ng-scope layout-row flex-auto"
+>
     <md-content id="gesuchContainer" class="_md flex">
         <div>
             <div>
-                <div class="create-angebot-view gesuch-modul static-position betreuung-view" flex="auto">
-                    <h1 class="access-for-all-title" data-translate="AFA_DASHBOARD"></h1>
+                <div
+                    class="create-angebot-view gesuch-modul static-position betreuung-view"
+                    flex="auto"
+                >
+                    <h1
+                        class="access-for-all-title"
+                        data-translate="AFA_DASHBOARD"
+                    ></h1>
                     <div class="dashboard-header">
-
                         <div class="row view-title margin-top-40">
-                            <div class="dv-input-container-medium col-md-12 create-angebot-view--centered-col">
+                            <div
+                                class="dv-input-container-medium col-md-12 create-angebot-view--centered-col"
+                            >
                                 <h2>
-
-                                    <span ng-if="vm.ts" data-translate="TAGESSCHULE_ERFASSEN"
-                                          data-translate-value-gs="{{vm.getGesuchsperiodeString()}}"></span>
-                                    <span ng-if="vm.fi" data-translate="FERIENINSEL_ERFASSEN"
-                                          data-translate-value-gs="{{vm.getGesuchsperiodeString()}}"></span>
+                                    <span
+                                        ng-if="vm.ts"
+                                        data-translate="TAGESSCHULE_ERFASSEN"
+                                        data-translate-value-gs="{{
+                                            vm.getGesuchsperiodeString()
+                                        }}"
+                                    ></span>
+                                    <span
+                                        ng-if="vm.fi"
+                                        data-translate="FERIENINSEL_ERFASSEN"
+                                        data-translate-value-gs="{{
+                                            vm.getGesuchsperiodeString()
+                                        }}"
+                                    ></span>
                                 </h2>
                             </div>
                         </div>
 
                         <div class="row margin-top-40">
-                            <div class="dv-input-container-medium col-md-12 create-angebot-view--centered-col">
-                                <form role="form" name="vm.form" class="" novalidate
-                                      unsaved-warning-form>
-
-
+                            <div
+                                class="dv-input-container-medium col-md-12 create-angebot-view--centered-col"
+                            >
+                                <form
+                                    role="form"
+                                    name="vm.form"
+                                    class=""
+                                    novalidate
+                                    unsaved-warning-form
+                                >
                                     <!-- Kind -->
                                     <div class="row">
-                                        <div class="col-sm-12 dv-input-container-medium form-group">
-                                            <label class="ebegu-h1 required" data-translate="KIND_WAEHLEN" for="kind">
+                                        <div
+                                            class="col-sm-12 dv-input-container-medium form-group"
+                                        >
+                                            <label
+                                                class="ebegu-h1 required"
+                                                data-translate="KIND_WAEHLEN"
+                                                for="kind"
+                                            >
                                             </label>
 
                                             <div class="dv-select-style">
-                                                <select aria-describedby="kind-error" name="kind" id="kind"
-                                                        ng-model="vm.kindContainer"
-                                                        class="form-control"
-                                                        ng-options="kindContainer as kindContainer.kindJA.getFullName() for kindContainer in vm.getKindContainerList()"
-                                                        ng-required="true" ng-change="vm.selectedKindChanged()">
-                                                </select>
-                                                <dv-error-messages input-id="kind"
-                                                                   for="vm.form.kind.$error"></dv-error-messages>
+                                                <select
+                                                    aria-describedby="kind-error"
+                                                    name="kind"
+                                                    id="kind"
+                                                    ng-model="vm.kindContainer"
+                                                    class="form-control"
+                                                    ng-options="kindContainer as kindContainer.kindJA.getFullName() for kindContainer in vm.getKindContainerList()"
+                                                    ng-required="true"
+                                                    ng-change="vm.selectedKindChanged()"
+                                                ></select>
+                                                <dv-error-messages
+                                                    input-id="kind"
+                                                    for="vm.form.kind.$error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!--sprichtAmtssprache-->
                                     <div class="row">
-                                        <div class="col-xs-12 dv-input-container-question">
-                                            <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
+                                        <div
+                                            class="col-xs-12 dv-input-container-question"
+                                        >
+                                            <div
+                                                class="form-group"
+                                                ng-show="
+                                                    vm.anmeldungDTO
+                                                        .additionalKindQuestions
+                                                "
+                                            >
                                                 <span class="ebegu-h1 required">
-                                                    <span>{{vm.getTextSprichtAmtssprache()}}</span>
-                                                    <dv-tooltip input-id="sprichtAmtssprache"
-                                                                text="'SPRICHT_AMTSSPRACHE_HELP' | translate"></dv-tooltip>
+                                                    <span>{{
+                                                        vm.getTextSprichtAmtssprache()
+                                                    }}</span>
+                                                    <dv-tooltip
+                                                        input-id="sprichtAmtssprache"
+                                                        text="'SPRICHT_AMTSSPRACHE_HELP' | translate"
+                                                    ></dv-tooltip>
                                                 </span>
 
-                                                <dv-radio-container name="sprichtAmtssprache" class="input-element"
-                                                                    ng-required="vm.anmeldungDTO.additionalKindQuestions"
-                                                                    ng-model="vm.anmeldungDTO.sprichtAmtssprache"
-                                                                    aria-label="{{vm.getTextSprichtAmtssprache()}}"
-                                                                    aria-described-by="sprichtAmtssprache-error">
+                                                <dv-radio-container
+                                                    name="sprichtAmtssprache"
+                                                    class="input-element"
+                                                    ng-required="vm.anmeldungDTO.additionalKindQuestions"
+                                                    ng-model="vm.anmeldungDTO.sprichtAmtssprache"
+                                                    aria-label="{{
+                                                        vm.getTextSprichtAmtssprache()
+                                                    }}"
+                                                    aria-described-by="sprichtAmtssprache-error"
+                                                >
                                                 </dv-radio-container>
-                                                <dv-error-messages input-id="sprichtAmtssprache"
-                                                                   for="vm.form.sprichtAmtssprache.$error"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    input-id="sprichtAmtssprache"
+                                                    for="vm.form.sprichtAmtssprache.$error"
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!--Welche Klasse wird Ihr Kind am 01.08.XXXX besuchen?-->
                                     <div class="row">
-                                        <div class="col-xs-12 dv-input-container-question">
-                                            <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
+                                        <div
+                                            class="col-xs-12 dv-input-container-question"
+                                        >
+                                            <div
+                                                class="form-group"
+                                                ng-show="
+                                                    vm.anmeldungDTO
+                                                        .additionalKindQuestions
+                                                "
+                                            >
                                                 <span class="ebegu-h1 required">
-                                                    <span data-translate="EINSCHULUNG"
-                                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
+                                                    <span
+                                                        data-translate="EINSCHULUNG"
+                                                        data-translate-value-date="{{
+                                                            vm.getDatumEinschulung()
+                                                                | amDateFormat
+                                                                    : 'DD.MM.YYYY'
+                                                        }}"
+                                                    >
                                                     </span>
                                                 </span>
                                                 <div class="dv-select-style">
-                                                    <select name="einschulungTyp" id="einschulungTyp"
-                                                            class="form-control"
-                                                            aria-describedby="einschulung-error"
-                                                            ng-model="vm.anmeldungDTO.einschulungTyp"
-                                                            ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
-                                                            ng-required="vm.anmeldungDTO.additionalKindQuestions">
-                                                    </select>
+                                                    <select
+                                                        name="einschulungTyp"
+                                                        id="einschulungTyp"
+                                                        class="form-control"
+                                                        aria-describedby="einschulung-error"
+                                                        ng-model="vm.anmeldungDTO.einschulungTyp"
+                                                        ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
+                                                        ng-required="vm.anmeldungDTO.additionalKindQuestions"
+                                                    ></select>
                                                 </div>
-                                                <dv-error-messages input-id="einschulung"
-                                                                   for="vm.form.einschulung.$error"
-                                                                   class="error"></dv-error-messages>
+                                                <dv-error-messages
+                                                    input-id="einschulung"
+                                                    for="vm.form.einschulung.$error"
+                                                    class="error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                                     <div class="row">
-                                        <div class="col-sm-12 dv-input-container-medium form-group"
-                                             ng-if="vm.showInstitutionSelect()">
-                                            <label class="ebegu-h1 required" data-translate="INSTITUTION"
-                                                   for="institution">
+                                        <div
+                                            class="col-sm-12 dv-input-container-medium form-group"
+                                            ng-if="vm.showInstitutionSelect()"
+                                        >
+                                            <label
+                                                class="ebegu-h1 required"
+                                                data-translate="INSTITUTION"
+                                                for="institution"
+                                            >
                                             </label>
                                             <div class="dv-select-style">
-                                                <select aria-describedby="institution-error" name="institution"
-                                                        id="institution"
-                                                        ng-model="vm.institution"
-                                                        class="form-control"
-                                                        ng-options="institutionSD as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
-                                                        ng-required="true"
-                                                        ng-change="vm.selectedInstitutionStammdatenChanged()">
-                                                </select>
-                                                <dv-error-messages input-id="institution"
-                                                                   for="vm.form.institution.$error"></dv-error-messages>
+                                                <select
+                                                    aria-describedby="institution-error"
+                                                    name="institution"
+                                                    id="institution"
+                                                    ng-model="vm.institution"
+                                                    class="form-control"
+                                                    ng-options="institutionSD as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
+                                                    ng-required="true"
+                                                    ng-change="vm.selectedInstitutionStammdatenChanged()"
+                                                ></select>
+                                                <dv-error-messages
+                                                    input-id="institution"
+                                                    for="vm.form.institution.$error"
+                                                ></dv-error-messages>
                                             </div>
                                         </div>
                                     </div>
@@ -138,34 +223,54 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <!-- Tagesschule -->
-                                            <div ng-if="vm.displayModuleTagesschule()">
-                                                <betreuung-tagesschule-view betreuung="vm.anmeldungDTO.betreuung"
-                                                                            form="vm.form"
-                                                                            on-save="vm.anmeldenSchulamt()"
-                                                                            cancel="vm.backToHome()">
+                                            <div
+                                                ng-if="
+                                                    vm.displayModuleTagesschule()
+                                                "
+                                            >
+                                                <betreuung-tagesschule-view
+                                                    betreuung="vm.anmeldungDTO.betreuung"
+                                                    form="vm.form"
+                                                    on-save="
+                                                        vm.anmeldenSchulamt()
+                                                    "
+                                                    cancel="vm.backToHome()"
+                                                >
                                                 </betreuung-tagesschule-view>
                                             </div>
 
                                             <!-- Ferieninsel -->
-                                            <div ng-if="vm.displayModuleFerieninsel()">
-                                                <betreuung-ferieninsel-view betreuung="vm.anmeldungDTO.betreuung"
-                                                                            form="vm.form"
-                                                                            on-save="vm.anmeldenSchulamt()"
-                                                                            cancel="vm.backToHome()">
+                                            <div
+                                                ng-if="
+                                                    vm.displayModuleFerieninsel()
+                                                "
+                                            >
+                                                <betreuung-ferieninsel-view
+                                                    betreuung="vm.anmeldungDTO.betreuung"
+                                                    form="vm.form"
+                                                    on-save="
+                                                        vm.anmeldenSchulamt()
+                                                    "
+                                                    cancel="vm.backToHome()"
+                                                >
                                                 </betreuung-ferieninsel-view>
                                             </div>
                                         </div>
                                         <div class="dv-navigation">
-                                            <dv-loading-button class="dv-navigation-item"
-                                                               button-click="vm.backToHome()"
-                                                               ng-if="!vm.institution"
-                                                               button-class="cancel-button"
-                                                               type="reset">
-                                                <span class="uppercase" data-translate="ABBRECHEN"></span>
+                                            <dv-loading-button
+                                                class="dv-navigation-item"
+                                                button-click="vm.backToHome()"
+                                                ng-if="!vm.institution"
+                                                button-class="cancel-button"
+                                                type="reset"
+                                            >
+                                                <span
+                                                    class="uppercase"
+                                                    data-translate="ABBRECHEN"
+                                                ></span>
                                             </dv-loading-button>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
                         </div>

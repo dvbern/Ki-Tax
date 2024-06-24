@@ -21,7 +21,6 @@ import {TSUnbezahlterUrlaub} from './TSUnbezahlterUrlaub';
  * Definiert ein Erwerbspensum
  */
 export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
-
     private _taetigkeit: TSTaetigkeit;
 
     private _bezeichnung: string;
@@ -31,6 +30,8 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
     private _unregelmaessigeArbeitszeiten: boolean;
 
     private _erwerbspensumInstitution: string;
+
+    private _wegzeit: string;
 
     public constructor() {
         super();
@@ -74,5 +75,13 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set erwerbspensumInstitution(value: string) {
         this._erwerbspensumInstitution = value;
+    }
+
+    public get wegzeit(): string {
+        return this._wegzeit;
+    }
+
+    public set wegzeit(value: string) {
+        this._wegzeit = value;
     }
 }

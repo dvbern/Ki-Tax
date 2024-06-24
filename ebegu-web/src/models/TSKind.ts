@@ -21,7 +21,6 @@ import {TSPensumAusserordentlicherAnspruch} from './TSPensumAusserordentlicherAn
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export class TSKind extends TSAbstractPersonEntity {
-
     private _kinderabzugErstesHalbjahr: TSKinderabzug;
     private _kinderabzugZweitesHalbjahr: TSKinderabzug;
     private _isPflegekind: boolean;
@@ -44,6 +43,8 @@ export class TSKind extends TSAbstractPersonEntity {
     private _zukunftigeGeburtsdatum: boolean;
     private _inPruefung: boolean;
     private _unterhaltspflichtig: boolean;
+    private _hoehereBeitraegeWegenBeeintraechtigungBeantragen: boolean;
+    private _hoehereBeitraegeUnterlagenDigital: boolean | null;
 
     public constructor() {
         super();
@@ -165,7 +166,9 @@ export class TSKind extends TSAbstractPersonEntity {
         return this._pensumAusserordentlicherAnspruch;
     }
 
-    public set pensumAusserordentlicherAnspruch(value: TSPensumAusserordentlicherAnspruch) {
+    public set pensumAusserordentlicherAnspruch(
+        value: TSPensumAusserordentlicherAnspruch
+    ) {
         this._pensumAusserordentlicherAnspruch = value;
     }
 
@@ -175,7 +178,8 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set zemisNummer(value: string) {
         this._zemisNummer = value;
-        this.zemisNummerStandardFormat = EbeguUtil.zemisNummerToStandardZemisNummer(value);
+        this.zemisNummerStandardFormat =
+            EbeguUtil.zemisNummerToStandardZemisNummer(value);
     }
 
     public get zemisNummerStandardFormat(): string {
@@ -224,5 +228,22 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set unterhaltspflichtig(value: boolean) {
         this._unterhaltspflichtig = value;
+    }
+
+    public get hoehereBeitraegeUnterlagenDigital(): boolean | null {
+        return this._hoehereBeitraegeUnterlagenDigital;
+    }
+
+    public set hoehereBeitraegeUnterlagenDigital(value: boolean | null) {
+        this._hoehereBeitraegeUnterlagenDigital = value;
+    }
+    public get hoehereBeitraegeWegenBeeintraechtigungBeantragen(): boolean {
+        return this._hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+    }
+
+    public set hoehereBeitraegeWegenBeeintraechtigungBeantragen(
+        value: boolean
+    ) {
+        this._hoehereBeitraegeWegenBeeintraechtigungBeantragen = value;
     }
 }

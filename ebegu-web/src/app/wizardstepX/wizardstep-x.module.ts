@@ -23,18 +23,8 @@ import {UIRouterModule} from '@uirouter/angular';
 import {WizardSideNavComponent} from './wizard-side-nav/wizard-side-nav.component';
 
 @NgModule({
-    declarations: [
-        WizardSideNavComponent
-    ],
-    exports: [
-        WizardSideNavComponent
-    ],
-    imports: [
-        CommonModule,
-        TranslateModule,
-        RouterModule,
-        UIRouterModule
-    ]
+    declarations: [WizardSideNavComponent],
+    exports: [WizardSideNavComponent],
+    imports: [CommonModule, TranslateModule, RouterModule, UIRouterModule]
 })
-export class WizardstepXModule {
-}
+export class WizardstepXModule {}

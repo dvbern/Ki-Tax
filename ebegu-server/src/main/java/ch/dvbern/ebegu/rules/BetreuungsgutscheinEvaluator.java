@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
+import ch.dvbern.ebegu.rules.mutationsmerger.MutationsMerger;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;
@@ -234,7 +235,7 @@ public class BetreuungsgutscheinEvaluator {
 				// Die Initialen Zeitabschnitte sind die "Restansprüche" aus der letzten Betreuung
 				List<VerfuegungZeitabschnitt> zeitabschnitte = restanspruchZeitabschnitte;
 				if (isDebug) {
-					LOG.info("BG-Nummer: {}", platz.getBGNummer());
+					LOG.info("RefNr: {}", platz.getReferenzNummer());
 					LOG.info("{}: ", RestanspruchInitializer.class.getSimpleName());
 					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 						LOG.info(verfuegungZeitabschnitt.toString());

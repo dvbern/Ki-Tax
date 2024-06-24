@@ -23,17 +23,24 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class AntragStatusHistoryRS {
-
     public get lastChange$(): Observable<TSAntragStatusHistory | null> {
         return this._lastChange$;
     }
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
+    public static $inject = [
+        '$http',
+        'REST_API',
+        'EbeguRestUtil',
+        '$log',
+        'AuthServiceRS'
+    ];
 
     public serviceURL: string;
 
-    private readonly lastChangeSubject$ = new ReplaySubject<TSAntragStatusHistory | null>(1);
-    private readonly _lastChange$: Observable<TSAntragStatusHistory | null> = this.lastChangeSubject$.asObservable();
+    private readonly lastChangeSubject$ =
+        new ReplaySubject<TSAntragStatusHistory | null>(1);
+    private readonly _lastChange$: Observable<TSAntragStatusHistory | null> =
+        this.lastChangeSubject$.asObservable();
 
     public constructor(
         public http: IHttpService,
@@ -48,13 +55,23 @@ export class AntragStatusHistoryRS {
     /**
      * laedt und merkt sich den letzten Statusuebergang, kann mit #lastChange() ausgelesen werden
      */
-    public loadLastStatusChange(gesuch: TSGesuch): IPromise<TSAntragStatusHistory> {
+    public loadLastStatusChange(
+        gesuch: TSGesuch
+    ): IPromise<TSAntragStatusHistory> {
         if (gesuch && gesuch.id) {
-            return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
+            return this.http
+                .get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
                 .then((response: any) => {
-                    this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
+                    this.log.debug(
+                        'PARSING AntragStatusHistory REST object ',
+                        response.data
+                    );
                     const history = new TSAntragStatusHistory();
-                    const lastChange = this.ebeguRestUtil.parseAntragStatusHistory(history, response.data);
+                    const lastChange =
+                        this.ebeguRestUtil.parseAntragStatusHistory(
+                            history,
+                            response.data
+                        );
                     this.lastChangeSubject$.next(lastChange);
 
                     return lastChange;
@@ -67,14 +84,21 @@ export class AntragStatusHistoryRS {
         dossier: TSDossier,
         gesuchsperiode: TSGesuchsperiode
     ): IPromise<Array<TSAntragStatusHistory>> {
-
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
             const baseUrl = `${this.serviceURL}/verlauf/`;
 
-            return this.http.get(`${baseUrl + encodeURIComponent(gesuchsperiode.id)}/${encodeURIComponent(dossier.id)}`)
+            return this.http
+                .get(
+                    `${baseUrl + encodeURIComponent(gesuchsperiode.id)}/${encodeURIComponent(dossier.id)}`
+                )
                 .then((response: any) => {
-                    this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
-                    return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);
+                    this.log.debug(
+                        'PARSING AntragStatusHistory REST object ',
+                        response.data
+                    );
+                    return this.ebeguRestUtil.parseAntragStatusHistoryCollection(
+                        response.data
+                    );
                 });
         }
         return Promise.resolve(undefined);
@@ -93,5 +117,4 @@ export class AntragStatusHistoryRS {
 
         return principal ? principal.getFullName() : '';
     }
-
 }

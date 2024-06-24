@@ -18,7 +18,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
-
     private _gueltigkeit: TSDateRange;
 
     public constructor(gueltigkeit?: TSDateRange) {
@@ -34,10 +33,15 @@ export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
         this._gueltigkeit = value;
     }
 
-    public deepCopyTo(target: TSAbstractDateRangedEntity): TSAbstractDateRangedEntity {
+    public deepCopyTo(
+        target: TSAbstractDateRangedEntity
+    ): TSAbstractDateRangedEntity {
         super.deepCopyTo(target);
         if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
-            target.gueltigkeit = new TSDateRange(this.gueltigkeit.gueltigAb?.clone(), this.gueltigkeit.gueltigBis?.clone());
+            target.gueltigkeit = new TSDateRange(
+                this.gueltigkeit.gueltigAb?.clone(),
+                this.gueltigkeit.gueltigBis?.clone()
+            );
         }
 
         return target;

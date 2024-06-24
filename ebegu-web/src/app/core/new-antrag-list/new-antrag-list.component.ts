@@ -27,7 +27,7 @@ import {
     Output,
     SimpleChanges,
     ViewChild,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
@@ -35,17 +35,31 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription} from 'rxjs';
+import {
+    BehaviorSubject,
+    forkJoin,
+    from,
+    Observable,
+    of,
+    Subject,
+    Subscription
+} from 'rxjs';
 import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
-import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
+import {
+    getNormalizedTSAntragTypValues,
+    TSAntragTyp
+} from '../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp,
-} from '../../../models/enums/TSBetreuungsangebotTyp';
+    TSBetreuungsangebotTyp
+} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
@@ -78,8 +92,9 @@ const LOG = LogFactory.createLog('DVAntragListController');
     // we need this to overwrite angular material styles
     encapsulation: ViewEncapsulation.None
 })
-export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-
+export class NewAntragListComponent
+    implements OnInit, OnDestroy, OnChanges, AfterViewInit
+{
     @ViewChild(MatPaginator) public paginator: MatPaginator;
     @ViewChild(MatTable) private readonly table: MatTable<DVAntragListItem>;
     @ViewChild(MatSort) private readonly matSort: MatSort;
@@ -87,7 +102,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     /**
      * Emits when the user clicks on a row
      */
-    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO; event: MouseEvent }> = new EventEmitter<any>();
+    @Output() public readonly rowClicked: EventEmitter<{
+        antrag: TSAntragDTO;
+        event: MouseEvent;
+    }> = new EventEmitter<any>();
 
     /**
      * Can be one of
@@ -127,7 +145,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     /**
      * Emits any time the filter changes. Only emits when the data$ input is provided.
      */
-    @Output() public readonly filterChange: EventEmitter<DVAntragListFilter> = new EventEmitter<DVAntragListFilter>();
+    @Output() public readonly filterChange: EventEmitter<DVAntragListFilter> =
+        new EventEmitter<DVAntragListFilter>();
 
     /**
      * Emits any time the sort changes. Only emits when the data$ input is provided.
@@ -143,7 +162,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     /**
      * Emits any time the user clicks on the pagination navigation. Omly emits when the data$ input is provided.
      */
-    @Output() public readonly paginationEvent: EventEmitter<DVPaginationEvent> = new EventEmitter<DVPaginationEvent>();
+    @Output() public readonly paginationEvent: EventEmitter<DVPaginationEvent> =
+        new EventEmitter<DVPaginationEvent>();
 
     /**
      * The first page the list starts on
@@ -206,7 +226,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public gesuchsperiodenList: Array<string> = [];
     private allInstitutionen: TSInstitution[];
-    public institutionenList$: BehaviorSubject<TSInstitution[]> = new BehaviorSubject<TSInstitution[]>([]);
+    public institutionenList$: BehaviorSubject<TSInstitution[]> =
+        new BehaviorSubject<TSInstitution[]>([]);
 
     public gemeindenList: Array<TSGemeinde> = [];
 
@@ -284,6 +305,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private sortId: string;
     private filterId: string;
     private tagesschulangebotEnabled: boolean;
+    private angebotMittagstischEnabled: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -300,8 +322,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly benutzerRS: BenutzerRSX,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly demofeatureRS: DemoFeatureRS
-    ) {
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.updateInstitutionenList();
@@ -325,7 +346,6 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.updateColumns();
         }
 
-        // eslint-disable-next-line
         if (changes.data$) {
             this.customData = !!this.data$;
             if (!changes.data$.firstChange) {
@@ -346,17 +366,27 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             } else {
                 this.hiddenColumns.push('verantwortlicheGemeinde');
             }
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())) {
+            if (
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getSozialdienstRolle()
+                )
+            ) {
                 this.hiddenColumns.push('verantwortlicheBG');
                 this.hiddenColumns.push('verantwortlicheTS');
                 this.hiddenColumns.push('verantwortlicheGemeinde');
                 this.hiddenColumns.push('internePendenz');
                 this.hiddenColumns.push('dokumenteHochgeladen');
             }
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            if (
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+            ) {
                 this.hiddenColumns.push('verantwortlicherGemeindeantraege');
             }
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            if (
+                this.authServiceRS.isOneOfRoles(
+                    TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+                )
+            ) {
                 this.hiddenColumns.push('internePendenz');
             }
         }
@@ -364,31 +394,44 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private updateColumns(): void {
-        this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
+        this.displayedColumns = this.allColumns.filter(
+            column => !this.hiddenColumns.includes(column)
+        );
         if (this.showRemoveButton) {
             this.displayedColumns.push('remove');
         }
-        this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
+        this.filterColumns = this.displayedColumns.map(
+            column => `${column}-filter`
+        );
     }
 
     private initSort(): void {
-        // eslint-disable-next-line
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as { predicate?: string; reverse?: boolean };
+            const stored = this.stateStore.get(this.sortId) as {
+                predicate?: string;
+                reverse?: boolean;
+            };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
             this.matSort.active = stored.predicate;
             this.matSort.direction = stored.reverse ? 'asc' : 'desc';
-            (this.matSort.sortables.get(stored.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+            (
+                this.matSort.sortables.get(stored.predicate) as MatSortHeader
+            )?._setAnimationTransitionState({toState: 'active'});
             this.sortChange.emit(this.sort);
         }
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
-            this.allInstitutionen = response;
-            this.institutionenList$.next(this.allInstitutionen);
-        }, error => LOG.error(error));
+        this.institutionRS
+            .getInstitutionenReadableForCurrentBenutzer()
+            .subscribe(
+                response => {
+                    this.allInstitutionen = response;
+                    this.institutionenList$.next(this.allInstitutionen);
+                },
+                error => LOG.error(error)
+            );
     }
 
     public updateGesuchsperiodenList(): void {
@@ -396,7 +439,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.gesuchsperiodenList = [];
             response.forEach(gesuchsperiode => {
                 if (this.showPeriodeInList(gesuchsperiode)) {
-                    this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                    this.gesuchsperiodenList.push(
+                        gesuchsperiode.gesuchsperiodeString
+                    );
                 }
             });
         });
@@ -412,9 +457,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(gemeinden => {
+            .subscribe(
+                gemeinden => {
                     this.gemeindenList = gemeinden;
                     gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
@@ -423,15 +470,21 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private initFilter(fromStore: boolean = false): void {
-        this.filterPredicate = (fromStore && this.filterId && this.stateStore.has(this.filterId)) ?
-            this.stateStore.get(this.filterId) :
-            {...this.initialFilter};
+        this.filterPredicate =
+            fromStore && this.filterId && this.stateStore.has(this.filterId)
+                ? this.stateStore.get(this.filterId)
+                : {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
     }
 
     private initSearchInaktivePerioden(): void {
-        if (this.stateStoreId && this.stateStore.has(this.searchInaktivePeriodenId)) {
-            const stored = this.stateStore.get(this.searchInaktivePeriodenId) as { searchInaktivePerioden: boolean };
+        if (
+            this.stateStoreId &&
+            this.stateStore.has(this.searchInaktivePeriodenId)
+        ) {
+            const stored = this.stateStore.get(
+                this.searchInaktivePeriodenId
+            ) as {searchInaktivePerioden: boolean};
             this.searchInaktivePerioden = stored.searchInaktivePerioden;
         }
     }
@@ -458,75 +511,102 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             sort: this.sort,
             onlyAktivePerioden: !this.searchInaktivePerioden
         };
-        const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
-            this.data$ :
-            this.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
-                        fallNummer: antragDto.fallNummer,
-                        dossierId: antragDto.dossierId,
-                        antragId: antragDto.antragId,
-                        gemeinde: antragDto.gemeinde,
-                        status: antragDto.status,
-                        familienName: antragDto.familienName,
-                        kinder: antragDto.kinder,
-                        laufNummer: antragDto.laufnummer,
-                        antragTyp: antragDto.antragTyp,
-                        periodenString: antragDto.gesuchsperiodeString,
-                        aenderungsdatum: antragDto.aenderungsdatum,
-                        internePendenz: antragDto.internePendenz,
-                        internePendenzAbgelaufen: antragDto.internePendenzAbgelaufen,
-                        dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
-                        angebote: antragDto.angebote,
-                        institutionen: antragDto.institutionen,
-                        verantwortlicheTS: antragDto.verantwortlicherTS,
-                        verantwortlicheBG: antragDto.verantwortlicherBG,
-                        hasBesitzer: () => antragDto.hasBesitzer(),
-                        isSozialdienst: antragDto.isSozialdienst
-                    }))));
+        const dataToLoad$: Observable<DVAntragListItem[]> = this.data$
+            ? this.data$
+            : this.searchAntraege(body).pipe(
+                  map((result: TSAntragSearchresultDTO) =>
+                      result.antragDTOs.map(antragDto => ({
+                          fallNummer: antragDto.fallNummer,
+                          dossierId: antragDto.dossierId,
+                          antragId: antragDto.antragId,
+                          gemeinde: antragDto.gemeinde,
+                          status: antragDto.status,
+                          familienName: antragDto.familienName,
+                          kinder: antragDto.kinder,
+                          laufNummer: antragDto.laufnummer,
+                          antragTyp: antragDto.antragTyp,
+                          periodenString: antragDto.gesuchsperiodeString,
+                          aenderungsdatum: antragDto.aenderungsdatum,
+                          internePendenz: antragDto.internePendenz,
+                          internePendenzAbgelaufen:
+                              antragDto.internePendenzAbgelaufen,
+                          dokumenteHochgeladen: antragDto.dokumenteHochgeladen,
+                          angebote: antragDto.angebote,
+                          institutionen: antragDto.institutionen,
+                          verantwortlicheTS: antragDto.verantwortlicherTS,
+                          verantwortlicheBG: antragDto.verantwortlicherBG,
+                          hasBesitzer: () => antragDto.hasBesitzer(),
+                          isSozialdienst: antragDto.isSozialdienst
+                      }))
+                  )
+              );
 
         // cancel previous subscription if not closed
         this.dataLoadingSubscription?.unsubscribe();
 
-        this.dataLoadingSubscription = dataToLoad$.subscribe((result: DVAntragListItem[]) => {
-            this.datasource.data = result;
-            this.updatePagination();
-        }, error => {
-            this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
-                this.errorService.addMesageAsError(message);
-            }, translateError => console.error('Could not load translation', translateError));
-        });
+        this.dataLoadingSubscription = dataToLoad$.subscribe(
+            (result: DVAntragListItem[]) => {
+                this.datasource.data = result;
+                this.updatePagination();
+            },
+            error => {
+                this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(
+                    message => {
+                        this.errorService.addMesageAsError(message);
+                    },
+                    translateError =>
+                        console.error(
+                            'Could not load translation',
+                            translateError
+                        )
+                );
+            }
+        );
 
         this.loadTotalCount(body);
     }
 
     private searchAntraege(body: any): Observable<TSAntragSearchresultDTO> {
-        return from(this.demofeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLE_FAELLE_SUCHE_NEU))
-            .pipe(mergeMap((alleFaelleViewNeuAktiv: boolean) => {
+        return from(
+            this.demofeatureRS.isDemoFeatureAllowed(
+                TSDemoFeature.ALLE_FAELLE_SUCHE_NEU
+            )
+        ).pipe(
+            mergeMap((alleFaelleViewNeuAktiv: boolean) => {
                 if (alleFaelleViewNeuAktiv) {
                     return this.searchRS.searchAntraegeInAlleFaelleView(body);
                 }
 
                 return this.searchRS.searchAntraege(body);
-            }));
+            })
+        );
     }
 
     // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling
     private loadTotalCount(body: {
-        search: { predicateObject: DVAntragListFilter };
-        pagination: { number: any; start: number };
-        sort: { predicate?: string; reverse?: boolean };
+        search: {predicateObject: DVAntragListFilter};
+        pagination: {number: any; start: number};
+        sort: {predicate?: string; reverse?: boolean};
     }): void {
         if (!EbeguUtil.isNullOrUndefined(this.data$)) {
             return;
         }
-        this.searchRS.countAntraege(body).subscribe(result => {
-            this.totalItems = result;
-        }, error => LOG.error(error));
+        this.searchRS.countAntraege(body).subscribe(
+            result => {
+                this.totalItems = result;
+            },
+            error => LOG.error(error)
+        );
     }
 
     private updatePagination(): void {
         this.paginationItems = [];
-        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalItems / this.pageSize),
-            this.page + 5); i++) {
+        for (
+            let i = Math.max(1, this.page - 4);
+            i <=
+            Math.min(Math.ceil(this.totalItems / this.pageSize), this.page + 5);
+            i++
+        ) {
             this.paginationItems.push(i);
         }
     }
@@ -601,22 +681,34 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public filterVerantwortlicheTS(verantwortliche: TSBenutzerNoDetails): void {
-        this.filterPredicate.verantwortlicherTS = verantwortliche ? verantwortliche.getFullName() : null;
+        this.filterPredicate.verantwortlicherTS = verantwortliche
+            ? verantwortliche.getFullName()
+            : null;
         this.applyFilter();
     }
 
     public filterVerantwortlicheBG(verantwortliche: TSBenutzerNoDetails): void {
-        this.filterPredicate.verantwortlicherBG = verantwortliche ? verantwortliche.getFullName() : null;
+        this.filterPredicate.verantwortlicherBG = verantwortliche
+            ? verantwortliche.getFullName()
+            : null;
         this.applyFilter();
     }
 
-    public filterVerantwortlicheGemeinde(verantwortliche: TSBenutzerNoDetails): void {
-        this.filterPredicate.verantwortlicherGemeinde = verantwortliche ? verantwortliche.getFullName() : null;
+    public filterVerantwortlicheGemeinde(
+        verantwortliche: TSBenutzerNoDetails
+    ): void {
+        this.filterPredicate.verantwortlicherGemeinde = verantwortliche
+            ? verantwortliche.getFullName()
+            : null;
         this.applyFilter();
     }
 
-    public filterVerantwortlicherGemeindeantraege(verantwortliche: TSBenutzerNoDetails): void {
-        this.filterPredicate.verantwortlicherGemeindeantraege = verantwortliche ? verantwortliche : null;
+    public filterVerantwortlicherGemeindeantraege(
+        verantwortliche: TSBenutzerNoDetails
+    ): void {
+        this.filterPredicate.verantwortlicherGemeindeantraege = verantwortliche
+            ? verantwortliche
+            : null;
         this.applyFilter();
     }
 
@@ -638,10 +730,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public filterInstitution(query: string): void {
         // filter the institutitonen list for the autocomplete
         this.institutionenList$.next(
-            query ?
-                this.allInstitutionen.filter(institution => institution.name.toLocaleLowerCase()
-                    .includes(query.toLocaleLowerCase())) :
-                this.allInstitutionen
+            query
+                ? this.allInstitutionen.filter(institution =>
+                      institution.name
+                          .toLocaleLowerCase()
+                          .includes(query.toLocaleLowerCase())
+                  )
+                : this.allInstitutionen
         );
         this.filterPredicate.institutionen = query.length > 0 ? query : null;
         this.applyFilter();
@@ -655,14 +750,20 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * Alle TSAntragStatus fuer das Filterdropdown
      */
     public getAntragStatus(): string[] | TSAntragStatus[] {
-        return this.filterStateList || getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+        return (
+            this.filterStateList ||
+            getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole())
+        );
     }
 
     /**
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): TSBetreuungsangebotTyp[] {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+        return getTSBetreuungsangebotTypValuesForMandant(
+            this.isTagesschulangebotEnabled(),
+            this.angebotMittagstischEnabled
+        );
     }
 
     private isTagesschulangebotEnabled(): boolean {
@@ -670,7 +771,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public sortData(sortEvent: Sort): void {
-        this.sort.predicate = sortEvent.direction.length > 0 ? sortEvent.active : null;
+        this.sort.predicate =
+            sortEvent.direction.length > 0 ? sortEvent.active : null;
         this.sort.reverse = sortEvent.direction === 'asc';
         if (this.customData) {
             this.sortChange.emit(this.sort);
@@ -691,9 +793,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (!angebote) {
             return of('');
         }
-        return forkJoin(angebote.map(angebot => this.translate.get(angebot)))
-            .pipe(map(translatedAngebote => translatedAngebote.join(', ')
-            ));
+        return forkJoin(
+            angebote.map(angebot => this.translate.get(angebot))
+        ).pipe(map(translatedAngebote => translatedAngebote.join(', ')));
     }
 
     public getAntragTypBezeichnung(element: any): string {
@@ -710,21 +812,27 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (this.isPendenzGemeindeRolle()) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userListBgTsOrGemeinde = response;
-                this.initialGemeindeUser =
-                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherGemeinde, response);
+                this.initialGemeindeUser = EbeguUtil.findUserByNameInList(
+                    this.filterPredicate?.verantwortlicherGemeinde,
+                    response
+                );
                 this.changeDetectorRef.markForCheck();
             });
         } else {
             this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userListBgOrGemeinde = response;
-                this.initialBgGemeindeUser =
-                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherBG, response);
+                this.initialBgGemeindeUser = EbeguUtil.findUserByNameInList(
+                    this.filterPredicate?.verantwortlicherBG,
+                    response
+                );
                 this.changeDetectorRef.markForCheck();
             });
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userListTsOrGemeinde = response;
-                this.initialTsGemeindeUser =
-                    EbeguUtil.findUserByNameInList(this.filterPredicate?.verantwortlicherTS, response);
+                this.initialTsGemeindeUser = EbeguUtil.findUserByNameInList(
+                    this.filterPredicate?.verantwortlicherTS,
+                    response
+                );
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -733,7 +841,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public isPendenzGemeindeRolle(): boolean {
-        return this.pendenz && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+        return (
+            this.pendenz &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGOrTSRoles()
+            )
+        );
     }
 
     private initStateStores(): void {
@@ -744,18 +857,22 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.filterId = `${this.stateStoreId}-filter`;
         this.searchInaktivePeriodenId = `${this.stateStoreId}-searchInaktivePerioden`;
 
-        this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
-            if (this.sort.predicate) {
-                this.stateStore.store(this.sortId, this.sort);
-            } else {
-                this.stateStore.delete(this.sortId);
-                this.stateStore.delete(this.filterId);
+        this.transitionService.onStart(
+            {exiting: this.uiRouterGlobals.$current.name},
+            () => {
+                if (this.sort.predicate) {
+                    this.stateStore.store(this.sortId, this.sort);
+                } else {
+                    this.stateStore.delete(this.sortId);
+                    this.stateStore.delete(this.filterId);
+                }
+
+                this.stateStore.store(this.filterId, this.filterPredicate);
+                this.stateStore.store(this.searchInaktivePeriodenId, {
+                    searchInaktivePerioden: this.searchInaktivePerioden
+                });
             }
-
-            this.stateStore.store(this.filterId, this.filterPredicate);
-            this.stateStore.store(this.searchInaktivePeriodenId, {searchInaktivePerioden: this.searchInaktivePerioden});
-        });
-
+        );
     }
 
     public getVerantwortlicheBgAndTs(antrag: DVAntragListItem): string {
@@ -772,19 +889,24 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public resetFilter(): void {
         this.initFilter();
         this.applyFilter();
-        this.initialGemeindeUser = new TSBenutzerNoDetails(this.initialGemeindeUser?.vorname,
+        this.initialGemeindeUser = new TSBenutzerNoDetails(
+            this.initialGemeindeUser?.vorname,
             this.initialGemeindeUser?.nachname,
             this.initialGemeindeUser?.username,
-            this.initialGemeindeUser?.gemeindeIds);
-        this.initialBgGemeindeUser = new TSBenutzerNoDetails(this.initialBgGemeindeUser?.vorname,
+            this.initialGemeindeUser?.gemeindeIds
+        );
+        this.initialBgGemeindeUser = new TSBenutzerNoDetails(
+            this.initialBgGemeindeUser?.vorname,
             this.initialBgGemeindeUser?.nachname,
             this.initialBgGemeindeUser?.username,
-            this.initialBgGemeindeUser?.gemeindeIds);
-        this.initialTsGemeindeUser = new TSBenutzerNoDetails(this.initialTsGemeindeUser?.vorname,
+            this.initialBgGemeindeUser?.gemeindeIds
+        );
+        this.initialTsGemeindeUser = new TSBenutzerNoDetails(
+            this.initialTsGemeindeUser?.vorname,
             this.initialTsGemeindeUser?.nachname,
             this.initialTsGemeindeUser?.username,
-            this.initialTsGemeindeUser?.gemeindeIds);
-
+            this.initialTsGemeindeUser?.gemeindeIds
+        );
     }
 
     private initBenutzerListGemeindeAntraege(): void {
@@ -798,7 +920,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         });
     }
 
-    public changeSearchInaktivePerioden(searchInaktivenPerioden: boolean): void {
+    public changeSearchInaktivePerioden(
+        searchInaktivenPerioden: boolean
+    ): void {
         this.searchInaktivePerioden = searchInaktivenPerioden;
         this.updateGesuchsperiodenList();
         this.loadData();
@@ -814,6 +938,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initPublicProperties() {
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tagesschulangebotEnabled = res.angebotTSActivated;
+            this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
         });
     }
 }

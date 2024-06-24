@@ -19,9 +19,10 @@ import {of} from 'rxjs';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
 describe('TestFaelleRS', () => {
-
     let testFaelleRS: TestFaelleRS;
-    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['get']);
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, [
+        'get'
+    ]);
 
     beforeEach(() => {
         TestBed.configureTestingModule({

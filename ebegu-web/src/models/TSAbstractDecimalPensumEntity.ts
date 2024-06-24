@@ -17,21 +17,17 @@
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
+import {TSEingewoehnung} from './TSEingewoehnung';
 
 export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
-
     private _unitForDisplay: TSPensumUnits;
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
-    private _eingewoehnungPauschale: TSEingewoehnungPauschale;
+    private _betreuteTage: number;
+    private _eingewoehnung: TSEingewoehnung;
     // Transient field used for calculations. Not sent to server
-    private _hasEingewoehnungsPauschale: boolean;
-
-    public constructor() {
-        super();
-    }
+    private _hasEingewoehnung: boolean;
 
     public get unitForDisplay(): TSPensumUnits {
         return this._unitForDisplay;
@@ -65,19 +61,27 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
         this._stuendlicheVollkosten = value;
     }
 
-    public get eingewoehnungPauschale(): TSEingewoehnungPauschale {
-        return this._eingewoehnungPauschale;
+    public get betreuteTage(): number {
+        return this._betreuteTage;
     }
 
-    public set eingewoehnungPauschale(value: TSEingewoehnungPauschale) {
-        this._eingewoehnungPauschale = value;
+    public set betreuteTage(value: number) {
+        this._betreuteTage = value;
     }
 
-    public get hasEingewoehnungsPauschale(): boolean {
-        return this._hasEingewoehnungsPauschale;
+    public get eingewoehnung(): TSEingewoehnung {
+        return this._eingewoehnung;
     }
 
-    public set hasEingewoehnungsPauschale(value: boolean) {
-        this._hasEingewoehnungsPauschale = value;
+    public set eingewoehnung(value: TSEingewoehnung) {
+        this._eingewoehnung = value;
+    }
+
+    public get hasEingewoehnungs(): boolean {
+        return this._hasEingewoehnung;
+    }
+
+    public set hasEingewoehnung(value: boolean) {
+        this._hasEingewoehnung = value;
     }
 }

@@ -14,9 +14,13 @@
  */
 
 import * as moment from 'moment';
+import {TSBedarfsstufe} from './enums/betreuung/TSBedarfsstufe';
 import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from './enums/betreuung/TSBetreuungsangebotTyp';
+import {
+    isBetreuungsstatusTSAusgeloest,
+    TSBetreuungsstatus
+} from './enums/betreuung/TSBetreuungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAbwesenheitContainer} from './TSAbwesenheitContainer';
 import {TSAnmeldungTagesschuleZeitabschnitt} from './TSAnmeldungTagesschuleZeitabschnitt';
@@ -31,10 +35,13 @@ import {TSVerfuegung} from './TSVerfuegung';
 
 export class TSBetreuung extends TSAbstractMutableEntity {
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
-    private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-    private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> = [];
+    private _betreuungsstatus: TSBetreuungsstatus =
+        TSBetreuungsstatus.AUSSTEHEND;
+    private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> =
+        [];
     private _abwesenheitContainers: Array<TSAbwesenheitContainer> = [];
-    private _betreuungspensumAbweichungen: Array<TSBetreuungspensumAbweichung> = [];
+    private _betreuungspensumAbweichungen: Array<TSBetreuungspensumAbweichung> =
+        [];
     private _erweiterteBetreuungContainer: TSErweiterteBetreuungContainer;
     private _grundAblehnung: string;
     private _betreuungNummer: number;
@@ -53,14 +60,17 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _belegungTagesschule: TSBelegungTagesschule;
     private _belegungFerieninsel: TSBelegungFerieninsel;
     private _anmeldungMutationZustand: TSAnmeldungMutationZustand;
-    private _bgNummer: string;
+    private _referenzNummer: string;
     private _keineDetailinformationen: boolean = false;
-    private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
+    private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> =
+        [];
     private _eingewoehnung: boolean = false;
     private _auszahlungAnEltern: boolean = false;
     private _begruendungAuszahlungAnInstitution: string;
 
     private _finSitRueckwirkendKorrigiertInThisMutation: boolean = false;
+
+    private _bedarfsstufe: TSBedarfsstufe;
 
     public constructor() {
         super();
@@ -86,7 +96,9 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         return this._betreuungspensumContainers;
     }
 
-    public set betreuungspensumContainers(value: Array<TSBetreuungspensumContainer>) {
+    public set betreuungspensumContainers(
+        value: Array<TSBetreuungspensumContainer>
+    ) {
         this._betreuungspensumContainers = value;
     }
 
@@ -102,7 +114,9 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         return this._erweiterteBetreuungContainer;
     }
 
-    public set erweiterteBetreuungContainer(value: TSErweiterteBetreuungContainer) {
+    public set erweiterteBetreuungContainer(
+        value: TSErweiterteBetreuungContainer
+    ) {
         this._erweiterteBetreuungContainer = value;
     }
 
@@ -110,7 +124,9 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         return this._betreuungspensumAbweichungen;
     }
 
-    public set betreuungspensumAbweichungen(value: Array<TSBetreuungspensumAbweichung>) {
+    public set betreuungspensumAbweichungen(
+        value: Array<TSBetreuungspensumAbweichung>
+    ) {
         this._betreuungspensumAbweichungen = value;
     }
 
@@ -275,14 +291,20 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     }
 
     public getAngebotTyp(): TSBetreuungsangebotTyp {
-        if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
+        if (
+            this.institutionStammdaten &&
+            this.institutionStammdaten.betreuungsangebotTyp
+        ) {
             return this.institutionStammdaten.betreuungsangebotTyp;
         }
         return null;
     }
 
     private isAngebot(typ: TSBetreuungsangebotTyp): boolean {
-        if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
+        if (
+            this.institutionStammdaten &&
+            this.institutionStammdaten.betreuungsangebotTyp
+        ) {
             return this.institutionStammdaten.betreuungsangebotTyp === typ;
         }
 
@@ -290,9 +312,13 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     }
 
     public isEnabled(): boolean {
-        return (!this.hasVorgaenger() || this.isAngebotSchulamt())
-            && (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND)
-                || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST));
+        return (
+            (!this.hasVorgaenger() || this.isAngebotSchulamt()) &&
+            (this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND) ||
+                this.isBetreuungsstatus(
+                    TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+                ))
+        );
     }
 
     public isBetreuungsstatus(status: TSBetreuungsstatus): boolean {
@@ -300,7 +326,10 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     }
 
     public isSchulamtangebotAusgeloest(): boolean {
-        return this.isAngebotSchulamt() && isBetreuungsstatusTSAusgeloest(this.betreuungsstatus);
+        return (
+            this.isAngebotSchulamt() &&
+            isBetreuungsstatusTSAusgeloest(this.betreuungsstatus)
+        );
     }
 
     public get anmeldungMutationZustand(): TSAnmeldungMutationZustand {
@@ -311,19 +340,21 @@ export class TSBetreuung extends TSAbstractMutableEntity {
         this._anmeldungMutationZustand = value;
     }
 
-    public get bgNummer(): string {
-        return this._bgNummer;
+    public get referenzNummer(): string {
+        return this._referenzNummer;
     }
 
-    public set bgNummer(value: string) {
-        this._bgNummer = value;
+    public set referenzNummer(value: string) {
+        this._referenzNummer = value;
     }
 
     public get anmeldungTagesschuleZeitabschnitts(): Array<TSAnmeldungTagesschuleZeitabschnitt> {
         return this._anmeldungTagesschuleZeitabschnitts;
     }
 
-    public set anmeldungTagesschuleZeitabschnitts(value: Array<TSAnmeldungTagesschuleZeitabschnitt>) {
+    public set anmeldungTagesschuleZeitabschnitts(
+        value: Array<TSAnmeldungTagesschuleZeitabschnitt>
+    ) {
         this._anmeldungTagesschuleZeitabschnitts = value;
     }
 
@@ -357,5 +388,13 @@ export class TSBetreuung extends TSAbstractMutableEntity {
 
     public set finSitRueckwirkendKorrigiertInThisMutation(value: boolean) {
         this._finSitRueckwirkendKorrigiertInThisMutation = value;
+    }
+
+    public get bedarfsstufe(): TSBedarfsstufe {
+        return this._bedarfsstufe;
+    }
+
+    public set bedarfsstufe(value: TSBedarfsstufe) {
+        this._bedarfsstufe = value;
     }
 }

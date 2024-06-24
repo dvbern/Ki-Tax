@@ -23,17 +23,17 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
+import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -50,12 +50,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
-import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
 import static ch.dvbern.ebegu.util.Constants.DEUTSCH_LOCALE;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.expect;
@@ -72,19 +70,29 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Mock
 	private EinstellungService einstellungService;
 
+	@Mock
+	private BetreuungEinstellungenService betreuungEinstellungenService;
+
+
 	@TestSubject
 	private final MitteilungServiceBean mitteilungServiceBean = new MitteilungServiceBean();
 
 	@Test
 	void emptyWhenNoPensen() {
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen);
 
 		assertThat(result, emptyString());
 	}
 
 	@Test
 	void concatWithNewline() {
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, createPensum(), createPensum());
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result =
+			run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, createPensum(),
+				createPensum());
 
 		assertThat(
 			result,
@@ -95,7 +103,9 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void percentage() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, pensum);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, pensum);
 
 		assertThat(
 			result,
@@ -105,7 +115,12 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void percentageWithMahlzeitenVerguenstigungEnabled() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, true, false, pensum);
+
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.mahlzeitenVerguenstigungEnabled(true)
+			.build();
+
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, pensum);
 
 		assertThat(
 			result,
@@ -117,7 +132,9 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void stunden() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, pensum);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, einstellungen, pensum);
 
 		assertThat(
 			result,
@@ -127,7 +144,12 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void stundenWithMahlzeitenVerguenstigungEnabled() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, true, false, pensum);
+
+		BetreuungEinstellungen einstellungen = BetreuungEinstellungen.builder()
+			.mahlzeitenVerguenstigungEnabled(true)
+			.build();
+
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, einstellungen, pensum);
 
 		assertThat(
 			result,
@@ -140,7 +162,9 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	void mittagstisch_doesNotDependOnAnzeigeTyp(BetreuungspensumAnzeigeTyp anzeigeTyp) {
 		BetreuungsmitteilungPensum pensum = createPensum();
 		PensumUtil.transformMittagstischPensum(pensum);
-		String result = run(BetreuungsangebotTyp.MITTAGSTISCH, anzeigeTyp, pensum);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(BetreuungsangebotTyp.MITTAGSTISCH, anzeigeTyp, einstellungen, pensum);
 
 		assertThat(
 			result,
@@ -153,26 +177,46 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void tfo() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.TAGESFAMILIEN, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, pensum);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(BetreuungsangebotTyp.TAGESFAMILIEN, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, einstellungen, pensum);
 
 		assertThat(
 			result,
 			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
+	@Test
+	void tfoMitAnwesenheitstagen() {
+		BetreuungsmitteilungPensum pensum = createPensum();
+		pensum.setBetreuteTage(BigDecimal.valueOf(8));
+
+		BetreuungEinstellungen einstellungen = defaultEinstellungen()
+			.betreuteTageEnabled(true)
+			.build();
+
+		String result = run(BetreuungsangebotTyp.TAGESFAMILIEN, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, einstellungen, pensum);
+
+		assertThat(
+			result,
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, Anwesenheitstage: 8, monatliche Betreuungskosten: CHF 1’230.35"));
+	}
+
 	@ParameterizedTest
 	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
-	void eingewoehnungPauschale(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+	void eingewoehnungKosten(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		pensum.setEingewoehnungPauschale(createEingewoehnungPauschale());
+		pensum.setEingewoehnung(createEingewoehnung());
 
-		String result = run(angebotsTyp, anzeigeTyp, pensum);
+		BetreuungEinstellungen einstellungen = defaultEinstellungen().build();
+
+		String result = run(angebotsTyp, anzeigeTyp, einstellungen, pensum);
 
 		assertThat(
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", monatliche Betreuungskosten: CHF 1’230.35, Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
+				", monatliche Betreuungskosten: CHF 1’230.35, Eingewöhnung von 28.12.2023 bis 07.01.2024: Kosten: CHF 777"
 			));
 	}
 
@@ -184,7 +228,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			BetreuungsmitteilungPensum pensum = createPensum();
 			pensum.setBetreuungInFerienzeit(true);
 
-			String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, pensum);
+			BetreuungEinstellungen einstellungen = defaultEinstellungen()
+				.schulergaenzendeBetreuungEnabled(false)
+				.build();
+
+			String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, pensum);
 
 			assertThat(result, not(containsString("während der schulfreien Zeit")));
 		}
@@ -198,7 +246,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 				.getKindJA()
 				.setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
 
-			String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, pensum);
+			BetreuungEinstellungen einstellungen = defaultEinstellungen()
+				.schulergaenzendeBetreuungEnabled(false)
+				.build();
+
+			String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, pensum);
 
 			assertThat(result, not(containsString("während der schulfreien Zeit")));
 		}
@@ -211,7 +263,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
 			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
 
-			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+			BetreuungEinstellungen einstellungen = defaultEinstellungen()
+				.schulergaenzendeBetreuungEnabled(true)
+				.build();
+
+			String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, einstellungen, pensum);
 
 			assertThat(
 				result,
@@ -229,7 +285,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
 			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
 
-			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+			BetreuungEinstellungen einstellungen = defaultEinstellungen()
+				.schulergaenzendeBetreuungEnabled(true)
+				.build();
+
+			String result = run(betreuungsmitteilung, anzeigeTyp, einstellungen, pensum);
 
 			assertThat(
 				result,
@@ -241,63 +301,48 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	}
 
 	@Nonnull
+	private BetreuungEinstellungen.BetreuungEinstellungenBuilder defaultEinstellungen() {
+		return BetreuungEinstellungen.builder()
+			.mahlzeitenVerguenstigungEnabled(false)
+			.schulergaenzendeBetreuungEnabled(false)
+			.betreuteTageEnabled(false);
+	}
+
 	private String run(
 		@Nonnull BetreuungsangebotTyp angebotTyp,
 		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
+		@Nonnull BetreuungEinstellungen einstellungen,
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
-		return run(angebotTyp, anzeigeTyp, false, false, pensen);
+		return run(createBetreuungsmitteilung(angebotTyp, pensen), anzeigeTyp, einstellungen, pensen);
 	}
 
-	@Nonnull
-	private String run(
-		@Nonnull BetreuungsangebotTyp angebotTyp,
-		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
-		@Nonnull Boolean mahlzeitenVerguenstigungEnabled,
-		@Nonnull Boolean betreuungInFerienEnabled,
-		@Nonnull BetreuungsmitteilungPensum... pensen
-	) {
-		Betreuungsmitteilung mitteilung = createBetreuungsmitteilung(angebotTyp, pensen);
-
-		return run(mitteilung, anzeigeTyp, mahlzeitenVerguenstigungEnabled, betreuungInFerienEnabled, pensen);
-	}
-
-	@Nonnull
 	private String run(
 		@Nonnull Betreuungsmitteilung mitteilung,
 		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
-		@Nonnull Boolean mahlzeitenVerguenstigungEnabled,
-		@Nonnull Boolean betreuungInFerienEnabled,
+		@Nonnull BetreuungEinstellungen einstellungen,
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
-		Gemeinde gemeinde = betreuung.extractGemeinde();
-		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
 
-		String mahlzeitenVerguenstigung = mahlzeitenVerguenstigungEnabled.toString();
-		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, periode))
-			.andReturn(new Einstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, mahlzeitenVerguenstigung, periode))
+		expect(betreuungEinstellungenService.getEinstellungen(betreuung))
+			.andReturn(einstellungen)
 			.anyTimes();
 
-		expect(einstellungService.findEinstellung(PENSUM_ANZEIGE_TYP, gemeinde, periode))
-			.andReturn(new Einstellung(PENSUM_ANZEIGE_TYP, anzeigeTyp.name(), periode))
+		expect(einstellungService.findEinstellung(PENSUM_ANZEIGE_TYP, betreuung))
+			.andReturn(new Einstellung(PENSUM_ANZEIGE_TYP, anzeigeTyp.name(), betreuung.extractGesuchsperiode()))
 			.anyTimes();
 
-		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_KITA, gemeinde, periode))
-			.andReturn(new Einstellung(OEFFNUNGSTAGE_KITA, "220", periode))
+		expect(einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_KITA, betreuung))
+			.andReturn(new BigDecimal("220"))
 			.anyTimes();
 
-		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_TFO, gemeinde, periode))
-			.andReturn(new Einstellung(OEFFNUNGSTAGE_TFO, "240", periode))
+		expect(einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSTAGE_TFO, betreuung))
+			.andReturn(new BigDecimal("240"))
 			.anyTimes();
 
-		expect(einstellungService.findEinstellung(OEFFNUNGSSTUNDEN_TFO, gemeinde, periode))
-			.andReturn(new Einstellung(OEFFNUNGSTAGE_TFO, "11", periode))
-			.anyTimes();
-
-		String betreuungInFerien = betreuungInFerienEnabled.toString();
-		expect(einstellungService.findEinstellung(SCHULERGAENZENDE_BETREUUNGEN, gemeinde, periode))
-			.andReturn(new Einstellung(SCHULERGAENZENDE_BETREUUNGEN, betreuungInFerien, periode))
+		expect(einstellungService.getEinstellungAsBigDecimal(OEFFNUNGSSTUNDEN_TFO, betreuung))
+			.andReturn(new BigDecimal("11"))
 			.anyTimes();
 
 		replayAll();
@@ -350,10 +395,10 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	}
 
 	@Nonnull
-	private EingewoehnungPauschale createEingewoehnungPauschale() {
-		EingewoehnungPauschale pauschale = new EingewoehnungPauschale();
+	private Eingewoehnung createEingewoehnung() {
+		Eingewoehnung pauschale = new Eingewoehnung();
 		pauschale.setGueltigkeit(new DateRange(LocalDate.of(2023, 12, 28), LocalDate.of(2024, 1, 7)));
-		pauschale.setPauschale(BigDecimal.valueOf(777));
+		pauschale.setKosten(BigDecimal.valueOf(777));
 
 		return pauschale;
 	}

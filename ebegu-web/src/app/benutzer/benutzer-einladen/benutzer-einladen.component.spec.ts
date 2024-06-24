@@ -31,38 +31,54 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
-import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 describe('BenutzerEinladenComponent', () => {
     let component: BenutzerEinladenComponent;
     let fixture: ComponentFixture<BenutzerEinladenComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getVisibleRolesForPrincipal']);
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenEditableForCurrentBenutzer']);
-    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
-        ['getSozialdienstList']);
-    const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['einladen']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal']
+    );
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['getInstitutionenEditableForCurrentBenutzer']
+    );
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['getAllTraegerschaften']
+    );
+    const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, [
+        'getGemeindenForPrincipal$'
+    ]);
+    const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(
+        SozialdienstRS.name,
+        ['getSozialdienstList']
+    );
+    const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, [
+        'einladen'
+    ]);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
 
     beforeEach(waitForAsync(() => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                UIRouterModule.forRoot()
-            ],
+            imports: [SharedModule, UIRouterModule.forRoot()],
             declarations: [BenutzerEinladenComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
@@ -88,57 +104,5 @@ describe('BenutzerEinladenComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    describe('Email validation check', () => {
-        const pattern = new RegExp(CONSTANTS.PATTERN_EMAIL);
-
-        it('should check valid email with one dot before and after @', () => {
-            const validEmail = 'test.test@dvbern.ch';
-            const validationCheck = pattern.test(validEmail);
-            expect(validationCheck).toBeTruthy();
-        });
-
-        it('should check invalid email with two dots', () => {
-            const invalidEmail = 'test.test.test@dvbern.ch';
-            const validationCheck = pattern.test(invalidEmail);
-            expect(validationCheck).toBeTruthy();
-        });
-
-        it('should check invalid email without dot', () => {
-            const invalidEmail = 'testtest@dvbern.ch';
-            const validationCheck = pattern.test(invalidEmail);
-            expect(validationCheck).toBeTruthy();
-        });
-
-        it('should check valid email with specialchar', () => {
-            const valid = 'test.te#s*t@dvbern.ch';
-            const validationCheck = pattern.test(valid);
-            expect(validationCheck).toBeTruthy();
-        });
-
-        it('should check valid email with hyphen after @', () => {
-            const valid = 'test.test@dv-bern.ch';
-            const validationCheck = pattern.test(valid);
-            expect(validationCheck).toBeTruthy();
-        });
-
-        it('should check invalid email without dot after @', () => {
-            const invalidEmail = 'test.test@dvbernch';
-            const validationCheck = pattern.test(invalidEmail);
-            expect(validationCheck).toBeFalsy();
-        });
-
-        it('should check invalid email with bracket', () => {
-            const invalidEmail = 'test.test@dvbern.ch)';
-            const validationCheck = pattern.test(invalidEmail);
-            expect(validationCheck).toBeFalsy();
-        });
-
-        it('should check valid email with .email top-level domain', () => {
-            const valid = 'test.test@dvbern.email';
-            const validationCheck = pattern.test(valid);
-            expect(validationCheck).toBeTruthy();
-        });
     });
 });

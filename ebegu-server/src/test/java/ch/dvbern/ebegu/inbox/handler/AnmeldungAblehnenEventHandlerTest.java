@@ -27,14 +27,12 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -77,22 +75,16 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	private BetreuungEventHelper betreuungEventHelper;
 
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
-	@Mock
-	private GemeindeService gemeindeService;
-
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
 
 	private AnmeldungTagesschule anmeldungTagesschule;
 	private EventMonitor eventMonitor = null;
-	private Mandant mandant;
 
 	@BeforeEach
 	void setUp() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
-		mandant = gesuchsperiode.getMandant();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		eventMonitor = new EventMonitor(betreuungMonitoringService, EVENT_TIME, REF_NUMMER, CLIENT_NAME);
@@ -110,16 +102,8 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 	class IgnoreEventTest {
 
 		@Test
-		void ignoreWhenMandantNotFound() {
-			//noinspection ConstantConditions
-			mandant = null;
-
-			testIgnored("Mandant konnte nicht gefunden werden.");
-		}
-
-		@Test
 		void ignoreEventWhenNoAnmeldungFound() {
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.empty());
 
 			testIgnored("AnmeldungTagesschule nicht gefunden.");
@@ -130,7 +114,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		void ignoreEventWhenPeriodeNotAktiv(@Nonnull GesuchsperiodeStatus status) {
 			anmeldungTagesschule.extractGesuchsperiode().setStatus(status);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 
 			testIgnored("Die Gesuchsperiode ist nicht aktiv.");
@@ -142,7 +126,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 			LocalDateTime anmeldungMutiertTime = EVENT_TIME.plusSeconds(1);
 			anmeldungTagesschule.setTimestampMutiert(anmeldungMutiertTime);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 
 			testIgnored(
@@ -152,7 +136,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		@Test
 		void ignoreEventWhenNoExternalClient() {
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			expect(betreuungEventHelper.getExternalClients(CLIENT_NAME, anmeldungTagesschule))
 				.andReturn(new InstitutionExternalClients(null, Collections.emptyList()));
@@ -166,7 +150,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		@Test
 		void ignoreEventWhenClientGueltigkeitOutsidePeriode() {
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(new DateRange(2022));
 
@@ -180,7 +164,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		void ignoreWhenInvalidBetreuungStatus(@Nonnull Betreuungsstatus status) {
 			anmeldungTagesschule.setBetreuungsstatus(status);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 
@@ -189,9 +173,6 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testIgnored(@Nonnull String message) {
-			expect(betreuungEventHelper.getMandantFromBgNummer(eventMonitor.getRefnr()))
-				.andReturn(Optional.ofNullable(mandant));
-
 			replayAll();
 
 			Processing result = anmeldungAblehnenEventHandler.attemptProcessing(eventMonitor);
@@ -205,13 +186,10 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void testAnmeldungAkzeptiert() {
-			expect(betreuungEventHelper.getMandantFromBgNummer(eventMonitor.getRefnr()))
-				.andReturn(Optional.of(mandant));
-
 			expect(betreuungService.anmeldungSchulamtAblehnen(anmeldungTagesschule))
 				.andReturn(anmeldungTagesschule);
 
-			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
+			expect(betreuungService.findAnmeldungenTagesschuleByReferenzNummer(eventMonitor.getRefnr()))
 				.andReturn(Optional.of(anmeldungTagesschule));
 			mockClient(Constants.DEFAULT_GUELTIGKEIT);
 			replayAll();

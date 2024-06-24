@@ -160,45 +160,6 @@ class FinanzielleSituationSchwyzRechnerTest {
 					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(48000)));
 					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.valueOf(48000)));
 				}
-
-				@Test
-				void quellenBesteuerteShouldHaveFinSitValueIfEKVIsAnnulliert() {
-
-					Gesuch gesuch = prepareGesuchWithEmptyEKV();
-					extractEinkommensverschlechterungInfoJANullSafe(gesuch).setEkvBasisJahrPlus1Annulliert(true);
-
-					FinanzielleSituation finsitJA = extractFinSitJANullsafe(gesuch.getGesuchsteller1());
-					Einkommensverschlechterung ekvJA = extractEKVJANullsafe(gesuch.getGesuchsteller1());
-					setFinSitValueForQuellenbesteuert(finsitJA, BigDecimal.ZERO);
-					ekvJA.setBruttoLohn(new BigDecimal(60000));
-					finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, BigDecimal.ZERO);
-					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.ZERO));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.ZERO));
-				}
-
-
-				@Test
-				void nichtQuellenBesteuerteShouldHaveFinSitMEKIfEKVIsAnnulliert() {
-					Gesuch gesuch = prepareGesuchWithEmptyEKV();
-					extractEinkommensverschlechterungInfoJANullSafe(gesuch).setEkvBasisJahrPlus1Annulliert(true);
-					FinanzielleSituation finsitJA = extractFinSitJANullsafe(gesuch.getGesuchsteller1());
-					Einkommensverschlechterung ekvJA = extractEKVJANullsafe(gesuch.getGesuchsteller1());
-					setFinSitValueForNichtQuellenbesteuert(finsitJA,
-						BigDecimal.ZERO,
-						BigDecimal.ZERO,
-						BigDecimal.ZERO,
-						BigDecimal.ZERO);
-					setAbstractFinSitValuesNichtQuellenbesteuert(ekvJA,
-						new BigDecimal(60000),
-						new BigDecimal(10000),
-						new BigDecimal(1000),
-						new BigDecimal(1000));
-
-					finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, BigDecimal.ZERO);
-					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.ZERO));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.ZERO));
-				}
-
 			}
 
 			@Nested
@@ -330,7 +291,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				 * 62'000
 				 */
 				@Test
-				void nichtQuellenBesteuerteShouldBeAnnulliertIfIsRising() {
+				void nichtQuellenBesteuerteShouldNotBeAnnulliertIfIsRising() {
 					Gesuch gesuch = prepareGesuchWithEmptyEKV();
 					FinanzielleSituation finsitJA = extractFinSitJANullsafe(gesuch.getGesuchsteller1());
 					Einkommensverschlechterung ekvJA = extractEKVJANullsafe(gesuch.getGesuchsteller1());
@@ -348,8 +309,8 @@ class FinanzielleSituationSchwyzRechnerTest {
 					finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, BigDecimal.ZERO);
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(true));
 				}
 
 				/**
@@ -360,7 +321,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				 * 48'000
 				 */
 				@Test
-				void quellenBesteuerteShouldBeAnnulliertIfIsRising() {
+				void quellenBesteuerteShouldNotBeAnnulliertIfIsRising() {
 
 					Gesuch gesuch = prepareGesuchWithEmptyEKV();
 					FinanzielleSituation finsitJA = extractFinSitJANullsafe(gesuch.getGesuchsteller1());
@@ -370,8 +331,8 @@ class FinanzielleSituationSchwyzRechnerTest {
 					finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, BigDecimal.ZERO);
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(true));
 				}
 
 				/**
@@ -511,10 +472,6 @@ class FinanzielleSituationSchwyzRechnerTest {
 					new BigDecimal(250000),
 					new BigDecimal(1000),
 					new BigDecimal(1000));
-				gesuch.getGesuchsteller1()
-					.getFinanzielleSituationContainer()
-					.getFinanzielleSituationJA()
-					.setSteuerbaresVermoegen(new BigDecimal(250000));
 				finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 				assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(67000)));
 			}
@@ -593,15 +550,15 @@ class FinanzielleSituationSchwyzRechnerTest {
 			@Nested
 			class CalculationTest {
 				/**
-				 * Steuerbares Einkommen								60'000
+				 * Steuerbares Einkommen												60'000
 				 * <p>
-				 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
-				 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-				 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+				 * Steuerbares Vermögen	200'000 * 200'000 / (200'000 + 200'000), 10% = +10'000
+				 * Abzüge für den effektiven Liegenschaftsunterhalt... 				   + 1'000
+				 * Einkäufe in die berufliche Vorsorge Subtrahieren                    + 1'000
 				 * -------
-				 * 62'000
+				 * 72'000
 				 * <p>
-				 * GS2 gleich => 62'000 x 2 = 124'000
+				 * GS2 gleich => 72'000 x 2 = 144'000
 				 */
 				@Test
 				void calculateForNichtQuellenBesteuerteTest() {
@@ -638,13 +595,13 @@ class FinanzielleSituationSchwyzRechnerTest {
 						is(BigDecimal.valueOf(62000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP1VorAbzFamGr(),
-						is(BigDecimal.valueOf(124000)));
+						is(BigDecimal.valueOf(144000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(),
 						is(BigDecimal.valueOf(62000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP2VorAbzFamGr(),
-						is(BigDecimal.valueOf(124000)));
+						is(BigDecimal.valueOf(144000)));
 				}
 
 				/**
@@ -854,7 +811,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				}
 
 				@Test
-				void quellenBesteuerteShouldBeAnnulliertIfIsRising() {
+				void quellenBesteuerteShouldNotBeAnnulliertIfIsRising() {
 					Gesuch gesuch = prepareGesuchWithEmptyEKV();
 					createEmptyEKVForGS2(gesuch);
 					setGemeinsameSteuererklaerung(gesuch, false);
@@ -866,12 +823,12 @@ class FinanzielleSituationSchwyzRechnerTest {
 					finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, BigDecimal.ZERO);
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1AcceptedAndNotAnnuliert(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2AcceptedAndNotAnnuliert(), is(true));
 				}
 
 				@Test
@@ -922,7 +879,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				}
 
 				@Test
-				void nichtQuellenBesteuertGemeinsameStekNullShouldBeAnnulliertIfIsRising() {
+				void nichtQuellenBesteuertGemeinsameStekNullShouldNotBeAnnulliertIfIsRising() {
 					Gesuch gesuch = prepareGesuchWithEmptyEKV();
 					setGemeinsameSteuererklaerung(gesuch, true);
 					setFinSitValueForNichtQuellenbesteuert(
@@ -941,12 +898,12 @@ class FinanzielleSituationSchwyzRechnerTest {
 
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv1AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2AcceptedAndNotAnnuliert(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2Erfasst(), is(true));
 					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv2Erfasst(), is(true));
-					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1AcceptedAndNotAnnuliert(), is(false));
-					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(false));
+					assertThat(gesuch.getFinanzDatenDTO_zuZweit().isEkv1AcceptedAndNotAnnuliert(), is(true));
+					assertThat(gesuch.getFinanzDatenDTO_alleine().isEkv2AcceptedAndNotAnnuliert(), is(true));
 				}
 
 				@Test
@@ -999,15 +956,15 @@ class FinanzielleSituationSchwyzRechnerTest {
 			}
 		}
 		/**
-		 * Steuerbares Einkommen								60'000
+		 * Steuerbares Einkommen												 60'000
 		 * <p>
-		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
-		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * Steuerbares Vermögen	200'000 * 200'000 / (200'000 + 200'000), 10% = + 10'000
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... 				   +  1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    				   +  1'000
 		 * -------
-		 * 62'000
+		 * 72'000
 		 * <p>
-		 * GS2 gleich => 62'000 x 2 = 124'000
+		 * GS2 gleich => 72'000 x 2 = 144'000
 		 */
 		@Test
 		void calculateForNichtQuellenBesteuerteTest() {
@@ -1024,7 +981,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				new BigDecimal(1000));
 			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(144000)));
 		}
 
 
@@ -1073,6 +1030,39 @@ class FinanzielleSituationSchwyzRechnerTest {
 			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
 			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+		}
+
+		@Test
+		void testReinvermoegenGS1Quellenbesteuert(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(250_000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(115_000)));
+		}
+
+		@Test
+		void testReinvermoegenZero(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124_000)));
 		}
 
 		private Gesuch prepareGesuch() {

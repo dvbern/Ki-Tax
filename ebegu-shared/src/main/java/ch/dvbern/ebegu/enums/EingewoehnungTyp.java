@@ -15,12 +15,17 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.entities.Eingewoehnung;
+
 /**
  * Enum fuer Typ der Eingewöhung
  */
 public enum EingewoehnungTyp {
 	FKJV,
 	LUZERN,
+	/**
+	 * Pauschale Eingewöhnungskosten {@link Eingewoehnung}
+	 */
 	PAUSCHALE,
 	KEINE;
 

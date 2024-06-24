@@ -25,11 +25,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 
 public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
@@ -62,12 +63,16 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(createAnrede());
-			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT), 2));
+			document.add(getCustomBegleitschreibenParagraph());
 			document.add(createParagraphGruss());
 			document.add(PdfUtil.createParagraph(translate(DokumentAnFamilieGenerator.SACHBEARBEITUNG), 2));
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
 			document.add(PdfUtil.createListInParagraph(getBeilagen()));
 		};
+	}
+
+	protected Paragraph getCustomBegleitschreibenParagraph() {
+		return PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT, 2));
 	}
 
 	@Nonnull
@@ -101,6 +106,6 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
 		return translate(BEILAGE_VERFUEGUNG,
 			betreuung.getKind().getKindJA().getNachname() + ' ' + betreuung.getKind().getKindJA().getVorname(),
-			betreuung.getBGNummer());
+			betreuung.getReferenzNummer());
 	}
 }

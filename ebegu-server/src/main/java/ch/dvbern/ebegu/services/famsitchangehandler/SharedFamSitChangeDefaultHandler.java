@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.services.famsitchangehandler;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -81,15 +83,25 @@ public class SharedFamSitChangeDefaultHandler implements FamSitChangeHandler {
 	protected void handlePossibleKinderabzugFragenReset(
 		Gesuch gesuch,
 		Familiensituation newFamiliensituation,
-		Familiensituation oldFamiliensituation) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV
-			|| newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.SCHWYZ &&
-			oldFamiliensituation != null &&
-			(oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()
-				|| oldFamiliensituation.getGesuchstellerKardinalitaet() != newFamiliensituation.getGesuchstellerKardinalitaet()) &&
-			!Objects.equals(newFamiliensituation.getPartnerIdentischMitVorgesuch(), Boolean.FALSE)) {
+		@Nullable Familiensituation oldFamiliensituation) {
+		if (needKinderabzugResetBern(gesuch, oldFamiliensituation, newFamiliensituation)
+			|| needsKinderabzugResetSchwyz(newFamiliensituation, oldFamiliensituation)) {
 			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
 		}
+	}
+
+	private boolean needKinderabzugResetBern(Gesuch gesuch, @Nullable Familiensituation oldFamiliensituation, Familiensituation newFamiliensituation) {
+		return gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+			oldFamiliensituation != null &&
+			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus() &&
+			!Objects.equals(newFamiliensituation.getPartnerIdentischMitVorgesuch(), Boolean.FALSE);
+	}
+
+	private static boolean needsKinderabzugResetSchwyz(Familiensituation newFamiliensituation, @Nullable Familiensituation oldFamiliensituation) {
+		return newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.SCHWYZ
+			&& oldFamiliensituation != null
+			&& (oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()
+			|| oldFamiliensituation.getGesuchstellerKardinalitaet() != newFamiliensituation.getGesuchstellerKardinalitaet());
 	}
 
 	@Override
@@ -176,7 +188,7 @@ public class SharedFamSitChangeDefaultHandler implements FamSitChangeHandler {
 	 * Bei Mutation oder nach Freigabe kann der GS2 geloescht werden wenn er gar nicht mehr ins Gesuch
 	 * beruecksichtig wird. D.H. alle Daten die die FamSit / FinSit Regeln betreffen muessen geprueft werden
 	 */
-	private boolean isNeededToRemoveGesuchsteller2(
+	protected boolean isNeededToRemoveGesuchsteller2(
 		Gesuch gesuch,
 		Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch

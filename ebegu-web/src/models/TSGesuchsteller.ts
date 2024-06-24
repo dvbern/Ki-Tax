@@ -17,7 +17,6 @@ import {TSSprache} from './enums/TSSprache';
 import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
 
 export class TSGesuchsteller extends TSAbstractPersonEntity {
-
     private _mail: string;
     private _mobile: string;
     private _telefon: string;
@@ -25,6 +24,7 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
     private _diplomatenstatus: boolean;
     private _korrespondenzSprache: TSSprache;
     private _notfallnummer: string;
+    private _sozialversicherungsnummer: string;
 
     public constructor() {
         super();
@@ -94,5 +94,13 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
             return this.telefon;
         }
         return '';
+    }
+
+    public get sozialversicherungsnummer(): string {
+        return this._sozialversicherungsnummer;
+    }
+
+    public set sozialversicherungsnummer(value: string) {
+        this._sozialversicherungsnummer = value;
     }
 }

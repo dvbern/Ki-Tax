@@ -22,10 +22,13 @@
                 <div class="col-sm-6">
                     <div class="form-group mt-2">
                         <div class="form-group">
-                            <mat-checkbox id="altTSAdresse_id" name="altTSAdresse_id"
-                                          [(ngModel)]="altTSAdresse"
-                                          (ngModelChange)="altTSAdresseHasChange($event)">
-                                {{'ALTERNATIVE_ADRESSE'|translate}}
+                            <mat-checkbox
+                                id="altTSAdresse_id"
+                                name="altTSAdresse_id"
+                                [(ngModel)]="altTSAdresse"
+                                (ngModelChange)="altTSAdresseHasChange($event)"
+                            >
+                                {{ 'ALTERNATIVE_ADRESSE' | translate }}
                             </mat-checkbox>
                         </div>
                         <div *ngIf="altTSAdresse">
@@ -33,18 +36,31 @@
                                 <div class="row">
                                     <div>
                                         <div class="form-group">
-                                            <label class="required"
-                                                   translate for="anschrift_ts_id">ADRESSE_ANSCHRIFT</label>
-                                            <input id="anschrift_ts_id"
-                                                   type="text"
-                                                   name="anschrift_ts_id"
-                                                   #nameAnschriftTS="ngModel"
-                                                   [(ngModel)]="stammdaten.tsAdresse.organisation"
-                                                   [maxlength]="255"
-                                                   class="form-control"
-                                                   required>
-                                            <dv-error-messages [errorObject]="nameAnschriftTS.errors"
-                                                               inputId="anschrift_ts_id"></dv-error-messages>
+                                            <label
+                                                class="required"
+                                                translate
+                                                for="anschrift_ts_id"
+                                                >ADRESSE_ANSCHRIFT</label
+                                            >
+                                            <input
+                                                id="anschrift_ts_id"
+                                                type="text"
+                                                name="anschrift_ts_id"
+                                                #nameAnschriftTS="ngModel"
+                                                [(ngModel)]="
+                                                    stammdaten.tsAdresse
+                                                        .organisation
+                                                "
+                                                [maxlength]="255"
+                                                class="form-control"
+                                                required
+                                            />
+                                            <dv-error-messages
+                                                [errorObject]="
+                                                    nameAnschriftTS.errors
+                                                "
+                                                inputId="anschrift_ts_id"
+                                            ></dv-error-messages>
                                         </div>
                                     </div>
                                 </div>
@@ -53,30 +69,53 @@
                                 <!-- Strasse -->
                                 <div class="col-sm-10">
                                     <div class="form-group">
-                                        <label class="required"
-                                               translate
-                                               for="strasse_ts_id">ADRESSE_STRASSE</label>
-                                        <input id="strasse_ts_id" type="text" name="strasse_ts_id"
-                                               #nameStrasseTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsAdresse.strasse"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameStrasseTS.errors"
-                                                           inputId="strasse_ts_id"></dv-error-messages>
+                                        <label
+                                            class="required"
+                                            translate
+                                            for="strasse_ts_id"
+                                            >ADRESSE_STRASSE</label
+                                        >
+                                        <input
+                                            id="strasse_ts_id"
+                                            type="text"
+                                            name="strasse_ts_id"
+                                            #nameStrasseTS="ngModel"
+                                            [(ngModel)]="
+                                                stammdaten.tsAdresse.strasse
+                                            "
+                                            [maxlength]="255"
+                                            class="form-control"
+                                            required
+                                        />
+                                        <dv-error-messages
+                                            [errorObject]="nameStrasseTS.errors"
+                                            inputId="strasse_ts_id"
+                                        ></dv-error-messages>
                                     </div>
                                 </div>
                                 <!-- Hausnummer -->
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label translate for="hausnummer_ts_id">ADRESSE_NUMMER</label>
-                                        <input id="hausnummer_ts_id"
-                                               type="text"
-                                               name="hausnummer_ts_id"
-                                               #nameHausnummerTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsAdresse.hausnummer"
-                                               [maxlength]="255"
-                                               class="form-control">
-                                        <dv-error-messages [errorObject]="nameHausnummerTS.errors"
-                                                           inputId="hausnummer_ts_id"></dv-error-messages>
+                                        <label translate for="hausnummer_ts_id"
+                                            >ADRESSE_NUMMER</label
+                                        >
+                                        <input
+                                            id="hausnummer_ts_id"
+                                            type="text"
+                                            name="hausnummer_ts_id"
+                                            #nameHausnummerTS="ngModel"
+                                            [(ngModel)]="
+                                                stammdaten.tsAdresse.hausnummer
+                                            "
+                                            [maxlength]="255"
+                                            class="form-control"
+                                        />
+                                        <dv-error-messages
+                                            [errorObject]="
+                                                nameHausnummerTS.errors
+                                            "
+                                            inputId="hausnummer_ts_id"
+                                        ></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -84,198 +123,147 @@
                                 <!-- PLZ -->
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label class="required" translate for="plz_ts_id">ADRESSE_PLZ</label>
-                                        <input id="plz_ts_id" type="text" name="plz_ts_id" #namePLZTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsAdresse.plz"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="namePLZTS.errors"
-                                                           inputId="plz_ts_id"></dv-error-messages>
+                                        <label
+                                            class="required"
+                                            translate
+                                            for="plz_ts_id"
+                                            >ADRESSE_PLZ</label
+                                        >
+                                        <input
+                                            id="plz_ts_id"
+                                            type="text"
+                                            name="plz_ts_id"
+                                            #namePLZTS="ngModel"
+                                            [(ngModel)]="
+                                                stammdaten.tsAdresse.plz
+                                            "
+                                            [maxlength]="255"
+                                            class="form-control"
+                                            required
+                                        />
+                                        <dv-error-messages
+                                            [errorObject]="namePLZTS.errors"
+                                            inputId="plz_ts_id"
+                                        ></dv-error-messages>
                                     </div>
                                 </div>
                                 <!-- Ort -->
                                 <div class="col-sm-10">
                                     <div class="form-group">
-                                        <label class="required" translate for="ort_ts_id">ADRESSE_ORT</label>
-                                        <input id="ort_ts_id" type="text" name="ort_ts_id" #nameOrtTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsAdresse.ort"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameOrtTS.errors"
-                                                           inputId="ort_ts_id"></dv-error-messages>
+                                        <label
+                                            class="required"
+                                            translate
+                                            for="ort_ts_id"
+                                            >ADRESSE_ORT</label
+                                        >
+                                        <input
+                                            id="ort_ts_id"
+                                            type="text"
+                                            name="ort_ts_id"
+                                            #nameOrtTS="ngModel"
+                                            [(ngModel)]="
+                                                stammdaten.tsAdresse.ort
+                                            "
+                                            [maxlength]="255"
+                                            class="form-control"
+                                            required
+                                        />
+                                        <dv-error-messages
+                                            [errorObject]="nameOrtTS.errors"
+                                            inputId="ort_ts_id"
+                                        ></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                            <div class="row">
-                                <!-- Alternative Email -->
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label translate for="email_ts_id">ALTERNATIVE_EMAIL
-                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
-                                        </label>
-                                        <input id="email_ts_id" type="text" name="email_ts_id"
-                                               #nameEmailTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsEmail"
-                                               [pattern]="CONSTANTS.PATTERN_EMAIL"
-                                               class="form-control">
-                                        <dv-error-messages [errorObject]="nameEmailTS.errors"
-                                                           inputId="email_ts_id"></dv-error-messages>
-                                    </div>
+                        <div class="row">
+                            <!-- Alternative Email -->
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate for="email_ts_id"
+                                        >ALTERNATIVE_EMAIL
+                                        <dv-tooltip
+                                            [text]="
+                                                'ANGABEN_VON_STAMMDATEN'
+                                                    | translate
+                                            "
+                                        ></dv-tooltip>
+                                    </label>
+                                    <input
+                                        id="email_ts_id"
+                                        type="email"
+                                        name="email_ts_id"
+                                        #nameEmailTS="ngModel"
+                                        [(ngModel)]="stammdaten.tsEmail"
+                                        class="form-control"
+                                        email
+                                    />
+                                    <dv-error-messages
+                                        [errorObject]="nameEmailTS.errors"
+                                        inputId="email_ts_id"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
-                            <div class="row">
-                                <!-- Alternative Telefonnummer -->
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label translate for="telefonnummer_ts_id">ALTERNATIVE_TELEFONNUMMER
-                                            <dv-tooltip [text]="'ANGABEN_VON_STAMMDATEN'|translate"></dv-tooltip>
-                                        </label>
-                                        <input id="telefonnummer_ts_id" type="text" name="telefonnummer_ts_id"
-                                               #nameTelefonnummerTS="ngModel"
-                                               [(ngModel)]="stammdaten.tsTelefon"
-                                               [pattern]="CONSTANTS.PATTERN_PHONE"
-                                               class="form-control">
-                                        <dv-error-messages [errorObject]="nameTelefonnummerTS.errors"
-                                                           inputId="telefonnummer_ts_id"></dv-error-messages>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <!-- Alternative Telefonnummer -->
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label translate for="telefonnummer_ts_id"
+                                        >ALTERNATIVE_TELEFONNUMMER
+                                        <dv-tooltip
+                                            [text]="
+                                                'ANGABEN_VON_STAMMDATEN'
+                                                    | translate
+                                            "
+                                        ></dv-tooltip>
+                                    </label>
+                                    <input
+                                        id="telefonnummer_ts_id"
+                                        type="text"
+                                        name="telefonnummer_ts_id"
+                                        #nameTelefonnummerTS="ngModel"
+                                        [(ngModel)]="stammdaten.tsTelefon"
+                                        [pattern]="CONSTANTS.PATTERN_PHONE"
+                                        class="form-control"
+                                    />
+                                    <dv-error-messages
+                                        [errorObject]="
+                                            nameTelefonnummerTS.errors
+                                        "
+                                        inputId="telefonnummer_ts_id"
+                                    ></dv-error-messages>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Standardverantwortliche TS -->
                 <div *ngIf="!stammdaten.gemeinde.nurLats" class="col-sm-6">
                     <div class="form-group">
-                        <h3 translate
-                            for="verantwortliche_ts_id">ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerTS"
-                                    id="verantwortliche_ts_id"
-                                    name="verantwortliche_ts_id"
-                                    class="form-control"
-                                    #nameVerantwortlicheTS='ngModel'
-                                    [compareWith]="compareBenutzer">
-                            <mat-option *ngFor="let vts of stammdaten.benutzerListeTS" [value]="vts">
-                                {{vts.vorname}} {{vts.nachname}}
+                        <h3 translate for="verantwortliche_ts_id">
+                            ALT_STANDARD_VERANTWORTLICHE
+                        </h3>
+                        <mat-select
+                            [(ngModel)]="stammdaten.defaultBenutzerTS"
+                            id="verantwortliche_ts_id"
+                            name="verantwortliche_ts_id"
+                            class="form-control"
+                            #nameVerantwortlicheTS="ngModel"
+                            [compareWith]="compareBenutzer"
+                        >
+                            <mat-option
+                                *ngFor="let vts of stammdaten.benutzerListeTS"
+                                [value]="vts"
+                            >
+                                {{ vts.vorname }} {{ vts.nachname }}
                             </mat-option>
                         </mat-select>
-                        <dv-error-messages [errorObject]="nameVerantwortlicheTS.errors"
-                                           inputId="verantwortliche_ts_id"></dv-error-messages>
-                    </div>
-                </div>
-
-            </div>
-            <div *ngIf="!stammdaten.gemeinde.nurLats">
-            <div class="row">
-                <!-- Anmeldungen akzeptieren ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>TS_START</h3>
-                        <p>{{tsAnmeldungenStartStr}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-6" *ngIf="stammdaten?.gemeindeStammdatenKorrespondenz">
-                    <div class="form-group">
-                        <mat-checkbox id="hasAlternativeLogoTagesschule_id"
-                                      name="hasAlternativeLogoTagesschule_id"
-                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
-                            {{'GEMEINDE_HAS_ALTERNATIVE_TS_LOGO'|translate}}
-                        </mat-checkbox>
-                    </div>
-                    <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
-                        <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
-                        <img [src]="altLogoImageUrl$ | async"
-                             class="tagesschul-profil-image">
-                        <input #fileInput type="file" accept='image/png,image/jpeg'
-                               (change)="srcChange(fileInput.files)"
-                               class="gemeinde-profil-fileinput">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group checkbox-with-tooltip">
-                        <div>
-                            <mat-checkbox id="benachrichtigungTsEmailAuto_id"
-                                          name="benachrichtigungTsEmailAuto_id"
-                                          [(ngModel)]="stammdaten.benachrichtigungTsEmailAuto">
-                                {{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'|translate}}
-                            </mat-checkbox>
-                        </div>
-                        <dv-tooltip id="benachrichtigungTsEmailAuto_tooltip"
-                                    [text]="'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP' | translate"></dv-tooltip>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <dv-external-client-multiselect
-                        [externalClients]="externalClients">
-                    </dv-external-client-multiselect>
-                </div>
-                <div *ngIf="isSuperAdmin" class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-6"></div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label translate for="anschrift_ts_id">SCOLARIS_USERNAME</label>
-                                <input id="username_scolaris_id"
-                                       type="text"
-                                       name="username_scolaris_id"
-                                       [(ngModel)]="usernameScolaris"
-                                       [maxlength]="255"
-                                       class="form-control"
-                                       #usernameScolarisTS='ngModel'
-                                       (ngModelChange)="usernameScolarisHasChange($event)">
-                                <dv-error-messages [errorObject]="usernameScolarisTS.errors"
-                                                   inputId="username_scolaris_id"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <dv-gemeinde-ts-konfiguration
-                [konfigurationsListe]="stammdaten.konfigurationsListe"
-                [gemeindeStatus]="stammdaten.gemeinde.status"
-                [editMode]="editMode"
-                [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
-                [editMode]="editMode"
-                [gemeindeId]="stammdaten.gemeinde.id"
-                [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
-                [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr">
-            </dv-gemeinde-ts-konfiguration>
-            </div>
-        </fieldset>
-
-    </div>
-
-    <ng-template #viewModeTemplate>
-        <fieldset>
-            <div class="row">
-
-                <!-- Beschwerdeadresse -->
-                <div>
-                    <div *ngIf="!altTSAdresse; else displayTSAdresse" class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
-                        </div>
-                    </div>
-                    <ng-template #displayTSAdresse>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate>ALTERNATIVE_ADRESSE</h3>
-                                <p>{{stammdaten.tsAdresse.organisation}}</p>
-                                <p>{{stammdaten.tsAdresse.strasse}}
-                                    {{stammdaten.tsAdresse.hausnummer}}</p>
-                                <p>{{stammdaten.tsAdresse.plz}} {{stammdaten.tsAdresse.ort}}</p>
-                                <p *ngIf="stammdaten.tsEmail">{{stammdaten.tsEmail}}</p>
-                                <p *ngIf="stammdaten.tsTelefon">{{stammdaten.tsTelefon}}</p>
-                            </div>
-                        </div>
-                    </ng-template>
-                </div>
-
-                <!-- Standardverantwortliche -->
-                <div *ngIf="stammdaten.defaultBenutzerTS && !stammdaten.gemeinde.nurLats" class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <p>{{stammdaten.defaultBenutzerTS.vorname}} {{stammdaten.defaultBenutzerTS.nachname}}</p>
+                        <dv-error-messages
+                            [errorObject]="nameVerantwortlicheTS.errors"
+                            inputId="verantwortliche_ts_id"
+                        ></dv-error-messages>
                     </div>
                 </div>
             </div>
@@ -285,79 +273,299 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>TS_START</h3>
-                            <p>{{tsAnmeldungenStartStr}}</p>
+                            <p>{{ tsAnmeldungenStartStr }}</p>
+                        </div>
+                    </div>
+                    <div
+                        class="col-sm-6"
+                        *ngIf="stammdaten?.gemeindeStammdatenKorrespondenz"
+                    >
+                        <div class="form-group">
+                            <mat-checkbox
+                                id="hasAlternativeLogoTagesschule_id"
+                                name="hasAlternativeLogoTagesschule_id"
+                                [(ngModel)]="
+                                    stammdaten.gemeindeStammdatenKorrespondenz
+                                        .hasAlternativeLogoTagesschule
+                                "
+                            >
+                                {{
+                                    'GEMEINDE_HAS_ALTERNATIVE_TS_LOGO'
+                                        | translate
+                                }}
+                            </mat-checkbox>
+                        </div>
+                        <div
+                            class="form-group"
+                            *ngIf="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .hasAlternativeLogoTagesschule
+                            "
+                        >
+                            <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
+                            <img
+                                [src]="altLogoImageUrl$ | async"
+                                class="tagesschul-profil-image"
+                            />
+                            <input
+                                #fileInput
+                                type="file"
+                                accept="image/png,image/jpeg"
+                                (change)="srcChange(fileInput.files)"
+                                class="gemeinde-profil-fileinput"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group checkbox-with-tooltip">
+                            <div>
+                                <mat-checkbox
+                                    id="benachrichtigungTsEmailAuto_id"
+                                    name="benachrichtigungTsEmailAuto_id"
+                                    [(ngModel)]="
+                                        stammdaten.benachrichtigungTsEmailAuto
+                                    "
+                                >
+                                    {{
+                                        'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'
+                                            | translate
+                                    }}
+                                </mat-checkbox>
+                            </div>
+                            <dv-tooltip
+                                id="benachrichtigungTsEmailAuto_tooltip"
+                                [text]="
+                                    'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP'
+                                        | translate
+                                "
+                            ></dv-tooltip>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <dv-external-client-multiselect
+                            [externalClients]="externalClients"
+                        >
+                        </dv-external-client-multiselect>
+                    </div>
+                    <div *ngIf="isSuperAdmin" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label translate for="anschrift_ts_id"
+                                        >SCOLARIS_USERNAME</label
+                                    >
+                                    <input
+                                        id="username_scolaris_id"
+                                        type="text"
+                                        name="username_scolaris_id"
+                                        [(ngModel)]="usernameScolaris"
+                                        [maxlength]="255"
+                                        class="form-control"
+                                        #usernameScolarisTS="ngModel"
+                                        (ngModelChange)="
+                                            usernameScolarisHasChange($event)
+                                        "
+                                    />
+                                    <dv-error-messages
+                                        [errorObject]="
+                                            usernameScolarisTS.errors
+                                        "
+                                        inputId="username_scolaris_id"
+                                    ></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <dv-gemeinde-ts-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [editMode]="editMode"
+                    [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
+                    [editMode]="editMode"
+                    [gemeindeId]="stammdaten.gemeinde.id"
+                    [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
+                    [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr"
+                >
+                </dv-gemeinde-ts-konfiguration>
+            </div>
+        </fieldset>
+    </div>
+
+    <ng-template #viewModeTemplate>
+        <fieldset>
+            <div class="row">
+                <!-- Beschwerdeadresse -->
+                <div>
+                    <div
+                        *ngIf="!altTSAdresse; else displayTSAdresse"
+                        class="col-sm-6"
+                    >
+                        <div class="form-group">
+                            <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
+                        </div>
+                    </div>
+                    <ng-template #displayTSAdresse>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>ALTERNATIVE_ADRESSE</h3>
+                                <p>{{ stammdaten.tsAdresse.organisation }}</p>
+                                <p>
+                                    {{ stammdaten.tsAdresse.strasse }}
+                                    {{ stammdaten.tsAdresse.hausnummer }}
+                                </p>
+                                <p>
+                                    {{ stammdaten.tsAdresse.plz }}
+                                    {{ stammdaten.tsAdresse.ort }}
+                                </p>
+                                <p *ngIf="stammdaten.tsEmail">
+                                    {{ stammdaten.tsEmail }}
+                                </p>
+                                <p *ngIf="stammdaten.tsTelefon">
+                                    {{ stammdaten.tsTelefon }}
+                                </p>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <!-- Standardverantwortliche -->
+                <div
+                    *ngIf="
+                        stammdaten.defaultBenutzerTS &&
+                        !stammdaten.gemeinde.nurLats
+                    "
+                    class="col-sm-6"
+                >
+                    <div class="form-group">
+                        <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
+                        <p>
+                            {{ stammdaten.defaultBenutzerTS.vorname }}
+                            {{ stammdaten.defaultBenutzerTS.nachname }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!stammdaten.gemeinde.nurLats">
+                <div class="row">
+                    <!-- Anmeldungen akzeptieren ab -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>TS_START</h3>
+                            <p>{{ tsAnmeldungenStartStr }}</p>
                         </div>
                     </div>
 
                     <!-- Alternatives Logo Tagesschule -->
                     <div class="col-sm-6">
-                        <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
+                        <div
+                            class="form-group"
+                            *ngIf="
+                                stammdaten.gemeindeStammdatenKorrespondenz
+                                    .hasAlternativeLogoTagesschule
+                            "
+                        >
                             <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
-                            <img [src]="(altLogoImageUrl$ | async)"
-                                 class="tagesschul-profil-image">
+                            <img
+                                [src]="altLogoImageUrl$ | async"
+                                class="tagesschul-profil-image"
+                            />
                         </div>
                     </div>
                 </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
-                    </h3>
-                    <h3 *ngIf="!stammdaten.benachrichtigungTsEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
-                    </h3>
-                    <p></p>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-external-client-assignment [externalClients]="externalClients">
-                        </dv-external-client-assignment>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
+                            {{
+                                'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate
+                            }}
+                        </h3>
+                        <h3 *ngIf="!stammdaten.benachrichtigungTsEmailAuto">
+                            {{
+                                'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN'
+                                    | translate
+                            }}
+                        </h3>
+                        <p></p>
                     </div>
-                </div>
-                <div *ngIf="isSuperAdmin && isUsernameScolarisNotNullOrUndefined()" class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-6"></div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate>SCOLARIS_USERNAME</h3>
-                                <p>{{usernameScolaris}}</p>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <dv-external-client-assignment
+                                [externalClients]="externalClients"
+                            >
+                            </dv-external-client-assignment>
+                        </div>
+                    </div>
+                    <div
+                        *ngIf="
+                            isSuperAdmin &&
+                            isUsernameScolarisNotNullOrUndefined()
+                        "
+                        class="col-sm-12"
+                    >
+                        <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <h3 translate>SCOLARIS_USERNAME</h3>
+                                    <p>{{ usernameScolaris }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <!-- Tagesschulen der Gemeinden -->
-                <div class="col-sm-6">
-                    <h3>
-                        {{'TAGESSCHULEN_DER_GEMEINDEN' | translate}}
-                        <i *ngIf="!showTSList" class="fa fa-plus-circle" (click)="showListTS()"></i>
-                        <i *ngIf="showTSList" class="fa fa-minus-circle" (click)="hideTSList()"></i>
-                        <ul *ngIf="showTSList">
-                            <li *ngFor="let tagesschule of tagesschulen">
-                            <a uiSref="institution.edit"
-                                [uiParams]="{institutionId: tagesschule.id, editMode: false}">
-                                {{tagesschule.name}}
-                            </a>
-                            </li>
-                        </ul>
-                    </h3>
+                <div class="row">
+                    <!-- Tagesschulen der Gemeinden -->
+                    <div class="col-sm-6">
+                        <h3>
+                            {{ 'TAGESSCHULEN_DER_GEMEINDEN' | translate }}
+                            <i
+                                *ngIf="!showTSList"
+                                class="fa fa-plus-circle"
+                                (click)="showListTS()"
+                            ></i>
+                            <i
+                                *ngIf="showTSList"
+                                class="fa fa-minus-circle"
+                                (click)="hideTSList()"
+                            ></i>
+                            <ul *ngIf="showTSList">
+                                <li *ngFor="let tagesschule of tagesschulen">
+                                    <a
+                                        uiSref="institution.edit"
+                                        [uiParams]="{
+                                            institutionId: tagesschule.id,
+                                            editMode: false
+                                        }"
+                                    >
+                                        {{ tagesschule.name }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </h3>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-2">
-                <dv-gemeinde-ts-konfiguration
-                    [konfigurationsListe]="stammdaten.konfigurationsListe"
-                    [gemeindeStatus]="stammdaten.gemeinde.status"
-                    [editMode]="editMode"
-                    [gemeindeId]="stammdaten.gemeinde.id"
-                    [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
-                    [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr"
-                    [editMode]="editMode"
-                    [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
-                </dv-gemeinde-ts-konfiguration>
-            </div>
+                <div class="mt-2">
+                    <dv-gemeinde-ts-konfiguration
+                        [konfigurationsListe]="stammdaten.konfigurationsListe"
+                        [gemeindeStatus]="stammdaten.gemeinde.status"
+                        [editMode]="editMode"
+                        [gemeindeId]="stammdaten.gemeinde.id"
+                        [korrespondenzspracheDe]="
+                            stammdaten.korrespondenzspracheDe
+                        "
+                        [korrespondenzspracheFr]="
+                            stammdaten.korrespondenzspracheFr
+                        "
+                        [editMode]="editMode"
+                        [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
+                    >
+                    </dv-gemeinde-ts-konfiguration>
+                </div>
             </div>
         </fieldset>
     </ng-template>
 </div>
-

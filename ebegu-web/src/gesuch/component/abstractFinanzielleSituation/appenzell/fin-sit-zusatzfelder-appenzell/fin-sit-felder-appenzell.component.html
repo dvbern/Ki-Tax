@@ -16,196 +16,243 @@
   -->
 
 <div class="row">
-	<div class="col-xs-12">
-		<h3 class="margin-bottom-20">{{'FINANZIELLE_VERHAELTNISSE_ECKDATEN' | translate}}</h3>
-	</div>
-	<div class="col-xs-12  dv-input-container-medium">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
-				[wertBasisjahr]="undefined"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.steuerbaresEinkommen"
-				[korrektur]="finSitZusatzangabenAppenzell?.steuerbaresEinkommen">
-		</dv-input-label-field>
-	</div>
+    <div class="col-xs-12">
+        <h3 class="margin-bottom-20">
+            {{ 'FINANZIELLE_VERHAELTNISSE_ECKDATEN' | translate }}
+        </h3>
+    </div>
+    <div class="col-xs-12 dv-input-container-medium">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
+            [labelMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN'
+            "
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
+            [wertBasisjahr]="undefined"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.steuerbaresEinkommen"
+            [korrektur]="finSitZusatzangabenAppenzell?.steuerbaresEinkommen"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-xs-12  dv-input-container-medium">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.steuerbaresVermoegen"
-				[labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-				[tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.steuerbaresVermoegen"
-				[wertBasisjahr]="undefined"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.steuerbaresVermoegen"
-				[korrektur]="finSitZusatzangabenAppenzell?.steuerbaresVermoegen">
-		</dv-input-label-field>
-	</div>
+    <div class="col-xs-12 dv-input-container-medium">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.steuerbaresVermoegen"
+            [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+            [tooltipMessageKey]="
+                'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.steuerbaresVermoegen"
+            [wertBasisjahr]="undefined"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.steuerbaresVermoegen"
+            [korrektur]="finSitZusatzangabenAppenzell?.steuerbaresVermoegen"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 
 <mat-divider></mat-divider>
-<h3 class="margin-bottom-20">{{'PHASE_1_PRUEFUNG_OBERGRENZEN' | translate}}</h3>
+<h3 class="margin-bottom-20">
+    {{ 'PHASE_1_PRUEFUNG_OBERGRENZEN' | translate }}
+</h3>
 <dv-input-label-field
-		[model]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
-		[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN'"
-		[inputDisabled]="true">
+    [model]="finSitZusatzangabenAppenzell.steuerbaresEinkommen"
+    [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN'"
+    [inputDisabled]="true"
+>
 </dv-input-label-field>
 
-
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.saeule3a"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3ABVG'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3ABVG_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.saeule3a"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.saeule3a"
-				[korrektur]="finSitZusatzangabenAppenzell?.saeule3a">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.saeule3a"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3ABVG'"
+            [tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3ABVG_HELP'"
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.saeule3a"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.saeule3a"
+            [korrektur]="finSitZusatzangabenAppenzell?.saeule3a"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.saeule3aNichtBvg"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3A_NICHT_BVG'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3A_NICHT_BVG_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.saeule3aNichtBvg"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.saeule3aNichtBvg"
-				[korrektur]="finSitZusatzangabenAppenzell?.saeule3aNichtBvg">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.saeule3aNichtBvg"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_SAEULE3A_NICHT_BVG'"
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_SAEULE3A_NICHT_BVG_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.saeule3aNichtBvg"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.saeule3aNichtBvg"
+            [korrektur]="finSitZusatzangabenAppenzell?.saeule3aNichtBvg"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.beruflicheVorsorge"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_BERUFLICHE_VORSORGE'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_BERUFLICHE_VORSORGE_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.beruflicheVorsorge"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.beruflicheVorsorge"
-				[korrektur]="finSitZusatzangabenAppenzell?.beruflicheVorsorge">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.beruflicheVorsorge"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_BERUFLICHE_VORSORGE'"
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_BERUFLICHE_VORSORGE_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.beruflicheVorsorge"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.beruflicheVorsorge"
+            [korrektur]="finSitZusatzangabenAppenzell?.beruflicheVorsorge"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.liegenschaftsaufwand"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_LIEGENSCHAFTS_AUFWAND'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_LIEGENSCHAFTS_AUFWAND_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.liegenschaftsaufwand"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.liegenschaftsaufwand"
-				[korrektur]="finSitZusatzangabenAppenzell?.liegenschaftsaufwand">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.liegenschaftsaufwand"
+            [labelMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_LIEGENSCHAFTS_AUFWAND'
+            "
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_LIEGENSCHAFTS_AUFWAND_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.liegenschaftsaufwand"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.liegenschaftsaufwand"
+            [korrektur]="finSitZusatzangabenAppenzell?.liegenschaftsaufwand"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.einkuenfteBgsa"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_EINKUENFTE_BGSA'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_EINKUENFTE_BGSA_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.einkuenfteBgsa"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.einkuenfteBgsa"
-				[korrektur]="finSitZusatzangabenAppenzell?.einkuenfteBgsa">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.einkuenfteBgsa"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_EINKUENFTE_BGSA'"
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_EINKUENFTE_BGSA_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.einkuenfteBgsa"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.einkuenfteBgsa"
+            [korrektur]="finSitZusatzangabenAppenzell?.einkuenfteBgsa"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.vorjahresverluste"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_VORJAHRESVERLUSTE'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_VORJAHRESVERLUSTE_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.vorjahresverluste"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.vorjahresverluste"
-				[korrektur]="finSitZusatzangabenAppenzell?.vorjahresverluste">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.vorjahresverluste"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_VORJAHRESVERLUSTE'"
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_VORJAHRESVERLUSTE_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.vorjahresverluste"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.vorjahresverluste"
+            [korrektur]="finSitZusatzangabenAppenzell?.vorjahresverluste"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[model]="getVermoegenAnrechenbar()"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_VERMOEGEN_15_PERCENT'"
-				[inputDisabled]="true">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [model]="getVermoegenAnrechenbar()"
+            [labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_VERMOEGEN_15_PERCENT'"
+            [inputDisabled]="true"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.politischeParteiSpende"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_POLITISCHE_PARTEI_SPENDE'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_POLITISCHE_PARTEI_SPENDE_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.politischeParteiSpende"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.politischeParteiSpende"
-				[korrektur]="finSitZusatzangabenAppenzell?.politischeParteiSpende">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="finSitZusatzangabenAppenzell.politischeParteiSpende"
+            [labelMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_POLITISCHE_PARTEI_SPENDE'
+            "
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_POLITISCHE_PARTEI_SPENDE_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="finSitZusatzangabenAppenzell.politischeParteiSpende"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.politischeParteiSpende"
+            [korrektur]="finSitZusatzangabenAppenzell?.politischeParteiSpende"
+        >
+        </dv-input-label-field>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
-		<dv-input-label-field
-				[(model)]="finSitZusatzangabenAppenzell.leistungAnJuristischePersonen"
-				[labelMessageKey]="'FINANZIELLE_VERHAELTNISSE_LEISTUNG_AN_JURISTISCHE_PERSONEN'"
-				[tooltipMessageKey]="'FINANZIELLE_VERHAELTNISSE_LEISTUNG_AN_JURISTISCHE_PERSONEN_HELP'"
-				[inputRequired]="true"
-				[dvOnBlur]="onValueChangeFunction"
-				[inputDisabled]="readOnly"
-				[neuerWert]="finSitZusatzangabenAppenzell.leistungAnJuristischePersonen"
-				[basisjahr]="finanzModel.getBasisjahr()"
-				[showBisher]="showBisher"
-				[deklaration]="deklaration?.leistungAnJuristischePersonen"
-				[korrektur]="finSitZusatzangabenAppenzell?.leistungAnJuristischePersonen">
-		</dv-input-label-field>
-	</div>
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [(model)]="
+                finSitZusatzangabenAppenzell.leistungAnJuristischePersonen
+            "
+            [labelMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_LEISTUNG_AN_JURISTISCHE_PERSONEN'
+            "
+            [tooltipMessageKey]="
+                'FINANZIELLE_VERHAELTNISSE_LEISTUNG_AN_JURISTISCHE_PERSONEN_HELP'
+            "
+            [inputRequired]="true"
+            [dvOnBlur]="onValueChangeFunction"
+            [inputDisabled]="readOnly"
+            [neuerWert]="
+                finSitZusatzangabenAppenzell.leistungAnJuristischePersonen
+            "
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="showBisher"
+            [deklaration]="deklaration?.leistungAnJuristischePersonen"
+            [korrektur]="
+                finSitZusatzangabenAppenzell?.leistungAnJuristischePersonen
+            "
+        >
+        </dv-input-label-field>
+    </div>
 </div>

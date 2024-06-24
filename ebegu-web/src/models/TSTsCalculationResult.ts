@@ -18,7 +18,6 @@
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSTsCalculationResult extends TSAbstractEntity {
-
     public betreuungszeitProWoche: number;
     public verpflegungskosten: number;
     public verpflegungskostenVerguenstigt: number;

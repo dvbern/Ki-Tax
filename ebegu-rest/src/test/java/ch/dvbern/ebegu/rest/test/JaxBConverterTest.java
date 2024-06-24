@@ -20,6 +20,7 @@ import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.api.resource.*;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;

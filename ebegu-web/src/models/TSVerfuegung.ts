@@ -15,13 +15,12 @@
 
 import {
     getZahlungsstatusIgnorieren,
-    TSVerfuegungZeitabschnittZahlungsstatus,
+    TSVerfuegungZeitabschnittZahlungsstatus
 } from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSVerfuegungZeitabschnitt} from './TSVerfuegungZeitabschnitt';
 
 export class TSVerfuegung extends TSAbstractMutableEntity {
-
     private _generatedBemerkungen: string;
     private _manuelleBemerkungen: string;
     private _zeitabschnitte: Array<TSVerfuegungZeitabschnitt>;
@@ -129,7 +128,9 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
      * Checks whether all Zeitabschnitte have the same data as the previous (vorgaenger) Verfuegung.
      */
     public areSameVerfuegteVerfuegungsrelevanteDaten(): boolean {
-        return this._zeitabschnitte.every(za => za.sameVerfuegteVerfuegungsrelevanteDaten);
+        return this._zeitabschnitte.every(
+            za => za.sameVerfuegteVerfuegungsrelevanteDaten
+        );
     }
 
     /**
@@ -138,7 +139,9 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
      * All Ignorierte Zeitabschnitte must be ignored because they will always be ignored
      * Entscheidet, ob die Frage nach dem Ignorieren gestellt werden soll
      */
-    public fragenObIgnorieren(showIfVerrechnetAberKeineBetreuung: boolean): boolean {
+    public fragenObIgnorieren(
+        showIfVerrechnetAberKeineBetreuung: boolean
+    ): boolean {
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const zeitabschnitt = this._zeitabschnitte[i];
@@ -147,11 +150,18 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // eslint-disable-next-line
-            if (zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
-                    && !zeitabschnitt.sameAusbezahlteVerguenstigung) {
-                if (showIfVerrechnetAberKeineBetreuung ||
-                    this.isNotVerrechnetKeineBetreuung(zeitabschnitt.zahlungsstatusInstitution)) {
+
+            if (
+                zeitabschnitt.zahlungsstatusInstitution !==
+                    TSVerfuegungZeitabschnittZahlungsstatus.NEU &&
+                !zeitabschnitt.sameAusbezahlteVerguenstigung
+            ) {
+                if (
+                    showIfVerrechnetAberKeineBetreuung ||
+                    this.isNotVerrechnetKeineBetreuung(
+                        zeitabschnitt.zahlungsstatusInstitution
+                    )
+                ) {
                     // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                     // gestellt werden
                     return true;
@@ -161,8 +171,13 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         return false;
     }
 
-    private isNotVerrechnetKeineBetreuung(status: TSVerfuegungZeitabschnittZahlungsstatus): boolean {
-        return status !== TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
+    private isNotVerrechnetKeineBetreuung(
+        status: TSVerfuegungZeitabschnittZahlungsstatus
+    ): boolean {
+        return (
+            status !==
+            TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG
+        );
     }
 
     public fragenObIgnorierenMahlzeiten(): boolean {
@@ -174,9 +189,12 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // eslint-disable-next-line
-            if (zeitabschnitt.zahlungsstatusAntragsteller !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
-                && !zeitabschnitt.sameAusbezahlteMahlzeiten) {
+
+            if (
+                zeitabschnitt.zahlungsstatusAntragsteller !==
+                    TSVerfuegungZeitabschnittZahlungsstatus.NEU &&
+                !zeitabschnitt.sameAusbezahlteMahlzeiten
+            ) {
                 // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                 // gestellt werden
                 return true;
@@ -190,8 +208,11 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
-            const alreadyIgnored = abschnitt.zahlungsstatusInstitution === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                || abschnitt.zahlungsstatusInstitution === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            const alreadyIgnored =
+                abschnitt.zahlungsstatusInstitution ===
+                    TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT ||
+                abschnitt.zahlungsstatusInstitution ===
+                    TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
@@ -204,8 +225,11 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
-            const alreadyIgnored = abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                || abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            const alreadyIgnored =
+                abschnitt.zahlungsstatusAntragsteller ===
+                    TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT ||
+                abschnitt.zahlungsstatusAntragsteller ===
+                    TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
@@ -218,7 +242,9 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
-            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(abschnitt.zahlungsstatusInstitution);
+            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(
+                abschnitt.zahlungsstatusInstitution
+            );
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
@@ -231,7 +257,9 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
-            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(abschnitt.zahlungsstatusAntragsteller);
+            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(
+                abschnitt.zahlungsstatusAntragsteller
+            );
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }

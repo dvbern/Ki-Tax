@@ -14,7 +14,6 @@
   -->
 
 <div class="zahlungsauftrag-view">
-
     <!-- Toggle fuer den Auszahlungstyp (anstelle von Tabs, da GUI sonst identisch) -->
     <div *ngIf="showAuszahlungsTypToggle()" class="switch-auszahlungstyp">
         <dv-switch
@@ -26,79 +25,170 @@
         ></dv-switch>
     </div>
 
-    <form role="form" #form=ngForm name="form"  [ngClass]="{'ng-submitted': form.submitted}" unsaved-warning-form="" novalidate *ngIf="showForm()">
+    <form
+        role="form"
+        #form="ngForm"
+        name="form"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        unsaved-warning-form=""
+        novalidate
+        *ngIf="showForm()"
+    >
         <div class="row actions">
             <div>
                 <div class="row zahlungen-form flex-row-start-center">
-
                     <!-- Gemeinde -->
-                    <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}">
+                    <div
+                        [ngClass]="{
+                            'col-md-3': !testMode,
+                            'col-md-2': testMode
+                        }"
+                    >
                         <div class="form-group">
-                            <label class="md-no-float" for="gemeinde"
-                            translate>GEMEINDE</label>
+                            <label class="md-no-float" for="gemeinde" translate
+                                >GEMEINDE</label
+                            >
                             <div class="dv-select-style">
-                                <select [(ngModel)]="gemeinde"
-                                        class="form-control"
-                                        id="gemeinde"
-                                        name="gemeinde"
-                                        required>
+                                <select
+                                    [(ngModel)]="gemeinde"
+                                    class="form-control"
+                                    id="gemeinde"
+                                    name="gemeinde"
+                                    required
+                                >
                                     <option [ngValue]="null"></option>
-                                    <option *ngFor="let gemeindeEntry of gemeindenList" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
+                                    <option
+                                        *ngFor="
+                                            let gemeindeEntry of gemeindenList
+                                        "
+                                        [ngValue]="gemeindeEntry"
+                                    >
+                                        {{ gemeindeEntry.name }}
+                                    </option>
                                 </select>
-                                <dv-error-messages [errorObject]="form?.form.get('gemeinde')?.errors"
-                                                   class="error"></dv-error-messages>
+                                <dv-error-messages
+                                    [errorObject]="
+                                        form?.form.get('gemeinde')?.errors
+                                    "
+                                    class="error"
+                                ></dv-error-messages>
                             </div>
                         </div>
                     </div>
 
-                    <div [ngClass]="{'col-md-3': !testMode,'col-md-2': testMode}">
+                    <div
+                        [ngClass]="{
+                            'col-md-3': !testMode,
+                            'col-md-2': testMode
+                        }"
+                    >
                         <div class="form-group">
-                            <label class="md-no-float" for="faelligkeitsdatumPicker" translate>ZAHLUNG_FAELLIGKEITSDATUM</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="faelligkeitsdatumPicker" id="faelligkeitsdatumPicker"
-                                   [(ngModel)]="faelligkeitsdatum"
-                                   [matDatepicker]="faelligkeitsdatumPicker"
-                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                   required>
-                            <mat-datepicker-toggle matSuffix
-                                                   [for]="faelligkeitsdatumPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #faelligkeitsdatumPicker></mat-datepicker>
-                            <dv-error-messages [errorObject]="(form?.form.get('faelligkeitsdatumPicker')?.dirty || form?.submitted) && form?.form.get('faelligkeitsdatumPicker')?.errors"
-                                               class="error"></dv-error-messages>
+                            <label
+                                class="md-no-float"
+                                for="faelligkeitsdatumPicker"
+                                translate
+                                >ZAHLUNG_FAELLIGKEITSDATUM</label
+                            >
+                            <input
+                                class="dv-mat-datepicker"
+                                type="text"
+                                name="faelligkeitsdatumPicker"
+                                id="faelligkeitsdatumPicker"
+                                [(ngModel)]="faelligkeitsdatum"
+                                [matDatepicker]="faelligkeitsdatumPicker"
+                                placeholder="{{
+                                    'DATE_PLACEHOLDER' | translate
+                                }}"
+                                required
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="faelligkeitsdatumPicker"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                                #faelligkeitsdatumPicker
+                            ></mat-datepicker>
+                            <dv-error-messages
+                                [errorObject]="
+                                    (form?.form.get('faelligkeitsdatumPicker')
+                                        ?.dirty ||
+                                        form?.submitted) &&
+                                    form?.form.get('faelligkeitsdatumPicker')
+                                        ?.errors
+                                "
+                                class="error"
+                            ></dv-error-messages>
                         </div>
                     </div>
                     <div class="col-md-2" *ngIf="testMode">
                         <div class="form-group">
-                            <label class="md-no-float" for="datumGeneriertPicker"
-                                   translate>ZAHLUNG_GENERIERT</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="datumGeneriertPicker" id="datumGeneriertPicker"
-                                   [(ngModel)]="datumGeneriert"
-                                   [matDatepicker]="datumGeneriertPicker"
-                                   placeholder="{{'DATE_PLACEHOLDER' | translate}}">
-                            <mat-datepicker-toggle matSuffix
-                                                   [for]="datumGeneriertPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #datumGeneriertPicker></mat-datepicker>
-                            <dv-error-messages [errorObject]="form?.form.get('datumGeneriertPicker')?.errors"
-                                               class="error"></dv-error-messages>
+                            <label
+                                class="md-no-float"
+                                for="datumGeneriertPicker"
+                                translate
+                                >ZAHLUNG_GENERIERT</label
+                            >
+                            <input
+                                class="dv-mat-datepicker"
+                                type="text"
+                                name="datumGeneriertPicker"
+                                id="datumGeneriertPicker"
+                                [(ngModel)]="datumGeneriert"
+                                [matDatepicker]="datumGeneriertPicker"
+                                placeholder="{{
+                                    'DATE_PLACEHOLDER' | translate
+                                }}"
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="datumGeneriertPicker"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                                #datumGeneriertPicker
+                            ></mat-datepicker>
+                            <dv-error-messages
+                                [errorObject]="
+                                    form?.form.get('datumGeneriertPicker')
+                                        ?.errors
+                                "
+                                class="error"
+                            ></dv-error-messages>
                         </div>
                     </div>
-                    <div [ngClass]="{'col-md-4': !testMode,'col-md-3': testMode}">
+                    <div
+                        [ngClass]="{
+                            'col-md-4': !testMode,
+                            'col-md-3': testMode
+                        }"
+                    >
                         <div class="form-group">
-                            <label class="md-no-float" translate
-                                   for="beschrieb">ZAHLUNG_BESCHRIEB</label>
-                            <input id="beschrieb" name="beschrieb"
-                                   [(ngModel)]="beschrieb"
-                                   class="form-control input-dv input-element" required>
-                            <dv-error-messages [errorObject]="form?.form.get('beschrieb')?.errors"
-                                               class="error"></dv-error-messages>
+                            <label class="md-no-float" translate for="beschrieb"
+                                >ZAHLUNG_BESCHRIEB</label
+                            >
+                            <input
+                                id="beschrieb"
+                                name="beschrieb"
+                                [(ngModel)]="beschrieb"
+                                class="form-control input-dv input-element"
+                                required
+                            />
+                            <dv-error-messages
+                                [errorObject]="
+                                    form?.form.get('beschrieb')?.errors
+                                "
+                                class="error"
+                            ></dv-error-messages>
                         </div>
                     </div>
-                    <div flex layout="row"
-                         layout-align="center center">
-                        <dv-loading-button (buttonClick)="createZahlungsauftrag()"
-                                           [ariaLabel]="getLabelZahlungslaufErstellen()" type="submit">
-                            <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>
+                    <div flex layout="row" layout-align="center center">
+                        <dv-loading-button
+                            (buttonClick)="createZahlungsauftrag()"
+                            [ariaLabel]="getLabelZahlungslaufErstellen()"
+                            type="submit"
+                        >
+                            <span class="uppercase">{{
+                                getLabelZahlungslaufErstellen()
+                            }}</span>
                         </dv-loading-button>
                     </div>
                     <div class="col-md-3" *ngIf="checkboxAuszahlungInZukunft">
@@ -118,49 +208,80 @@
     </div>
 
     <div class="row">
-        <div class="col-md-11 ">
+        <div class="col-md-11">
             <h3 translate>ZAHLUNGSAUFTRAEGE</h3>
         </div>
         <div class="col-md-1 text-right">
-            <h3>{{totalResult}}</h3>
+            <h3>{{ totalResult }}</h3>
         </div>
     </div>
     <div class="table-responsive" *ngIf="showGemeindeFilter()">
         <table class="table ebegu-table fixedtable table-striped">
             <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th>
-                    <div class="dv-select-style">
-                        <select name="gemeindeFilter" [(ngModel)]="filterGemeinde" (ngModelChange)="updateZahlungsauftrag()">
-                            <option [ngValue]="null" selected>{{"ALLE" | translate}}</option>
-                            <option *ngFor="let gemeindeItem of gemeindenList" [ngValue]="gemeindeItem">{{gemeindeItem.name}}</option>
-                        </select>
-                    </div>
-                </th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <div class="dv-select-style">
+                            <select
+                                name="gemeindeFilter"
+                                [(ngModel)]="filterGemeinde"
+                                (ngModelChange)="updateZahlungsauftrag()"
+                            >
+                                <option [ngValue]="null" selected>
+                                    {{ 'ALLE' | translate }}
+                                </option>
+                                <option
+                                    *ngFor="let gemeindeItem of gemeindenList"
+                                    [ngValue]="gemeindeItem"
+                                >
+                                    {{ gemeindeItem.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
             </thead>
         </table>
     </div>
     <div class="dv-table dv-simple-table table-striped" *ngIf="datasource">
         <div class="mat-elevation-z0">
-            <mat-table matSort (matSortChange)="sortData($event)"
-                       [dataSource]="datasource">
-
-                <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.attributeName">
-                    <mat-header-cell [mat-sort-header]="column.attributeName" *matHeaderCellDef class="ellipsis">
-                        <span>{{column.displayedName | translate}}</span>
+            <mat-table
+                matSort
+                (matSortChange)="sortData($event)"
+                [dataSource]="datasource"
+            >
+                <ng-container
+                    *ngFor="let column of tableColumns"
+                    [matColumnDef]="column.attributeName"
+                >
+                    <mat-header-cell
+                        [mat-sort-header]="column.attributeName"
+                        *matHeaderCellDef
+                        class="ellipsis"
+                    >
+                        <span>{{ column.displayedName | translate }}</span>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="ellipsis pointer-cursor" (click)="gotoZahlung(element)">
-                        <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
+                    <mat-cell
+                        *matCellDef="let element"
+                        class="ellipsis pointer-cursor"
+                        (click)="gotoZahlung(element)"
+                    >
+                        <span
+                            [title]="
+                                getDisplayValue(element, column) | translate
+                            "
+                            [innerHTML]="
+                                getDisplayValue(element, column) | translate
+                            "
+                        ></span>
                     </mat-cell>
                 </ng-container>
 
@@ -169,20 +290,29 @@
                         <span translate>ZAHLUNG_TOTAL</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <i class="fa fa-exclamation-triangle warning-negative-zahlungen"
-                           *ngIf="element.hasNegativeZahlungen"
-                           [title]="'TOOLTIP_NEGATIVE_WERTE' | translate"></i>
-                        <span [title]="element.betragTotalAuftrag">{{element.betragTotalAuftrag | currency:'':''}}</span>
+                        <i
+                            class="fa fa-exclamation-triangle warning-negative-zahlungen"
+                            *ngIf="element.hasNegativeZahlungen"
+                            [title]="'TOOLTIP_NEGATIVE_WERTE' | translate"
+                        ></i>
+                        <span [title]="element.betragTotalAuftrag">{{
+                            element.betragTotalAuftrag | currency: '' : ''
+                        }}</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container [matColumnDef]="'zahlungPain'">
                     <mat-header-cell *matHeaderCellDef class="ellipsis">
-                        <span [innerHTML]="'ZAHLUNG_PAIN001' | translate"></span>
+                        <span
+                            [innerHTML]="'ZAHLUNG_PAIN001' | translate"
+                        ></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button type="button" (buttonClick)="downloadPain(element)"
-                                           [buttonClass]="'dv-btn-operation'">
+                        <dv-loading-button
+                            type="button"
+                            (buttonClick)="downloadPain(element)"
+                            [buttonClass]="'dv-btn-operation'"
+                        >
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>
                     </mat-cell>
@@ -193,8 +323,12 @@
                         <span [innerHTML]="'ZAHLUNG_INFOMA' | translate"></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button *ngIf="element.gemeinde.infomaZahlungen" type="button" (buttonClick)="downloadInfoma(element)"
-                                           [buttonClass]="'dv-btn-operation'">
+                        <dv-loading-button
+                            *ngIf="element.gemeinde.infomaZahlungen"
+                            type="button"
+                            (buttonClick)="downloadInfoma(element)"
+                            [buttonClass]="'dv-btn-operation'"
+                        >
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>
                     </mat-cell>
@@ -205,8 +339,11 @@
                         <span translate>ZAHLUNG_DETAILPOSITIONEN</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button type="button" (buttonClick)="downloadAllDetails(element)"
-                                           [buttonClass]="'dv-btn-operation'">
+                        <dv-loading-button
+                            type="button"
+                            (buttonClick)="downloadAllDetails(element)"
+                            [buttonClass]="'dv-btn-operation'"
+                        >
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>
                     </mat-cell>
@@ -217,68 +354,120 @@
                         <span translate></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button *ngIf="isEditable(element.status) && !isEditMode(element.id)"
-                                           type="button" (buttonClick)="edit(element)"
-                                           [buttonClass]="'dv-btn-operation'">
+                        <dv-loading-button
+                            *ngIf="
+                                isEditable(element.status) &&
+                                !isEditMode(element.id)
+                            "
+                            type="button"
+                            (buttonClick)="edit(element)"
+                            [buttonClass]="'dv-btn-operation'"
+                        >
                             <i class="fa fa-lg fa-pencil-square-o"></i>
                         </dv-loading-button>
-                        <dv-loading-button *ngIf="isEditMode(element.id) && isEditValid()"
-                                           type="button" (buttonClick)="save(element)"
-                                           [buttonClass]="'dv-btn-operation'">
+                        <dv-loading-button
+                            *ngIf="isEditMode(element.id) && isEditValid()"
+                            type="button"
+                            (buttonClick)="save()"
+                            [buttonClass]="'dv-btn-operation'"
+                        >
                             <i class="fa fa-lg fa-floppy-o"></i>
                         </dv-loading-button>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container [matColumnDef]="'datumFaellig'">
-                    <mat-header-cell *matHeaderCellDef class="ellipsis" [mat-sort-header]="'datumFaellig'">
+                    <mat-header-cell
+                        *matHeaderCellDef
+                        class="ellipsis"
+                        [mat-sort-header]="'datumFaellig'"
+                    >
                         <span translate>ZAHLUNG_FAELLIGKEIT</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-
-                            <div *ngIf="isEditMode(element.id)" class="form-group">
-                                <label class="md-no-float" for="faelligkeitsdatumRow"
-                                       translate>ZAHLUNG_GENERIERT</label>
-                                <input class="dv-mat-datepicker" type="text"
-                                       name="faelligkeitsdatumRow" id="faelligkeitsdatumRow"
-                                       [(ngModel)]="zahlungsauftragToEdit.datumFaellig"
-                                       [matDatepicker]="faelligkeitsdatumRow"
-                                       required>
-                                <mat-datepicker-toggle matSuffix
-                                                       [for]="faelligkeitsdatumRow"></mat-datepicker-toggle>
-                                <mat-datepicker #faelligkeitsdatumRow></mat-datepicker>
-                                <div ng-messages="vm.form.faelligkeitsdatumRow.$error" role="alert"
-                                     class="error"></div>
-                            </div>
+                        <div *ngIf="isEditMode(element.id)" class="form-group">
+                            <label
+                                class="md-no-float"
+                                for="faelligkeitsdatumRow"
+                                translate
+                                >ZAHLUNG_GENERIERT</label
+                            >
+                            <input
+                                class="dv-mat-datepicker"
+                                type="text"
+                                name="faelligkeitsdatumRow"
+                                id="faelligkeitsdatumRow"
+                                [(ngModel)]="zahlungsauftragToEdit.datumFaellig"
+                                [matDatepicker]="faelligkeitsdatumRow"
+                                required
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="faelligkeitsdatumRow"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                                #faelligkeitsdatumRow
+                            ></mat-datepicker>
+                            <div
+                                ng-messages="vm.form.faelligkeitsdatumRow.$error"
+                                role="alert"
+                                class="error"
+                            ></div>
+                        </div>
                         <!-- datumFaellig -->
-                        <div *ngIf="!isEditMode(element.id)" (click)="gotoZahlung(element)" class="pointer-cursor full-width-heigth">
-                            <span [attr.title]="element.datumFaellig.format('DD.MM.YYYY')">
-                                {{element.datumFaellig.format('DD.MM.YYYY')}}
+                        <div
+                            *ngIf="!isEditMode(element.id)"
+                            (click)="gotoZahlung(element)"
+                            class="pointer-cursor full-width-heigth"
+                        >
+                            <span
+                                [attr.title]="
+                                    element.datumFaellig.format('DD.MM.YYYY')
+                                "
+                            >
+                                {{ element.datumFaellig.format('DD.MM.YYYY') }}
                             </span>
                         </div>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container [matColumnDef]="'beschrieb'">
-                    <mat-header-cell *matHeaderCellDef class="ellipsis" [mat-sort-header]="'beschrieb'">
+                    <mat-header-cell
+                        *matHeaderCellDef
+                        class="ellipsis"
+                        [mat-sort-header]="'beschrieb'"
+                    >
                         <span translate>ZAHLUNG_BESCHRIEB</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-
-                            <div *ngIf="isEditMode(element.id)" class="form-group">
-                                <label class="md-no-float" for="beschriebRow"
-                                       translate>BESCHRIEB</label>
-                                <input type="text"
-                                       name="beschriebRow" id="beschriebRow"
-                                       [(ngModel)]="zahlungsauftragToEdit.beschrieb"
-                                       required>
-                                <div ng-messages="vm.form.faelligkeitsdatumRow.$error" role="alert"
-                                     class="error"></div>
-                            </div>
+                        <div *ngIf="isEditMode(element.id)" class="form-group">
+                            <label
+                                class="md-no-float"
+                                for="beschriebRow"
+                                translate
+                                >BESCHRIEB</label
+                            >
+                            <input
+                                type="text"
+                                name="beschriebRow"
+                                id="beschriebRow"
+                                [(ngModel)]="zahlungsauftragToEdit.beschrieb"
+                                required
+                            />
+                            <div
+                                ng-messages="vm.form.faelligkeitsdatumRow.$error"
+                                role="alert"
+                                class="error"
+                            ></div>
+                        </div>
                         <!-- datumFaellig -->
-                        <div *ngIf="!isEditMode(element.id)" (click)="gotoZahlung(element)" class="pointer-cursor full-width-heigth">
-                            <span [attr.title]="element.beschrieb" >
-                                {{element.beschrieb}}
+                        <div
+                            *ngIf="!isEditMode(element.id)"
+                            (click)="gotoZahlung(element)"
+                            class="pointer-cursor full-width-heigth"
+                        >
+                            <span [attr.title]="element.beschrieb">
+                                {{ element.beschrieb }}
                             </span>
                         </div>
                     </mat-cell>
@@ -290,17 +479,30 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
                         <td class="symbol text-center">
-                            <dv-loading-button *ngIf="isEditable(element.status) && !isEditMode(element.id)"
-                                               type="button" (buttonClick)="ausloesen(element.id)"
-                                               [buttonClass]="'dv-btn-operation'">
-                                <i class="fa fa-lg fa-arrow-right" style="color: green"></i>
+                            <dv-loading-button
+                                *ngIf="
+                                    isEditable(element.status) &&
+                                    !isEditMode(element.id)
+                                "
+                                type="button"
+                                (buttonClick)="ausloesen(element.id)"
+                                [buttonClass]="'dv-btn-operation'"
+                            >
+                                <i
+                                    class="fa fa-lg fa-arrow-right"
+                                    style="color: green"
+                                ></i>
                             </dv-loading-button>
                         </td>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="getColumnsAttributeName()"></mat-header-row>
-                <mat-row *matRowDef="let element; columns: getColumnsAttributeName();"></mat-row>
+                <mat-header-row
+                    *matHeaderRowDef="getColumnsAttributeName()"
+                ></mat-header-row>
+                <mat-row
+                    *matRowDef="let element; columns: getColumnsAttributeName()"
+                ></mat-row>
             </mat-table>
 
             <mat-paginator [pageSize]="PAGE_SIZE"></mat-paginator>
@@ -308,8 +510,16 @@
             <div class="bottom-pagination">
                 <nav>
                     <ul class="pagination">
-                        <li *ngFor="let index of paginationItems" [ngClass]="{'active': index - 1 === page}">
-                            <a (click)="handlePagination({pageIndex: index - 1})">{{index}}</a>
+                        <li
+                            *ngFor="let index of paginationItems"
+                            [ngClass]="{active: index - 1 === page}"
+                        >
+                            <a
+                                (click)="
+                                    handlePagination({pageIndex: index - 1})
+                                "
+                                >{{ index }}</a
+                            >
                         </li>
                     </ul>
                 </nav>

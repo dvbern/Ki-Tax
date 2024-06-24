@@ -44,7 +44,9 @@ const getNettoertraegeErbengemeinschaft = () => {
 };
 
 const getEinkommenInVereinfachtemVerfahrenNein = () => {
-    return cy.getByData('einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein');
+    return cy.getByData(
+        'einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein'
+    );
 };
 
 const getGeleisteteAlimente = () => {
@@ -60,11 +62,11 @@ const getGewinnungskosten = () => {
 };
 
 const getSteuerdatenzugriff = (answer: string) => {
-	return cy.getByData('steuerdatenzugriff.radio-value.' + answer);
+    return cy.getByData('steuerdatenzugriff.radio-value.' + answer);
 };
 
 const getAutomatischePruefung = (answer: string) => {
-	return cy.getByData('automatischePruefung.radio-value.' + answer);
+    return cy.getByData('automatischePruefung.radio-value.' + answer);
 };
 
 const getShowSelbstaendig = () => {
@@ -86,8 +88,12 @@ const getShowErsatzeinkommenSelbststaendigkeit = () => {
     return cy.getByData('show-ersatzeinkommen-selbststaendigkeit');
 };
 
-const getShowErsatzeinkommenSelbststaendigkeitRadioButton = (answer: string) => {
-    return cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.' + answer);
+const getShowErsatzeinkommenSelbststaendigkeitRadioButton = (
+    answer: string
+) => {
+    return cy.getByData(
+        'showErsatzeinkommenSelbststaendigkeit.radio-value.' + answer
+    );
 };
 
 const getErsatzeinkommenSelbststaendigkeitBasisjahr = () => {
@@ -107,26 +113,47 @@ const getErsatzeinkommenInvalidErrorMessage = () => {
 };
 
 const getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage = () => {
-    return cy.getByData('all-ersatzeinkommen-selbststaendigkeit-zero-error-message');
+    return cy.getByData(
+        'all-ersatzeinkommen-selbststaendigkeit-zero-error-message'
+    );
 };
 
 // !! -- PAGE ACTIONS -- !!
-const fillFinanzielleSituationForm = (dataset: keyof typeof FixtureFinSit, gs: 'GS1' | 'GS2') => {
-    FixtureFinSit[dataset]((allData) => {
+const fillFinanzielleSituationForm = (
+    dataset: keyof typeof FixtureFinSit,
+    gs: 'GS1' | 'GS2'
+) => {
+    FixtureFinSit[dataset](allData => {
         cy.url().should('include', 'finanzielleSituation');
         cy.wait(2000);
-        FinanzielleSituationPO.getNettoLohn().find('input').type(allData[gs].nettolohn);
-        FinanzielleSituationPO.getFamilienzulagen().find('input').type(allData[gs].familienzulage);
-        FinanzielleSituationPO.getErsatzeinkommen().find('input').type(allData[gs].ersatzeinkommen);
-        FinanzielleSituationPO.getErhalteneAlimente().find('input').type(allData[gs].erhalteneAlimente);
-        FinanzielleSituationPO.getBruttoertraegeVermoegen().find('input').type(allData[gs].bruttoErtraegeVermoegen);
+        FinanzielleSituationPO.getNettoLohn()
+            .find('input')
+            .type(allData[gs].nettolohn);
+        FinanzielleSituationPO.getFamilienzulagen()
+            .find('input')
+            .type(allData[gs].familienzulage);
+        FinanzielleSituationPO.getErsatzeinkommen()
+            .find('input')
+            .type(allData[gs].ersatzeinkommen);
+        FinanzielleSituationPO.getErhalteneAlimente()
+            .find('input')
+            .type(allData[gs].erhalteneAlimente);
+        FinanzielleSituationPO.getBruttoertraegeVermoegen()
+            .find('input')
+            .type(allData[gs].bruttoErtraegeVermoegen);
         FinanzielleSituationPO.getNettoertraegeErbengemeinschaft()
             .find('input')
             .type(allData[gs].nettoertraegeErbengemeinschaften);
         FinanzielleSituationPO.getEinkommenInVereinfachtemVerfahrenNein().click();
-        FinanzielleSituationPO.getGeleisteteAlimente().find('input').type(allData[gs].geleisteteAlimente);
-        FinanzielleSituationPO.getAbzugSchuldzinsen().find('input').type(allData[gs].abzugSchuldzinsen);
-        FinanzielleSituationPO.getGewinnungskosten().find('input').type(allData[gs].gewinnungskosten);
+        FinanzielleSituationPO.getGeleisteteAlimente()
+            .find('input')
+            .type(allData[gs].geleisteteAlimente);
+        FinanzielleSituationPO.getAbzugSchuldzinsen()
+            .find('input')
+            .type(allData[gs].abzugSchuldzinsen);
+        FinanzielleSituationPO.getGewinnungskosten()
+            .find('input')
+            .type(allData[gs].gewinnungskosten);
     });
 };
 
@@ -163,6 +190,5 @@ export const FinanzielleSituationPO = {
     getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage,
     // page actions
     fillFinanzielleSituationForm,
-    saveFormAndGoNext,
+    saveFormAndGoNext
 };
-

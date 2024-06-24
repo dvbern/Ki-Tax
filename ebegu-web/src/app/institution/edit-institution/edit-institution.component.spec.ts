@@ -19,25 +19,43 @@ import {SharedModule} from '../../shared/shared.module';
 import {EditInstitutionComponent} from './edit-institution.component';
 
 describe('EditInstitutionComponent', () => {
-
     let component: EditInstitutionComponent;
     let fixture: ComponentFixture<EditInstitutionComponent>;
 
-    const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
-        ['getAllActiveTraegerschaften']);
-    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenReadableForCurrentBenutzer']);
-    const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
-        ['findInstitutionStammdaten']);
-    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(
+        TraegerschaftRS.name,
+        ['getAllActiveTraegerschaften']
+    );
+    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(
+        InstitutionRS.name,
+        ['getInstitutionenReadableForCurrentBenutzer']
+    );
+    const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(
+        InstitutionStammdatenRS.name,
+        ['findInstitutionStammdaten']
+    );
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(
+        ErrorService.name,
+        ['getErrors']
+    );
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params',
+        'from'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['isOneOfRoles']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
             imports: [
                 NoopAnimationsModule,
@@ -52,16 +70,22 @@ describe('EditInstitutionComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
-                {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
+                {
+                    provide: InstitutionStammdatenRS,
+                    useValue: stammdatenServiceSpy
+                },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
             declarations: [EditInstitutionComponent]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);
-        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(of([]));
+        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(
+            of([])
+        );
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));
@@ -86,61 +110,104 @@ describe('EditInstitutionComponent', () => {
             it('should be false if start date is set to past and end date is set to past', () => {
                 const current = new TSDateRange(aug2, sep28);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be false if start date is set to past and end date stays same', () => {
                 const current = new TSDateRange(aug2, sep27);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
 
             it('should be false if start date is set to past and end date is set to future', () => {
                 const current = new TSDateRange(aug2, sep27);
                 const change = new TSDateRange(aug1, sep28);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
         });
 
         describe('start date stays same', () => {
-
             it('should be true if start date stays same and end date is set to past', () => {
                 const current = new TSDateRange(aug1, sep28);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be false if start date stays same and end date stays same', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
 
             it('should be false if start date stays same and end date is set to future', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug1, sep28);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
         });
 
         describe('start date to future', () => {
-
             it('should be true if start date is set to future and end date is set to past', () => {
                 const current = new TSDateRange(aug1, sep28);
                 const change = new TSDateRange(aug2, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be true if start date is set to future and end date stays same', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug2, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be true if start date is set to future and end date is set to future', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug2, sep28);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
         });
 
@@ -148,19 +215,34 @@ describe('EditInstitutionComponent', () => {
             it('should be false if start date is set to past', () => {
                 const current = new TSDateRange(aug2, sep27);
                 const change = new TSDateRange(aug1, null);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
 
             it('should be false if start date stays same', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug1, null);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeFalse();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeFalse();
             });
 
             it('should be true if start date is set to future', () => {
                 const current = new TSDateRange(aug1, sep27);
                 const change = new TSDateRange(aug2, null);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
         });
 
@@ -168,21 +250,35 @@ describe('EditInstitutionComponent', () => {
             it('should be false if start date is set to past', () => {
                 const current = new TSDateRange(aug2, null);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be false if start date stays same', () => {
                 const current = new TSDateRange(aug1, null);
                 const change = new TSDateRange(aug1, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
 
             it('should be false if start date is set to future', () => {
                 const current = new TSDateRange(aug1, null);
                 const change = new TSDateRange(aug2, sep27);
-                expect(EditInstitutionComponent.hasGueltigkeitDecreased(current, change)).toBeTrue();
+                expect(
+                    EditInstitutionComponent.hasGueltigkeitDecreased(
+                        current,
+                        change
+                    )
+                ).toBeTrue();
             });
         });
-
     });
 });

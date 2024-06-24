@@ -19,22 +19,27 @@
     <div class="antrag-container">
         <div class="side-nav">
             <dv-wizard-side-nav
-                    [id]="ferienbetreuungId"
-                    [wizardTyp]="wizardTyp"
-                    [status]="ferienbetreuungContainer?.status | translate"
-                    [gemeinde]="ferienbetreuungContainer?.gemeinde"
-                    [gesuchsperiode]="ferienbetreuungContainer?.gesuchsperiode"
-                    [subHeader]="'FERIENBETREUUNG' | translate"
+                [id]="ferienbetreuungId"
+                [wizardTyp]="wizardTyp"
+                [status]="ferienbetreuungContainer?.status | translate"
+                [gemeinde]="ferienbetreuungContainer?.gemeinde"
+                [gesuchsperiode]="ferienbetreuungContainer?.gesuchsperiode"
+                [subHeader]="'FERIENBETREUUNG' | translate"
             >
             </dv-wizard-side-nav>
             <div class="flex-spacing-6"></div>
             <div class="padding-left-20">
-                <dv-loading-button (buttonClick)="downloadFerienbetreuungReport()">{{'PDF_EXPORTIEREN' | translate}}</dv-loading-button>
+                <dv-loading-button
+                    (buttonClick)="downloadFerienbetreuungReport()"
+                    >{{ 'PDF_EXPORTIEREN' | translate }}</dv-loading-button
+                >
             </div>
         </div>
         <div class="antrag">
             <ui-view></ui-view>
         </div>
-        <dv-ferienbetreuung-kommantar *ngIf="showKommentare()"></dv-ferienbetreuung-kommantar>
+        <dv-ferienbetreuung-kommantar
+            *ngIf="showKommentare()"
+        ></dv-ferienbetreuung-kommantar>
     </div>
 </div>

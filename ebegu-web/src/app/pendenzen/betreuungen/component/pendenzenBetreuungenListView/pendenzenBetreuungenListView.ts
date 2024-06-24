@@ -21,7 +21,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {BerechnungsManager} from '../../../../../gesuch/service/berechnungsManager';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
-import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSGemeinde} from '../../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../../../models/TSInstitution';
@@ -36,7 +36,9 @@ import {PendenzBetreuungenRS} from '../../service/PendenzBetreuungenRS.rest';
 
 const LOG = LogFactory.createLog('PendenzenBetreuungenListViewController');
 
-export class PendenzenBetreuungenListViewComponentConfig implements IComponentOptions {
+export class PendenzenBetreuungenListViewComponentConfig
+    implements IComponentOptions
+{
     public transclude = false;
     public template = require('./pendenzenBetreuungenListView.html');
     public controller = PendenzenBetreuungenListViewController;
@@ -44,7 +46,6 @@ export class PendenzenBetreuungenListViewComponentConfig implements IComponentOp
 }
 
 export class PendenzenBetreuungenListViewController implements IController {
-
     public static $inject: string[] = [
         'PendenzBetreuungenRS',
         'EbeguUtil',
@@ -85,8 +86,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         private readonly $state: StateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.updatePendenzenList();
@@ -111,40 +111,58 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     private updatePendenzenList(): void {
-        this.pendenzBetreuungenRS.getPendenzenBetreuungenList().then(response => {
-            this.pendenzenList = response;
-            this.numberOfPages = this.pendenzenList.length / this.itemsByPage;
-        });
+        this.pendenzBetreuungenRS
+            .getPendenzenBetreuungenList()
+            .then(response => {
+                this.pendenzenList = response;
+                this.numberOfPages =
+                    this.pendenzenList.length / this.itemsByPage;
+            });
     }
 
     public updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllAktivUndInaktivGesuchsperioden().then(response => {
-            this.extractGesuchsperiodeStringList(response);
-        });
+        this.gesuchsperiodeRS
+            .getAllAktivUndInaktivGesuchsperioden()
+            .then(response => {
+                this.extractGesuchsperiodeStringList(response);
+            });
     }
 
-    private extractGesuchsperiodeStringList(allActiveGesuchsperioden: TSGesuchsperiode[]): void {
+    private extractGesuchsperiodeStringList(
+        allActiveGesuchsperioden: TSGesuchsperiode[]
+    ): void {
         allActiveGesuchsperioden.forEach(gesuchsperiode => {
-            this.activeGesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+            this.activeGesuchsperiodenList.push(
+                gesuchsperiode.gesuchsperiodeString
+            );
         });
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
-            this.institutionenList = response;
-        }, error => LOG.error(error));
+        this.institutionRS
+            .getInstitutionenReadableForCurrentBenutzer()
+            .subscribe(
+                response => {
+                    this.institutionenList = response;
+                },
+                error => LOG.error(error)
+            );
     }
 
     public updateBetreuungsangebotTypList(): void {
-        this.institutionStammdatenRS.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer().then(response => {
-            this.betreuungsangebotTypList = response;
-        });
+        this.institutionStammdatenRS
+            .getBetreuungsangeboteForInstitutionenOfCurrentBenutzer()
+            .then(response => {
+                this.betreuungsangebotTypList = response;
+            });
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(gemeinden => {
+            .subscribe(
+                gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
                 err => LOG.error(err)
@@ -155,15 +173,23 @@ export class PendenzenBetreuungenListViewController implements IController {
         return this.pendenzenList;
     }
 
-    public editPendenzBetreuungen(pendenz: TSPendenzBetreuung, event: any): void {
+    public editPendenzBetreuungen(
+        pendenz: TSPendenzBetreuung,
+        event: any
+    ): void {
         if (pendenz) {
-            const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+            const isCtrlKeyPressed: boolean = event && event.ctrlKey;
             this.openBetreuung(pendenz, isCtrlKeyPressed);
         }
     }
 
-    private openBetreuung(pendenz: TSPendenzBetreuung, isCtrlKeyPressed: boolean): void {
-        const numberParts = this.ebeguUtil.splitBetreuungsnummer(pendenz.betreuungsNummer);
+    private openBetreuung(
+        pendenz: TSPendenzBetreuung,
+        isCtrlKeyPressed: boolean
+    ): void {
+        const numberParts = this.ebeguUtil.splitBetreuungsnummer(
+            pendenz.betreuungsNummer
+        );
         if (!numberParts || !pendenz) {
             return;
         }
@@ -190,22 +216,34 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     private initHasInstitutionenInStatusAngemeldet(): void {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getInstitutionProfilEditRoles()
+            )
+        ) {
             return;
         }
-        this.institutionRS.hasInstitutionenInStatusAngemeldet()
-            .subscribe(result => {
+        this.institutionRS.hasInstitutionenInStatusAngemeldet().subscribe(
+            result => {
                 this.hasInstitutionenInStatusAngemeldet = result;
-            }, error => LOG.error(error));
+            },
+            error => LOG.error(error)
+        );
     }
 
     private initIsStammdatenCheckRequired(): void {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles())) {
+        if (
+            !this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getInstitutionProfilEditRoles()
+            )
+        ) {
             return;
         }
-        this.institutionRS.isStammdatenCheckRequired()
-            .subscribe(result => {
+        this.institutionRS.isStammdatenCheckRequired().subscribe(
+            result => {
                 this.isStammdatenCheckRequired = result;
-            }, error => LOG.error(error));
+            },
+            error => LOG.error(error)
+        );
     }
 }

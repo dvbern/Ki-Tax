@@ -24,11 +24,14 @@ import {
     isAnyStatusOfVerfuegt,
     TSAntragStatus
 } from '../../../../models/enums/TSAntragStatus';
-import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
+import {
+    getNormalizedTSAntragTypValues,
+    TSAntragTyp
+} from '../../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
     TSBetreuungsangebotTyp
-} from '../../../../models/enums/TSBetreuungsangebotTyp';
+} from '../../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAbstractAntragDTO} from '../../../../models/TSAbstractAntragDTO';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
@@ -65,10 +68,13 @@ export class DVQuicksearchListConfig implements IComponentOptions {
 }
 
 export class DVQuicksearchListController implements IController {
-
     public static $inject: string[] = [
-        '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$filter',
+        'InstitutionRS',
+        'GesuchsperiodeRS',
+        '$state',
+        'AuthServiceRS',
+        'GemeindeRS',
         'ApplicationPropertyRS'
     ];
 
@@ -101,6 +107,7 @@ export class DVQuicksearchListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
     private anmeldungTSEnabled: boolean;
+    private angebotMittagstischEnabled: boolean;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -110,8 +117,7 @@ export class DVQuicksearchListController implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS
-    ) {
-    }
+    ) {}
 
     public userHasChanged(selectedUser: TSBenutzerNoDetails): void {
         this.userChanged({user: selectedUser});
@@ -123,6 +129,7 @@ export class DVQuicksearchListController implements IController {
         this.updateGemeindenList();
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.anmeldungTSEnabled = res.angebotTSActivated;
+            this.angebotMittagstischEnabled = res.angebotMittagstischActivated;
         });
     }
 
@@ -136,32 +143,46 @@ export class DVQuicksearchListController implements IController {
     }
 
     public getAntragStatus(): Array<TSAntragStatus> {
-        return getTSAntragStatusValuesByRole(this.authServiceRS.getPrincipalRole());
+        return getTSAntragStatusValuesByRole(
+            this.authServiceRS.getPrincipalRole()
+        );
     }
 
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
+        return getTSBetreuungsangebotTypValuesForMandant(
+            this.isTagesschulangebotEnabled(),
+            this.angebotMittagstischEnabled
+        );
     }
 
     public updateGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllAktivUndInaktivGesuchsperioden().then((response: any) => {
-            this.gesuchsperiodenList = [];
-            response.forEach((gesuchsperiode: TSGesuchsperiode) => {
-                this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+        this.gesuchsperiodeRS
+            .getAllAktivUndInaktivGesuchsperioden()
+            .then((response: any) => {
+                this.gesuchsperiodenList = [];
+                response.forEach((gesuchsperiode: TSGesuchsperiode) => {
+                    this.gesuchsperiodenList.push(
+                        gesuchsperiode.gesuchsperiodeString
+                    );
+                });
             });
-        });
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getAllInstitutionen().subscribe((response: any) => {
-            this.institutionenList = response;
-        }, error => LOG.error(error));
+        this.institutionRS.getAllInstitutionen().subscribe(
+            (response: any) => {
+                this.institutionenList = response;
+            },
+            error => LOG.error(error)
+        );
     }
 
     private updateGemeindenList(): void {
-        this.gemeindeRS.getGemeindenForPrincipal$()
+        this.gemeindeRS
+            .getGemeindenForPrincipal$()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(gemeinden => {
+            .subscribe(
+                gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
                 err => LOG.error(err)
@@ -180,15 +201,23 @@ export class DVQuicksearchListController implements IController {
         return EbeguUtil.addZerosToFallNummer(fallnummer);
     }
 
-    public translateBetreuungsangebotTypList(betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>): string {
+    public translateBetreuungsangebotTypList(
+        betreuungsangebotTypList: Array<TSBetreuungsangebotTyp>
+    ): string {
         let result = '';
         if (betreuungsangebotTypList) {
             let prefix = '';
             if (Array.isArray(betreuungsangebotTypList)) {
                 // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
-                    const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
-                    result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
+                    const tsBetreuungsangebotTyp =
+                        TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
+                    result =
+                        result +
+                        prefix +
+                        this.$filter('translate')(
+                            tsBetreuungsangebotTyp
+                        ).toString();
                     prefix = ', ';
                 }
             }
@@ -201,7 +230,7 @@ export class DVQuicksearchListController implements IController {
             return;
         }
 
-        const isCtrlKeyPressed: boolean = (event && event.ctrlKey);
+        const isCtrlKeyPressed: boolean = event && event.ctrlKey;
         if (abstractAntrag instanceof TSAntragDTO) {
             this.navigateToGesuch(abstractAntrag, isCtrlKeyPressed);
         } else if (abstractAntrag instanceof TSFallAntragDTO) {
@@ -209,9 +238,14 @@ export class DVQuicksearchListController implements IController {
         }
     }
 
-    private navigateToMitteilungen(isCtrlKeyPressed: boolean, fallAntrag: TSFallAntragDTO): void {
+    private navigateToMitteilungen(
+        isCtrlKeyPressed: boolean,
+        fallAntrag: TSFallAntragDTO
+    ): void {
         if (isCtrlKeyPressed) {
-            const url = this.$state.href('mitteilungen.view', {dossierId: fallAntrag.dossierId});
+            const url = this.$state.href('mitteilungen.view', {
+                dossierId: fallAntrag.dossierId
+            });
             window.open(url, '_blank');
         } else {
             this.$state.go('mitteilungen.view', {
@@ -221,7 +255,10 @@ export class DVQuicksearchListController implements IController {
         }
     }
 
-    private navigateToGesuch(antragDTO: TSAntragDTO, isCtrlKeyPressed: boolean): void {
+    private navigateToGesuch(
+        antragDTO: TSAntragDTO,
+        isCtrlKeyPressed: boolean
+    ): void {
         if (!antragDTO.antragId) {
             return;
         }
@@ -229,14 +266,20 @@ export class DVQuicksearchListController implements IController {
             gesuchId: antragDTO.antragId,
             dossierId: antragDTO.dossierId
         };
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+            )
+        ) {
             if (isAnyStatusOfVerfuegt(antragDTO.status)) {
-                this.goTo('gesuch.verfuegen',
+                this.goTo(
+                    'gesuch.verfuegen',
                     {gesuchId: antragDTO.antragId},
                     isCtrlKeyPressed
                 );
             } else {
-                this.goTo('gesuch.betreuungen',
+                this.goTo(
+                    'gesuch.betreuungen',
                     {gesuchId: antragDTO.antragId},
                     isCtrlKeyPressed
                 );
@@ -251,7 +294,11 @@ export class DVQuicksearchListController implements IController {
     }
 
     public showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
-        return row instanceof TSAntragDTO && !row.hasBesitzer() && !row.isSozialdienst;
+        return (
+            row instanceof TSAntragDTO &&
+            !row.hasBesitzer() &&
+            !row.isSozialdienst
+        );
     }
 
     public showSozialdienstGesuchIcon(row: TSAbstractAntragDTO): boolean {

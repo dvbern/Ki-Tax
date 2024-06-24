@@ -115,6 +115,7 @@ public class Kind extends AbstractPersonEntity {
 	@Nonnull
 	private Boolean keinPlatzInSchulhort = false;
 
+
 	@Valid
 	@Nonnull
 	@OneToMany(mappedBy = "kind", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -148,6 +149,13 @@ public class Kind extends AbstractPersonEntity {
 	@Column(nullable = true)
 	@Nullable
 	private Boolean unterhaltspflichtig;
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen = false;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean hoehereBeitraegeUnterlagenDigital;
 
 	public Kind() {
 	}
@@ -344,37 +352,13 @@ public class Kind extends AbstractPersonEntity {
 
 		switch (copyType) {
 		case MUTATION:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setPflegekind(this.getPflegekind());
-			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
-			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
-			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
-			target.setInErstausbildung(this.getInErstausbildung());
-			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
-			target.setAlimenteErhalten(this.getAlimenteErhalten());
-			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			copyKindForMutation(target, regelStartDatum);
 			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
-			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
-			target.setPflegekind(this.getPflegekind());
-			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
-			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
-			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
-			target.setInErstausbildung(this.getInErstausbildung());
-			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
-			target.setAlimenteErhalten(this.getAlimenteErhalten());
-			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
-			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
-			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			copyKindForMutation(target, regelStartDatum);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
@@ -388,6 +372,24 @@ public class Kind extends AbstractPersonEntity {
 			break;
 		}
 		return target;
+	}
+
+	private void copyKindForMutation(@Nonnull Kind target, @Nonnull LocalDate regelStartDatum) {
+		target.setEinschulungTyp(this.getEinschulungTyp());
+		target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+		target.setPflegekind(this.getPflegekind());
+		target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+		target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+		target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+		target.setInErstausbildung(this.getInErstausbildung());
+		target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+		target.setAlimenteErhalten(this.getAlimenteErhalten());
+		target.setAlimenteBezahlen(this.getAlimenteBezahlen());
+		target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
+		target.setHoehereBeitraegeWegenBeeintraechtigungBeantragen(this.getHoehereBeitraegeWegenBeeintraechtigungBeantragen());
+		target.setHoehereBeitraegeUnterlagenDigital(this.getHoehereBeitraegeUnterlagenDigital());
+		target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum));
 	}
 
 	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
@@ -448,6 +450,12 @@ public class Kind extends AbstractPersonEntity {
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
 			Objects.equals(getUnterhaltspflichtig(), otherKind.getUnterhaltspflichtig()) &&
+			Objects.equals(
+				getHoehereBeitraegeWegenBeeintraechtigungBeantragen(),
+				otherKind.hoehereBeitraegeWegenBeeintraechtigungBeantragen) &&
+			Objects.equals(
+				getHoehereBeitraegeUnterlagenDigital(),
+				otherKind.hoehereBeitraegeUnterlagenDigital) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			sameFachstellen &&
 			EbeguUtil.isSame(
@@ -497,5 +505,23 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setUnterhaltspflichtig(@Nullable Boolean unterhaltspflichtig) {
 		this.unterhaltspflichtig = unterhaltspflichtig;
+	}
+
+	public Boolean getHoehereBeitraegeWegenBeeintraechtigungBeantragen() {
+		return hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	public void setHoehereBeitraegeWegenBeeintraechtigungBeantragen(
+		Boolean hoehereBeitraegeWegenBeeintraechtigungBeantragen) {
+		this.hoehereBeitraegeWegenBeeintraechtigungBeantragen = hoehereBeitraegeWegenBeeintraechtigungBeantragen;
+	}
+
+	@Nullable
+	public Boolean getHoehereBeitraegeUnterlagenDigital() {
+		return hoehereBeitraegeUnterlagenDigital;
+	}
+
+	public void setHoehereBeitraegeUnterlagenDigital(@Nullable Boolean hoehereBeitraegeUnterlagenDigital) {
+		this.hoehereBeitraegeUnterlagenDigital = hoehereBeitraegeUnterlagenDigital;
 	}
 }

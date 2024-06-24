@@ -38,8 +38,8 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-@AssociationOverride(name = "eingewoehnungPauschale",
-	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"))
+@AssociationOverride(name = "eingewoehnung",
+	joinColumns = @JoinColumn(name = "eingewoehnung_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_id"))
 public class Betreuungspensum extends AbstractBetreuungsPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
@@ -64,12 +64,13 @@ public class Betreuungspensum extends AbstractBetreuungsPensum implements Compar
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
+		this.setBetreuteTage(betPensumMitteilung.getBetreuteTage());
 
-		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
-			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
-			eingewoehnungPauschale.setPauschale(betPensumMitteilung.getEingewoehnungPauschale().getPauschale());
-			eingewoehnungPauschale.setGueltigkeit(betPensumMitteilung.getEingewoehnungPauschale().getGueltigkeit());
-			this.setEingewoehnungPauschale(eingewoehnungPauschale);
+		if (betPensumMitteilung.getEingewoehnung() != null) {
+			Eingewoehnung eingewoehnung = new Eingewoehnung();
+			eingewoehnung.setKosten(betPensumMitteilung.getEingewoehnung().getKosten());
+			eingewoehnung.setGueltigkeit(betPensumMitteilung.getEingewoehnung().getGueltigkeit());
+			this.setEingewoehnung(eingewoehnung);
 		}
 	}
 

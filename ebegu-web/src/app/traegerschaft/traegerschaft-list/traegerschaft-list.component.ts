@@ -15,7 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
@@ -30,13 +37,17 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
-  selector: 'dv-traegerschaft-list',
-  templateUrl: './traegerschaft-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-traegerschaft-list',
+    templateUrl: './traegerschaft-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TraegerschaftListComponent extends AbstractAdminViewX implements OnInit {
-
-    private readonly log: Log = LogFactory.createLog('TraegerschaftListComponent');
+export class TraegerschaftListComponent
+    extends AbstractAdminViewX
+    implements OnInit
+{
+    private readonly log: Log = LogFactory.createLog(
+        'TraegerschaftListComponent'
+    );
 
     @Input() public traegerschaften: TSTraegerschaft[];
 
@@ -53,7 +64,6 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
         private readonly $state: StateService,
         private readonly cd: ChangeDetectorRef
     ) {
-
         super(authServiceRS);
     }
 
@@ -64,11 +74,12 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
 
     public loadData(): void {
         const readDeleteAllowed = this.isReadDeleteAllowed();
-        this.antragList$ = from(this.traegerschaftRS.getAllActiveTraegerschaften()
-            .then(traegerschaftList => {
-                const entitaetListItems: DVEntitaetListItem[] = [];
-                traegerschaftList.forEach(
-                    traegerschaft => {
+        this.antragList$ = from(
+            this.traegerschaftRS
+                .getAllActiveTraegerschaften()
+                .then(traegerschaftList => {
+                    const entitaetListItems: DVEntitaetListItem[] = [];
+                    traegerschaftList.forEach(traegerschaft => {
                         const dvListItem = {
                             id: traegerschaft.id,
                             name: traegerschaft.name,
@@ -77,11 +88,11 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
                             canRemove: readDeleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    }
-                );
-                this.cd.markForCheck();
-                return entitaetListItems;
-            }));
+                    });
+                    this.cd.markForCheck();
+                    return entitaetListItems;
+                })
+        );
     }
 
     public isReadDeleteAllowed(): boolean {
@@ -93,7 +104,9 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
     }
 
     public openTraegerschaft(id: string): void {
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles())) {
+        if (
+            this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles())
+        ) {
             this.$state.go('traegerschaft.edit', {traegerschaftId: id});
         }
     }
@@ -104,9 +117,12 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
             title: 'LOESCHEN_DIALOG_TITLE'
         };
 
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+        this.dialog
+            .open(DvNgRemoveDialogComponent, dialogConfig)
+            .afterClosed()
             .subscribe(
-                userAccepted => {   // User confirmed removal
+                userAccepted => {
+                    // User confirmed removal
                     if (!userAccepted) {
                         return;
                     }
@@ -115,7 +131,9 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
                     });
                 },
                 () => {
-                    this.log.error('error has occurred while closing the remove dialog for Traegerschaft');
+                    this.log.error(
+                        'error has occurred while closing the remove dialog for Traegerschaft'
+                    );
                 }
             );
     }

@@ -40,15 +40,18 @@ export interface HTMLInputEvent extends Event {
     styleUrls: ['./multiple-file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MultipleFileUploadComponent<T extends TSFile> implements OnChanges, OnInit {
-
+export class MultipleFileUploadComponent<T extends TSFile>
+    implements OnChanges, OnInit
+{
     @Input() public title: string;
     @Input() public readOnly: boolean;
     @Input() public readOnlyDelete: boolean;
     @Input() public tooltipText: string;
-    @Output() public readonly download: EventEmitter<[T, boolean]> = new EventEmitter();
+    @Output() public readonly download: EventEmitter<[T, boolean]> =
+        new EventEmitter();
     @Output() public readonly delete: EventEmitter<T> = new EventEmitter();
-    @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
+    @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> =
+        new EventEmitter();
 
     public uploadInputValue: string = '';
     @Input() public files: TSUploadFile[];

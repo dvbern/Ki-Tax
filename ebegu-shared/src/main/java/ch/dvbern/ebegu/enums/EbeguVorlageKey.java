@@ -20,6 +20,8 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+
 /**
  * Keys für die zeitabhängigen E-BEGU-Vorlagen
  */

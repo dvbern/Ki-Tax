@@ -20,7 +20,7 @@ package ch.dvbern.ebegu.inbox.handler;
 import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
+import ch.dvbern.ebegu.entities.Eingewoehnung;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -48,12 +48,12 @@ class PlatzbestaetigungSnapshotTest {
 	void mappingMustBeReconsideredWhenPropertiesChange() {
 		DateRange dateRange = new DateRange(2024);
 
-		EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
-		eingewoehnungPauschale.setGueltigkeit(dateRange);
+		Eingewoehnung eingewoehnung = new Eingewoehnung();
+		eingewoehnung.setGueltigkeit(dateRange);
 
 		BetreuungsmitteilungPensum pensum = new BetreuungsmitteilungPensum();
 		pensum.setGueltigkeit(dateRange);
-		pensum.setEingewoehnungPauschale(eingewoehnungPauschale);
+		pensum.setEingewoehnung(eingewoehnung);
 
 
 		expect.serializer("json").toMatchSnapshot(pensum);

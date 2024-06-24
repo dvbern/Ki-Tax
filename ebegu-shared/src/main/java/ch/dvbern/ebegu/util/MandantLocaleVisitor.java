@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.util;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
 public class MandantLocaleVisitor implements MandantVisitor<Locale> {
@@ -30,14 +31,18 @@ public class MandantLocaleVisitor implements MandantVisitor<Locale> {
 	private static final String VARIANT_APPENZELL_AUSSERRHODEN = "ar";
 	private static final String VARIANT_SCHWYZ = "sz";
 
-	private Locale locale;
+	private final Locale locale;
 
 	public MandantLocaleVisitor(Locale locale) {
 		this.locale = locale;
 	}
 
 	public Locale process(Mandant mandant) {
-		return mandant.getMandantIdentifier().accept(this);
+		return process(mandant.getMandantIdentifier());
+	}
+
+	public Locale process(MandantIdentifier mandantIdentifier) {
+		return mandantIdentifier.accept(this);
 	}
 
 	@Override

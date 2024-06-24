@@ -17,7 +17,7 @@ import {IHttpBackendService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
@@ -30,7 +30,6 @@ import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 
 describe('institutionStammdatenRS', () => {
-
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -46,27 +45,36 @@ describe('institutionStammdatenRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
         today = DateUtil.today();
         mockInstitution = new TSInstitution('Institution_Test');
         mockAdresse = new TSAdresse();
         mockInstitutionStammdaten = new TSInstitutionStammdaten();
-        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
-        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'iban';
-        mockInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
+        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
+            new TSInstitutionStammdatenBetreuungsgutscheine();
+        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban =
+            'iban';
+        mockInstitutionStammdaten.betreuungsangebotTyp =
+            TSBetreuungsangebotTyp.KITA;
         mockInstitutionStammdaten.institution = mockInstitution;
         mockInstitutionStammdaten.adresse = mockAdresse;
         mockInstitutionStammdaten.mail = 'mail@example.com';
         mockInstitutionStammdaten.telefon = 'telefon';
         mockInstitutionStammdaten.gueltigkeit = new TSDateRange(today, today);
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
-        mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
+        mockInstitutionStammdatenRest =
+            ebeguRestUtil.institutionStammdatenToRestObject(
+                {},
+                mockInstitutionStammdaten
+            );
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
@@ -74,49 +82,74 @@ describe('institutionStammdatenRS', () => {
         describe('findInstitutionStammdaten', () => {
             it('should return the InstitutionStammdaten by id', () => {
                 const url = `${institutionStammdatenRS.serviceURL}/id/${encodeURIComponent(mockInstitutionStammdaten.id)}`;
-                $httpBackend.expectGET(url)
+                $httpBackend
+                    .expectGET(url)
                     .respond(mockInstitutionStammdatenRest);
 
                 let foundInstitutionStammdaten: TSInstitutionStammdaten;
-                institutionStammdatenRS.findInstitutionStammdaten(mockInstitutionStammdaten.id).then(result => {
-                    foundInstitutionStammdaten = result;
-                });
+                institutionStammdatenRS
+                    .findInstitutionStammdaten(mockInstitutionStammdaten.id)
+                    .then(result => {
+                        foundInstitutionStammdaten = result;
+                    });
                 $httpBackend.flush();
-                checkFieldValues(foundInstitutionStammdaten, mockInstitutionStammdaten);
+                checkFieldValues(
+                    foundInstitutionStammdaten,
+                    mockInstitutionStammdaten
+                );
             });
-
         });
 
         describe('createInstitutionStammdaten', () => {
             it('should create a InstitutionStammdaten', () => {
                 let createdInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
-                    mockInstitutionStammdatenRest);
+                $httpBackend
+                    .expectPUT(
+                        institutionStammdatenRS.serviceURL,
+                        mockInstitutionStammdatenRest
+                    )
+                    .respond(mockInstitutionStammdatenRest);
 
-                institutionStammdatenRS.createInstitutionStammdaten(mockInstitutionStammdaten)
+                institutionStammdatenRS
+                    .createInstitutionStammdaten(mockInstitutionStammdaten)
                     .then(result => {
                         createdInstitutionStammdaten = result;
                     });
                 $httpBackend.flush();
-                checkFieldValues(createdInstitutionStammdaten, mockInstitutionStammdaten);
+                checkFieldValues(
+                    createdInstitutionStammdaten,
+                    mockInstitutionStammdaten
+                );
             });
         });
 
         describe('updateInstitutionStammdaten', () => {
             it('should update a InstitutionStammdaten', () => {
-                mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'CH123456';
+                mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban =
+                    'CH123456';
                 mockInstitutionStammdatenRest =
-                    ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
+                    ebeguRestUtil.institutionStammdatenToRestObject(
+                        {},
+                        mockInstitutionStammdaten
+                    );
                 let updatedInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
-                    mockInstitutionStammdatenRest);
+                $httpBackend
+                    .expectPUT(
+                        institutionStammdatenRS.serviceURL,
+                        mockInstitutionStammdatenRest
+                    )
+                    .respond(mockInstitutionStammdatenRest);
 
-                institutionStammdatenRS.updateInstitutionStammdaten(mockInstitutionStammdaten)
+                institutionStammdatenRS
+                    .updateInstitutionStammdaten(mockInstitutionStammdaten)
                     .then(result => {
                         updatedInstitutionStammdaten = result;
                     });
                 $httpBackend.flush();
-                checkFieldValues(updatedInstitutionStammdaten, mockInstitutionStammdaten);
+                checkFieldValues(
+                    updatedInstitutionStammdaten,
+                    mockInstitutionStammdaten
+                );
             });
         });
     });
@@ -126,10 +159,16 @@ describe('institutionStammdatenRS', () => {
         institutionStammdaten2: TSInstitutionStammdaten
     ): void {
         expect(institutionStammdaten1).toBeDefined();
-        expect(institutionStammdaten1.institutionStammdatenBetreuungsgutscheine.iban)
-            .toEqual(institutionStammdaten2.institutionStammdatenBetreuungsgutscheine.iban);
+        expect(
+            institutionStammdaten1.institutionStammdatenBetreuungsgutscheine
+                .iban
+        ).toEqual(
+            institutionStammdaten2.institutionStammdatenBetreuungsgutscheine
+                .iban
+        );
         expect(institutionStammdaten1.id).toEqual(institutionStammdaten2.id);
-        expect(institutionStammdaten1.institution.name).toEqual(institutionStammdaten2.institution.name);
+        expect(institutionStammdaten1.institution.name).toEqual(
+            institutionStammdaten2.institution.name
+        );
     }
-
 });

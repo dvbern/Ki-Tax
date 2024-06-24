@@ -17,37 +17,55 @@
 
 <div class="institutionen-list admin-modul" flex="auto">
     <div class="col-md-8 col-md-offset-2">
-
-        <h1 class="access-for-all-title" translate>AFA_INSTITUTIONENVERWALTUNG</h1>
+        <h1 class="access-for-all-title" translate>
+            AFA_INSTITUTIONENVERWALTUNG
+        </h1>
         <div class="view-title">
             <h2 translate>INSTITUTIONEN</h2>
-            <hr class="header">
+            <hr class="header" />
         </div>
 
-        <dv-search-list [hiddenColumns]="hiddenDVTableColumns"
-                        [data$]="antragList$"
-                        (openEvent)="openInstitution($event)"
-                        (removeEvent)="removeInstitution($event)"
-                        [statusPrefix]="'INSTITUTION_STATUS'"
-                        [columnName]="'INSTITUTION'"
+        <dv-search-list
+            [hiddenColumns]="hiddenDVTableColumns"
+            [data$]="antragList$"
+            (openEvent)="openInstitution($event)"
+            (removeEvent)="removeInstitution($event)"
+            [statusPrefix]="'INSTITUTION_STATUS'"
+            [columnName]="'INSTITUTION'"
         ></dv-search-list>
     </div>
-        <div class="col-md-offset-2 dv-navigation-mobileless">
-            <button *ngIf="isCreateBGAllowed()" (click)="createInstitutionBG();" class="dv-btn next-button">
-                <span translate>INSTITUTION_HINZUFUEGEN</span>
-            </button>
+    <div class="col-md-offset-2 dv-navigation-mobileless">
+        <button
+            *ngIf="isCreateBGAllowed()"
+            (click)="createInstitutionBG()"
+            class="dv-btn next-button"
+        >
+            <span translate>INSTITUTION_HINZUFUEGEN</span>
+        </button>
 
-            <button *ngIf="isCreateTSAllowed() && !isAdminBG()" (click)="createInstitutionTS();" class="dv-btn next-button"
-                    data-test="institution.create-tagesschule">
-                <span translate>TAGESSCHULE_HINZUFUEGEN</span>
-            </button>
+        <button
+            *ngIf="isCreateTSAllowed() && !isAdminBG()"
+            (click)="createInstitutionTS()"
+            class="dv-btn next-button"
+            data-test="institution.create-tagesschule"
+        >
+            <span translate>TAGESSCHULE_HINZUFUEGEN</span>
+        </button>
 
-            <button *ngIf="isCreateLATSTSAllowed() && !isBGRole()" (click)="createLATSInstitutionTS();" class="dv-btn next-button">
-                <span translate>LATS_TAGESSCHULE_HINZUFUEGEN</span>
-            </button>
+        <button
+            *ngIf="isCreateLATSTSAllowed() && !isBGRole()"
+            (click)="createLATSInstitutionTS()"
+            class="dv-btn next-button"
+        >
+            <span translate>LATS_TAGESSCHULE_HINZUFUEGEN</span>
+        </button>
 
-            <button *ngIf="isCreateFIAllowed() && !isAdminBG()" (click)="createInstitutionFI();" class="dv-btn next-button">
-                <span translate>FERIENINSEL_HINZUFUEGEN</span>
-            </button>
-        </div>
+        <button
+            *ngIf="isCreateFIAllowed() && !isAdminBG()"
+            (click)="createInstitutionFI()"
+            class="dv-btn next-button"
+        >
+            <span translate>FERIENINSEL_HINZUFUEGEN</span>
+        </button>
+    </div>
 </div>

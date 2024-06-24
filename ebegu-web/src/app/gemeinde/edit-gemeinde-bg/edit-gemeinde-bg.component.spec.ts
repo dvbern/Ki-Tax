@@ -32,55 +32,65 @@ import {GemeindeModule} from '../gemeinde.module';
 import {EditGemeindeBGComponent} from './edit-gemeinde-bg.component';
 
 describe('EditGemeindeBGComponent', () => {
-
     let component: EditGemeindeBGComponent;
     let fixture: ComponentFixture<EditGemeindeBGComponent>;
     const user = new TSBenutzer();
 
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, [
+        'params'
+    ]);
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-        getPrincipalRole: TSRole.SUPER_ADMIN,
-        getPrincipal: user,
-        isRole: false,
-        isOneOfRoles: false
-    });
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        {
+            getPrincipalRole: TSRole.SUPER_ADMIN,
+            getPrincipal: user,
+            isRole: false,
+            isOneOfRoles: false
+        }
+    );
     authServiceSpy.principal$ = of(user) as any;
 
-    const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
-        ['findEinstellungByKey', 'findEinstellung']);
+    const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(
+        EinstellungRS.name,
+        ['findEinstellungByKey', 'findEinstellung']
+    );
 
-    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getPublicPropertiesCached']);
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']
+        );
     applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({} as any);
 
-    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, ['getAllBgInstitutionen']);
+    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, [
+        'getAllBgInstitutionen'
+    ]);
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                MaterialModule,
-                GemeindeModule
-            ],
+            imports: [SharedModule, MaterialModule, GemeindeModule],
             schemas: [],
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                },
                 {provide: InstitutionRS, useValue: institutionRSSpy}
             ],
-            declarations: [
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
-
+            declarations: []
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {

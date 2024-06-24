@@ -13,7 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
+import {
+    IAugmentedJQuery,
+    IDirective,
+    IDirectiveFactory,
+    IDirectiveLinkFn,
+    IScope
+} from 'angular';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {LogFactory} from '../../logging/LogFactory';
@@ -28,7 +34,12 @@ const LOG = LogFactory.createLog('DVSTPersistPendenzen');
  * The information will be stored in an angular-service, whi
  */
 export class DVSTPersistPendenzen implements IDirective {
-    public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+    public static $inject: string[] = [
+        'BenutzerRS',
+        'InstitutionRS',
+        'DVsTPersistService',
+        'GemeindeRS'
+    ];
 
     public restrict = 'A';
     public require = ['^stTable', '^dvQuicksearchList'];
@@ -40,17 +51,27 @@ export class DVSTPersistPendenzen implements IDirective {
         private readonly dVsTPersistService: DVsTPersistService,
         private readonly gemeindeRS: GemeindeRS
     ) {
-        this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
+        this.link = (
+            scope: IScope,
+            _element: IAugmentedJQuery,
+            attrs,
+            ctrlArray: any
+        ) => {
             const nameSpace: string = attrs.dvStPersistQuicksearch;
             const stTableCtrl = ctrlArray[0];
-            const quicksearchListController: DVQuicksearchListController = ctrlArray[1];
+            const quicksearchListController: DVQuicksearchListController =
+                ctrlArray[1];
 
             // save the table state every time it changes
-            scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
-                if (newValue !== oldValue) {
-                    this.dVsTPersistService.saveData(nameSpace, newValue);
-                }
-            }, true);
+            scope.$watch(
+                () => stTableCtrl.tableState(),
+                (newValue, oldValue) => {
+                    if (newValue !== oldValue) {
+                        this.dVsTPersistService.saveData(nameSpace, newValue);
+                    }
+                },
+                true
+            );
 
             // fetch the table state when the directive is loaded
             const savedState = this.dVsTPersistService.loadData(nameSpace);
@@ -59,24 +80,40 @@ export class DVSTPersistPendenzen implements IDirective {
             }
             if (savedState.search && savedState.search.predicateObject) {
                 // update all objects of the model for the filters
-                quicksearchListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
+                quicksearchListController.selectedAntragTyp =
+                    savedState.search.predicateObject.antragTyp;
                 quicksearchListController.selectedGesuchsperiode =
                     savedState.search.predicateObject.gesuchsperiodeString;
-                quicksearchListController.selectedAntragStatus = savedState.search.predicateObject.status;
-                quicksearchListController.selectedBetreuungsangebotTyp = savedState.search.predicateObject.angebote;
-                this.setInstitutionFromName(quicksearchListController,
-                    savedState.search.predicateObject.institutionen);
-                quicksearchListController.selectedFallNummer = savedState.search.predicateObject.fallNummer;
-                quicksearchListController.selectedFamilienName = savedState.search.predicateObject.familienName;
-                quicksearchListController.selectedKinder = savedState.search.predicateObject.kinder;
-                quicksearchListController.selectedEingangsdatum = savedState.search.predicateObject.eingangsdatum;
+                quicksearchListController.selectedAntragStatus =
+                    savedState.search.predicateObject.status;
+                quicksearchListController.selectedBetreuungsangebotTyp =
+                    savedState.search.predicateObject.angebote;
+                this.setInstitutionFromName(
+                    quicksearchListController,
+                    savedState.search.predicateObject.institutionen
+                );
+                quicksearchListController.selectedFallNummer =
+                    savedState.search.predicateObject.fallNummer;
+                quicksearchListController.selectedFamilienName =
+                    savedState.search.predicateObject.familienName;
+                quicksearchListController.selectedKinder =
+                    savedState.search.predicateObject.kinder;
+                quicksearchListController.selectedEingangsdatum =
+                    savedState.search.predicateObject.eingangsdatum;
                 quicksearchListController.selectedDokumenteHochgeladen =
                     savedState.search.predicateObject.dokumenteHochgeladen;
-                this.setGemeindeFromName(quicksearchListController, savedState.search.predicateObject.gemeinde);
-                this.setVerantwortlicherBGFromName(quicksearchListController,
-                    savedState.search.predicateObject.verantwortlicherBG);
-                this.setVerantwortlicherTSFromName(quicksearchListController,
-                    savedState.search.predicateObject.verantwortlicherTS);
+                this.setGemeindeFromName(
+                    quicksearchListController,
+                    savedState.search.predicateObject.gemeinde
+                );
+                this.setVerantwortlicherBGFromName(
+                    quicksearchListController,
+                    savedState.search.predicateObject.verantwortlicherBG
+                );
+                this.setVerantwortlicherTSFromName(
+                    quicksearchListController,
+                    savedState.search.predicateObject.verantwortlicherTS
+                );
             }
             const tableState = stTableCtrl.tableState();
             angular.extend(tableState, savedState);
@@ -90,11 +127,19 @@ export class DVSTPersistPendenzen implements IDirective {
             institutionRS: any,
             dVsTPersistService: any,
             gemeindeRS: any
-        ) => new DVSTPersistPendenzen(benutzerRS,
-            institutionRS,
-            dVsTPersistService,
-            gemeindeRS);
-        directive.$inject = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
+        ) =>
+            new DVSTPersistPendenzen(
+                benutzerRS,
+                institutionRS,
+                dVsTPersistService,
+                gemeindeRS
+            );
+        directive.$inject = [
+            'BenutzerRS',
+            'InstitutionRS',
+            'DVsTPersistService',
+            'GemeindeRS'
+        ];
         return directive;
     }
 
@@ -112,8 +157,11 @@ export class DVSTPersistPendenzen implements IDirective {
         }
 
         this.benutzerRS.getAllBenutzerBgOrGemeinde().then(userList => {
-            const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherBGFullname);
-            quicksearchListController.selectedVerantwortlicherBG = verantwortlicher;
+            const verantwortlicher = userList.find(
+                user => user.getFullName() === verantwortlicherBGFullname
+            );
+            quicksearchListController.selectedVerantwortlicherBG =
+                verantwortlicher;
             quicksearchListController.userChanged(verantwortlicher);
         });
     }
@@ -132,8 +180,11 @@ export class DVSTPersistPendenzen implements IDirective {
         }
 
         this.benutzerRS.getAllBenutzerTsOrGemeinde().then(userList => {
-            const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherTSFullname);
-            quicksearchListController.selectedVerantwortlicherTS = verantwortlicher;
+            const verantwortlicher = userList.find(
+                user => user.getFullName() === verantwortlicherTSFullname
+            );
+            quicksearchListController.selectedVerantwortlicherTS =
+                verantwortlicher;
             quicksearchListController.userChanged(verantwortlicher);
         });
     }
@@ -142,23 +193,37 @@ export class DVSTPersistPendenzen implements IDirective {
      * Extracts the Institution from the institutionList of the controller using the name that had been saved in the
      * filter. This is needed because the filter saves the name and not the object.
      */
-    private setInstitutionFromName(quicksearchListController: DVQuicksearchListController, institution: string): void {
+    private setInstitutionFromName(
+        quicksearchListController: DVQuicksearchListController,
+        institution: string
+    ): void {
         if (!(institution && quicksearchListController)) {
             return;
         }
 
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
-            quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
-        }, error => LOG.error(error));
+        this.institutionRS
+            .getInstitutionenReadableForCurrentBenutzer()
+            .subscribe(
+                institutionList => {
+                    quicksearchListController.selectedInstitution =
+                        institutionList.find(i => i.name === institution);
+                },
+                error => LOG.error(error)
+            );
     }
 
-    private setGemeindeFromName(quicksearchListController: DVQuicksearchListController, gemeinde: string): void {
+    private setGemeindeFromName(
+        quicksearchListController: DVQuicksearchListController,
+        gemeinde: string
+    ): void {
         if (!(gemeinde && quicksearchListController)) {
             return;
         }
 
         this.gemeindeRS.getAllGemeinden().then(gemeindeList => {
-            quicksearchListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
+            quicksearchListController.selectedGemeinde = gemeindeList.find(
+                g => g.name === gemeinde
+            );
         });
     }
 }

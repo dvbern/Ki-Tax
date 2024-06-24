@@ -19,8 +19,10 @@ const LOG = LogFactory.createLog('FamiliensituationAppenzellViewXComponent');
     templateUrl: './familiensituation-appenzell-view-x.component.html',
     styleUrls: ['./familiensituation-appenzell-view-x.component.less']
 })
-export class FamiliensituationAppenzellViewXComponent extends AbstractFamiliensitutaionView implements OnInit {
-
+export class FamiliensituationAppenzellViewXComponent
+    extends AbstractFamiliensitutaionView
+    implements OnInit
+{
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
         const savedContaier = await this.save();
         onResult(savedContaier);
@@ -34,33 +36,60 @@ export class FamiliensituationAppenzellViewXComponent extends AbstractFamiliensi
         protected readonly authService: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS
     ) {
-        super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
+        super(
+            gesuchModelManager,
+            errorService,
+            wizardStepManager,
+            familiensituationRS,
+            authService
+        );
         this.getFamiliensituation().familienstatus = TSFamilienstatus.APPENZELL;
     }
 
     public ngOnInit(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
-                .forEach(value => {
-                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
-                });
-        }, error => LOG.error(error));
+        this.einstellungRS
+            .getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                (response: TSEinstellung[]) => {
+                    response
+                        .filter(
+                            r =>
+                                r.key ===
+                                TSEinstellungKey.MINIMALDAUER_KONKUBINAT
+                        )
+                        .forEach(value => {
+                            this.getFamiliensituation().minDauerKonkubinat =
+                                Number(value.value);
+                        });
+                },
+                error => LOG.error(error)
+            );
     }
 
     public showGemeinsamerHausltMitPartnerFrage(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut) ||
-            EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson);
+        return (
+            EbeguUtil.isNotNullAndFalse(
+                this.getFamiliensituation().geteilteObhut
+            ) ||
+            EbeguUtil.isNotNullAndFalse(
+                this.getFamiliensituation()
+                    .gemeinsamerHaushaltMitObhutsberechtigterPerson
+            )
+        );
     }
 
     public showGemeinsamerHausltMitObhutsberchtigterPersonFrage(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getFamiliensituation().geteilteObhut);
+        return EbeguUtil.isNotNullAndTrue(
+            this.getFamiliensituation().geteilteObhut
+        );
     }
 
     public onGeteilteObhutFrageChange(): void {
         this.getFamiliensituation().gemeinsamerHaushaltMitPartner = undefined;
-        this.getFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson = undefined;
+        this.getFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson =
+            undefined;
     }
 
     public onGemeinsamerHausaltMitObhutsberechtigerPersionChange(): void {

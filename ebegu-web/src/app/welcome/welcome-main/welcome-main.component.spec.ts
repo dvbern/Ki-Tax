@@ -28,41 +28,50 @@ import {SharedModule} from '../../shared/shared.module';
 import {WelcomeMainComponent} from './welcome-main.component';
 
 describe('WelcomeMainComponent', () => {
-
     let component: WelcomeMainComponent;
     let fixture: ComponentFixture<WelcomeMainComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['getPrincipal', 'isOneOfRoles']);
-    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const applicationPropertyRSSpy = jasmine
-        .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name,
+        ['getPrincipal', 'isOneOfRoles']
+    );
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(
+        StateService.name,
+        ['go']
+    );
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(
+            ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']
+        );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule
-            ],
+            imports: [SharedModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                {
+                    provide: ApplicationPropertyRS,
+                    useValue: applicationPropertyRSSpy
+                }
             ],
-            declarations: [
-                WelcomeMainComponent
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
-
+            declarations: [WelcomeMainComponent]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {
-        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(
+            of(new TSPublicAppConfig()).toPromise()
+        );
         fixture = TestBed.createComponent(WelcomeMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -34,11 +34,7 @@ describe('ExternalClientMultiselectComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                NoopAnimationsModule,
-                MaterialModule
-            ],
+            imports: [SharedModule, NoopAnimationsModule, MaterialModule],
             providers: [
                 WindowRef,
                 {provide: NgForm, useValue: new NgForm([], [])}
@@ -72,7 +68,13 @@ describe('ExternalClientMultiselectComponent', () => {
         clients.assignedClients = [foo, bar];
         clients.availableClients = [returns];
 
-        component.ngOnChanges({externalClients: new SimpleChange(component.externalClients, clients, false)});
+        component.ngOnChanges({
+            externalClients: new SimpleChange(
+                component.externalClients,
+                clients,
+                false
+            )
+        });
 
         expect(component.options).toEqual([bar, foo, returns]);
     });

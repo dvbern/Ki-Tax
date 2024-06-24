@@ -15,12 +15,13 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-
 <div class="form-group">
-    <label class="md-no-float {{getRequiredCssClass()}}" >
-        <span >{{labelMessageKey | translate:labelMessageKeyArgs}}</span>
-        <dv-tooltip *ngIf="tooltipMessageKey"
-                    [text]="tooltipMessageKey | translate:tooltipMessageKeyArgs">
+    <label class="md-no-float {{ getRequiredCssClass() }}">
+        <span>{{ labelMessageKey | translate: labelMessageKeyArgs }}</span>
+        <dv-tooltip
+            *ngIf="tooltipMessageKey"
+            [text]="tooltipMessageKey | translate: tooltipMessageKeyArgs"
+        >
         </dv-tooltip>
     </label>
     <div class="dv-input-container-medium-select">
@@ -43,7 +44,4 @@
         >
         </dv-valueinput-x>
     </div>
-
 </div>
-
-

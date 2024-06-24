@@ -16,19 +16,28 @@
   -->
 
 <dv-full-height-container>
-    <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+    <form
+        (ngSubmit)="onSubmit(form)"
+        #form="ngForm"
+        [ngClass]="{'ng-submitted': form.submitted}"
+        novalidate
+    >
         <div class="dv-content">
-            <h1 class="access-for-all-title" translate>AFA_BENUTZERVERWALTUNG</h1>
+            <h1 class="access-for-all-title" translate>
+                AFA_BENUTZERVERWALTUNG
+            </h1>
             <div class="row view-title">
                 <div class="col-md-12">
                     <h2 translate>BENUTZER_ADD</h2>
-                    <hr class="header">
+                    <hr class="header" />
                 </div>
             </div>
 
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                <span translate>BENUTZER_EINLADEN_NUTZUNGSBEDINGUNGEN_INFO</span>
+                <span translate
+                    >BENUTZER_EINLADEN_NUTZUNGSBEDINGUNGEN_INFO</span
+                >
             </div>
 
             <div class="row">
@@ -36,14 +45,18 @@
                     <div class="form-group">
                         <!-- Name -->
                         <label translate for="nachname_ID">NAME</label>
-                        <input id="nachname_ID"
-                               type="text"
-                               name="nachname"
-                               [(ngModel)]="benutzer.nachname"
-                               required
-                               class="form-control">
-                        <dv-error-messages [errorObject]="form.controls['nachname']?.errors"
-                                           inputId="nachname_ID">
+                        <input
+                            id="nachname_ID"
+                            type="text"
+                            name="nachname"
+                            [(ngModel)]="benutzer.nachname"
+                            required
+                            class="form-control"
+                        />
+                        <dv-error-messages
+                            [errorObject]="form.controls['nachname']?.errors"
+                            inputId="nachname_ID"
+                        >
                         </dv-error-messages>
                     </div>
                 </div>
@@ -51,14 +64,18 @@
                     <div class="form-group">
                         <!-- Vorname -->
                         <label translate for="vorname_ID">VORNAME</label>
-                        <input id="vorname_ID"
-                               type="text"
-                               name="vorname"
-                               [(ngModel)]="benutzer.vorname"
-                               required
-                               class="form-control">
-                        <dv-error-messages [errorObject]="form.controls['vorname']?.errors"
-                                           inputId="vorname_ID">
+                        <input
+                            id="vorname_ID"
+                            type="text"
+                            name="vorname"
+                            [(ngModel)]="benutzer.vorname"
+                            required
+                            class="form-control"
+                        />
+                        <dv-error-messages
+                            [errorObject]="form.controls['vorname']?.errors"
+                            inputId="vorname_ID"
+                        >
                         </dv-error-messages>
                     </div>
                 </div>
@@ -69,31 +86,42 @@
                     <div class="form-group">
                         <!-- E-Mail -->
                         <label translate for="email_ID">EMAIL</label>
-                        <input id="email_ID"
-                               type="email"
-                               name="email"
-                               [(ngModel)]="benutzer.email"
-                               required
-                               pattern="{{CONSTANTS.PATTERN_EMAIL}}"
-                               class="form-control">
-                        <dv-error-messages [errorObject]="form.controls['email']?.errors"
-                                           inputId="email_ID">
+                        <input
+                            id="email_ID"
+                            type="email"
+                            name="email"
+                            email
+                            [(ngModel)]="benutzer.email"
+                            required
+                            class="form-control"
+                        />
+                        <dv-error-messages
+                            [errorObject]="form.controls['email']?.errors"
+                            inputId="email_ID"
+                        >
                         </dv-error-messages>
                     </div>
                 </div>
             </div>
-            <dv-berechtigung displayClass="col-sm-6"
-                             [berechtigung]="benutzer.currentBerechtigung"
-                             [excludedRoles]="excludedRoles">
+            <dv-berechtigung
+                displayClass="col-sm-6"
+                [berechtigung]="benutzer.currentBerechtigung"
+                [excludedRoles]="excludedRoles"
+            >
             </dv-berechtigung>
         </div>
 
         <div class="dv-footer">
-            <button class="dv-btn" type="submit" translate>BENUTZER_INVITE</button>
-            <button type="button"
-                    class="dv-btn cancel-button"
-                    [uiSref]="'admin.benutzerlist'"
-                    translate>CANCEL
+            <button class="dv-btn" type="submit" translate>
+                BENUTZER_INVITE
+            </button>
+            <button
+                type="button"
+                class="dv-btn cancel-button"
+                [uiSref]="'admin.benutzerlist'"
+                translate
+            >
+                CANCEL
             </button>
         </div>
     </form>

@@ -81,7 +81,6 @@ export class StammdatenViewComponentConfig implements IComponentOptions {
 }
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
-
     public static $inject = [
         '$stateParams',
         'EbeguRestUtil',
@@ -102,7 +101,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'ApplicationPropertyRS',
         'DokumenteRS',
         'MandantService',
-        'DemoFeatureRS',
+        'DemoFeatureRS'
     ];
 
     public filesTooBig: File[];
@@ -124,6 +123,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private isLuzern: boolean;
     public demoFeature2754: boolean = false;
     private angebotTS: boolean;
+    public sozialversicherungsnummerRequiredEinstellung: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -145,19 +145,31 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dokumenteRS: DokumenteRS,
         private readonly mandantService: MandantService,
-        private readonly demoFeatureRS: DemoFeatureRS,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
-        super(gesuchModelManager,
+        super(
+            gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             TSWizardStepName.GESUCHSTELLER,
-            $timeout);
-        this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
-        this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        }, err => LOG.error(err));
+            $timeout
+        );
+        this.gesuchstellerNumber = parseInt(
+            $stateParams.gesuchstellerNumber,
+            10
+        );
+        this.gesuchModelManager.setGesuchstellerNumber(
+            this.gesuchstellerNumber
+        );
+        this.mandantService.mandant$
+            .pipe(map(mandant => mandant === MANDANTS.LUZERN))
+            .subscribe(
+                isLuzern => {
+                    this.isLuzern = isLuzern;
+                },
+                err => LOG.error(err)
+            );
     }
 
     public $onInit(): void {
@@ -165,19 +177,28 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.initViewmodel();
         this.initAusweisNachweis();
         this.setFrenchEnabled();
+        this.initSozialversicherungsnummerEinstellung();
     }
 
     private initAusweisNachweis(): void {
-        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
-            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                ausweisNachweisRequired => {
+                    this.ausweisNachweisRequiredEinstellung =
+                        ausweisNachweisRequired.value === 'true';
 
-            if (!this.ausweisNachweisRequiredEinstellung) {
-                return;
-            }
-            this.loadAusweisNachweiseIfNotNewContainer();
-        }, error => LOG.error(error));
+                    if (!this.ausweisNachweisRequiredEinstellung) {
+                        return;
+                    }
+                    this.loadAusweisNachweiseIfNotNewContainer();
+                },
+                error => LOG.error(error)
+            );
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
@@ -185,34 +206,64 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             .getDokumente(this.gesuchModelManager.getGesuch())
             .then((alleDokumente: TSDokumenteDTO) => {
                 alleDokumente.dokumentGruende
-                    .filter(tsDokument => tsDokument.dokumentGrundTyp === TSDokumentGrundTyp.FAMILIENSITUATION)
-                    .filter(tsDokument => tsDokument.dokumentTyp === TSDokumentTyp.AUSWEIS_ID)
-                    .forEach(tsDokument =>
-                        this.dokumentGrund = tsDokument);
+                    .filter(
+                        tsDokument =>
+                            tsDokument.dokumentGrundTyp ===
+                            TSDokumentGrundTyp.FAMILIENSITUATION
+                    )
+                    .filter(
+                        tsDokument =>
+                            tsDokument.dokumentTyp === TSDokumentTyp.AUSWEIS_ID
+                    )
+                    .forEach(tsDokument => (this.dokumentGrund = tsDokument));
             });
     }
 
     private initViewmodel(): void {
         this.gesuchModelManager.initStammdaten();
-        this.model = angular.copy(this.gesuchModelManager.getStammdatenToWorkWith());
+        this.model = angular.copy(
+            this.gesuchModelManager.getStammdatenToWorkWith()
+        );
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.GESUCHSTELLER,
-            TSWizardStepStatus.IN_BEARBEITUNG);
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
-        this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
-        this.showKorrespondadrGS = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS);
-        this.showRechnungsadr = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA);
-        this.showRechnungsadrGS = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS);
-        this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.getModel().showUmzug = this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
+        this.showKorrespondadr = !!(
+            this.model.korrespondenzAdresse &&
+            this.model.korrespondenzAdresse.adresseJA
+        );
+        this.showKorrespondadrGS = !!(
+            this.model.korrespondenzAdresse &&
+            this.model.korrespondenzAdresse.adresseGS
+        );
+        this.showRechnungsadr = !!(
+            this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA
+        );
+        this.showRechnungsadrGS = !!(
+            this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS
+        );
+        this.allowedRoles =
+            this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.getModel().showUmzug =
+            this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
         this.setLastVerfuegtesGesuch();
-        this.einstellungRS.findEinstellung(TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).subscribe(diplomatenStatusDisabled => {
-            this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
-        }, error => LOG.error(error));
-        this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.KIBON_2754)
-            .then(isAllowed => this.demoFeature2754 = isAllowed);
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                diplomatenStatusDisabled => {
+                    this.diplomatenStatusDisabled =
+                        diplomatenStatusDisabled.value === 'true';
+                },
+                error => LOG.error(error)
+            );
+        this.demoFeatureRS
+            .isDemoFeatureAllowed(TSDemoFeature.KIBON_2754)
+            .then(isAllowed => (this.demoFeature2754 = isAllowed));
     }
 
     public getFamilienSituationDisplayValue(): string {
@@ -224,19 +275,27 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             return '1';
         }
 
-        const tsFamiliensituation: TSFamiliensituation = this.getFamiliensituationToExtractGs2Titel();
+        const tsFamiliensituation: TSFamiliensituation =
+            this.getFamiliensituationToExtractGs2Titel();
         if (EbeguUtil.isNullOrUndefined(tsFamiliensituation)) {
             return '';
         }
 
-        const familienstatusTitel = this.isGs2AndererElternteil(tsFamiliensituation) ?
-            'ANDERER_ELTERNTEIL' : `GS2_${tsFamiliensituation.familienstatus}`;
+        const familienstatusTitel = this.isGs2AndererElternteil(
+            tsFamiliensituation
+        )
+            ? 'ANDERER_ELTERNTEIL'
+            : `GS2_${tsFamiliensituation.familienstatus}`;
 
         return `2 (${this.$translate.instant(familienstatusTitel)})`;
     }
 
     private getFamiliensituationToExtractGs2Titel(): TSFamiliensituation {
-        if (EbeguUtil.isNullOrUndefined(this.getGesuch().extractFamiliensituation())) {
+        if (
+            EbeguUtil.isNullOrUndefined(
+                this.getGesuch().extractFamiliensituation()
+            )
+        ) {
             return undefined;
         }
 
@@ -244,15 +303,25 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             return this.getGesuch().extractFamiliensituation();
         }
 
-        const endOfPeriode = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+        const endOfPeriode =
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
 
-        if (!this.getGesuch().extractFamiliensituation().hasSecondGesuchsteller(endOfPeriode)) {
+        if (
+            !this.getGesuch()
+                .extractFamiliensituation()
+                .hasSecondGesuchsteller(endOfPeriode)
+        ) {
             //Wenn Mutation nur ein Gesuchsteller hat, aber zwei im Antrag verlangt werden, muss der Titel für den GS2 immer
             //aus dem Erstgesuch kommen
             return this.getGesuch().extractFamiliensituationErstgesuch();
         }
 
-        if (EbeguUtil.isNotNullAndFalse(this.getGesuch().extractFamiliensituation()?.partnerIdentischMitVorgesuch)) {
+        if (
+            EbeguUtil.isNotNullAndFalse(
+                this.getGesuch().extractFamiliensituation()
+                    ?.partnerIdentischMitVorgesuch
+            )
+        ) {
             //Wenn der Partner nicht identisch ist, wird das Gesuch beendet und der Titel muss immer aus dem Erstgesuch kommen
             return this.getGesuch().extractFamiliensituationErstgesuch();
         }
@@ -263,27 +332,45 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private isGs2AndererElternteil(familiensituation: TSFamiliensituation) {
-        if (familiensituation.familienstatus === TSFamilienstatus.ALLEINERZIEHEND) {
+        if (
+            familiensituation.familienstatus ===
+            TSFamilienstatus.ALLEINERZIEHEND
+        ) {
             //wenn alleinerziehend ist gs2 immer der andere elternteil
             return true;
         }
 
-        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+        if (
+            familiensituation.familienstatus !==
+            TSFamilienstatus.KONKUBINAT_KEIN_KIND
+        ) {
             //wenn nicht alleinzerziehend und nicht Konkubinat kein Kind ist der GS2 nie der andere Elternteil
             return false;
         }
 
-        if (familiensituation.isShortKonkubinatForEntirePeriode(this.getGesuch().gesuchsperiode)) {
+        if (
+            familiensituation.isShortKonkubinatForEntirePeriode(
+                this.getGesuch().gesuchsperiode
+            )
+        ) {
             // wenn das Konkubinat kurz ist, ist der 2 GS immer der andere Elternteil
             return true;
         }
 
-        if (!familiensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
+        if (
+            !familiensituation.konkubinatGetXYearsInPeriod(
+                this.getGesuch().gesuchsperiode.gueltigkeit
+            )
+        ) {
             // wenn das Konkubinat während der ganzen Periode lang ist, ist der 2 GS nie der andere Elternteil
             return false;
         }
-        return familiensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
-            familiensituation.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+        return (
+            familiensituation.gesuchstellerKardinalitaet ===
+                TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+            familiensituation.unterhaltsvereinbarung ===
+                TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+        );
     }
 
     public korrespondenzAdrClicked(): void {
@@ -292,7 +379,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
 
         if (!this.model.korrespondenzAdresse) {
-            this.model.korrespondenzAdresse = this.initAdresse(TSAdressetyp.KORRESPONDENZADRESSE);
+            this.model.korrespondenzAdresse = this.initAdresse(
+                TSAdressetyp.KORRESPONDENZADRESSE
+            );
         } else if (!this.model.korrespondenzAdresse.adresseJA) {
             this.initKorrespondenzAdresseJA();
         }
@@ -304,14 +393,17 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
 
         if (!this.model.rechnungsAdresse) {
-            this.model.rechnungsAdresse = this.initAdresse(TSAdressetyp.RECHNUNGSADRESSE);
+            this.model.rechnungsAdresse = this.initAdresse(
+                TSAdressetyp.RECHNUNGSADRESSE
+            );
         } else if (!this.model.rechnungsAdresse.adresseJA) {
             this.initRechnungsAdresseJA();
         }
     }
 
     private setLastVerfuegtesGesuch(): void {
-        this.isLastVerfuegtesGesuch = this.gesuchModelManager.isNeuestesGesuch();
+        this.isLastVerfuegtesGesuch =
+            this.gesuchModelManager.isNeuestesGesuch();
     }
 
     public preSave(): IPromise<TSGesuchstellerContainer> {
@@ -320,8 +412,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
 
         if (this.areEmailTelefonEditable() && this.isGesuchReadonly()) {
-            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({},
-                this.gesuchModelManager.getGesuch());
+            const properties =
+                this.ebeguRestUtil.alwaysEditablePropertiesToRestObject(
+                    {},
+                    this.gesuchModelManager.getGesuch()
+                );
             if (this.gesuchstellerNumber === 2) {
                 properties.mailGS2 = this.getModelJA().mail;
                 properties.mobileGS2 = this.getModelJA().mobile;
@@ -339,13 +434,14 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 return this.$q.when(this.model);
             }
 
-            return this.gesuchModelManager.updateAlwaysEditableProperties(properties).then(g => {
-                if (this.gesuchstellerNumber === 2) {
-                    return g.gesuchsteller2;
-                }
-                return g.gesuchsteller1;
-            });
-
+            return this.gesuchModelManager
+                .updateAlwaysEditableProperties(properties)
+                .then(g => {
+                    if (this.gesuchstellerNumber === 2) {
+                        return g.gesuchsteller2;
+                    }
+                    return g.gesuchsteller1;
+                });
         }
 
         return this.save();
@@ -356,17 +452,27 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             EbeguUtil.selectFirstInvalid();
         }
 
-        if (this.isAusweisNachweisRequired() && (EbeguUtil.isNullOrUndefined(this.dokumentGrund)
-            || this.dokumentGrund?.dokumente.length === 0)) {
+        if (
+            this.isAusweisNachweisRequired() &&
+            (EbeguUtil.isNullOrUndefined(this.dokumentGrund) ||
+                this.dokumentGrund?.dokumente.length === 0)
+        ) {
             this.dvFileUploadError = {required: true};
         }
 
-        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumentGrund?.dokumente.length > 0);
+        return (
+            this.form.$valid &&
+            (!this.isAusweisNachweisRequired() ||
+                this.dokumentGrund?.dokumente.length > 0)
+        );
     }
 
     private isAusweisNachweisRequired(): boolean {
-        return this.ausweisNachweisRequiredEinstellung && this.gesuchModelManager.getGesuch()
-            ?.isOnlineGesuch() && this.gesuchstellerNumber === 1;
+        return (
+            this.ausweisNachweisRequiredEinstellung &&
+            this.gesuchModelManager.getGesuch()?.isOnlineGesuch() &&
+            this.gesuchstellerNumber === 1
+        );
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {
@@ -379,9 +485,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
             // Update wizardStepStatus also if the form is empty and not dirty
-            const isGS2Required = this.gesuchModelManager.isGesuchsteller2Required();
-            if ((isGS2Required && this.gesuchstellerNumber === 2) || !isGS2Required) {
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+            const isGS2Required =
+                this.gesuchModelManager.isGesuchsteller2Required();
+            if (
+                (isGS2Required && this.gesuchstellerNumber === 2) ||
+                !isGS2Required
+            ) {
+                this.wizardStepManager.updateCurrentWizardStepStatus(
+                    TSWizardStepStatus.OK
+                );
             }
             return this.$q.when(this.model);
         }
@@ -399,8 +511,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             // umzug can only be introduced for gs1
             return;
         }
-        const showUmzug = this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug;
-        if ((this.gesuchModelManager.getGesuch().gesuchsteller1 && showUmzug) || this.isMutation()) {
+        const showUmzug =
+            this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug;
+        if (
+            (this.gesuchModelManager.getGesuch().gesuchsteller1 && showUmzug) ||
+            this.isMutation()
+        ) {
             this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
         } else {
             this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
@@ -420,9 +536,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      * Die Wohnadresse des GS1 darf bei Mutationen nie geaendert werden
      */
     public disableWohnadresseFor2GS(): boolean {
-        return this.isMutation() && (this.gesuchstellerNumber === 1
-            || (this.model.vorgaengerId !== null
-                && this.model.vorgaengerId !== undefined));
+        return (
+            this.isMutation() &&
+            (this.gesuchstellerNumber === 1 ||
+                (this.model.vorgaengerId !== null &&
+                    this.model.vorgaengerId !== undefined))
+        );
     }
 
     /**
@@ -433,7 +552,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public isThereAnyUmzug(): boolean {
-        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().isThereAnyUmzug();
+        return (
+            this.gesuchModelManager.getGesuch() &&
+            this.gesuchModelManager.getGesuch().isThereAnyUmzug()
+        );
     }
 
     private maybeResetKorrespondadr(): void {
@@ -479,7 +601,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.model.rechnungsAdresse.showDatumVon = false;
     }
 
-    public getTextAddrKorrekturJA(adresseContainer: TSAdresseContainer): string {
+    public getTextAddrKorrekturJA(
+        adresseContainer: TSAdresseContainer
+    ): string {
         if (adresseContainer && adresseContainer.adresseGS) {
             const adr = adresseContainer.adresseGS;
             const organisation = adr.organisation ? adr.organisation : '-';
@@ -496,7 +620,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 zusatzzeile,
                 plz,
                 ort,
-                land,
+                land
             });
         }
 
@@ -509,10 +633,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      * and the current gesuch is the newest one they may also edit those fields
      */
     public areEmailTelefonEditable(): boolean {
-        return this.isLastVerfuegtesGesuch
-        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()) ?
-            true :
-            !this.isGesuchReadonly();
+        return this.isLastVerfuegtesGesuch &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()
+            )
+            ? true
+            : !this.isGesuchReadonly();
     }
 
     /**
@@ -523,10 +649,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public showRechnungsadresseCheckbox(): boolean {
-        return this.gesuchstellerNumber === 1
-            && this.angebotTS
-            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde()
-            && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
+        return (
+            this.gesuchstellerNumber === 1 &&
+            this.angebotTS &&
+            this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde() &&
+            this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode()
+        );
     }
 
     // Email is not required for Papiergesuche and Sozialdienst Gesuche
@@ -539,7 +667,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (fall.isSozialdienstFall()) {
             return false;
         }
-        return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
+        return (
+            this.gesuchstellerNumber === 1 &&
+            gesuch.eingangsart === TSEingangsart.ONLINE
+        );
     }
 
     public getMailRequiredCssClass(): string {
@@ -550,8 +681,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public isLastStepOfSteueramt(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
-            && this.gesuchModelManager.isLastGesuchsteller();
+        return (
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getSteueramtOnlyRoles()
+            ) && this.gesuchModelManager.isLastGesuchsteller()
+        );
     }
 
     public onUpload(event: any): void {
@@ -565,9 +699,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (EbeguUtil.isNullOrUndefined(this.dokumentGrund)) {
             this.dokumentGrund = new TSDokumentGrund();
             this.dokumentGrund.dokumentTyp = TSDokumentTyp.AUSWEIS_ID;
-            this.dokumentGrund.dokumentGrundTyp = TSDokumentGrundTyp.FAMILIENSITUATION;
+            this.dokumentGrund.dokumentGrundTyp =
+                TSDokumentGrundTyp.FAMILIENSITUATION;
         }
-        this.uploadRS.uploadFile(files, this.dokumentGrund, this.gesuchModelManager.getGesuch().id)
+        this.uploadRS
+            .uploadFile(
+                files,
+                this.dokumentGrund,
+                this.gesuchModelManager.getGesuch().id
+            )
             .then(dokumentGrund => {
                 this.dokumentGrund = dokumentGrund;
                 this.dvFileUploadError = null;
@@ -589,29 +729,47 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public onDeleteFile(dokument: TSDokument): void {
-        const index = EbeguUtil.getIndexOfElementwithID(dokument, this.dokumentGrund.dokumente);
+        const index = EbeguUtil.getIndexOfElementwithID(
+            dokument,
+            this.dokumentGrund.dokumente
+        );
 
         if (index > -1) {
             this.dokumentGrund.dokumente.splice(index, 1);
         }
 
-        this.dokumenteRS.removeDokument(dokument).then(() => {
-            this.dokumentGrund.dokumente = this.dokumentGrund.dokumente.filter(d => d.id !== dokument.id);
-            if (this.dokumentGrund.dokumente.length === 0) {
-                this.dvFileUploadError = {required: true};
-            }
-            this.form.$setDirty();
-        }).catch(err => {
-            LOG.error(err);
-            this.errorService.addMesageAsError(err);
-        });
+        this.dokumenteRS
+            .removeDokument(dokument)
+            .then(() => {
+                this.dokumentGrund.dokumente =
+                    this.dokumentGrund.dokumente.filter(
+                        d => d.id !== dokument.id
+                    );
+                if (this.dokumentGrund.dokumente.length === 0) {
+                    this.dvFileUploadError = {required: true};
+                }
+                this.form.$setDirty();
+            })
+            .catch(err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(err);
+            });
     }
 
-    public downloadAusweisDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
+    public downloadAusweisDokument(
+        dokument: TSSozialdienstFallDokument,
+        attachment: boolean
+    ): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenDokument(dokument.id)
+        this.downloadRS
+            .getAccessTokenDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    attachment,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
@@ -619,7 +777,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private setFrenchEnabled(): void {
-        this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS
+            .getPublicPropertiesCached()
             .then(properties => {
                 this.frenchEnabled = properties.frenchEnabled;
                 this.angebotTS = properties.angebotTSActivated;
@@ -627,10 +786,32 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public showKorrespondenzsprache(): boolean {
-        return this.gesuchModelManager.getGesuchstellerNumber() === 1 && this.frenchEnabled;
+        return (
+            this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
+            this.frenchEnabled
+        );
     }
 
     public showHintMandatoryFields(): boolean {
-        return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
+        return (
+            !this.isLuzern ||
+            this.gesuchModelManager.getGesuchstellerNumber() === 1
+        );
+    }
+
+    private initSozialversicherungsnummerEinstellung(): void {
+        this.einstellungRS
+            .findEinstellung(
+                TSEinstellungKey.SOZIALVERSICHERUNGSNUMMER_PERIODE,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            )
+            .subscribe(
+                sozialversicherungsnummerRequired => {
+                    this.sozialversicherungsnummerRequiredEinstellung =
+                        sozialversicherungsnummerRequired.value === 'true';
+                },
+                error => LOG.error(error)
+            );
     }
 }

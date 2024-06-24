@@ -19,7 +19,6 @@ import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class OkDialogLongTextController {
-
     public static $inject = ['$mdDialog', '$translate', 'title', 'body'];
 
     public title: string;
@@ -29,17 +28,14 @@ export class OkDialogLongTextController {
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
         title: string,
-        body: string,
-        _okText: string
+        body: string
     ) {
-
         if (EbeguUtil.isNotNullOrUndefined(title)) {
             this.title = $translate.instant(title);
         }
         if (EbeguUtil.isNotNullOrUndefined(body)) {
             this.body = $translate.instant(body);
         }
-
     }
 
     public hide(): IPromise<any> {

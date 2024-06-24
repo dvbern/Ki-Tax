@@ -23,7 +23,6 @@ import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {FallRS} from './fallRS.rest';
 
 describe('fallRS', () => {
-
     let fallRS: FallRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
@@ -36,11 +35,13 @@ describe('fallRS', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        fallRS = $injector.get('FallRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(
+        angular.mock.inject($injector => {
+            fallRS = $injector.get('FallRS');
+            $httpBackend = $injector.get('$httpBackend');
+            ebeguRestUtil = $injector.get('EbeguRestUtil');
+        })
+    );
 
     beforeEach(() => {
         mockFall = new TSFall();
@@ -59,7 +60,9 @@ describe('fallRS', () => {
     describe('API Usage', () => {
         describe('findFall', () => {
             it('should return the Fall by id', () => {
-                $httpBackend.expectGET(`${fallRS.serviceURL}/id/${mockFall.id}`).respond(mockFallRest);
+                $httpBackend
+                    .expectGET(`${fallRS.serviceURL}/id/${mockFall.id}`)
+                    .respond(mockFallRest);
 
                 let foundFall: TSFall;
                 fallRS.findFall(mockFall.id).then(result => {
@@ -73,7 +76,9 @@ describe('fallRS', () => {
         describe('createFall', () => {
             it('should create an fall', () => {
                 let createdFall: TSFall;
-                $httpBackend.expectPUT(fallRS.serviceURL, mockFallRest).respond(mockFallRest);
+                $httpBackend
+                    .expectPUT(fallRS.serviceURL, mockFallRest)
+                    .respond(mockFallRest);
 
                 fallRS.createFall(mockFall).then(result => {
                     createdFall = result;

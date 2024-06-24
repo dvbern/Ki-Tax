@@ -32,8 +32,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     styleUrls: ['./modul-tagesschule-dialog.component.less']
 })
 export class ModulTagesschuleDialogComponent implements OnInit {
-
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public noDaySelected: boolean = false;
@@ -88,6 +87,9 @@ export class ModulTagesschuleDialogComponent implements OnInit {
     }
 
     public isModulErfassungDynamisch(): boolean {
-        return TSModulTagesschuleName.DYNAMISCH === this.modulTagesschuleGroup.modulTagesschuleName;
+        return (
+            TSModulTagesschuleName.DYNAMISCH ===
+            this.modulTagesschuleGroup.modulTagesschuleName
+        );
     }
 }

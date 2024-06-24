@@ -33,12 +33,13 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.mocks.ApplicationPropertyServiceMock;
+import ch.dvbern.ebegu.mocks.ConfigurationServiceMock;
 import ch.dvbern.ebegu.mocks.DokumentGrundServiceMock;
 import ch.dvbern.ebegu.mocks.DokumenteverzeichnisEvaluatorMock;
 import ch.dvbern.ebegu.mocks.DossierServiceBeanMock;
@@ -49,6 +50,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.ConfigurationService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -109,6 +111,9 @@ public class PDFServiceBeanTest {
 
 	@InjectIntoMany
 	ApplicationPropertyService applicationPropertyService = new ApplicationPropertyServiceMock();
+
+	@InjectIntoMany
+	ConfigurationService configurationService = new ConfigurationServiceMock();
 
 	private Gesuch gesuch_1GS, gesuch_2GS, gesuch_Schulamt;
 
@@ -196,7 +201,7 @@ public class PDFServiceBeanTest {
 		if (betreuung.isPresent()) {
 			byte[] bytes = pdfService.generateNichteintreten(betreuung.get(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 			Assert.assertNotNull(bytes);
-			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getBGNummer() + ").pdf");
+			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getReferenzNummer() + ").pdf");
 		} else {
 			throw new Exception(String.format("%s", "testPrintNichteintreten()"));
 		}

@@ -26,13 +26,11 @@ import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
+import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersendeteMails/uebersichtVersendeteMails.component';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 
 @NgModule({
-    imports: [
-        SharedModule,
-        NgAdminRoutingModule
-    ],
+    imports: [SharedModule, NgAdminRoutingModule],
     declarations: [
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
@@ -42,9 +40,9 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         AdminViewXComponent,
         GesuchsperiodeListViewXComponent,
         BenutzerListViewXComponent,
-        BenutzerListXComponent
+        BenutzerListXComponent,
+        UebersichtVersendeteMailsComponent
     ],
     providers: []
 })
-export class NgAdminModule {
-}
+export class NgAdminModule {}

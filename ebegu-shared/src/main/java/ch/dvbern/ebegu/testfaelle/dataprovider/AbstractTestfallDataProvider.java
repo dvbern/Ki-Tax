@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 
 import javax.annotation.Nonnull;
 
@@ -10,11 +11,13 @@ import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -44,7 +47,7 @@ public abstract class AbstractTestfallDataProvider {
 
 	protected Auszahlungsdaten createDefaultAuszahlungsdaten() {
 		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
-		auszahlungsdaten.setIban(new IBAN("CH2089144969768441935"));
+		auszahlungsdaten.setIban(new IBAN("CH9789144829733648596"));
 		auszahlungsdaten.setKontoinhaber("kiBon Test");
 		return auszahlungsdaten;
 	}
@@ -80,24 +83,40 @@ public abstract class AbstractTestfallDataProvider {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 		Kind kind = new Kind();
-		kind.setGeschlecht(geschlecht);
-		kind.setNachname(name);
-		kind.setVorname(vorname);
-		kind.setGeburtsdatum(geburtsdatum);
-		kind.setKinderabzugErstesHalbjahr(kinderabzug);
-		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
-		if (is18GeburtstagBeforeGPEnds) {
+		final TestKindParameter testKindParameter =
+			TestKindParameter.builder()
+				.geburtsdatum(geburtsdatum)
+				.betreuung(betreuung)
+				.kind(kind)
+				.geschlecht(geschlecht)
+				.name(name)
+				.is18GeburtstagBeforeGPEnds(is18GeburtstagBeforeGPEnds)
+				.kinderabzug(kinderabzug)
+				.vorname(vorname)
+				.build();
+		setRequiredKindData(testKindParameter);
+
+		return kind;
+	}
+
+	public static void setRequiredKindData(TestKindParameter testKindParameter) {
+		final Kind kind = testKindParameter.getKind();
+		kind.setGeschlecht(testKindParameter.getGeschlecht());
+		kind.setNachname(testKindParameter.getName());
+		kind.setVorname(testKindParameter.getVorname());
+		kind.setGeburtsdatum(testKindParameter.getGeburtsdatum());
+		kind.setKinderabzugErstesHalbjahr(testKindParameter.getKinderabzug());
+		kind.setKinderabzugZweitesHalbjahr(testKindParameter.getKinderabzug());
+		if (Boolean.TRUE.equals(testKindParameter.getIs18GeburtstagBeforeGPEnds())) {
 			kind.setInErstausbildung(false);
 		} else {
 			kind.setObhutAlternierendAusueben(false);
 		}
-		kind.setFamilienErgaenzendeBetreuung(betreuung);
-		if (betreuung) {
+		kind.setFamilienErgaenzendeBetreuung(testKindParameter.isBetreuung());
+		if (testKindParameter.isBetreuung()) {
 			kind.setSprichtAmtssprache(Boolean.TRUE);
 			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
-
-		return kind;
 	}
 
 	public Erwerbspensum createErwerbspensum(int prozent) {
@@ -106,6 +125,22 @@ public abstract class AbstractTestfallDataProvider {
 		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(prozent);
 		return erwerbspensum;
+	}
+
+	/**
+	 * @param gesuchstellerNumber is required in overriding methods
+	 */
+	public Gesuchsteller createGesuchsteller(String name, String vorname, int gesuchstellerNumber) {
+		Gesuchsteller gesuchsteller = new Gesuchsteller();
+		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
+		gesuchsteller.setNachname(name);
+		gesuchsteller.setVorname(vorname);
+		gesuchsteller.setGeburtsdatum(LocalDate.of(1980, Month.MARCH, 25));
+		gesuchsteller.setDiplomatenstatus(false);
+		gesuchsteller.setMail("test@mailbucket.dvbern.ch");
+		gesuchsteller.setMobile("079 000 00 00");
+		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
+		return gesuchsteller;
 	}
 }
 

@@ -19,7 +19,6 @@ import * as moment from 'moment';
 import {TSAbstractEntity} from './TSAbstractEntity';
 
 export class TSRueckforderungMitteilung extends TSAbstractEntity {
-
     private _betreff: string;
     private _inhalt: string;
     private _sendeDatum: moment.Moment;

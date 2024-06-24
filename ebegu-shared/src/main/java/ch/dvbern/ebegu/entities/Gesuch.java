@@ -19,10 +19,12 @@ import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
+import ch.dvbern.ebegu.validators.CheckAhvGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
 import com.google.common.base.Strings;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
 @Audited
 @CheckGesuchComplete(groups = AntragCompleteValidationGroup.class)
 @CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
+@CheckAhvGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")

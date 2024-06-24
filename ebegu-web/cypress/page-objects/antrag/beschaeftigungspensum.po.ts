@@ -15,32 +15,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureBeschaeftigungspensum } from '@dv-e2e/fixtures';
+import {FixtureBeschaeftigungspensum} from '@dv-e2e/fixtures';
 import {NavigationPO} from './navigation.po';
 
 // !! -- PAGE OBJECTS -- !!
 const getAddErwerbspensumButton = (gesuchSteller: 'GS1' | 'GS2') => {
-	return cy.getByData(`container.add-erwerbungspensum-erwerbspensen${gesuchSteller}`, 'navigation-button');
+    return cy.getByData(
+        `container.add-erwerbungspensum-erwerbspensen${gesuchSteller}`,
+        'navigation-button'
+    );
 };
 
 const getBezeichnung = () => {
-	return cy.getByData('bezeichnung');
+    return cy.getByData('bezeichnung');
 };
 
 const getTaetigkeit = () => {
-	return cy.getByData('taetigkeit');
+    return cy.getByData('taetigkeit');
 };
 
 const getTaetigkeitsPensum = () => {
-	return cy.getByData('taetigkeit-pensum');
+    return cy.getByData('taetigkeit-pensum');
 };
 
 const getTaetigkeitAb = () => {
-	return cy.getByData('taetigkeit-ab');
+    return cy.getByData('taetigkeit-ab');
 };
 
 // !! -- PAGE ACTIONS -- !!
-const createBeschaeftigungspensum = (gesuchSteller: 'GS1' | 'GS2', dataset: keyof typeof FixtureBeschaeftigungspensum) => {
+const createBeschaeftigungspensum = (
+    gesuchSteller: 'GS1' | 'GS2',
+    dataset: keyof typeof FixtureBeschaeftigungspensum
+) => {
     FixtureBeschaeftigungspensum[dataset](data => {
         getAddErwerbspensumButton(gesuchSteller).click();
         getBezeichnung().type(data[gesuchSteller].bezeichnung);
@@ -62,5 +68,5 @@ export const AntragBeschaeftigungspensumPO = {
     getTaetigkeitAb,
     getTaetigkeitsPensum,
     // page objects
-    createBeschaeftigungspensum,
+    createBeschaeftigungspensum
 };

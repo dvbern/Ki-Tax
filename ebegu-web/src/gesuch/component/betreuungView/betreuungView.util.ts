@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
@@ -29,11 +29,11 @@ export function createTSBetreuungspensum(params: {
     isTFOKostenBerechnungStuendlich: boolean;
     mahlzeitenverguenstigungActive: boolean;
 }): TSBetreuungspensum {
-
     const tsBetreuungspensum = new TSBetreuungspensum();
-    tsBetreuungspensum.unitForDisplay = params.anzeigeEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN ?
-        TSPensumUnits.HOURS :
-        TSPensumUnits.PERCENTAGE;
+    tsBetreuungspensum.unitForDisplay =
+        params.anzeigeEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN
+            ? TSPensumUnits.HOURS
+            : TSPensumUnits.PERCENTAGE;
     tsBetreuungspensum.nichtEingetreten = false;
     tsBetreuungspensum.gueltigkeit = new TSDateRange();
 
@@ -56,7 +56,10 @@ export function createTSBetreuungspensum(params: {
         tsBetreuungspensum.tarifProNebenmahlzeit = 0;
     }
 
-    if (params.isTFOKostenBerechnungStuendlich && params.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+    if (
+        params.isTFOKostenBerechnungStuendlich &&
+        params.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN
+    ) {
         // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls
         // die TFO Kosten stündlich eingegeben werden
         tsBetreuungspensum.monatlicheBetreuungskosten = 0;

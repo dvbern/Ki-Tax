@@ -20,7 +20,6 @@ import {TSDateRange} from './types/TSDateRange';
 import {EbeguUtil} from '../utils/EbeguUtil';
 
 export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
-
     public constructor() {
         super();
     }
@@ -31,7 +30,8 @@ export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
         if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
             target.gueltigkeit = new TSDateRange();
             target.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb?.clone();
-            target.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis?.clone();
+            target.gueltigkeit.gueltigBis =
+                this.gueltigkeit.gueltigBis?.clone();
         }
         return target;
     }

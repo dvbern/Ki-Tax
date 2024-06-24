@@ -7,18 +7,18 @@
             "geschlecht": "MAENNLICH",
             "vorname": "gs1-vorname",
             "nachname": "gs1-nachname",
-            "geburtsdatum":  "01.01.1990",
+            "geburtsdatum": "01.01.1990",
             "korrespondenzSprache": "string:DEUTSCH",
             "adresseStrasse": "Foobar",
-            "adresseHausnummer":  "1",
+            "adresseHausnummer": "1",
             "adressePlz": "3000",
-            "adresseOrt":  "Bern"
+            "adresseOrt": "Bern"
         },
         "GS2": {
             "geschlecht": "WEIBLICH",
             "vorname": "gs2-vorname",
             "nachname": "gs2-nachname",
-            "geburtsdatum":  "01.01.1991"
+            "geburtsdatum": "01.01.1991"
         }
     }
 }

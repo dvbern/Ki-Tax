@@ -34,8 +34,10 @@ export class DVLoginButtonConfig implements IComponentOptions {
 const LOG = LogFactory.createLog('DvLoginButtonController');
 
 export class DVLoginButtonController implements IController {
-
-    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$uiRouterGlobals'];
+    public static $inject: ReadonlyArray<string> = [
+        'AuthServiceRS',
+        '$uiRouterGlobals'
+    ];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
@@ -44,16 +46,17 @@ export class DVLoginButtonController implements IController {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly uiRouterGlobals: UIRouterGlobals
-    ) {
-    }
+    ) {}
 
     public $onInit(): void {
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(principal => {
+            .subscribe(
+                principal => {
                     this.principal = principal;
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
     }
 
     public showButton(): boolean {

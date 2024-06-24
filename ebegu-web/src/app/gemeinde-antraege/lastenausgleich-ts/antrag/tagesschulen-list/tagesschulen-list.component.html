@@ -18,12 +18,19 @@
 <div class="row view-title">
     <div class="col-md-12">
         <h2 translate>LATS_ANGABEN_TAGESSCHULEN</h2>
-        <hr class="header"/>
+        <hr class="header" />
     </div>
 </div>
 
-<dv-simple-table *ngIf="tableColumns" [data]="data" [columns]="tableColumns" (rowClicked)="navigate($event)"></dv-simple-table>
-<button class="dv-btn cancel-button margin-top-20"
-        *ngIf="isGemeindeOrSuperadmin() && (isInBearbeitungGemeinde() | async)"
-        (click)="createMissingTagesschuleFormulare()"
-        [textContent]="'CREATE_MISSING_FORMULARE' | translate"></button>
+<dv-simple-table
+    *ngIf="tableColumns"
+    [data]="data"
+    [columns]="tableColumns"
+    (rowClicked)="navigate($event)"
+></dv-simple-table>
+<button
+    class="dv-btn cancel-button margin-top-20"
+    *ngIf="isGemeindeOrSuperadmin() && (isInBearbeitungGemeinde() | async)"
+    (click)="createMissingTagesschuleFormulare()"
+    [textContent]="'CREATE_MISSING_FORMULARE' | translate"
+></button>

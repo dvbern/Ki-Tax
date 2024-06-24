@@ -16,7 +16,6 @@
  */
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -25,30 +24,23 @@ import {GemeindeModule} from '../gemeinde.module';
 import {EditGemeindeFIComponent} from './edit-gemeinde-fi.component';
 
 describe('EditGemeindeFIComponent', () => {
-
     let component: EditGemeindeFIComponent;
     let fixture: ComponentFixture<EditGemeindeFIComponent>;
 
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(
+        I18nServiceRSRest.name,
+        ['extractPreferredLanguage']
+    );
 
     beforeEach(waitForAsync(() => {
-
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                MaterialModule,
-                GemeindeModule
-            ],
+            imports: [SharedModule, MaterialModule, GemeindeModule],
             schemas: [],
-            providers: [
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
-            ],
-            declarations: [
-            ]
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
-        ).compileComponents();
-
+            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy}],
+            declarations: []
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
     }));
 
     beforeEach(waitForAsync(() => {

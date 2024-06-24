@@ -15,7 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest,
+    HttpResponse
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
@@ -27,19 +33,24 @@ import {CONSTANTS} from '../constants/CONSTANTS';
  */
 @Injectable()
 export class HttpVersionInterceptorX implements HttpInterceptor {
+    public constructor(private readonly versionService: VersionService) {}
 
-    public constructor(
-            private readonly versionService: VersionService
-    ) {
-    }
-
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).pipe(tap((response: HttpResponse<any>) => {
-            if (response instanceof HttpResponse &&
+    public intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
+        return next.handle(req).pipe(
+            tap((response: HttpResponse<any>) => {
+                if (
+                    response instanceof HttpResponse &&
                     response.headers &&
-                    req.url.indexOf(CONSTANTS.REST_API) === 0) {
-                this.versionService.updateBackendVersion(response.headers.get('x-ebegu-version'));
-            }
-        }));
+                    req.url.indexOf(CONSTANTS.REST_API) === 0
+                ) {
+                    this.versionService.updateBackendVersion(
+                        response.headers.get('x-ebegu-version')
+                    );
+                }
+            })
+        );
     }
 }

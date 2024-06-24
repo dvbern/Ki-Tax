@@ -30,8 +30,8 @@ import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
     styleUrls: ['../tutorial-login.component.less']
 })
 export class TutorialInstitutionLoginComponent {
-
-    private static readonly ID_KITA_TUTORIAL = '22222222-1111-1111-1111-444444444444';
+    private static readonly ID_KITA_TUTORIAL =
+        '22222222-1111-1111-1111-444444444444';
 
     @Input() public returnTo: TargetState;
 
@@ -45,7 +45,6 @@ export class TutorialInstitutionLoginComponent {
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService
     ) {
-
         this.mandant = TutorialInstitutionLoginComponent.getMandant();
         this.institutionTutorial = this.getInsitution();
 
@@ -67,7 +66,8 @@ export class TutorialInstitutionLoginComponent {
     }
 
     private createInstitutionUsers(): void {
-        this.sachbearbeiterInstitutionKitaTutorial = new TSBenutzer('Sophie',
+        this.sachbearbeiterInstitutionKitaTutorial = new TSBenutzer(
+            'Sophie',
             'Tutorial',
             'tuso',
             'password9',
@@ -75,7 +75,8 @@ export class TutorialInstitutionLoginComponent {
             this.mandant,
             TSRole.SACHBEARBEITER_INSTITUTION,
             undefined,
-            this.institutionTutorial);
+            this.institutionTutorial
+        );
     }
 
     /**
@@ -91,7 +92,10 @@ export class TutorialInstitutionLoginComponent {
     }
 
     public logIn(): void {
-        this.authServiceRS.loginRequest(this.sachbearbeiterInstitutionKitaTutorial)
-            .then(() => returnToOriginalState(this.stateService, this.returnTo));
+        this.authServiceRS
+            .loginRequest(this.sachbearbeiterInstitutionKitaTutorial)
+            .then(() =>
+                returnToOriginalState(this.stateService, this.returnTo)
+            );
     }
 }

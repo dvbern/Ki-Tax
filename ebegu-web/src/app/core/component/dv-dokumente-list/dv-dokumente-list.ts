@@ -18,9 +18,7 @@
 import {IComponentOptions, IController, ILogService} from 'angular';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {
-    FinanzielleSituationAppenzellService
-} from '../../../../gesuch/component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
+import {FinanzielleSituationAppenzellService} from '../../../../gesuch/component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
@@ -59,7 +57,6 @@ export class DVDokumenteListConfig implements IComponentOptions {
         onUploadDone: '&',
         onRemove: '&',
         sonstige: '<'
-
     };
     public template = require('./dv-dokumente-list.html');
     public controller = DVDokumenteListController;
@@ -67,7 +64,6 @@ export class DVDokumenteListConfig implements IComponentOptions {
 }
 
 export class DVDokumenteListController implements IController {
-
     public static $inject: ReadonlyArray<string> = [
         'UploadRS',
         'GesuchModelManager',
@@ -104,9 +100,7 @@ export class DVDokumenteListController implements IController {
         private readonly $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService
-    ) {
-
-    }
+    ) {}
 
     public $onInit(): void {
         this.applicationPropertyRS.getAllowedMimetypes().then(response => {
@@ -125,7 +119,9 @@ export class DVDokumenteListController implements IController {
 
     public uploadAnhaenge(files: any[], selectDokument: TSDokumentGrund): void {
         if (!this.gesuchModelManager.getGesuch()) {
-            this.$log.warn('No gesuch found to store file or gesuch is status verfuegt');
+            this.$log.warn(
+                'No gesuch found to store file or gesuch is status verfuegt'
+            );
             return;
         }
 
@@ -153,20 +149,27 @@ export class DVDokumenteListController implements IController {
             }
             returnString += '</ul>';
 
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: returnString
-            });
+            this.dvDialog.showDialog(
+                okHtmlDialogTempl,
+                OkHtmlDialogController,
+                {
+                    title: returnString
+                }
+            );
         }
 
         if (filesOk.length <= 0) {
             return;
         }
 
-        this.uploadRS.uploadFile(filesOk, selectDokument, gesuchID).then(response => {
-            const returnedDG = angular.copy(response);
-            this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
-                .then(() => this.handleUpload(returnedDG));
-        });
+        this.uploadRS
+            .uploadFile(filesOk, selectDokument, gesuchID)
+            .then(response => {
+                const returnedDG = angular.copy(response);
+                this.wizardStepManager
+                    .findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
+                    .then(() => this.handleUpload(returnedDG));
+            });
     }
 
     public hasDokuments(selectDokument: TSDokumentGrund): boolean {
@@ -184,7 +187,10 @@ export class DVDokumenteListController implements IController {
         this.onUploadDone({dokument: returnedDG});
     }
 
-    public isRemoveAllowed(_dokumentGrund: TSDokumentGrund, dokument: TSDokument): boolean {
+    public isRemoveAllowed(
+        _dokumentGrund: TSDokumentGrund,
+        dokument: TSDokument
+    ): boolean {
         // Loeschen von Dokumenten ist nur in folgenden Faellen erlaubt:
         // - GS bis Freigabe (d.h nicht readonlyForRole). In diesem Status kann es nur "seine" Dokumente geben
         // - JA bis Verfuegen, aber nur die von JA hinzugefuegten: d.h. wenn noch nicht verfuegt: die eigenen, wenn
@@ -228,15 +234,21 @@ export class DVDokumenteListController implements IController {
 
     public remove(dokumentGrund: TSDokumentGrund, dokument: TSDokument): void {
         this.$log.debug(`component -> remove dokument ${dokument.filename}`);
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-            deleteText: '',
-            title: 'FILE_LOESCHEN',
-            parentController: undefined,
-            elementID: undefined
-        })
-            .then(() => {   // User confirmed removal
+        this.dvDialog
+            .showRemoveDialog(
+                removeDialogTemplate,
+                undefined,
+                RemoveDialogController,
+                {
+                    deleteText: '',
+                    title: 'FILE_LOESCHEN',
+                    parentController: undefined,
+                    elementID: undefined
+                }
+            )
+            .then(() => {
+                // User confirmed removal
                 this.onRemove({dokumentGrund, dokument});
-
             });
     }
 
@@ -244,14 +256,22 @@ export class DVDokumenteListController implements IController {
         this.$log.debug(`download dokument ${dokument.filename}`);
         const win = this.downloadRS.prepareDownloadWindow();
 
-        this.downloadRS.getAccessTokenDokument(dokument.id)
+        this.downloadRS
+            .getAccessTokenDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.$log.debug(`accessToken: ${downloadFile.accessToken}`);
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+                this.downloadRS.startDownload(
+                    downloadFile.accessToken,
+                    downloadFile.filename,
+                    attachment,
+                    win
+                );
             })
             .catch(() => {
                 win.close();
-                this.$log.error('An error occurred downloading the document, closing download window.');
+                this.$log.error(
+                    'An error occurred downloading the document, closing download window.'
+                );
             });
     }
 
@@ -272,10 +292,18 @@ export class DVDokumenteListController implements IController {
         // gleichbedeutend mit readonly auf dem Gesuch
         // Jedoch darf der Gesuchsteller und der Unterstützungsdienst nach der Verfuegung und
         // in Bearbeitung Gemeinde/JA nichts mehr hochladen
-        const gsAndVerfuegt = this.gesuchModelManager.getGesuch()
-            && isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.gesuchModelManager.getGesuch().status)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
-        return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
+        const gsAndVerfuegt =
+            this.gesuchModelManager.getGesuch() &&
+            isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(
+                this.gesuchModelManager.getGesuch().status
+            ) &&
+            this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getGesuchstellerSozialdienstRolle()
+            );
+        return (
+            gsAndVerfuegt ||
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles())
+        );
     }
 
     /**
@@ -291,11 +319,18 @@ export class DVDokumenteListController implements IController {
             return '';
         }
 
-        if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
-           return this.getFullNameGesuchsteller(dokumentGrund.personNumber);
+        if (
+            dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER
+        ) {
+            return this.getFullNameGesuchsteller(dokumentGrund.personNumber);
         }
-        if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND && gesuch.kindContainers) {
-            const kindContainer = gesuch.extractKindFromKindNumber(dokumentGrund.personNumber);
+        if (
+            dokumentGrund.personType === TSDokumentGrundPersonType.KIND &&
+            gesuch.kindContainers
+        ) {
+            const kindContainer = gesuch.extractKindFromKindNumber(
+                dokumentGrund.personNumber
+            );
             if (kindContainer && kindContainer.kindJA) {
                 return kindContainer.kindJA.getFullName();
             }
@@ -315,16 +350,26 @@ export class DVDokumenteListController implements IController {
         if (personNumber === 1 && gesuch.gesuchsteller1) {
             return gesuch.gesuchsteller1.extractFullName();
         }
-        if (personNumber === 0 && gesuch.gesuchsteller1 && gesuch.gesuchsteller2) {
+        if (
+            personNumber === 0 &&
+            gesuch.gesuchsteller1 &&
+            gesuch.gesuchsteller2
+        ) {
             return this.$translate.instant('DOK_GS1_AND_GS2', {
                 gs1: gesuch.gesuchsteller1.extractFullName(),
-                gs2: gesuch.gesuchsteller2.extractFullName()});
+                gs2: gesuch.gesuchsteller2.extractFullName()
+            });
         }
-        if (personNumber === 0 && gesuch.gesuchsteller1 && this.isAppenzellSpeziallFall(gesuch)) {
+        if (
+            personNumber === 0 &&
+            gesuch.gesuchsteller1 &&
+            this.isAppenzellSpeziallFall(gesuch)
+        ) {
             const gs2Name = this.$translate.instant('GS2_VERHEIRATET');
             return this.$translate.instant('DOK_GS1_AND_GS2', {
                 gs1: gesuch.gesuchsteller1.extractFullName(),
-                gs2: gs2Name});
+                gs2: gs2Name
+            });
         }
 
         return '';
@@ -336,7 +381,9 @@ export class DVDokumenteListController implements IController {
     }
 
     public getTableTitleText(): string {
-        return this.$translate.instant(this.tableTitle, {basisjahr: this.titleValue});
+        return this.$translate.instant(this.tableTitle, {
+            basisjahr: this.titleValue
+        });
     }
 
     public get dokumentTyp(): typeof TSDokumentTyp {
@@ -347,7 +394,10 @@ export class DVDokumenteListController implements IController {
         if (this.mandant !== MANDANTS.APPENZELL_AUSSERRHODEN) {
             return false;
         }
-        return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuch)
-        && EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2);
+        return (
+            FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
+                gesuch
+            ) && EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2)
+        );
     }
 }

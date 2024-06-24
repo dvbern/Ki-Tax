@@ -1,4 +1,9 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit
+} from '@angular/core';
 import {MatRadioChange} from '@angular/material/radio';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -19,10 +24,12 @@ const LOG = LogFactory.createLog('FinanzielleSituationStartSchwyzComponent');
 @Component({
     selector: 'dv-finanzielle-situation-start-schwyz',
     templateUrl: './finanzielle-situation-start-schwyz.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
-
+export class FinanzielleSituationStartSchwyzComponent
+    extends AbstractGesuchViewX<TSFinanzModel>
+    implements OnInit
+{
     public hasMultipleGS = false;
     public gs2Ausgefuellt = false;
 
@@ -35,31 +42,50 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         protected ref: ChangeDetectorRef,
         protected readonly gesuchModelManager: GesuchModelManager,
         private readonly finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService,
-        private readonly wizardstepManager: WizardStepManager,
+        private readonly wizardstepManager: WizardStepManager
     ) {
-        super(gesuchModelManager, wizardstepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
+        super(
+            gesuchModelManager,
+            wizardstepManager,
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ
+        );
     }
 
     public ngOnInit(): void {
-        this.wizardstepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
-            TSWizardStepStatus.IN_BEARBEITUNG);
-        this.hasMultipleGS = this.gesuchModelManager.getFamiliensituation()
-            .hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
-        this.gs2Ausgefuellt = EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        this.wizardstepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
+            TSWizardStepStatus.IN_BEARBEITUNG
+        );
+        this.hasMultipleGS = this.gesuchModelManager
+            .getFamiliensituation()
+            .hasSecondGesuchsteller(
+                this.gesuchModelManager.getGesuchsperiode().gueltigkeit
+                    .gueltigBis
+            );
+        this.gs2Ausgefuellt = EbeguUtil.isNotNullOrUndefined(
+            this.gesuchModelManager.getGesuch().gesuchsteller2
+        );
         this.initFinanzModel();
     }
 
     private initFinanzModel(): void {
-        this.model =
-            new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), 1);
-        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.model = new TSFinanzModel(
+            this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            1
+        );
+        this.model.copyFinSitDataFromGesuch(
+            this.gesuchModelManager.getGesuch()
+        );
         this.setupCalculation();
         this.calculate();
         // this field is not present on schwyz but will be checked in a lot of distributed places. Therefore we set it
         this.model.familienSituation.sozialhilfeBezueger = false;
     }
 
-    public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -67,19 +93,31 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         return this.save(onResult);
     }
 
-    private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
-        const hasGemeinsamChanged = this.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung
-            !== this.model.familienSituation.gemeinsameSteuererklaerung;
-        if (this.gesuchModelManager.isGesuchsteller2Required()
-            && hasGemeinsamChanged
-            && EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
+    private save(
+        onResult: (arg: any) => void
+    ): Promise<TSFinanzielleSituationContainer> {
+        const hasGemeinsamChanged =
+            this.getGesuch().extractFamiliensituation()
+                .gemeinsameSteuererklaerung !==
+            this.model.familienSituation.gemeinsameSteuererklaerung;
+        if (
+            this.gesuchModelManager.isGesuchsteller2Required() &&
+            hasGemeinsamChanged &&
+            EbeguUtil.isNotNullAndFalse(
+                this.model.familienSituation.gemeinsameSteuererklaerung
+            )
+        ) {
             this.resetAllFinSitSchwyzData();
         }
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituationStart()
+        return this.gesuchModelManager
+            .saveFinanzielleSituationStart()
             .then(() => this.gesuchModelManager.updateGesuch())
             .then(async () => {
-                if (!this.hasMultipleGS || this.model.familienSituation.gemeinsameSteuererklaerung) {
+                if (
+                    !this.hasMultipleGS ||
+                    this.model.familienSituation.gemeinsameSteuererklaerung
+                ) {
                     await this.updateWizardStepStatus();
                 }
                 onResult(this.getModel());
@@ -88,18 +126,21 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
     }
 
     public recalculateMassgendesEinkommen(): void {
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(
+            this.model
+        );
     }
 
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     protected updateWizardStepStatus(): Promise<void> {
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
-                TSWizardStepStatus.OK) as Promise<void>;
+        return this.gesuchModelManager.getGesuch().isMutation()
+            ? (this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void>)
+            : (this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                  TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
+                  TSWizardStepStatus.OK
+              ) as Promise<void>);
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
@@ -123,30 +164,45 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
     }
 
     public calculate(): void {
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(
+            this.model
+        );
     }
 
     public setupCalculation(): void {
-        this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(resultate => {
-                this.resultate = resultate;
+        this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(
+            resultate => {
+                this.resultate = resultate.finSitResultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error),
+            },
+            error => LOG.error(error)
         );
     }
 
     public gemeinsamChanged($event: MatRadioChange): void {
         if ($event.value === true) {
-            this.finSitGS1JAToRestore = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
-            this.finSitGS2JAToRestore = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
-            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
-            if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.quellenbesteuert) {
-                this.model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+            this.finSitGS1JAToRestore =
+                this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+            this.finSitGS2JAToRestore =
+                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA =
+                new TSFinanzielleSituation();
+            if (
+                this.model.finanzielleSituationContainerGS1
+                    .finanzielleSituationJA.quellenbesteuert
+            ) {
+                this.model.finanzielleSituationContainerGS1.finanzielleSituationJA =
+                    new TSFinanzielleSituation();
             }
         } else {
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA =
-                this.finSitGS2JAToRestore ? this.finSitGS2JAToRestore : new TSFinanzielleSituation();
+                this.finSitGS2JAToRestore
+                    ? this.finSitGS2JAToRestore
+                    : new TSFinanzielleSituation();
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA =
-                this.finSitGS1JAToRestore ? this.finSitGS1JAToRestore : new TSFinanzielleSituation();
+                this.finSitGS1JAToRestore
+                    ? this.finSitGS1JAToRestore
+                    : new TSFinanzielleSituation();
         }
         this.calculate();
     }
