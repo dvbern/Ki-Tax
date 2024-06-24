@@ -283,7 +283,6 @@ deploy:
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         -   if: $CI_MERGE_REQUEST_ID
             when: manual
-            allow_failure: true
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
