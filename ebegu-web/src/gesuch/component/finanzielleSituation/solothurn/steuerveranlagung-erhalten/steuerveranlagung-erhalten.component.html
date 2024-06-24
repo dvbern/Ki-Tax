@@ -86,7 +86,11 @@
                         required
                         #steuerveranlagungErhalten="ngModel"
                         dvEnableElement
-                        [enableExpression]="canEdit()"
+                        [enableExpression]="
+                            canEdit() &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
                         [ngModel]="
                             model.finanzielleSituationJA
                                 .steuerveranlagungErhalten
