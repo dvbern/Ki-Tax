@@ -18,11 +18,14 @@
 package ch.dvbern.ebegu.rules.mutationsmerger;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
@@ -30,14 +33,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.*;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.
@@ -175,13 +179,15 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		BGCalculationInput inputAktuel,
 		BGCalculationResult resultVorgaenger,
 		LocalDate mutationsEingansdatum) {
-		if (isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
-			inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
-			if (inputAktuel.getBedarfsstufe() != null && inputAktuel.getBedarfsstufe() != Bedarfsstufe.KEINE) {
-				inputAktuel.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.BEDARFSSTUFE_MSG, locale, inputAktuel.getBedarfsstufe());
-			}
+		if (!isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum) ||
+			inputAktuel.getBedarfsstufe() == resultVorgaenger.getBedarfsstufe()) {
+			return;
 		}
+
+		inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
+		inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
+		inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
+		inputAktuel.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG, locale, inputAktuel.getBedarfsstufe());
 	}
 
 	private void handleAnspruch(

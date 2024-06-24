@@ -268,6 +268,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
 		this.zusaetzlicherGutscheinGemeindeBetrag = toCopy.zusaetzlicherGutscheinGemeindeBetrag;
 		this.hoehererBeitrag = toCopy.hoehererBeitrag;
+		this.bedarfsstufe = toCopy.bedarfsstufe;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {

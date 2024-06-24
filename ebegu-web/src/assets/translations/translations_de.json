@@ -3278,5 +3278,6 @@
     "BEDARFSSTUFE_2": "Bedarfsstufe: 2 / mittel",
     "BEDARFSSTUFE_3": "Bedarfsstufe: 3 / ausgeprägt",
     "BEDARFSSTUFE_MISSING_BEDARFSSTUFE": "Für das Kind {{vorname}} {{nachname}} wurden höhere Beiträge beantragt. Setzen Sie die Bedarfsstufe in der Betreuung des Kindes nach erfolgter Beurteilung der Fachstelle für Kinderbetreuung. <a target='_blank' href='assets/pdf/schwyz/Workflow_hoehere_Beitraege.pdf'>Weitere Informationen zum Ablauf finden Sie hier.</a>",
+    "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

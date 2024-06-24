@@ -18,18 +18,19 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.NotImplementedException;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
@@ -118,8 +119,7 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		// Punkt VII
 		result.setVerguenstigung(gutschein);
 		// Punkt VIII
-		result.setHoehererBeitrag(hoehererBeitrag);
-		result.setBedarfsstufe(input.getBedarfsstufe());
+		handleHoehererBeitrag(result, hoehererBeitrag, verfuegungZeitabschnitt);
 
 		result.setElternbeitrag(elternbeitrag);
 		result.setMinimalerElternbeitrag(minimalerBeitragProZeitAbschnitt);
@@ -129,6 +129,16 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private static void handleHoehererBeitrag(BGCalculationResult result, BigDecimal hoehererBeitrag,
+		VerfuegungZeitabschnitt zeitabschnitt) {
+		result.setHoehererBeitrag(hoehererBeitrag);
+		if (hoehererBeitrag != null && result.getAnspruchspensumProzent() <= 0) {
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG);
+		}
 	}
 
 	private BigDecimal calculateHoereBeitragProZeitAbschnitt(
@@ -147,8 +157,9 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 			return calculateHoereBeitragFuerBedarfsstufeZwei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
 		case BEDARFSSTUFE_3:
 			return calculateHoereBeitragFuerBedarfsstufeDrei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
+		default:
+			throw new NotImplementedException("Bedarfsstufe " + input.getBedarfsstufe() + " is not implemented");
 		}
-		return BigDecimal.ZERO;
 	}
 
 	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeZwei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {

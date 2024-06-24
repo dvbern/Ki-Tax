@@ -17,13 +17,9 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
@@ -36,6 +32,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -85,6 +84,27 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		return cell;
 	}
 
+	@Nonnull
+	@Override
+	protected PdfPTable createVerfuegungTable() {
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
+		VerfuegungTable verfuegungTable = new VerfuegungTable(
+			zeitabschnitte,
+			getPageConfiguration(),
+			true
+		);
+
+		verfuegungTable.add(createVonColumn())
+			.add(createBisColumn())
+			.add(createPensumGroup())
+			.add(createVollkostenColumn())
+			.add(createGutscheinOhneVollkostenColumn())
+			.add(createGutscheinOhneMinimalbeitragColumn())
+			.add(createElternbeitragColumn())
+			.add(createGutscheinInstitutionColumn());
+		return super.createVerfuegungTable();
+	}
+
 	@Override
 	protected void createDokumentNichtEintretten(
 		@Nonnull Document document,
@@ -109,34 +129,11 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		addZusatzTextIfAvailable(document);
 	}
 
-	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-
-	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
-	}
-
 	private Element createParagraphErwaegungenNichtEintretten() {
 		Paragraph paragraph = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 		paragraph.add(PdfUtil.createSuperTextInText("1"));
 		paragraph.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_5)));
 		return paragraph;
-	}
-
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelle;
 	}
 
 	private Paragraph createParagraphTitle(String title) {
