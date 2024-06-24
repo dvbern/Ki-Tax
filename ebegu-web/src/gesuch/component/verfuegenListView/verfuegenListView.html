@@ -106,9 +106,10 @@
                                     </td>
                                     <td ng-show="vm.isSuperAdmin()">
                                         <span>{{
-                                            betreuung.gueltig
+                                            (betreuung.gueltig
                                                 ? 'LABEL_JA'
-                                                : ('LABEL_NEIN' | translate)
+                                                : 'LABEL_NEIN'
+                                            ) | translate
                                         }}</span>
                                     </td>
                                     <td
