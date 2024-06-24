@@ -243,11 +243,10 @@ public class Adresse extends AbstractDateRangedEntity {
 
 	@Nonnull
 	public String getAddressAsStringInOneLine() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getStrasseAndHausnummer());
-		sb.append(", ");
-		sb.append(getPlz()).append(' ').append(getOrt());
-		return sb.toString();
+		String adressString = getStrasseAndHausnummer()
+			+ ", "
+			+ getPlz() + ' ' + getOrt();
+		return adressString;
 	}
 
 
