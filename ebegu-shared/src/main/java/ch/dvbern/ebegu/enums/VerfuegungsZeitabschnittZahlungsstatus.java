@@ -68,4 +68,8 @@ public enum VerfuegungsZeitabschnittZahlungsstatus {
 	public boolean isZuBehandelnInZahlungslauf() {
 		return isNeu() || isVerrechnend() || isIgnorierend() || this == IGNORIERT;
 	}
+
+	public boolean hasZeitabschnittOrVorgaengerBeenAusbezahlt() {
+		return !isNeu() && this != VERRECHNET_KEINE_BETREUUNG;
+	}
 }
