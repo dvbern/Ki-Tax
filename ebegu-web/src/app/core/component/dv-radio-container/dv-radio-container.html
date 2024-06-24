@@ -48,9 +48,8 @@
             ng-value="true"
             ng-attr-data-test="{{ vm.name + '.radio-value.ja' }}"
             aria-label="{{
-                vm.trueOptionLabel
-                    ? vm.trueOptionLabel
-                    : ('LABEL_JA' | translate)
+                (vm.trueOptionLabel ? vm.trueOptionLabel : 'LABEL_JA')
+                    | translate
             }}"
             class="element-ja"
             ng-attr-dv-enable-element="{{
@@ -64,9 +63,8 @@
             ng-required="vm.ngRequired"
         >
             <span>{{
-                vm.trueOptionLabel
-                    ? vm.trueOptionLabel
-                    : ('LABEL_JA' | translate)
+                (vm.trueOptionLabel ? vm.trueOptionLabel : 'LABEL_JA')
+                    | translate
             }}</span>
         </md-radio-button>
         <md-radio-button
@@ -74,9 +72,8 @@
             ng-attr-data-test="{{ vm.name + '.radio-value.nein' }}"
             ng-value="false"
             aria-label="{{
-                vm.falseOptionLabel
-                    ? vm.falseOptionLabel
-                    : ('LABEL_NEIN' | translate)
+                (vm.falseOptionLabel ? vm.falseOptionLabel : 'LABEL_NEIN')
+                    | translate
             }}"
             class="element-nein"
             ng-attr-dv-enable-element="{{
@@ -90,9 +87,8 @@
             ng-required="vm.ngRequired"
         >
             <span>{{
-                vm.falseOptionLabel
-                    ? vm.falseOptionLabel
-                    : ('LABEL_NEIN' | translate)
+                (vm.falseOptionLabel ? vm.falseOptionLabel : 'LABEL_NEIN')
+                    | translate
             }}</span>
         </md-radio-button>
     </md-radio-group>
