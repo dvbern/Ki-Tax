@@ -31,13 +31,20 @@ const getPageTitle = () => {
     return cy.getByData('page-title');
 };
 
+// const getGemeindeSelection = () => {
+//     return cy.getByData('gemeinde');
+// };
+
 const getGemeindeSelection = () => {
-    return cy.getByData('gemeinde');
+    return cy.get('[data-test="gemeinde"]', {
+        timeout: Cypress.config('defaultCommandTimeout') * 100
+    });
 };
 
 const getGemeindeOption = (gemeinde: GemeindeTestFall) => {
     return cy.getByData(`gemeinde.${gemeinde}`);
 };
+
 
 const getPeriodeSelection = () => {
     return cy.getByData('periode');
@@ -93,7 +100,7 @@ const createPapierTestfall = (data: {
     periode: TestPeriode;
     betreuungsstatus: TestBetreuungsstatus;
 }) => {
-    navigateToTestfaelle();
+    cy.waitForRequest("GET", "**/gemeinde/active", () => navigateToTestfaelle());
     getGemeindeSelection().click();
     getGemeindeOption(data.gemeinde).click();
     getPeriodeSelection().click();
@@ -109,7 +116,7 @@ const createOnlineTestfall = (data: {
     betreuungsstatus: TestBetreuungsstatus;
     besitzerin: TestGesuchstellende;
 }) => {
-    navigateToTestfaelle();
+    cy.waitForRequest("GET", "**/gemeinde/active", () => navigateToTestfaelle());
     getGemeindeSelection().click();
     getGemeindeOption(data.gemeinde).click();
     getPeriodeSelection().click();
