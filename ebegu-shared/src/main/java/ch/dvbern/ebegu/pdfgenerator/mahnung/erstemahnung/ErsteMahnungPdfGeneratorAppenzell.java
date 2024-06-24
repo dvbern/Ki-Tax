@@ -1,4 +1,4 @@
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -16,5 +16,4 @@ public class ErsteMahnungPdfGeneratorAppenzell extends AbstractErsteMahnungPdfGe
 	protected String getBetreuungsString(KindContainer kindContainer, List<String> betreuungenList) {
 		return kindContainer.getKindJA().getFullName();
 	}
-
 }

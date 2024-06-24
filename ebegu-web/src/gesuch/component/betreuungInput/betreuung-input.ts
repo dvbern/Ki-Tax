@@ -16,6 +16,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
+import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/betreuung/TSBetreuungsangebotTyp';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
@@ -36,7 +37,8 @@ export class BetreuungInputConfig implements IComponentOptions {
         multiplierKita: '<',
         multiplierTfo: '<',
         betreuungInputSwitchTyp: '<',
-        isLuzern: '<'
+        mandant: '<',
+        vertrag: '<'
     };
     public controller = BetreuungInput;
     public controllerAs = 'vm';
@@ -62,10 +64,11 @@ export class BetreuungInput implements IController {
     private multiplier: number = 1;
     private readonly multiplierKita: number;
     private readonly multiplierTfo: number;
+    private readonly vertrag: boolean;
 
     private pensumValue: number;
 
-    private readonly isLuzern: boolean;
+    private readonly mandant: KiBonMandant;
 
     public constructor(
         private readonly translate: ITranslateService,
@@ -244,7 +247,15 @@ export class BetreuungInput implements IController {
         );
     }
 
+    public isSchwyz() {
+        return this.mandant === MANDANTS.SCHWYZ;
+    }
+
+    public isLuzern() {
+        return this.mandant === MANDANTS.LUZERN;
+    }
+
     public getStepSize(): string {
-        return this.isLuzern ? '0.0000000001' : '0.01';
+        return this.isLuzern() ? '0.0000000001' : '0.01';
     }
 }
