@@ -68,6 +68,9 @@
         <ng-template #alleinigesGesuch>
             <dv-finanzielle-situation-single-gs-schwyz
                 [readonly]="gesuchModelManager.isGesuchReadonly()"
+                [korrekturModusJugendamt]="
+                    gesuchModelManager.isKorrekturModusJugendamt()
+                "
                 (valueChanged)="recalculateMassgendesEinkommen()"
                 [finanzModel]="model"
             >

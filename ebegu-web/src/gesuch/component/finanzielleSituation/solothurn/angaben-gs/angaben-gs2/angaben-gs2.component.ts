@@ -33,8 +33,6 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
         return TSFinanzielleSituationSubStepName.SOLOTHURN_GS2;
     }
 
-    public notify(): void {}
-
     public prepareSave(
         onResult: (arg: any) => any
     ): Promise<TSFinanzielleSituationContainer> {

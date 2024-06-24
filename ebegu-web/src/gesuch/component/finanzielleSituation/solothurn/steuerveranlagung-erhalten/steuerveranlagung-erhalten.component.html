@@ -7,16 +7,20 @@
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>
                     <mat-radio-group
-                        aria-labelledby="selbststaendig_id"
-                        name="selbststaendig"
-                        id="selbststaendig_id"
-                        required
                         #selbststaendig="ngModel"
-                        dvEnableElement
-                        [enableExpression]="canEdit()"
                         [(ngModel)]="
                             model.finanzielleSituationJA.momentanSelbststaendig
                         "
+                        [enableExpression]="
+                            canEdit() &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
+                        aria-labelledby="selbststaendig_id"
+                        dvEnableElement
+                        id="selbststaendig_id"
+                        name="selbststaendig"
+                        required
                     >
                         <mat-radio-button [value]="true">{{
                             'LABEL_JA' | translate
@@ -36,7 +40,7 @@
         </div>
     </div>
 </div>
-<div class="row" *ngIf="showVeranlagungErhalten()">
+<div *ngIf="showVeranlagungErhalten()" class="row">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span
@@ -56,8 +60,7 @@
                                       gesuchModelManager.getBasisjahrMinus(2)
                               }
                 }}</span
-            >
-            <span
+            ><span
                 *ngIf="
                     model.finanzielleSituationJA.momentanSelbststaendig === true
                 "
@@ -83,7 +86,11 @@
                         required
                         #steuerveranlagungErhalten="ngModel"
                         dvEnableElement
-                        [enableExpression]="canEdit()"
+                        [enableExpression]="
+                            canEdit() &&
+                            !isGesuchReadonly() &&
+                            !isKorrekturModusJugendamt()
+                        "
                         [ngModel]="
                             model.finanzielleSituationJA
                                 .steuerveranlagungErhalten
