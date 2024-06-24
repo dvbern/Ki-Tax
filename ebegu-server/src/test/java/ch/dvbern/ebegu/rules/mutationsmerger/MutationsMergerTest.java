@@ -40,6 +40,8 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -733,6 +735,67 @@ public class MutationsMergerTest {
 			.forEach(zeitabschnitt -> assertTrue(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
 	}
 
+	@ParameterizedTest
+	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
+		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
+		mode = EnumSource.Mode.EXCLUDE)
+	void auszahlungAnInstuitionAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
+		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
+			.setZahlungsstatusInstitution(zahlungsstatus);
+
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE);
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			monatsRule,
+			mutierteBetreuung,
+			EbeguRuleTestsHelper.calculate(mutierteBetreuung));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
+		assertFalse(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).isAuszahlungAnEltern());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).isAuszahlungAnEltern());
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = VerfuegungsZeitabschnittZahlungsstatus.class,
+		names = { "NEU", "VERRECHNET_KEINE_BETREUUNG" },
+		mode = EnumSource.Mode.INCLUDE)
+	void auszahlungAnInstuitionNichtAusbezahltMutationAuszahlungAnEltern(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
+		findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST)
+			.setZahlungsstatusInstitution(zahlungsstatus);
+
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE);
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			monatsRule,
+			mutierteBetreuung,
+			EbeguRuleTestsHelper.calculate(mutierteBetreuung));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(
+			mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		assertNotNull(zeitabschnitte);
+		assertEquals(12, zeitabschnitte.size());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).isAuszahlungAnEltern());
+		assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).isAuszahlungAnEltern());
+	}
+
 	@Test
 	public void finSitFKJV_einkommenChanged() {
 		//EK ErstGesuch = 50000
@@ -1379,8 +1442,6 @@ public class MutationsMergerTest {
 		erstgesuchBetreuung.extractGesuch().getFall().setMandant(mandantAR);
 		return MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 	}
-
-
 
 	private Verfuegung prepareErstTagesschuleGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR) {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createGesuchWithAnmeldungTagesschule();

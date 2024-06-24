@@ -215,19 +215,16 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		VerfuegungZeitabschnitt aktuellerAbschnitt,
 		VerfuegungZeitabschnitt vorangehenderAbschnitt) {
 
-		if (vorangehenderAbschnitt.getZahlungsstatusInstitution().isVerrechnetMitBetreuung()
-			|| vorangehenderAbschnitt.getZahlungsstatusInstitution().isVerrechnend()
-			|| vorangehenderAbschnitt.getZahlungsstatusAntragsteller().isVerrechnetMitBetreuung()
-			|| vorangehenderAbschnitt.getZahlungsstatusAntragsteller().isVerrechnend()) {
+		if (vorangehenderAbschnitt.getZahlungsstatusInstitution().hasZeitabschnittOrVorgaengerBeenAusbezahlt()
+		   || vorangehenderAbschnitt.getZahlungsstatusAntragsteller().hasZeitabschnittOrVorgaengerBeenAusbezahlt()) {
 			aktuellerAbschnitt.setAuszahlungAnEltern(vorangehenderAbschnitt.isAuszahlungAnEltern());
 		}
 	}
 
-	private void handleEinreichfrist(
-		BGCalculationInput input,
-		BGCalculationResult resultVorgaenger,
-		AbstractPlatz platz,
-		LocalDate mutationsEingansdatum) {
+	private void handleEinreichfrist(BGCalculationInput input,
+									 BGCalculationResult resultVorgaenger,
+									 AbstractPlatz platz,
+									 LocalDate mutationsEingansdatum) {
 		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag
 		// ZuSpaetEingereicht gesetzt werden
 		if (isMeldungZuSpaet(input.getParent().getGueltigkeit(), mutationsEingansdatum)) {

@@ -264,7 +264,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		}
 		var finSit = finSitContainer.getFinanzielleSituationJA();
 		var ekv = gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-
+		if (finSit == null || ekv == null) {
+			return;
+		}
 		if (Boolean.TRUE.equals(finSit.getQuellenbesteuert())) {
 			ekv.setSteuerbaresEinkommen(null);
 			ekv.setSteuerbaresVermoegen(null);

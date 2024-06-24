@@ -472,10 +472,6 @@ class FinanzielleSituationSchwyzRechnerTest {
 					new BigDecimal(250000),
 					new BigDecimal(1000),
 					new BigDecimal(1000));
-				gesuch.getGesuchsteller1()
-					.getFinanzielleSituationContainer()
-					.getFinanzielleSituationJA()
-					.setSteuerbaresVermoegen(new BigDecimal(250000));
 				finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 				assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(67000)));
 			}
@@ -554,15 +550,15 @@ class FinanzielleSituationSchwyzRechnerTest {
 			@Nested
 			class CalculationTest {
 				/**
-				 * Steuerbares Einkommen								60'000
+				 * Steuerbares Einkommen												60'000
 				 * <p>
-				 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
-				 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-				 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+				 * Steuerbares Vermögen	200'000 * 200'000 / (200'000 + 200'000), 10% = +10'000
+				 * Abzüge für den effektiven Liegenschaftsunterhalt... 				   + 1'000
+				 * Einkäufe in die berufliche Vorsorge Subtrahieren                    + 1'000
 				 * -------
-				 * 62'000
+				 * 72'000
 				 * <p>
-				 * GS2 gleich => 62'000 x 2 = 124'000
+				 * GS2 gleich => 72'000 x 2 = 144'000
 				 */
 				@Test
 				void calculateForNichtQuellenBesteuerteTest() {
@@ -599,13 +595,13 @@ class FinanzielleSituationSchwyzRechnerTest {
 						is(BigDecimal.valueOf(62000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP1VorAbzFamGr(),
-						is(BigDecimal.valueOf(124000)));
+						is(BigDecimal.valueOf(144000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(),
 						is(BigDecimal.valueOf(62000)));
 					assertThat(
 						gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP2VorAbzFamGr(),
-						is(BigDecimal.valueOf(124000)));
+						is(BigDecimal.valueOf(144000)));
 				}
 
 				/**
@@ -960,15 +956,15 @@ class FinanzielleSituationSchwyzRechnerTest {
 			}
 		}
 		/**
-		 * Steuerbares Einkommen								60'000
+		 * Steuerbares Einkommen												 60'000
 		 * <p>
-		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
-		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * Steuerbares Vermögen	200'000 * 200'000 / (200'000 + 200'000), 10% = + 10'000
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... 				   +  1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    				   +  1'000
 		 * -------
-		 * 62'000
+		 * 72'000
 		 * <p>
-		 * GS2 gleich => 62'000 x 2 = 124'000
+		 * GS2 gleich => 72'000 x 2 = 144'000
 		 */
 		@Test
 		void calculateForNichtQuellenBesteuerteTest() {
@@ -985,7 +981,7 @@ class FinanzielleSituationSchwyzRechnerTest {
 				new BigDecimal(1000));
 			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(144000)));
 		}
 
 
@@ -1034,6 +1030,39 @@ class FinanzielleSituationSchwyzRechnerTest {
 			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
 			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+		}
+
+		@Test
+		void testReinvermoegenGS1Quellenbesteuert(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(250_000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(115_000)));
+		}
+
+		@Test
+		void testReinvermoegenZero(){
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				BigDecimal.ZERO,
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62_000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124_000)));
 		}
 
 		private Gesuch prepareGesuch() {
