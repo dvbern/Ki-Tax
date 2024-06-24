@@ -31,14 +31,8 @@ const getPageTitle = () => {
     return cy.getByData('page-title');
 };
 
-// const getGemeindeSelection = () => {
-//     return cy.getByData('gemeinde');
-// };
-
 const getGemeindeSelection = () => {
-    return cy.get('[data-test="gemeinde"]', {
-        timeout: Cypress.config('defaultCommandTimeout') * 100
-    });
+    return cy.getByData('gemeinde');
 };
 
 const getGemeindeOption = (gemeinde: GemeindeTestFall) => {
