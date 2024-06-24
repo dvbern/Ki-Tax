@@ -20,12 +20,19 @@
             <label class="md-no-float" for="betreuungspensum-{{ vm.index }}">
                 <span>{{ vm.getBetreuungspensumLabel(vm.index + 1) }}</span>
                 <dv-tooltip
-                    ng-if="!vm.gesuchModelManager.isFKJVTexte && vm.vertrag"
+                    ng-if="
+                        !vm.gesuchModelManager.isFKJVTexte &&
+                        (!vm.isSchwyz() || vm.vertrag)
+                    "
                     input-id="betreuungspensum-{{ vm.index }}"
                     text="vm.betreuungspensumHelpKey | translate"
                 ></dv-tooltip>
                 <dv-tooltip
-                    ng-if="!vm.gesuchModelManager.isFKJVTexte && !vm.vertrag"
+                    ng-if="
+                        !vm.gesuchModelManager.isFKJVTexte &&
+                        !vm.vertrag &&
+                        vm.isSchwyz()
+                    "
                     input-id="betreuungspensum-{{ vm.index + 1 }}"
                     text="'BETREUUNGSPENSUM_HELP_UNBEKANNTE_INSTITUTION' | translate"
                 ></dv-tooltip>

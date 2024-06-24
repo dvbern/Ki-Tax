@@ -228,7 +228,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(
             mandant => {
                 this.mandant = mandant;
-                this.isLuzern = mandant === MANDANTS.LUZERN;
             },
             err => LOG.error(err)
         );
