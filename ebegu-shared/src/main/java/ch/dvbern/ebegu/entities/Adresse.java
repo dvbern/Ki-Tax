@@ -243,10 +243,9 @@ public class Adresse extends AbstractDateRangedEntity {
 
 	@Nonnull
 	public String getAddressAsStringInOneLine() {
-		String adressString = getStrasseAndHausnummer()
+		return getStrasseAndHausnummer()
 			+ ", "
 			+ getPlz() + ' ' + getOrt();
-		return adressString;
 	}
 
 
