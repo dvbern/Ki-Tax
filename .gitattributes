@@ -12,3 +12,15 @@ Dockerfile text eol=lf
 # Java Snapshot testing
 *.snap	     text eol=lf
 *.snap.debug text eol=lf
+
+*.xlsx binary
+*.xlsm binary
+*.xls binary
+*.doc binary
+*.docx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.ttf binary
+*.ico binary
+*.gif binary
