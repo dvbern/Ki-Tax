@@ -20,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {EwkAdresseComponent} from '../app/ewk-adresse/ewk-adresse.component';
 import {PersonensucheComponent} from '../app/personensuche/personensuche.component';
+import {WarningComponent} from '../app/shared/component/warning/warning.component';
 import {SharedModule} from '../app/shared/shared.module';
 import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
@@ -72,7 +73,8 @@ import {EinkommensverschlechterungAppenzellResultateViewComponent} from './compo
         SharedModule,
         FallToolbarModule,
         FinanzielleSituationSchwyzModule,
-        FamiliensituationModule
+        FamiliensituationModule,
+        WarningComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
