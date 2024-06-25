@@ -483,6 +483,24 @@ export class EbeguUtil {
         return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
+    public static roundDefaultBetreuungspensum(toRound: number): number {
+        return Number(toRound.toFixed(2));
+    }
+
+    public static getBoolean(value: string | boolean | number) {
+        switch (value) {
+            case true:
+            case 'true':
+            case 1:
+            case '1':
+            case 'on':
+            case 'yes':
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
@@ -661,9 +679,5 @@ export class EbeguUtil {
             EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
             sprachlicheIntegrationen.length === 0
         );
-    }
-
-    public static roundDefaultBetreuungspensum(toRound: number): number {
-        return Number(toRound.toFixed(2));
     }
 }

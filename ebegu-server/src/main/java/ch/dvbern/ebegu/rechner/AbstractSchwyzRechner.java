@@ -18,22 +18,27 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.NotImplementedException;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
 abstract class AbstractSchwyzRechner extends AbstractRechner {
+	private static final BigDecimal HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT = new BigDecimal(352);
+
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
@@ -71,7 +76,10 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		var bgBetreuungsZeiteinheitProZeitabschnitt =
 			toZeiteinheitProZeitabschnitt(parameterDTO, bgPensumFaktor, anteilMonat);
 
-		var gutschein = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
+		var hoehererBeitrag = calculateHoereBeitragProZeitAbschnitt(input, bgBetreuungsZeiteinheitProZeitabschnitt, anteilMonat);
+
+		var gutscheinOhneHoehererBeitrag = EXACT.multiply(totalBetreuungsbeitragProZeiteinheit, bgBetreuungsZeiteinheitProZeitabschnitt);
+		var gutschein = EXACT.add(hoehererBeitrag, gutscheinOhneHoehererBeitrag);
 		var vollkosten = EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilMonat);
 		var gutscheinVorAbzugSelbstbehalt =
 			Objects.requireNonNull(EXACT.multiply(beitragProZeiteinheitVorAbzug, bgBetreuungsZeiteinheitProZeitabschnitt));
@@ -105,12 +113,13 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		result.setVollkosten(vollkosten);
 		// Punkt V
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinVorAbzugSelbstbehalt);
-		// Punkt VI
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(gutscheinVorAbzugSelbstbehalt);
-		// Punkt VII
+		// Punkt VI
 		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
-		// Punkt VIII
+		// Punkt VII
 		result.setVerguenstigung(gutschein);
+		// Punkt VIII
+		handleHoehererBeitrag(result, hoehererBeitrag, verfuegungZeitabschnitt);
 
 		result.setElternbeitrag(elternbeitrag);
 		result.setMinimalerElternbeitrag(minimalerBeitragProZeitAbschnitt);
@@ -120,6 +129,45 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private static void handleHoehererBeitrag(BGCalculationResult result, BigDecimal hoehererBeitrag,
+		VerfuegungZeitabschnitt zeitabschnitt) {
+		result.setHoehererBeitrag(hoehererBeitrag);
+		if (hoehererBeitrag != null && result.getAnspruchspensumProzent() <= 0) {
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG);
+		}
+	}
+
+	private BigDecimal calculateHoereBeitragProZeitAbschnitt(
+		BGCalculationInput input,
+		BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt,
+		BigDecimal anteilMonat) {
+		if (input.getBedarfsstufe() == null || input.getBedarfsstufe().equals(Bedarfsstufe.KEINE)
+		|| bgBetreuungsZeiteinheitProZeitabschnitt.compareTo(BigDecimal.ZERO) == 0) {
+			return BigDecimal.ZERO;
+		}
+		var basisBetragProZeitabschnitt = EXACT.multiply(HOHERE_BEITRAG_BASIS_BETRAG_PRO_MONAT, anteilMonat); // nur wenn bgBetreuungsZeiteinheitProZeitabschnitt > 0
+		switch (input.getBedarfsstufe()) {
+		case BEDARFSSTUFE_1:
+			return basisBetragProZeitabschnitt;
+		case BEDARFSSTUFE_2:
+			return calculateHoereBeitragFuerBedarfsstufeZwei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
+		case BEDARFSSTUFE_3:
+			return calculateHoereBeitragFuerBedarfsstufeDrei(basisBetragProZeitabschnitt, bgBetreuungsZeiteinheitProZeitabschnitt);
+		default:
+			throw new NotImplementedException("Bedarfsstufe " + input.getBedarfsstufe() + " is not implemented");
+		}
+	}
+
+	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeZwei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {
+		return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getBedarfsstufeZweiBetragForAngebot()));
+	}
+
+	private  BigDecimal calculateHoereBeitragFuerBedarfsstufeDrei(BigDecimal basisBetragProZeitabschnitt, BigDecimal bgBetreuungsZeiteinheitProZeitabschnitt) {
+		return EXACT.add(basisBetragProZeitabschnitt, EXACT.multiply(bgBetreuungsZeiteinheitProZeitabschnitt, getBedarfsstufeDreiBetragForAngebot()));
 	}
 
 	protected static BigDecimal toTageProZeitAbschnitt(
@@ -152,7 +200,9 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 		return EXACT.divide(anzahlGeschwister, BigDecimal.TEN);
 	}
 
-	protected BigDecimal calculateTarifProZeiteinheit(BGRechnerParameterDTO parameterDTO, BigDecimal effektivesPensumFaktor,
+	protected BigDecimal calculateTarifProZeiteinheit(
+		BGRechnerParameterDTO parameterDTO,
+		BigDecimal effektivesPensumFaktor,
 		BGCalculationInput input) {
 		var effektiveBetreuungsZeiteinheitenProMonat =
 			toZeiteinheitProZeitabschnitt(parameterDTO, effektivesPensumFaktor, BigDecimal.ONE);
@@ -174,4 +224,8 @@ abstract class AbstractSchwyzRechner extends AbstractRechner {
 	protected abstract BigDecimal getMinimalTarif(BGRechnerParameterDTO parameterDTO);
 
 	protected abstract PensumUnits getZeiteinheit();
+	protected abstract BigDecimal getBedarfsstufeZweiBetragForAngebot();
+
+	protected abstract BigDecimal getBedarfsstufeDreiBetragForAngebot();
+
 }

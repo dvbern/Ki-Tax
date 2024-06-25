@@ -30,12 +30,14 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.betreuung.Bedarfsstufe;
 import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * Regel für die Erstellung der Zeitabschnitte der Betreuungspensen
@@ -202,6 +204,18 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
+
+		// hier kind hoehereBeitraegeWegenBeeintraechtigungBeantragen pruefen
+		// dazu auch die gegebene Wert im Drop down beruchsichtigen wenn gesetzt und checkbox dann Wert im Input schreiben
+		if (Boolean.TRUE.equals(betreuung.getKind().getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen()) && betreuung.getBedarfsstufe() != null) {
+			zeitabschnitt.setBedarfsstufeForAsivAndGemeinde(betreuung.getBedarfsstufe());
+			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				betreuung.getBedarfsstufe() == Bedarfsstufe.KEINE ?
+					MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG :
+					MsgKey.BEDARFSSTUFE_MSG,
+				getLocale(),
+				ServerMessageUtil.translateEnumValue(betreuung.getBedarfsstufe(), getLocale(), betreuung.extractGesuch().extractMandant()));
+		}
 
 		return zeitabschnitt;
 	}

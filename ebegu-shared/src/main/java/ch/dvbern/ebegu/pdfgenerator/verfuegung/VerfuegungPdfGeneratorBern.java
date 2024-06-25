@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -47,25 +46,4 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 		createDokumentNichtEintrettenDefault(document, generator);
 	}
 
-	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		//defualt no-op: wird nur in Luzern angezeigt
-	}
-
-	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
-	}
-
-	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelle;
-	}
 }

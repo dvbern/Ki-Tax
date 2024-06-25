@@ -105,6 +105,10 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.save(onResult);
     }
 
+    public getFamiliensituation(): TSFamiliensituation {
+        return this.gesuchModelManager.getFamiliensituation();
+    }
+
     protected save(
         onResult: (arg: any) => any
     ): IPromise<TSFinanzielleSituationContainer> {
@@ -132,10 +136,6 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
             .catch(error => {
                 throw error;
             });
-    }
-
-    public getFamiliensituation(): TSFamiliensituation {
-        return this.gesuchModelManager.getFamiliensituation();
     }
 
     public isNotSozialhilfeBezueger(): boolean {

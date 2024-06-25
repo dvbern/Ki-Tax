@@ -88,7 +88,6 @@ import {MultipleFileUploadComponent} from './component/multpile-file-upload/mult
 import {SavingInfoComponent} from './component/save-input-info/saving-info.component';
 import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
-import {WarningComponent} from './component/warning/warning.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {DvIfViewportSizeDirective} from './directive/dv-if-viewport-size/dv-if-viewport-size.directive';
@@ -203,7 +202,6 @@ export function createTranslateLoader(
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent,
         DvNgEnableElementDirective,
         DvDemoFeatureWrapperComponent,
         PulldownUserMenuComponent,
@@ -288,7 +286,6 @@ export function createTranslateLoader(
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent,
         DvNgEnableElementDirective,
         DvIfViewportSizeDirective,
         AuszahlungsdatenComponent,

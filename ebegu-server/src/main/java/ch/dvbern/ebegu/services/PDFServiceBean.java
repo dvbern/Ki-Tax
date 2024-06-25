@@ -58,12 +58,12 @@ import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
-import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung.ErsteMahnungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.LATSReportPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MusterPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
@@ -73,8 +73,8 @@ import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.VollmachtPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorFactory;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung.ZweiteMahnungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -131,7 +131,8 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung));
+			configurationService.getVerfuegungPdfGeneratorKonfigurationNichtEintretten(betreuung)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
@@ -149,17 +150,15 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(mahnung.getGesuch());
 
-		MahnungPdfGenerator pdfGenerator;
+		AbstractMahnungPdfGenerator pdfGenerator;
 		switch (mahnung.getMahnungTyp()) {
 		case ERSTE_MAHNUNG:
 			pdfGenerator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
 				.getErsteMahnungPdfGeneratorForMandant(mahnung.getGesuch().extractMandant());
 			break;
 		case ZWEITE_MAHNUNG:
-			Mahnung vorgaengerMahnung =
-				vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
-			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten);
+			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
+			pdfGenerator = new ZweiteMahnungPdfGeneratorVisitor(mahnung, vorgaengerMahnung, stammdaten).getZweiteMahnungPdfGeneratorForMandant(mahnung.getGesuch().extractMandant());
 			break;
 		default:
 			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
@@ -271,7 +270,8 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			art,
-			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected));
+			configurationService.getVerfuegungPdfGeneratorKonfiguration(betreuung, writeProtected)
+		);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 

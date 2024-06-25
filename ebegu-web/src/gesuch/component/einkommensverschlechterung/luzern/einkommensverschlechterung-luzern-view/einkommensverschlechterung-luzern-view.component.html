@@ -60,7 +60,9 @@
                     [finanzModel]="model"
                     [model]="this.model.getEkvToWorkWith()"
                     [basisJahr]="
-                        this.gesuchModelManager.getBasisjahrToWorkWith()
+                        this.gesuchModelManager
+                            .getBasisjahrToWorkWith()
+                            .toString()
                     "
                     [basisJahrPlus]="
                         this.gesuchModelManager.getBasisJahrPlusNumber()

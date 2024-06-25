@@ -15,30 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
-
-import java.util.List;
-
-import javax.annotation.Nonnull;
+package ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import javax.annotation.Nonnull;
+import java.util.List;
 
-public class ZweiteMahnungPdfGenerator extends MahnungPdfGenerator {
-
+public abstract class AbstractZweiteMahnungPdfGenerator extends AbstractMahnungPdfGenerator {
 	private static final String ZWEITE_MAHNUNG_SEITE_1_PARAGRAPH_1 = "PdfGeneration_ZweiteMahnung_Seite1_Paragraph1";
 	private static final String ZWEITE_MAHNUNG_SEITE_1_PARAGRAPH_2 = "PdfGeneration_ZweiteMahnung_Seite1_Paragraph2";
 	private static final String ZWEITE_MAHNUNG_SEITE_2_PARAGRAPH_1 = "PdfGeneration_ZweiteMahnung_Seite2_Paragraph1";
 	private static final String ZWEITE_MAHNUNG_SEITE_2_PARAGRAPH_2 = "PdfGeneration_ZweiteMahnung_Seite2_Paragraph2";
 
-	private Mahnung ersteMahnung;
+	private final Mahnung ersteMahnung;
 
-
-	public ZweiteMahnungPdfGenerator(
+	protected AbstractZweiteMahnungPdfGenerator(
 		@Nonnull Mahnung mahnung,
 		@Nonnull Mahnung ersteMahnung,
 		@Nonnull GemeindeStammdaten stammdaten

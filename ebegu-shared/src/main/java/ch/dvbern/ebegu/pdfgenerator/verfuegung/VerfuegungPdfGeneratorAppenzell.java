@@ -17,17 +17,10 @@
 
 package ch.dvbern.ebegu.pdfgenerator.verfuegung;
 
-import java.awt.Color;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
@@ -35,20 +28,17 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenerator {
 
-	private final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
-
-	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
-
-	private boolean isBetreuungTagesfamilie = false;
 	private boolean auszahlungAusserhalbKibon = false;
 
 	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
@@ -66,7 +56,6 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 		VerfuegungPdfGeneratorKonfiguration verfuegungPdfGeneratorKonfiguration
 	) {
 		super(betreuung, stammdaten, art, verfuegungPdfGeneratorKonfiguration);
-		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 		auszahlungAusserhalbKibon = betreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().isAuszahlungAusserhalbVonKibon();
 	}
 
@@ -90,19 +79,59 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 		)));
 	}
 
+	@Nonnull
 	@Override
-	protected float[] getVerfuegungColumnWidths() {
-		return COLUMN_WIDTHS;
+	protected PdfPTable createVerfuegungTable() {
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = getVerfuegungZeitabschnitt();
+		VerfuegungTable verfuegungTable = new VerfuegungTable(
+			zeitabschnitte,
+			getPageConfiguration(),
+			false
+		);
+		verfuegungTable
+			.add(createVonColumn())
+			.add(createBisColumn())
+			.add(createPensumGroup())
+			.add(createVollkostenColumn())
+			.add(createSelbstbehaltColumn())
+			.add(createBeitragshoeheColumn())
+			.add(createGutscheinInstitutionColumn());
+
+		return verfuegungTable.build();
+	}
+
+	@Nonnull
+	private VerfuegungTableColumn createSelbstbehaltColumn() {
+		return VerfuegungTableColumn.builder()
+			.width(100)
+			.title(translate(SELBSTBEHALT_PROZENT))
+			.bgColor(Color.LIGHT_GRAY)
+			.dataExtractor(zeitabschnitt -> PdfUtil.printPercent(
+					MathUtil.GANZZAHL.subtract(BigDecimal.valueOf(100),
+						MathUtil.GANZZAHL.from(zeitabschnitt.getBeitraghoheProzent()))))
+			.build();
+	}
+
+	@Nonnull
+	private VerfuegungTableColumn createBeitragshoeheColumn() {
+		return VerfuegungTableColumn.builder()
+			.width(100)
+			.bgColor(Color.LIGHT_GRAY)
+			.title(translate(BEITRAGSHOHE_PROZENT))
+			.dataExtractor(zeitabschnitt -> PdfUtil.printPercent(MathUtil.GANZZAHL.from(zeitabschnitt.getBeitraghoheProzent())))
+			.build();
 	}
 
 	@Override
-	protected Font getBgColorForUeberwiesenerBetragCell() {
-		return fontTabelleBold;
-	}
-
-	@Override
-	protected Font getBgColorForBetreuungsgutscheinCell() {
-		return fontTabelle;
+	@Nonnull
+	protected VerfuegungTableColumn createGutscheinInstitutionColumn() {
+		return VerfuegungTableColumn.builder()
+			.title(translate(GUTSCHEIN_AN_INSTITUTION))
+			.bgColor(Color.LIGHT_GRAY)
+			.width(110)
+			.boldContent(true)
+			.dataExtractor(abschnitt -> PdfUtil.printBigDecimal(getVerguenstigungAnInstitution(abschnitt)))
+			.build();
 	}
 
 	@Override
@@ -119,120 +148,12 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
-	protected void addTitleGutscheinProStunde(PdfPTable table) {
-		if (isBetreuungTagesfamilie) {
-			table.addCell(createCell(
-				true,
-				Element.ALIGN_RIGHT,
-				translate(GUTSCHEIN_PRO_STUNDE),
-				Color.LIGHT_GRAY,
-				fontTabelle,
-				2,
-				1));
-		}
-	}
-
-	@Override
-	protected void addReferenzNummerCells(PdfPTable table) {
-		//no-op die Zeile mit den RefernzNummern soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addTitleBerechneterGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addTitleBetreuungsGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addTitleNrElternBeitrag(PdfPTable table) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
-		table.addCell(createCell(
-				true,
-				Element.ALIGN_RIGHT,
-				translate(SELBSTBEHALT_PROZENT),
-				Color.LIGHT_GRAY,
-				fontTabelle,
-				2,
-				1));
-
-		table.addCell(createCell(
-				true,
-				Element.ALIGN_RIGHT,
-				translate(BEITRAGSHOHE_PROZENT),
-				Color.LIGHT_GRAY,
-				fontTabelle,
-				2,
-				1));
-	}
-
-	@Override
-	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addValueBetreuungsGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
-		//no-op die Spalte soll in Appenzell nicht angezeigt werden
-	}
-
-	@Override
-	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
-		BigDecimal beitragHoeheGanzzahl = MathUtil.GANZZAHL.from(beitraghoheInProzent);
-		BigDecimal selbstbehalt = MathUtil.GANZZAHL.subtract(BigDecimal.valueOf(100), beitragHoeheGanzzahl);
-
-		table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(selbstbehalt),
-				Color.LIGHT_GRAY,
-				getBgColorForBetreuungsgutscheinCell(),
-				1,
-				1));
-		table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(beitragHoeheGanzzahl),
-				Color.LIGHT_GRAY,
-				getBgColorForBetreuungsgutscheinCell(),
-				1,
-				1));
-	}
-
-	@Override
-	protected void addValueGutscheinProStunde(
-		PdfPTable table,
-		@Nullable BigDecimal verguenstigungProZeiteinheit) {
-		if (this.isBetreuungTagesfamilie) {
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(verguenstigungProZeiteinheit),
-				Color.LIGHT_GRAY,
-				getBgColorForUeberwiesenerBetragCell(),
-				1,
-				1));
-		}
-	}
-
-	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
 		return super.getZeitabschnitteOrderByGueltigAb(false);
 	}
 
+	@Override
 	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
 		// bei Appenzell wird auch bei keinem Anspruch die Verfügung generiert.
 		super.createDokumentNormal(document, generator);
@@ -254,6 +175,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 		//no-op: wird in Appenzell nicht angezeigt
 	}
 
+	@Nonnull
 	@Override
 	protected Paragraph createFirstParagraph(Kind kind) {
 		return PdfUtil.createParagraph(translate(

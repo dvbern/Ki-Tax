@@ -33,6 +33,9 @@
     <form #form="ngForm">
         <dv-finanzielle-situation-single-gs-schwyz
             [readonly]="gesuchmodelManager.isGesuchReadonly()"
+            [korrekturModusJugendamt]="
+                gesuchmodelManager.isKorrekturModusJugendamt()
+            "
             (valueChanged)="recalculateMassgebendesEinkommen()"
             [finanzModel]="model"
         >

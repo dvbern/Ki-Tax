@@ -18,6 +18,7 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {NgxIbanModule} from 'ngx-iban';
+import {WarningComponent} from '../shared/component/warning/warning.component';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
@@ -38,7 +39,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         InstitutionRoutingModule,
         MaterialModule,
         NgxIbanModule,
-        ClipboardModule
+        ClipboardModule,
+        WarningComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

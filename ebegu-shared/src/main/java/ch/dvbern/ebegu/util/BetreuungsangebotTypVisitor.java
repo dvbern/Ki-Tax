@@ -4,7 +4,7 @@ public interface BetreuungsangebotTypVisitor<T> {
 
 	T visitKita();
 	T visitTagesfamilien();
-	T visitMittagtisch();
+	T visitMittagstisch();
 	T visitTagesschule();
 
 	T visitFerieninsel();

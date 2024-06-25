@@ -266,6 +266,17 @@ export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(
     );
 }
 
+export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossenButJA(
+    status: TSAntragStatus
+): boolean {
+    return (
+        isAnyStatusOfVerfuegtButSchulamt(status) ||
+        status === TSAntragStatus.GEPRUEFT ||
+        status === TSAntragStatus.VERFUEGEN ||
+        status === TSAntragStatus.NUR_SCHULAMT
+    );
+}
+
 /**
  * Returns true when the status of the Gesuch is VERFUEGEN or VERFUEGT or NUR_SCHULAMT
  */

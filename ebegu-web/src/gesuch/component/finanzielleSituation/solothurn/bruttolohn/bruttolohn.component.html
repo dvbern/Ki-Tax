@@ -11,10 +11,12 @@
                     [tooltipMessageKey]="
                         'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'
                     "
-                >
-                    [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)"
+                    [showBisher]="
+                        isNotNullOrUndefined(model.finanzielleSituationGS)
+                    "
                     [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
-                    [korrektur]="model.finanzielleSituationJA.bruttoLohn">
+                    [korrektur]="model.finanzielleSituationJA.bruttoLohn"
+                >
                 </dv-input-label-field>
             </div>
         </div>
