@@ -439,7 +439,7 @@
                                                     name="prov-monatlicheHauptmahlzeiten"
                                                     ng-model="vm.getBetreuungspensum(0).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                     class="form-control"
-                                                    ng-attr-data-test="monatliche-hauptmahlzeiten#"
+                                                    ng-attr-data-test="monatliche-hauptmahlzeiten-"
                                                     ng-required="true"
                                                 />
                                                 <dv-error-messages
@@ -1392,7 +1392,7 @@
                                                                 }}"
                                                                 ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                                 class="form-control"
-                                                                ng-attr-data-test="monatliche-hauptmahlzeiten#{{
+                                                                ng-attr-data-test="monatliche-hauptmahlzeiten-{{
                                                                     $index
                                                                 }}"
                                                                 ng-required="true"
