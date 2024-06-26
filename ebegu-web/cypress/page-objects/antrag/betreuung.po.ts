@@ -70,6 +70,10 @@ const getBetreuungspensum = (betreuungspensumIndex: number) => {
     return cy.getByData(`betreuungspensum-${betreuungspensumIndex}`);
 };
 
+const getMonatlicheHauptmahlzeiten = (hauptmahlzeitenIndex: number) => {
+    return cy.getByData(`monatliche-hauptmahlzeiten-${hauptmahlzeitenIndex}`);
+};
+
 const getWeiteresBetreuungspensumErfassenButton = () => {
     return cy.getByData('container.add-betreuungspensum', 'navigation-button');
 };
@@ -79,7 +83,7 @@ const getMonatlicheBetreuungskosten = (betreuungspensumIndex: number) => {
 };
 
 const getKostenProMahlzeit = (betreuungspensumIndex: number) => {
-    return cy.getByData('kosten-pro-mahlzeit#' + betreuungspensumIndex);
+    return cy.getByData('kosten-pro-mahlzeit-' + betreuungspensumIndex);
 };
 
 const getBetreuungspensumAb = (betreuungspensumIndex: number) => {
@@ -215,19 +219,21 @@ const fillMittagstischBetreuungsForm = (
 ) => {
     FixtureBetreuung[dataset](data => {
         const mittagstisch = data[gemeinde].mittagstisch;
+        cy.wait(1500);
         getBetreuungsangebot().select('Mittagstisch');
+        cy.wait(1500);
         getHasVertrag('ja').click();
         getInstitution().find('input').type(mittagstisch.institution);
         getInstitutionSuchtext().click();
         getInstitution()
             .find('input')
             .should('have.value', mittagstisch.institution);
-        getKesbPlatzierung('nein').click();
-        getHasErweiterteBeduerfnisse('nein').click();
+        // getKesbPlatzierung('nein').click();
+        // getHasErweiterteBeduerfnisse('nein').click();
     });
 };
 
-const fillMittagstischBetreuungspensumForm = (
+const fillMittagstischBetreuungenForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
@@ -237,15 +243,18 @@ const fillMittagstischBetreuungspensumForm = (
             if (index > 0) {
                 AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
-            AntragBetreuungPO.getBetreuungspensum(index).type(
+            cy.wait(500);
+            AntragBetreuungPO.getMonatlicheHauptmahlzeiten(index).type(
                 pensum.anzahlMittagessenProMonat
             );
             AntragBetreuungPO.getKostenProMahlzeit(index).type(
                 pensum.kostenProMittagessen
             );
+            cy.wait(500);
             AntragBetreuungPO.getBetreuungspensumBis(0)
                 .find('input')
                 .type(pensum.bis);
+            cy.wait(500);
             AntragBetreuungPO.getBetreuungspensumAb(0)
                 .find('input')
                 .type(pensum.von);
@@ -419,6 +428,7 @@ export const AntragBetreuungPO = {
     getPlatzAkzeptierenButton,
     getWeiteresBetreuungspensumErfassenButton,
     getMutationsmeldungErstellenButton,
+    getMonatlicheHauptmahlzeiten,
     getBetreuungLoeschenButton,
     getMutationsmeldungSendenButton,
     getPlatzbestaetigungAnfordernButton,
@@ -430,7 +440,7 @@ export const AntragBetreuungPO = {
     getInstitutionMobile,
     getInstitutionSuchtext,
     getHasVertrag,
-    getKesbPlatzierung,
+    // getKesbPlatzierung,
     getXthTagesschulModulOfDay,
     getAGBTSAkzeptiert,
     getHasErweiterteBeduerfnisse,
@@ -446,7 +456,7 @@ export const AntragBetreuungPO = {
     fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillMittagstischBetreuungsForm,
-    fillMittagstischBetreuungspensumForm,
+    fillMittagstischBetreuungenForm,
     fillOnlineKitaBetreuungsForm,
     fillOnlineTfoBetreuungsForm,
     fillKeinePlatzierung,
