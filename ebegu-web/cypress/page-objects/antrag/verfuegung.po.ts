@@ -89,7 +89,9 @@ const nichtEintretenVerfuegen = () => {
 const betreuungKontrollierenAndVerfuegen = () => {
     cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
         getVerfuegungsBemerkungenKontrolliert().click();
+        cy.wait(3000);
         getVerfuegenButton().click();
+        cy.wait(3000);
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
