@@ -21,6 +21,13 @@ const getFreigebenButton = () => {
     return cy.getByData('container.freigeben', 'navigation-button');
 };
 
+const approveCorrectDataValues = () => {
+    return cy.getByData('gesuchfreigeben', 'checkbox');
+};
+const getFreigebenButtonSchwyz = () => {
+    return cy.getByData('gesuchfreigeben', 'navigation-button');
+};
+
 const getFreigabequittungEinscannenSimulierenButton = () => {
     return cy.getByData(
         'container.antrag-freigeben-simulieren',
@@ -45,10 +52,20 @@ const freigeben = () => {
     });
 };
 
+const freigebenSchwyz = () => {
+    FreigabePO.approveCorrectDataValues().click();
+    FreigabePO.getFreigebenButtonSchwyz().click();
+};
+
+
+
 export const FreigabePO = {
     // PAGE OBJECTS
     getFreigebenButton,
+    getFreigebenButtonSchwyz,
     getFreigabequittungEinscannenSimulierenButton,
     // PAGE ACTIONS
-    freigeben
+    freigeben,
+    freigebenSchwyz,
+    approveCorrectDataValues
 };
