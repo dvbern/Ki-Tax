@@ -116,8 +116,10 @@ const createOnlineTestfall = (data: {
         navigateToTestfaelle()
     );
     getGemeindeSelection().click();
+    cy.wait(1500);
     getGemeindeOption(data.gemeinde).click();
     getPeriodeSelection().click();
+    cy.wait(1500);
     getPeriodeOption(data.periode).click();
     getBetreuungsstatus(data.betreuungsstatus).find('label').click();
     getBesitzerinSelection().click();
