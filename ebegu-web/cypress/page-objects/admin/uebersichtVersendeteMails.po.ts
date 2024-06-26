@@ -44,7 +44,7 @@ const getNextMailsInTable = () => {
 };
 
 const getNextMailsInTableCheck = () => {
-    return cy.get('.mat-paginator-range-label');
+    return cy.get('.mat-mdc-paginator-range-label');
 };
 
 const getVersendeteMailTableContent = () => {
