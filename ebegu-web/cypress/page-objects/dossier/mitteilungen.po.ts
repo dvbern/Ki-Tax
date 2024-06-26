@@ -49,6 +49,9 @@ const getInhaltOfMitteilung = (mitteilungIndex: number) => {
     );
 };
 
+const getMutationsmeldungOeffnenButton = (mitteilungsIndex: number) => {
+    return cy.getByData('container.mitteilung#' + mitteilungsIndex);
+};
 const getMutationsmeldungHinzufuegenButton = (mitteilungsIndex: number) => {
     return cy.getByData(
         'container.mitteilung#' + mitteilungsIndex,
@@ -65,5 +68,6 @@ export const MitteilungenPO = {
     getMitteilung,
     getSubjectOfMitteilung,
     getInhaltOfMitteilung,
-    getMutationsmeldungHinzufuegenButton
+    getMutationsmeldungHinzufuegenButton,
+    getMutationsmeldungOeffnenButton
 };
