@@ -26,6 +26,7 @@ const getPageTitle = () => {
 };
 
 const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
+    cy.wait(1500);
     return cy.getByData(
         'container.kind#' + kindIndex,
         'container.betreuung#' + betreuungsIndex
@@ -332,6 +333,7 @@ const fillOnlineTfoBetreuungsForm = (
 };
 
 const selectTagesschulBetreuung = () => {
+    cy.wait(1500);
     getBetreuungsangebot().select('Tagesschule');
 };
 
@@ -406,7 +408,9 @@ const platzAbweisen = (grundAbweisung: string) => {
 const platzAkzeptieren = () => {
     cy.waitForRequest('GET', '**/gesuchBetreuungenStatus/*', () => {
         cy.waitForRequest('PUT', '**/schulamt/akzeptieren', () => {
+            cy.wait(1500);
             getPlatzAkzeptierenButton().click();
+            cy.wait(1500);
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     });
