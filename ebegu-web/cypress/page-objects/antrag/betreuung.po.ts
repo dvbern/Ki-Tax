@@ -204,7 +204,7 @@ const fillKitaBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
         getInstitution().find('input').type(kita.institution, {delay: 30});
@@ -217,7 +217,7 @@ const fillMittagstischBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const mittagstisch = data[gemeinde].mittagstisch;
         cy.wait(1500);
         getBetreuungsangebot().select('Mittagstisch');
@@ -237,9 +237,9 @@ const fillMittagstischBetreuungenForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const pensen = data[gemeinde].mittagstisch.betreuungspensen;
-        pensen.forEach((pensum, index: number) => {
+        pensen.forEach((pensum: any, index: number) => {
             if (index > 0) {
                 AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
@@ -267,9 +267,9 @@ const fillKitaBetreuungspensumForm = (
     gemeinde: GemeindeTestFall
 ) => {
     cy.wait(2000);
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const pensen = data[gemeinde].kita.betreuungspensen;
-        pensen.forEach((pensum, index) => {
+        pensen.forEach((pensum: any, index: number) => {
             if (index > 0) {
                 AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
@@ -294,7 +294,7 @@ const fillOnlineKitaBetreuungsForm = (
     gemeinde: GemeindeTestFall,
     opts?: {mobile: boolean}
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -315,7 +315,7 @@ const fillOnlineTfoBetreuungsForm = (
     gemeinde: GemeindeTestFall,
     opts?: {mobile: boolean}
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const tfo = data[gemeinde].tfo;
         getBetreuungsangebot().select(tfo.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -339,7 +339,7 @@ const fillTagesschulBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const tagesschule = data[gemeinde].tagesschule.institution;
         getHasVertrag('nein').should('not.exist');
         cy.wait(1000);
