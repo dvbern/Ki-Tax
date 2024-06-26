@@ -3,7 +3,7 @@ import {defineConfig} from 'cypress';
 import * as dvTasks from './cypress/support/tasks';
 import * as fs from 'fs';
 
-const baseUrl = process.env.baseURL ?? 'http://local-be.kibon.ch:4200/';
+const baseUrl = process.env.baseURL ?? 'http://local-sz.kibon.ch:4200/';
 
 export default defineConfig({
     watchForFileChanges: false,

@@ -90,7 +90,7 @@ describe('Mittagstisch Anmeldung', () => {
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.getMutationsmeldungErstellenButton().click();
-        AntragBetreuungPO.getBetreuungspensum(0).clear().type('12');
+        AntragBetreuungPO.getMonatlicheHauptmahlzeiten(0).clear().type('12');
         AntragBetreuungPO.getMutationsmeldungSendenButton().click();
         cy.waitForRequest(
             'PUT',
@@ -116,7 +116,10 @@ describe('Mittagstisch Anmeldung', () => {
         DossierToolbarPO.getAntrag(1).click();
         SidenavPO.goTo('BETREUUNG');
         AntragBetreuungPO.getBetreuung(0, 0).click();
-        AntragBetreuungPO.getBetreuungspensum(0).should('have.value', '12');
+        AntragBetreuungPO.getMonatlicheHauptmahlzeiten(0).should(
+            'have.value',
+            '12'
+        );
         SidenavPO.getGesuchsDaten()
             .then(el$ => el$.data('antrags-id'))
             .as('mutation1');

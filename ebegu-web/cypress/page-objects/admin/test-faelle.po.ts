@@ -39,7 +39,6 @@ const getGemeindeOption = (gemeinde: GemeindeTestFall) => {
     return cy.getByData(`gemeinde.${gemeinde}`);
 };
 
-
 const getPeriodeSelection = () => {
     return cy.getByData('periode');
 };

@@ -57,8 +57,6 @@ const freigebenSchwyz = () => {
     FreigabePO.getFreigebenButtonSchwyz().click();
 };
 
-
-
 export const FreigabePO = {
     // PAGE OBJECTS
     getFreigebenButton,
