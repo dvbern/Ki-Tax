@@ -123,8 +123,8 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     });
 
     it('should change Table page', () => {
-        UebersichtVersendeteMailsPO.getNextMailsInTablle().click();
-        UebersichtVersendeteMailsPO.getNextMailsInTablleCheck().should(
+        UebersichtVersendeteMailsPO.getNextMailsInTable().click();
+        UebersichtVersendeteMailsPO.getNextMailsInTableCheck().should(
             'not.contain.text',
             '1-10'
         );
