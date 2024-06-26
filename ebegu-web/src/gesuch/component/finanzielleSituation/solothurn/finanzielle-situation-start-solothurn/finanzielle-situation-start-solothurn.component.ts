@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
-import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -68,11 +67,13 @@ export class FinanzielleSituationStartSolothurnComponent
         );
     }
 
-    public notify(): void {}
-
     public prepareSave(
         onResult: (arg: any) => void
     ): Promise<TSFinanzielleSituationContainer> {
+        if (this.form.disabled) {
+            onResult(this.getModel());
+            return undefined;
+        }
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -99,10 +100,6 @@ export class FinanzielleSituationStartSolothurnComponent
             .catch(error => {
                 throw error;
             }) as Promise<TSFinanzielleSituationContainer>;
-    }
-
-    public getFamilienSitutation(): TSFamiliensituation {
-        return this.getGesuch().familiensituationContainer.familiensituationJA;
     }
 
     public onSozialhilfeBezuegerChange(isSozialhilfebezueger: boolean): void {

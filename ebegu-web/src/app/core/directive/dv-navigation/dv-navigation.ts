@@ -285,11 +285,17 @@ export class NavigatorController implements IController {
         if (this.isSavingEnabled() && this.dvSave) {
             const returnValue = this.dvSave(); // callback ausfuehren, could return promise
             if (returnValue) {
-                this.$q.when(returnValue).then(() => {
-                    this.$timeout(() => {
-                        this.navigateToPreviousStep(); // wait till digest is finished (EBEGU-1595)
+                this.$q
+                    .when(returnValue)
+                    .then(() =>
+                        this.$timeout(() => {
+                            this.navigateToPreviousStep(); // wait till digest is finished (EBEGU-1595)
+                        })
+                    )
+                    .catch(() => {
+                        // the promise was rejected, the navigation aborted:
+                        this.wizardStepManager.isTransitionInProgress = false;
                     });
-                });
             } else {
                 // we need to release the semaphore because we stay in the page and we need to allow the user to move on
                 this.wizardStepManager.isTransitionInProgress = false;

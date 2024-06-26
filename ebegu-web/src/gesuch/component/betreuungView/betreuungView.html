@@ -329,14 +329,12 @@
                         </div>
                     </div>
 
-                    <!--provisorische Betreuung KITA TFO-->
+                    <!--provisorische Betreuung-->
                     <fieldset>
                         <div
                             ng-if="
                                 vm.isProvisorischeBetreuung() &&
-                                !vm.getBetreuungModel()
-                                    .keineDetailinformationen &&
-                                !vm.isBetreuungsangebotMittagstisch()
+                                !vm.getBetreuungModel().keineDetailinformationen
                             "
                         >
                             <dv-betreuung-input
@@ -346,7 +344,8 @@
                                 is-disabled="!vm.isEnabled()"
                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
                                 betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
-                                is-luzern="vm.isLuzern"
+                                vertrag="vm.getBetreuungModel().vertrag"
+                                mandant="vm.mandant"
                             >
                             </dv-betreuung-input>
 
@@ -988,6 +987,66 @@
                         </div>
                     </div>
 
+                    <!-- Infobox höhere Beiträge beantragt  -->
+                    <div
+                        class="row margin-bottom-20"
+                        ng-if="
+                            vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt &&
+                            vm.isHoehereBeitraegeEinstellungAktiviert
+                        "
+                    >
+                        <div class="well well-status-warten">
+                            {{
+                                'HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_BEANTRAGT'
+                                    | translate
+                            }}
+                        </div>
+                    </div>
+
+                    <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
+                    <div
+                        class="row margin-bottom-20"
+                        ng-if="
+                            vm.hoehereBeitraegeWegenBeeintraechtigungBeantragt &&
+                            vm.isHoehereBeitraegeEinstellungAktiviert
+                        "
+                    >
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label
+                                    class="md-no-float margin-bottom-20"
+                                    for="bedarfsstufe"
+                                >
+                                    <span
+                                        class="required"
+                                        data-translate="BEDARFSSTUFE_WAEHLEN"
+                                    ></span>
+                                    <dv-tooltip
+                                        text="'BEDARFSSTUFE_INFOTEXT' | translate"
+                                    >
+                                    </dv-tooltip>
+                                </label>
+                                <div class="dv-select-style">
+                                    <select
+                                        class="form-control"
+                                        id="bedarfsstufe"
+                                        name="bedarfsstufe"
+                                        ng-change="vm.changedBedarfsstufe()"
+                                        ng-disabled="!vm.canEditBedarfsstufen"
+                                        ng-model="vm.getBetreuungModel().bedarfsstufe"
+                                        ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
+                                        ng-required="vm.canEditBedarfsstufen"
+                                    ></select>
+
+                                    <dv-error-messages
+                                        for="vm.form.bedarfsstufe.$error"
+                                        input-id="bedarfsstufe"
+                                    ></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Eingewoehnung Periode-->
                     <div class="row" ng-if="vm.showEingewoehnungPeriode()">
                         <div class="col-xs-12 dv-input-container-question">
@@ -1200,6 +1259,7 @@
                                             multiplier-tfo="vm.getMultiplierTFO()"
                                             betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
                                             is-luzern="vm.isLuzern"
+                                            vertrag="vm.getBetreuungModel().vertrag"
                                         >
                                         </dv-betreuung-input>
                                     </div>

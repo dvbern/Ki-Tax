@@ -148,14 +148,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract getAntragstellerNummer(): number;
 
-    public hasPrevious(): boolean {
-        return true;
-    }
-
-    public hasNext(): boolean {
-        return true;
-    }
-
     public abstract getSubStepIndex(): number;
 
     public abstract getSubStepName(): string;
@@ -189,8 +181,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public getModel(): TSFinanzielleSituationContainer {
         return this.model.getFiSiConToWorkWith();
     }
-
-    public abstract notify(): void;
 
     protected save(
         onResult: (arg: any) => any

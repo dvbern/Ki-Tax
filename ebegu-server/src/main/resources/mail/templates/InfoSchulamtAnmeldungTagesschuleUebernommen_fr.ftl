@@ -28,17 +28,17 @@ ${templateConfiguration.mailCss}
 		Chère famille,
 	</p>
 	<p>
-		Votre inscription pour ${betreuung.kind.kindJA.fullName} à ${betreuung.institutionStammdaten.institution.name} a été acceptée. Vous pouvez consulter la liste des offres de prise en charge <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">ici</a>.
+		Votre inscription pour ${betreuung.kind.kindJA.fullName} à l'EJC (${betreuung.institutionStammdaten.institution.name}) a été acceptée. Vous pouvez consulter la liste des offres de prise en charge <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">ici</a>.
 	</p>
 	<p>
-		Nous vous présentons nos meilleures salutations.<br/>
+		Nous vous présentons nos salutations les meilleures.<br/>
 		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
 		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
 		</#if>
-		Merci de ne pas répondre à ce message automatique.
+		Merci de ne pas répondre à ce message électronique.
 	</p>
 </div>
 

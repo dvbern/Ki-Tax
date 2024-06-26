@@ -32,7 +32,7 @@ public class InstitutionStammdatenInitalizerVisitor implements Betreuungsangebot
 	}
 
 	@Override
-	public InstitutionStammdaten visitMittagtisch() {
+	public InstitutionStammdaten visitMittagstisch() {
 		return institutionStammdatenInitalizerService.initInstitutionStammdatenBetreuungsgutschein();
 	}
 

@@ -44,7 +44,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
-        protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
+        protected finSitLuService: FinanzielleSituationLuzernService,
         protected authServiceRS: AuthServiceRS,
         protected readonly translate: TranslateService,
         protected readonly applicationPropertyRS: ApplicationPropertyRS
@@ -245,9 +245,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return '';
     }
 
-    public getYearForSelbstdeklaration(): number | string {
+    public getYearForSelbstdeklaration(): string {
         if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
-            return this.getBasisjahr();
+            return this.getBasisjahr().toString();
         }
         if (
             EbeguUtil.isNotNullAndFalse(
@@ -257,14 +257,14 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
                 this.getModel().finanzielleSituationJA.alleinigeStekVorjahr
             )
         ) {
-            return this.getBasisjahrPlus1();
+            return this.getBasisjahrPlus1().toString();
         }
         if (
             EbeguUtil.isNotNullAndFalse(
                 this.getModel().finanzielleSituationJA.veranlagtVorjahr
             )
         ) {
-            return this.getBasisjahr();
+            return this.getBasisjahr().toString();
         }
         return '';
     }

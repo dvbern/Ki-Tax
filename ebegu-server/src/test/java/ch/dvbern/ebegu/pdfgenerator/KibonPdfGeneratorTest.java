@@ -53,6 +53,9 @@ import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechn
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.erstemahnung.ErsteMahnungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.AbstractMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.mahnung.zweitemahnung.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorKonfiguration;
 import ch.dvbern.ebegu.pdfgenerator.verfuegung.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
@@ -229,13 +232,15 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			AbstractVerfuegungPdfGenerator.Art.NORMAL,
-			verfuegungPdfGeneratorKonfiguration);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant), mandant, dokumentname);
 	}
 
@@ -285,12 +290,14 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.KEIN_ANSPRUCH,
-			verfuegungPdfGeneratorKonfiguration);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 
@@ -337,12 +344,14 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			.stadtBernAsivConfigured(STADT_BERN_ASIV_CONFIGUERED)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 		final VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			getFirstBetreuung(gesuch),
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			verfuegungPdfGeneratorKonfiguration);
+			verfuegungPdfGeneratorKonfiguration
+		);
 		generateTestDocument(verfuegungPdfGeneratorVisitor.visit(mandant), mandant, dokumentname);
 	}
 
@@ -445,7 +454,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		stammdaten.getGemeinde().setMandant(mandant);
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final MahnungPdfGenerator generator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
+		final AbstractMahnungPdfGenerator generator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
 			.getErsteMahnungPdfGeneratorForMandant(mandant);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
@@ -469,7 +478,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		stammdaten.getGemeinde().setMandant(mandant);
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final MahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
+		final AbstractMahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 

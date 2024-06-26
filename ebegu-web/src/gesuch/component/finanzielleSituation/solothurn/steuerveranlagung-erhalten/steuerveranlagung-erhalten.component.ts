@@ -25,6 +25,13 @@ export class SteuerveranlagungErhaltenComponent {
 
     public constructor(public gesuchModelManager: GesuchModelManager) {}
 
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
+    public isKorrekturModusJugendamt(): boolean {
+        return this.gesuchModelManager.isKorrekturModusJugendamt();
+    }
+
     public setSteuerveranlagungErhalten(value: any): void {
         this.model.finanzielleSituationJA.steuerveranlagungErhalten = value;
         this.steuerveranlagungErhaltenChange.emit(value);

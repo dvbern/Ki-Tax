@@ -18,10 +18,14 @@
 package ch.dvbern.ebegu.rules.mutationsmerger;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
@@ -35,7 +39,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.*;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.
@@ -47,7 +53,8 @@ import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.*;
  * <p>
  * Rechtzeitige Meldung:In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst.
  * <p>
- * Verspätete Meldung: Wird die Änderung des Arbeitspensums im Monat des Ereignis oder noch später gemeldet, erfolgt eine ERHÖHUNG des Anspruchs erst auf den Folgemonat
+ * Verspätete Meldung: Wird die Änderung des Arbeitspensums im Monat des Ereignis oder noch später gemeldet, erfolgt eine
+ * ERHÖHUNG des Anspruchs erst auf den Folgemonat
  * <p>
  * Im Falle einer Herabsetzung des Arbeitspensums, wird der Anspruch zusammen mit dem Ereigniseintritt angepasst
  * <p>
@@ -58,8 +65,8 @@ import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.*;
  * Regel für das Setzten des Flags auszahlungAnEltern bei einer Mutation:
  * - Flag hat denselben Wert im aktuellen als auch im Vorgänger Zeitabschnitt -> keine Aktion
  * - Flag hat nicht denselben Wert im aktuellen wie im Vorgänger Zeitabschnitt
- * 		- Wenn Zahlung bereits ausgeführt -> Wert des Vorgängers übernehmen
- * 	    - Wenn Zahlung noch nicht ausgeführt -> Wert des aktuellen überhnehmen
+ * - Wenn Zahlung bereits ausgeführt -> Wert des Vorgängers übernehmen
+ * - Wenn Zahlung noch nicht ausgeführt -> Wert des aktuellen überhnehmen
  */
 @SuppressWarnings("PMD.CollapsibleIfStatements") // wegen besserer Lesbarkeit
 public final class MutationsMerger extends AbstractAbschlussRule {
@@ -82,7 +89,9 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> execute(
+		@Nonnull AbstractPlatz platz,
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (platz.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}
@@ -94,20 +103,22 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			VerfuegungZeitabschnitt vorangehenderAbschnitt =
 				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 			VerfuegungZeitabschnitt vorgaengerZeitabschnittVerfugegungAusbezahlt =
-					getVorgaengerZeitabschnittVerfugegungAusbezahlt(platz, zeitabschnittStart);
+				getVorgaengerZeitabschnittVerfugegungAusbezahlt(platz, zeitabschnittStart);
 
 			if (vorangehenderAbschnitt != null) {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
 				handleMutation(inputAsiv, resultAsivVorangehenderAbschnitt, platz);
-				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt,
-						vorgaengerZeitabschnittVerfugegungAusbezahlt != null ?
-								vorgaengerZeitabschnittVerfugegungAusbezahlt :
-								vorangehenderAbschnitt);
+				handleAuszahlungAnElternFlag(
+					verfuegungZeitabschnitt,
+					vorgaengerZeitabschnittVerfugegungAusbezahlt != null ?
+						vorgaengerZeitabschnittVerfugegungAusbezahlt :
+						vorangehenderAbschnitt);
 
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
-				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
+				BGCalculationResult resultGemeindeVorangehenderAbschnitt =
+					vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
 				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
 					handleMutation(inputGemeinde, resultGemeindeVorangehenderAbschnitt, platz);
@@ -119,15 +130,15 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	@Nullable
 	private VerfuegungZeitabschnitt getVorgaengerZeitabschnittVerfugegungAusbezahlt(
-			AbstractPlatz platz,
-			LocalDate zeitabschnittStart) {
+		AbstractPlatz platz,
+		LocalDate zeitabschnittStart) {
 
 		if (!(platz instanceof Betreuung)) {
 			return null;
 		}
 
 		Map<ZahlungslaufTyp, Verfuegung> allVorgaengerVerfugegungAusbezahlt =
-				((Betreuung) platz).getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
+			((Betreuung) platz).getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
 
 		if (allVorgaengerVerfugegungAusbezahlt == null) {
 			return null;
@@ -137,14 +148,14 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		}
 
 		Verfuegung vorgaengerVerfuegungAusbezahlt =
-				allVorgaengerVerfugegungAusbezahlt.values().stream().reduce(null, (prev, cur) -> {
-					if (prev == null) {
-						return cur;
-					}
-					Objects.requireNonNull(cur.getTimestampMutiert());
-					Objects.requireNonNull(prev.getTimestampMutiert());
-					return cur.getTimestampMutiert().isBefore(prev.getTimestampMutiert()) ? cur : prev;
-				});
+			allVorgaengerVerfugegungAusbezahlt.values().stream().reduce(null, (prev, cur) -> {
+				if (prev == null) {
+					return cur;
+				}
+				Objects.requireNonNull(cur.getTimestampMutiert());
+				Objects.requireNonNull(prev.getTimestampMutiert());
+				return cur.getTimestampMutiert().isBefore(prev.getTimestampMutiert()) ? cur : prev;
+			});
 
 		return findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegungAusbezahlt);
 	}
@@ -161,6 +172,22 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		handleEinreichfrist(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		handleAnspruch(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+		handleBedarfsstufe(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+	}
+
+	private void handleBedarfsstufe(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		LocalDate mutationsEingansdatum) {
+		if (!isMeldungZuSpaet(inputAktuel.getParent().getGueltigkeit(), mutationsEingansdatum) ||
+			inputAktuel.getBedarfsstufe() == resultVorgaenger.getBedarfsstufe()) {
+			return;
+		}
+
+		inputAktuel.setBedarfsstufe(resultVorgaenger.getBedarfsstufe());
+		inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_MSG);
+		inputAktuel.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG);
+		inputAktuel.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.BEDARFSSTUFE_AENDERUNG_MSG, locale, inputAktuel.getBedarfsstufe());
 	}
 
 	private void handleAnspruch(

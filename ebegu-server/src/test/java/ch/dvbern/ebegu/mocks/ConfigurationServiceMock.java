@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.services.ConfigurationService;
 
 public class ConfigurationServiceMock extends ConfigurationService {
 
+	@Override
 	public VerfuegungPdfGeneratorKonfiguration getVerfuegungPdfGeneratorKonfiguration(
 		@Nonnull Betreuung betreuung, boolean writeProtected) {
 
@@ -34,9 +35,11 @@ public class ConfigurationServiceMock extends ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 	}
 
+	@Override
 	public VerfuegungPdfGeneratorKonfiguration getVerfuegungPdfGeneratorKonfigurationNichtEintretten(
 		@Nonnull Betreuung betreuung) {
 		return VerfuegungPdfGeneratorKonfiguration.builder()
@@ -44,6 +47,7 @@ public class ConfigurationServiceMock extends ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(false)
 			.betreuungspensumAnzeigeTyp(BetreuungspensumAnzeigeTyp.NUR_PROZENT)
+			.isHoehereBeitraegeConfigured(false)
 			.build();
 	}
 }

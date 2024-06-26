@@ -13,11 +13,7 @@ describe('DvEnableAllowedRolesDirective', () => {
     );
     authServiceSpy.isOneOfRoles.and.returnValue(true);
     it('should create an instance', () => {
-        const directive = new EnableElementDirective(
-            new MockElementRef({}),
-            authServiceSpy,
-            null
-        );
+        const directive = new EnableElementDirective(authServiceSpy, null);
         expect(directive).toBeTruthy();
     });
 });

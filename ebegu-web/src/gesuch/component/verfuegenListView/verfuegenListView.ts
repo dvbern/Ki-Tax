@@ -101,22 +101,22 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         'EinstellungRS',
         'EbeguUtil'
     ];
-
-    private kinderWithBetreuungList: Array<TSKindContainer>;
     public hasAnyNewOrStornierteBetreuung: boolean = false;
     public veraenderungBG: number;
     public veraenderungTS: number;
     public allVerfuegungenIgnorable: boolean = false;
     public mahnungList: TSMahnung[];
+    public finSitStatus: Array<string>;
+    public finSitStatusUpdateIsRunning: boolean = false;
+    public hoehereBeitraegeBeeintraechtigungAktiviert: boolean;
+    private kinderWithBetreuungList: Array<TSKindContainer>;
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
-    public finSitStatus: Array<string>;
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
     private minPensumSprachlicheIndikation: number;
     private letzteIgnorierteGesuchId: string;
-    public finSitStatusUpdateIsRunning: boolean = false;
 
     public readonly demoFeatureFachstelleUebergangsloesung =
         TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
@@ -153,119 +153,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         ) {
             this.loadNeustesVerfuegtesGesuchFuerGesuch();
         }
-    }
-
-    /**
-     * Die finanzielle Situation und die Einkommensverschlechterungen muessen mithilfe des Berechnungsmanagers
-     * berechnet werden, um manche Daten zur Verfügung zu haben. Das ist notwendig weil die finanzielle Situation nicht
-     * gespeichert wird. D.H. das erste Mal in einer Sitzung wenn ein Gesuch geoeffnet wird, ist gar nichts berechnet.
-     * Wenn man dann die Verfügen direkt aufmacht, ist alles leer und wird nichts angezeigt, deswegen muss alles auch
-     * hier berechnet werden. Um Probleme mit der Performance zu vermeiden, wird zuerst geprueft, ob die Berechnung
-     * schon vorher gemacht wurde, wenn ja dann wird sie einfach verwendet ohne sie neu berechnen zu muessen. Dieses
-     * geht aber davon aus, dass die Berechnungen immer richtig kalkuliert wurden.
-     *
-     * Die Verfuegungen werden IMMER geladen, wenn diese View geladen wird. Dieses ist etwas ineffizient. Allerdings
-     * muss es eigentlich so funktionieren, weil die Daten sich haben aendern koennen. Es ist ein aehnlicher Fall wie
-     * mit der finanziellen Situation. Sollte es Probleme mit der Performance geben, muessen wir ueberlegen, ob wir es
-     * irgendwie anders berechnen koennen um den Server zu entlasten.
-     */
-    private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-            TSWizardStepName.VERFUEGEN,
-            TSWizardStepStatus.WARTEN
-        );
-
-        // Berechnung aller finanziellen Daten
-        const gesuch = this.gesuchModelManager.getGesuch();
-        if (!this.berechnungsManager.finanzielleSituationResultate) {
-            this.berechnungsManager.calculateFinanzielleSituation(gesuch);
-        }
-        if (
-            gesuch &&
-            gesuch.extractEinkommensverschlechterungInfo() &&
-            gesuch.extractEinkommensverschlechterungInfo()
-                .ekvFuerBasisJahrPlus1 &&
-            !this.berechnungsManager.einkommensverschlechterungResultateBjP1
-        ) {
-            this.berechnungsManager.calculateEinkommensverschlechterung(
-                gesuch,
-                1
-            );
-        }
-        if (
-            gesuch &&
-            gesuch.extractEinkommensverschlechterungInfo() &&
-            gesuch.extractEinkommensverschlechterungInfo()
-                .ekvFuerBasisJahrPlus2 &&
-            !this.berechnungsManager.einkommensverschlechterungResultateBjP2
-        ) {
-            this.berechnungsManager.calculateEinkommensverschlechterung(
-                gesuch,
-                2
-            );
-        }
-        this.refreshKinderListe();
-        this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
-
-        // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
-
-        if (
-            EbeguUtil.isNotNullOrUndefined(
-                this.gesuchModelManager.getGesuchsperiode()
-            )
-        ) {
-            this.einstellungRS
-                .findEinstellung(
-                    TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                    this.gesuchModelManager.getDossier().gemeinde.id,
-                    this.gesuchModelManager.getGesuchsperiode().id
-                )
-                .subscribe(
-                    response => {
-                        this.kontingentierungEnabled = JSON.parse(
-                            response.value
-                        );
-                    },
-                    error => LOG.error(error)
-                );
-
-            this.einstellungRS
-                .findEinstellung(
-                    TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
-                    this.gesuchModelManager.getDossier().gemeinde.id,
-                    this.gesuchModelManager.getGesuchsperiode().id
-                )
-                .subscribe(
-                    response => {
-                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(
-                            response.value
-                        );
-                    },
-                    error => LOG.error(error)
-                );
-            this.einstellungRS
-                .findEinstellung(
-                    TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                    this.gesuchModelManager.getDossier().gemeinde.id,
-                    this.gesuchModelManager.getGesuchsperiode().id
-                )
-                .subscribe(
-                    response => {
-                        this.minPensumSprachlicheIndikation = Number(
-                            response.value
-                        );
-                    },
-                    error => LOG.error(error)
-                );
-        }
-    }
-
-    private refreshKinderListe(): IPromise<any> {
-        return this.gesuchModelManager.calculateVerfuegungen().then(() => {
-            this.kinderWithBetreuungList =
-                this.gesuchModelManager.getKinderWithBetreuungList();
-            this.calculateVeraenderung();
-        });
     }
 
     public getKinderWithBetreuungList(): Array<TSKindContainer> {
@@ -631,15 +518,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                         );
                     })
             );
-    }
-
-    private hasOffeneMahnungen(): boolean {
-        for (const mahn of this.mahnungList) {
-            if (!mahn.timestampAbgeschlossen) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public sendToSteuerverwaltung(): void {
@@ -1049,6 +927,39 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return !!(this.getGesuch() && this.getGesuch().finSitStatus);
     }
 
+    public isHoehereBeitraegeBeeintraechtigungAktiviert() {
+        return this.hoehereBeitraegeBeeintraechtigungAktiviert;
+    }
+
+    public isBedarfsstufeNotSelected(): boolean {
+        const kinderWithBetreuung: TSKindContainer[] =
+            this.gesuchModelManager.getKinderWithBetreuungList();
+        let isSelected = false;
+
+        kinderWithBetreuung.some(kind => {
+            if (
+                kind.kindJA
+                    ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true
+            ) {
+                kind.betreuungen?.every(betreuung => {
+                    isSelected = EbeguUtil.isNullOrUndefined(
+                        betreuung.bedarfsstufe
+                    );
+                });
+            }
+        });
+        return isSelected;
+    }
+
+    public isRolleGemeinde(): boolean {
+        return (
+            this.authServiceRs.isOneOfRoles(
+                TSRoleUtil.getGemeindeOrBGRoles()
+            ) ||
+            this.authServiceRs.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())
+        );
+    }
+
     public isFinSitAbglehnt(): boolean {
         return (
             this.isFinSitChoosen() &&
@@ -1142,12 +1053,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             );
     }
 
-    private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
-        this.gesuchModelManager.setGesuch(gesuchFromServer);
-        this.refreshKinderListe();
-        return this.gesuchModelManager.getGesuch();
-    }
-
     public changeFinSitStatus(): void {
         if (!this.getGesuch().finSitStatus) {
             return;
@@ -1202,6 +1107,187 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION
         ]);
+    }
+
+    public getVeraenderungBgString(): string {
+        let roundedVeranderung = EbeguUtil.roundToFiveRappen(
+            this.veraenderungBG
+        );
+        let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
+
+        if (roundedVeranderung < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_BG_TIEFER';
+            roundedVeranderung *= -1;
+        }
+
+        return this.$translate.instant(translationId, {
+            veraenderung: roundedVeranderung.toFixed(2)
+        });
+    }
+
+    public getVeraenderungTsString(): string {
+        let translationId = 'MUTATION_VERAENDERUNG_TS_HOEHER';
+        let veranderung = this.veraenderungTS;
+
+        if (this.veraenderungTS < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_TS_TIEFER';
+            veranderung *= -1;
+        }
+
+        return this.$translate.instant(translationId, {
+            veraenderung: veranderung.toFixed(2)
+        });
+    }
+
+    public isGesuchIgnoriert(): boolean {
+        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
+    }
+
+    public gotoLetzterGueltigerAntrag() {
+        const navObj: any = {
+            gesuchId: this.letzteIgnorierteGesuchId
+        };
+        this.$state.go('gesuch.verfuegen', navObj);
+    }
+
+    /**
+     * Die finanzielle Situation und die Einkommensverschlechterungen muessen mithilfe des Berechnungsmanagers
+     * berechnet werden, um manche Daten zur Verfügung zu haben. Das ist notwendig weil die finanzielle Situation nicht
+     * gespeichert wird. D.H. das erste Mal in einer Sitzung wenn ein Gesuch geoeffnet wird, ist gar nichts berechnet.
+     * Wenn man dann die Verfügen direkt aufmacht, ist alles leer und wird nichts angezeigt, deswegen muss alles auch
+     * hier berechnet werden. Um Probleme mit der Performance zu vermeiden, wird zuerst geprueft, ob die Berechnung
+     * schon vorher gemacht wurde, wenn ja dann wird sie einfach verwendet ohne sie neu berechnen zu muessen. Dieses
+     * geht aber davon aus, dass die Berechnungen immer richtig kalkuliert wurden.
+     *
+     * Die Verfuegungen werden IMMER geladen, wenn diese View geladen wird. Dieses ist etwas ineffizient. Allerdings
+     * muss es eigentlich so funktionieren, weil die Daten sich haben aendern koennen. Es ist ein aehnlicher Fall wie
+     * mit der finanziellen Situation. Sollte es Probleme mit der Performance geben, muessen wir ueberlegen, ob wir es
+     * irgendwie anders berechnen koennen um den Server zu entlasten.
+     */
+    private initViewModel(): void {
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.VERFUEGEN,
+            TSWizardStepStatus.WARTEN
+        );
+
+        // Berechnung aller finanziellen Daten
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!this.berechnungsManager.finanzielleSituationResultate) {
+            this.berechnungsManager.calculateFinanzielleSituation(gesuch);
+        }
+        if (
+            gesuch?.extractEinkommensverschlechterungInfo()
+                ?.ekvFuerBasisJahrPlus1 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP1
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                1
+            );
+        }
+        if (
+            gesuch?.extractEinkommensverschlechterungInfo()
+                ?.ekvFuerBasisJahrPlus2 &&
+            !this.berechnungsManager.einkommensverschlechterungResultateBjP2
+        ) {
+            this.berechnungsManager.calculateEinkommensverschlechterung(
+                gesuch,
+                2
+            );
+        }
+        this.refreshKinderListe();
+        this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
+
+        // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
+        // eslint-disable-next-line
+        if (
+            EbeguUtil.isNotNullOrUndefined(
+                this.gesuchModelManager.getGesuchsperiode()
+            )
+        ) {
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.kontingentierungEnabled = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.minPensumSprachlicheIndikation = Number(
+                            response.value
+                        );
+                    },
+                    error => LOG.error(error)
+                );
+
+            this.einstellungRS
+                .findEinstellung(
+                    TSEinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+                    this.gesuchModelManager.getDossier().gemeinde.id,
+                    this.gesuchModelManager.getGesuchsperiode().id
+                )
+                .subscribe(
+                    response => {
+                        this.hoehereBeitraegeBeeintraechtigungAktiviert =
+                            JSON.parse(response.value);
+                    },
+                    error => LOG.error(error)
+                );
+        }
+
+        this.isBedarfsstufeNotSelected();
+    }
+
+    private refreshKinderListe(): IPromise<any> {
+        return this.gesuchModelManager.calculateVerfuegungen().then(() => {
+            this.kinderWithBetreuungList =
+                this.gesuchModelManager.getKinderWithBetreuungList();
+            this.calculateVeraenderung();
+        });
+    }
+
+    private hasOffeneMahnungen(): boolean {
+        for (const mahn of this.mahnungList) {
+            if (!mahn.timestampAbgeschlossen) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
+        this.gesuchModelManager.setGesuch(gesuchFromServer);
+        this.refreshKinderListe();
+        return this.gesuchModelManager.getGesuch();
     }
 
     private calculateVeraenderung(): void {
@@ -1291,47 +1377,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.gesuchModelManager.isGesuchStatusIn([
             TSAntragStatus.GEPRUEFT
         ]);
-    }
-
-    public getVeraenderungBgString(): string {
-        let roundedVeranderung = EbeguUtil.roundToFiveRappen(
-            this.veraenderungBG
-        );
-        let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
-
-        if (roundedVeranderung < 0) {
-            translationId = 'MUTATION_VERAENDERUNG_BG_TIEFER';
-            roundedVeranderung *= -1;
-        }
-
-        return this.$translate.instant(translationId, {
-            veraenderung: roundedVeranderung.toFixed(2)
-        });
-    }
-
-    public getVeraenderungTsString(): string {
-        let translationId = 'MUTATION_VERAENDERUNG_TS_HOEHER';
-        let veranderung = this.veraenderungTS;
-
-        if (this.veraenderungTS < 0) {
-            translationId = 'MUTATION_VERAENDERUNG_TS_TIEFER';
-            veranderung *= -1;
-        }
-
-        return this.$translate.instant(translationId, {
-            veraenderung: veranderung.toFixed(2)
-        });
-    }
-
-    public isGesuchIgnoriert(): boolean {
-        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
-    }
-
-    public gotoLetzterGueltigerAntrag() {
-        const navObj: any = {
-            gesuchId: this.letzteIgnorierteGesuchId
-        };
-        this.$state.go('gesuch.verfuegen', navObj);
     }
 
     private loadNeustesVerfuegtesGesuchFuerGesuch(): void {

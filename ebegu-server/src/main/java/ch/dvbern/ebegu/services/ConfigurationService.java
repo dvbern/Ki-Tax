@@ -54,6 +54,7 @@ public class ConfigurationService {
 			.stadtBernAsivConfigured(applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant()))
 			.FKJVTexte(getEinstellungFKJVTexte(betreuung))
 			.betreuungspensumAnzeigeTyp(getEinstellungBetreuungspensumAnzeigeTyp(betreuung))
+			.isHoehereBeitraegeConfigured(getEinstellungHoehereBeitraegeConfigured(betreuung))
 			.build();
 	}
 
@@ -65,6 +66,7 @@ public class ConfigurationService {
 			.stadtBernAsivConfigured(false)
 			.FKJVTexte(getEinstellungFKJVTexte(betreuung))
 			.betreuungspensumAnzeigeTyp(getEinstellungBetreuungspensumAnzeigeTyp(betreuung))
+			.isHoehereBeitraegeConfigured(getEinstellungHoehereBeitraegeConfigured(betreuung))
 			.build();
 	}
 
@@ -82,5 +84,14 @@ public class ConfigurationService {
 			betreuung.extractGesuch().extractGemeinde(),
 			betreuung.extractGesuchsperiode()
 		).getValue());
+
+	}
+
+	private boolean getEinstellungHoehereBeitraegeConfigured(@Nonnull Betreuung betreuung) {
+		return einstellungService.findEinstellung(
+			EinstellungKey.HOEHERE_BEITRAEGE_BEEINTRAECHTIGUNG_AKTIVIERT,
+			betreuung.extractGesuch().extractGemeinde(),
+			betreuung.extractGesuchsperiode()
+		).getValueAsBoolean();
 	}
 }

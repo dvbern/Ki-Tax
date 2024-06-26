@@ -3158,5 +3158,6 @@
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_MAX_MASSGEBENDES_EINKOMMEN_READONLY": "Revenu déterminant en CHF pour le bon supplémentaire (Max) : {{value}} CHF",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM": "Dépendance du droit au taux d'occupation (Dépendant, Indépendant, Minimum)",
     "STAEDTISCHER_ZUSCHLAG_IN_CHF": "Supplément de la ville (en CHF)",
+    "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
