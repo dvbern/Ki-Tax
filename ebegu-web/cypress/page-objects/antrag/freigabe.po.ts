@@ -29,10 +29,7 @@ const getFreigebenButtonSchwyz = () => {
 };
 
 const getFreigabequittungEinscannenSimulierenButton = () => {
-    return cy.getByData(
-        'container.antrag-freigeben-simulieren',
-        'navigation-button'
-    );
+    return cy.getByData('container.antrag-freigeben-simulieren');
 };
 
 const freigeben = () => {
