@@ -33,6 +33,15 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
     it('should access the Uebersicht View as Superadmin', () => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
+
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt',
+            besitzerin: '[5-GS] Jean Chambre'
+        });
+
         MainNavigationPO.getMenuButton().click();
         UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().click();
         cy.url().should('contain', 'uebersichtVersendeteMails');
@@ -68,6 +77,7 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
             betreuungsstatus: 'verfuegt',
             besitzerin: '[5-GS] Jean Chambre'
         });
+
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
             cy.visit('/#/uebersichtVersendeteMails');
