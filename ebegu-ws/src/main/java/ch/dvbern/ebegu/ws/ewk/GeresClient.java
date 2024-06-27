@@ -15,16 +15,16 @@
 
 package ch.dvbern.ebegu.ws.ewk;
 
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
+
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
 
 /**
  * Serviceinterface welches die Methoden des EWK Service zur verfuegung stellt
@@ -50,7 +50,7 @@ public interface GeresClient {
 	EWKResultat suchePersonenInHaushalt(Long wohnungsId, Long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 
 	@Nonnull
-	EWKPerson suchePersonMitAhvNummer(Gesuchsteller gesuchsteller) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
+	EWKPerson suchePersonMitAhvNummerInGemeinde(Gesuchsteller gesuchsteller, Gemeinde gemeinde) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 
 	String test() throws PersonenSucheServiceException;
 }
