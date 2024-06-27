@@ -132,6 +132,7 @@ describe('Mittagstisch Anmeldung', () => {
         const mutationIdAlias = '@mutation1';
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
+        cy.changeMandant('be');
     });
 });
 
