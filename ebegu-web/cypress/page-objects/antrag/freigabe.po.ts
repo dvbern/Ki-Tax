@@ -22,7 +22,7 @@ const getFreigebenButton = () => {
 };
 
 const getApproveCorrectDataValuesCheckbox = () => {
-    return cy.getByData('gesuchfreigeben', 'checkbox');
+    return cy.getByData('gesuchfreigeben', 'checkbox').find('label');
 };
 const getFreigebenButtonSchwyz = () => {
     return cy.getByData('gesuchfreigeben', 'navigation-button');
@@ -51,7 +51,7 @@ const freigeben = () => {
 
 const freigebenSchwyz = () => {
     FreigabePO.getApproveCorrectDataValuesCheckbox().click();
-    cy.wait(4000);
+    cy.wait(1500);
     FreigabePO.getFreigebenButtonSchwyz().click();
 };
 
