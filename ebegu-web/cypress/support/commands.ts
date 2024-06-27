@@ -173,6 +173,11 @@ declare global {
              *  });
              */
             getDownloadUrl(downloadAction: () => void): Chainable<string>;
+
+            /**
+             *
+             */
+            changeMandant(mandant: string): void;
         }
     }
 }
@@ -305,4 +310,13 @@ Cypress.Commands.add('getDownloadUrl', action => {
             return cy.location('origin').then(origin => origin.concat(result));
         });
     });
+});
+Cypress.Commands.add('changeMandant', (mandant: string) => {
+    // this only works for environments like dev, demo, uat, preview with a "-" in the url
+    if (Cypress.config().baseUrl.includes('-')) {
+        let prefixUrl: string[] = Cypress.config().baseUrl.split('-');
+        let urlToSplit: string[] = prefixUrl[1].split('.');
+        let newBaseUrl: string = prefixUrl[0] + '-' + mandant + '.' + urlToSplit[1] + urlToSplit[2];
+        Cypress.config('baseUrl', newBaseUrl);
+    }
 });
