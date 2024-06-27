@@ -26,7 +26,6 @@ const getPageTitle = () => {
 };
 
 const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
-    cy.wait(1500);
     return cy.getByData(
         'container.kind#' + kindIndex,
         'container.betreuung#' + betreuungsIndex
