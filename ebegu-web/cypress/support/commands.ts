@@ -316,7 +316,8 @@ Cypress.Commands.add('changeMandant', (mandant: string) => {
     if (Cypress.config().baseUrl.includes('-')) {
         let prefixUrl: string[] = Cypress.config().baseUrl.split('-');
         let urlToSplit: string[] = prefixUrl[1].split('.');
-        let newBaseUrl: string = prefixUrl[0] + '-' + mandant + '.' + urlToSplit[1] + urlToSplit[2];
+        let newBaseUrl: string =
+            prefixUrl[0] + '-' + mandant + '.' + urlToSplit[1] + urlToSplit[2];
         Cypress.config('baseUrl', newBaseUrl);
     }
 });

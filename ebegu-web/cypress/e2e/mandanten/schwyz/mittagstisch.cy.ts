@@ -40,6 +40,7 @@ describe('Mittagstisch Anmeldung', () => {
     const gemeinde: GemeindeTestFall = 'Testgemeinde Schwyz';
 
     it('should be possible to make and verfuegen a mittagstisch anmeldung', () => {
+        cy.changeMandant('sz');
         //SUPER ADMIN
         cy.login(userSuperadmin);
         cy.visit('/');
