@@ -18,14 +18,6 @@
 
 package ch.dvbern.ebegu.ws.ewk;
 
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Stream;
-
-import javax.xml.soap.SOAPFault;
-
 import ch.bedag.geres.schemas._20180101.geresresidentinforesponse.BaseDeliveryType;
 import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.InfrastructureFault;
 import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.InvalidArgumentsFault;
@@ -34,6 +26,7 @@ import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.ResidentInfoPar
 import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.ResidentInfoPortType;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.PersonensucheAuditLog;
 import ch.dvbern.ebegu.enums.Geschlecht;
@@ -69,6 +62,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import javax.xml.soap.SOAPFault;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.stream.Stream;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.capture;
@@ -168,6 +168,12 @@ class GeresProductiveClientTest extends EasyMockSupport {
 		Gesuchsteller gs = TestDataUtil.createDefaultGesuchsteller();
 		gs.setSozialversicherungsnummer("756.1234.5678.97");
 		return gs;
+	}
+
+	private static Gemeinde getGemeinde() {
+		Gemeinde g = new Gemeinde();
+		g.setBfsNummer(351L);
+		return g;
 	}
 
 	@Nested
@@ -318,7 +324,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 			replayAll();
 
 			// when
-			EWKPerson ewkPerson = testee.suchePersonMitAhvNummer(gs);
+			EWKPerson ewkPerson = testee.suchePersonMitAhvNummerInGemeinde(gs, getGemeinde());
 
 			// verify
 			ResidentInfoParametersType parametersType = paramsCapture.getValue();
@@ -352,7 +358,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 			replayAll();
 
 			// when
-			EWKPerson ewkPerson = testee.suchePersonMitAhvNummer(gs);
+			EWKPerson ewkPerson = testee.suchePersonMitAhvNummerInGemeinde(gs, getGemeinde());
 
 			// verify
 			ResidentInfoParametersType parametersType = paramsCapture.getValue();
@@ -372,6 +378,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 		void mustRethrowOtherExceptions() throws InvalidArgumentsFault, InfrastructureFault, PermissionDeniedFault {
 			// given
 			Gesuchsteller gs = getGs();
+			Gemeinde g = getGemeinde();
 			Capture<ResidentInfoParametersType> paramsCapture = EasyMock.newCapture();
 			Capture<PersonensucheAuditLog> auditLogCapture = createAuditLogCapture();
 			ServerSOAPFaultException soapFaultException = createServerSOAPFaultException("something else");
@@ -383,7 +390,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 
 			// when
 			// verify
-			assertThrows(ServerSOAPFaultException.class, () -> testee.suchePersonMitAhvNummer(gs));
+			assertThrows(ServerSOAPFaultException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, g));
 
 			PersonensucheAuditLog auditLog = auditLogCapture.getValue();
 			assertThat(auditLog.getFaultReceived(), is(nullValue()));
@@ -394,6 +401,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 		void mustThrowIfMoreThanOneResult() throws InvalidArgumentsFault, InfrastructureFault, PermissionDeniedFault {
 			// given
 			Gesuchsteller gs = getGs();
+			Gemeinde g = getGemeinde();
 			Capture<PersonensucheAuditLog> auditLogCapture = createAuditLogCapture();
 
 			BaseDeliveryType delivery = createDelivery(gs);
@@ -406,7 +414,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 			// when
 			// verify
 			PersonenSucheServiceException personenSucheServiceException =
-				assertThrows(PersonenSucheServiceException.class, () -> testee.suchePersonMitAhvNummer(gs));
+				assertThrows(PersonenSucheServiceException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, g));
 
 			assertThat(personenSucheServiceException.getMessage(), containsStringIgnoringCase("more than one"));
 			PersonensucheAuditLog auditLog = auditLogCapture.getValue();
