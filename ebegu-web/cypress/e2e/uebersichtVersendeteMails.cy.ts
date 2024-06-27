@@ -114,7 +114,9 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
 
     it('should select Mail amount', () => {
         UebersichtVersendeteMailsPO.getPaginatorMailUebersicht().click();
+        cy.wait(1500);
         UebersichtVersendeteMailsPO.getPaginatorAmountMailUebersicht().click();
+        cy.wait(1500);
         UebersichtVersendeteMailsPO.getSentMailsSubject().should(
             'have.length.within',
             10,
@@ -124,6 +126,7 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
 
     it('should change Table page', () => {
         UebersichtVersendeteMailsPO.getNextMailsInTable().click();
+        cy.wait(1500);
         UebersichtVersendeteMailsPO.getNextMailsInTableCheck().should(
             'not.contain.text',
             '1-10'
