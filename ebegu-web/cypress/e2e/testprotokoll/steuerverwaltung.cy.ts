@@ -86,20 +86,12 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.changeLogin(userSteueramt);
         cy.visit('/#/pendenzenSteueramt');
 
-        cy.waitForRequest(
-            'GET',
-            '**/gesuche/**',
-            () => {
-                FaelleListePO.getAntrag(fallnummer).click();
-            }
-        );
-        cy.waitForRequest(
-            'GET',
-            '**/gesuche/**',
-            () => {
-                SidenavPO.goTo('GESUCHSTELLER');
-            }
-        );
+        cy.waitForRequest('GET', '**/gesuche/**', () => {
+            FaelleListePO.getAntrag(fallnummer).click();
+        });
+        cy.waitForRequest('GET', '**/gesuche/**', () => {
+            SidenavPO.goTo('GESUCHSTELLER');
+        });
         SidenavPO.getGesuchStatus().should(
             'contain.text',
             'In Bearbeitung Steuerbüro der Gemeinde'

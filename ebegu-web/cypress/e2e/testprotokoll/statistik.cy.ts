@@ -224,8 +224,8 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     expect(data[last][7].length).to.eq(17);
 
     // Check IBAN-Nummer
-    expect(data[last - 1][8]).to.eq('CH2089144969768441935');
-    expect(data[last][8]).to.eq('CH2089144969768441935');
+    expect(data[last - 1][8]).to.eq('CH9789144829733648596');
+    expect(data[last][8]).to.eq('CH9789144829733648596');
 
     // Check Kontoinhaber/in
     expect(data[last - 1][9]).to.eq('kiBon Test');

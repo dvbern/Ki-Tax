@@ -119,7 +119,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
-        SidenavPO.getGesuchStatus().should('include.text', 'Warten auf Platzbestätigung');
+        SidenavPO.getGesuchStatus().should(
+            'include.text',
+            'Warten auf Platzbestätigung'
+        );
     };
 
     const createTsAnmeldungFuerKind2 = () => {
@@ -133,7 +136,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const plaetzeFuerBeideKinderBestaetigen = (antragIdAlias: string) => {
         SidenavPO.goTo('BETREUUNG');
-        SidenavPO.getGesuchStatus().should('include.text', 'In Bearbeitung Antragsteller/in');
+        SidenavPO.getGesuchStatus().should(
+            'include.text',
+            'In Bearbeitung Antragsteller/in'
+        );
         AntragBetreuungPO.getBetreuung(0, 0).click();
         cy.wait(1000);
         AntragBetreuungPO.getKorrekteKostenBestaetigung().click();
@@ -155,10 +161,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const tsUebernehmen = (
-        kindIndex: number,
-        betreuungsIndex: number
-    ) => {
+    const tsUebernehmen = (kindIndex: number, betreuungsIndex: number) => {
         AntragBetreuungPO.getBetreuung(kindIndex, betreuungsIndex).click();
         cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
             AntragBetreuungPO.getPlatzAkzeptierenButton().click();
@@ -181,7 +184,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const freigabequittungEinlesen = () => {
         SidenavPO.goTo('FREIGABE');
-        SidenavPO.getGesuchStatus().should('include.text', 'Freigabequittung ausstehend');
+        SidenavPO.getGesuchStatus().should(
+            'include.text',
+            'Freigabequittung ausstehend'
+        );
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
             FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
         });
@@ -241,7 +247,6 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         );
     };
 });
-
 
 function openGesuchInBetreuung(antragIdAlias: string) {
     cy.waitForRequest(
