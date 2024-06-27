@@ -378,6 +378,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 		void mustRethrowOtherExceptions() throws InvalidArgumentsFault, InfrastructureFault, PermissionDeniedFault {
 			// given
 			Gesuchsteller gs = getGs();
+			Gemeinde g = getGemeinde();
 			Capture<ResidentInfoParametersType> paramsCapture = EasyMock.newCapture();
 			Capture<PersonensucheAuditLog> auditLogCapture = createAuditLogCapture();
 			ServerSOAPFaultException soapFaultException = createServerSOAPFaultException("something else");
@@ -389,7 +390,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 
 			// when
 			// verify
-			assertThrows(ServerSOAPFaultException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, getGemeinde()));
+			assertThrows(ServerSOAPFaultException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, g));
 
 			PersonensucheAuditLog auditLog = auditLogCapture.getValue();
 			assertThat(auditLog.getFaultReceived(), is(nullValue()));
@@ -400,6 +401,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 		void mustThrowIfMoreThanOneResult() throws InvalidArgumentsFault, InfrastructureFault, PermissionDeniedFault {
 			// given
 			Gesuchsteller gs = getGs();
+			Gemeinde g = getGemeinde();
 			Capture<PersonensucheAuditLog> auditLogCapture = createAuditLogCapture();
 
 			BaseDeliveryType delivery = createDelivery(gs);
@@ -412,7 +414,7 @@ class GeresProductiveClientTest extends EasyMockSupport {
 			// when
 			// verify
 			PersonenSucheServiceException personenSucheServiceException =
-				assertThrows(PersonenSucheServiceException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, getGemeinde()));
+				assertThrows(PersonenSucheServiceException.class, () -> testee.suchePersonMitAhvNummerInGemeinde(gs, g));
 
 			assertThat(personenSucheServiceException.getMessage(), containsStringIgnoringCase("more than one"));
 			PersonensucheAuditLog auditLog = auditLogCapture.getValue();
