@@ -21,7 +21,7 @@ const getFreigebenButton = () => {
     return cy.getByData('container.freigeben', 'navigation-button');
 };
 
-const approveCorrectDataValues = () => {
+const getApproveCorrectDataValuesCheckbox = () => {
     return cy.getByData('gesuchfreigeben', 'checkbox');
 };
 const getFreigebenButtonSchwyz = () => {
@@ -50,7 +50,8 @@ const freigeben = () => {
 };
 
 const freigebenSchwyz = () => {
-    FreigabePO.approveCorrectDataValues().click();
+    FreigabePO.getApproveCorrectDataValuesCheckbox().click();
+    cy.wait(4000);
     FreigabePO.getFreigebenButtonSchwyz().click();
 };
 
@@ -62,5 +63,5 @@ export const FreigabePO = {
     // PAGE ACTIONS
     freigeben,
     freigebenSchwyz,
-    approveCorrectDataValues
+    getApproveCorrectDataValuesCheckbox
 };
