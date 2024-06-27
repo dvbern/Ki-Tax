@@ -40,6 +40,7 @@ describe('Mittagstisch Anmeldung', () => {
     const gemeinde: GemeindeTestFall = 'Testgemeinde Schwyz';
 
     it('should be possible to make and verfuegen a mittagstisch anmeldung', () => {
+        //SUPER ADMIN
         cy.login(userSuperadmin);
         cy.visit('/');
         TestFaellePO.createOnlineTestfall({
@@ -54,6 +55,7 @@ describe('Mittagstisch Anmeldung', () => {
             .as('antragsId');
         const antragIdAlias = '@antragsId';
 
+        // GESUCHSTELLER
         cy.changeLogin(userGS);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuungLoeschenButton(0, 0).click();
@@ -66,8 +68,9 @@ describe('Mittagstisch Anmeldung', () => {
             gemeinde
         );
         AntragBetreuungPO.platzBestaetigungAnfordern();
-        cy.changeLogin(userTraegerschaft);
 
+        // TRAEGERSCHAFT
+        cy.changeLogin(userTraegerschaft);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.fillMittagstischBetreuungenForm(
@@ -76,16 +79,19 @@ describe('Mittagstisch Anmeldung', () => {
         );
         AntragBetreuungPO.platzBestaetigen();
 
+        // GESUCHSTELLER
         cy.changeLogin(userGS);
         openGesuchInFreigabeSchwyz(antragIdAlias);
         FreigabePO.freigebenSchwyz();
         cy.wait(1500);
 
+        // SACHBEARBEITER
         cy.changeLogin(userSB);
         openGesuchInFreigabeSchwyz(antragIdAlias);
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
 
+        // TRAEGERSCHAFT
         cy.changeLogin(userTraegerschaft);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuung(0, 0).click();
@@ -100,11 +106,10 @@ describe('Mittagstisch Anmeldung', () => {
             }
         );
 
+        // SACHBEARBEITER
         cy.changeLogin(userSB);
         openGesuchInBetreuungen(antragIdAlias);
-
         cy.wait(1500);
-
         cy.waitForRequest('GET', '**/mitteilungen/**', () => {
             DossierToolbarPO.getMitteilungen().click();
         });
