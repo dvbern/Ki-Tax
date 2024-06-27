@@ -96,8 +96,8 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
             betreuungsstatus: 'verfuegt',
             besitzerin: '[5-GS] Jean Chambre'
         });
+        cy.visit('/#/uebersichtVersendeteMails');
         UebersichtVersendeteMailsPO.getVersendeteMailTableContent().click();
-
         UebersichtVersendeteMailsPO.getVersendeteMailTableContent().then(
             $address => {
                 var addresses: any[] = [];
