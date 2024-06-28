@@ -4,6 +4,6 @@
             <ng-content></ng-content>
         </div>
     } @else {
-        <div class="col-sm-12 well well-status-warten" [innerHTML]="text"></div>
+        <div class="col-sm-12 well well-status-warten" [innerHTML]="text | translate"></div>
     }
 </div>
