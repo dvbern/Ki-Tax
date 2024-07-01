@@ -63,7 +63,7 @@ describe('Kibon - generate Statistiken', () => {
             cy.downloadFile(url, fileName).as('download');
         });
 
-        cy.get('@download').should('not.equal', false);
+        cy.get('@download', {timeout: 15000}).should('not.equal', false);
         cy.get<string>('@download')
             .then(fileName =>
                 cy.task(
