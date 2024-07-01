@@ -101,10 +101,14 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                     cy.visit('/#/dossier/gesuchstellerDashboard');
                 }
             );
+            cy.wait(2000);
             GesuchstellendeDashboardPO.getAntragBearbeitenButton(
                 gesuchsPeriode.ganze
             ).click();
-            AntragCreationPO.getPageTitle().should('include.text', 'Antrag');
+            AntragCreationPO.getAntragBearbeitenButton().should(
+                'include.text',
+                'Antrag'
+            );
         };
 
         //INIT Antrag
