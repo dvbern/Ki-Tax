@@ -44,15 +44,10 @@ describe('Kibon - generate Statistiken', () => {
             () => {
                 StatistikPO.getStatistikJobStatus(0).should(
                     'include.text',
-                    'Statistik angefordert'
+                    'Bereit zum Download'
                 );
             },
             {waitOptions: {requestTimeout: 20000, responseTimeout: 20000}}
-        );
-
-        StatistikPO.getStatistikJobStatus(0).should(
-            'include.text',
-            'Bereit zum Download'
         );
 
         cy.getDownloadUrl(() => {
