@@ -40,7 +40,7 @@ const getStatistikJob = (listIndex: number) => {
 };
 const getStatistikJobStatus = (listIndex: number, timeout = 20000) => {
     return getStatistikJob(listIndex).find('[data-test="job-status"]', {
-        timeout: 1500
+        timeout
     });
 };
 
