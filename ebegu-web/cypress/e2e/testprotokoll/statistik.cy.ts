@@ -38,6 +38,18 @@ describe('Kibon - generate Statistiken', () => {
             StatistikPO.getGenerierenButton().click();
         });
 
+        cy.waitForRequest(
+            'GET',
+            '**/admin/batch/userjobs/**',
+            () => {
+                StatistikPO.getStatistikJobStatus(0).should(
+                    'include.text',
+                    'Statistik angefordert'
+                );
+            },
+            {waitOptions: {requestTimeout: 20000, responseTimeout: 20000}}
+        );
+
         StatistikPO.getStatistikJobStatus(0).should(
             'include.text',
             'Bereit zum Download'
@@ -46,7 +58,7 @@ describe('Kibon - generate Statistiken', () => {
         cy.getDownloadUrl(() => {
             StatistikPO.getStatistikJob(0).click();
         }).as('downloadUrl');
-        cy.get<string>('@downloadUrl').then(url => {
+        cy.get<string>('@downloadUrl', {timeout: 15000}).then(url => {
             cy.log(`downloading ${url}`);
             cy.downloadFile(url, fileName).as('download');
         });
