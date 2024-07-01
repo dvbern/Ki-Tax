@@ -153,6 +153,10 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         ).process(this.mandant);
     }
 
+    public checkMandant(): boolean {
+        return this.mandant === MANDANTS.APPENZELL_AUSSERRHODEN;
+    }
+
     public save(): IPromise<any> {
         if (!this.isGesuchValid()) {
             return undefined;
