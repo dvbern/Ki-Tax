@@ -106,7 +106,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -116,7 +116,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:e2e
             service-name: kibon-dev-e2e
@@ -126,7 +126,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: $DEV_HOST
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:prod
             service-name: kibon
@@ -136,7 +136,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:uat
             service-name: kibon-uat
@@ -146,7 +146,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:iat
             service-name: kibon-iat
@@ -156,7 +156,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba41.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:schulung
             service-name: kibon-schulung
@@ -166,7 +166,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba11.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:demo
             service-name: kibon-demo
@@ -283,7 +283,6 @@ deploy:
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         -   if: $CI_MERGE_REQUEST_ID
             when: manual
-            allow_failure: true
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
