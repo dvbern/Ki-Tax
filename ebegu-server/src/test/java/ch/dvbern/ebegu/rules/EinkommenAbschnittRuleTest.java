@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,6 @@ import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -262,7 +260,7 @@ public class EinkommenAbschnittRuleTest {
 	}
 
 	private List<VerfuegungZeitabschnitt> createTestdataEinkommensverschlechterung(@Nonnull BigDecimal massgebendesEk, @Nullable BigDecimal ekv1, @Nullable BigDecimal ekv2) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.setFinanzielleSituation(gesuch, massgebendesEk);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());

@@ -41,7 +41,7 @@ public class WohnsitzAbschnittRuleTest {
 
 	@Test
 	public void testCreateZeitAbschnitte() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -97,7 +97,7 @@ public class WohnsitzAbschnittRuleTest {
 
 	@Test
 	public void testCreateZeitAbschnitteFamSituationMutationFrom1GSTo2GS() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		createAdressenForGS1(gesuch);
@@ -155,7 +155,7 @@ public class WohnsitzAbschnittRuleTest {
 
 	@Test
 	public void testCreateZeitAbschnitteFamSituationMutationFrom2GSTo1GS() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		createAdressenForGS1(gesuch);
@@ -217,7 +217,7 @@ public class WohnsitzAbschnittRuleTest {
 	@Test
 	public void testNichtInBernInBernNichtInBern() {
 		// der GS wohnt zuerst nicht in Bern, danach zieht er ein und dann wieder weg. Das Wegziehen sollte erst 2 Monaten danach beruecksichtigt werden
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
@@ -269,7 +269,7 @@ public class WohnsitzAbschnittRuleTest {
 
 	@Test
 	public void testUmzugNachBernOneMonthBeforeGesuchsperiode() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
@@ -302,7 +302,7 @@ public class WohnsitzAbschnittRuleTest {
 
 	@Test
 	public void testUmzugAusBernOneMonthBeforeGesuchsperiode() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 

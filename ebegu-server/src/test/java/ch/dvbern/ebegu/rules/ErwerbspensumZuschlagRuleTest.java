@@ -145,7 +145,7 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 
 
 	private Betreuung createGesuchWithBetreuung() {
-		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		final Gesuch gesuch = betreuungToCreate.extractGesuch();
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuungToCreate);
 		betPensContainer.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(Constants.START_OF_TIME);

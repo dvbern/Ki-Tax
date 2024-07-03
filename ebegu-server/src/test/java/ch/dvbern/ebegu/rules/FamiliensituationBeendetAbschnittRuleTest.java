@@ -29,7 +29,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 
 	@BeforeEach
 	public void setup() {
-		erstGesuch = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		erstGesuch = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 
 		einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(erstGesuch.extractGesuchsperiode());
 		einstellungen.get(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2).setValue(String.valueOf(true));
@@ -132,7 +132,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 	private Betreuung createMutationMitAndererFamiliensituation(final Betreuung erstGesuch, final Boolean partnerIdentisch) {
 		VerfuegungZeitabschnitt ersterZeitabschnitt = zeitAbschnitteErstgesuch.get(0);
 		LocalDate erstGesuchGueltigAb = ersterZeitabschnitt.getGueltigkeit().getGueltigAb();
-		Betreuung mutation = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung mutation = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		mutation.initVorgaengerVerfuegungen(erstGesuch.getVerfuegung(), null);
 		assertNotNull(erstGesuch.extractGesuch().getFamiliensituationContainer());
 		assertNotNull(erstGesuch.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA());
