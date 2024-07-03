@@ -87,6 +87,7 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {createTSBetreuungspensum} from './betreuungView.util';
 import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
+import {ErweiterteBeduerfnisseBestaetigenEinstellungen} from './erweiterte-beduerfnisse-bestaetigung/erweiterte-beduerfnisse-bestaetigung.component';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -159,8 +160,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
     public provisorischeBetreuung: boolean;
-    public zuschlagBehinderungProStd: number;
-    public zuschlagBehinderungProTag: number;
     public korrekteKostenBestaetigung: boolean = false;
     public isBestaetigenClicked: boolean = false;
     public searchQuery: string = '';
@@ -179,7 +178,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     protected minEintrittsdatum: moment.Moment;
     private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
-    private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     private betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
     private oeffnungstageKita: number;
@@ -199,6 +197,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private schulergaenzendeBetreuungAktiv: boolean = false;
     private erweitereBeduerfnisseAktiv: boolean = false;
     private isAnwesenheitstageProMonatAktiviert: boolean = false;
+
+    erweiterteBeduerfnisseBestaetigungEinstellungen: ErweiterteBeduerfnisseBestaetigenEinstellungen =
+        {
+            besondereBeduerfnisseAufwandKonfigurierbar: false,
+            zuschlagBehinderungProStd: 0,
+            zuschlagBehinderungProTag: 0
+        };
 
     public constructor(
         private readonly $state: StateService,
@@ -2074,7 +2079,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
-        return this.besondereBeduerfnisseAufwandKonfigurierbar;
+        return this.erweiterteBeduerfnisseBestaetigungEinstellungen
+            .besondereBeduerfnisseAufwandKonfigurierbar;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {
@@ -2200,7 +2206,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
-        if (this.besondereBeduerfnisseAufwandKonfigurierbar) {
+        if (
+            this.erweiterteBeduerfnisseBestaetigungEinstellungen
+                .besondereBeduerfnisseAufwandKonfigurierbar
+        ) {
             return this.$translate.instant(
                 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITHOUT_BETRAG'
             );
@@ -2214,7 +2223,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.$translate.instant(
                 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
                 {
-                    betrag: this.zuschlagBehinderungProStd,
+                    betrag: this.erweiterteBeduerfnisseBestaetigungEinstellungen
+                        .zuschlagBehinderungProStd,
                     einheit: this.$translate.instant('STUNDE')
                 }
             );
@@ -2223,7 +2233,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.$translate.instant(
             'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG',
             {
-                betrag: this.zuschlagBehinderungProTag,
+                betrag: this.erweiterteBeduerfnisseBestaetigungEinstellungen
+                    .zuschlagBehinderungProTag,
                 einheit: this.$translate.instant('TAG')
             }
         );
@@ -2628,8 +2639,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                                     value.getValueAsBoolean()
                                 )
                             ) {
-                                this.besondereBeduerfnisseAufwandKonfigurierbar =
-                                    true;
+                                this.erweiterteBeduerfnisseBestaetigungEinstellungen =
+                                    {
+                                        ...this
+                                            .erweiterteBeduerfnisseBestaetigungEinstellungen,
+                                        besondereBeduerfnisseAufwandKonfigurierbar:
+                                            true
+                                    };
                             }
                         });
                     response
@@ -2745,7 +2761,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             )
             .subscribe(
                 res => {
-                    this.zuschlagBehinderungProTag = Number(res.value);
+                    this.erweiterteBeduerfnisseBestaetigungEinstellungen = {
+                        ...this.erweiterteBeduerfnisseBestaetigungEinstellungen,
+                        zuschlagBehinderungProTag: Number(res.value)
+                    };
                 },
                 error => LOG.error(error)
             );
@@ -2758,7 +2777,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             )
             .subscribe(
                 res => {
-                    this.zuschlagBehinderungProStd = Number(res.value);
+                    this.erweiterteBeduerfnisseBestaetigungEinstellungen = {
+                        ...this.erweiterteBeduerfnisseBestaetigungEinstellungen,
+                        zuschlagBehinderungProStd: Number(res.value)
+                    };
                 },
                 error => LOG.error(error)
             );
