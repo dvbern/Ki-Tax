@@ -66,7 +66,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void test2PKeinAbzug() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
@@ -81,7 +81,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void test3P_Abzug() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer defaultKindContainer1 = TestDataUtil.createDefaultKindContainer();
@@ -102,7 +102,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void test4P_Abzug() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer defaultKindContainer1 = TestDataUtil.createDefaultKindContainer();
@@ -123,7 +123,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void test3P_Abzug_Kind_waehrendPeriode() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer defaultKindContainer1 = TestDataUtil.createDefaultKindContainer();
@@ -158,7 +158,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void test3P_Abzug_Zwiling_waehrendPeriode() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer defaultKindContainer1 = TestDataUtil.createDefaultKindContainer();
@@ -432,7 +432,7 @@ public class FamilienabzugAbschnittRuleBernTest {
 
 	@Test
 	void testFamiliensituationMutiert1GSTo2GS() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		final LocalDate date = LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 25); // gesuchsperiode ist 2017/2018
 		gesuch.extractFamiliensituation().setAenderungPer(date);

@@ -250,7 +250,7 @@ public class AbstractEbeguRuleTest {
 
 	@Test
 	public void testBegrenzungAufGesuchsperiode() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
@@ -269,7 +269,7 @@ public class AbstractEbeguRuleTest {
 
 	@Test
 	public void testZusammenlegenVonIdentischenPerioden() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		// 2*20%, direkt gefolgt von 1*40% sollte 1 Abschnitt mit 40% geben
 		List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
 		zeitabschnitte.add(createErwerbspensum(DATUM_2, DATUM_3, 20));
@@ -304,7 +304,7 @@ public class AbstractEbeguRuleTest {
 
 	@Test
 	public void testNichtZusammenlegenVonIdentischenPeriodenMitAbstand() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		// 2*20%, direkt gefolgt von 1*40% sollte 1 Abschnitt mit 40% geben
 		List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
 		zeitabschnitte.add(createErwerbspensum(DATUM_2, DATUM_3, 20));

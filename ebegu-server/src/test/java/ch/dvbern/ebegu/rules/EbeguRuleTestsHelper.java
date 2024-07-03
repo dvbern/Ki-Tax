@@ -535,7 +535,7 @@ public final class EbeguRuleTestsHelper {
 			BigDecimal monatlicheHauptmahlzeiten,
 			BigDecimal monatlicheNebenmahlzeiten
 	) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
@@ -565,7 +565,7 @@ public final class EbeguRuleTestsHelper {
 			BigDecimal monatlicheNebenmahlzeiten,
 			Mandant mandant
 	) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false, mandant);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false, mandant);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();

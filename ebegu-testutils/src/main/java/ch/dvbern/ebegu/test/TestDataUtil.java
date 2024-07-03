@@ -1391,7 +1391,7 @@ public final class TestDataUtil {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller) {
+	public static Betreuung createGesuchWithoutBetreuungspensum(boolean zweiGesuchsteller) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		gesuch.setDossier(createDefaultDossier());
@@ -1427,7 +1427,7 @@ public final class TestDataUtil {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller, Mandant mandant) {
+	public static Betreuung createGesuchWithoutBetreuungspensum(boolean zweiGesuchsteller, Mandant mandant) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718(mandant));
 		gesuch.setDossier(createDefaultDossier(mandant));

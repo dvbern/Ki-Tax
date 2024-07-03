@@ -97,7 +97,7 @@ public class KindTarifAbschnittRuleTest {
 	}
 
 	private Betreuung createKindWithBetreuung() {
-		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		final Gesuch gesuch = betreuungToCreate.extractGesuch();
 		gesuch.setDossier(TestDataUtil.createDefaultDossier());
 		return betreuungToCreate;

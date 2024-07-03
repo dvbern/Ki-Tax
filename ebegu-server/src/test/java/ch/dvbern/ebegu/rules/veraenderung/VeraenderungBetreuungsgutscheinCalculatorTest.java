@@ -540,10 +540,10 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 
 	private Betreuung initBetreuung(Verfuegung verfuegung, Verfuegung vorgaenger) {
 		if (vorgaenger != null) {
-			vorgaenger.setBetreuung(TestDataUtil.createGesuchWithBetreuungspensum(false));
+			vorgaenger.setBetreuung(TestDataUtil.createGesuchWithoutBetreuungspensum(false));
 		}
 
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		betreuung.setVerfuegung(verfuegung);
 		betreuung.initVorgaengerVerfuegungen(vorgaenger, null);

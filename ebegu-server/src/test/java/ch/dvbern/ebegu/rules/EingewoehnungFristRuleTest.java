@@ -721,7 +721,7 @@ public class EingewoehnungFristRuleTest {
 	}
 
 	private Betreuung createGesuch(final boolean gs2, final boolean eingewoehnung) {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(gs2);
 		betreuung.setEingewoehnung(eingewoehnung);
 
 		BetreuungspensumContainer container  = TestDataUtil.createBetPensContainer(betreuung);

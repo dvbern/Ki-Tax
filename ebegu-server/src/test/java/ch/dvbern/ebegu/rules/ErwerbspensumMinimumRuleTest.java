@@ -54,7 +54,7 @@ public class ErwerbspensumMinimumRuleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void test1GSKeinErwerbspensum() {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
 		assertKeinAnspruch(result);
 	}
@@ -89,7 +89,7 @@ public class ErwerbspensumMinimumRuleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void test2GSKeinErwerbspensum() {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(true);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
 		assertKeinAnspruch(result);
 	}
@@ -144,7 +144,7 @@ public class ErwerbspensumMinimumRuleTest extends AbstractBGRechnerTest {
 	}
 
 	private Betreuung createBetreuungWithPensum(int pensumGS1, int pensumGS2, boolean gs2) {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(gs2);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		Assert.assertNotNull(gesuch.getGesuchsteller1());

@@ -62,7 +62,7 @@ class ErwerbspensumSchwyzCalcRuleTest extends EasyMockSupport {
 
 		@Test
 		void keinErwerbspensumShouldNotHaveAnspruch() {
-			Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+			Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 			List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
 			assertThat(result.get(0).getAnspruchberechtigtesPensum(), is(0));
 		}
@@ -70,7 +70,7 @@ class ErwerbspensumSchwyzCalcRuleTest extends EasyMockSupport {
 		@ParameterizedTest
 		@ValueSource(ints = { 0, 10, 19 })
 		void totalErwerbspensumOfXLessThanMinShouldHaveNoAnspruch(int anspruch) {
-			Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+			Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 			Gesuch gesuch = betreuung.extractGesuch();
 			final GesuchstellerContainer gesuchsteller = gesuch.getGesuchsteller1();
 			Objects.requireNonNull(gesuchsteller);
@@ -84,7 +84,7 @@ class ErwerbspensumSchwyzCalcRuleTest extends EasyMockSupport {
 		@ParameterizedTest
 		@ValueSource(ints = { 20, 40, 100 })
 		void totalErwerbspensumOfXBiggerEqualMinShouldHaveXAnspruch(int anspruch) {
-			Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+			Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
 			Gesuch gesuch = betreuung.extractGesuch();
 			final GesuchstellerContainer gesuchsteller = gesuch.getGesuchsteller1();
 			Objects.requireNonNull(gesuchsteller);
