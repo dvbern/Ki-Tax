@@ -1001,7 +1001,14 @@
                                     | translate
                             }}
                         </div>
+
+                        <erweiterte-beduerfnisse-bestaetigung [erweiterte-betreuung-j-a]="vm.getErweiterteBetreuungJA()"
+                                                              [einstellungen]="vm.erweiterteBeduerfnisseBestaetigungEinstellungen"
+                                                              [angebot-typ]="vm.getBetreuungModel().getAngebotTyp()"
+                                                              [read-only]="!vm.isBestaetigungBesondereBeduerfnisseEnabled()"></erweiterte-beduerfnisse-bestaetigung>
                     </div>
+
+
 
                     <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
                     <div
