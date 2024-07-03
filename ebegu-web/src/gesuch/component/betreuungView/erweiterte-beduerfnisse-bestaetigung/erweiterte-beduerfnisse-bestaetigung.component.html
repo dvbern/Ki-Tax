@@ -1,13 +1,13 @@
 <div class="row">
-    <div
-        class="col-xs-12 dv-input-container-question margin-left-20"
-    >
-        <dv-checkbox-x [class]="readOnly() ? 'not-allowed-cursor' : 'pointer-cursor'"
-                       [(model)]="erweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt"
-                       data-test="erweiterte-beduerfnisse-bestaetigt"
-                       [displayBisher]="false"
-                       [label]="labelKey() | translate:labelParameters()"
-                       [readonly]="readOnly()">
+    <div class="col-xs-12 dv-input-container-question margin-left-20">
+        <dv-checkbox-x
+            [class]="readOnly() ? 'not-allowed-cursor' : 'pointer-cursor'"
+            [(model)]="erweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt"
+            data-test="erweiterte-beduerfnisse-bestaetigt"
+            [displayBisher]="false"
+            [label]="labelKey() | translate: labelParameters()"
+            [readonly]="readOnly()"
+        >
         </dv-checkbox-x>
     </div>
 </div>
