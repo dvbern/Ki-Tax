@@ -334,6 +334,7 @@
                         <div
                             ng-if="
                                 vm.isProvisorischeBetreuung() &&
+                                !vm.isBetreuungsangebotMittagstisch() &&
                                 !vm.getBetreuungModel().keineDetailinformationen
                             "
                         >
@@ -422,7 +423,7 @@
                                                 ></span>
                                                 <dv-tooltip
                                                     input-id="prov-monatlicheHauptmahlzeiten-tooltip"
-                                                    text="'PENSUM_MAHLZEITEN_HELP' | translate"
+                                                    text="'GESCHAETZTE_PENSUM_MAHLZEITEN_HELP' | translate"
                                                 ></dv-tooltip>
                                             </label>
                                             <div
@@ -462,11 +463,11 @@
                                             for="prov-kostenProMahlzeit"
                                         >
                                             <span
-                                                data-translate="KOSTEN_PRO_MAHLZEIT"
+                                                data-translate="GESCHAETZTE_KOSTEN_PRO_MAHLZEIT"
                                             ></span>
                                             <dv-tooltip
                                                 input-id="prov-kostenProMahlzeit"
-                                                text="'KOSTEN_PRO_MAHLZEIT_HELP' | translate"
+                                                text="'GESCHAETZTE_KOSTEN_PRO_MAHLZEIT_HELP' | translate"
                                             ></dv-tooltip>
                                         </label>
                                         <div
