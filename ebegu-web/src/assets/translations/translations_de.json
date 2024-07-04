@@ -3281,6 +3281,5 @@
     "BEDARFSSTUFE_3": "Bedarfsstufe: 3 / ausgeprägt",
     "BEDARFSSTUFE_MISSING_BEDARFSSTUFE": "Für das Kind {{vorname}} {{nachname}} wurden höhere Beiträge beantragt. Setzen Sie die Bedarfsstufe in der Betreuung des Kindes nach erfolgter Beurteilung der Fachstelle für Kinderbetreuung. <a target='_blank' href='assets/pdf/schwyz/Workflow_hoehere_Beitraege.pdf'>Weitere Informationen zum Ablauf finden Sie hier.</a>",
     "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
-    "AENDERUNG_PER_DATUM_INFO": "Dieses Datum dient lediglich als Information für die Gemeinde. Die Änderung der Familiensituation erfolgt auf Folgemonat nach Einreichung der Mutation. Die neue finanzielle Situation gilt ebenfalls ab Folgemonat nach Einreichung der Mutation.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

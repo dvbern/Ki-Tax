@@ -34,9 +34,12 @@
                                         translate=""
                                         for="aenderungPer_ID"
                                         >AENDERUNG_PER
-                                    <dv-tooltip
-                                        text="'AENDERUNG_PER_DATUM_INFO' | translate"
-                                    ></dv-tooltip></label
+                                        <dv-tooltip
+                                            [text]="
+                                            'AENDERUNG_PER_DATUM_INFO'
+                                        "
+                                        ></dv-tooltip
+                                        ></label
                                     >
                                     <dv-date-picker-x
                                         [inputId]="'aenderungPer_ID'"

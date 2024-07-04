@@ -61,6 +61,7 @@
     "VORSCHULALTER": "Nicht eingeschult",
     "FAMILIENSITUATION_ONLY_KINDER_AUS_HAUSHALT_WARNING": "Reichen Sie nur Gesuche für Kinder ein, die auch mindestens zur Hälfte bei Ihnen im Haushalt wohnen.",
     "FAMILIENSITUATION_FRAGE_2": "Sind Sie verheiratet oder leben Sie mit dem anderen Elternteil der Kinder, für die Sie das folgende Gesuch einreichen, in einem gemeinsamen Haushalt?",
+    "AENDERUNG_PER_DATUM_INFO": "Dieses Datum dient lediglich als Information für die Gemeinde. Die Änderung der Familiensituation erfolgt auf Folgemonat nach Einreichung der Mutation. Die neue finanzielle Situation gilt ebenfalls ab Folgemonat nach Einreichung der Mutation.",
     "FAMILIENSITUATION_FRAGE_2_HINT": "Wenn Sie unverheiratet sind und die Kinder, für die Sie das Gesuch einreichen möchten, von mehreren anderen Elternteilen stammen, müssen Sie separate Gesuche einreichen (siehe oranger Kasten «Patchworkfamilie»).",
     "FAMILIENSITUATION_PATCHWORKFAMILIE": "Wenn Sie eine <b>Patchworkfamilie</b> (Fortsetzungsfamilie) sind, müssen Sie unter Umständen mehrere Gesuche einreichen. Bitte folgen Sie dieser Anleitung:",
     "FAMILIENSITUATION_PATCHWORKFAMILIE_VERHEIRATET": "<b>Sie sind verheiratet.</b> Dann reichen Sie ein gemeinsames Gesuch für alle Kinder ein – unabhängig davon ob es Ihre gemeinsamen Kinder sind oder nicht (total 1 Gesuch).",
