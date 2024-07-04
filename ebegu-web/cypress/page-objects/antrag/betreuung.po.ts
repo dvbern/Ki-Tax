@@ -228,8 +228,6 @@ const fillMittagstischBetreuungsForm = (
         getInstitution()
             .find('input')
             .should('have.value', mittagstisch.institution);
-        // getKesbPlatzierung('nein').click();
-        // getHasErweiterteBeduerfnisse('nein').click();
     });
 };
 
@@ -443,7 +441,6 @@ export const AntragBetreuungPO = {
     getInstitutionMobile,
     getInstitutionSuchtext,
     getHasVertrag,
-    // getKesbPlatzierung,
     getXthTagesschulModulOfDay,
     getAGBTSAkzeptiert,
     getHasErweiterteBeduerfnisse,
