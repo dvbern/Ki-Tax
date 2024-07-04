@@ -1416,6 +1416,7 @@ public final class TestDataUtil {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		KindContainer kindContainer = createDefaultKindContainer();
+		betreuung.setBetreuungspensumContainers(Set.of(TestDataUtil.createBetPensContainer(betreuung)));
 		kindContainer.getBetreuungen().add(betreuung);
 		betreuung.setKind(kindContainer);
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
@@ -1456,6 +1457,7 @@ public final class TestDataUtil {
 		kindContainer.getBetreuungen().add(betreuung);
 		betreuung.setKind(kindContainer);
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		betreuung.setBetreuungspensumContainers(Set.of(TestDataUtil.createBetPensContainer(betreuung)));
 		betreuung.getKind().setGesuch(gesuch);
 		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten(mandant));
