@@ -78,7 +78,7 @@ public class BetreuungsangebotTypCalcRuleTest {
 	}
 
 	private AbstractPlatz prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(betreuungsangebotTyp);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());

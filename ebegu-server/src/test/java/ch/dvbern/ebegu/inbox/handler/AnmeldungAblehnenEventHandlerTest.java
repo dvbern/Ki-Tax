@@ -83,7 +83,7 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 	@BeforeEach
 	void setUp() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
 		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), gesuchsperiode);
 		anmeldungTagesschule.extractGesuch().setStatus(AntragStatus.IN_BEARBEITUNG_JA);

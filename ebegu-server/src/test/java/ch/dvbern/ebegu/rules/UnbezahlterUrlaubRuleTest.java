@@ -131,7 +131,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 	}
 
 	private Betreuung createGesuchWithBetreuung() {
-		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuungToCreate.extractGesuch();
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuungToCreate);
 		betPensContainer.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(Constants.START_OF_TIME);

@@ -296,7 +296,7 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	}
 
 	private AbstractPlatz preparePlatz(@Nonnull EinschulungTyp schulstufe, int ewpAngestellt, int ewpFreiwillig) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(new BigDecimal(100));

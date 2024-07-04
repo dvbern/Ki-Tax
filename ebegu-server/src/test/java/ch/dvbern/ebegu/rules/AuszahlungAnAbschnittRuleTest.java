@@ -44,7 +44,7 @@ class AuszahlungAnAbschnittRuleTest {
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
 	void shouldBeSameAsBetreuungAuszahlungAnEltern(boolean auszahlungAnEltern) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		betreuung.setAuszahlungAnEltern(auszahlungAnEltern);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
@@ -56,7 +56,7 @@ class AuszahlungAnAbschnittRuleTest {
 	@ParameterizedTest
 	@MethodSource("provideGueltigkeiten")
 	void shouldHaveGueltigkeitEntireGPNoMatterBetreuungspensum(List<DateRange> betreuungspensenGueltigkeiten) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		betreuung.getBetreuungspensumContainers().clear();
 		betreuungspensenGueltigkeiten.forEach(gueltigkeit -> {
 			BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();

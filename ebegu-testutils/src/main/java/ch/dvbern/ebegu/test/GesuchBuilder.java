@@ -29,7 +29,7 @@ public class GesuchBuilder {
 	private final Gesuch gesuch;
 
 	public GesuchBuilder() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		gesuch = betreuung.extractGesuch();
 	}
 

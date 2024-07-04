@@ -38,6 +38,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.rules.MonatsMergerRule;
+import ch.dvbern.ebegu.rules.MonatsRule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
@@ -326,7 +329,7 @@ public class MonatsMergerRuleTest {
 
 
 	private List<VerfuegungZeitabschnitt> createGesuchAndCalculateZeitabschnitt(boolean anspruchMonatsweise, final boolean gs2, ErwerbspensumContainer... erwerbspensumContainers) {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(gs2);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
@@ -338,7 +341,7 @@ public class MonatsMergerRuleTest {
 	}
 
 	private Betreuung createBetreuungWithErwerpspensen(ErwerbspensumContainer... erwerbspensumContainers) {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 

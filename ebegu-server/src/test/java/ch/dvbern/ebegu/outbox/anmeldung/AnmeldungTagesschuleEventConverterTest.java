@@ -161,7 +161,7 @@ public class AnmeldungTagesschuleEventConverterTest {
 
 	@Nonnull
 	private AnmeldungTagesschule createAnmeldungTagesschule() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setFreigabeDatum(LocalDate.now());
 		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());

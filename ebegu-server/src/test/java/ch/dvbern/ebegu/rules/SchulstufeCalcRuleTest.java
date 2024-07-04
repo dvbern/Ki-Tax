@@ -142,7 +142,7 @@ public class SchulstufeCalcRuleTest {
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		betreuung.getKind().getKindJA().setEinschulungTyp(schulstufe);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);
