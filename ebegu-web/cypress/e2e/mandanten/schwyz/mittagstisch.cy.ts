@@ -28,6 +28,7 @@ import {
     VerfuegungPO
 } from '@dv-e2e/page-objects';
 import {GemeindeTestFall, getUser, TestGesuchstellende} from '@dv-e2e/types';
+import {MANDANTS} from '../../../../src/app/core/constants/MANDANTS';
 
 describe('Mittagstisch Anmeldung', () => {
     const besitzerin: TestGesuchstellende = '[5-GS] Heinrich Mueller';
@@ -40,7 +41,7 @@ describe('Mittagstisch Anmeldung', () => {
     const gemeinde: GemeindeTestFall = 'Testgemeinde Schwyz';
 
     it('should be possible to make and verfuegen a mittagstisch anmeldung', () => {
-        cy.changeMandant('sz');
+        cy.changeMandant(MANDANTS.SCHWYZ);
         //SUPER ADMIN
         cy.login(userSuperadmin);
         cy.visit('/');
@@ -132,7 +133,7 @@ describe('Mittagstisch Anmeldung', () => {
         const mutationIdAlias = '@mutation1';
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
-        cy.changeMandant('be');
+        cy.changeMandant(MANDANTS.BERN);
     });
 });
 
