@@ -520,7 +520,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 	}
 
 	private Betreuung createGesuch(final boolean gs2) {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(gs2);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		return betreuung;
 	}
 

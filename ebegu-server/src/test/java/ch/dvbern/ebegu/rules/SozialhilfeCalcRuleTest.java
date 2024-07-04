@@ -70,7 +70,7 @@ public class SozialhilfeCalcRuleTest {
 	}
 
 	private Betreuung createDefaultBetruungForTest() {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(

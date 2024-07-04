@@ -251,7 +251,7 @@ public class WohnsitzRuleTest {
 	}
 
 	private Betreuung createTestdata(boolean zweigesuchsteller) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(zweigesuchsteller);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(zweigesuchsteller);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();

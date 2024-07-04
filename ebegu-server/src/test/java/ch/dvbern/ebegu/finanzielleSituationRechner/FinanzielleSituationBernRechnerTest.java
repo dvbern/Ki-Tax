@@ -52,7 +52,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testPositiverDurschnittlicherGewinn() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
@@ -72,7 +72,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testNegativerDurschnittlicherGewinn() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
@@ -92,7 +92,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testKeineEinkommensverschlechterung() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.calculateFinanzDaten(gesuch, finSitRechner);
@@ -108,7 +108,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Abgelehnt() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -130,7 +130,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Angenommen() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -149,7 +149,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Abgelehnt2017Angenommen() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -172,7 +172,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Angenommen2017Abgelehnt() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -193,7 +193,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Angenommen2017Angenommen() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -214,7 +214,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterung2016Abgelehnt2017Abgelehnt() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -235,7 +235,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testEinkommensverschlechterungDezember2016Angenommen() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
@@ -255,7 +255,7 @@ public class FinanzielleSituationBernRechnerTest {
 
 	@Test
 	public void testGesuchWithoutEKVContainer_shouldIgnoreEKV() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);

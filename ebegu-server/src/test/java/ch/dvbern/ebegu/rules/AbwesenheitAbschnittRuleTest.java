@@ -52,7 +52,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 	@Test
 	public void testAbschnitteShortAbwesenheit() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 
 		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
 		abwenseheitContList.add(TestDataUtil.createShortAbwesenheitContainer(betreuung.extractGesuchsperiode()));
@@ -66,7 +66,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 	@Test
 	public void testAbschnitteLongAbwesenheit() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 
 		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
 		final AbwesenheitContainer abwesenheit = TestDataUtil.createLongAbwesenheitContainer(betreuung.extractGesuchsperiode());
@@ -84,7 +84,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 	@Test
 	public void testAbschnitteSeveralLongAbw() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 
 		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
 		final AbwesenheitContainer abwesenheit1 = TestDataUtil.createLongAbwesenheitContainer(betreuung.extractGesuchsperiode());
@@ -110,7 +110,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 	@Test
 	public void testAbschnitteShortLongAbw() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithoutBetreuungspensum(false);
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 
 		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
 		final AbwesenheitContainer abwesenheit1 = TestDataUtil.createShortAbwesenheitContainer(betreuung.extractGesuchsperiode());
