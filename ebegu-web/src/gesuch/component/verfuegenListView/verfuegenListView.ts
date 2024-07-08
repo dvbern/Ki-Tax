@@ -950,16 +950,14 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                         EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)
                     ) {
                         bedarfsStufen.push(betreuung.bedarfsstufe);
-                    } else {
-                        if (
-                            this.missingBedarfsstufeChildNames.indexOf(
-                                kind.kindJA.getFullName()
-                            ) === -1
-                        ) {
-                            this.missingBedarfsstufeChildNames.push(
-                                kind.kindJA.getFullName()
-                            );
-                        }
+                    } else if (
+                        this.missingBedarfsstufeChildNames.indexOf(
+                            kind.kindJA.getFullName()
+                        ) === -1
+                    ) {
+                        this.missingBedarfsstufeChildNames.push(
+                            kind.kindJA.getFullName()
+                        );
                     }
                 });
             }
