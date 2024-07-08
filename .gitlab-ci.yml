@@ -432,7 +432,8 @@ run-e2e-all-tests:
 # based on stip-api's mirror job
 github-mirror:
     stage: mirror
-    needs: [ ]
+    needs:
+        - deploy:prod
     image:
         name: '${DVB_DOCKER_REGISTRY}/dockerhub/alpine/git:2.40.1'
         entrypoint: [ '' ]
@@ -447,5 +448,4 @@ github-mirror:
         - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
     rules:
         -   if: $CI_COMMIT_TAG
-            when: manual
             allow_failure: true
