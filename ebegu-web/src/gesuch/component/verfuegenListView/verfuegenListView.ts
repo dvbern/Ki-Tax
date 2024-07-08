@@ -110,6 +110,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public finSitStatus: Array<string>;
     public finSitStatusUpdateIsRunning: boolean = false;
     public hoehereBeitraegeBeeintraechtigungAktiviert: boolean;
+    public missingBedarfsstufeChildName: string[] = [];
     private kinderWithBetreuungList: Array<TSKindContainer>;
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -936,24 +937,28 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const kinderWithBetreuung: TSKindContainer[] =
             this.gesuchModelManager.getKinderWithBetreuungList();
         const bedarfsStufen: TSBedarfsstufe[] = [];
-        let countBeeintraechtigung: number = 0;
+        let betreuungenWithHoehereBeitraege: number = 0;
 
         kinderWithBetreuung.forEach(kind => {
             if (
                 kind.kindJA
                     ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true
             ) {
-                countBeeintraechtigung += 1;
+                betreuungenWithHoehereBeitraege += kind.betreuungen.length;
                 kind.betreuungen?.forEach(betreuung => {
                     if (
                         EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)
                     ) {
                         bedarfsStufen.push(betreuung.bedarfsstufe);
+                    } else {
+                        this.missingBedarfsstufeChildName.push(
+                            kind.kindJA.getFullName()
+                        );
                     }
                 });
             }
         });
-        return countBeeintraechtigung != bedarfsStufen.length;
+        return betreuungenWithHoehereBeitraege != bedarfsStufen.length;
     }
 
     public isRolleGemeinde(): boolean {
@@ -1268,7 +1273,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     error => LOG.error(error)
                 );
         }
-
+        this.missingBedarfsstufeChildName = [];
         this.isBedarfsstufeNotSelected();
     }
 
