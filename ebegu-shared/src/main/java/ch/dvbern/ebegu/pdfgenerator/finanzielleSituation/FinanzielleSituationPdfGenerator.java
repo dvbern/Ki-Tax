@@ -17,16 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
@@ -52,6 +42,15 @@ import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.MassgebendesEinkommenColumn.column;
 import static java.util.Objects.requireNonNull;
@@ -165,7 +164,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 		document.setPageSize(config.getPageSize());
 		document.newPage();
 		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
-		document.add(createIntroMassgebendesEinkommen());
+		document.add(PdfUtil.createIntroTable(createIntroMassgebendesEinkommen(), sprache, mandant));
 
 		List<Float> columnWidths = config.getColumns().stream()
 			.map(MassgebendesEinkommenColumn::getWidth)
@@ -195,12 +194,11 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	}
 
 	@Nonnull
-	protected final PdfPTable createIntroMassgebendesEinkommen() {
-		List<TableRowLabelValue> introMassgEinkommen = List.of(
+	protected List<TableRowLabelValue> createIntroMassgebendesEinkommen() {
+		return List.of(
 			new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()),
 			new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString()))
 		);
-		return PdfUtil.createIntroTable(introMassgEinkommen, sprache, mandant);
 	}
 
 	@Nonnull
