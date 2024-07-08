@@ -177,7 +177,10 @@
                 >
                     <div
                         class="well well-status-abgewiesen"
-                        ng-bind-html="'BEDARFSSTUFE_MISSING_BEDARFSSTUFE' | translate"
+                        data-translate="BEDARFSSTUFE_MISSING_BEDARFSSTUFE"
+                        data-translate-value-name="{{
+                            vm.missingBedarfsstufeChildName[0]
+                        }}"
                     ></div>
                 </div>
 
