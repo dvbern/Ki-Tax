@@ -110,7 +110,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public finSitStatus: Array<string>;
     public finSitStatusUpdateIsRunning: boolean = false;
     public hoehereBeitraegeBeeintraechtigungAktiviert: boolean;
-    public missingBedarfsstufeChildName: string[] = [];
+    public missingBedarfsstufeChildNames: string[] = [];
     private kinderWithBetreuungList: Array<TSKindContainer>;
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -951,13 +951,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     ) {
                         bedarfsStufen.push(betreuung.bedarfsstufe);
                     } else {
-                        this.missingBedarfsstufeChildName.push(
-                            kind.kindJA.getFullName()
-                        );
+                        if (
+                            this.missingBedarfsstufeChildNames.indexOf(
+                                kind.kindJA.getFullName()
+                            ) === -1
+                        ) {
+                            this.missingBedarfsstufeChildNames.push(
+                                kind.kindJA.getFullName()
+                            );
+                        }
                     }
                 });
             }
         });
+
+        console.log(this.missingBedarfsstufeChildNames);
         return betreuungenWithHoehereBeitraege != bedarfsStufen.length;
     }
 
@@ -1273,7 +1281,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     error => LOG.error(error)
                 );
         }
-        this.missingBedarfsstufeChildName = [];
+        this.missingBedarfsstufeChildNames = [];
         this.isBedarfsstufeNotSelected();
     }
 

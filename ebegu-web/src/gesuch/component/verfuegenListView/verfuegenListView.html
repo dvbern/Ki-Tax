@@ -176,11 +176,10 @@
                     "
                 >
                     <div
+                        ng-repeat="childName in vm.missingBedarfsstufeChildNames"
                         class="well well-status-abgewiesen"
                         data-translate="BEDARFSSTUFE_MISSING_BEDARFSSTUFE"
-                        data-translate-value-name="{{
-                            vm.missingBedarfsstufeChildName[0]
-                        }}"
+                        data-translate-value-name="{{ childName }}"
                     ></div>
                 </div>
 
