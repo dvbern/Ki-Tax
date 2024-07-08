@@ -36,7 +36,7 @@
         <section *ngIf="showReason()" class="well well-status-warten">
             {{ getReason() | translate }}
         </section>
-        <form>
+        <form data-test="gesuchfreigeben">
             <dv-checkbox-x
                 [readonly]="checkboxDisabled()"
                 [displayBisher]="false"

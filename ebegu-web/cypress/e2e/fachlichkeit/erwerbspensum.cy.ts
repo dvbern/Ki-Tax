@@ -439,13 +439,14 @@ describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () =
                 gemeinde: 'London'
             });
 
-            cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/*', () => {
+            cy.waitForRequest('GET', '**/antragStatusHistory/*', () => {
                 DossierToolbarPO.getAntragMutieren().click();
             });
 
             AntragCreationPO.getEingangsdatum()
                 .find('input')
                 .should('not.have.attr', 'disabled');
+
             AntragCreationPO.getEingangsdatum()
                 .find('input')
                 .clear()

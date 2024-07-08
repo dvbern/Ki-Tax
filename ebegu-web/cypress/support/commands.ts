@@ -22,6 +22,7 @@ type DvTasks = typeof dvTasks;
 
 import {OnlyValidSelectors, User} from '@dv-e2e/types';
 import {Method, WaitOptions} from 'cypress/types/net-stubbing';
+import {KiBonMandant} from '../../src/app/core/constants/MANDANTS';
 
 declare global {
     namespace Cypress {
@@ -173,6 +174,11 @@ declare global {
              *  });
              */
             getDownloadUrl(downloadAction: () => void): Chainable<string>;
+
+            /**
+             *
+             */
+            changeMandant(mandant: KiBonMandant): void;
         }
     }
 }
@@ -305,4 +311,20 @@ Cypress.Commands.add('getDownloadUrl', action => {
             return cy.location('origin').then(origin => origin.concat(result));
         });
     });
+});
+Cypress.Commands.add('changeMandant', (mandant: KiBonMandant) => {
+    // this only works for environments like dev, demo, uat, preview with a "-" in the url
+    if (Cypress.config().baseUrl.includes('-')) {
+        let prefixUrl: string[] = Cypress.config().baseUrl.split('-');
+        let urlToSplit: string[] = prefixUrl[1].split('.');
+        let newBaseUrl: string =
+            prefixUrl[0] +
+            '-' +
+            mandant.hostname +
+            '.' +
+            urlToSplit[1] +
+            '.' +
+            urlToSplit[2];
+        Cypress.config('baseUrl', newBaseUrl);
+    }
 });

@@ -43,7 +43,7 @@ const abweichungenSpeichern = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/abweichungen/**', () => {
         getSpeichernButton().click();
     });
-    ConfirmDialogPO.getDialogOkButton().click();
+    ConfirmDialogPO.getDvLoadingConfirmButton().click();
 };
 
 const fillInAbweichung = (index: number, pensum: number, kosten: number) => {
