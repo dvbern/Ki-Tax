@@ -965,7 +965,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             }
         });
 
-        console.log(this.missingBedarfsstufeChildNames);
         return betreuungenWithHoehereBeitraege != bedarfsStufen.length;
     }
 
