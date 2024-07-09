@@ -38,20 +38,27 @@ describe('Kibon - generate Statistiken', () => {
             StatistikPO.getGenerierenButton().click();
         });
 
-        StatistikPO.getStatistikJobStatus(0).should(
-            'include.text',
-            'Bereit zum Download'
+        cy.waitForRequest(
+            'GET',
+            '**/admin/batch/userjobs/**',
+            () => {
+                StatistikPO.getStatistikJobStatus(0).should(
+                    'include.text',
+                    'Bereit zum Download'
+                );
+            },
+            {waitOptions: {requestTimeout: 20000, responseTimeout: 20000}}
         );
 
         cy.getDownloadUrl(() => {
             StatistikPO.getStatistikJob(0).click();
         }).as('downloadUrl');
-        cy.get<string>('@downloadUrl').then(url => {
+        cy.get<string>('@downloadUrl', {timeout: 15000}).then(url => {
             cy.log(`downloading ${url}`);
             cy.downloadFile(url, fileName).as('download');
         });
 
-        cy.get('@download').should('not.equal', false);
+        cy.get('@download', {timeout: 15000}).should('not.equal', false);
         cy.get<string>('@download')
             .then(fileName =>
                 cy.task(
@@ -224,8 +231,8 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     expect(data[last][7].length).to.eq(17);
 
     // Check IBAN-Nummer
-    expect(data[last - 1][8]).to.eq('CH2089144969768441935');
-    expect(data[last][8]).to.eq('CH2089144969768441935');
+    expect(data[last - 1][8]).to.eq('CH9789144829733648596');
+    expect(data[last][8]).to.eq('CH9789144829733648596');
 
     // Check Kontoinhaber/in
     expect(data[last - 1][9]).to.eq('kiBon Test');

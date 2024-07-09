@@ -28,6 +28,7 @@ import {
     VerfuegungPO
 } from '@dv-e2e/page-objects';
 import {GemeindeTestFall, getUser, TestGesuchstellende} from '@dv-e2e/types';
+import {MANDANTS} from '../../../../src/app/core/constants/MANDANTS';
 
 describe('Mittagstisch Anmeldung', () => {
     const besitzerin: TestGesuchstellende = '[5-GS] Heinrich Mueller';
@@ -40,6 +41,8 @@ describe('Mittagstisch Anmeldung', () => {
     const gemeinde: GemeindeTestFall = 'Testgemeinde Schwyz';
 
     it('should be possible to make and verfuegen a mittagstisch anmeldung', () => {
+        cy.changeMandant(MANDANTS.SCHWYZ);
+        //SUPER ADMIN
         cy.login(userSuperadmin);
         cy.visit('/');
         TestFaellePO.createOnlineTestfall({
@@ -54,6 +57,7 @@ describe('Mittagstisch Anmeldung', () => {
             .as('antragsId');
         const antragIdAlias = '@antragsId';
 
+        // GESUCHSTELLER
         cy.changeLogin(userGS);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuungLoeschenButton(0, 0).click();
@@ -66,30 +70,35 @@ describe('Mittagstisch Anmeldung', () => {
             gemeinde
         );
         AntragBetreuungPO.platzBestaetigungAnfordern();
-        cy.changeLogin(userTraegerschaft);
 
+        // TRAEGERSCHAFT
+        cy.changeLogin(userTraegerschaft);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuung(0, 0).click();
-        AntragBetreuungPO.fillMittagstischBetreuungspensumForm(
+        AntragBetreuungPO.fillMittagstischBetreuungenForm(
             'withSchwyz',
             gemeinde
         );
         AntragBetreuungPO.platzBestaetigen();
 
+        // GESUCHSTELLER
         cy.changeLogin(userGS);
-        openGesuchInFreigabe(antragIdAlias);
-        FreigabePO.freigeben();
+        openGesuchInFreigabeSchwyz(antragIdAlias);
+        FreigabePO.freigebenSchwyz();
+        cy.wait(1500);
 
+        // SACHBEARBEITER
         cy.changeLogin(userSB);
-        openGesuchInFreigabe(antragIdAlias);
+        openGesuchInFreigabeSchwyz(antragIdAlias);
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
 
+        // TRAEGERSCHAFT
         cy.changeLogin(userTraegerschaft);
         openGesuchInBetreuungen(antragIdAlias);
         AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.getMutationsmeldungErstellenButton().click();
-        AntragBetreuungPO.getBetreuungspensum(0).clear().type('12');
+        AntragBetreuungPO.getMonatlicheHauptmahlzeiten(0).clear().type('12');
         AntragBetreuungPO.getMutationsmeldungSendenButton().click();
         cy.waitForRequest(
             'PUT',
@@ -99,10 +108,14 @@ describe('Mittagstisch Anmeldung', () => {
             }
         );
 
+        // SACHBEARBEITER
         cy.changeLogin(userSB);
         openGesuchInBetreuungen(antragIdAlias);
-
-        DossierToolbarPO.getMitteilungen().click();
+        cy.wait(1500);
+        cy.waitForRequest('GET', '**/mitteilungen/**', () => {
+            DossierToolbarPO.getMitteilungen().click();
+        });
+        cy.wait(1500);
         MitteilungenPO.getMitteilung(0).click();
         MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
@@ -110,35 +123,17 @@ describe('Mittagstisch Anmeldung', () => {
         DossierToolbarPO.getAntrag(1).click();
         SidenavPO.goTo('BETREUUNG');
         AntragBetreuungPO.getBetreuung(0, 0).click();
-        AntragBetreuungPO.getBetreuungspensum(0).should('have.value', '12');
+        AntragBetreuungPO.getMonatlicheHauptmahlzeiten(0).should(
+            'have.value',
+            '12'
+        );
         SidenavPO.getGesuchsDaten()
             .then(el$ => el$.data('antrags-id'))
             .as('mutation1');
         const mutationIdAlias = '@mutation1';
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
-
-        cy.changeLogin(userTraegerschaft);
-        openGesuchInBetreuungen(mutationIdAlias);
-        AntragBetreuungPO.getBetreuung(0, 0).click();
-        AntragBetreuungPO.getAbweichungenMeldenButton().click();
-        AbweichungenPO.fillInAbweichung(4, 7, 10);
-        AbweichungenPO.abweichungenSpeichern();
-        AbweichungenPO.abweichungenFreigeben();
-
-        cy.changeLogin(userSB);
-        openGesuchInBetreuungen(mutationIdAlias);
-        DossierToolbarPO.getMitteilungen().click();
-        MitteilungenPO.getMitteilung(0).click();
-        MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
-        ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        DossierToolbarPO.getAntraegeTrigger().click();
-        DossierToolbarPO.getAntrag(2).click();
-        SidenavPO.getGesuchsDaten()
-            .then(el$ => el$.data('antrags-id'))
-            .as('mutation1');
-        SidenavPO.goTo('VERFUEGEN');
-        verfuegen();
+        cy.changeMandant(MANDANTS.BERN);
     });
 });
 
@@ -151,6 +146,11 @@ function openGesuchInFreigabe(antragIdAlias: string) {
                 cy.visit(`/#/gesuch/freigabe/${antragsId}`)
             );
         }
+    );
+}
+function openGesuchInFreigabeSchwyz(antragIdAlias: string) {
+    cy.get(antragIdAlias).then(antragsId =>
+        cy.visit(`/#/gesuch/freigabe/${antragsId}`)
     );
 }
 

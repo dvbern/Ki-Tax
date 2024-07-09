@@ -32,8 +32,6 @@ workflow:
         -   if: $CI_COMMIT_TAG
             variables:
                 VERSION: $CI_COMMIT_TAG
-        # Scheduled Pipelines
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
 
 include:
     -   component: gitlab.dvbern.ch/devops/gitlab/components/maven@v0.1.7
@@ -68,7 +66,7 @@ include:
             context-dir: ebegu-web
             enforce-quality-gate: 'false'
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah/@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -80,7 +78,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah/@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -93,7 +91,7 @@ include:
             dockerfile-path: e2e-test-db-setup/Dockerfile
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah/@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -106,7 +104,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -116,7 +114,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:e2e
             service-name: kibon-dev-e2e
@@ -126,7 +124,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: $DEV_HOST
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:prod
             service-name: kibon
@@ -136,7 +134,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:uat
             service-name: kibon-uat
@@ -146,7 +144,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:iat
             service-name: kibon-iat
@@ -156,7 +154,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba41.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:schulung
             service-name: kibon-schulung
@@ -166,7 +164,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba11.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
+    -   component: 'gitlab.dvbern.ch/kibon/docker-compose-deploy/@4a7fb5324b9fae0b000349e0f8a443c3e9af9809'
         inputs:
             name: .docker-compose-deploy:demo
             service-name: kibon-demo
@@ -278,12 +276,9 @@ deploy:
     rules:
         -   if: $CI_COMMIT_TAG
             when: never
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         -   if: $CI_MERGE_REQUEST_ID
             when: manual
-            allow_failure: true
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
@@ -292,8 +287,6 @@ deploy:e2e:
         name: e2e
         url: https://e2e.kibon.ch
     rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 create-build-args:
@@ -326,8 +319,6 @@ build-backend:
             - 'ebegu-*/target/classes'
         expire_in: 7 days
     rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         - when: always
 
 build-frontend:
@@ -348,8 +339,6 @@ build-frontend:
             - 'ebegu-web/build/*'
         expire_in: 7 days
     rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         - when: always
 
 analyze-backend:
@@ -360,8 +349,6 @@ analyze-backend:
     needs:
         - build-backend
     rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         - when: always
 
 build-backend-image:
@@ -370,8 +357,6 @@ build-backend-image:
         - build-backend
         - create-build-args
     rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
         - when: always
 
 build-frontend-image:
@@ -379,10 +364,6 @@ build-frontend-image:
     needs:
         - build-frontend
         - create-build-args
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
-        - when: always
 
 analyze-frontend:
     before_script:
@@ -391,30 +372,24 @@ analyze-frontend:
     allow_failure: true # TODO remove after SONAR_TOKEN clash is resolved
     needs:
         - build-frontend
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
-        - when: always
 
 build-e2e-test-db-setup-image:
     extends: .build-e2e-test-db-setup-image
     needs: [ ]
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
-        - when: always
 
 run-e2e-testprotokoll-tests:
     extends: .run-e2e-tests
+    needs:
+        - deploy
+        - build-frontend
     rules:
         -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
             when: manual
-            needs:
-                - deploy
-                - build-frontend
             variables:
                 environment: preview
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+            variables:
+                environment: e2e
     script:
         - cd ebegu-web
         - npx cypress run --e2e --headless --browser chrome --spec ./cypress/e2e/testprotokoll/*.cy.ts
@@ -433,7 +408,8 @@ run-e2e-all-tests:
 # based on stip-api's mirror job
 github-mirror:
     stage: mirror
-    needs: [ ]
+    needs:
+        - deploy:prod
     image:
         name: '${DVB_DOCKER_REGISTRY}/dockerhub/alpine/git:2.40.1'
         entrypoint: [ '' ]
@@ -448,5 +424,4 @@ github-mirror:
         - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
     rules:
         -   if: $CI_COMMIT_TAG
-            when: manual
             allow_failure: true

@@ -439,7 +439,7 @@
                                                     name="prov-monatlicheHauptmahlzeiten"
                                                     ng-model="vm.getBetreuungspensum(0).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                     class="form-control"
-                                                    ng-attr-data-test="monatliche-hauptmahlzeiten#"
+                                                    ng-attr-data-test="monatliche-hauptmahlzeiten-"
                                                     ng-required="true"
                                                 />
                                                 <dv-error-messages
@@ -1002,6 +1002,21 @@
                                     | translate
                             }}
                         </div>
+
+                        <erweiterte-beduerfnisse-bestaetigung
+                            [erweiterte-betreuung-j-a]="
+                                vm.getErweiterteBetreuungJA()
+                            "
+                            [einstellungen]="
+                                vm.erweiterteBeduerfnisseBestaetigungEinstellungen
+                            "
+                            [angebot-typ]="
+                                vm.getBetreuungModel().getAngebotTyp()
+                            "
+                            [read-only]="
+                                !vm.isBestaetigungBesondereBeduerfnisseEnabled()
+                            "
+                        ></erweiterte-beduerfnisse-bestaetigung>
                     </div>
 
                     <!-- bedarfsstufe dropdown, wenn höhere Beiträge beantragt -->
@@ -1036,7 +1051,6 @@
                                         ng-disabled="!vm.canEditBedarfsstufen"
                                         ng-model="vm.getBetreuungModel().bedarfsstufe"
                                         ng-options="bedarfsstufe as bedarfsstufe | translate for bedarfsstufe in vm.bedarfsstufeValues"
-                                        ng-required="vm.canEditBedarfsstufen"
                                     ></select>
 
                                     <dv-error-messages
@@ -1453,7 +1467,7 @@
                                                                 }}"
                                                                 ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                                 class="form-control"
-                                                                ng-attr-data-test="monatliche-hauptmahlzeiten#{{
+                                                                ng-attr-data-test="monatliche-hauptmahlzeiten-{{
                                                                     $index
                                                                 }}"
                                                                 ng-required="true"
@@ -1514,7 +1528,7 @@
                                                             ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                             min="0"
                                                             ng-required="true"
-                                                            ng-attr-data-test="kosten-pro-mahlzeit#{{
+                                                            ng-attr-data-test="kosten-pro-mahlzeit-{{
                                                                 $index
                                                             }}"
                                                             ng-attr-placeholder="{{

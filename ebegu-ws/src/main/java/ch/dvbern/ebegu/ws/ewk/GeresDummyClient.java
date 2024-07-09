@@ -15,19 +15,19 @@
 
 package ch.dvbern.ebegu.ws.ewk;
 
-import java.security.SecureRandom;
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
 import ch.dvbern.ebegu.dto.personensuche.EWKBeziehung;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
+
+import javax.annotation.Nonnull;
+import java.security.SecureRandom;
+import java.time.LocalDate;
 
 public class GeresDummyClient implements GeresClient {
 
@@ -88,8 +88,8 @@ public class GeresDummyClient implements GeresClient {
 
 	@Nonnull
 	@Override
-	public EWKPerson suchePersonMitAhvNummer(Gesuchsteller gesuchsteller) {
-		return suchePerson(gesuchsteller.getNachname(), gesuchsteller.getVorname(), LocalDate.now(), Geschlecht.MAENNLICH, null).getPersonen().get(0);
+	public EWKPerson suchePersonMitAhvNummerInGemeinde(Gesuchsteller gesuchsteller, Gemeinde gemeinde) {
+		return suchePerson(gesuchsteller.getNachname(), gesuchsteller.getVorname(), LocalDate.now(), Geschlecht.MAENNLICH, gemeinde.getBfsNummer()).getPersonen().get(0);
 	}
 
 	@Override

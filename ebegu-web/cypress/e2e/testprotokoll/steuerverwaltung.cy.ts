@@ -85,7 +85,13 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
 
         cy.changeLogin(userSteueramt);
         cy.visit('/#/pendenzenSteueramt');
-        FaelleListePO.getAntrag(fallnummer).click();
+
+        cy.waitForRequest('GET', '**/gesuche/**', () => {
+            FaelleListePO.getAntrag(fallnummer).click();
+        });
+        cy.waitForRequest('GET', '**/gesuche/**', () => {
+            SidenavPO.goTo('GESUCHSTELLER');
+        });
         SidenavPO.getGesuchStatus().should(
             'contain.text',
             'In Bearbeitung Steuerbüro der Gemeinde'
@@ -95,7 +101,6 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
             'have.value',
             'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?'
         );
-        NavigationPO.saveAndGoNext();
         GesuchstellendePO.getFormularTitle().should(
             'contain.text',
             'Antragsteller/in'

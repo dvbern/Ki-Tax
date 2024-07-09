@@ -29,6 +29,10 @@ const getAlternativdatum = () => {
     return cy.getByData('fall-creation-alternativDatum');
 };
 
+const getAntragBearbeitenButton = () => {
+    return cy.getByData('container.antrag-bearbeiten');
+};
+
 // TODO: this should probably be on a toolbar po
 const getVerantwortlicher = () => {
     return cy.getByData('verantwortlicher');
@@ -51,5 +55,6 @@ export const AntragCreationPO = {
     getEingangsdatum,
     getVerantwortlicher,
     getUserOption,
-    getPageTitle
+    getPageTitle,
+    getAntragBearbeitenButton
 };

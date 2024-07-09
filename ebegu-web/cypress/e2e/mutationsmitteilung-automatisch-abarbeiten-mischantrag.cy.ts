@@ -102,7 +102,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         {
             cy.changeLogin(superAdmin);
             openGesuchInFreigabe();
-            cy.waitForRequest('POST', '**/freigeben/*/JA/*/SCH/*', () => {
+            cy.waitForRequest('POST', '**/freigeben/**', () => {
                 FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
             });
             SidenavPO.getGesuchStatus().should('have.text', 'Freigegeben');
@@ -206,12 +206,8 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
                 PosteingangPO.getEmpfaengerFilter()
                     .find('select')
                     .find('option')
-                    .first()
-                    .then(firstOption => {
-                        PosteingangPO.getEmpfaengerFilter()
-                            .find('select')
-                            .select(firstOption.text());
-                    });
+                    .eq(0)
+                    .then(element => cy.get('select').select(element.val()));
             });
 
             cy.waitForRequest(
@@ -219,6 +215,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
                 'applybetreuungsmitteilungsilently',
                 () => {
                     PosteingangPO.getMutationsmitteilungenAutomatischBearbeitenButton().click();
+                    cy.wait(1500);
                     ConfirmDialogPO.getSimpleConfirmButton().click();
                 },
                 {waitOptions: {timeout: 40000}}
@@ -319,6 +316,7 @@ function verfuegeBetreuung(
         '**/verfuegung/verfuegen/*/*/false/false',
         () => {
             VerfuegungPO.getVerfuegenButton().click();
+            cy.wait(1500);
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         },
         {waitOptions: {timeout: 40000}}

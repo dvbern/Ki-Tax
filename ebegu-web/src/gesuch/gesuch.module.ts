@@ -30,6 +30,7 @@ import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitte
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
+import {ErweiterteBeduerfnisseBestaetigungWrapperComponent} from './component/betreuungView/erweiterte-beduerfnisse-bestaetigung/angularjs-wrapper/erweiterte-beduerfnisse-bestaetigung-wrapper.component';
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
 import {
     DossierToolbarComponentConfig,
@@ -225,6 +226,13 @@ export const GESUCH_JS_MODULE = angular
     .component(
         'dvFallCreationViewX',
         downgradeComponent({component: FallCreationViewXComponent})
+    )
+    .directive(
+        'erweiterteBeduerfnisseBestaetigung',
+        downgradeComponent({
+            component: ErweiterteBeduerfnisseBestaetigungWrapperComponent,
+            propagateDigest: false
+        })
     )
     .component('kindView', new KindViewComponentConfig())
     .component('betreuungListView', new BetreuungListViewComponentConfig())

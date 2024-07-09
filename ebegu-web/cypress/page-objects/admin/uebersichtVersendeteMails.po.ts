@@ -39,12 +39,12 @@ const getPaginatorAmountMailUebersicht = () => {
     return cy.get('#mat-option-1');
 };
 
-const getNextMailsInTablle = () => {
-    return cy.get('.mat-paginator-navigation-next');
+const getNextMailsInTable = () => {
+    return cy.get('.mat-mdc-paginator-navigation-next');
 };
 
-const getNextMailsInTablleCheck = () => {
-    return cy.get('.mat-paginator-range-label');
+const getNextMailsInTableCheck = () => {
+    return cy.get('.mat-mdc-paginator-range-label');
 };
 
 const getVersendeteMailTableContent = () => {
@@ -60,7 +60,7 @@ export const UebersichtVersendeteMailsPO = {
     getSentMailsSubject,
     getPaginatorMailUebersicht,
     getPaginatorAmountMailUebersicht,
-    getNextMailsInTablle,
-    getNextMailsInTablleCheck,
+    getNextMailsInTable,
+    getNextMailsInTableCheck,
     getVersendeteMailTableContent
 };

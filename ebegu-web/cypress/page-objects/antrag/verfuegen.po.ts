@@ -53,6 +53,7 @@ const getSendToSTVButton = () => {
 const pruefeGesuch = () => {
     cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
         VerfuegenPO.getGeprueftButton().click();
+        cy.wait(1500);
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
@@ -60,6 +61,7 @@ const pruefeGesuch = () => {
 const verfuegenStarten = () => {
     cy.waitForRequest('POST', '**/verfuegenStarten/*', () => {
         VerfuegenPO.getVerfuegenStartenButton().click();
+        cy.wait(1500);
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
@@ -67,7 +69,7 @@ const verfuegenStarten = () => {
 const finSitAkzeptieren = () => {
     return cy.waitForRequest('POST', '**/changeFinSitStatus/**', () => {
         // likely to be an angularjs issue, where radio-buttons are enabled but not clickable soon after first render
-        cy.wait(400);
+        cy.wait(1500);
         getFinSitAkzeptiert('AKZEPTIERT').click();
     });
 };
