@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -72,65 +73,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		// es handelt sich um FEBR und wir müssen die Pensen gemäss dem alten System umrechnen.
 		if (possibleKitaxRechner) {
-
-			List<Betreuungspensum> pensenToUse = new ArrayList<>();
-
-			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
-
-				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-
-				if (KitaxUtil.isCompletePensumASIV(kitaxParameter, betreuungspensum)) {
-					pensenToUse.add(betreuungspensum);
-					continue;
-				}
-
-				boolean recalculationNecessary = false;
-
-				// Eine Kopie erstellen, da die Daten nicht veraendert werden duerfen!
-				Betreuungspensum copy = initBetreuungspensumCopy(betreuungspensum);
-
-				// das komplette Pensum liegt innerhalb von FEBR
-				if (kitaxParameter.getStadtBernAsivStartDate().isAfter(betreuungspensum.getGueltigkeit().getGueltigBis())) {
-					recalculationNecessary = true;
-				}
-
-				if (KitaxUtil.isPensumMixedFEBRandASIV(kitaxParameter, betreuungspensum)) {
-					recalculationNecessary = true;
-					copy.getGueltigkeit().setGueltigBis(kitaxParameter.getStadtBernAsivStartDate().minusDays(1l));
-
-					Betreuungspensum restPensumAsiv = initBetreuungspensumCopy(betreuungspensum);
-					restPensumAsiv.getGueltigkeit().setGueltigAb(kitaxParameter.getStadtBernAsivStartDate());
-					restPensumAsiv.getGueltigkeit().setGueltigBis(betreuungspensum.getGueltigkeit().getGueltigBis());
-					restPensumAsiv.setPensum(betreuungspensum.getPensum());
-					pensenToUse.add(restPensumAsiv);
-				}
-
-				boolean betreuungInGemeinde;
-				// wenn das Flag betreuungInGemeinde nicht aktiviert ist, ist der BG beim Ki-Tax Rechner immer 0.
-				// dann muss auch nichts umgerechnet werden. Dies verhindert spätere Nullpointer, wenn die Öffnungszeiten
-				// abgefragt werden.
-				if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-					betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getBetreuungInGemeinde();
-				} else {
-					betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungGS().getBetreuungInGemeinde();
-				}
-				if (!betreuungInGemeinde) {
-					recalculationNecessary = false;
-				}
-
-				if (recalculationNecessary) {
-					String kitaName = betreuung.getInstitutionStammdaten().getInstitution().getName();
-					final BigDecimal convertedPensum = KitaxUtil.recalculatePensumKonvertierung(kitaName, kitaxParameter, betreuungspensum);
-					copy.setPensum(convertedPensum);
-					pensenToUse.add(copy);
-				}
-			}
-
-			for (Betreuungspensum pensum : pensenToUse) {
-				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensum, betreuung));
-			}
-
-			pensenToUse.clear();
+			handleKitaxRechner(betreuungspensen, betreuung, betreuungspensumAbschnitte);
 		} else {
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
@@ -139,6 +82,69 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		return betreuungspensumAbschnitte;
+	}
+
+	private void handleKitaxRechner(
+		Set<BetreuungspensumContainer> betreuungspensen,
+		Betreuung betreuung,
+		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte) {
+		List<Betreuungspensum> pensenToUse = new ArrayList<>();
+		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
+
+			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
+
+			if (KitaxUtil.isCompletePensumASIV(kitaxParameter, betreuungspensum)) {
+				pensenToUse.add(betreuungspensum);
+				continue;
+			}
+
+			boolean recalculationNecessary = false;
+
+			// Eine Kopie erstellen, da die Daten nicht veraendert werden duerfen!
+			Betreuungspensum copy = initBetreuungspensumCopy(betreuungspensum);
+
+			// das komplette Pensum liegt innerhalb von FEBR
+			if (kitaxParameter.getStadtBernAsivStartDate().isAfter(betreuungspensum.getGueltigkeit().getGueltigBis())) {
+				recalculationNecessary = true;
+			}
+
+			if (KitaxUtil.isPensumMixedFEBRandASIV(kitaxParameter, betreuungspensum)) {
+				recalculationNecessary = true;
+				copy.getGueltigkeit().setGueltigBis(kitaxParameter.getStadtBernAsivStartDate().minusDays(1l));
+
+				Betreuungspensum restPensumAsiv = initBetreuungspensumCopy(betreuungspensum);
+				restPensumAsiv.getGueltigkeit().setGueltigAb(kitaxParameter.getStadtBernAsivStartDate());
+				restPensumAsiv.getGueltigkeit().setGueltigBis(betreuungspensum.getGueltigkeit().getGueltigBis());
+				restPensumAsiv.setPensum(betreuungspensum.getPensum());
+				pensenToUse.add(restPensumAsiv);
+			}
+
+			boolean betreuungInGemeinde;
+			// wenn das Flag betreuungInGemeinde nicht aktiviert ist, ist der BG beim Ki-Tax Rechner immer 0.
+			// dann muss auch nichts umgerechnet werden. Dies verhindert spätere Nullpointer, wenn die Öffnungszeiten
+			// abgefragt werden.
+			if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
+				betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getBetreuungInGemeinde();
+			} else {
+				betreuungInGemeinde = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungGS().getBetreuungInGemeinde();
+			}
+			if (!betreuungInGemeinde) {
+				recalculationNecessary = false;
+			}
+
+			if (recalculationNecessary) {
+				String kitaName = betreuung.getInstitutionStammdaten().getInstitution().getName();
+				final BigDecimal convertedPensum = KitaxUtil.recalculatePensumKonvertierung(kitaName, kitaxParameter, betreuungspensum);
+				copy.setPensum(convertedPensum);
+				pensenToUse.add(copy);
+			}
+		}
+
+		for (Betreuungspensum pensum : pensenToUse) {
+			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensum, betreuung));
+		}
+
+		pensenToUse.clear();
 	}
 
 	/**
@@ -205,19 +211,29 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		zeitabschnitt.setBetreuungInFerienzeit(Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit()));
 
+		handleHoehereBeitraege(betreuung, zeitabschnitt);
+
+		return zeitabschnitt;
+	}
+
+	private void handleHoehereBeitraege(Betreuung betreuung, VerfuegungZeitabschnitt zeitabschnitt) {
 		// hier kind hoehereBeitraegeWegenBeeintraechtigungBeantragen pruefen
 		// dazu auch die gegebene Wert im Drop down beruchsichtigen wenn gesetzt und checkbox dann Wert im Input schreiben
 		if (Boolean.TRUE.equals(betreuung.getKind().getKindJA().getHoehereBeitraegeWegenBeeintraechtigungBeantragen()) && betreuung.getBedarfsstufe() != null) {
-			zeitabschnitt.setBedarfsstufeForAsivAndGemeinde(betreuung.getBedarfsstufe());
-			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-				betreuung.getBedarfsstufe() == Bedarfsstufe.KEINE ?
-					MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG :
-					MsgKey.BEDARFSSTUFE_MSG,
-				getLocale(),
-				ServerMessageUtil.translateEnumValue(betreuung.getBedarfsstufe(), getLocale(), betreuung.extractGesuch().extractMandant()));
+			if (Objects.requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).isErweiterteBeduerfnisseBestaetigt()) {
+				zeitabschnitt.setBedarfsstufeForAsivAndGemeinde(betreuung.getBedarfsstufe());
+				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+					betreuung.getBedarfsstufe() == Bedarfsstufe.KEINE ?
+						MsgKey.BEDARFSSTUFE_NICHT_GEWAEHRT_MSG :
+						MsgKey.BEDARFSSTUFE_MSG,
+					getLocale(),
+					ServerMessageUtil.translateEnumValue(betreuung.getBedarfsstufe(), getLocale(), betreuung.extractGesuch().extractMandant()));
+			} else {
+				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+					MsgKey.BEDARFSSTUFE_NICHT_VERRECHNET_MSG,
+					getLocale());
+			}
 		}
-
-		return zeitabschnitt;
 	}
 
 	private Betreuungspensum initBetreuungspensumCopy(Betreuungspensum original) {
@@ -229,7 +245,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		copy.setTarifProHauptmahlzeit(original.getTarifProHauptmahlzeit());
 		copy.setTarifProNebenmahlzeit(original.getTarifProNebenmahlzeit());
 		copy.setGueltigkeit(original.getGueltigkeit());
-//		copy.setPensum(original.getPensum());
 
 		return copy;
 	}

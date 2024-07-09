@@ -24,6 +24,7 @@ import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoF
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBedarfsstufe} from '../../../models/enums/betreuung/TSBedarfsstufe';
 import {
     isAnyStatusOfMahnung,
     isAnyStatusOfVerfuegt,
@@ -109,6 +110,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public finSitStatus: Array<string>;
     public finSitStatusUpdateIsRunning: boolean = false;
     public hoehereBeitraegeBeeintraechtigungAktiviert: boolean;
+    public missingBedarfsstufeChildNames: string[] = [];
     private kinderWithBetreuungList: Array<TSKindContainer>;
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -934,21 +936,34 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public isBedarfsstufeNotSelected(): boolean {
         const kinderWithBetreuung: TSKindContainer[] =
             this.gesuchModelManager.getKinderWithBetreuungList();
-        let isSelected = false;
+        const bedarfsStufen: TSBedarfsstufe[] = [];
+        let betreuungenWithHoehereBeitraege: number = 0;
 
-        kinderWithBetreuung.some(kind => {
+        kinderWithBetreuung.forEach(kind => {
             if (
                 kind.kindJA
                     ?.hoehereBeitraegeWegenBeeintraechtigungBeantragen === true
             ) {
-                kind.betreuungen?.every(betreuung => {
-                    isSelected = EbeguUtil.isNullOrUndefined(
-                        betreuung.bedarfsstufe
-                    );
+                betreuungenWithHoehereBeitraege += kind.betreuungen.length;
+                kind.betreuungen?.forEach(betreuung => {
+                    if (
+                        EbeguUtil.isNotNullOrUndefined(betreuung.bedarfsstufe)
+                    ) {
+                        bedarfsStufen.push(betreuung.bedarfsstufe);
+                    } else if (
+                        this.missingBedarfsstufeChildNames.indexOf(
+                            kind.kindJA.getFullName()
+                        ) === -1
+                    ) {
+                        this.missingBedarfsstufeChildNames.push(
+                            kind.kindJA.getFullName()
+                        );
+                    }
                 });
             }
         });
-        return isSelected;
+
+        return betreuungenWithHoehereBeitraege != bedarfsStufen.length;
     }
 
     public isRolleGemeinde(): boolean {
@@ -1263,7 +1278,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     error => LOG.error(error)
                 );
         }
-
+        this.missingBedarfsstufeChildNames = [];
         this.isBedarfsstufeNotSelected();
     }
 

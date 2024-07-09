@@ -333,6 +333,7 @@ class MutationsMergerSchwyzTest {
 		betreuung.getInstitutionStammdaten().getInstitution().setMandant(schwyz);
 		betreuung.getKind().getKindJA().setHoehereBeitraegeWegenBeeintraechtigungBeantragen(true);
 		betreuung.setBedarfsstufe(bedarfsstufe);
+		Objects.requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).setErweiterteBeduerfnisseBestaetigt(true);
 		return betreuung;
 	}
 
