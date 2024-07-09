@@ -43,6 +43,7 @@ const createNewKindWithAllSettings = () => {
     AntragKindPO.fillPflegekind();
 
     cy.getByData('show-fachstelle').click();
+    cy.wait(1500);
     AntragKindPO.fillFachstelle();
 
     cy.getByData('show-asylwesen').click();
@@ -68,275 +69,248 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
-    beforeEach(() => {
-        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
-        cy.login(userSB);
-        cy.visit('/#/faelle');
-    });
-
     it('should correctly create a new Papier Antrag', () => {
+        // cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
+        cy.login(userSB);
+        cy.visit('/');
+
         // INIT
-        {
-            AntragPapierPO.createPapierGesuch('withValid');
-            AntragCreationPO.getAntragsDaten()
-                .then(el$ => el$.data('antrags-id'))
-                .as('antragsId');
-        }
+
+        AntragPapierPO.createPapierGesuch('withValid');
 
         // FAMILIENSITUATION
-        {
-            AntragFamSitPO.fillFamiliensituationForm('withValid');
+
+        AntragFamSitPO.fillFamiliensituationForm('withValid');
+        cy.wait(1500);
+        cy.waitForRequest('POST', '**/wizard-steps', () => {
             NavigationPO.saveAndGoNext();
-            GesuchstellendePO.fillVerheiratet('withValid');
+        });
+        GesuchstellendePO.fillVerheiratet('withValid');
+        cy.waitForRequest('POST', '**/wizard-steps', () => {
             NavigationPO.saveAndGoNext();
-        }
+        });
 
         // KINDER
-        {
-            createNewKindWithAllSettings();
-            AntragKindPO.getPageTitle().should('include.text', 'Kinder');
 
-            cy.waitForRequest('POST', '**/wizard-steps', () => {
-                NavigationPO.saveAndGoNext();
-            });
-        }
+        createNewKindWithAllSettings();
+        AntragKindPO.getPageTitle().should('include.text', 'Kinder');
+
+        cy.waitForRequest('POST', '**/wizard-steps', () => {
+            NavigationPO.saveAndGoNext();
+        });
 
         // BETREUUNG
-        {
-            createNewBetreuungWithAllSettings();
-            AntragBetreuungPO.getPageTitle().should(
-                'include.text',
-                'Betreuung'
-            );
 
-            cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
-                NavigationPO.saveAndGoNext();
-            });
-        }
+        createNewBetreuungWithAllSettings();
+        AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
+
+        cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
+            NavigationPO.saveAndGoNext();
+        });
 
         // BESCHAEFTIGUNGSPENSUM
-        {
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
-                'GS1',
-                'withValid'
-            );
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
-                'GS2',
-                'withValid'
-            );
 
-            NavigationPO.saveAndGoNext();
-        }
+        AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+            'GS1',
+            'withValid'
+        );
+        AntragBeschaeftigungspensumPO.createBeschaeftigungspensum(
+            'GS2',
+            'withValid'
+        );
+
+        NavigationPO.saveAndGoNext();
 
         // FINANZIELLE VERHAELTNISSE
-        {
-            // Config
-            {
-                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm(
-                    'withValid'
-                );
-                FinanzielleSituationStartPO.saveForm();
-            }
 
-            // Finanzielle Situation - GS 1
-            {
-                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FinanzielleSituationPO.fillFinanzielleSituationForm(
-                    'withValid',
-                    'GS1'
-                );
-                FinanzielleSituationPO.saveFormAndGoNext();
-            }
+        // Config
 
-            // Finanzielle Situation - GS 2
-            {
-                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FinanzielleSituationPO.fillFinanzielleSituationForm(
-                    'withValid',
-                    'GS2'
-                );
-                FinanzielleSituationPO.saveFormAndGoNext();
-            }
+        FinanzielleSituationStartPO.fillFinanzielleSituationStartForm(
+            'withValid'
+        );
+        FinanzielleSituationStartPO.saveForm();
 
-            // Resultate
-            {
-                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({Resultate}) => {
-                    FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
-                        .find('input')
-                        .should(
-                            'have.value',
-                            Resultate.einkommenBeiderGesuchsteller
-                        );
-                    FinanzielleSituationResultatePO.getBruttovermoegenGS1()
-                        .find('input')
-                        .type(Resultate.bruttovermoegen1);
-                    FinanzielleSituationResultatePO.getBruttovermoegenGS2()
-                        .find('input')
-                        .type(Resultate.bruttovermoegen2);
-                    FinanzielleSituationResultatePO.getSchuldenGS1()
-                        .find('input')
-                        .type(Resultate.schulden1);
-                    FinanzielleSituationResultatePO.getSchuldenGS2()
-                        .find('input')
-                        .type(Resultate.schulden2);
-                    FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
-                        .find('input')
-                        .should(
-                            'have.value',
-                            Resultate.nettovermoegenFuenfProzent
-                        );
-                    FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
-                        .find('input')
-                        .should('have.value', Resultate.anrechenbaresEinkommen);
-                    FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden()
-                        .find('input')
-                        .should(
-                            'have.value',
-                            Resultate.abzuegeBeiderGesuchsteller
-                        );
-                    FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse()
-                        .find('input')
-                        .should(
-                            'have.value',
-                            Resultate.massgebendesEinkVorAbzFamGr
-                        );
-                });
-            }
+        // Finanzielle Situation - GS 1
 
-            cy.waitForRequest(
-                'GET',
-                '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**',
-                () => {
-                    NavigationPO.saveAndGoNext();
-                }
-            );
-        }
+        // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
+        FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
+        FinanzielleSituationPO.saveFormAndGoNext();
+
+        // Finanzielle Situation - GS 2
+
+        // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
+        FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
+        FinanzielleSituationPO.saveFormAndGoNext();
+
+        // Resultate
+
+        // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
+        FixtureFinSit.withValid(({Resultate}) => {
+            FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
+                .find('input')
+                .should('have.value', Resultate.einkommenBeiderGesuchsteller);
+            FinanzielleSituationResultatePO.getBruttovermoegenGS1()
+                .find('input')
+                .type(Resultate.bruttovermoegen1);
+            FinanzielleSituationResultatePO.getBruttovermoegenGS2()
+                .find('input')
+                .type(Resultate.bruttovermoegen2);
+            FinanzielleSituationResultatePO.getSchuldenGS1()
+                .find('input')
+                .type(Resultate.schulden1);
+            FinanzielleSituationResultatePO.getSchuldenGS2()
+                .find('input')
+                .type(Resultate.schulden2);
+            FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
+                .find('input')
+                .should('have.value', Resultate.nettovermoegenFuenfProzent);
+            FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
+                .find('input')
+                .should('have.value', Resultate.anrechenbaresEinkommen);
+            FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden()
+                .find('input')
+                .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
+            FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse()
+                .find('input')
+                .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
+        });
+
+        cy.waitForRequest(
+            'GET',
+            '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**',
+            () => {
+                NavigationPO.saveAndGoNext();
+            }
+        );
 
         // EINKOMMENSVERSCHLECHTERUNG
-        {
-            cy.waitForRequest('GET', '**/dokumente/**', () => {
-                NavigationPO.saveAndGoNext();
-            });
-        }
+
+        cy.waitForRequest('GET', '**/dokumente/**', () => {
+            NavigationPO.saveAndGoNext();
+        });
 
         // DOKUMENTE
-        {
-            // Test upload file
-            cy.fixture('documents/small.png').as('smallPng');
 
-            // Upload the file on every <input type=file>, Angular JS file upload makes specific upload difficult:
-            // https://github.com/abramenal/cypress-file-upload/tree/main/recipes/angularjs-ng-file-upload
-            // https://github.com/danialfarid/ng-file-upload/issues/1140
-            // https://github.com/danialfarid/ng-file-upload/issues/1167
-            cy.get('input[type="file"][tabindex=0]').each(($el, index) => {
-                const upload = `fileUpload#${index}`;
-                cy.intercept('POST', '**/upload').as(upload);
-                cy.wrap($el).selectFile(
-                    {contents: '@smallPng', fileName: `small-${index}.png`},
-                    {force: true}
-                );
-                return cy.wait(`@${upload}`);
-            });
+        // Test upload file
+        cy.fixture('documents/small.png').as('smallPng');
 
-            // TODO: Is flaky, some download requests seem to cancelled
-            // cy.get('[data-test^="download-file"').each(($el, index) => {
-            //     cy.wrap($el).click();
-            // });
-            //
-            // cy.get('[data-test^="download-file"').each(($el, index) => {
-            //     const downloadsFolder = Cypress.config('downloadsFolder');
-            //     const fileName = `small-${index}.png`;
-            //     const fullPath = path.join(downloadsFolder, fileName);
-            //     cy.readFile(fullPath).should('exist');
-            //     cy.log('FULL PATH?', fullPath);
-            //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName }, { custom: true });
-            //     return cy.readFile(fullPath).should('not.exist');
-            // });
+        // Upload the file on every <input type=file>, Angular JS file upload makes specific upload difficult:
+        // https://github.com/abramenal/cypress-file-upload/tree/main/recipes/angularjs-ng-file-upload
+        // https://github.com/danialfarid/ng-file-upload/issues/1140
+        // https://github.com/danialfarid/ng-file-upload/issues/1167
+        cy.get('input[type="file"][tabindex=0]').each(($el, index) => {
+            const upload = `fileUpload#${index}`;
+            cy.intercept('POST', '**/upload').as(upload);
+            cy.wrap($el).selectFile(
+                {contents: '@smallPng', fileName: `small-${index}.png`},
+                {force: true}
+            );
+            return cy.wait(`@${upload}`);
+        });
 
-            cy.waitForRequest('POST', '**/wizard-steps', () => {
-                NavigationPO.saveAndGoNext();
-            });
-        }
+        // TODO: Is flaky, some download requests seem to cancelled
+        // cy.get('[data-test^="download-file"').each(($el, index) => {
+        //     cy.wrap($el).click();
+        // });
+        //
+        // cy.get('[data-test^="download-file"').each(($el, index) => {
+        //     const downloadsFolder = Cypress.config('downloadsFolder');
+        //     const fileName = `small-${index}.png`;
+        //     const fullPath = path.join(downloadsFolder, fileName);
+        //     cy.readFile(fullPath).should('exist');
+        //     cy.log('FULL PATH?', fullPath);
+        //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName }, { custom: true });
+        //     return cy.readFile(fullPath).should('not.exist');
+        // });
+
+        cy.waitForRequest('POST', '**/wizard-steps', () => {
+            NavigationPO.saveAndGoNext();
+        });
 
         // PLATZBESTAETIGUNG mit Kita SB
         // !!!!!! - New User - !!!!!!
-        {
-            cy.changeLogin(userKita);
+        SidenavPO.getGesuchsDaten()
+            .then(el$ => el$.data('antrags-id'))
+            .as('antragsId');
+        const antragIdAlias = '@antragsId';
 
-            cy.get('@antragsId').then(antragsId =>
-                cy.visit(`/#/gesuch/familiensituation/${antragsId}`)
-            );
-            cy.waitForRequest(
-                'GET',
-                '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**',
-                () => {
-                    SidenavPO.goTo('BETREUUNG');
-                }
-            );
+        cy.changeLogin(userKita);
+        openGesuchInBetreuungen(antragIdAlias);
 
-            AntragBetreuungPO.getBetreuung(0, 0).click();
-            AntragBetreuungPO.fillKitaBetreuungspensumForm(
-                'withValid',
-                gemeinde
-            );
-            AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
-            AntragBetreuungPO.platzBestaetigen();
-        }
-        cy.changeLogin(userSB);
+        cy.wait(1500);
+
+        AntragBetreuungPO.getBetreuung(0, 0).click();
+        AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', gemeinde);
+        AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
+        AntragBetreuungPO.platzBestaetigen();
+
         // !!!!!! - changed back to previous user - !!!!!!
-
         // VERFUEGUNG
-        {
-            cy.get('@antragsId').then(antragsId =>
-                cy.visit(`/#/gesuch/verfuegen/${antragsId}`)
-            );
+        cy.changeLogin(userSB);
+        openGesuchInVerfuegung(antragIdAlias);
 
-            SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
+        SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
 
-            VerfuegenPO.finSitAkzeptieren();
-            VerfuegenPO.pruefeGesuch();
-            SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
+        VerfuegenPO.finSitAkzeptieren();
+        VerfuegenPO.pruefeGesuch();
+        SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
-            VerfuegenPO.verfuegenStarten();
-            SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
+        VerfuegenPO.verfuegenStarten();
+        SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
 
-            VerfuegenPO.getVerfuegung(0, 0).click();
-            VerfuegungPO.getBetreuungspensumProzent(5).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(6).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(7).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(8).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(9).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(10).should(
-                'include.text',
-                '25%'
-            );
-            VerfuegungPO.getBetreuungspensumProzent(11).should(
-                'include.text',
-                '25%'
-            );
+        VerfuegenPO.getVerfuegung(0, 0).click();
+        VerfuegungPO.getBetreuungspensumProzent(5).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(6).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(7).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(8).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(9).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(10).should(
+            'include.text',
+            '25%'
+        );
+        VerfuegungPO.getBetreuungspensumProzent(11).should(
+            'include.text',
+            '25%'
+        );
 
-            VerfuegungPO.nichtEintretenVerfuegen();
-            SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
-            VerfuegenPO.getBetreuungsstatus(0, 0).should(
-                'have.text',
-                'Nicht eingetreten'
-            );
-        }
+        VerfuegungPO.nichtEintretenVerfuegen();
+        SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
+        VerfuegenPO.getBetreuungsstatus(0, 0).should(
+            'have.text',
+            'Nicht eingetreten'
+        );
     });
 });
+
+function openGesuchInBetreuungen(antragIdAlias: string) {
+    cy.waitForRequest(
+        'GET',
+        '**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*',
+        () => {
+            cy.get(antragIdAlias).then(antragsId => {
+                cy.visit(`/#/gesuch/betreuungen/${antragsId}`);
+            });
+        }
+    );
+}
+
+function openGesuchInVerfuegung(antragIdAlias: string) {
+    cy.get(antragIdAlias).then(antragsId =>
+        cy.visit(`/#/gesuch/verfuegen/${antragsId}`)
+    );
+}

@@ -33,6 +33,15 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
     it('should access the Uebersicht View as Superadmin', () => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
+
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt',
+            besitzerin: '[5-GS] Jean Chambre'
+        });
+
         MainNavigationPO.getMenuButton().click();
         UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().click();
         cy.url().should('contain', 'uebersichtVersendeteMails');
@@ -41,6 +50,7 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
     it('should not have acces to the Ueberischt View as SB', () => {
         cy.login(userAdminBern);
         cy.visit('/#/faelle');
+
         MainNavigationPO.getMenuButton().click();
         UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().should(
             'not.exist'
@@ -68,6 +78,7 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
             betreuungsstatus: 'verfuegt',
             besitzerin: '[5-GS] Jean Chambre'
         });
+
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
             cy.visit('/#/uebersichtVersendeteMails');
@@ -78,8 +89,15 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     });
 
     it('should sort displayed Mails', () => {
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-1',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt',
+            besitzerin: '[5-GS] Jean Chambre'
+        });
+        cy.visit('/#/uebersichtVersendeteMails');
         UebersichtVersendeteMailsPO.getVersendeteMailTableContent().click();
-
         UebersichtVersendeteMailsPO.getVersendeteMailTableContent().then(
             $address => {
                 var addresses: any[] = [];
@@ -114,7 +132,9 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
 
     it('should select Mail amount', () => {
         UebersichtVersendeteMailsPO.getPaginatorMailUebersicht().click();
+        cy.wait(1500);
         UebersichtVersendeteMailsPO.getPaginatorAmountMailUebersicht().click();
+        cy.wait(1500);
         UebersichtVersendeteMailsPO.getSentMailsSubject().should(
             'have.length.within',
             10,
@@ -123,8 +143,9 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     });
 
     it('should change Table page', () => {
-        UebersichtVersendeteMailsPO.getNextMailsInTablle().click();
-        UebersichtVersendeteMailsPO.getNextMailsInTablleCheck().should(
+        UebersichtVersendeteMailsPO.getNextMailsInTable().click();
+        cy.wait(1500);
+        UebersichtVersendeteMailsPO.getNextMailsInTableCheck().should(
             'not.contain.text',
             '1-10'
         );

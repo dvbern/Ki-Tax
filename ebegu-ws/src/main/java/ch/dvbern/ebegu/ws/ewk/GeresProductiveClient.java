@@ -17,14 +17,6 @@
  */
 package ch.dvbern.ebegu.ws.ewk;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.bedag.geres.schemas._20180101.geresechtypes.FaultBase;
 import ch.bedag.geres.schemas._20180101.geresechtypes.IdType;
 import ch.bedag.geres.schemas._20180101.geresechtypes.TestResponse;
@@ -36,6 +28,7 @@ import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.ResidentInfoPar
 import ch.bedag.geres.schemas._20180101.geresresidentinfoservice.ResidentInfoPortType;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.PersonensucheAuditLog;
 import ch.dvbern.ebegu.enums.Geschlecht;
@@ -47,6 +40,13 @@ import com.sun.xml.ws.fault.ServerSOAPFaultException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class GeresProductiveClient implements GeresClient {
@@ -137,7 +137,7 @@ public class GeresProductiveClient implements GeresClient {
 			LocalDateTime.now()
 		);
 		final PersonensucheAuditLog logEntry = personenSucheAuditLogService.savePersonenSucheAuditLog(personensucheAuditLogEntry);
-		LOGGER.trace("Webservice call to Gers complete: Auditinfo {}", logEntry);
+		LOGGER.trace("Webservice call to Geres complete: Auditinfo {}", logEntry);
 	}
 
 	private String convertSearchParamForLog(ResidentInfoParametersType residentInfoParameters) {
@@ -196,7 +196,10 @@ public class GeresProductiveClient implements GeresClient {
 
 	@Override
 	@Nonnull
-	public EWKPerson suchePersonMitAhvNummer(Gesuchsteller gesuchsteller) throws PersonenSucheServiceException {
+	public EWKPerson suchePersonMitAhvNummerInGemeinde(
+		Gesuchsteller gesuchsteller,
+		Gemeinde gemeinde)
+		throws PersonenSucheServiceException {
 		Objects.requireNonNull(gesuchsteller.getSozialversicherungsnummer(), "VN cannot be null");
 		try {
 			ResidentInfoParametersType parameters = new ResidentInfoParametersType();
@@ -204,6 +207,7 @@ public class GeresProductiveClient implements GeresClient {
 			idType.setPersonIdCategory(ID_CATEGORY_AHV_13);
 			idType.setPersonId(removeDots(gesuchsteller.getSozialversicherungsnummer()));
 			parameters.setPersonId(idType);
+			parameters.setMunicipalityNumber(gemeinde.getBfsNummer().intValue());
 			LocalDate validityDate = LocalDate.now();
 			EWKResultat ewkResultat = this.residentInfoFull(parameters, validityDate, SEARCH_MAX);
 			throwIfMoreThanOnePersonReturned(gesuchsteller, ewkResultat);

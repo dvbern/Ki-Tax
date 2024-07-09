@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDate;
@@ -101,7 +102,9 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				stichtag,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(msgKey, getLocale());
+			if (!gesuch.extractMandant().getMandantIdentifier().equals(MandantIdentifier.SCHWYZ)) {
+				abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(msgKey, getLocale());
+			}
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND

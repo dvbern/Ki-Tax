@@ -438,7 +438,7 @@
                                                     name="prov-monatlicheHauptmahlzeiten"
                                                     ng-model="vm.getBetreuungspensum(0).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                     class="form-control"
-                                                    ng-attr-data-test="monatliche-hauptmahlzeiten#"
+                                                    ng-attr-data-test="monatliche-hauptmahlzeiten-"
                                                     ng-required="true"
                                                 />
                                                 <dv-error-messages
@@ -1466,7 +1466,7 @@
                                                                 }}"
                                                                 ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheHauptmahlzeiten"
                                                                 class="form-control"
-                                                                ng-attr-data-test="monatliche-hauptmahlzeiten#{{
+                                                                ng-attr-data-test="monatliche-hauptmahlzeiten-{{
                                                                     $index
                                                                 }}"
                                                                 ng-required="true"
@@ -1527,7 +1527,7 @@
                                                             ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                             min="0"
                                                             ng-required="true"
-                                                            ng-attr-data-test="kosten-pro-mahlzeit#{{
+                                                            ng-attr-data-test="kosten-pro-mahlzeit-{{
                                                                 $index
                                                             }}"
                                                             ng-attr-placeholder="{{

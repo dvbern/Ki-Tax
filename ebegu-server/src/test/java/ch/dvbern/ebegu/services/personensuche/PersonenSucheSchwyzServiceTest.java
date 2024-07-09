@@ -18,9 +18,6 @@
 
 package ch.dvbern.ebegu.services.personensuche;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
@@ -51,6 +48,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -108,7 +108,7 @@ class PersonenSucheSchwyzServiceTest extends EasyMockSupport {
 			EWKPerson ewkGs1 = GeresTestUtil.ewkPersonFromEntity(gs1);
 			ewkGs1.setAdresse(getGs1Adresse(gesuch));
 
-			expect(geresClient.suchePersonMitAhvNummer(gs1)).andReturn(ewkGs1);
+			expect(geresClient.suchePersonMitAhvNummerInGemeinde(gs1, gemeinde)).andReturn(ewkGs1);
 			EWKResultat personenInHaushalt = new EWKResultat();
 			personenInHaushalt.getPersonen().add(GeresTestUtil.ewkPersonFromEntity(kind));
 			personenInHaushalt.getPersonen()
@@ -162,7 +162,7 @@ class PersonenSucheSchwyzServiceTest extends EasyMockSupport {
 			Kind kind = gesuch.getKindContainers().stream().findFirst().orElseThrow().getKindJA();
 
 			EWKPerson ewkGsPerson = GeresUtil.createNotFoundPerson(gs1);
-			expect(geresClient.suchePersonMitAhvNummer(gs1)).andReturn(ewkGsPerson);
+			expect(geresClient.suchePersonMitAhvNummerInGemeinde(gs1, gemeinde)).andReturn(ewkGsPerson);
 			replayAll();
 
 			// when
@@ -227,7 +227,7 @@ class PersonenSucheSchwyzServiceTest extends EasyMockSupport {
 			EWKPerson ewkGs1 = GeresTestUtil.ewkPersonFromEntity(gs1);
 			ewkGs1.setAdresse(getGs1Adresse(gesuch));
 
-			expect(geresClient.suchePersonMitAhvNummer(gs1)).andReturn(ewkGs1);
+			expect(geresClient.suchePersonMitAhvNummerInGemeinde(gs1, gemeinde)).andReturn(ewkGs1);
 
 			Gesuchsteller gs2 = gesuch.extractGesuchsteller2().orElseThrow();
 			EWKResultat ewkResultatGs2 = new EWKResultat();
@@ -298,12 +298,12 @@ class PersonenSucheSchwyzServiceTest extends EasyMockSupport {
 			EWKPerson ewkGs1 = GeresTestUtil.ewkPersonFromEntity(gs1);
 			ewkGs1.setAdresse(getGs1Adresse(gesuch));
 
-			expect(geresClient.suchePersonMitAhvNummer(gs1)).andReturn(ewkGs1);
+			expect(geresClient.suchePersonMitAhvNummerInGemeinde(gs1, gemeinde)).andReturn(ewkGs1);
 
 			Gesuchsteller gs2 = gesuch.extractGesuchsteller2().orElseThrow();
 
 			EWKPerson ewkGs2 = GeresTestUtil.ewkPersonFromEntity(gs2);
-			expect(geresClient.suchePersonMitAhvNummer(gs2)).andReturn(ewkGs2);
+			expect(geresClient.suchePersonMitAhvNummerInGemeinde(gs2, gemeinde)).andReturn(ewkGs2);
 
 			var kinder = new ArrayList<>(gesuch.getKindContainers());
 			Kind kind1 = kinder.get(0).getKindJA();

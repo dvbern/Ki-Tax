@@ -39,9 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.TAGESSCHULE;
+import static ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp.getBerechnetesAngebotTypes;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.
@@ -84,7 +82,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return List.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return getBerechnetesAngebotTypes();
 	}
 
 	@Nonnull

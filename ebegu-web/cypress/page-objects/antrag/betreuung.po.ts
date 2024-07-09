@@ -70,6 +70,10 @@ const getBetreuungspensum = (betreuungspensumIndex: number) => {
     return cy.getByData(`betreuungspensum-${betreuungspensumIndex}`);
 };
 
+const getMonatlicheHauptmahlzeiten = (hauptmahlzeitenIndex: number) => {
+    return cy.getByData(`monatliche-hauptmahlzeiten-${hauptmahlzeitenIndex}`);
+};
+
 const getWeiteresBetreuungspensumErfassenButton = () => {
     return cy.getByData('container.add-betreuungspensum', 'navigation-button');
 };
@@ -79,7 +83,7 @@ const getMonatlicheBetreuungskosten = (betreuungspensumIndex: number) => {
 };
 
 const getKostenProMahlzeit = (betreuungspensumIndex: number) => {
-    return cy.getByData('kosten-pro-mahlzeit#' + betreuungspensumIndex);
+    return cy.getByData('kosten-pro-mahlzeit-' + betreuungspensumIndex);
 };
 
 const getBetreuungspensumAb = (betreuungspensumIndex: number) => {
@@ -200,7 +204,7 @@ const fillKitaBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
         getInstitution().find('input').type(kita.institution, {delay: 30});
@@ -213,39 +217,42 @@ const fillMittagstischBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const mittagstisch = data[gemeinde].mittagstisch;
+        cy.wait(1500);
         getBetreuungsangebot().select('Mittagstisch');
+        cy.wait(1500);
         getHasVertrag('ja').click();
         getInstitution().find('input').type(mittagstisch.institution);
         getInstitutionSuchtext().click();
         getInstitution()
             .find('input')
             .should('have.value', mittagstisch.institution);
-        getKesbPlatzierung('nein').click();
-        getHasErweiterteBeduerfnisse('nein').click();
     });
 };
 
-const fillMittagstischBetreuungspensumForm = (
+const fillMittagstischBetreuungenForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const pensen = data[gemeinde].mittagstisch.betreuungspensen;
-        pensen.forEach((pensum, index: number) => {
+        pensen.forEach((pensum: any, index: number) => {
             if (index > 0) {
                 AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
-            AntragBetreuungPO.getBetreuungspensum(index).type(
+            cy.wait(500);
+            AntragBetreuungPO.getMonatlicheHauptmahlzeiten(index).type(
                 pensum.anzahlMittagessenProMonat
             );
             AntragBetreuungPO.getKostenProMahlzeit(index).type(
                 pensum.kostenProMittagessen
             );
+            cy.wait(500);
             AntragBetreuungPO.getBetreuungspensumBis(0)
                 .find('input')
                 .type(pensum.bis);
+            cy.wait(500);
             AntragBetreuungPO.getBetreuungspensumAb(0)
                 .find('input')
                 .type(pensum.von);
@@ -258,9 +265,9 @@ const fillKitaBetreuungspensumForm = (
     gemeinde: GemeindeTestFall
 ) => {
     cy.wait(2000);
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const pensen = data[gemeinde].kita.betreuungspensen;
-        pensen.forEach((pensum, index) => {
+        pensen.forEach((pensum: any, index: number) => {
             if (index > 0) {
                 AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             }
@@ -285,7 +292,7 @@ const fillOnlineKitaBetreuungsForm = (
     gemeinde: GemeindeTestFall,
     opts?: {mobile: boolean}
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const kita = data[gemeinde].kita;
         getBetreuungsangebot().select(kita.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -306,7 +313,7 @@ const fillOnlineTfoBetreuungsForm = (
     gemeinde: GemeindeTestFall,
     opts?: {mobile: boolean}
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const tfo = data[gemeinde].tfo;
         getBetreuungsangebot().select(tfo.betreuungsangebot);
         getHasVertrag('ja').click();
@@ -323,6 +330,7 @@ const fillOnlineTfoBetreuungsForm = (
 };
 
 const selectTagesschulBetreuung = () => {
+    cy.wait(1500);
     getBetreuungsangebot().select('Tagesschule');
 };
 
@@ -330,7 +338,7 @@ const fillTagesschulBetreuungsForm = (
     dataset: keyof typeof FixtureBetreuung,
     gemeinde: GemeindeTestFall
 ) => {
-    FixtureBetreuung[dataset](data => {
+    FixtureBetreuung[dataset]((data: any) => {
         const tagesschule = data[gemeinde].tagesschule.institution;
         getHasVertrag('nein').should('not.exist');
         cy.wait(1000);
@@ -397,7 +405,9 @@ const platzAbweisen = (grundAbweisung: string) => {
 const platzAkzeptieren = () => {
     cy.waitForRequest('GET', '**/gesuchBetreuungenStatus/*', () => {
         cy.waitForRequest('PUT', '**/schulamt/akzeptieren', () => {
+            cy.wait(1500);
             getPlatzAkzeptierenButton().click();
+            cy.wait(1500);
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     });
@@ -419,6 +429,7 @@ export const AntragBetreuungPO = {
     getPlatzAkzeptierenButton,
     getWeiteresBetreuungspensumErfassenButton,
     getMutationsmeldungErstellenButton,
+    getMonatlicheHauptmahlzeiten,
     getBetreuungLoeschenButton,
     getMutationsmeldungSendenButton,
     getPlatzbestaetigungAnfordernButton,
@@ -430,7 +441,6 @@ export const AntragBetreuungPO = {
     getInstitutionMobile,
     getInstitutionSuchtext,
     getHasVertrag,
-    getKesbPlatzierung,
     getXthTagesschulModulOfDay,
     getAGBTSAkzeptiert,
     getHasErweiterteBeduerfnisse,
@@ -446,7 +456,7 @@ export const AntragBetreuungPO = {
     fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillMittagstischBetreuungsForm,
-    fillMittagstischBetreuungspensumForm,
+    fillMittagstischBetreuungenForm,
     fillOnlineKitaBetreuungsForm,
     fillOnlineTfoBetreuungsForm,
     fillKeinePlatzierung,

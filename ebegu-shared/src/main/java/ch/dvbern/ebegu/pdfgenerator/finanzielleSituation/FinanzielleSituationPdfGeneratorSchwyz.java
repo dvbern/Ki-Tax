@@ -17,16 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -45,6 +35,15 @@ import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.finanziellesituation.FinanzielleSituationUtil.findEinkommensverschlechterung;
 import static ch.dvbern.ebegu.finanziellesituation.FinanzielleSituationUtil.findFinanzielleSituation;
@@ -291,5 +290,11 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 			column(10, translate(SOZIALABZUG), a -> printCHF(a.getAbzugFamGroesse())),
 			column(10, translate(ANSBRUCHBERECHTIGTES_EINKOMMEN), a -> printCHF(a.getMassgebendesEinkommen()))
 		);
+	}
+
+	@Override
+	@Nonnull
+	protected List<TableRowLabelValue> createIntroMassgebendesEinkommen() {
+		return List.of(new TableRowLabelValue(REFERENZ_NUMMER, gesuch.getJahrFallAndGemeindenummer()));
 	}
 }

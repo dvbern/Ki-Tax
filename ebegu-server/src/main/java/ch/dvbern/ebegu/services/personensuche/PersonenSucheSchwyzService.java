@@ -18,20 +18,10 @@
 
 package ch.dvbern.ebegu.services.personensuche;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -42,6 +32,16 @@ import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.ws.ewk.GeresClient;
 import ch.dvbern.ebegu.ws.ewk.GeresUtil;
 import lombok.RequiredArgsConstructor;
+
+import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
  * Implementation of https://intra.dvbern.ch/display/KIB/GERES+Schwyz
@@ -56,8 +56,7 @@ public class PersonenSucheSchwyzService implements PersonenSucheService {
 	public EWKResultat suchePersonen(@Nonnull Gesuch gesuch)
 		throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		Set<EWKPerson> personen = new HashSet<>();
-
-		var resultatGs1 = suchePersonMitAhvNr(gesuch.getGesuchsteller1());
+		var resultatGs1 = suchePersonMitAhvNrInGemeinde(gesuch.getGesuchsteller1(), gesuch.getDossier().getGemeinde());
 		resultatGs1.setGesuchsteller(true);
 		personen.add(resultatGs1);
 
@@ -70,7 +69,7 @@ public class PersonenSucheSchwyzService implements PersonenSucheService {
 				findInResult(gesuch.getGesuchsteller2().getGesuchstellerJA(), personen);
 
 			if (inResultGs2.isEmpty()) {
-				personen.add(suchePersonMitAhvNr(gesuch.getGesuchsteller2()));
+				personen.add(suchePersonMitAhvNrInGemeinde(gesuch.getGesuchsteller2(), gesuch.getDossier().getGemeinde()));
 			} else {
 				personen.addAll(inResultGs2);
 			}
@@ -110,10 +109,10 @@ public class PersonenSucheSchwyzService implements PersonenSucheService {
 		return new HashSet<>(personenImGleichenHaushalt.getPersonen());
 	}
 
-	private EWKPerson suchePersonMitAhvNr(GesuchstellerContainer gesuchsteller)
+	private EWKPerson suchePersonMitAhvNrInGemeinde(GesuchstellerContainer gesuchsteller, Gemeinde gemeinde)
 		throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		Gesuchsteller gesuchstellerJA = Objects.requireNonNull(gesuchsteller.getGesuchstellerJA());
-		return geresClient.suchePersonMitAhvNummer(gesuchstellerJA);
+		return geresClient.suchePersonMitAhvNummerInGemeinde(gesuchstellerJA, gemeinde);
 	}
 
 	private List<EWKPerson> findInResult(@NotNull AbstractPersonEntity personEntity, Set<EWKPerson> personen) {

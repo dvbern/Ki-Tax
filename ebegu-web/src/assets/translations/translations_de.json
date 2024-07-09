@@ -69,6 +69,7 @@
     "ERROR_SOZIALVERSICHERUNGSNUMMER_DOPPELT": "Die angegebene SV-Nummer wurde bereits in dem Gesuch verwendet.",
     "ERWERBSPENSUM_LOESCHEN": "Wollen Sie das Beschäftigungspensum wirklich löschen?",
     "ERWERBSPENSUM_LOESCHEN_GS_MUTATION": "Sie sind dabei, ein bereits laufendes oder vergangenes Pensum zu löschen. Bitte stellen Sie sicher, dass Sie alle Beschäftigungspensen der ganzen Periode korrekt eingegeben haben",
+    "ERWERBSPENSUM_PENSUM_INFOBOX": "",
     "FAELLE_LIST": "Alle Fälle",
     "FILE_LOESCHEN": "Wollen Sie das Dokument wirklich löschen",
     "FINANZIELLE_SITUATION": "Finanzielle Verhältnisse {{gesuchsteller}} {{basisjahr}}",
@@ -3281,5 +3282,6 @@
     "BEDARFSSTUFE_3": "Bedarfsstufe: 3 / ausgeprägt",
     "BEDARFSSTUFE_MISSING_BEDARFSSTUFE": "Für das Kind {{name}} wurden höhere Beiträge beantragt. Setzen Sie die Bedarfsstufe in der Betreuung des Kindes nach erfolgter Beurteilung der Fachstelle für Kinderbetreuung. <a target='_blank' href='assets/pdf/schwyz/Workflow_hoehere_Beitraege.pdf'>Weitere Informationen zum Ablauf finden Sie hier.</a>",
     "GUTSCHEIN_HOEHERER_BEITRAG": "Höherer Beitrag gemäss § 17 KiBeV",
+    "AENDERUNG_PER_DATUM_INFO": "Dieses Datum dient lediglich als Information für die Gemeinde. Die Änderung der Familiensituation erfolgt auf Folgemonat nach Einreichung der Mutation. Die neue finanzielle Situation gilt ebenfalls ab Folgemonat nach Einreichung der Mutation.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
