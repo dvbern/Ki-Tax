@@ -11,9 +11,7 @@
                         [(ngModel)]="
                             model.finanzielleSituationJA.momentanSelbststaendig
                         "
-                        [enableExpression]="
-                            !isGesuchReadonly()
-                        "
+                        [enableExpression]="!isGesuchReadonly()"
                         aria-labelledby="selbststaendig_id"
                         dvEnableElement
                         id="selbststaendig_id"
