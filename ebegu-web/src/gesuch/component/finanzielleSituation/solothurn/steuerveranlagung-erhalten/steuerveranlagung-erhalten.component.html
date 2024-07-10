@@ -12,9 +12,7 @@
                             model.finanzielleSituationJA.momentanSelbststaendig
                         "
                         [enableExpression]="
-                            canEdit() &&
-                            !isGesuchReadonly() &&
-                            !isKorrekturModusJugendamt()
+                            !isGesuchReadonly()
                         "
                         aria-labelledby="selbststaendig_id"
                         dvEnableElement
@@ -86,11 +84,7 @@
                         required
                         #steuerveranlagungErhalten="ngModel"
                         dvEnableElement
-                        [enableExpression]="
-                            canEdit() &&
-                            !isGesuchReadonly() &&
-                            !isKorrekturModusJugendamt()
-                        "
+                        [enableExpression]="!isGesuchReadonly()"
                         [ngModel]="
                             model.finanzielleSituationJA
                                 .steuerveranlagungErhalten
