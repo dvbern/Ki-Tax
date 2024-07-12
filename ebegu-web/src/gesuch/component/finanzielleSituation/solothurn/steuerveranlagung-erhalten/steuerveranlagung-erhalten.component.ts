@@ -42,8 +42,4 @@ export class SteuerveranlagungErhaltenComponent {
             this.model.finanzielleSituationJA.momentanSelbststaendig
         );
     }
-
-    public canEdit(): boolean {
-        return !this.gesuchModelManager.isGesuchReadonly();
-    }
 }
