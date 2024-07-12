@@ -207,10 +207,7 @@
                                     getModel().finanzielleSituationJA
                                         .quellenbesteuert
                                 "
-                                [disabled]="
-                                    isFinSitReadonly() ||
-                                    isKorrekturModusJugendamt()
-                                "
+                                [disabled]="isFinSitReadonly()"
                                 id="quellenbesteuert_id"
                                 name="quellenbesteuert"
                                 required
@@ -261,10 +258,7 @@
                                     getModel().finanzielleSituationJA
                                         .gemeinsameStekVorjahr
                                 "
-                                [disabled]="
-                                    isFinSitReadonly() ||
-                                    isKorrekturModusJugendamt()
-                                "
+                                [disabled]="isFinSitReadonly()"
                                 id="gemeinsameSteuererklaerung_id"
                                 name="gemeinsameSteuererklaerung"
                                 required
@@ -305,10 +299,7 @@
                                     getModel().finanzielleSituationJA
                                         .alleinigeStekVorjahr
                                 "
-                                [disabled]="
-                                    isFinSitReadonly() ||
-                                    isKorrekturModusJugendamt()
-                                "
+                                [disabled]="isFinSitReadonly()"
                                 id="alleinigeStekVorjahr_id"
                                 name="alleinigeStekVorjahr"
                                 required
@@ -343,10 +334,7 @@
                                     getModel().finanzielleSituationJA.veranlagt
                                 "
                                 (change)="veranlagtChange()"
-                                [disabled]="
-                                    isFinSitReadonly() ||
-                                    isKorrekturModusJugendamt()
-                                "
+                                [disabled]="isFinSitReadonly()"
                                 id="veranlagt_id"
                                 name="veranlagt"
                                 required
@@ -402,10 +390,7 @@
                                     getModel().finanzielleSituationJA
                                         .veranlagtVorjahr
                                 "
-                                [disabled]="
-                                    isFinSitReadonly() ||
-                                    isKorrekturModusJugendamt()
-                                "
+                                [disabled]="isFinSitReadonly()"
                                 id="veranlagtVorjahr_id"
                                 name="veranlagtVorjahr"
                                 required

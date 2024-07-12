@@ -17,22 +17,6 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.betreuung.BetreuungEinstellungen;
 import ch.dvbern.ebegu.betreuung.BetreuungEinstellungenService;
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -45,11 +29,12 @@ import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.betreuung.Betreuungsstatus;
 import ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.ImportForm;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
@@ -75,6 +60,21 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.importAs;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungImportForm.isNotYetFreigegeben;
@@ -382,10 +382,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	private void setErweitereBeduerfnisseBestaetigt(@Nonnull ProcessingContext ctx) {
 		ErweiterteBetreuung eb = ctx.getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+		Kind kind = ctx.getBetreuung().getKind().getKindJA();
 		// Der Wert aus dem DTO wird nur berücksichtigt, wenn bereits bei dem Antrag erweitere Bedürfnisse angemeldet
 		// wurden.
 		if (eb != null) {
-			Boolean claimed = eb.getErweiterteBeduerfnisse();
+			boolean claimed = eb.getErweiterteBeduerfnisse() || kind.getHoehereBeitraegeWegenBeeintraechtigungBeantragen();
 			boolean confirmed = ctx.getDto().getAusserordentlicherBetreuungsaufwand();
 
 			eb.setErweiterteBeduerfnisseBestaetigt(claimed == confirmed);

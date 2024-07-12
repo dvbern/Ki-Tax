@@ -24,9 +24,6 @@ export class FinanzielleSituationSingleGsSchwyzComponent {
     public readonly!: boolean;
 
     @Input()
-    public korrekturModusJugendamt!: boolean;
-
-    @Input()
     public finanzModel: TSFinanzModel;
 
     @Output()
