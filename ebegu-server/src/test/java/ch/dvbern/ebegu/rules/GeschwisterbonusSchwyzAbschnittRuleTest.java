@@ -17,14 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -37,14 +29,22 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.equalTo;
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 class GeschwisterbonusSchwyzAbschnittRuleTest {
 
@@ -266,6 +266,18 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 
 				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
 			}
+
+			@Test
+			void oneOtherKindWithTwoBetreuung_shouldGetBonusForOneGeschwister() {
+				KindContainer kind2 = addGeschwisterWithBetreuungEntirePeriode(
+					GP_START.minusYears(5).plusMonths(2));
+
+				kind2.getBetreuungen()
+					.add(createBetreuungWithPensen(kind2, Set.of(new DateRange(GP_START, Constants.END_OF_TIME))));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
+			}
 		}
 	}
 
@@ -387,11 +399,13 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		}
 	}
 
-	private void addGeschwisterWithBetreuungEntirePeriode(LocalDate geburtsdatum) {
+	@CanIgnoreReturnValue
+	private KindContainer addGeschwisterWithBetreuungEntirePeriode(LocalDate geburtsdatum) {
 		KindContainer kind2 = TestDataUtil.createDefaultKindContainer();
 		kind2.getKindJA().setGeburtsdatum(geburtsdatum);
 		kind2.getBetreuungen().add(TestDataUtil.createDefaultBetreuung(40, GP_START, GP_END));
 		gesuch.getKindContainers().add(kind2);
+		return kind2;
 	}
 
 	private Betreuung createBetreuung() {

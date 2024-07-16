@@ -17,25 +17,25 @@
 
 package ch.dvbern.ebegu.rules;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.GeschwisterbonusTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.DateUtil;
+import lombok.Getter;
+
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.betreuung.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.GeschwisterbonusTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.DateUtil;
 
 public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 
@@ -87,14 +87,17 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 	private Stream<VerfuegungZeitabschnittGeburtsdatumTuple> createAbschnittGeburtstagTuplesForBetreuungen(
 		KindContainer kindContainer,
 		DateRange gpGueltigkeit) {
-		return kindContainer.getBetreuungen()
+		List<VerfuegungZeitabschnitt> zeitabschnitts = kindContainer.getBetreuungen()
 			.stream()
 			.flatMap(betreuung -> betreuung.getBetreuungspensumContainers().stream())
-			.map(betreuungspensumContainer -> new VerfuegungZeitabschnittGeburtsdatumTuple(
-				createZeitabschnittWithinValidityPeriodOfRule(DateUtil.limitToDateRange(
+			.map(betreuungspensumContainer -> createZeitabschnittWithinValidityPeriodOfRule(DateUtil.limitToDateRange(
 					betreuungspensumContainer.getGueltigkeit(),
-					gpGueltigkeit)),
-				kindContainer.getKindJA().getGeburtsdatum()));
+					gpGueltigkeit)))
+			.collect(Collectors.toList());
+
+		return mergeZeitabschnitte(zeitabschnitts)
+			.stream()
+			.map(zeitabschnitt -> new VerfuegungZeitabschnittGeburtsdatumTuple(zeitabschnitt, kindContainer.getKindJA().getGeburtsdatum()));
 	}
 
 	@Nonnull
@@ -141,6 +144,7 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 		return zeitabschnittGeburtsdatumTuple;
 	}
 
+	@Getter
 	private static class VerfuegungZeitabschnittGeburtsdatumTuple {
 		private final VerfuegungZeitabschnitt zeitabschnitt;
 		private final LocalDate geburtsdatum;
@@ -148,14 +152,6 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 		private VerfuegungZeitabschnittGeburtsdatumTuple(VerfuegungZeitabschnitt zeitabschnitt, LocalDate geburtsdatum) {
 			this.zeitabschnitt = zeitabschnitt;
 			this.geburtsdatum = geburtsdatum;
-		}
-
-		public VerfuegungZeitabschnitt getZeitabschnitt() {
-			return zeitabschnitt;
-		}
-
-		public LocalDate getGeburtsdatum() {
-			return geburtsdatum;
 		}
 	}
 }
